@@ -1,4 +1,4 @@
-﻿# Trợ Lý Ảo Pháp Lý - Nhóm 7 (MVP Demo)
+﻿# LLM Pháp Lý - Nhóm 7 (Demo)
 
 Hệ thống RAG + Semantic Router + DuckDuckGo MCP chạy Local 100%.
 
@@ -7,7 +7,7 @@ Hệ thống RAG + Semantic Router + DuckDuckGo MCP chạy Local 100%.
 - `app/ingest.py`: Script tự động đọc Excel và nhúng vào Vector DB (ChromaDB).
 - `data/dataset.xlsx`: File gốc 42 thủ tục hành chính.
 
-## Hướng dẫn cài đặt cho Thành viên Nhóm
+## Hướng dẫn cài đặt 
 
 **Bước 1: Tải Local LLM (Ollama)**
 1. Tải và cài đặt [Ollama](https://ollama.com/).
@@ -24,6 +24,7 @@ Hệ thống RAG + Semantic Router + DuckDuckGo MCP chạy Local 100%.
 
 **Bước 3: Khởi tạo Database RAG**
 Đảm bảo đã kích hoạt môi trường (có chữ `(venv)` ở đầu dòng):
+
 `cd app`
 
 `python ingest.py`
