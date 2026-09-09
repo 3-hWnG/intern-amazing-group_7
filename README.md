@@ -24,8 +24,8 @@ Hệ thống RAG + Semantic Router + DuckDuckGo MCP chạy Local 100%.
 
 **Bước 3: Khởi tạo Database RAG**
 Đảm bảo đã kích hoạt môi trường (có chữ `(venv)` ở đầu dòng):
--`cd app`
--`python ingest.py`
+   - `cd app`
+   - `python ingest.py`
 *(Chờ nó báo Done! Database ready. Chỉ cần chạy 1 lần duy nhất).*
 
 **Bước 4: Chạy Server**
