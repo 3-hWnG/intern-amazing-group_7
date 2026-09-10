@@ -7,6 +7,7 @@ from pydantic import BaseModel
 import uvicorn
 from duckduckgo_search import DDGS
 import numpy as np
+import torch
 
 app = FastAPI()
 
@@ -77,27 +78,58 @@ class Query(BaseModel):
 
 print("Loading Database & Semantic Router...")
 try:
-    embed_model = SentenceTransformer("keepitreal/vietnamese-sbert")
+    device = "cuda" if torch.cuda.is_available() else "cpu"
+    embed_model = SentenceTransformer("keepitreal/vietnamese-sbert", device=device)
     client = chromadb.PersistentClient(path="../data/chromadb")
     collection = client.get_or_create_collection(name="legal_docs")
     
     # Định nghĩa Cụm Vector Nhận diện Ngữ nghĩa (Không học vẹt từ khóa)
-    luat_emb = embed_model.encode("hỏi đáp thủ tục hành chính, quy định pháp luật, hồ sơ, giấy tờ, đăng ký, lệ phí, nhà nước, công dân, thẻ căn cước công dân, cấp đổi cccd, hộ chiếu passport, kết hôn, ly hôn, khai sinh, khai tử, cấp giấy chứng sinh, hộ khẩu thường trú, thủ tục sang tên sổ đỏ, cấp giấy phép xây dựng, nhà đất, hộ kinh doanh")
-    ngoai_emb = embed_model.encode("tin tức thời sự, giá cả thị trường, chứng khoán, thời tiết, bão lũ, hôm nay, kiến thức ngoài lề, sự kiện")
-    xagiao_emb = embed_model.encode("xin chào, bạn tên gì, cảm ơn, khỏe không, trò chuyện, tâm sự, giao tiếp cơ bản")
+    luat_anchors = [
+    # Hộ tịch & Gia đình
+    "đăng ký kết hôn", "thủ tục ly hôn", "làm giấy khai sinh", "đăng ký khai tử",
+    "xác nhận độc thân", "xác nhận tình trạng hôn nhân", "trích lục khai sinh",
+    "nhận cha mẹ con", "thay đổi họ tên", "cải chính hộ tịch",
+    
+    # Giấy tờ tùy thân & Cư trú (Dù ở Phường hay Công an cũng thuộc mảng LUAT)
+    "mất căn cước công dân", "làm lại cccd", "đổi thẻ căn cước", "căn cước gắn chip",
+    "đăng ký tạm trú", "đăng ký thường trú", "giấy xác nhận cư trú ct07", "hộ khẩu",
+    "làm hộ chiếu", "passport", "tài khoản vneid", "định danh điện tử",
+    
+    # Đất đai, Xây dựng & Nhà ở
+    "sang tên sổ đỏ", "làm sổ hồng", "cấp giấy phép xây dựng", "sửa chữa nhà",
+    "trích lục địa chính", "đo đạc đất đai", "chuyển mục đích sử dụng đất",
+    "xác nhận tình trạng quy hoạch", "tranh chấp đất đai",
+    
+    # Chứng thực & Sao y
+    "công chứng giấy tờ", "chứng thực bản sao", "sao y bản chính",
+    "chứng thực chữ ký", "chứng thực hợp đồng ủy quyền", "giấy ủy quyền",
+    
+    # Chính sách xã hội & Người có công
+    "trợ cấp mai táng", "tiền hỗ trợ hỏa táng", "chế độ liệt sĩ", "thương binh",
+    "hỗ trợ hộ nghèo", "trợ cấp bảo trợ xã hội", "làm thẻ bảo hiểm y tế miễn phí",
+    
+    # Hộ kinh doanh & Dịch vụ công
+    "đăng ký hộ kinh doanh", "mở cửa hàng buôn bán", "tạm ngừng kinh doanh",
+    "thủ tục hành chính", "hồ sơ cần giấy tờ gì", "thời gian giải quyết bao lâu",
+    "lệ phí bao nhiêu tiền", "nộp hồ sơ một cửa", "cổng dịch vụ công trực tuyến"]
+
+    luat_emb = np.mean(embed_model.encode(luat_anchors, device=device), axis=0)
+
+    xagiao_anchors = [
+    "xin chào", "chào bạn", "hello", "helo", "hế lô", "hê lô", "hi", "alo",
+    "chào buổi sáng", "bạn là ai", "bạn tên gì", "cảm ơn bạn", "tạm biệt",
+    "chúc bạn một ngày tốt lành", "tư vấn giúp tôi với"]
+    xagiao_emb = np.mean(embed_model.encode(xagiao_anchors, device=device), axis=0)
+
+    ngoai_anchors = ["vượt đèn đỏ phạt bao nhiêu tiền", "lỗi không đội mũ bảo hiểm",
+    "uống rượu lái xe phạt bao nhiêu", "nồng độ cồn xe máy", "bị bắn tốc độ", 
+    "xin chào, bạn tên gì, cảm ơn, khỏe không, trò chuyện, tâm sự, giao tiếp cơ bản"]
+    ngoai_emb = np.mean(embed_model.encode(ngoai_anchors, device=device), axis=0)
+
 except Exception as e:
     print("LỖI KHỞI TẠO:", e)
 
-def classify_intent_semantic(text: str):
-
-    clean_text = text.strip().lower()
-    greetings = ["xin chào", "chào", "chào bạn", "hello", "hi", "alo", "ê", "bạn là ai", "cảm ơn", "tạm biệt", "bye"]
-    if clean_text in greetings or (len(clean_text.split()) <= 3 and any(w in clean_text for w in greetings)):
-        return "XAGIAO", 1.0
-    law_keywords = ["thủ tục", "hồ sơ", "giấy tờ", "lệ phí", "kết hôn", "khai sinh", "khai tử", "căn cước", "cccd", "sổ đỏ", "xây dựng", "liệt sĩ", "hỏa táng", "học bổng", "chuyển trường", "hộ kinh doanh"]
-    if any(kw in clean_text for kw in law_keywords):
-        return "LUAT", 0.95
-    
+def classify_intent_semantic(text: str): 
     q_emb = embed_model.encode(text)
 
     
@@ -112,16 +144,16 @@ def classify_intent_semantic(text: str):
     
     best_intent = max(scores, key=scores.get)
     best_score = round(float(scores[best_intent]), 2)
-    return best_intent, best_score
+    return best_intent, best_score, q_emb
 
 @app.post("/chat")
 async def chat_endpoint(query: Query):
     try:
-        intent, score = classify_intent_semantic(query.text)
+        intent, score, q_emb = classify_intent_semantic(query.text)
         
         if intent == "LUAT":
             query_embed = embed_model.encode(query.text).tolist()
-            results = collection.query(query_embeddings=[query_embed], n_results=2)
+            results = collection.query(query_embeddings=[q_emb.tolist()], n_results=2)
             context = "\\n\\n".join(results['documents'][0])
             prompt = (
                 f"Bạn là Trợ lý ảo tư vấn thủ tục hành chính công của UBND Phường (Bộ phận Một cửa).\n"
@@ -166,7 +198,7 @@ async def chat_endpoint(query: Query):
                 f"CÂU TRẢ LỜI CỦA BẠN:"
             )
             
-        else: # XAGIAO
+        else: 
             prompt = (
                 f"Bạn là Trợ lý ảo tư vấn thủ tục hành chính công của UBND Phường.\n"
                 f"Công dân đang giao tiếp với bạn: \"{query.text}\"\n\n"
@@ -175,7 +207,11 @@ async def chat_endpoint(query: Query):
 
         response = ollama.chat(model='qwen2.5:1.5b', messages=[
             {'role': 'user', 'content': prompt}
-        ])
+        ], options={
+                'repeat_penalty': 1.2,   
+                'temperature': 0.2,      
+                'num_predict': 350}       
+        )
         answer = response['message']['content']
         
     except Exception as e:
