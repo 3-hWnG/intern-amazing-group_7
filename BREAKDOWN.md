@@ -32,10 +32,10 @@ Dự án nằm trọn trong thư mục `D:\intern_7` (hoặc tên repo Github kh
 
 ### 🧠 `app/main.py` (Trái Tim Hệ Thống)
 Đây là File Code quan trọng nhất, gánh 4 tác vụ cực nặng:
-1. **Giao diện (Frontend):** Chứa trực tiếp mã HTML/CSS/JS (Clone phong cách của ChatGPT/Gemini) với tính năng chuyển đổi Light/Dark Theme mượt mà. 
-2. **Bộ Não Định Tuyến (Semantic Router):** Khi User gõ câu hỏi, nó không bắt chữ (Keyword) ngu ngốc. Nó dùng thuật toán `Cosine Similarity` để đo khoảng cách Vector từ câu hỏi tới 3 cụm Điểm Trọng Tâm (LUAT, NGOAI, XAGIAO) để bẻ lái luồng chạy.
+1. **Giao diện (Frontend):** Chứa trực tiếp mã HTML/CSS/JS (Clone phong cách của ChatGPT/Gemini) với tính năng chuyển đổi Light/Dark Theme mượt mà. Đã tích hợp luồng Đọc Stream thời gian thực (ReadableStream) để tạo hiệu ứng gõ phím.
+2. **Bộ Não Định Tuyến (Semantic Router):** Khi User gõ câu hỏi, nó không bắt chữ (Keyword) ngu ngốc. Nó dùng thuật toán `Cosine Similarity` để đo khoảng cách Vector từ câu hỏi tới 3 cụm Điểm Trọng Tâm (LUAT, NGOAI, XAGIAO) để bẻ lái luồng chạy. Độ tin cậy được tuồn ngầm qua HTTP Headers để không làm nghẽn luồng Stream.
 3. **Cổng Kết Nối MCP (DuckDuckGo):** Nếu Router bẻ vào luồng `NGOAI`, file này kích hoạt hàm móc ra Internet cào tin tức nóng hổi về nạp cho AI (Realtime).
-4. **Prompt Engineering (Kiểm soát Ảo giác):** Gài luật thép bắt LLM phải tuân thủ nghiêm ngặt (Ví dụ: Hỏi Hộ chiếu phải đuổi sang Công An, Vi phạm luật giao thông phải đọc Nghị định). Giúp mô hình nhỏ (1.5B) không nói nhảm.
+4. **Prompt Engineering (Kiểm soát Ảo giác):** Gài luật thép bắt LLM phải tuân thủ nghiêm ngặt (Ví dụ: Hỏi Hộ chiếu phải đuổi sang Công An, Vi phạm luật giao thông phải đọc Nghị định). Kèm theo Chính sách Cấm lảm nhảm (Anti-Yapping) ép trả lời thẳng vào trọng tâm.
 
 ### 🗄️ `data/dataset.xlsx` và `data/chromadb/`
 - Excel là nơi Sếp/Mentor quăng dữ liệu vào.
@@ -49,8 +49,8 @@ Khi một thành viên nhập câu hỏi: *"Thủ tục đăng ký kết hôn c�
 1. **UI:** Web gửi API `/chat` dạng JSON chứa câu hỏi xuống `main.py`.
 2. **Semantic Router:** Câu hỏi bị băm thành Vector. So khớp thấy khoảng cách gần nhất với mảng `LUAT` -> Đi vào luồng LUẬT.
 3. **Tra RAG:** Code chui vào `chromadb`, bốc 2 thủ tục liên quan nhất (Evidence Pack).
-4. **Ép Prompt:** Trộn Câu Hỏi + Bằng Chứng RAG + Lệnh Ép Khuôn (Persona Cán bộ Phường).
-5. **Sinh Text:** Gửi nguyên cụm Prompt đó qua lõi Máy chủ **Ollama** đang chạy ngầm (`qwen2.5:1.5b`).
-6. **Trả Kết Quả:** LLM nôn ra câu trả lời (có định dạng Markdown) -> Đẩy ngược về giao diện ChatGPT trên Web.
+4. **Ép Prompt:** Trộn Câu Hỏi + Bằng Chứng RAG + Lệnh Ép Khuôn (Cấm nhại câu hỏi, Bắt trả lời gạch đầu dòng).
+5. **Sinh Text (Real-time Stream):** Gửi nguyên cụm Prompt đó qua lõi **Ollama** (`qwen2.5:1.5b`). API lập tức trả về Thông tin Router qua ngầm Headers, sau đó bắn từng Byte chữ về cho Web ngay khi LLM vừa nghĩ ra.
+6. **Hiển thị:** JS Frontend chắt lọc từng chữ và vẽ lên màn hình y hệt hiệu ứng Gõ phím của ChatGPT.
 
-Tất cả diễn ra hoàn toàn Offline (Chỉ kết nối Internet nếu nhảy luồng MCP). Chấm hết.
+Tất cả diễn ra hoàn toàn Offline, độ trễ gần như bằng 0 (Chỉ kết nối Internet nếu nhảy luồng MCP). Chấm hết.
