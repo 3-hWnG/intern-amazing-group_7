@@ -122,8 +122,7 @@ try:
     xagiao_emb = np.mean(embed_model.encode(xagiao_anchors, device=device), axis=0)
 
     ngoai_anchors = ["vượt đèn đỏ phạt bao nhiêu tiền", "lỗi không đội mũ bảo hiểm",
-    "uống rượu lái xe phạt bao nhiêu", "nồng độ cồn xe máy", "bị bắn tốc độ", 
-    "xin chào, bạn tên gì, cảm ơn, khỏe không, trò chuyện, tâm sự, giao tiếp cơ bản"]
+    "uống rượu lái xe phạt bao nhiêu", "nồng độ cồn xe máy", "bị bắn tốc độ"]
     ngoai_emb = np.mean(embed_model.encode(ngoai_anchors, device=device), axis=0)
 
 except Exception as e:
