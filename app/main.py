@@ -82,14 +82,24 @@ try:
     collection = client.get_or_create_collection(name="legal_docs")
     
     # Định nghĩa Cụm Vector Nhận diện Ngữ nghĩa (Không học vẹt từ khóa)
-    luat_emb = embed_model.encode("hỏi đáp thủ tục hành chính, quy định pháp luật, hồ sơ, giấy tờ, đăng ký, lệ phí, nhà nước, công dân")
+    luat_emb = embed_model.encode("hỏi đáp thủ tục hành chính, quy định pháp luật, hồ sơ, giấy tờ, đăng ký, lệ phí, nhà nước, công dân, thẻ căn cước công dân, cấp đổi cccd, hộ chiếu passport, kết hôn, ly hôn, khai sinh, khai tử, cấp giấy chứng sinh, hộ khẩu thường trú, thủ tục sang tên sổ đỏ, cấp giấy phép xây dựng, nhà đất, hộ kinh doanh")
     ngoai_emb = embed_model.encode("tin tức thời sự, giá cả thị trường, chứng khoán, thời tiết, bão lũ, hôm nay, kiến thức ngoài lề, sự kiện")
     xagiao_emb = embed_model.encode("xin chào, bạn tên gì, cảm ơn, khỏe không, trò chuyện, tâm sự, giao tiếp cơ bản")
-except:
-    pass
+except Exception as e:
+    print("LỖI KHỞI TẠO:", e)
 
 def classify_intent_semantic(text: str):
+
+    clean_text = text.strip().lower()
+    greetings = ["xin chào", "chào", "chào bạn", "hello", "hi", "alo", "ê", "bạn là ai", "cảm ơn", "tạm biệt", "bye"]
+    if clean_text in greetings or (len(clean_text.split()) <= 3 and any(w in clean_text for w in greetings)):
+        return "XAGIAO", 1.0
+    law_keywords = ["thủ tục", "hồ sơ", "giấy tờ", "lệ phí", "kết hôn", "khai sinh", "khai tử", "căn cước", "cccd", "sổ đỏ", "xây dựng", "liệt sĩ", "hỏa táng", "học bổng", "chuyển trường", "hộ kinh doanh"]
+    if any(kw in clean_text for kw in law_keywords):
+        return "LUAT", 0.95
+    
     q_emb = embed_model.encode(text)
+
     
     def cosine_sim(a, b):
         return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
@@ -113,15 +123,55 @@ async def chat_endpoint(query: Query):
             query_embed = embed_model.encode(query.text).tolist()
             results = collection.query(query_embeddings=[query_embed], n_results=2)
             context = "\\n\\n".join(results['documents'][0])
-            prompt = f"Trả lời CÂU HỎI dựa vào TÀI LIỆU RAG sau:\n{context}\nCÂU HỎI: {query.text}"
+            prompt = (
+                f"Bạn là Trợ lý ảo tư vấn thủ tục hành chính công của UBND Phường (Bộ phận Một cửa).\n"
+                f"DƯỚI ĐÂY LÀ CƠ SỞ DỮ LIỆU THỦ TỤC CỦA PHƯỜNG:\n"
+                f"---------------------\n"
+                f"{context}\n"
+                f"---------------------\n\n"
+                f"CÂU HỎI CỦA CÔNG DÂN: \"{query.text}\"\n\n"
+                f"HÃY TUÂN THỦ NGHIÊM NGẶT CÁC NGUYÊN TẮC SAU:\n"
+                f"1. NẾU THỦ TỤC CÓ TRONG TÀI LIỆU TRÊN (như kết hôn, khai sinh, khai tử, hỏa táng, liệt sĩ, xây dựng...):\n"
+                f"   - Hãy hướng dẫn đúng theo tài liệu gồm: Thành phần hồ sơ cần có, Thời gian giải quyết và Lệ phí chuẩn.\n"
+                f"   - Trình bày dạng gạch đầu dòng rõ ràng, mạch lạc, dễ hiểu cho người dân.\n\n"
+                f"2. NẾU THỦ TỤC KHÔNG CÓ TRONG TÀI LIỆU (hoặc thuộc cơ quan khác):\n"
+                f"   - Ví dụ: Làm lại thẻ Căn cước/CCCD bị mất, Cấp hộ chiếu... là thủ tục thuộc thẩm quyền của CÔNG AN cấp quận/huyện hoặc Cổng Dịch vụ công Bộ Công an, KHÔNG thuộc thẩm quyền UBND Phường.\n"
+                f"   - Hãy giải thích rõ điều này cho công dân và hướng dẫn họ mang giấy tờ đến Công an quận/huyện hoặc làm trực tuyến qua app VNeID / Cổng DVC Bộ Công an.\n"
+                f"   - TUYỆT ĐỐI KHÔNG TỰ BỊA ĐẶT các bước kỳ quặc (như quay video, thủ tục lạ lùng) không có thật.\n\n"
+                f"3. VĂN PHONG: Trang trọng, lịch sự, ân cần, đúng chuẩn mực cán bộ hành chính công vụ Việt Nam.\n\n"
+                f"CÂU TRẢ LỜI CỦA BẠN:"
+            )
             
         elif intent == "NGOAI":
-            search_res = DDGS().text(query.text, max_results=3)
-            context = "\\n".join([r['body'] for r in search_res]) if search_res else "Không tìm thấy trên mạng."
-            prompt = f"Trả lời CÂU HỎI dựa vào TIN TỨC TỪ MCP (DUCKDUCKGO) sau:\n{context}\nCÂU HỎI: {query.text}"
+            clean_q = query.text.replace("\\", "").strip()
+            context = ""
+            try:
+                search_res = DDGS().text(clean_q, max_results=3)
+                if search_res:
+                    context = "\n".join([r.get('body', '') for r in search_res])
+            except Exception as search_err:
+                print("Lỗi tìm kiếm mạng:", search_err)
+                context = "Không thể kết nối Internet thời gian thực. Hãy dùng kiến thức pháp luật chung để trả lời."
+            prompt = (
+                f"Bạn là Trợ lý tư vấn pháp lý và kiến thức xã hội Việt Nam.\n"
+                f"THÔNG TIN TRA CỨU MỚI NHẤT:\n"
+                f"---------------------\n"
+                f"{context}\n"
+                f"---------------------\n\n"
+                f"CÂU HỎI: \"{clean_q}\"\n\n"
+                f"NGUYÊN TẮC TRẢ LỜI:\n"
+                f"1. Dựa vào thông tin tra cứu hoặc quy định pháp luật hiện hành để trả lời chính xác, đi thẳng vào trọng tâm.\n"
+                f"2. Nếu hỏi về mức phạt vi phạm (ví dụ: giao thông, nồng độ cồn, không đội mũ bảo hiểm), hãy nêu rõ mức tiền phạt và viện dẫn số hiệu Nghị định (như Nghị định 100/2019/NĐ-CP hoặc 123/2021/NĐ-CP) nếu có.\n"
+                f"3. Trả lời ngắn gọn, chuẩn xác, không dài dòng lan man.\n\n"
+                f"CÂU TRẢ LỜI CỦA BẠN:"
+            )
             
         else: # XAGIAO
-            prompt = f"Bạn là trợ lý ảo. Trò chuyện thân thiện với người dùng: {query.text}"
+            prompt = (
+                f"Bạn là Trợ lý ảo tư vấn thủ tục hành chính công của UBND Phường.\n"
+                f"Công dân đang giao tiếp với bạn: \"{query.text}\"\n\n"
+                f"Hãy phản hồi lịch sự, thân thiện bằng tiếng Việt (1-2 câu ngắn gọn), giới thiệu bạn có thể hỗ trợ tra cứu các thủ tục hành chính (như Hộ tịch, Đất đai, Xây dựng, Chính sách xã hội...) hoặc giải đáp quy định pháp luật."
+            )
 
         response = ollama.chat(model='qwen2.5:1.5b', messages=[
             {'role': 'user', 'content': prompt}
