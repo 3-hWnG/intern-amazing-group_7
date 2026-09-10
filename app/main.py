@@ -1,5 +1,5 @@
-﻿from fastapi import FastAPI
-from fastapi.responses import HTMLResponse
+from fastapi import FastAPI
+from fastapi.responses import HTMLResponse, StreamingResponse
 import chromadb
 from sentence_transformers import SentenceTransformer
 import ollama
@@ -13,40 +13,110 @@ app = FastAPI()
 
 html_content = """
 <!DOCTYPE html>
-<html>
+<html data-theme="dark">
 <head>
-    <title>Trợ lý pháp lý - Demo</title>
+    <title>Trợ Lý Pháp Lý - Nhóm 7</title>
     <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-        body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; background-color: #1e1e1e; color: #fff;}
-        #chat { height: 500px; border: 1px solid #444; overflow-y: auto; padding: 10px; background: #2d2d2d; border-radius: 5px; margin-bottom: 10px;}
-        .msg { margin: 10px 0; padding: 10px; border-radius: 5px; white-space: pre-wrap;}
-        .user { background: #005A9C; text-align: right;}
-        .bot { background: #444; }
-        .router-log { color: #f39c12; font-size: 0.8em; font-style: italic; margin-bottom: 5px;}
-        input { width: 80%; padding: 10px; border: none; border-radius: 5px; outline: none;}
-        button { width: 15%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 5px; cursor: pointer;}
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #0f0f0f;
+            --chat-bg: #ffffff;
+            --user-msg: #f4f4f4;
+            --bot-msg: #ffffff;
+            --border: #e5e5e5;
+            --accent: #10a37f;
+            --router-color: #888;
+        }
+        [data-theme="dark"] {
+            --bg-color: #212121;
+            --text-color: #ececec;
+            --chat-bg: #212121;
+            --user-msg: #2f2f2f;
+            --bot-msg: #212121;
+            --border: #333;
+            --accent: #10a37f;
+            --router-color: #aaa;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: var(--bg-color); color: var(--text-color); height: 100vh; display: flex; flex-direction: column; transition: background-color 0.3s, color 0.3s; }
+        .header { padding: 15px 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center; background: var(--chat-bg); }
+        .theme-toggle { background: none; border: 1px solid var(--border); border-radius: 8px; padding: 5px 10px; font-size: 14px; cursor: pointer; color: var(--text-color); transition: 0.2s; }
+        .theme-toggle:hover { background: var(--user-msg); }
+        .chat-container { flex: 1; overflow-y: auto; display: flex; flex-direction: column; align-items: center; background: var(--chat-bg); scroll-behavior: smooth; }
+        .msg-wrapper { width: 100%; display: flex; justify-content: center; padding: 25px 20px; border-bottom: 1px solid var(--border); }
+        .msg-wrapper.user { background: var(--user-msg); }
+        .msg-wrapper.bot { background: var(--bot-msg); }
+        .msg-content { max-width: 800px; width: 100%; display: flex; gap: 20px; line-height: 1.6; font-size: 15px; }
+        .avatar { width: 36px; height: 36px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-weight: bold; flex-shrink: 0; }
+        .avatar.user-av { background: #5436da; color: white; }
+        .avatar.bot-av { background: var(--accent); color: white; }
+        .text { flex: 1; white-space: pre-wrap; margin-top: 5px; }
+        .router-log { font-size: 0.8em; color: var(--router-color); margin-bottom: 10px; font-family: monospace; background: rgba(0,0,0,0.05); padding: 5px 10px; border-radius: 4px; display: inline-block; }
+        [data-theme="dark"] .router-log { background: rgba(255,255,255,0.05); }
+        .input-area { padding: 25px 20px; display: flex; justify-content: center; background: var(--bg-color); }
+        .input-box { max-width: 800px; width: 100%; display: flex; background: var(--chat-bg); border: 1px solid var(--border); border-radius: 24px; padding: 8px 12px; box-shadow: 0 0 15px rgba(0,0,0,0.05); }
+        [data-theme="dark"] .input-box { box-shadow: 0 0 15px rgba(0,0,0,0.2); }
+        input { flex: 1; background: transparent; border: none; outline: none; color: var(--text-color); font-size: 15px; padding: 10px; }
+        button.send-btn { background: var(--accent); color: white; border: none; border-radius: 50%; width: 35px; height: 35px; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; margin-top: 3px; }
+        button.send-btn:hover { opacity: 0.8; }
+        .typing { animation: blink 1s infinite; }
+        @keyframes blink { 50% { opacity: 0.5; } }
     </style>
 </head>
 <body>
-    <h2> LLM Pháp lý  (Semantic Router) - Nhóm 7</h2>
-    <div id="chat"></div>
-    <div style="display:flex; justify-content:space-between;">
-        <input type="text" id="query" placeholder="Hỏi bất cứ thứ gì..." onkeypress="if(event.key === 'Enter') send()">
-        <button onclick="send()">Gửi</button>
+    <div class="header">
+        <h3 style="font-weight: 600;">Legal AI - Nhóm 7</h3>
+        <button class="theme-toggle" onclick="toggleTheme()">🌓 Đổi nền</button>
+    </div>
+    
+    <div class="chat-container" id="chat">
+        <div class="msg-wrapper bot">
+            <div class="msg-content">
+                <div class="avatar bot-av">AI</div>
+                <div class="text">Xin chào! Tôi là Trợ lý Ảo Pháp lý do Nhóm 7 phát triển. Bạn cần tư vấn thủ tục hành chính hay tra cứu luật gì hôm nay?</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="input-area">
+        <div class="input-box">
+            <input type="text" id="query" placeholder="Nhập câu hỏi pháp lý của bạn..." onkeypress="if(event.key === 'Enter') send()">
+            <button class="send-btn" onclick="send()">➤</button>
+        </div>
     </div>
 
     <script>
+        function toggleTheme() {
+            let html = document.documentElement;
+            html.setAttribute('data-theme', html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        }
+
         async function send() {
             let query = document.getElementById('query').value;
-            if (!query) return;
+            if (!query.trim()) return;
             
             let chat = document.getElementById('chat');
-            chat.innerHTML += `<div class="msg user"><b>Bạn:</b> ${query}</div>`;
+            chat.innerHTML += `
+                <div class="msg-wrapper user">
+                    <div class="msg-content">
+                        <div class="avatar user-av">U</div>
+                        <div class="text">${query}</div>
+                    </div>
+                </div>`;
             document.getElementById('query').value = '';
             
             let botMsgId = "msg-" + Date.now();
-            chat.innerHTML += `<div class="msg bot" id="${botMsgId}"><b>Đang dùng Vector tính toán ngữ nghĩa...</b></div>`;
+            chat.innerHTML += `
+                <div class="msg-wrapper bot">
+                    <div class="msg-content">
+                        <div class="avatar bot-av">AI</div>
+                        <div class="text" id="${botMsgId}">
+                            <span class="typing">Đang kết nối não AI...</span>
+                        </div>
+                    </div>
+                </div>`;
             chat.scrollTop = chat.scrollHeight;
 
             try {
@@ -55,14 +125,30 @@ html_content = """
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify({text: query})
                 });
-                let data = await response.json();
+
+                if (!response.ok) throw new Error("Server trả về lỗi");
+
+                let intent = response.headers.get("X-Intent") || "UNKNOWN";
+                let score = response.headers.get("X-Score") || "0.0";
                 
-                let logHtml = `<div class="router-log">[Semantic Router] Chế độ: ${data.intent} (Độ tin cậy: ${data.score})</div>`;
-                document.getElementById(botMsgId).innerHTML = logHtml + `<b>Trợ lý:</b>\n${data.answer}`;
+                let textContainer = document.getElementById(botMsgId);
+                let logHtml = `<div class="router-log">[Router: ${intent} | Độ tin cậy: ${score}]</div><br>`;
+                textContainer.innerHTML = logHtml;
+
+                const reader = response.body.getReader();
+                const decoder = new TextDecoder();
+
+                while (true) {
+                    const {done, value} = await reader.read();
+                    if (done) break;
+                    let chunkText = decoder.decode(value, {stream: true});
+                    textContainer.innerHTML += chunkText;
+                    chat.scrollTop = chat.scrollHeight;
+                }
+
             } catch (err) {
-                document.getElementById(botMsgId).innerHTML = `<b>Lỗi hệ thống:</b>\n${err}`;
+                document.getElementById(botMsgId).innerHTML = `<span style="color:red">Lỗi hệ thống: ${err}</span>`;
             }
-            chat.scrollTop = chat.scrollHeight;
         }
     </script>
 </body>
@@ -83,46 +169,33 @@ try:
     client = chromadb.PersistentClient(path="../data/chromadb")
     collection = client.get_or_create_collection(name="legal_docs")
     
-    # Định nghĩa Cụm Vector Nhận diện Ngữ nghĩa (Không học vẹt từ khóa)
-    luat_anchors = [
-    # Hộ tịch & Gia đình
-    "đăng ký kết hôn", "thủ tục ly hôn", "làm giấy khai sinh", "đăng ký khai tử",
+    luat_anchors = ["đăng ký kết hôn", "thủ tục ly hôn", "làm giấy khai sinh", "đăng ký khai tử",
     "xác nhận độc thân", "xác nhận tình trạng hôn nhân", "trích lục khai sinh",
     "nhận cha mẹ con", "thay đổi họ tên", "cải chính hộ tịch",
-    
-    # Giấy tờ tùy thân & Cư trú (Dù ở Phường hay Công an cũng thuộc mảng LUAT)
     "mất căn cước công dân", "làm lại cccd", "đổi thẻ căn cước", "căn cước gắn chip",
     "đăng ký tạm trú", "đăng ký thường trú", "giấy xác nhận cư trú ct07", "hộ khẩu",
     "làm hộ chiếu", "passport", "tài khoản vneid", "định danh điện tử",
-    
-    # Đất đai, Xây dựng & Nhà ở
     "sang tên sổ đỏ", "làm sổ hồng", "cấp giấy phép xây dựng", "sửa chữa nhà",
     "trích lục địa chính", "đo đạc đất đai", "chuyển mục đích sử dụng đất",
     "xác nhận tình trạng quy hoạch", "tranh chấp đất đai",
-    
-    # Chứng thực & Sao y
     "công chứng giấy tờ", "chứng thực bản sao", "sao y bản chính",
     "chứng thực chữ ký", "chứng thực hợp đồng ủy quyền", "giấy ủy quyền",
-    
-    # Chính sách xã hội & Người có công
     "trợ cấp mai táng", "tiền hỗ trợ hỏa táng", "chế độ liệt sĩ", "thương binh",
     "hỗ trợ hộ nghèo", "trợ cấp bảo trợ xã hội", "làm thẻ bảo hiểm y tế miễn phí",
-    
-    # Hộ kinh doanh & Dịch vụ công
     "đăng ký hộ kinh doanh", "mở cửa hàng buôn bán", "tạm ngừng kinh doanh",
     "thủ tục hành chính", "hồ sơ cần giấy tờ gì", "thời gian giải quyết bao lâu",
     "lệ phí bao nhiêu tiền", "nộp hồ sơ một cửa", "cổng dịch vụ công trực tuyến"]
 
     luat_emb = np.mean(embed_model.encode(luat_anchors, device=device), axis=0)
 
-    xagiao_anchors = [
-    "xin chào", "chào bạn", "hello", "helo", "hế lô", "hê lô", "hi", "alo",
+    xagiao_anchors = ["xin chào", "chào bạn", "hello", "helo", "hế lô", "hê lô", "hi", "alo",
     "chào buổi sáng", "bạn là ai", "bạn tên gì", "cảm ơn bạn", "tạm biệt",
     "chúc bạn một ngày tốt lành", "tư vấn giúp tôi với"]
     xagiao_emb = np.mean(embed_model.encode(xagiao_anchors, device=device), axis=0)
 
     ngoai_anchors = ["vượt đèn đỏ phạt bao nhiêu tiền", "lỗi không đội mũ bảo hiểm",
-    "uống rượu lái xe phạt bao nhiêu", "nồng độ cồn xe máy", "bị bắn tốc độ"]
+    "uống rượu lái xe phạt bao nhiêu", "nồng độ cồn xe máy", "bị bắn tốc độ", 
+    "giá vàng hôm nay", "thời tiết", "chứng khoán", "tin tức thời sự", "bão lũ"]
     ngoai_emb = np.mean(embed_model.encode(ngoai_anchors, device=device), axis=0)
 
 except Exception as e:
@@ -131,7 +204,6 @@ except Exception as e:
 def classify_intent_semantic(text: str): 
     q_emb = embed_model.encode(text)
 
-    
     def cosine_sim(a, b):
         return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
         
@@ -162,15 +234,10 @@ async def chat_endpoint(query: Query):
                 f"---------------------\n\n"
                 f"CÂU HỎI CỦA CÔNG DÂN: \"{query.text}\"\n\n"
                 f"HÃY TUÂN THỦ NGHIÊM NGẶT CÁC NGUYÊN TẮC SAU:\n"
-                f"1. NẾU THỦ TỤC CÓ TRONG TÀI LIỆU TRÊN (như kết hôn, khai sinh, khai tử, hỏa táng, liệt sĩ, xây dựng...):\n"
-                f"   - Hãy hướng dẫn đúng theo tài liệu gồm: Thành phần hồ sơ cần có, Thời gian giải quyết và Lệ phí chuẩn.\n"
-                f"   - Trình bày dạng gạch đầu dòng rõ ràng, mạch lạc, dễ hiểu cho người dân.\n\n"
-                f"2. NẾU THỦ TỤC KHÔNG CÓ TRONG TÀI LIỆU (hoặc thuộc cơ quan khác):\n"
-                f"   - Ví dụ: Làm lại thẻ Căn cước/CCCD bị mất, Cấp hộ chiếu... là thủ tục thuộc thẩm quyền của CÔNG AN cấp quận/huyện hoặc Cổng Dịch vụ công Bộ Công an, KHÔNG thuộc thẩm quyền UBND Phường.\n"
-                f"   - Hãy giải thích rõ điều này cho công dân và hướng dẫn họ mang giấy tờ đến Công an quận/huyện hoặc làm trực tuyến qua app VNeID / Cổng DVC Bộ Công an.\n"
-                f"   - TUYỆT ĐỐI KHÔNG TỰ BỊA ĐẶT các bước kỳ quặc (như quay video, thủ tục lạ lùng) không có thật.\n\n"
-                f"3. VĂN PHONG: Trang trọng, lịch sự, ân cần, đúng chuẩn mực cán bộ hành chính công vụ Việt Nam.\n\n"
-                f"CÂU TRẢ LỜI CỦA BẠN:"
+                f"1. VĂN PHONG CỰC KỲ NGẮN GỌN. TUYỆT ĐỐI KHÔNG DÔNG DÀI. TUYỆT ĐỐI KHÔNG NHẠI LẠI CÂU HỎI. ĐI THẲNG VÀO VẤN ĐỀ.\n"
+                f"2. NẾU THỦ TỤC CÓ TRONG TÀI LIỆU TRÊN: Chỉ liệt kê Thành phần hồ sơ, Thời gian và Lệ phí dưới dạng gạch đầu dòng ngắn gọn.\n"
+                f"3. NẾU THỦ TỤC KHÔNG CÓ TRONG TÀI LIỆU: Chỉ hướng dẫn người dân ra Công an quận/huyện hoặc truy cập Dịch vụ công Quốc gia. CẤM BỊA ĐẶT THỦ TỤC.\n\n"
+                f"TRẢ LỜI NGAY VÀO TRỌNG TÂM:"
             )
             
         elif intent == "NGOAI":
@@ -185,40 +252,46 @@ async def chat_endpoint(query: Query):
                 context = "Không thể kết nối Internet thời gian thực. Hãy dùng kiến thức pháp luật chung để trả lời."
             prompt = (
                 f"Bạn là Trợ lý tư vấn pháp lý và kiến thức xã hội Việt Nam.\n"
-                f"THÔNG TIN TRA CỨU MỚI NHẤT:\n"
+                f"THÔNG TIN TRA CỨU MỚI NHẤT TỪ INTERNET:\n"
                 f"---------------------\n"
                 f"{context}\n"
                 f"---------------------\n\n"
                 f"CÂU HỎI: \"{clean_q}\"\n\n"
                 f"NGUYÊN TẮC TRẢ LỜI:\n"
-                f"1. Dựa vào thông tin tra cứu hoặc quy định pháp luật hiện hành để trả lời chính xác, đi thẳng vào trọng tâm.\n"
-                f"2. Nếu hỏi về mức phạt vi phạm (ví dụ: giao thông, nồng độ cồn, không đội mũ bảo hiểm), hãy nêu rõ mức tiền phạt và viện dẫn số hiệu Nghị định (như Nghị định 100/2019/NĐ-CP hoặc 123/2021/NĐ-CP) nếu có.\n"
-                f"3. Trả lời ngắn gọn, chuẩn xác, không dài dòng lan man.\n\n"
-                f"CÂU TRẢ LỜI CỦA BẠN:"
+                f"1. TUYỆT ĐỐI KHÔNG NHẠI LẠI CÂU HỎI. TRẢ LỜI NGẮN GỌN, VÀO THẲNG VẤN ĐỀ CHÍNH.\n"
+                f"2. Dựa vào thông tin tra cứu hoặc quy định pháp luật hiện hành để trả lời.\n\n"
+                f"TRẢ LỜI NGAY VÀO TRỌNG TÂM:"
             )
             
         else: 
             prompt = (
                 f"Bạn là Trợ lý ảo tư vấn thủ tục hành chính công của UBND Phường.\n"
                 f"Công dân đang giao tiếp với bạn: \"{query.text}\"\n\n"
-                f"Hãy phản hồi lịch sự, thân thiện bằng tiếng Việt (1-2 câu ngắn gọn), giới thiệu bạn có thể hỗ trợ tra cứu các thủ tục hành chính (như Hộ tịch, Đất đai, Xây dựng, Chính sách xã hội...) hoặc giải đáp quy định pháp luật."
+                f"TUYỆT ĐỐI KHÔNG NHẠI LẠI CÂU HỎI. Hãy phản hồi thân thiện, NGẮN GỌN TRONG 1 CÂU DUY NHẤT, báo rằng bạn sẵn sàng hỗ trợ thủ tục hành chính (Sổ đỏ, hộ khẩu, đăng ký kết hôn...)."
             )
 
-        response = ollama.chat(model='qwen2.5:1.5b', messages=[
-            {'role': 'user', 'content': prompt}
-        ], options={
-                'repeat_penalty': 1.2,   
-                'temperature': 0.2,      
-                'num_predict': 350}       
-        )
-        answer = response['message']['content']
+        def generate():
+            try:
+                stream = ollama.chat(model='qwen2.5:1.5b', messages=[
+                    {'role': 'user', 'content': prompt}
+                ], stream=True, options={
+                    'repeat_penalty': 1.2,   
+                    'temperature': 0.2,      
+                    'num_predict': 350
+                })
+                for chunk in stream:
+                    yield chunk['message']['content']
+            except Exception as e:
+                yield f"\n[Lỗi kết nối Ollama]: {str(e)}"
+        
+        headers = {"X-Intent": intent, "X-Score": str(score)}
+        return StreamingResponse(generate(), media_type="text/plain", headers=headers)
         
     except Exception as e:
-        answer = str(e)
-        intent = "ERROR"
-        score = 0.0
-        
-    return {"answer": answer, "intent": intent, "score": score}
+        headers = {"X-Intent": "ERROR", "X-Score": "0.0"}
+        def error_gen():
+            yield str(e)
+        return StreamingResponse(error_gen(), media_type="text/plain", headers=headers)
 
 if __name__ == "__main__":
     uvicorn.run(app, host="127.0.0.1", port=8000)
