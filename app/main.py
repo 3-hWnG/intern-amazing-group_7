@@ -15,7 +15,7 @@ html_content = """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Trợ Lý Pháp Lý - Demo</title>
+    <title>Trợ lý pháp lý - Demo</title>
     <meta charset="utf-8">
     <style>
         body { font-family: Arial, sans-serif; max-width: 800px; margin: auto; padding: 20px; background-color: #1e1e1e; color: #fff;}
@@ -29,7 +29,7 @@ html_content = """
     </style>
 </head>
 <body>
-    <h2>🤖 Trợ Lý Ảo (Semantic Router) - Nhóm 7</h2>
+    <h2> LLM Pháp lý  (Semantic Router) - Nhóm 7</h2>
     <div id="chat"></div>
     <div style="display:flex; justify-content:space-between;">
         <input type="text" id="query" placeholder="Hỏi bất cứ thứ gì..." onkeypress="if(event.key === 'Enter') send()">
