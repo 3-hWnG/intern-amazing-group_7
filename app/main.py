@@ -1,4 +1,4 @@
-from fastapi import FastAPI
+﻿from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, StreamingResponse
 import chromadb
 from sentence_transformers import SentenceTransformer
@@ -201,8 +201,18 @@ try:
 except Exception as e:
     print("LỖI KHỞI TẠO:", e)
 
+try:
+    ollama.chat(
+        model='qwen2.5:1.5b',
+        messages=[{'role': 'user', 'content': 'hi'}],
+        options={'num_predict': 1},
+        keep_alive='30m'
+    )
+except Exception as e:
+    print("Warm-up Ollama:", e)
+
 def classify_intent_semantic(text: str): 
-    q_emb = embed_model.encode(text)
+    q_emb = embed_model.encode(text, device=device)
 
     def cosine_sim(a, b):
         return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
@@ -223,16 +233,19 @@ async def chat_endpoint(query: Query):
         intent, score, q_emb = classify_intent_semantic(query.text)
         
         if intent == "LUAT":
-            query_embed = embed_model.encode(query.text).tolist()
             results = collection.query(query_embeddings=[q_emb.tolist()], n_results=2)
             context = "\\n\\n".join(results['documents'][0])
             prompt = (
-                f"Bạn là Trợ lý ảo tư vấn thủ tục hành chính công của UBND Phường (Bộ phận Một cửa).\n"
+                f"Bạn là Trợ lý ảo tư vấn pháp lý.\n"
                 f"DƯỚI ĐÂY LÀ CƠ SỞ DỮ LIỆU THỦ TỤC CỦA PHƯỜNG:\n"
                 f"---------------------\n"
                 f"{context}\n"
                 f"---------------------\n\n"
-                f"CÂU HỎI CỦA CÔNG DÂN: \"{query.text}\"\n\n"
+                f"Hãy hướng dẫn ngắn gọn cho công dân bằng các dấu gạch đầu dòng (-):\n"
+                f"- Tên thủ tục:\n"
+                f"- Hồ sơ cần chuẩn bị:\n"
+                f"- Nơi tiếp nhận:\n"
+                f"- Thời gian & Lệ phí:"
                 f"HÃY TUÂN THỦ NGHIÊM NGẶT CÁC NGUYÊN TẮC SAU:\n"
                 f"1. VĂN PHONG CỰC KỲ NGẮN GỌN. TUYỆT ĐỐI KHÔNG DÔNG DÀI. TUYỆT ĐỐI KHÔNG NHẠI LẠI CÂU HỎI. ĐI THẲNG VÀO VẤN ĐỀ.\n"
                 f"2. NẾU THỦ TỤC CÓ TRONG TÀI LIỆU TRÊN: Chỉ liệt kê Thành phần hồ sơ, Thời gian và Lệ phí dưới dạng gạch đầu dòng ngắn gọn.\n"
@@ -265,7 +278,7 @@ async def chat_endpoint(query: Query):
             
         else: 
             prompt = (
-                f"Bạn là Trợ lý ảo tư vấn thủ tục hành chính công của UBND Phường.\n"
+                f"Bạn là Trợ lý tư vấn pháp lý.\n"
                 f"Công dân đang giao tiếp với bạn: \"{query.text}\"\n\n"
                 f"TUYỆT ĐỐI KHÔNG NHẠI LẠI CÂU HỎI. Hãy phản hồi thân thiện, NGẮN GỌN TRONG 1 CÂU DUY NHẤT, báo rằng bạn sẵn sàng hỗ trợ thủ tục hành chính (Sổ đỏ, hộ khẩu, đăng ký kết hôn...)."
             )
