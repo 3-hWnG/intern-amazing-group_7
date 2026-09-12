@@ -241,11 +241,16 @@ async def chat_endpoint(query: Query):
                 f"---------------------\n"
                 f"{context}\n"
                 f"---------------------\n\n"
-                f"Hãy hướng dẫn ngắn gọn bằng các gạch đầu dòng (-), không viết lại câu hỏi:\n"
-                    f"- Tên thủ tục:\n"
-                    f"- Hồ sơ cần chuẩn bị:\n"
-                    f"- Cơ quan tiếp nhận:\n"
-                    f"- Thời gian giải quyết và Lệ phí:"
+                f"Hãy hướng dẫn ngắn gọn cho công dân bằng các dấu gạch đầu dòng (-):\n"
+                f"- Tên thủ tục:\n"
+                f"- Hồ sơ cần chuẩn bị:\n"
+                f"- Nơi tiếp nhận:\n"
+                f"- Thời gian & Lệ phí:"
+                f"HÃY TUÂN THỦ NGHIÊM NGẶT CÁC NGUYÊN TẮC SAU:\n"
+                f"1. VĂN PHONG CỰC KỲ NGẮN GỌN. TUYỆT ĐỐI KHÔNG DÔNG DÀI. TUYỆT ĐỐI KHÔNG NHẠI LẠI CÂU HỎI. ĐI THẲNG VÀO VẤN ĐỀ.\n"
+                f"2. NẾU THỦ TỤC CÓ TRONG TÀI LIỆU TRÊN: Chỉ liệt kê Thành phần hồ sơ, Thời gian và Lệ phí dưới dạng gạch đầu dòng ngắn gọn.\n"
+                f"3. NẾU THỦ TỤC KHÔNG CÓ TRONG TÀI LIỆU: Chỉ hướng dẫn người dân ra Công an quận/huyện hoặc truy cập Dịch vụ công Quốc gia. CẤM BỊA ĐẶT THỦ TỤC.\n\n"
+                f"TRẢ LỜI NGAY VÀO TRỌNG TÂM:"
             )
             
         elif intent == "NGOAI":
@@ -280,7 +285,7 @@ async def chat_endpoint(query: Query):
 
         def generate():
             try:
-                stream = ollama.chat(model='qwen2.5:3b', messages=[
+                stream = ollama.chat(model='qwen2.5:1.5b', messages=[
                     {'role': 'user', 'content': prompt}
                 ], stream=True, options={
                     'repeat_penalty': 1.2,   
