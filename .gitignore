@@ -1,4 +1,40 @@
-﻿venv/
+# ---------------------------------------------------------------- python ---
+venv/
+.venv/
 __pycache__/
-.env
+*.pyc
+
+# ------------------------------------------------- generated indexes -------
+# Rebuilt by `.\run.ps1 -Ingest`; large, binary, and always derivable.
 data/chromadb/
+data/chromadb_eval/
+data/*.pkl
+
+# ------------------------------------------------ runtime & user data ------
+# app.db holds real accounts, bcrypt password hashes and chat history.
+# NEVER commit it.
+app/runtime/
+*.db
+*.db-shm
+*.db-wal
+app/startup_debug.log
+
+# ------------------------------------------------------------- secrets ----
+.env
+.env.*
+*.pem
+*.key
+
+# --------------------------------------------------- personal data --------
+# NOTE: data/dataset.xlsx is intentionally TRACKED. Its "Địa chỉ email" column
+# holds 9 contributors' real addresses, which is acceptable only while this
+# repo stays PRIVATE to the team who already have the file. If the repo is ever
+# made public, that history must be purged first - see
+# claude/pre-push-privacy-audit.md.
+
+# ------------------------------------------------- editor / OS junk -------
+.~lock.*#
+*.swp
+*~
+Thumbs.db
+.DS_Store

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đăng nhập — Trợ lý Thủ tục hành chính</title>
+<link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="auth-page">
+  <main class="auth-card">
+    <h1>Trợ lý Thủ tục hành chính</h1>
+    <p class="auth-sub">Nhóm 7 · Tra cứu hồ sơ, thời gian, lệ phí</p>
+
+    <div class="tabs">
+      <button id="tab-login" class="tab active" type="button">Đăng nhập</button>
+      <button id="tab-register" class="tab" type="button">Đăng ký</button>
+    </div>
+
+    <form id="auth-form" autocomplete="on">
+      <label id="name-row" hidden>
+        <span>Tên hiển thị</span>
+        <input id="display_name" type="text" autocomplete="name">
+      </label>
+      <label>
+        <span>Email</span>
+        <input id="email" type="email" required autocomplete="username">
+      </label>
+      <label>
+        <span>Mật khẩu</span>
+        <input id="password" type="password" required minlength="8"
+               autocomplete="current-password">
+      </label>
+      <p id="auth-error" class="error" hidden></p>
+      <button id="submit" class="primary" type="submit">Đăng nhập</button>
+    </form>
+  </main>
+  <script src="/static/js/api.js"></script>
+  <script src="/static/js/auth.js"></script>
+</body>
+</html>

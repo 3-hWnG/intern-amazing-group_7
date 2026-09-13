@@ -33,7 +33,7 @@ Dự án nằm trọn trong thư mục `D:\intern_7` (hoặc tên repo Github kh
 ###  `app/main.py` (Trái Tim Hệ Thống)
 Đây là File Code quan trọng nhất, gánh 4 tác vụ cực nặng:
 1. **Giao diện (Frontend):** Chứa trực tiếp mã HTML/CSS/JS (Clone phong cách của ChatGPT/Gemini) với tính năng chuyển đổi Light/Dark Theme mượt mà. Đã tích hợp luồng Đọc Stream thời gian thực (ReadableStream) để tạo hiệu ứng gõ phím.
-2. **Bộ Não Định Tuyến (Semantic Router):** Khi User gõ câu hỏi, nó không bắt chữ (Keyword) ngu ngốc. Nó dùng thuật toán `Cosine Similarity` để đo khoảng cách Vector từ câu hỏi tới 3 cụm Điểm Trọng Tâm (LUAT, NGOAI, XAGIAO) để bẻ lái luồng chạy. Độ tin cậy được tuồn ngầm qua HTTP Headers để không làm nghẽn luồng Stream.
+2. **Bộ Não Định Tuyến (Semantic Router):** Khi User gõ câu hỏi, nó không bắt chữ (Keyword). Nó dùng thuật toán `Cosine Similarity` để đo khoảng cách Vector từ câu hỏi tới 3 cụm Điểm Trọng Tâm (LUAT, NGOAI, XAGIAO) để bẻ lái luồng chạy. Độ tin cậy được tuồn ngầm qua HTTP Headers để không làm nghẽn luồng Stream.
 3. **Cổng Kết Nối MCP (DuckDuckGo):** Nếu Router bẻ vào luồng `NGOAI`, file này kích hoạt hàm móc ra Internet cào tin tức nóng hổi về nạp cho AI (Realtime).
 4. **Prompt Engineering (Kiểm soát Ảo giác):** Gài luật thép bắt LLM phải tuân thủ nghiêm ngặt (Ví dụ: Hỏi Hộ chiếu phải đuổi sang Công An, Vi phạm luật giao thông phải đọc Nghị định). Kèm theo Chính sách Cấm lảm nhảm (Anti-Yapping) ép trả lời thẳng vào trọng tâm.
 

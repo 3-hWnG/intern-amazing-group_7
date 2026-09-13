@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trợ lý Thủ tục hành chính — Nhóm 7</title>
+<link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar">
+    <button id="new-chat" class="primary block">+ Cuộc trò chuyện mới</button>
+    <nav id="conv-list" class="conv-list"></nav>
+    <div class="sidebar-foot">
+      <div id="queue-info" class="queue-info"></div>
+      <div class="user-row">
+        <span id="user-name"></span>
+        <button id="logout" class="link" type="button">Đăng xuất</button>
+      </div>
+      <div id="dev-box" hidden>
+        <button id="dev-reset" class="danger block" type="button">Reset dữ liệu (DEV)</button>
+        <small id="dev-stats"></small>
+      </div>
+    </div>
+  </aside>
+
+  <main class="chat">
+    <header class="chat-head">
+      <button id="toggle-sidebar" class="icon" type="button" aria-label="Ẩn/hiện thanh bên">☰</button>
+      <h1 id="conv-title">Trợ lý Thủ tục hành chính</h1>
+      <button id="theme" class="icon" type="button" aria-label="Đổi giao diện sáng/tối">◐</button>
+    </header>
+
+    <div id="messages" class="messages">
+      <div class="empty">
+        <h2>Bạn cần tra cứu thủ tục nào?</h2>
+        <p>Ví dụ: <em>“Con tôi mới sinh, làm giấy khai sinh cần gì?”</em></p>
+      </div>
+    </div>
+
+    <form id="composer" class="composer">
+      <textarea id="input" rows="1" placeholder="Nhập câu hỏi…" autocomplete="off"></textarea>
+      <button id="send" class="primary" type="submit">Gửi</button>
+    </form>
+  </main>
+
+</div>
+<script src="/static/js/api.js"></script>
+<script src="/static/js/conversations.js"></script>
+<script src="/static/js/chat.js"></script>
+<script src="/static/js/dev.js"></script>
+<script src="/static/js/app.js"></script>
+</body>
+</html>
