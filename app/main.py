@@ -1,4 +1,4 @@
-﻿from fastapi import FastAPI
+from fastapi import FastAPI
 from fastapi.responses import HTMLResponse, StreamingResponse
 import chromadb
 from sentence_transformers import SentenceTransformer
@@ -162,11 +162,15 @@ async def get_ui():
 class Query(BaseModel):
     text: str
 
+import os
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CHROMA_PATH = os.path.join(BASE_DIR, "..", "data", "chromadb")
+
 print("Loading Database & Semantic Router...")
 try:
     device = "cuda" if torch.cuda.is_available() else "cpu"
     embed_model = SentenceTransformer("keepitreal/vietnamese-sbert", device=device)
-    client = chromadb.PersistentClient(path="../data/chromadb")
+    client = chromadb.PersistentClient(path=CHROMA_PATH)
     collection = client.get_or_create_collection(name="legal_docs")
     
     luat_anchors = ["đăng ký kết hôn", "thủ tục ly hôn", "làm giấy khai sinh", "đăng ký khai tử",
@@ -233,23 +237,34 @@ async def chat_endpoint(query: Query):
         intent, score, q_emb = classify_intent_semantic(query.text)
         
         if intent == "LUAT":
-            results = collection.query(query_embeddings=[q_emb.tolist()], n_results=2)
-            context = "\\n\\n".join(results['documents'][0])
+            results = collection.query(query_embeddings=[q_emb.tolist()], n_results=3)
+            context_blocks = []
+            for doc, meta in zip(results['documents'][0], results['metadatas'][0]):
+                updated_date = meta.get('updated_at', 'Mới nhất')
+                context_blocks.append(
+                    f"--- {meta.get('title', 'Thủ tục')} (Lĩnh vực: {meta.get('field', 'Hành chính công')} | Cập nhật ngày: {updated_date}) ---\n"
+                    f"Hình thức nộp: {meta.get('submission', 'Trực tiếp / Trực tuyến')}\n"
+                    f"{doc}"
+                )
+            context = "\n\n".join(context_blocks)
             prompt = (
-                f"Bạn là Trợ lý ảo tư vấn pháp lý.\n"
-                f"DƯỚI ĐÂY LÀ CƠ SỞ DỮ LIỆU THỦ TỤC CỦA PHƯỜNG:\n"
+                f"Bạn là Trợ lý ảo tư vấn thủ tục hành chính công Việt Nam.\n"
+                f"DƯỚI ĐÂY LÀ DỮ LIỆU THỦ TỤC CHÍNH THỨC:\n"
                 f"---------------------\n"
                 f"{context}\n"
                 f"---------------------\n\n"
-                f"Hãy hướng dẫn ngắn gọn cho công dân bằng các dấu gạch đầu dòng (-):\n"
+                f"CÂU HỎI CỦA CÔNG DÂN: \"{query.text}\"\n\n"
+                f"Hãy hướng dẫn ngắn gọn cho công dân theo đúng cấu trúc gạch đầu dòng sau:\n"
                 f"- Tên thủ tục:\n"
+                f"- Lĩnh vực:\n"
                 f"- Hồ sơ cần chuẩn bị:\n"
-                f"- Nơi tiếp nhận:\n"
-                f"- Thời gian & Lệ phí:"
-                f"HÃY TUÂN THỦ NGHIÊM NGẶT CÁC NGUYÊN TẮC SAU:\n"
+                f"- Thời gian giải quyết & Lệ phí:\n"
+                f"- Hình thức & Nơi tiếp nhận:\n\n"
+                f"NGUYÊN TẮC BẮT BUỘC:\n"
                 f"1. VĂN PHONG CỰC KỲ NGẮN GỌN. TUYỆT ĐỐI KHÔNG DÔNG DÀI. TUYỆT ĐỐI KHÔNG NHẠI LẠI CÂU HỎI. ĐI THẲNG VÀO VẤN ĐỀ.\n"
-                f"2. NẾU THỦ TỤC CÓ TRONG TÀI LIỆU TRÊN: Chỉ liệt kê Thành phần hồ sơ, Thời gian và Lệ phí dưới dạng gạch đầu dòng ngắn gọn.\n"
-                f"3. NẾU THỦ TỤC KHÔNG CÓ TRONG TÀI LIỆU: Chỉ hướng dẫn người dân ra Công an quận/huyện hoặc truy cập Dịch vụ công Quốc gia. CẤM BỊA ĐẶT THỦ TỤC.\n\n"
+                f"2. NƠI TIẾP NHẬN: Nêu rõ nếu nộp trực tuyến thì nộp qua Cổng Dịch vụ công Quốc gia (dichvucong.gov.vn) hoặc Cổng DVC cấp tỉnh; nếu nộp trực tiếp thì nộp tại Bộ phận Một cửa của UBND Xã/Phường nơi cư trú (hoặc cơ quan có thẩm quyền theo quy định). Tuyệt đối KHÔNG nêu tên riêng của bất kỳ phường/xã cụ thể nào.\n"
+                f"3. NẾU THỦ TỤC CÓ TRONG TÀI LIỆU TRÊN: Chỉ liệt kê Thành phần hồ sơ, Thời gian và Lệ phí dưới dạng gạch đầu dòng ngắn gọn.\n"
+                f"4. NẾU THỦ TỤC KHÔNG CÓ TRONG TÀI LIỆU: Chỉ hướng dẫn người dân liên hệ Công an xã/phường/quận hoặc truy cập Cổng Dịch vụ công Quốc gia để tra cứu. CẤM BỊA ĐẶT THỦ TỤC.\n\n"
                 f"TRẢ LỜI NGAY VÀO TRỌNG TÂM:"
             )
             
