@@ -56,3 +56,41 @@ Muốn sửa gì thì vào đúng file đó, không phải đọc cả nghìn d�
 -> Mở trình duyệt Web truy cập: `http://localhost:8000`
 
 *(Đường dẫn giờ tính từ gốc project nên chạy ở thư mục nào cũng được, không bắt buộc `cd app`.)*
+
+
+---
+
+## v6 — bộ điều phối agent (14/09/2026)
+
+Bảng thủ tục giờ là **công cụ** mô hình tự chọn dùng, không phải cái cũi nhốt
+nó. Chi tiết đầy đủ: [`docs/AGENT.md`](docs/AGENT.md).
+
+```text
+app/core/agent.py          vòng lặp chọn công cụ (thay pipeline.py)
+app/core/tools.py          4 công cụ: search_procedures / get_procedure
+                           / search_attachments / search_web
+app/core/resources.py      sổ đăng ký tài liệu + manifest
+app/core/parsers.py        csv/xlsx/pdf/docx/txt/json -> chunk
+app/core/chunk_index.py    truy hồi trong tệp đính kèm
+app/api/file_routes.py     POST/GET/DELETE tệp đính kèm
+app/prompts/agent_templates.py
+Evaluation/evaluate_routing.py   chấm độ chính xác chọn công cụ
+```
+
+**Quay lại luồng cũ để so sánh:** `ORCHESTRATOR = "tiers"` trong `config.py`.
+
+**Cắm mô hình lớn hơn:** đổi `LLM_MODEL_NAME`, đặt `AGENT_TOOL_MODE = "native"`
+và `AGENT_FORCE_RETRIEVAL_ON_ADMIN_SIGNAL = False`. Không sửa gì khác.
+
+**Đính kèm tệp:** bấm **+** ở ô nhập. Nút **Web** cạnh đó ép tra cứu trên
+mạng cho đúng lượt tiếp theo (hoặc cứ nói thẳng "tra trên mạng giúp mình"). Chạy được ngay với csv/tsv/xlsx/txt/md/json.
+Muốn thêm .pdf/.docx thì cài hai thư viện tuỳ chọn:
+
+```powershell
+.venv\Scripts\python.exe -m pip install pypdf python-docx
+```
+
+**Chạy:**
+```powershell
+.venv\Scripts\python.exe app\main.py     # rồi mở http://localhost:8000
+```

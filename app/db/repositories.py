@@ -293,3 +293,121 @@ def purge_old(retention_days: int) -> int:
     cur = conn.execute("DELETE FROM conversations WHERE updated_at < ?", (cutoff,))
     conn.commit()
     return cur.rowcount
+
+
+# ------------------------------------------------------------ tài liệu ----
+class Documents:
+    """Sổ đăng ký tài nguyên. Dataset nội bộ và tệp đính kèm dùng chung bảng này.
+
+    Điểm quan trọng: bản ghi scope='global' KHÔNG lưu chunk ở đây — nó trỏ
+    thẳng vào chỉ mục đã dựng sẵn (chromadb_eval + bm25_index.pkl). Đăng ký nó
+    chỉ để trợ lý BIẾT là có tài nguyên đó, không phải để nhúng lại.
+    """
+
+    @staticmethod
+    def create(*, scope: str, filename: str, user_id: int | None = None,
+               conversation_id: int | None = None, mime_type: str = "",
+               storage_path: str = "", description: str = "",
+               n_bytes: int = 0, status: str = "pending") -> dict:
+        conn = get_conn()
+        cur = conn.execute(
+            "INSERT INTO documents(scope, user_id, conversation_id, filename,"
+            " mime_type, storage_path, description, n_bytes, status, created_at)"
+            " VALUES (?,?,?,?,?,?,?,?,?,?)",
+            (scope, user_id, conversation_id, filename, mime_type,
+             storage_path, description, int(n_bytes or 0), status, _now()))
+        conn.commit()
+        return Documents.by_id(cur.lastrowid)
+
+    @staticmethod
+    def by_id(doc_id: int) -> dict | None:
+        return _row(get_conn().execute(
+            "SELECT * FROM documents WHERE id = ?", (doc_id,)).fetchone())
+
+    @staticmethod
+    def owned_by(doc_id: int, user_id: int) -> dict | None:
+        return _row(get_conn().execute(
+            "SELECT * FROM documents WHERE id = ? AND user_id = ?",
+            (doc_id, user_id)).fetchone())
+
+    @staticmethod
+    def list_for_conversation(conversation_id: int) -> list[dict]:
+        rows = get_conn().execute(
+            "SELECT * FROM documents WHERE conversation_id = ? ORDER BY id",
+            (conversation_id,)).fetchall()
+        return [dict(r) for r in rows]
+
+    @staticmethod
+    def list_global() -> list[dict]:
+        rows = get_conn().execute(
+            "SELECT * FROM documents WHERE scope = 'global' ORDER BY id").fetchall()
+        return [dict(r) for r in rows]
+
+    @staticmethod
+    def by_filename_global(filename: str) -> dict | None:
+        return _row(get_conn().execute(
+            "SELECT * FROM documents WHERE scope = 'global' AND filename = ?",
+            (filename,)).fetchone())
+
+    @staticmethod
+    def mark(doc_id: int, status: str, *, n_chunks: int = 0, error: str = "") -> None:
+        conn = get_conn()
+        conn.execute("UPDATE documents SET status = ?, n_chunks = ?, error = ?"
+                     " WHERE id = ?", (status, int(n_chunks), error[:500], doc_id))
+        conn.commit()
+
+    @staticmethod
+    def delete(doc_id: int) -> None:
+        conn = get_conn()
+        conn.execute("DELETE FROM documents WHERE id = ?", (doc_id,))
+        conn.commit()
+
+    @staticmethod
+    def count_for_conversation(conversation_id: int) -> int:
+        return get_conn().execute(
+            "SELECT COUNT(*) c FROM documents WHERE conversation_id = ?",
+            (conversation_id,)).fetchone()["c"]
+
+
+class DocumentChunks:
+    @staticmethod
+    def add_many(document_id: int, chunks: list[dict]) -> list[int]:
+        """chunks: [{"content": str, "metadata": dict}] — trả về danh sách id."""
+        conn = get_conn()
+        ids = []
+        for i, ch in enumerate(chunks):
+            cur = conn.execute(
+                "INSERT INTO document_chunks(document_id, ordinal, content,"
+                " metadata_json, created_at) VALUES (?,?,?,?,?)",
+                (document_id, i, ch.get("content", ""),
+                 json.dumps(ch.get("metadata") or {}, ensure_ascii=False), _now()))
+            ids.append(cur.lastrowid)
+        conn.commit()
+        return ids
+
+    @staticmethod
+    def list_for_document(document_id: int) -> list[dict]:
+        rows = get_conn().execute(
+            "SELECT * FROM document_chunks WHERE document_id = ? ORDER BY ordinal",
+            (document_id,)).fetchall()
+        return [dict(r) for r in rows]
+
+    @staticmethod
+    def list_for_conversation(conversation_id: int) -> list[dict]:
+        rows = get_conn().execute(
+            "SELECT ch.*, d.filename FROM document_chunks ch"
+            " JOIN documents d ON d.id = ch.document_id"
+            " WHERE d.conversation_id = ? AND d.status = 'processed'"
+            " ORDER BY ch.document_id, ch.ordinal", (conversation_id,)).fetchall()
+        return [dict(r) for r in rows]
+
+    @staticmethod
+    def by_ids(ids: list[int]) -> dict[int, dict]:
+        if not ids:
+            return {}
+        marks = ",".join("?" * len(ids))
+        rows = get_conn().execute(
+            f"SELECT ch.*, d.filename FROM document_chunks ch"
+            f" JOIN documents d ON d.id = ch.document_id"
+            f" WHERE ch.id IN ({marks})", ids).fetchall()
+        return {r["id"]: dict(r) for r in rows}

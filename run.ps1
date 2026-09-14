@@ -2,13 +2,16 @@
 # Nhom 7 - Tro ly Thu tuc hanh chinh
 #
 #   .\run.ps1              -> CHAY UNG DUNG (tu nap chi muc neu can). Mot dong duy nhat.
-#   .\run.ps1 -Eval        -> cham diem truy hoi tren 862 cau hoi
+#   .\run.ps1 -Eval        -> cham diem TRUY HOI tren 862 cau hoi
+#   .\run.ps1 -Routing     -> cham diem CHON CONG CU (agent v6)
 #   .\run.ps1 -Reingest    -> ep nap lai chi muc roi chay
 #   .\run.ps1 -Check       -> kiem tra moi truong day du (co nap model)
 #   .\run.ps1 -Test        -> kiem thu tu dong
 # ---------------------------------------------------------------------------
 param(
     [switch]$Eval,
+    [switch]$Routing,
+    [string]$Save = "",
     [switch]$Reingest,
     [switch]$Check,
     [switch]$Test,
@@ -51,9 +54,19 @@ if ($Test) {
     exit $LASTEXITCODE
 }
 
+if ($Routing) {
+    Set-Location $Root
+    Write-Host "=== Cham diem chon cong cu (agent) ===" -ForegroundColor Cyan
+    $RoutingArgs = @("Evaluation\evaluate_routing.py")
+    if ($Limit -gt 0) { $RoutingArgs += @("--limit", "$Limit") }
+    if ($Save -ne "") { $RoutingArgs += @("--save", $Save) }
+    & ".\.venv\Scripts\python.exe" @RoutingArgs
+    exit $LASTEXITCODE
+}
+
 if ($Eval) {
-    $EvalCsv = Resolve-Path "$Root\..\..\Evaluation\eval_questions.csv"
-    $OutCsv  = "$Root\..\..\Evaluation\eval_results.csv"
+    $EvalCsv = Resolve-Path "$Root\Evaluation\eval_questions.csv"
+    $OutCsv  = "$Root\Evaluation\eval_results.csv"
     Write-Host "=== Cham diem ===" -ForegroundColor Cyan
     if ($Limit -gt 0) {
         python evaluate_retrieval.py --eval "$EvalCsv" --out "$OutCsv" --limit $Limit

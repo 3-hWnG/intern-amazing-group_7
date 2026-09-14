@@ -71,3 +71,36 @@ CREATE TABLE IF NOT EXISTS job_log (
     process_ms      INTEGER DEFAULT 0,
     queue_position  INTEGER DEFAULT 0
 );
+
+-- ==========================================================================
+-- TÀI LIỆU (v6) — dataset nội bộ và tệp người dùng đính kèm dùng CHUNG lược đồ
+-- scope='global'       : luôn tra được ở mọi hội thoại, đánh chỉ mục MỘT LẦN
+-- scope='conversation' : chỉ tra được trong đúng cuộc trò chuyện đó
+-- ==========================================================================
+CREATE TABLE IF NOT EXISTS documents (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    scope           TEXT NOT NULL DEFAULT 'conversation',
+    user_id         INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    conversation_id INTEGER REFERENCES conversations(id) ON DELETE CASCADE,
+    filename        TEXT NOT NULL,
+    mime_type       TEXT DEFAULT '',
+    storage_path    TEXT DEFAULT '',
+    description     TEXT DEFAULT '',
+    n_chunks        INTEGER DEFAULT 0,
+    n_bytes         INTEGER DEFAULT 0,
+    status          TEXT NOT NULL DEFAULT 'pending',
+    error           TEXT DEFAULT '',
+    created_at      TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_doc_conv ON documents(conversation_id);
+CREATE INDEX IF NOT EXISTS idx_doc_scope ON documents(scope);
+
+CREATE TABLE IF NOT EXISTS document_chunks (
+    id            INTEGER PRIMARY KEY AUTOINCREMENT,
+    document_id   INTEGER NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+    ordinal       INTEGER NOT NULL DEFAULT 0,
+    content       TEXT NOT NULL,
+    metadata_json TEXT DEFAULT '',
+    created_at    TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_chunk_doc ON document_chunks(document_id);

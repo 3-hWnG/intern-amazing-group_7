@@ -1,8 +1,11 @@
 """Hội thoại nhiều cửa sổ + gửi câu hỏi qua hàng đợi.
 
-Đây là nơi RÁP: lấy ngữ cảnh từ DB -> dựng plan (pipeline thuần nghiệp vụ) ->
-đẩy vào hàng đợi -> stream chữ về -> lưu lại. Bản thân file này không chứa
-logic truy hồi hay logic phân tầng.
+Đây là nơi RÁP: lấy ngữ cảnh từ DB -> dựng plan (thuần nghiệp vụ) -> đẩy vào
+hàng đợi -> stream chữ về -> lưu lại. File này không chứa logic truy hồi.
+
+v6: bộ điều phối chọn theo config.ORCHESTRATOR
+    "agent" (mặc định) -> core/agent.py    mô hình tự chọn công cụ
+    "tiers"            -> core/pipeline.py luồng cũ, giữ để so sánh A/B
 """
 
 from __future__ import annotations
@@ -17,8 +20,9 @@ from fastapi.responses import StreamingResponse
 from api.deps import current_user
 from api.schemas import (ChatRequest, ConversationCreate, ConversationRename,
                          FeedbackRequest)
-from config import QUEUE_ENABLED
-from core import formatter, llm, pipeline, queue, summarizer
+from config import (AGENT_SHOW_TOOL_TRACE, ORCHESTRATOR, QUEUE_ENABLED,
+                    REPLAY_CHUNK_CHARS)
+from core import formatter, llm, queue, summarizer
 from db import connection
 from db.repositories import Conversations, Feedback, JobLog, Messages
 
@@ -35,6 +39,25 @@ async def _owned(conv_id: int, user: dict) -> dict:
     if conv is None:
         raise HTTPException(status_code=404, detail="Không tìm thấy cuộc trò chuyện.")
     return conv
+
+
+def _ascii(value: str) -> str:
+    """Header HTTP chỉ mã hoá được latin-1 — bỏ dấu trước khi nhét vào.
+
+    Không làm bước này thì một câu tóm tắt kiểm chứng có dấu tiếng Việt
+    (\"không đạt...\") sẽ làm uvicorn ném UnicodeEncodeError và trả 500 giữa
+    lúc đang stream. Thân câu trả lời vẫn giữ nguyên tiếng Việt có dấu.
+    """
+    from domain.text import fold
+    folded = fold(value or "")
+    return "".join(c for c in folded if 32 <= ord(c) < 127)[:400]
+
+
+def _replay(text: str):
+    """Cắt câu trả lời đã kiểm chứng thành mẩu nhỏ để giữ hiệu ứng gõ chữ."""
+    size = max(1, int(REPLAY_CHUNK_CHARS))
+    for i in range(0, len(text), size):
+        yield text[i:i + size]
 
 
 # ------------------------------------------------------- CRUD hội thoại ----
@@ -57,7 +80,9 @@ async def get_conversation(conv_id: int, user: dict = Depends(current_user)):
             m["sources"] = json.loads(m["sources"] or "[]")
         except Exception:
             m["sources"] = []
-    return {"conversation": conv, "messages": messages}
+    from db.repositories import Documents
+    documents = await connection.run(Documents.list_for_conversation, conv_id)
+    return {"conversation": conv, "messages": messages, "documents": documents}
 
 
 @router.patch("/api/conversations/{conv_id}")
@@ -71,8 +96,38 @@ async def rename_conversation(conv_id: int, body: ConversationRename,
 @router.delete("/api/conversations/{conv_id}")
 async def delete_conversation(conv_id: int, user: dict = Depends(current_user)):
     await _owned(conv_id, user)
+    # SQLite tự cascade documents/document_chunks, nhưng ChromaDB thì KHÔNG —
+    # phải tự gỡ vector của tệp đính kèm, không thì để lại rác vĩnh viễn.
+    from core import resources
+    from db.repositories import Documents
+    for doc in await connection.run(Documents.list_for_conversation, conv_id):
+        await connection.run(resources.delete_document, doc["id"], conv_id)
     await connection.run(Conversations.delete, conv_id, user["id"])
     return {"ok": True}
+
+
+# --------------------------------------------------------- dựng kế hoạch ----
+def _plan_with_agent(conv_id: int, question: str, history: list,
+                     force_web: bool = False):
+    """Chạy trong luồng riêng: manifest + ngữ cảnh -> vòng lặp agent."""
+    from core import agent, resources
+    from db.repositories import Conversations as Conv
+
+    manifest = resources.manifest(conv_id)
+    allow_attachments = resources.has_attachments(conv_id)
+
+    current = None
+    row = Conv.by_id(conv_id)
+    if row and row.get("last_row_id") is not None and int(row["last_row_id"]) >= 0:
+        from domain.records import by_row_id
+        record = by_row_id().get(int(row["last_row_id"]))
+        if record:
+            current = (int(row["last_row_id"]), record.ten)
+
+    return agent.build(question, history=history, conversation_id=conv_id,
+                       manifest=manifest, current=current,
+                       allow_attachments=allow_attachments,
+                       force_web=force_web)
 
 
 # --------------------------------------------------------------- chat ----
@@ -92,37 +147,41 @@ async def chat(conv_id: int, body: ChatRequest, user: dict = Depends(current_use
     await connection.run(Messages.add, conv_id, "user", question,
                          token_estimate=summarizer.estimate_tokens(question))
 
-    # 3. lấy ngữ cảnh (tóm tắt nếu quá dài) + trạng thái chờ làm rõ
-    pending = await connection.run(Conversations.take_pending, conv_id)
+    # 3. lấy ngữ cảnh (tóm tắt nếu quá dài)
     summary, recent = await connection.run(summarizer.build_context, conv_id)
     history = summarizer.as_history(summary, recent[:-1])   # bỏ chính câu vừa hỏi
 
-    # 4. dựng kế hoạch trả lời (thuần nghiệp vụ, không chạm DB)
-    last_title = await connection.run(Conversations.last_procedure_title, conv_id)
-    plan = await asyncio.to_thread(pipeline.build, question,
-                                   pending=pending, history=history,
-                                   context_hint=last_title)
+    # 4. dựng kế hoạch trả lời
+    if ORCHESTRATOR == "agent":
+        plan = await asyncio.to_thread(_plan_with_agent, conv_id, question,
+                                       history, bool(body.force_web))
+    else:
+        from core import pipeline
+        pending = await connection.run(Conversations.take_pending, conv_id)
+        last_title = await connection.run(Conversations.last_procedure_title, conv_id)
+        plan = await asyncio.to_thread(pipeline.build, question,
+                                       pending=pending, history=history,
+                                       context_hint=last_title)
+        if plan.pending_to_set is not None:
+            await connection.run(Conversations.set_pending, conv_id, plan.pending_to_set)
 
-    if plan.pending_to_set is not None:
-        await connection.run(Conversations.set_pending, conv_id, plan.pending_to_set)
-
-    # Ghi nhớ thủ tục vừa nói tới, để câu hỏi ngắn tiếp theo ("tốn bao nhiêu
-    # tiền?", "mất bao lâu?") biết đang hỏi về cái gì.
-    if plan.top_row_id is not None:
+    # Ghi nhớ thủ tục vừa nói tới. Ở luồng agent đây là NGỮ CẢNH đưa cho mô
+    # hình cân nhắc (kèm row_id để nó gọi get_procedure), không phải chuỗi bị
+    # ghép cứng vào câu hỏi như bản v5.
+    if getattr(plan, "top_row_id", None) is not None:
         await connection.run(Conversations.set_last_row, conv_id, plan.top_row_id)
 
-    # 5. hàm sinh chữ — worker của hàng đợi sẽ chạy hàm này trong luồng riêng
-    #    `collected` CHỈ chứa phần thân câu trả lời. Footer (nhãn tầng + dòng
-    #    miễn trừ) là phần TRÌNH BÀY: gửi cho người dùng nhưng KHÔNG lưu vào DB.
-    #    Nếu lưu, nó lọt vào lịch sử hội thoại và mô hình sẽ chép lại nguyên văn
-    #    bản ghi cũ - đã gây ra lỗi bịa "Thủ tục tạm trú" bằng nội dung của
-    #    thủ tục nhận cha mẹ con.
+    # 5. hàm sinh chữ — worker của hàng đợi chạy hàm này trong luồng riêng.
+    #    `collected` CHỈ chứa phần thân câu trả lời. Footer (nhãn + miễn trừ) là
+    #    phần TRÌNH BÀY: gửi cho người dùng nhưng KHÔNG lưu vào DB, nếu lưu nó
+    #    lọt vào lịch sử và mô hình chép lại nguyên văn bản ghi cũ.
     collected: list[str] = []
 
     def produce(emit):
         if plan.text is not None:
             collected.append(plan.text)
-            emit(plan.text)
+            for piece in _replay(plan.text):
+                emit(piece)
         else:
             for chunk in llm.stream_chat(plan.system, plan.user, plan.history):
                 collected.append(chunk)
@@ -132,10 +191,14 @@ async def chat(conv_id: int, body: ChatRequest, user: dict = Depends(current_use
     headers = {
         "X-Tier": plan.tier.value,
         "X-Confidence": f"{plan.confidence:.3f}",
-        "X-Sources": ",".join(plan.sources),
-        "X-Factcheck": plan.factcheck_summary,
+        "X-Sources": _ascii(", ".join(plan.sources)),
+        "X-Factcheck": _ascii(plan.factcheck_summary),
         "X-Conversation-Id": str(conv_id),
+        "X-Evidence": _ascii(getattr(plan, "kind", "")),
+        "X-Orchestrator": ORCHESTRATOR,
     }
+    if AGENT_SHOW_TOOL_TRACE and getattr(plan, "steps", None):
+        headers["X-Tools"] = _ascii(" | ".join(plan.steps))
 
     if not QUEUE_ENABLED:
         async def direct():

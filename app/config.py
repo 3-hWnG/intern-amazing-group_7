@@ -189,3 +189,171 @@ DEV_TOOLS_ENABLED = True
 
 HOST = "127.0.0.1"
 PORT = 8000
+
+
+# ==========================================================================
+# ORCHESTRATOR — v6 "agent"
+# ==========================================================================
+# "agent"  : LLM chọn công cụ (search_procedures / get_procedure /
+#            search_attachments / search_web / không dùng gì). Dataset là TÀI
+#            NGUYÊN, không phải nhà tù. Đây là mặc định.
+# "tiers"  : luồng cũ core/pipeline.py (router cứng A/B/C/D). Giữ lại để so
+#            sánh A/B, KHÔNG xoá.
+ORCHESTRATOR = "agent"
+
+# Số vòng gọi công cụ tối đa trong một lượt. 2 là đủ cho "tra bảng rồi tra web".
+AGENT_MAX_STEPS = 2
+
+# "json"   : một lần gọi LLM bị ép trả JSON (đáng tin với mô hình 1.5B).
+# "native" : dùng tool-calling gốc của Ollama. Bật khi cắm mô hình 3B/7B.
+AGENT_TOOL_MODE = "json"
+
+# Bước CHỌN công cụ phải lạnh và ngắn — nó không viết văn, chỉ ra quyết định.
+AGENT_DECISION_OPTIONS = {"temperature": 0.0, "num_predict": 160}
+
+# ---- GUARDRAIL DUY NHẤT --------------------------------------------------
+# Mô hình 1.5B đôi khi trả lời chay về một thủ tục hành chính mà không thèm tra
+# bảng -> khẳng định pháp lý không nguồn. Cờ này ép đúng MỘT lần tra cứu trong
+# trường hợp đó, rồi để mô hình tự viết.
+#
+# ĐẶT False KHI CẮM MÔ HÌNH LỚN (3B/7B quantized). Mô hình lớn tự biết khi nào
+# cần tra; ép thêm chỉ làm nó ngu đi. Đây là cái duy nhất cần tắt.
+AGENT_FORCE_RETRIEVAL_ON_ADMIN_SIGNAL = True
+
+# Ghi lại chuỗi công cụ đã gọi vào header X-Tools (soi lỗi ở tab Network).
+AGENT_SHOW_TOOL_TRACE = True
+
+# --------------------------------------------------------------------------
+# Văn phong câu trả lời khi CÓ bản ghi trong tay
+# --------------------------------------------------------------------------
+# "llm"      : mô hình tự viết từ bản ghi, sau đó kiểm chứng bằng luật
+#              (core/factcheck.py). MẶC ĐỊNH — dataset viết xấu, in thẳng ra
+#              đọc như một cái bảng Excel.
+# "template" : in nguyên bản ghi, không qua LLM. An toàn tuyệt đối, xấu.
+ANSWER_STYLE = "llm"
+
+# Khi câu hỏi nhắm vào MỘT con số cụ thể (lệ phí, thời gian, hồ sơ, nơi nộp),
+# prompt ép mô hình trích ĐÚNG NGUYÊN VĂN trường đó, không diễn đạt lại.
+# Đây là chỗ duy nhất cần "exactly".
+EXACT_ON_FACET = True
+
+# Câu trả lời có kiểm chứng phải sinh xong mới kiểm tra được -> phát lại theo
+# từng mẩu để giao diện vẫn có hiệu ứng gõ chữ.
+REPLAY_CHUNK_CHARS = 18
+
+# ==========================================================================
+# TÀI LIỆU (tri thức chung + tệp đính kèm theo hội thoại)
+# ==========================================================================
+ATTACHMENTS_ENABLED = True
+UPLOAD_DIR = RUNTIME_DIR / "uploads"
+ATTACH_MAX_BYTES = 20 * 1024 * 1024          # 20 MB
+ATTACH_MAX_PER_CONVERSATION = 10
+ATTACH_CHUNK_CHARS = 900
+ATTACH_CHUNK_OVERLAP = 120
+ATTACH_TOP_K = 5
+ATTACH_COLLECTION = "doc_chunks"             # collection riêng, KHÔNG đụng KB
+ATTACH_FUSION_TOP_K = 12
+
+# Luôn parse được (thư viện chuẩn / đã có sẵn)
+ATTACH_EXT_ALWAYS = {".csv", ".tsv", ".txt", ".md", ".json", ".xlsx", ".xls"}
+# Cần thư viện thêm — xem requirements.txt
+ATTACH_EXT_OPTIONAL = {".pdf", ".docx"}
+
+# --------------------------------------------------------------------------
+# Tri thức chung (global knowledge base)
+# --------------------------------------------------------------------------
+# Dataset thủ tục hành chính LUÔN tra cứu được ở MỌI hội thoại, đánh chỉ mục
+# MỘT LẦN (data/chromadb_eval + data/bm25_index.pkl đã có sẵn). Không upload
+# lại, không nhúng lại theo từng cuộc trò chuyện.
+GLOBAL_KB_NAME = "Thủ tục hành chính (dataset nội bộ)"
+GLOBAL_KB_TOOL = "search_procedures"
+
+
+# ==========================================================================
+# v6.1 — sửa sau lần chạy thử đầu tiên
+# ==========================================================================
+# Trình duyệt cache JS/CSS cũ -> nút đính kèm không hoạt động và ô nhập bị bẹp
+# vì CSS mới chưa được nạp. Đổi số này là mọi trình duyệt phải tải lại.
+STATIC_VERSION = "6.3"
+
+# Bao nhiêu thủ tục được đưa vào prompt.
+# Lần chạy đầu: đưa 3 thủ tục -> mô hình 1.5B gộp cả 3 thành một câu trả lời 10
+# gạch đầu dòng lộn xộn (cấp số nhà + gia hạn tạm trú + ...). Nay chỉ đưa thêm
+# ứng viên nào SÁT ĐIỂM với top-1; còn lại chỉ đưa đúng một thủ tục.
+EVIDENCE_PROCEDURES_MAX = 3
+EVIDENCE_TIE_GAP = 0.06        # cách top-1 xa hơn mức này -> không đưa vào prompt
+
+# Người dùng nói thẳng "tra trên mạng đi" thì phải tra, không bàn cãi.
+# Đây KHÔNG phải guardrail lên mô hình — đây là MỆNH LỆNH CỦA NGƯỜI DÙNG.
+WEB_FORCE_PHRASES = [
+    "web search", "websearch", "search web", "tim tren web", "tra tren web",
+    "tim tren mang", "tra tren mang", "len mang", "google", "tra google",
+    "tim google", "dung web", "dung internet", "tra internet", "tim internet",
+    "search tren mang", "tra cuu tren mang", "tim kiem tren mang",
+]
+
+
+# ==========================================================================
+# v6.2 — ngữ cảnh dính + chẩn đoán
+# ==========================================================================
+# Câu hỏi tiếp nối ("nộp ở đâu?", "tốn nhiều tiền?") phải nói về thủ tục ĐANG
+# nói tới, chứ không phải đi truy hồi lại từ đầu.
+#
+# Lỗi thật đã gặp: đang nói về "gia hạn tạm trú" (nơi nộp = Công an Xã), hỏi
+# "Nộp ở đâu" -> truy hồi mới trả về một thủ tục giao thông với độ tin cậy 0.43
+# -> trả lời "Cục Cảnh sát giao thông". Sai hoàn toàn, mà nghe rất tự tin.
+#
+# Quy tắc: câu hỏi nhắm vào MỘT trường (lệ phí / thời gian / hồ sơ / nơi nộp)
+# + đang có thủ tục trong ngữ cảnh + truy hồi mới KHÔNG đủ chắc (< TIER_A)
+# => quay lại đúng thủ tục đang nói tới.
+FOLLOWUP_STICKY = True
+
+# --------------------------------------------------------------------------
+# Tìm kiếm web — thử nhiều backend
+# --------------------------------------------------------------------------
+# duckduckgo_search/ddgs có nhiều backend; backend mặc định hay hỏng hoặc bị
+# chặn tốc độ. Thử lần lượt, ghi lại cái nào chạy được.
+WEB_SEARCH_BACKENDS = ["lite", "html", "auto"]
+# Lọc allowlist mà không còn kết quả nào: vẫn BÁO CÁO là đã tìm thấy nhưng bị
+# loại, để phân biệt "tra hỏng" với "tra được nhưng nguồn không chính thống".
+WEB_SEARCH_REPORT_BLOCKED = True
+
+# --------------------------------------------------------------------------
+# Chế độ nhà phát triển (app/developer_mode.py)
+# --------------------------------------------------------------------------
+# DEV_TOOLS_ENABLED quyết định có ĐĂNG KÝ route hay không (bảo mật thật).
+# Cờ dưới đây chỉ quyết định có GHI LẠI vết chạy hay không, bật/tắt được ngay
+# trong giao diện.
+DEVMODE_DEFAULT_ON = True
+DEVMODE_TRACE_SIZE = 40        # số lượt gần nhất giữ trong bộ nhớ
+
+
+# ==========================================================================
+# v6.3 — sàn độ tin cậy, nguồn có link, tra web bám .gov.vn
+# ==========================================================================
+# Dưới mức này thì bản ghi truy hồi được KHÔNG đáng tin để trả lời.
+# Lỗi thật: hỏi "Đến nơi đâu để nộp hồ sơ" -> truy hồi ra "Đăng ký khai sinh"
+# ở mức 0.20, mà giao diện vẫn dán nhãn xanh "Từ cơ sở dữ liệu thủ tục · 0.20"
+# rồi in nguyên bản ghi khai sinh ra. Nhãn NÓI DỐI, và người dân tin.
+#
+# Dưới sàn này: thử quay lại thủ tục đang nói tới; không có thì BỎ HẲN bằng
+# chứng và trả lời như không có dữ liệu — thà nói "mình chưa có" còn hơn đưa
+# nhầm thủ tục.
+EVIDENCE_MIN_CONFIDENCE = 0.45
+
+# Câu ngắn được coi là hỏi tiếp (dùng cho ngữ cảnh dính, kể cả khi bộ nhận diện
+# "hỏi vào trường nào" không bắt được cách diễn đạt).
+FOLLOWUP_MAX_WORDS = 9
+
+# --------------------------------------------------------------------------
+# Tra web bám nguồn chính thống ngay từ truy vấn
+# --------------------------------------------------------------------------
+# Đo được: truy vấn trần trả 20 kết quả, chỉ 4 qua allowlist. Nhét gợi ý miền
+# vào ngay truy vấn đầu tiên thì tỉ lệ dùng được cao hơn hẳn, đỡ phải chạy các
+# lượt dự phòng.
+WEB_SEARCH_QUERY_HINT = "site:gov.vn"
+# Vẫn giữ một lượt truy vấn TRẦN để dự phòng: có câu chỉ báo chí mới viết.
+WEB_SEARCH_PLAIN_FALLBACK = True
+
+# Trả về ĐƯỜNG LINK đầy đủ thay vì chỉ tên miền, để người dân bấm vào kiểm tra.
+WEB_SEARCH_RETURN_URLS = True

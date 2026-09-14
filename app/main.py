@@ -12,8 +12,9 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from config import (DEV_TOOLS_ENABLED, HOST, PORT, QUEUE_ENABLED,
-                    RETENTION_DAYS, STATIC_DIR, USE_LEXICAL)
+from config import (ATTACHMENTS_ENABLED, DEV_TOOLS_ENABLED, HOST,
+                    ORCHESTRATOR, PORT, QUEUE_ENABLED, RETENTION_DAYS,
+                    STATIC_DIR, USE_LEXICAL)
 
 
 @asynccontextmanager
@@ -33,6 +34,12 @@ async def lifespan(app: FastAPI):
             print(f"  - đã xoá {removed} hội thoại quá hạn lưu trữ")
 
         print(f"  - {len(get_procedures())} thủ tục")
+
+        # Đăng ký dataset là TÀI LIỆU CHUNG: luôn tra được ở mọi hội thoại,
+        # đánh chỉ mục MỘT LẦN (chỉ mục đã có sẵn, KHÔNG nhúng lại ở đây).
+        from core import resources
+        kb = resources.ensure_global_kb()
+        print(f"  - tri thức chung: {kb['filename']} ({kb['description']})")
         print(f"  - vector store: {vectorstore.get_collection().count()} view")
         if USE_LEXICAL:
             from core import lexical
@@ -60,6 +67,7 @@ async def lifespan(app: FastAPI):
             print("  ! DEV_TOOLS_ENABLED = True — có endpoint xoá dữ liệu.")
             print("  ! ĐẶT False trong config.py trước khi bàn giao bản cuối.")
             print("  " + "!" * 60)
+        print(f"  - bộ điều phối: {ORCHESTRATOR}")
         print("Sẵn sàng.")
     except Exception as exc:
         print("LỖI KHỞI TẠO:", exc)
@@ -75,10 +83,12 @@ def create_app() -> FastAPI:
     app = FastAPI(title="Trợ Lý Thủ Tục Hành Chính - Nhóm 7", lifespan=lifespan)
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
-    from api import auth_routes, chat_routes, routes
+    from api import auth_routes, chat_routes, file_routes, routes
     app.include_router(routes.router)
     app.include_router(auth_routes.router)
     app.include_router(chat_routes.router)
+    if ATTACHMENTS_ENABLED:
+        app.include_router(file_routes.router)
 
     if DEV_TOOLS_ENABLED:
         from api import dev_routes

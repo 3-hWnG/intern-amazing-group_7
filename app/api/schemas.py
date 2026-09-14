@@ -17,6 +17,7 @@ class ConversationRename(BaseModel):
 
 class ChatRequest(BaseModel):
     text: str
+    force_web: bool = False      # nút "Web" ở ô nhập -> bắt buộc tra mạng
 
 
 class FeedbackRequest(BaseModel):
@@ -34,3 +35,11 @@ class ResetRequest(BaseModel):
 class Query(BaseModel):
     text: str
     session_id: str = "default"
+
+
+class DevToggle(BaseModel):
+    enabled: bool | None = None       # None = đảo trạng thái
+
+
+class WebSearchTest(BaseModel):
+    query: str = ""

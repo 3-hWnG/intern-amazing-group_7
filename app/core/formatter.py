@@ -43,9 +43,22 @@ def render_clarify(candidates) -> str:
             "\n\nTrả lời số thứ tự hoặc mô tả rõ hơn giúp mình nhé.")
 
 
+def _host(source: str) -> str:
+    """URL -> tên miền cho gọn. Link đầy đủ do giao diện hiển thị bên dưới."""
+    if source.startswith("http"):
+        from urllib.parse import urlparse
+        return urlparse(source).hostname or source
+    return source
+
+
 def footer(tier: Tier, sources: list[str] | None = None) -> str:
     parts = [f"_[{LABELS[tier]}]_"]
     if sources:
-        parts.append("Nguồn: " + ", ".join(sources))
+        hosts = []
+        for s in sources:
+            h = _host(s)
+            if h not in hosts:
+                hosts.append(h)
+        parts.append("Nguồn: " + ", ".join(hosts))
     parts.append(AI_DISCLOSURE)
     return "\n\n" + " · ".join(parts)

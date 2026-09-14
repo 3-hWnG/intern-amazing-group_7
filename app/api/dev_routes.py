@@ -8,14 +8,47 @@ from __future__ import annotations
 
 from fastapi import APIRouter, Depends, HTTPException
 
+import developer_mode
 from api.deps import current_user
-from api.schemas import ResetRequest
+from api.schemas import DevToggle, ResetRequest, WebSearchTest
 from db import connection
 from db.repositories import Conversations, Feedback, Messages, Users
 
 router = APIRouter()
 
 CONFIRM_WORD = "XOA"
+
+
+# ------------------------------------------------------ chế độ dev ----
+@router.get("/api/dev/status")
+async def dev_status(user: dict = Depends(current_user)):
+    """Mọi công tắc đang ảnh hưởng tới hành vi — xem nhanh, khỏi mở config.py."""
+    return developer_mode.snapshot()
+
+
+@router.post("/api/dev/toggle")
+async def dev_toggle(body: DevToggle, user: dict = Depends(current_user)):
+    value = developer_mode.toggle() if body.enabled is None \
+        else developer_mode.set_enabled(body.enabled)
+    return {"developer_mode": value}
+
+
+@router.get("/api/dev/trace")
+async def dev_trace(limit: int = 10, user: dict = Depends(current_user)):
+    """Vết chạy của các lượt gần nhất: chọn công cụ gì, điểm bao nhiêu, vì sao."""
+    return {"enabled": developer_mode.enabled(),
+            "traces": developer_mode.traces(limit)}
+
+
+@router.delete("/api/dev/trace")
+async def dev_trace_clear(user: dict = Depends(current_user)):
+    return {"cleared": developer_mode.clear_traces()}
+
+
+@router.post("/api/dev/websearch")
+async def dev_websearch(body: WebSearchTest, user: dict = Depends(current_user)):
+    """Chạy thử tra web và nói THẲNG hỏng ở bước nào."""
+    return await connection.run(developer_mode.websearch_check, body.query or "")
 
 
 @router.get("/api/dev/stats")

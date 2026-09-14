@@ -21,6 +21,23 @@ window.API = (function () {
     patch: (url, body) => request(url, { method: "PATCH", body: JSON.stringify(body || {}) }),
     del: (url) => request(url, { method: "DELETE" }),
 
+    /* Tải tệp lên: gửi thẳng byte, tên tệp nằm ở header (không cần multipart). */
+    async upload(url, file) {
+      const res = await fetch(url, {
+        method: "POST",
+        credentials: "same-origin",
+        headers: {
+          "X-Filename": encodeURIComponent(file.name),
+          "Content-Type": file.type || "application/octet-stream",
+        },
+        body: file,
+      });
+      if (res.status === 401) { location.href = "/login"; throw new Error("Chưa đăng nhập"); }
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.detail || data.error || "Tải tệp thất bại");
+      return data;
+    },
+
     /* Stream trả về text/plain theo từng mẩu. */
     async stream(url, body, onChunk, onHeaders) {
       const res = await fetch(url, {

@@ -7,6 +7,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 
 from api.deps import current_user
 from api.schemas import Credentials
+from api.routes import render_page
 from config import AUTH_COOKIE_NAME, AUTH_ENABLED, TEMPLATES_DIR
 from core import auth
 from db import connection
@@ -16,7 +17,7 @@ router = APIRouter()
 
 @router.get("/login", response_class=HTMLResponse)
 async def login_page():
-    return (TEMPLATES_DIR / "login.html").read_text(encoding="utf-8")
+    return render_page("login.html")
 
 
 @router.post("/api/register")
