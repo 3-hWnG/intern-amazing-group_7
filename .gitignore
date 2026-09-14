@@ -1,4 +1,6 @@
-﻿venv/
+venv/
 __pycache__/
 .env
 data/chromadb/
+data/*.db
+*.backup.py

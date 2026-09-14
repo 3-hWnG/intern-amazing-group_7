@@ -1,4 +1,4 @@
-﻿import ollama
+import ollama
 text = 'Tin tức bão Yagi'
 prompt = f"""Phân loại câu hỏi vào 1 trong 3 nhóm: XAGIAO, LUAT, NGOAI.
 Ví dụ:
@@ -9,5 +9,5 @@ Ví dụ:
 
 Câu hỏi: {text}
 Kết quả (chỉ in đúng 1 từ):"""
-resp = ollama.chat(model='qwen2.5:1.5b', messages=[{'role': 'user', 'content': prompt}])
+resp = ollama.chat(model='3b-finetune', messages=[{'role': 'user', 'content': prompt}])
 print('LLM OUTPUT:', resp['message']['content'])

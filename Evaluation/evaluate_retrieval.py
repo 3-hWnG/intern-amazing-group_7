@@ -7,8 +7,10 @@ Chấm điểm tầng truy hồi (retrieval) bằng bộ eval_questions.csv.
 Đây là CON SỐ ĐẦU TIÊN của dự án. Chạy nó TRƯỚC khi đổi bất cứ thứ gì,
 để mọi thay đổi sau đó đều so được với mốc này.
 
-Chạy từ thư mục app/:
-    python evaluate_retrieval.py --eval ../eval/eval_questions.csv
+Cách chạy:
+    python Evaluation/evaluate_retrieval.py
+hoặc từ thư mục app/:
+    python ../Evaluation/evaluate_retrieval.py
 
 In ra:
   - Recall@1 / Recall@5 / MRR@10        (tổng thể + tách theo variant, độ khó, lĩnh vực)
@@ -28,7 +30,21 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).resolve().parent))
+# Đảm bảo UTF-8 cho Windows console
+if sys.platform == "win32":
+    try:
+        sys.stdout.reconfigure(encoding="utf-8")
+        sys.stderr.reconfigure(encoding="utf-8")
+    except Exception:
+        pass
+
+# Thêm Evaluation và thư mục gốc vào sys.path để import core
+eval_dir = Path(__file__).resolve().parent
+project_dir = eval_dir.parent
+if str(eval_dir) not in sys.path:
+    sys.path.insert(0, str(eval_dir))
+if str(project_dir) not in sys.path:
+    sys.path.insert(1, str(project_dir))
 
 from core import embeddings, vectorstore  # noqa: E402
 
@@ -51,15 +67,46 @@ def retrieve(question: str, n: int = TOP_N):
     return list(zip(ids, dists))
 
 
-def score(rows: list[dict]) -> tuple[list[dict], dict]:
-    results = []
-    for r in rows:
-        gold = set(filter(None, r["gold_chroma_id"].split(";")))
-        ranked = retrieve(r["question"])
-        ids = [i for i, _ in ranked]
-        top_dist = ranked[0][1] if ranked else None
+def score(rows: list[dict], batch_size: int = 32) -> tuple[list[dict], dict]:
+    coll = vectorstore.get_collection()
+    items = coll.get(include=["metadatas"])
 
-        rank = next((k + 1 for k, i in enumerate(ids) if i in gold), None)
+    # Xây dựng bảng ánh xạ title -> gold_chroma_id để hỗ trợ chunking 2 lớp
+    title_to_gold_ids = {}
+    for r in rows:
+        if r.get("in_scope") == "1":
+            titles = [t.strip().lower() for t in r.get("gold_title", "").split("|")]
+            gold_ids = set(filter(None, r.get("gold_chroma_id", "").split(";")))
+            for t in titles:
+                if t not in title_to_gold_ids:
+                    title_to_gold_ids[t] = set()
+                title_to_gold_ids[t].update(gold_ids)
+
+    chunk_to_gold = {}
+    for cid, meta in zip(items["ids"], items["metadatas"]):
+        t = meta.get("title", "").strip().lower()
+        if t in title_to_gold_ids:
+            chunk_to_gold[cid] = title_to_gold_ids[t]
+        else:
+            chunk_to_gold[cid] = set()
+
+    # Batch encode để tăng tốc x3-x5
+    questions = [r["question"] for r in rows]
+    q_embs = embeddings.encode(questions, batch_size=batch_size, show_progress_bar=False)
+    res = coll.query(query_embeddings=q_embs.tolist(), n_results=TOP_N)
+
+    results = []
+    for r, ids, dists in zip(rows, res["ids"], res["distances"]):
+        gold = set(filter(None, r["gold_chroma_id"].split(";")))
+        top_dist = dists[0] if dists else None
+
+        # Điều kiện trúng: ID trùng trực tiếp (legacy), hoặc chunk khớp thủ tục (2-chunk)
+        rank = None
+        for k, i in enumerate(ids):
+            if i in gold or bool(chunk_to_gold.get(i, set()) & gold):
+                rank = k + 1
+                break
+
         results.append({
             **r,
             "top1_id": ids[0] if ids else "",
@@ -132,17 +179,29 @@ def threshold_report(results: list[dict]) -> None:
 
 def main() -> None:
     ap = argparse.ArgumentParser()
-    ap.add_argument("--eval", default="../eval/eval_questions.csv")
-    ap.add_argument("--out", default="../eval/eval_results.csv")
+    # Tự động phát hiện vị trí eval_questions.csv
+    default_eval = eval_dir / "eval_questions.csv"
+    if not default_eval.exists():
+        default_eval = Path("../eval/eval_questions.csv")
+
+    default_out = eval_dir / "eval_results.csv"
+
+    ap.add_argument("--eval", default=str(default_eval))
+    ap.add_argument("--out", default=str(default_out))
+    ap.add_argument("--batch-size", type=int, default=32, help="Kích thước batch mã hóa")
     ap.add_argument("--limit", type=int, default=0, help="chỉ chạy N câu đầu (để thử nhanh)")
     args = ap.parse_args()
 
-    rows = load_eval(Path(args.eval))
+    eval_path = Path(args.eval)
+    if not eval_path.exists() and (eval_dir / args.eval).exists():
+        eval_path = eval_dir / args.eval
+
+    rows = load_eval(eval_path)
     if args.limit:
         rows = rows[: args.limit]
-    print(f"Đang chấm {len(rows)} câu hỏi...\n")
+    print(f"Đang chấm {len(rows)} câu hỏi từ {eval_path}...\n")
 
-    results, summary = score(rows)
+    results, summary = score(rows, batch_size=args.batch_size)
 
     print("=== TỔNG THỂ ===")
     for k, v in summary.items():
