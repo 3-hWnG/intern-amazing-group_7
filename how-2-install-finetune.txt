@@ -4,6 +4,8 @@ Trong folder đảm bảo vừa có file Modelfile và file model fine tune
 
 B3: Type
   ollama create 3b-finetune -f Modelfile
+- 3b-finetune là tên model finetune tương ứnng 
+
 P/s: Về sau muốn dùng model thì gọi tên nó : 3b-finetune
 TƯƠNG TỰ VỚI 1.5B fine tune
 ollama list -> Check coi tất cả local model ở mấy 
