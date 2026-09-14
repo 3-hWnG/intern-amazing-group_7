@@ -1,5 +1,7 @@
 B1: Cài folder về rồi unzip https://drive.google.com/drive/folders/1JwpuiILATMTKTLx72vD00CcMvYAEvJL0?usp=sharing
 B2: Mở cmd rồi cd vô folder vừa unzip đó 
+Trong folder đảm bảo vừa có file Modelfile và file model fine tune
+
 B3: Type ollama create 3b-finetune -f Modelfile
 P/s: Về sau muốn dùng model thì gọi tên nó : 3b-finetune
 TƯƠNG TỰ VỚI 1.5B fine tune
