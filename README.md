@@ -4,7 +4,7 @@ Hệ thống Trợ lý ảo tư vấn thủ tục hành chính công cấp xã/p
 
 ---
 
-## 🌟 Tính Năng Nổi Bật
+## Tính Năng Nổi Bật
 
 - **Kiến trúc Phân tầng Đa tầng (Adaptive Tiers)**:
   - **Tầng A (Dữ liệu chuẩn xác CSDL)**: Trả về trực tiếp 100% thông tin từ cơ sở dữ liệu (thành phần hồ sơ, lệ phí, thời gian giải quyết, link DVC) trong 0.001s; triệt tiêu hoàn toàn hiện tượng ảo giác, nhại prompt hay cắt cụt câu.
@@ -25,7 +25,7 @@ Hệ thống Trợ lý ảo tư vấn thủ tục hành chính công cấp xã/p
 
 ---
 
-## 📁 Cấu Trúc Thư Mục
+## Cấu Trúc Thư Mục
 
 ```text
 intern-amazing-group_7/
@@ -56,7 +56,7 @@ intern-amazing-group_7/
 
 ---
 
-## 🚀 Hướng Dẫn Cài Đặt & Sử Dụng
+## Hướng Dẫn Cài Đặt & Sử Dụng
 
 ### Bước 1: Chuẩn bị Mô hình Local LLM (Ollama)
 1. Tải và cài đặt [Ollama](https://ollama.com/).
@@ -93,20 +93,16 @@ intern-amazing-group_7/
   ```
 
 ### Bước 4: Khởi động Server & Trải nghiệm
-- **Cách 1 (Khuyên dùng)**: Chạy qua PowerShell script tiện ích:
+-  Chạy qua PowerShell script tiện ích:
   ```powershell
   .\run.ps1
   ```
-- **Cách 2**: Chạy qua Uvicorn trực tiếp:
-  ```powershell
-  python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
-  ```
 
-👉 **Mở trình duyệt Web truy cập:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
+=> **Mở trình duyệt Web truy cập:** [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 ---
 
-## ⚡ Các Lệnh Tiện Ích Trong `run.ps1`
+## Các Lệnh Tiện Ích Trong `run.ps1`
 
 File tiện ích `run.ps1` được tích hợp sẵn các chế độ vận hành chuyên nghiệp:
 
@@ -120,7 +116,7 @@ File tiện ích `run.ps1` được tích hợp sẵn các chế độ vận hà
 
 ---
 
-## 🕷️ Thu Thập Dữ Liệu Tự Động (`crawl_dichvucong.py`)
+## Thu Thập Dữ Liệu Tự Động (`crawl_dichvucong.py`)
 
 Hệ thống cung cấp module `crawl_dichvucong.py` giúp tự động bóc tách dữ liệu thủ tục hành chính trực tiếp từ Cổng Dịch vụ công (`dichvucong.bocongan.gov.vn`):
 - Bóc tách đầy đủ 7 trường nghiệp vụ cốt lõi: Tên thủ tục, lĩnh vực, hình thức nộp, thành phần hồ sơ, thời gian, lệ phí và địa điểm tiếp nhận.
@@ -129,15 +125,3 @@ Hệ thống cung cấp module `crawl_dichvucong.py` giúp tự động bóc tá
   ```powershell
   python app/crawl_dichvucong.py
   ```
-
----
-
-## 🛠️ Hướng Dẫn Tùy Chỉnh Nhanh (Developer Guide)
-
-Muốn sửa tính năng nào, chỉ cần mở đúng file tương ứng:
-- **Đổi Model LLM / Cổng Port / Ngưỡng RRF**: Chỉnh sửa file `app/config.py` (`LLM_MODEL_NAME`, `PORT`, `TIER_A_MIN_CONFIDENCE`...).
-- **Cập nhật nội dung thủ tục hành chính**: Sửa dữ liệu trong `data/data_merged.xlsx` rồi gõ `.\run.ps1 -Ingest`.
-- **Thêm luật giao thông hoặc tinh chỉnh văn phong phản hồi**: Mở `app/tiers.py` (`TRAFFIC_RULES`, `format_tier_a_response`...).
-- **Tùy biến giao diện Web SPA hoặc bổ sung API**: Mở `app/main.py`.
-- **Đánh giá benchmark độc lập**: Thư mục `Evaluation/` sử dụng `app/core.py` làm cầu nối độc lập mà không cần khởi chạy web server.
-- **Reset dữ liệu khi kiểm thử**: Sử dụng nút đỏ **Reset dữ liệu (DEV)** ngay góc dưới thanh Sidebar bên trái của trang Web.
