@@ -1,45 +1,45 @@
-{"id": "birth-01", "question": "tui mun lam giay khai sinh cho con moi de thi can gi z", "expected_intent": "birth_registration", "expect_clarify": false}
-{"id": "birth-02", "question": "Đăng ký khai sinh cho con trễ hạn có bị phạt không?", "expected_intent": "birth_registration", "expect_clarify": false}
-{"id": "birth-03", "question": "Con tôi sinh ở nước ngoài, về Việt Nam đăng ký khai sinh thế nào?", "expected_intent": "birth_registration", "expect_clarify": false}
-{"id": "birth-04", "question": "Làm giấy khai sinh online trên VNeID được không?", "expected_intent": "birth_registration", "expect_clarify": false}
-{"id": "birth-05", "question": "Cha mẹ chưa đăng ký kết hôn thì làm khai sinh cho con ra sao?", "expected_intent": "birth_registration", "expect_clarify": false}
-{"id": "birth-06", "question": "Thời hạn đăng ký khai sinh là bao nhiêu ngày kể từ khi sinh?", "expected_intent": "birth_registration", "expect_clarify": false}
-{"id": "birth-07", "question": "Giấy khai sinh bị mất thì xin cấp bản sao trích lục ở đâu?", "expected_intent": "birth_registration", "expect_clarify": false}
-{"id": "birth-08", "question": "khai sinh", "expected_intent": ["birth_registration", "unknown"], "expect_clarify": null}
-{"id": "marriage-01", "question": "Đăng ký kết hôn cần giấy tờ gì?", "expected_intent": "marriage_registration", "expect_clarify": false}
-{"id": "marriage-02", "question": "Kết hôn với người nước ngoài thì làm thủ tục ở đâu?", "expected_intent": "marriage_registration", "expect_clarify": false}
-{"id": "marriage-03", "question": "xin giấy xác nhận tình trạng hôn nhân ở đâu vậy", "expected_intent": ["marriage_registration", "other"], "expect_clarify": false}
-{"id": "marriage-04", "question": "Đăng ký kết hôn có mất lệ phí không?", "expected_intent": "marriage_registration", "expect_clarify": false}
-{"id": "marriage-05", "question": "Hai đứa hộ khẩu ở hai tỉnh khác nhau thì đăng ký kết hôn ở đâu?", "expected_intent": "marriage_registration", "expect_clarify": false}
-{"id": "marriage-06", "question": "Đăng ký kết hôn online được không?", "expected_intent": "marriage_registration", "expect_clarify": false}
-{"id": "marriage-07", "question": "Tôi muốn đăng ký kết hôn", "expected_intent": "marriage_registration", "expect_clarify": null}
-{"id": "marriage-08", "question": "Đã kết hôn ở nước ngoài thì về Việt Nam ghi chú kết hôn thế nào?", "expected_intent": "marriage_registration", "expect_clarify": false}
-{"id": "temp-01", "question": "Đăng ký tạm trú cần những giấy tờ gì?", "expected_intent": "temporary_residence", "expect_clarify": false}
-{"id": "temp-02", "question": "Thuê trọ ở Bình Thạnh thì chủ nhà hay tôi phải đi đăng ký tạm trú?", "expected_intent": "temporary_residence", "expect_clarify": false}
-{"id": "temp-03", "question": "Gia hạn tạm trú như thế nào?", "expected_intent": "temporary_residence", "expect_clarify": false}
-{"id": "temp-04", "question": "Không đăng ký tạm trú thì bị xử phạt bao nhiêu?", "expected_intent": "temporary_residence", "expect_clarify": false}
-{"id": "temp-05", "question": "Đăng ký tạm trú trên VNeID làm sao?", "expected_intent": "temporary_residence", "expect_clarify": false}
-{"id": "temp-06", "question": "le phi dang ky tam tru bn", "expected_intent": "temporary_residence", "expect_clarify": false}
-{"id": "temp-07", "question": "thế nộp hồ sơ ở đâu?", "history": [{"role": "user", "content": "Tôi đang thuê nhà ở Đà Nẵng, muốn đăng ký tạm trú", "kind": ""}, {"role": "assistant", "content": "Để đăng ký tạm trú, bạn chuẩn bị tờ khai thay đổi thông tin cư trú và giấy tờ chứng minh chỗ ở hợp pháp (ví dụ hợp đồng thuê nhà).", "kind": "answer"}], "expected_intent": "temporary_residence", "expect_clarify": false}
-{"id": "temp-08", "question": "Tạm trú được tối đa bao lâu thì phải gia hạn?", "expected_intent": "temporary_residence", "expect_clarify": false}
-{"id": "perm-01", "question": "Tôi muốn đăng ký thường trú.", "expected_intent": "permanent_residence", "expect_clarify": true}
-{"id": "perm-02", "question": "Nhập hộ khẩu vào nhà chồng cần giấy tờ gì?", "expected_intent": "permanent_residence", "expect_clarify": false}
-{"id": "perm-03", "question": "Đăng ký thường trú vào nhà thuê được không?", "expected_intent": "permanent_residence", "expect_clarify": false}
-{"id": "perm-04", "question": "Chuyển đi nơi khác thì có phải xóa đăng ký thường trú không?", "expected_intent": "permanent_residence", "expect_clarify": false}
-{"id": "perm-05", "question": "Sổ hộ khẩu giấy bây giờ còn dùng được không?", "expected_intent": "permanent_residence", "expect_clarify": false}
-{"id": "perm-06", "question": "nhà tôi mới mua ở Hà Nội", "history": [{"role": "user", "content": "Tôi muốn đăng ký thường trú.", "kind": ""}, {"role": "assistant", "content": "Bạn muốn đăng ký thường trú vào chỗ ở nào (nhà thuộc sở hữu của bạn, nhà thuê/mượn hay nhà của người thân) và ở tỉnh/thành phố nào ạ?", "kind": "clarify"}], "expected_intent": "permanent_residence", "expect_clarify": false}
-{"id": "perm-07", "question": "Giấy xác nhận thông tin về cư trú xin ở đâu?", "expected_intent": ["permanent_residence", "temporary_residence", "other"], "expect_clarify": false}
-{"id": "perm-08", "question": "Con mới sinh đăng ký thường trú cùng lúc với khai sinh được không?", "expected_intent": ["birth_registration", "permanent_residence"], "expect_clarify": false}
-{"id": "misc-01", "question": "Làm căn cước cho con 10 tuổi cần gì?", "expected_intent": "identity_documents", "expect_clarify": false}
-{"id": "misc-02", "question": "Bị mất căn cước thì cấp lại thế nào?", "expected_intent": "identity_documents", "expect_clarify": false}
-{"id": "misc-03", "question": "Làm hộ chiếu online như thế nào?", "expected_intent": "identity_documents", "expect_clarify": false}
-{"id": "misc-04", "question": "Thủ tục đăng ký hộ kinh doanh cá thể", "expected_intent": "business_registration", "expect_clarify": false}
-{"id": "misc-05", "question": "Sang tên sổ đỏ khi mua đất cần giấy tờ gì?", "expected_intent": "land_administration", "expect_clarify": false}
-{"id": "misc-06", "question": "Rút bảo hiểm xã hội một lần cần những gì?", "expected_intent": "social_security", "expect_clarify": false}
-{"id": "misc-07", "question": "Đăng ký mã số thuế cá nhân ở đâu?", "expected_intent": "tax", "expect_clarify": false}
-{"id": "misc-08", "question": "Xin cấp phiếu lý lịch tư pháp số 1", "expected_intent": "other", "expect_clarify": false}
+{"id": "birth-01", "question": "tui mun lam giay khai sinh cho con moi de thi can gi z", "expected_intent": "birth_registration", "expected_target": "required_documents", "expect_clarify": false}
+{"id": "birth-02", "question": "Đăng ký khai sinh cho con trễ hạn có bị phạt không?", "expected_intent": "birth_registration", "expected_target": ["other", "conditions"], "expect_clarify": false}
+{"id": "birth-03", "question": "Con tôi sinh ở nước ngoài, về Việt Nam đăng ký khai sinh thế nào?", "expected_intent": "birth_registration", "expected_target": ["procedure", "how_to_apply", "required_documents"], "expect_clarify": false}
+{"id": "birth-04", "question": "Làm giấy khai sinh online trên VNeID được không?", "expected_intent": "birth_registration", "expected_target": ["how_to_apply", "conditions"], "expect_clarify": false}
+{"id": "birth-05", "question": "Cha mẹ chưa đăng ký kết hôn thì làm khai sinh cho con ra sao?", "expected_intent": "birth_registration", "expected_target": ["procedure", "required_documents", "conditions"], "expect_clarify": false}
+{"id": "birth-06", "question": "Thời hạn đăng ký khai sinh là bao nhiêu ngày kể từ khi sinh?", "expected_intent": "birth_registration", "expected_target": ["conditions", "processing_time", "other"], "expect_clarify": false}
+{"id": "birth-07", "question": "Giấy khai sinh bị mất thì xin cấp bản sao trích lục ở đâu?", "expected_intent": "birth_registration", "expected_target": ["where_to_apply", "authority"], "expect_clarify": false}
+{"id": "birth-08", "question": "khai sinh", "expected_intent": ["birth_registration", "unknown"], "expected_target": ["procedure", "unknown"], "expect_clarify": null}
+{"id": "marriage-01", "question": "Đăng ký kết hôn cần giấy tờ gì?", "expected_intent": "marriage_registration", "expected_target": "required_documents", "expect_clarify": false}
+{"id": "marriage-02", "question": "Kết hôn với người nước ngoài thì làm thủ tục ở đâu?", "expected_intent": "marriage_registration", "expected_target": ["where_to_apply", "authority"], "expect_clarify": false}
+{"id": "marriage-03", "question": "xin giấy xác nhận tình trạng hôn nhân ở đâu vậy", "expected_intent": ["marriage_registration", "other"], "expected_target": ["where_to_apply", "authority"], "expect_clarify": false}
+{"id": "marriage-04", "question": "Đăng ký kết hôn có mất lệ phí không?", "expected_intent": "marriage_registration", "expected_target": "fee", "expect_clarify": false}
+{"id": "marriage-05", "question": "Hai đứa hộ khẩu ở hai tỉnh khác nhau thì đăng ký kết hôn ở đâu?", "expected_intent": "marriage_registration", "expected_target": ["where_to_apply", "authority"], "expect_clarify": false}
+{"id": "marriage-06", "question": "Đăng ký kết hôn online được không?", "expected_intent": "marriage_registration", "expected_target": ["how_to_apply", "conditions"], "expect_clarify": false}
+{"id": "marriage-07", "question": "Tôi muốn đăng ký kết hôn", "expected_intent": "marriage_registration", "expected_target": ["procedure", "required_documents"], "expect_clarify": null}
+{"id": "marriage-08", "question": "Đã kết hôn ở nước ngoài thì về Việt Nam ghi chú kết hôn thế nào?", "expected_intent": "marriage_registration", "expected_target": ["procedure", "how_to_apply", "required_documents"], "expect_clarify": false}
+{"id": "temp-01", "question": "Đăng ký tạm trú cần những giấy tờ gì?", "expected_intent": "temporary_residence", "expected_target": "required_documents", "expect_clarify": false}
+{"id": "temp-02", "question": "Thuê trọ ở Bình Thạnh thì chủ nhà hay tôi phải đi đăng ký tạm trú?", "expected_intent": "temporary_residence", "expected_target": ["eligibility", "conditions"], "expect_clarify": false}
+{"id": "temp-03", "question": "Gia hạn tạm trú như thế nào?", "expected_intent": "temporary_residence", "expected_target": ["procedure", "how_to_apply"], "expect_clarify": false}
+{"id": "temp-04", "question": "Không đăng ký tạm trú thì bị xử phạt bao nhiêu?", "expected_intent": "temporary_residence", "expected_target": ["other", "fee"], "expect_clarify": false}
+{"id": "temp-05", "question": "Đăng ký tạm trú trên VNeID làm sao?", "expected_intent": "temporary_residence", "expected_target": "how_to_apply", "expect_clarify": false}
+{"id": "temp-06", "question": "le phi dang ky tam tru bn", "expected_intent": "temporary_residence", "expected_target": "fee", "expect_clarify": false}
+{"id": "temp-07", "question": "thế nộp hồ sơ ở đâu?", "history": [{"role": "user", "content": "Tôi đang thuê nhà ở Đà Nẵng, muốn đăng ký tạm trú", "kind": ""}, {"role": "assistant", "content": "Để đăng ký tạm trú, bạn chuẩn bị tờ khai thay đổi thông tin cư trú và giấy tờ chứng minh chỗ ở hợp pháp (ví dụ hợp đồng thuê nhà).", "kind": "answer"}], "state": {"procedure_name": "đăng ký tạm trú", "domain": "cư trú", "province": "Đà Nẵng", "updated_at_turn": 2}, "turn_index": 2, "expected_intent": "temporary_residence", "expected_target": ["where_to_apply", "how_to_apply"], "expected_procedure_contains": ["tạm trú"], "expect_clarify": false}
+{"id": "temp-08", "question": "Tạm trú được tối đa bao lâu thì phải gia hạn?", "expected_intent": "temporary_residence", "expected_target": ["validity", "conditions"], "expect_clarify": false}
+{"id": "perm-01", "question": "Tôi muốn đăng ký thường trú.", "expected_intent": "permanent_residence", "expected_target": ["procedure", "required_documents"], "expect_clarify": true}
+{"id": "perm-02", "question": "Nhập hộ khẩu vào nhà chồng cần giấy tờ gì?", "expected_intent": "permanent_residence", "expected_target": "required_documents", "expect_clarify": false}
+{"id": "perm-03", "question": "Đăng ký thường trú vào nhà thuê được không?", "expected_intent": "permanent_residence", "expected_target": ["conditions", "eligibility"], "expect_clarify": false}
+{"id": "perm-04", "question": "Chuyển đi nơi khác thì có phải xóa đăng ký thường trú không?", "expected_intent": "permanent_residence", "expected_target": ["conditions", "procedure"], "expect_clarify": false}
+{"id": "perm-05", "question": "Sổ hộ khẩu giấy bây giờ còn dùng được không?", "expected_intent": "permanent_residence", "expected_target": ["validity", "conditions"], "expect_clarify": false}
+{"id": "perm-06", "question": "nhà tôi mới mua ở Hà Nội", "history": [{"role": "user", "content": "Tôi muốn đăng ký thường trú.", "kind": ""}, {"role": "assistant", "content": "Bạn muốn đăng ký thường trú vào chỗ ở nào (nhà thuộc sở hữu của bạn, nhà thuê/mượn hay nhà của người thân) và ở tỉnh/thành phố nào ạ?", "kind": "clarify"}], "state": {"procedure_name": "đăng ký thường trú", "domain": "cư trú", "updated_at_turn": 2}, "turn_index": 2, "expected_intent": "permanent_residence", "expected_target": ["procedure", "required_documents"], "expected_procedure_contains": ["thường trú"], "expect_clarify": false}
+{"id": "perm-07", "question": "Giấy xác nhận thông tin về cư trú xin ở đâu?", "expected_intent": ["permanent_residence", "temporary_residence", "other"], "expected_target": ["where_to_apply", "authority"], "expect_clarify": false}
+{"id": "perm-08", "question": "Con mới sinh đăng ký thường trú cùng lúc với khai sinh được không?", "expected_intent": ["birth_registration", "permanent_residence"], "expected_target": ["conditions", "procedure", "how_to_apply"], "expect_clarify": false}
+{"id": "misc-01", "question": "Làm căn cước cho con 10 tuổi cần gì?", "expected_intent": "identity_documents", "expected_target": "required_documents", "expect_clarify": false}
+{"id": "misc-02", "question": "Bị mất căn cước thì cấp lại thế nào?", "expected_intent": "identity_documents", "expected_target": ["procedure", "how_to_apply", "required_documents"], "expect_clarify": false}
+{"id": "misc-03", "question": "Làm hộ chiếu online như thế nào?", "expected_intent": "identity_documents", "expected_target": "how_to_apply", "expect_clarify": false}
+{"id": "misc-04", "question": "Thủ tục đăng ký hộ kinh doanh cá thể", "expected_intent": "business_registration", "expected_target": ["procedure", "required_documents"], "expect_clarify": false}
+{"id": "misc-05", "question": "Sang tên sổ đỏ khi mua đất cần giấy tờ gì?", "expected_intent": "land_administration", "expected_target": "required_documents", "expect_clarify": false}
+{"id": "misc-06", "question": "Rút bảo hiểm xã hội một lần cần những gì?", "expected_intent": "social_security", "expected_target": ["required_documents", "conditions"], "expect_clarify": false}
+{"id": "misc-07", "question": "Đăng ký mã số thuế cá nhân ở đâu?", "expected_intent": "tax", "expected_target": ["where_to_apply", "authority"], "expect_clarify": false}
+{"id": "misc-08", "question": "Xin cấp phiếu lý lịch tư pháp số 1", "expected_intent": "other", "expected_target": ["procedure", "required_documents"], "expect_clarify": false}
 {"id": "misc-09", "question": "Xin chào", "expected_intent": "chitchat", "expect_clarify": false}
 {"id": "misc-10", "question": "Cảm ơn bạn nhiều nha", "expected_intent": "chitchat", "expect_clarify": false}
-{"id": "misc-11", "question": "Viết giúp tôi một bài thơ về mùa thu", "expected_intent": "out_of_scope", "expect_clarify": false}
+{"id": "misc-11", "question": "Viết giúp tôi một bài thơ về mùa thu", "expected_intent": ["out_of_scope", "chitchat"], "expect_clarify": false, "note": "phai tu choi, khong duoc lam tho"}
 {"id": "misc-12", "question": "Hàng xóm xây lấn sang đất nhà tôi thì kiện ra tòa thế nào?", "expected_intent": ["out_of_scope", "land_administration"], "expect_clarify": null}
-{"id": "misc-13", "question": "cái đó làm ở đâu", "expected_intent": "unknown", "expect_clarify": true}
+{"id": "misc-13", "question": "cái đó làm ở đâu", "expected_intent": "unknown", "expected_target": ["where_to_apply", "unknown"], "expect_clarify": true}

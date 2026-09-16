@@ -28,7 +28,9 @@ window.Dev = (function () {
     let text = `+${e.at_ms}ms  ${e.kind}`;
     if (e.ms !== undefined) text += ` (${e.ms} ms)`;
     if (e.kind === "understand") {
-      text += `  intent=${e.intent}  gác=${e.gate}  → ${e.route}`;
+      text += `  intent=${e.intent}  mục tiêu=${e.target}  gác=${e.gate}  → ${e.route}`;
+      if (e.procedure) text += `  thủ tục=«${e.procedure}»`;
+      if (e.follow_up) text += "  (hỏi tiếp)";
       if ((e.missing_information || []).length) text += `  thiếu: ${e.missing_information.join("; ")}`;
       if ((e.search_queries || []).length) text += `  truy vấn: ${e.search_queries.join(" | ")}`;
     }
@@ -57,7 +59,9 @@ window.Dev = (function () {
     head.textContent = `#${t.id} · ${t.total_ms} ms · ${esc(t.question).slice(0, 48)}`;
     box.appendChild(head);
 
-    box.appendChild(row("Ý định", t.intent || "—"));
+    box.appendChild(row("Ý định / mục tiêu", `${t.intent || "—"} · ${t.target || "—"}`));
+    if (t.procedure) box.appendChild(row("Thủ tục", t.procedure));
+    if (t.target_in_evidence === false) box.appendChild(row("Cảnh báo", "nguồn KHÔNG nói về mục tiêu được hỏi"));
     if (t.standalone) box.appendChild(row("Câu hỏi đã làm rõ", t.standalone));
     box.appendChild(row("Kết quả", `${t.kind || "—"}${t.verdict ? " · " + t.verdict : ""}`));
     if ((t.queries || []).length) box.appendChild(row("Truy vấn MCP", t.queries.join("  |  ")));

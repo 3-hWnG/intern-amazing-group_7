@@ -71,6 +71,43 @@ CREATE TABLE IF NOT EXISTS evidence (
 );
 CREATE INDEX IF NOT EXISTS idx_evidence_msg ON evidence(message_id);
 
+-- Bối cảnh hội thoại có CẤU TRÚC cho câu hỏi nối tiếp ("vậy còn ... thì sao?").
+-- Đây là GIẢ THUYẾT hiện tại, không phải sự thật vĩnh viễn: mỗi lượt ghi đè, và
+-- quá STATE_MAX_AGE_TURNS lượt thì không dùng nữa.
+CREATE TABLE IF NOT EXISTS conversation_state (
+    conversation_id INTEGER PRIMARY KEY REFERENCES conversations(id) ON DELETE CASCADE,
+    domain          TEXT DEFAULT '',
+    procedure_name  TEXT DEFAULT '',
+    entities_json   TEXT DEFAULT '',
+    province        TEXT DEFAULT '',
+    ward            TEXT DEFAULT '',
+    last_target     TEXT DEFAULT '',
+    last_intent     TEXT DEFAULT '',
+    updated_at_turn INTEGER DEFAULT 0,
+    updated_at      TEXT NOT NULL
+);
+
+-- Nhật ký từng lượt: đủ để trả lời "câu trả lời sai này hỏng ở bước nào?"
+-- (ngữ cảnh / ý định / mục tiêu / truy vấn / truy hồi / sinh văn bản / kiểm chứng)
+CREATE TABLE IF NOT EXISTS turn_log (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    conversation_id INTEGER,
+    message_id      INTEGER,
+    created_at      TEXT NOT NULL,
+    model           TEXT DEFAULT '',
+    user_question   TEXT NOT NULL,
+    resolved_question TEXT DEFAULT '',
+    intent          TEXT DEFAULT '',
+    target          TEXT DEFAULT '',
+    procedure_name  TEXT DEFAULT '',
+    gate            TEXT DEFAULT '',
+    route           TEXT DEFAULT '',
+    kind            TEXT DEFAULT '',
+    verdict         TEXT DEFAULT '',
+    payload_json    TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_turnlog_conv ON turn_log(conversation_id, id);
+
 CREATE TABLE IF NOT EXISTS feedback (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
     message_id INTEGER NOT NULL REFERENCES messages(id) ON DELETE CASCADE,

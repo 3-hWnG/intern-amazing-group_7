@@ -25,11 +25,11 @@ from fastapi.responses import StreamingResponse
 
 from api.deps import current_user
 from api.schemas import ChatRequest, ConversationCreate, ConversationRename, FeedbackRequest
-from config import QUEUE_ENABLED
+from config import LLM_MODEL, QUEUE_ENABLED, TURN_LOG_ENABLED
 from core import llm, orchestrator, queue, summarizer
 from db import connection
-from db.repositories import (Conversations, Evidence, Feedback, JobLog, Messages,
-                             UserProfiles)
+from db.repositories import (ConversationState, Conversations, Evidence, Feedback,
+                             JobLog, Messages, TurnLog, UserProfiles)
 
 router = APIRouter()
 REPLAY_CHARS = 24
@@ -120,6 +120,37 @@ async def clear_profile(user: dict = Depends(current_user)):
 
 
 # --------------------------------------------------------------- chat ----
+def _log_turn(conv_id: int, message_id: int, question: str, result) -> None:
+    """Nhật ký đủ để truy nguyên: câu trả lời sai đến từ ngữ cảnh / ý định / mục
+    tiêu / truy vấn / truy hồi / sinh văn bản hay kiểm chứng?"""
+    pack = result.evidence or {}
+    TurnLog.add({
+        "conversation_id": conv_id, "message_id": message_id, "model": LLM_MODEL,
+        "user_question": question,
+        "resolved_question": result.intent.get("standalone_question", ""),
+        "intent": result.intent.get("intent", ""),
+        "target": result.intent.get("target", ""),
+        "procedure_name": result.intent.get("procedure", ""),
+        "gate": result.intent.get("gate", ""), "route": result.intent.get("route", ""),
+        "kind": result.kind, "verdict": result.verdict,
+        "follow_up": result.intent.get("follow_up"),
+        "entities": result.intent.get("entities", []),
+        "province": result.intent.get("province", ""),
+        "search_queries": pack.get("queries", []),
+        "transport": pack.get("transport", ""),
+        "evidence_error": pack.get("error", ""),
+        "target_in_evidence": result.target_in_evidence,
+        "sources": [{"id": s.get("id"), "title": s.get("title"), "url": s.get("url"),
+                     "domain": s.get("domain"), "trust": s.get("trust"),
+                     "score": s.get("score"), "fetched": s.get("fetched")}
+                    for s in (pack.get("sources") or [])],
+        "draft": (result.draft or "")[:4000],
+        "final_text": (result.text or "")[:4000],
+        "verification": result.verification,
+        "timings": result.timings,
+    })
+
+
 def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit) -> None:
     """Chạy trong worker của hàng đợi (luồng riêng): ngữ cảnh -> orchestrator -> lưu."""
     def send(**payload) -> None:
@@ -130,10 +161,13 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit) 
     history = [{"role": m["role"], "content": m["content"], "kind": m.get("kind") or ""}
                for m in recent if m["id"] != user_msg_id]
     profile = UserProfiles.get(user_id)
+    state = ConversationState.get(conv_id)
+    turn_index = len(recent)
 
     result = orchestrator.run_turn(
         orchestrator.TurnInput(question=question, history=history, summary=summary,
-                               profile=profile, conversation_id=conv_id),
+                               profile=profile, state=state, turn_index=turn_index,
+                               conversation_id=conv_id),
         status=lambda text: send(type="status", text=text))
 
     message_id = Messages.add(conv_id, "assistant", result.text, kind=result.kind,
@@ -144,6 +178,10 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit) 
         Evidence.add(message_id, result.evidence.get("question", ""), result.evidence)
     if result.profile_update:
         profile = UserProfiles.update(user_id, **result.profile_update)
+    if result.state_update:
+        ConversationState.save(conv_id, **result.state_update)
+    if TURN_LOG_ENABLED:
+        _log_turn(conv_id, message_id, question, result)
 
     for i in range(0, len(result.text), REPLAY_CHARS):
         send(type="delta", text=result.text[i:i + REPLAY_CHARS])

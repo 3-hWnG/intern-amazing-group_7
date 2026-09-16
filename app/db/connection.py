@@ -74,9 +74,9 @@ async def run(fn, *args, **kwargs):
 def reset_database() -> None:
     """Xoá toàn bộ dữ liệu, giữ lược đồ. Chỉ dùng cho công cụ phát triển."""
     conn = get_conn()
-    for table in ["feedback", "evidence", "messages", "document_chunks", "documents",
-                  "conversations", "user_profile", "auth_sessions", "login_attempts",
-                  "job_log", "users"]:
+    for table in ["feedback", "evidence", "turn_log", "messages", "document_chunks",
+                  "documents", "conversation_state", "conversations", "user_profile",
+                  "auth_sessions", "login_attempts", "job_log", "users"]:
         conn.execute(f"DELETE FROM {table}")
     conn.execute("DELETE FROM sqlite_sequence")
     conn.commit()

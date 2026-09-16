@@ -284,6 +284,84 @@ class Evidence:
             return None
 
 
+# ------------------------------------------------- bối cảnh hội thoại ----
+class ConversationState:
+    """Thủ tục đang nói tới — GIẢ THUYẾT, không phải sự thật vĩnh viễn."""
+
+    @staticmethod
+    def get(conversation_id: int) -> dict:
+        row = get_conn().execute(
+            "SELECT domain, procedure_name, entities_json, province, ward, last_target,"
+            " last_intent, updated_at_turn FROM conversation_state WHERE conversation_id = ?",
+            (conversation_id,)).fetchone()
+        if row is None:
+            return {}
+        state = dict(row)
+        try:
+            state["entities"] = json.loads(state.pop("entities_json") or "[]")
+        except Exception:
+            state["entities"] = []
+        return state
+
+    @staticmethod
+    def save(conversation_id: int, *, domain: str = "", procedure_name: str = "",
+             entities=None, province: str = "", ward: str = "", last_target: str = "",
+             last_intent: str = "", turn_index: int = 0) -> None:
+        conn = get_conn()
+        conn.execute(
+            "INSERT INTO conversation_state(conversation_id, domain, procedure_name,"
+            " entities_json, province, ward, last_target, last_intent, updated_at_turn,"
+            " updated_at) VALUES (?,?,?,?,?,?,?,?,?,?)"
+            " ON CONFLICT(conversation_id) DO UPDATE SET domain = excluded.domain,"
+            " procedure_name = excluded.procedure_name, entities_json = excluded.entities_json,"
+            " province = excluded.province, ward = excluded.ward,"
+            " last_target = excluded.last_target, last_intent = excluded.last_intent,"
+            " updated_at_turn = excluded.updated_at_turn, updated_at = excluded.updated_at",
+            (conversation_id, domain[:80], procedure_name[:160],
+             json.dumps(entities or [], ensure_ascii=False), province[:120], ward[:120],
+             last_target[:40], last_intent[:40], int(turn_index), _now()))
+        conn.commit()
+
+
+# ------------------------------------------------------ nhật ký từng lượt ----
+class TurnLog:
+    """Một dòng cho mỗi lượt hỏi — đủ để truy nguyên câu trả lời sai về đúng bước."""
+
+    FIELDS = ("conversation_id", "message_id", "model", "user_question",
+              "resolved_question", "intent", "target", "procedure_name", "gate",
+              "route", "kind", "verdict")
+
+    @staticmethod
+    def add(payload: dict) -> None:
+        values = [payload.get(f) if f in ("conversation_id", "message_id")
+                  else str(payload.get(f) or "")[:2000] for f in TurnLog.FIELDS]
+        conn = get_conn()
+        conn.execute(
+            "INSERT INTO turn_log(conversation_id, message_id, model, user_question,"
+            " resolved_question, intent, target, procedure_name, gate, route, kind,"
+            " verdict, created_at, payload_json) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
+            (*values, _now(), json.dumps(payload, ensure_ascii=False)))
+        conn.commit()
+
+    @staticmethod
+    def recent(limit: int = 200) -> list[dict]:
+        rows = get_conn().execute(
+            "SELECT * FROM turn_log ORDER BY id DESC LIMIT ?", (limit,)).fetchall()
+        out = []
+        for r in rows:
+            item = dict(r)
+            try:
+                item["payload"] = json.loads(item.pop("payload_json") or "{}")
+            except Exception:
+                item["payload"] = {}
+            out.append(item)
+        return out
+
+    @staticmethod
+    def count() -> int:
+        return get_conn().execute("SELECT COUNT(*) c FROM turn_log").fetchone()["c"]
+
+
 # ------------------------------------------------------------- feedback ----
 class Feedback:
     @staticmethod

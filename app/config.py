@@ -137,6 +137,11 @@ BLOCKED_DOMAINS = _list("BLOCKED_DOMAINS",
 # ==========================================================================
 VERIFIER_ENABLED = _bool("VERIFIER_ENABLED", True)
 MAX_VERIFY_RETRIES = _int("MAX_VERIFY_RETRIES", 1)
+# Tầng B: MỘT câu hỏi hẹp "bản nháp có trả lời đúng khía cạnh được hỏi không?"
+VERIFY_TARGET_CHECK = _bool("VERIFY_TARGET_CHECK", True)
+# Tầng C chặt: tên cơ quan / tên văn bản phải có trong nguồn, và con số phải nằm
+# trong ĐOẠN nói về đúng mục tiêu (không phải "có xuất hiện đâu đó trong pack").
+VERIFY_GROUNDING_STRICT = _bool("VERIFY_GROUNDING_STRICT", True)
 VERIFY_FAIL_POLICY = _str("VERIFY_FAIL_POLICY", "warn")   # warn | refuse
 
 # ==========================================================================
@@ -147,6 +152,15 @@ MAX_CONTEXT_TOKENS = _int("MAX_CONTEXT_TOKENS", 3000)     # vượt -> AI tóm t
 SUMMARY_KEEP_RECENT = _int("SUMMARY_KEEP_RECENT", 5)      # số LƯỢT (x2 tin nhắn) giữ nguyên văn
 TOKENS_PER_SYLLABLE = 1.4                                 # ước lượng thô cho tiếng Việt
 PROFILE_MEMORY_ENABLED = _bool("PROFILE_MEMORY_ENABLED", True)
+
+# Bối cảnh hội thoại có cấu trúc (thủ tục đang nói tới). Là GIẢ THUYẾT gợi ý cho
+# mô hình, không phải ràng buộc: quá số lượt này thì bỏ qua để chủ đề cũ không
+# bám sang câu hỏi mới.
+STATE_MAX_AGE_TURNS = _int("STATE_MAX_AGE_TURNS", 6)
+
+# Nhật ký từng lượt (ý định, mục tiêu, truy vấn, nguồn, bản nháp, kết quả kiểm
+# chứng) để truy nguyên câu trả lời sai đến từ bước nào. Chỉ nằm trong SQLite cục bộ.
+TURN_LOG_ENABLED = _bool("TURN_LOG_ENABLED", True)
 
 AI_DISCLOSURE = "Trợ lý ảo (AI) - thông tin tham khảo, không thay thế cán bộ một cửa."
 
