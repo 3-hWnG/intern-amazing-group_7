@@ -24,6 +24,30 @@ window.Dev = (function () {
   }
 
   /* ---------------- vết chạy ---------------- */
+  function describe(e) {
+    let text = `+${e.at_ms}ms  ${e.kind}`;
+    if (e.ms !== undefined) text += ` (${e.ms} ms)`;
+    if (e.kind === "understand") {
+      text += `  intent=${e.intent}  gác=${e.gate}  → ${e.route}`;
+      if ((e.missing_information || []).length) text += `  thiếu: ${e.missing_information.join("; ")}`;
+      if ((e.search_queries || []).length) text += `  truy vấn: ${e.search_queries.join(" | ")}`;
+    }
+    if (e.kind === "search" || e.kind === "research") {
+      text += `  ${e.transport || ""}  ${e.n_sources} nguồn`;
+      if (e.query) text += `  «${e.query}»`;
+      if (e.error) text += `  — ${e.error}`;
+    }
+    if (e.kind === "verify") {
+      text += `  lần ${e.attempt}: ${e.verdict}`;
+      if ((e.issues || []).length) text += `  — ${e.issues.join("; ")}`;
+      if (e.explanation) text += `  (${e.explanation})`;
+    }
+    if (e.chars !== undefined) text += `  ${e.chars} ký tự`;
+    if (e.missing) text += `  thiếu: ${e.missing.join("; ")}`;
+    if (e.note) text += `  — ${e.note}`;
+    return text;
+  }
+
   function renderTrace(t) {
     const box = document.createElement("div");
     box.className = "dev-card";
@@ -33,36 +57,30 @@ window.Dev = (function () {
     head.textContent = `#${t.id} · ${t.total_ms} ms · ${esc(t.question).slice(0, 48)}`;
     box.appendChild(head);
 
-    box.appendChild(row("Nguồn bằng chứng", t.kind || "—"));
-    box.appendChild(row("Nhãn / độ tin cậy", `${t.tier || "—"} · ${t.confidence ?? "—"}`));
-    if (t.facet) box.appendChild(row("Trường được hỏi", t.facet));
-    if (t.current) box.appendChild(row("Thủ tục trong ngữ cảnh", `${t.current[1]} (id=${t.current[0]})`));
-    box.appendChild(row("Chuỗi công cụ", (t.tools || []).join("  →  ") || "—"));
-    if (t.factcheck) box.appendChild(row("Kiểm chứng", t.factcheck));
-    if (t.sources && t.sources.length) box.appendChild(row("Nguồn", t.sources.join(", ")));
-    box.appendChild(row("Chế độ trả lời", t.mode === "text" ? "sinh xong mới phát" : "stream"));
+    box.appendChild(row("Ý định", t.intent || "—"));
+    if (t.standalone) box.appendChild(row("Câu hỏi đã làm rõ", t.standalone));
+    box.appendChild(row("Kết quả", `${t.kind || "—"}${t.verdict ? " · " + t.verdict : ""}`));
+    if ((t.queries || []).length) box.appendChild(row("Truy vấn MCP", t.queries.join("  |  ")));
+    if ((t.sources || []).length) box.appendChild(row("Nguồn được trích", t.sources.join(", ")));
+    if (t.timings) {
+      box.appendChild(row("Thời gian (ms)",
+        Object.entries(t.timings).map(([k, v]) => `${k} ${v}`).join(" · ")));
+    }
 
     (t.events || []).forEach((e) => {
-      let text = `+${e.at_ms}ms  ${e.kind}`;
-      if (e.tool) text += `  ${e.tool}(${esc(e.query).slice(0, 30)})`;
-      if (e.kind === "tool") text += `  ${e.ok ? "ok" : "HỎNG"} conf=${e.confidence}`;
-      if (e.title) text += `  «${e.title}»`;
-      if (e.note) text += `  — ${e.note}`;
-      if (e.kind === "sticky") text += `  ← quay lại «${e.title}» (mới chỉ ${e.fresh_confidence})`;
-      if (e.problem) text += `  — ${e.problem}`;
       const d = document.createElement("div");
-      d.className = "dev-ev" + (e.ok === false || e.kind === "web_failed" ? " bad" : "")
-        + (e.kind === "sticky" ? " good" : "");
-      d.textContent = text;
+      d.className = "dev-ev"
+        + (e.verdict === "FAIL" || e.kind === "error" || e.error ? " bad" : "")
+        + (e.verdict === "PASS" ? " good" : "");
+      d.textContent = describe(e);
       box.appendChild(d);
+      if (e.diagnostics) {
+        const pre = document.createElement("pre");
+        pre.className = "dev-pre";
+        pre.textContent = e.diagnostics;
+        box.appendChild(pre);
+      }
     });
-
-    if (t.diagnostics) {
-      const pre = document.createElement("pre");
-      pre.className = "dev-pre";
-      pre.textContent = t.diagnostics;
-      box.appendChild(pre);
-    }
     return box;
   }
 
@@ -80,28 +98,33 @@ window.Dev = (function () {
       }
       data.traces.forEach((t) => host.appendChild(renderTrace(t)));
     } catch (e) {
-      host.innerHTML = `<p class="small" style="color:var(--danger)">${esc(e.message)}</p>`;
+      const p = document.createElement("p");
+      p.className = "small";
+      p.style.color = "var(--danger)";
+      p.textContent = e.message;
+      host.appendChild(p);
     }
   }
 
-  /* ---------------- chẩn đoán tra web ---------------- */
+  /* ---------------- chẩn đoán tìm kiếm qua MCP ---------------- */
   async function testWeb() {
     const out = $("dev-web-out");
     const q = ($("dev-web-q").value || "").trim();
     out.textContent = "Đang tra…";
     try {
       const r = await API.post("/api/dev/websearch", { query: q });
+      const m = r.mcp || {};
       const lines = [
-        `CHẨN ĐOÁN: ${r.diagnosis}`,
-        r.fix ? `CÁCH SỬA : ${r.fix}` : "",
+        `KẾT QUẢ : ${r.ok ? "CHẠY TỐT" : "HỎNG"}${r.error ? " — " + r.error : ""}`,
+        `MCP     : ${m.transport} · kết nối=${m.connected} · công cụ=${(m.tools || []).join(", ")}`
+          + (m.last_error ? ` · lỗi gần nhất: ${m.last_error}` : ""),
+        `đường đi: ${r.transport || "—"} · nhà cung cấp: ${r.provider} · ${r.elapsed_ms} ms`,
         "",
-        `thư viện : ${r.library || r.library_error}`,
-        `bật      : ${r.enabled}   strict: ${r.strict}   timeout: ${r.timeout}s`,
-        `backend  : ${(r.backends || []).join(", ")}`,
+        ...(r.diagnostics || []),
         "",
-        r.report || "",
+        ...(r.results || []).map((x, i) => `${i + 1}. [${x.trust}] ${x.title}\n   ${x.url}`),
       ];
-      out.textContent = lines.filter(Boolean).join("\n");
+      out.textContent = lines.join("\n");
       out.className = "dev-pre " + (r.ok ? "good" : "bad");
     } catch (e) {
       out.textContent = "Lỗi gọi API: " + e.message;
@@ -205,9 +228,11 @@ window.Dev = (function () {
   async function stats() {
     try {
       const s = await API.get("/api/dev/stats");
+      const r = s.ratings || {};
       const el = $("dev-stats");
       if (el) el.textContent =
-        `${s.users} tài khoản · ${s.conversations} hội thoại · ${s.messages} tin nhắn`;
+        `${s.users} tài khoản · ${s.conversations} hội thoại · ${s.messages} tin nhắn · ` +
+        `phản hồi: 👍 ${r.phu_hop || 0} / 👎 ${r.khong_phu_hop || 0} / chưa đánh giá ${r.unrated || 0}`;
     } catch (_) { /* im lặng */ }
   }
 

@@ -1,0 +1,80 @@
+# Chạy toàn bộ hệ thống:
+#   copy .env.example .env          (chỉnh LLM_MODEL nếu muốn, ví dụ qwen2.5:3b)
+#   docker compose up --build       -> http://localhost:8000
+#
+# Có GPU NVIDIA:
+#   docker compose -f docker-compose.yml -f docker-compose.gpu.yml up --build
+#
+# Đã có Ollama chạy sẵn trên máy (không dùng container ollama):
+#   đặt OLLAMA_HOST_DOCKER=http://host.docker.internal:11434 trong .env
+#   docker compose up --build --no-deps app mcp-search
+name: tthc-assistant
+
+services:
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - ollama:/root/.ollama
+    ports:
+      - "11434:11434"
+    restart: unless-stopped
+
+  # Tải mô hình một lần rồi thoát
+  ollama-pull:
+    image: ollama/ollama:latest
+    depends_on:
+      - ollama
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        until ollama list >/dev/null 2>&1; do sleep 1; done
+        ollama pull ${LLM_MODEL:-qwen2.5:1.5b}
+        if [ -n "${VERIFIER_MODEL:-}" ]; then ollama pull ${VERIFIER_MODEL:-}; fi
+    restart: "no"
+
+  # MCP search server (Streamable HTTP): tra web -> Evidence Pack
+  mcp-search:
+    build: .
+    command: ["python", "app/mcp_search/server.py", "--transport", "http",
+              "--host", "0.0.0.0", "--port", "8765"]
+    env_file:
+      - path: .env
+        required: false
+    ports:
+      - "8765:8765"
+    restart: unless-stopped
+
+  # Backend API + worker hàng đợi + giao diện HTML
+  app:
+    build: .
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      APP_HOST: 0.0.0.0
+      RUNTIME_DIR: /data
+      OLLAMA_HOST: ${OLLAMA_HOST_DOCKER:-http://ollama:11434}
+      MCP_TRANSPORT: http
+      MCP_SERVER_URL: http://mcp-search:8765/mcp
+    ports:
+      - "8000:8000"
+    volumes:
+      - appdata:/data
+      - ./finetune:/srv/finetune:ro
+    depends_on:
+      mcp-search:
+        condition: service_started
+      ollama-pull:
+        condition: service_completed_successfully
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/health', timeout=4)"]
+      interval: 30s
+      timeout: 6s
+      start_period: 60s
+    restart: unless-stopped
+
+volumes:
+  ollama:
+  appdata:

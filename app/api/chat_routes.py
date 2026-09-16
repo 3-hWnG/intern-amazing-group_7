@@ -1,11 +1,16 @@
 """Hội thoại nhiều cửa sổ + gửi câu hỏi qua hàng đợi.
 
-Đây là nơi RÁP: lấy ngữ cảnh từ DB -> dựng plan (thuần nghiệp vụ) -> đẩy vào
-hàng đợi -> stream chữ về -> lưu lại. File này không chứa logic truy hồi.
+Đây là nơi RÁP: lưu câu hỏi -> đẩy MỘT job vào hàng đợi -> job đọc ngữ cảnh,
+chạy orchestrator, lưu câu trả lời + Evidence Pack -> stream sự kiện về.
+Mọi lời gọi LLM của một lượt (kể cả tóm tắt ngữ cảnh) nằm TRONG job, nên hàng
+đợi đảm bảo mô hình xử lý từng tin nhắn một.
 
-v6: bộ điều phối chọn theo config.ORCHESTRATOR
-    "agent" (mặc định) -> core/agent.py    mô hình tự chọn công cụ
-    "tiers"            -> core/pipeline.py luồng cũ, giữ để so sánh A/B
+Luồng trả về là NDJSON, mỗi dòng một sự kiện:
+    {"type": "queue",  "position": 2, "text": "..."}
+    {"type": "status", "text": "Đang tra cứu nguồn chính thống qua MCP…"}
+    {"type": "delta",  "text": "..."}          câu trả lời ĐÃ kiểm chứng, phát theo mẩu
+    {"type": "done",   "message_id": 12, "kind": "answer", "verdict": "PASS", "sources": [...]}
+    {"type": "error",  "text": "..."}
 """
 
 from __future__ import annotations
@@ -13,20 +18,21 @@ from __future__ import annotations
 import asyncio
 import json
 import time
+import traceback
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
 
 from api.deps import current_user
-from api.schemas import (ChatRequest, ConversationCreate, ConversationRename,
-                         FeedbackRequest)
-from config import (AGENT_SHOW_TOOL_TRACE, ORCHESTRATOR, QUEUE_ENABLED,
-                    REPLAY_CHUNK_CHARS)
-from core import formatter, llm, queue, summarizer
+from api.schemas import ChatRequest, ConversationCreate, ConversationRename, FeedbackRequest
+from config import QUEUE_ENABLED
+from core import llm, orchestrator, queue, summarizer
 from db import connection
-from db.repositories import Conversations, Feedback, JobLog, Messages
+from db.repositories import (Conversations, Evidence, Feedback, JobLog, Messages,
+                             UserProfiles)
 
 router = APIRouter()
+REPLAY_CHARS = 24
 
 
 def _title_from(question: str) -> str:
@@ -34,30 +40,15 @@ def _title_from(question: str) -> str:
     return " ".join(words[:8])[:120] or "Cuộc trò chuyện mới"
 
 
+def _event(**payload) -> str:
+    return json.dumps(payload, ensure_ascii=False) + "\n"
+
+
 async def _owned(conv_id: int, user: dict) -> dict:
     conv = await connection.run(Conversations.owned_by, conv_id, user["id"])
     if conv is None:
         raise HTTPException(status_code=404, detail="Không tìm thấy cuộc trò chuyện.")
     return conv
-
-
-def _ascii(value: str) -> str:
-    """Header HTTP chỉ mã hoá được latin-1 — bỏ dấu trước khi nhét vào.
-
-    Không làm bước này thì một câu tóm tắt kiểm chứng có dấu tiếng Việt
-    (\"không đạt...\") sẽ làm uvicorn ném UnicodeEncodeError và trả 500 giữa
-    lúc đang stream. Thân câu trả lời vẫn giữ nguyên tiếng Việt có dấu.
-    """
-    from domain.text import fold
-    folded = fold(value or "")
-    return "".join(c for c in folded if 32 <= ord(c) < 127)[:400]
-
-
-def _replay(text: str):
-    """Cắt câu trả lời đã kiểm chứng thành mẩu nhỏ để giữ hiệu ứng gõ chữ."""
-    size = max(1, int(REPLAY_CHUNK_CHARS))
-    for i in range(0, len(text), size):
-        yield text[i:i + size]
 
 
 # ------------------------------------------------------- CRUD hội thoại ----
@@ -80,9 +71,12 @@ async def get_conversation(conv_id: int, user: dict = Depends(current_user)):
             m["sources"] = json.loads(m["sources"] or "[]")
         except Exception:
             m["sources"] = []
+        m["has_evidence"] = bool(m["has_evidence"])
+        m.pop("intent_json", None)
     from db.repositories import Documents
     documents = await connection.run(Documents.list_for_conversation, conv_id)
-    return {"conversation": conv, "messages": messages, "documents": documents}
+    return {"conversation": {k: conv[k] for k in ("id", "title", "created_at", "updated_at")},
+            "messages": messages, "documents": documents}
 
 
 @router.patch("/api/conversations/{conv_id}")
@@ -96,8 +90,6 @@ async def rename_conversation(conv_id: int, body: ConversationRename,
 @router.delete("/api/conversations/{conv_id}")
 async def delete_conversation(conv_id: int, user: dict = Depends(current_user)):
     await _owned(conv_id, user)
-    # SQLite tự cascade documents/document_chunks, nhưng ChromaDB thì KHÔNG —
-    # phải tự gỡ vector của tệp đính kèm, không thì để lại rác vĩnh viễn.
     from core import resources
     from db.repositories import Documents
     for doc in await connection.run(Documents.list_for_conversation, conv_id):
@@ -106,141 +98,109 @@ async def delete_conversation(conv_id: int, user: dict = Depends(current_user)):
     return {"ok": True}
 
 
-# --------------------------------------------------------- dựng kế hoạch ----
-def _plan_with_agent(conv_id: int, question: str, history: list,
-                     force_web: bool = False):
-    """Chạy trong luồng riêng: manifest + ngữ cảnh -> vòng lặp agent."""
-    from core import agent, resources
-    from db.repositories import Conversations as Conv
+@router.get("/api/messages/{message_id}/evidence")
+async def message_evidence(message_id: int, user: dict = Depends(current_user)):
+    """Evidence Pack đã dùng để trả lời — chứng minh RAG ngay trên giao diện."""
+    pack = await connection.run(Evidence.for_message, message_id, user["id"])
+    if pack is None:
+        raise HTTPException(status_code=404, detail="Tin nhắn này không có Evidence Pack.")
+    return {"evidence": pack, "model": llm.model_info()}
 
-    manifest = resources.manifest(conv_id)
-    allow_attachments = resources.has_attachments(conv_id)
 
-    current = None
-    row = Conv.by_id(conv_id)
-    if row and row.get("last_row_id") is not None and int(row["last_row_id"]) >= 0:
-        from domain.records import by_row_id
-        record = by_row_id().get(int(row["last_row_id"]))
-        if record:
-            current = (int(row["last_row_id"]), record.ten)
+# ------------------------------------------------ bộ nhớ dài hạn ----
+@router.get("/api/profile")
+async def get_profile(user: dict = Depends(current_user)):
+    return {"profile": await connection.run(UserProfiles.get, user["id"])}
 
-    return agent.build(question, history=history, conversation_id=conv_id,
-                       manifest=manifest, current=current,
-                       allow_attachments=allow_attachments,
-                       force_web=force_web)
+
+@router.delete("/api/profile")
+async def clear_profile(user: dict = Depends(current_user)):
+    await connection.run(UserProfiles.clear, user["id"])
+    return {"ok": True}
 
 
 # --------------------------------------------------------------- chat ----
+def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit) -> None:
+    """Chạy trong worker của hàng đợi (luồng riêng): ngữ cảnh -> orchestrator -> lưu."""
+    def send(**payload) -> None:
+        emit(_event(**payload))
+
+    send(type="status", text="Đang đọc lại ngữ cảnh cuộc trò chuyện…")
+    summary, recent = summarizer.build_context(conv_id)
+    history = [{"role": m["role"], "content": m["content"], "kind": m.get("kind") or ""}
+               for m in recent if m["id"] != user_msg_id]
+    profile = UserProfiles.get(user_id)
+
+    result = orchestrator.run_turn(
+        orchestrator.TurnInput(question=question, history=history, summary=summary,
+                               profile=profile, conversation_id=conv_id),
+        status=lambda text: send(type="status", text=text))
+
+    message_id = Messages.add(conv_id, "assistant", result.text, kind=result.kind,
+                              verdict=result.verdict, sources=result.sources,
+                              intent=result.intent,
+                              token_estimate=summarizer.estimate_tokens(result.text))
+    if result.evidence is not None:
+        Evidence.add(message_id, result.evidence.get("question", ""), result.evidence)
+    if result.profile_update:
+        profile = UserProfiles.update(user_id, **result.profile_update)
+
+    for i in range(0, len(result.text), REPLAY_CHARS):
+        send(type="delta", text=result.text[i:i + REPLAY_CHARS])
+        time.sleep(0.006)                       # giữ hiệu ứng gõ chữ
+    send(type="done", message_id=message_id, kind=result.kind, verdict=result.verdict,
+         sources=result.sources, has_evidence=result.evidence is not None,
+         intent=result.intent.get("intent", ""), timings=result.timings, profile=profile)
+
+
 @router.post("/api/conversations/{conv_id}/chat")
 async def chat(conv_id: int, body: ChatRequest, user: dict = Depends(current_user)):
-    conv = await _owned(conv_id, user)
+    await _owned(conv_id, user)
     question = (body.text or "").strip()
     if not question:
         raise HTTPException(status_code=400, detail="Câu hỏi trống.")
 
-    # 1. đặt tên hội thoại theo câu hỏi đầu tiên
-    existing = await connection.run(Messages.list_for, conv_id)
-    if not existing:
+    if not await connection.run(Messages.list_for, conv_id):
         await connection.run(Conversations.rename, conv_id, user["id"], _title_from(question))
-
-    # 2. lưu câu hỏi
-    await connection.run(Messages.add, conv_id, "user", question,
-                         token_estimate=summarizer.estimate_tokens(question))
-
-    # 3. lấy ngữ cảnh (tóm tắt nếu quá dài)
-    summary, recent = await connection.run(summarizer.build_context, conv_id)
-    history = summarizer.as_history(summary, recent[:-1])   # bỏ chính câu vừa hỏi
-
-    # 4. dựng kế hoạch trả lời
-    if ORCHESTRATOR == "agent":
-        plan = await asyncio.to_thread(_plan_with_agent, conv_id, question,
-                                       history, bool(body.force_web))
-    else:
-        from core import pipeline
-        pending = await connection.run(Conversations.take_pending, conv_id)
-        last_title = await connection.run(Conversations.last_procedure_title, conv_id)
-        plan = await asyncio.to_thread(pipeline.build, question,
-                                       pending=pending, history=history,
-                                       context_hint=last_title)
-        if plan.pending_to_set is not None:
-            await connection.run(Conversations.set_pending, conv_id, plan.pending_to_set)
-
-    # Ghi nhớ thủ tục vừa nói tới. Ở luồng agent đây là NGỮ CẢNH đưa cho mô
-    # hình cân nhắc (kèm row_id để nó gọi get_procedure), không phải chuỗi bị
-    # ghép cứng vào câu hỏi như bản v5.
-    if getattr(plan, "top_row_id", None) is not None:
-        await connection.run(Conversations.set_last_row, conv_id, plan.top_row_id)
-
-    # 5. hàm sinh chữ — worker của hàng đợi chạy hàm này trong luồng riêng.
-    #    `collected` CHỈ chứa phần thân câu trả lời. Footer (nhãn + miễn trừ) là
-    #    phần TRÌNH BÀY: gửi cho người dùng nhưng KHÔNG lưu vào DB, nếu lưu nó
-    #    lọt vào lịch sử và mô hình chép lại nguyên văn bản ghi cũ.
-    collected: list[str] = []
+    user_msg_id = await connection.run(Messages.add, conv_id, "user", question,
+                                       token_estimate=summarizer.estimate_tokens(question))
 
     def produce(emit):
-        if plan.text is not None:
-            collected.append(plan.text)
-            for piece in _replay(plan.text):
-                emit(piece)
-        else:
-            for chunk in llm.stream_chat(plan.system, plan.user, plan.history):
-                collected.append(chunk)
-                emit(chunk)
-        emit(formatter.footer(plan.tier, plan.sources))    # KHÔNG vào collected
+        try:
+            _run_job(conv_id, user["id"], user_msg_id, question, emit)
+        except Exception as exc:
+            traceback.print_exc()
+            emit(_event(type="error", text=f"Lỗi xử lý: {exc}"))
 
-    headers = {
-        "X-Tier": plan.tier.value,
-        "X-Confidence": f"{plan.confidence:.3f}",
-        "X-Sources": _ascii(", ".join(plan.sources)),
-        "X-Factcheck": _ascii(plan.factcheck_summary),
-        "X-Conversation-Id": str(conv_id),
-        "X-Evidence": _ascii(getattr(plan, "kind", "")),
-        "X-Orchestrator": ORCHESTRATOR,
-    }
-    if AGENT_SHOW_TOOL_TRACE and getattr(plan, "steps", None):
-        headers["X-Tools"] = _ascii(" | ".join(plan.steps))
+    headers = {"X-Conversation-Id": str(conv_id), "Cache-Control": "no-cache"}
 
     if not QUEUE_ENABLED:
         async def direct():
-            for chunk in _sync_iter(produce):
+            chunks: list[str] = []
+            await asyncio.to_thread(produce, chunks.append)
+            for chunk in chunks:
                 yield chunk
-            await _persist(conv_id, plan, collected, 0, 0, 0)
-        return StreamingResponse(direct(), media_type="text/plain", headers=headers)
+        return StreamingResponse(direct(), media_type="application/x-ndjson", headers=headers)
 
     try:
         job = queue.manager.submit(produce)
     except queue.QueueFull as exc:
         raise HTTPException(status_code=503, detail=str(exc))
-
     headers["X-Queue-Position"] = str(job.position)
 
     async def body_stream():
         if job.position > 0:
-            yield f"_[Đang xếp hàng — còn {job.position} người trước bạn]_\n\n"
+            yield _event(type="queue", position=job.position,
+                         text=f"Đang xếp hàng — còn {job.position} lượt trước bạn…")
         async for chunk in queue.manager.stream(job):
-            yield chunk
+            # thông báo lỗi/timeout của hàng đợi là chữ thô -> gói lại thành sự kiện
+            yield chunk if chunk.startswith("{") else _event(type="error", text=chunk.strip())
         wait_ms = (job.started_at - job.enqueued_at) * 1000 if job.started_at else 0
         proc_ms = (job.finished_at - job.started_at) * 1000 if job.finished_at else 0
-        await _persist(conv_id, plan, collected, wait_ms, proc_ms, job.position)
+        await connection.run(JobLog.add, user["id"], conv_id, job.error or "done",
+                             wait_ms, proc_ms, job.position)
 
-    return StreamingResponse(body_stream(), media_type="text/plain", headers=headers)
-
-
-def _sync_iter(produce):
-    """Chạy producer đồng bộ và gom chữ (dùng khi TẮT hàng đợi)."""
-    out: list[str] = []
-    produce(out.append)
-    return out
-
-
-async def _persist(conv_id, plan, collected, wait_ms, proc_ms, position):
-    answer = "".join(collected)
-    await connection.run(
-        Messages.add, conv_id, "assistant", answer,
-        tier=plan.tier.value, confidence=plan.confidence,
-        sources=plan.sources, factcheck=plan.factcheck_summary,
-        token_estimate=summarizer.estimate_tokens(answer))
-    await connection.run(JobLog.add, None, conv_id, "done", wait_ms, proc_ms, position)
+    return StreamingResponse(body_stream(), media_type="application/x-ndjson", headers=headers)
 
 
 # ----------------------------------------------------------- phản hồi ----

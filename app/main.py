@@ -1,10 +1,11 @@
-"""Điểm khởi chạy: ráp FastAPI, nạp model, khởi động hàng đợi và CSDL."""
+"""Điểm khởi chạy: ráp FastAPI, mở CSDL, kết nối MCP, khởi động hàng đợi."""
 
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import asyncio
 import traceback
 from contextlib import asynccontextmanager
 
@@ -12,63 +13,55 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from config import (ATTACHMENTS_ENABLED, DEV_TOOLS_ENABLED, HOST,
-                    ORCHESTRATOR, PORT, QUEUE_ENABLED, RETENTION_DAYS,
-                    STATIC_DIR, USE_LEXICAL)
+from config import (ATTACHMENTS_ENABLED, DB_PATH, DEV_TOOLS_ENABLED, HOST, LLM_MODEL,
+                    OLLAMA_HOST, PORT, QUEUE_ENABLED, RETENTION_DAYS, SEARCH_PROVIDER,
+                    STATIC_DIR, VERIFIER_ENABLED, VERIFIER_MODEL)
 
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    from core import queue, vectorstore
+    from core import llm, mcp_client, queue
     from db import connection
     from db.repositories import AuthSessions, purge_old
-    from domain.records import get_procedures
 
     print("Đang khởi động...")
     try:
         connection.init_db()
-        print("  - CSDL: sẵn sàng")
+        print(f"  - CSDL: sẵn sàng ({DB_PATH})")
         AuthSessions.purge_expired()
         removed = purge_old(RETENTION_DAYS)
         if removed:
             print(f"  - đã xoá {removed} hội thoại quá hạn lưu trữ")
 
-        print(f"  - {len(get_procedures())} thủ tục")
+        # Ollama / MCP hỏng thì VẪN chạy: người dùng thấy thông báo lỗi rõ ràng
+        # trong khung chat, thay vì server không lên.
+        st = await asyncio.to_thread(llm.status)
+        if not st["reachable"]:
+            print(f"  ! Ollama không phản hồi tại {OLLAMA_HOST} — hãy mở Ollama")
+        elif st["missing"]:
+            print(f"  ! Chưa có mô hình: {', '.join(st['missing'])} "
+                  f"-> chạy: ollama pull {st['missing'][0]}")
+        else:
+            print(f"  - LLM: {LLM_MODEL}"
+                  + (f" · kiểm chứng: {VERIFIER_MODEL}" if VERIFIER_ENABLED else " · kiểm chứng: TẮT"))
+            asyncio.get_running_loop().run_in_executor(None, llm.warm_up)
 
-        # Đăng ký dataset là TÀI LIỆU CHUNG: luôn tra được ở mọi hội thoại,
-        # đánh chỉ mục MỘT LẦN (chỉ mục đã có sẵn, KHÔNG nhúng lại ở đây).
-        from core import resources
-        kb = resources.ensure_global_kb()
-        print(f"  - tri thức chung: {kb['filename']} ({kb['description']})")
-        print(f"  - vector store: {vectorstore.get_collection().count()} view")
-        if USE_LEXICAL:
-            from core import lexical
-            lexical.get_index()
-            print("  - BM25: sẵn sàng")
-
-        # Nạp sẵn hai mô hình: nếu để nạp lười thì câu hỏi ĐẦU TIÊN của người
-        # dùng phải chờ tải 2.2GB reranker — nhìn như hệ thống bị treo.
-        from config import USE_RERANKER
-        from core import embeddings
-        embeddings.encode("khởi động")
-        print(f"  - mô hình nhúng: sẵn sàng ({embeddings.get_device()})")
-        if USE_RERANKER:
-            from core import reranker
-            if reranker.is_available():
-                reranker.score("khởi động", ["khởi động"])
-                print(f"  - reranker: sẵn sàng ({reranker.get_device()})")
+        mcp = await asyncio.to_thread(mcp_client.connect, 40)
+        if mcp["transport"] == "direct":
+            print("  - MCP: TẮT (MCP_TRANSPORT=direct, gọi thẳng engine)")
+        elif mcp["connected"]:
+            print(f"  - MCP: {mcp['transport']} · công cụ: {', '.join(mcp['tools'])}"
+                  f" · tìm kiếm: {SEARCH_PROVIDER}")
+        else:
+            print(f"  ! MCP chưa kết nối ({mcp['last_error'] or 'không rõ lỗi'}) — sẽ thử lại khi có câu hỏi")
 
         if QUEUE_ENABLED:
             await queue.manager.start()
             print(f"  - hàng đợi: {queue.manager.concurrency} worker")
 
         if DEV_TOOLS_ENABLED:
-            print("  " + "!" * 60)
-            print("  ! DEV_TOOLS_ENABLED = True — có endpoint xoá dữ liệu.")
-            print("  ! ĐẶT False trong config.py trước khi bàn giao bản cuối.")
-            print("  " + "!" * 60)
-        print(f"  - bộ điều phối: {ORCHESTRATOR}")
-        print("Sẵn sàng.")
+            print("  ! DEV_TOOLS_ENABLED = True — có endpoint xoá dữ liệu. Đặt False khi bàn giao.")
+        print(f"Sẵn sàng: http://{HOST}:{PORT}")
     except Exception as exc:
         print("LỖI KHỞI TẠO:", exc)
         traceback.print_exc()
@@ -76,11 +69,11 @@ async def lifespan(app: FastAPI):
     yield
     if QUEUE_ENABLED:
         await queue.manager.stop()
+    await asyncio.to_thread(mcp_client.shutdown)
 
 
 def create_app() -> FastAPI:
-    """Tách ra để test tự động dựng được app mà không cần chạy server."""
-    app = FastAPI(title="Trợ Lý Thủ Tục Hành Chính - Nhóm 7", lifespan=lifespan)
+    app = FastAPI(title="Trợ lý Thủ tục hành chính", lifespan=lifespan)
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
     from api import auth_routes, chat_routes, file_routes, routes

@@ -1,19 +1,12 @@
 """Chế độ nhà phát triển — một chỗ duy nhất cho mọi công cụ soi hệ thống.
 
-Vì sao cần: khi trợ lý trả lời sai, nhìn từ ngoài KHÔNG tài nào biết được vì
-sao. Nó chọn công cụ nào? Truy hồi ra thủ tục gì, điểm bao nhiêu? Tra web hỏng
-ở bước nào, hay tra được mà bị allowlist chặn? Trước đây tất cả những thứ đó
-chỉ hiện ra dưới dạng một câu xin lỗi chung chung.
+Khi trợ lý trả lời sai, nhìn từ ngoài không biết được vì sao: hiểu nhầm ý định?
+truy vấn MCP tệ? nguồn không liên quan? kiểm chứng bắt được gì? Bảng Dev ghi
+lại từng bước của orchestrator để trả lời những câu đó.
 
 Hai lớp, ĐỪNG nhầm:
-
-    DEV_TOOLS_ENABLED (config.py)  quyết định có ĐĂNG KÝ route hay không.
-                                   Đây là bảo mật thật: False = endpoint không
-                                   tồn tại. Đặt False trước khi bàn giao.
-
-    developer_mode.enabled()       quyết định có GHI LẠI vết chạy hay không.
-                                   Bật/tắt ngay trong giao diện, không cần
-                                   khởi động lại.
+    DEV_TOOLS_ENABLED (config)   quyết định có ĐĂNG KÝ route hay không (bảo mật thật).
+    developer_mode.enabled()     quyết định có GHI LẠI vết chạy hay không (bật/tắt trên UI).
 
 Ghi vết nằm trong RAM (deque), không đụng CSDL, không ghi ra đĩa.
 """
@@ -70,7 +63,6 @@ class Turn:
         """Tên tham số có dấu gạch dưới để payload được phép chứa khoá 'kind'."""
         if not _enabled:
             return
-        # payload đặt TRƯỚC: loại sự kiện luôn thắng, không bị payload ghi đè.
         self.events.append({
             **payload,
             "kind": _kind,
@@ -98,11 +90,8 @@ class Turn:
             })
 
 
-_NULL = Turn("")          # dùng khi tắt dev mode: mọi thao tác đều không làm gì
-
-
 def turn(question: str, conversation_id: int | None = None) -> Turn:
-    return Turn(question, conversation_id) if _enabled else _NULL
+    return Turn(question, conversation_id)
 
 
 def traces(limit: int = 10) -> list[dict]:
@@ -121,18 +110,17 @@ def clear_traces() -> int:
 # ảnh chụp cấu hình đang chạy
 # ==========================================================================
 def snapshot() -> dict:
-    """Mọi công tắc đang ảnh hưởng tới hành vi. Xem nhanh thay vì mở config.py."""
     import config
     keys = [
-        "ORCHESTRATOR", "LLM_MODEL_NAME", "AGENT_TOOL_MODE", "AGENT_MAX_STEPS",
-        "AGENT_FORCE_RETRIEVAL_ON_ADMIN_SIGNAL", "ANSWER_STYLE",
-        "EXACT_ON_FACET", "FOLLOWUP_STICKY", "FACTCHECK_ENABLED",
-        "FACTCHECK_MAX_RETRIES", "TIER_A_MIN_CONFIDENCE",
-        "TIER_B_MIN_CONFIDENCE", "EVIDENCE_TIE_GAP", "USE_DENSE",
-        "USE_LEXICAL", "USE_RERANKER", "WEB_SEARCH_ENABLED",
-        "WEB_SEARCH_STRICT", "WEB_SEARCH_TIMEOUT", "SESSION_ENABLED",
-        "SUMMARY_ENABLED", "QUEUE_ENABLED", "QUEUE_CONCURRENCY",
-        "ATTACHMENTS_ENABLED", "STATIC_VERSION",
+        "LLM_MODEL", "VERIFIER_MODEL", "OLLAMA_HOST", "LLM_NUM_CTX", "TEMPERATURE",
+        "TOP_P", "ANSWER_MAX_TOKENS", "MODEL_KNOWLEDGE_CUTOFF", "CLARIFY_ENABLED",
+        "MCP_TRANSPORT", "MCP_SERVER_URL", "MCP_FALLBACK_DIRECT", "SEARCH_PROVIDER",
+        "SEARCH_DDGS_BACKEND", "SEARCH_MAX_QUERIES", "SEARCH_RESULTS_PER_QUERY",
+        "SEARCH_DEADLINE", "SEARCH_OFFICIAL_ONLY", "FETCH_TOP_N", "FETCH_DEADLINE",
+        "EVIDENCE_TOP_K", "EVIDENCE_MAX_CHARS", "UNDERSTAND_FEWSHOT", "VERIFIER_ENABLED",
+        "MAX_VERIFY_RETRIES", "VERIFY_FAIL_POLICY", "SUMMARY_ENABLED",
+        "MAX_CONTEXT_TOKENS", "SUMMARY_KEEP_RECENT", "PROFILE_MEMORY_ENABLED",
+        "QUEUE_ENABLED", "QUEUE_CONCURRENCY", "ATTACHMENTS_ENABLED", "STATIC_VERSION",
     ]
     return {
         "developer_mode": _enabled,
@@ -141,36 +129,28 @@ def snapshot() -> dict:
 
 
 # ==========================================================================
-# chẩn đoán tìm kiếm web
+# chẩn đoán tìm kiếm qua MCP
 # ==========================================================================
 def websearch_check(query: str = "") -> dict:
-    """Chạy thử tra web và nói THẲNG hỏng ở đâu.
+    """Gọi công cụ web_search qua MCP. Phân biệt: MCP hỏng / nhà cung cấp tìm kiếm hỏng / rỗng."""
+    from config import SEARCH_PROVIDER
+    from core import mcp_client
 
-    Bốn kết cục hoàn toàn khác nhau mà bản cũ gộp chung thành "không có kết quả":
-      - thiếu thư viện          -> cài ddgs
-      - thư viện ném lỗi        -> mất mạng / bị chặn tốc độ / đổi API
-      - bị allowlist chặn       -> tra ĐƯỢC, nhưng nguồn không chính thống
-      - thật sự rỗng            -> đổi từ khoá
-    """
-    from core import websearch
-    out = websearch.selftest(query or "thủ tục cấp hộ chiếu phổ thông")
-
-    if out["library"] is None:
-        out["diagnosis"] = "THIẾU THƯ VIỆN"
-        out["fix"] = r".venv\Scripts\python.exe -m pip install ddgs"
-    elif out["ok"]:
-        out["diagnosis"] = "CHẠY TỐT"
-        out["fix"] = ""
-    elif out["blocked_by_allowlist"]:
-        out["diagnosis"] = "BỊ ALLOWLIST CHẶN — tra được nhưng nguồn không chính thống"
-        out["fix"] = ("Thêm domain vào WEB_SEARCH_ALLOWLIST trong config.py, "
-                      "hoặc đặt WEB_SEARCH_STRICT = False (sẽ nhận nguồn "
-                      "không chính thống — cân nhắc kỹ).")
-    elif any(a["error"] for a in out["attempts"]):
-        out["diagnosis"] = "THƯ VIỆN LỖI — mất mạng, bị chặn tốc độ, hoặc đổi API"
-        out["fix"] = ("Kiểm tra mạng. Nếu lỗi kiểu RatelimitException thì chờ "
-                      "vài phút. Nếu gói cũ: pip install -U ddgs")
-    else:
-        out["diagnosis"] = "KHÔNG CÓ KẾT QUẢ — từ khoá quá hẹp"
-        out["fix"] = "Thử từ khoá ngắn hơn."
-    return out
+    query = query or "thủ tục cấp hộ chiếu phổ thông"
+    started = time.time()
+    data, transport, error = {}, "", ""
+    try:
+        data, transport = mcp_client.call_tool("web_search", {"query": query, "max_results": 8})
+        if not isinstance(data, dict):
+            data, error = {}, f"dữ liệu lạ từ MCP: {str(data)[:200]}"
+    except Exception as exc:
+        error = f"{type(exc).__name__}: {exc}"
+    results = data.get("results") or []
+    if not error and not results:
+        error = "nhà cung cấp tìm kiếm không trả kết quả (xem diagnostics)"
+    return {
+        "query": query, "ok": bool(results), "error": error, "transport": transport,
+        "provider": SEARCH_PROVIDER, "mcp": mcp_client.status(),
+        "elapsed_ms": int((time.time() - started) * 1000),
+        "results": results, "diagnostics": data.get("diagnostics") or [],
+    }

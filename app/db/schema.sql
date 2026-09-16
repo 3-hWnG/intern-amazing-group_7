@@ -24,6 +24,15 @@ CREATE TABLE IF NOT EXISTS login_attempts (
 );
 CREATE INDEX IF NOT EXISTS idx_attempt ON login_attempts(email, attempt_at);
 
+-- Bộ nhớ dài hạn theo NGƯỜI DÙNG (xuyên mọi cuộc trò chuyện)
+CREATE TABLE IF NOT EXISTS user_profile (
+    user_id    INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+    province   TEXT DEFAULT '',
+    ward       TEXT DEFAULT '',
+    notes      TEXT DEFAULT '',
+    updated_at TEXT NOT NULL
+);
+
 CREATE TABLE IF NOT EXISTS conversations (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id       INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -32,25 +41,35 @@ CREATE TABLE IF NOT EXISTS conversations (
     updated_at    TEXT NOT NULL,
     summary       TEXT DEFAULT '',
     summary_upto  INTEGER DEFAULT 0,
-    pending_json  TEXT DEFAULT '',
-    last_row_id   INTEGER DEFAULT -1,
     archived      INTEGER NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS idx_conv_user ON conversations(user_id, updated_at DESC);
 
+-- kind: answer | clarify | chitchat | out_of_scope | no_evidence | error
+-- verdict: PASS | FAIL | '' (không qua kiểm chứng)
 CREATE TABLE IF NOT EXISTS messages (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     conversation_id INTEGER NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
     role            TEXT NOT NULL,
     content         TEXT NOT NULL,
-    tier            TEXT DEFAULT '',
-    confidence      REAL DEFAULT 0,
+    kind            TEXT DEFAULT '',
+    verdict         TEXT DEFAULT '',
     sources         TEXT DEFAULT '',
-    factcheck       TEXT DEFAULT '',
+    intent_json     TEXT DEFAULT '',
     token_estimate  INTEGER DEFAULT 0,
     created_at      TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_msg_conv ON messages(conversation_id, id);
+
+-- Evidence Pack của từng câu trả lời: chứng minh RAG + dữ liệu cho fine-tune
+CREATE TABLE IF NOT EXISTS evidence (
+    id          INTEGER PRIMARY KEY AUTOINCREMENT,
+    message_id  INTEGER NOT NULL REFERENCES messages(id) ON DELETE CASCADE,
+    query       TEXT DEFAULT '',
+    pack_json   TEXT NOT NULL,
+    created_at  TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_evidence_msg ON evidence(message_id);
 
 CREATE TABLE IF NOT EXISTS feedback (
     id         INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -72,11 +91,7 @@ CREATE TABLE IF NOT EXISTS job_log (
     queue_position  INTEGER DEFAULT 0
 );
 
--- ==========================================================================
--- TÀI LIỆU (v6) — dataset nội bộ và tệp người dùng đính kèm dùng CHUNG lược đồ
--- scope='global'       : luôn tra được ở mọi hội thoại, đánh chỉ mục MỘT LẦN
--- scope='conversation' : chỉ tra được trong đúng cuộc trò chuyện đó
--- ==========================================================================
+-- Tệp người dùng đính kèm vào một cuộc trò chuyện
 CREATE TABLE IF NOT EXISTS documents (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,
     scope           TEXT NOT NULL DEFAULT 'conversation',
@@ -93,7 +108,6 @@ CREATE TABLE IF NOT EXISTS documents (
     created_at      TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_doc_conv ON documents(conversation_id);
-CREATE INDEX IF NOT EXISTS idx_doc_scope ON documents(scope);
 
 CREATE TABLE IF NOT EXISTS document_chunks (
     id            INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -1,83 +1,62 @@
-﻿# ---------------------------------------------------------------------------
-# Nhom 7 - Tro ly Thu tuc hanh chinh
+# ---------------------------------------------------------------------------
+# Tro ly Thu tuc hanh chinh
 #
-#   .\run.ps1              -> CHAY UNG DUNG (tu nap chi muc neu can). Mot dong duy nhat.
-#   .\run.ps1 -Eval        -> cham diem TRUY HOI tren 862 cau hoi
-#   .\run.ps1 -Routing     -> cham diem CHON CONG CU (agent v6)
-#   .\run.ps1 -Reingest    -> ep nap lai chi muc roi chay
-#   .\run.ps1 -Check       -> kiem tra moi truong day du (co nap model)
-#   .\run.ps1 -Test        -> kiem thu tu dong
+#   .\run.ps1                   -> CHAY UNG DUNG: http://127.0.0.1:8000
+#   .\run.ps1 -Install          -> cai thu vien vao .venv roi chay
+#   .\run.ps1 -Mcp              -> chay rieng MCP search server (HTTP, cong 8765)
+#   .\run.ps1 -Eval [-Limit N]  -> cham diem pipeline (Evaluation\eval_set.jsonl)
+#   .\run.ps1 -EvalIntent       -> chi cham buoc hieu y dinh / hoi lai (nhanh)
+#   .\run.ps1 -Bench            -> do toc do / VRAM mo hinh (finetune\benchmark_quant.py)
 # ---------------------------------------------------------------------------
 param(
+    [switch]$Install,
+    [switch]$Mcp,
     [switch]$Eval,
-    [switch]$Routing,
-    [string]$Save = "",
-    [switch]$Reingest,
-    [switch]$Check,
-    [switch]$Test,
+    [switch]$EvalIntent,
+    [switch]$Bench,
     [int]$Limit = 0
 )
 
 $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+$env:PYTHONIOENCODING = "utf-8"
 $Root = Split-Path -Parent $MyInvocation.MyCommand.Path
 Set-Location $Root
 
-if (-not (Test-Path ".\.venv\Scripts\Activate.ps1")) {
-    Write-Host "Khong tim thay .\.venv trong $Root" -ForegroundColor Red
-    exit 1
+$Py = Join-Path $Root ".venv\Scripts\python.exe"
+if (-not (Test-Path $Py)) {
+    Write-Host "Chua co .venv -> tao moi" -ForegroundColor Yellow
+    python -m venv .venv
+    $Install = $true
 }
-& ".\.venv\Scripts\Activate.ps1"
-
-python -m pip install -q rank_bm25 sentencepiece protobuf 2>&1 | Out-Null
-Set-Location "$Root\app"
-
-# --- kiem tra chi muc: chi doc 1 file JSON, KHONG nap model -> gan nhu tuc thi
-Write-Host "=== Chi muc ===" -ForegroundColor Cyan
-python check_index.py
-$needIngest = ($LASTEXITCODE -eq 2)
-
-if ($Reingest -or $needIngest) {
-    Write-Host "=== Nap chi muc ===" -ForegroundColor Cyan
-    python ingest.py
-    if ($LASTEXITCODE -ne 0) { Write-Host "ingest that bai" -ForegroundColor Red; exit 1 }
+if ($Install) {
+    & $Py -m pip install -r requirements.txt
+    if ($LASTEXITCODE -ne 0) { Write-Host "pip install that bai" -ForegroundColor Red; exit 1 }
+}
+if (-not (Test-Path ".env") -and (Test-Path ".env.example")) {
+    Copy-Item ".env.example" ".env"
+    Write-Host "Da tao .env tu .env.example" -ForegroundColor DarkGray
 }
 
-if ($Check) {
-    python preflight.py
+if ($Mcp) {
+    Write-Host "=== MCP search server: http://127.0.0.1:8765/mcp ===" -ForegroundColor Cyan
+    & $Py app\mcp_search\server.py --transport http --host 127.0.0.1 --port 8765
     exit $LASTEXITCODE
 }
 
-if ($Test) {
-    Write-Host "=== Kiem thu tu dong ===" -ForegroundColor Cyan
-    python selftest.py
+if ($Eval -or $EvalIntent) {
+    $EvalArgs = @("Evaluation\evaluate.py")
+    if ($EvalIntent) { $EvalArgs += "--only-intent" }
+    if ($Limit -gt 0) { $EvalArgs += @("--limit", "$Limit") }
+    & $Py @EvalArgs
     exit $LASTEXITCODE
 }
 
-if ($Routing) {
-    Set-Location $Root
-    Write-Host "=== Cham diem chon cong cu (agent) ===" -ForegroundColor Cyan
-    $RoutingArgs = @("Evaluation\evaluate_routing.py")
-    if ($Limit -gt 0) { $RoutingArgs += @("--limit", "$Limit") }
-    if ($Save -ne "") { $RoutingArgs += @("--save", $Save) }
-    & ".\.venv\Scripts\python.exe" @RoutingArgs
+if ($Bench) {
+    & $Py finetune\benchmark_quant.py
     exit $LASTEXITCODE
 }
 
-if ($Eval) {
-    $EvalCsv = Resolve-Path "$Root\Evaluation\eval_questions.csv"
-    $OutCsv  = "$Root\Evaluation\eval_results.csv"
-    Write-Host "=== Cham diem ===" -ForegroundColor Cyan
-    if ($Limit -gt 0) {
-        python evaluate_retrieval.py --eval "$EvalCsv" --out "$OutCsv" --limit $Limit
-    } else {
-        python evaluate_retrieval.py --eval "$EvalCsv" --out "$OutCsv"
-    }
-    Write-Host "`nKet qua: $OutCsv" -ForegroundColor Green
-    exit 0
-}
-
-# --- mac dinh: chay ung dung. Model chi nap MOT lan, trong lifespan cua server.
 Write-Host "=== Server: http://127.0.0.1:8000 ===" -ForegroundColor Cyan
 Write-Host "    (Ctrl+C de dung)" -ForegroundColor DarkGray
-python main.py
+& $Py app\main.py

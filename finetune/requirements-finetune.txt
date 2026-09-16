@@ -1,0 +1,11 @@
+# Chỉ cần cho fine-tune / gộp adapter. KHÔNG cần để chạy ứng dụng.
+# torch bản CUDA cài trước theo hướng dẫn tại https://pytorch.org (chọn đúng phiên bản CUDA).
+torch
+transformers>=4.51
+peft>=0.15
+bitsandbytes>=0.45
+accelerate>=1.6
+sentencepiece
+# Chuyển GGUF + lượng tử hoá dùng llama.cpp (clone riêng):
+#   git clone https://github.com/ggml-org/llama.cpp
+#   pip install -r llama.cpp/requirements.txt   rồi build để có llama-quantize

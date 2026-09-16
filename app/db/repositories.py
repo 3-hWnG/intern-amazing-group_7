@@ -114,6 +114,46 @@ class LoginAttempts:
         conn.commit()
 
 
+# ------------------------------------------------ bộ nhớ dài hạn người dùng ----
+class UserProfiles:
+    FIELDS = ("province", "ward", "notes")
+
+    @staticmethod
+    def get(user_id: int) -> dict:
+        row = get_conn().execute(
+            "SELECT province, ward, notes, updated_at FROM user_profile WHERE user_id = ?",
+            (user_id,)).fetchone()
+        return dict(row) if row else {}
+
+    @staticmethod
+    def update(user_id: int, **fields) -> dict:
+        changes = {k: str(v)[:120] for k, v in fields.items() if k in UserProfiles.FIELDS}
+        if not changes:
+            return UserProfiles.get(user_id)
+        current = UserProfiles.get(user_id)
+        merged = {k: current.get(k, "") or "" for k in UserProfiles.FIELDS}
+        # đổi tỉnh mà không nói xã/phường -> xã/phường cũ không còn đúng
+        if "province" in changes and changes["province"] != merged["province"] \
+                and "ward" not in changes:
+            merged["ward"] = ""
+        merged.update(changes)
+        conn = get_conn()
+        conn.execute(
+            "INSERT INTO user_profile(user_id, province, ward, notes, updated_at)"
+            " VALUES (?,?,?,?,?) ON CONFLICT(user_id) DO UPDATE SET"
+            " province = excluded.province, ward = excluded.ward,"
+            " notes = excluded.notes, updated_at = excluded.updated_at",
+            (user_id, merged["province"], merged["ward"], merged["notes"], _now()))
+        conn.commit()
+        return UserProfiles.get(user_id)
+
+    @staticmethod
+    def clear(user_id: int) -> None:
+        conn = get_conn()
+        conn.execute("DELETE FROM user_profile WHERE user_id = ?", (user_id,))
+        conn.commit()
+
+
 # -------------------------------------------------------- conversations ----
 class Conversations:
     @staticmethod
@@ -140,7 +180,8 @@ class Conversations:
     @staticmethod
     def list_for(user_id: int, limit: int = 100) -> list[dict]:
         rows = get_conn().execute(
-            "SELECT c.*, (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id) n_messages"
+            "SELECT c.id, c.title, c.created_at, c.updated_at,"
+            " (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id) n_messages"
             " FROM conversations c WHERE c.user_id = ? AND c.archived = 0"
             " ORDER BY c.updated_at DESC LIMIT ?", (user_id, limit)).fetchall()
         return [dict(r) for r in rows]
@@ -173,43 +214,6 @@ class Conversations:
         conn.commit()
 
     @staticmethod
-    def set_pending(conv_id: int, payload: dict | None) -> None:
-        conn = get_conn()
-        conn.execute("UPDATE conversations SET pending_json = ? WHERE id = ?",
-                     (json.dumps(payload, ensure_ascii=False) if payload else "", conv_id))
-        conn.commit()
-
-    @staticmethod
-    def take_pending(conv_id: int) -> dict | None:
-        row = get_conn().execute(
-            "SELECT pending_json FROM conversations WHERE id = ?", (conv_id,)).fetchone()
-        if not row or not row["pending_json"]:
-            return None
-        Conversations.set_pending(conv_id, None)
-        try:
-            return json.loads(row["pending_json"])
-        except Exception:
-            return None
-
-    @staticmethod
-    def set_last_row(conv_id: int, row_id: int) -> None:
-        conn = get_conn()
-        conn.execute("UPDATE conversations SET last_row_id = ? WHERE id = ?",
-                     (int(row_id), conv_id))
-        conn.commit()
-
-    @staticmethod
-    def last_procedure_title(conv_id: int) -> str:
-        """Tên thủ tục vừa nói tới - dùng làm ngữ cảnh cho câu hỏi ngắn tiếp theo."""
-        row = get_conn().execute(
-            "SELECT last_row_id FROM conversations WHERE id = ?", (conv_id,)).fetchone()
-        if not row or row["last_row_id"] is None or row["last_row_id"] < 0:
-            return ""
-        from domain.records import by_row_id
-        rec = by_row_id().get(int(row["last_row_id"]))
-        return rec.ten if rec else ""
-
-    @staticmethod
     def count() -> int:
         return get_conn().execute("SELECT COUNT(*) c FROM conversations").fetchone()["c"]
 
@@ -217,15 +221,16 @@ class Conversations:
 # ------------------------------------------------------------- messages ----
 class Messages:
     @staticmethod
-    def add(conversation_id: int, role: str, content: str, *, tier: str = "",
-            confidence: float = 0.0, sources=None, factcheck: str = "",
+    def add(conversation_id: int, role: str, content: str, *, kind: str = "",
+            verdict: str = "", sources=None, intent: dict | None = None,
             token_estimate: int = 0) -> int:
         conn = get_conn()
         cur = conn.execute(
-            "INSERT INTO messages(conversation_id, role, content, tier, confidence,"
-            " sources, factcheck, token_estimate, created_at) VALUES (?,?,?,?,?,?,?,?,?)",
-            (conversation_id, role, content, tier, float(confidence or 0),
-             json.dumps(sources or [], ensure_ascii=False), factcheck,
+            "INSERT INTO messages(conversation_id, role, content, kind, verdict, sources,"
+            " intent_json, token_estimate, created_at) VALUES (?,?,?,?,?,?,?,?,?)",
+            (conversation_id, role, content, kind, verdict,
+             json.dumps(sources or [], ensure_ascii=False),
+             json.dumps(intent, ensure_ascii=False) if intent else "",
              int(token_estimate or 0), _now()))
         conn.commit()
         Conversations.touch(conversation_id)
@@ -234,7 +239,10 @@ class Messages:
     @staticmethod
     def list_for(conversation_id: int, after_id: int = 0) -> list[dict]:
         rows = get_conn().execute(
-            "SELECT * FROM messages WHERE conversation_id = ? AND id > ? ORDER BY id",
+            "SELECT m.id, m.conversation_id, m.role, m.content, m.kind, m.verdict,"
+            " m.sources, m.intent_json, m.token_estimate, m.created_at,"
+            " EXISTS(SELECT 1 FROM evidence e WHERE e.message_id = m.id) AS has_evidence"
+            " FROM messages m WHERE m.conversation_id = ? AND m.id > ? ORDER BY m.id",
             (conversation_id, after_id)).fetchall()
         return [dict(r) for r in rows]
 
@@ -250,6 +258,32 @@ class Messages:
         return get_conn().execute("SELECT COUNT(*) c FROM messages").fetchone()["c"]
 
 
+# ------------------------------------------------------------- evidence ----
+class Evidence:
+    @staticmethod
+    def add(message_id: int, query: str, pack: dict) -> None:
+        conn = get_conn()
+        conn.execute("INSERT INTO evidence(message_id, query, pack_json, created_at)"
+                     " VALUES (?,?,?,?)",
+                     (message_id, query or "", json.dumps(pack, ensure_ascii=False), _now()))
+        conn.commit()
+
+    @staticmethod
+    def for_message(message_id: int, user_id: int) -> dict | None:
+        row = get_conn().execute(
+            "SELECT e.pack_json FROM evidence e"
+            " JOIN messages m ON m.id = e.message_id"
+            " JOIN conversations c ON c.id = m.conversation_id"
+            " WHERE e.message_id = ? AND c.user_id = ? ORDER BY e.id DESC LIMIT 1",
+            (message_id, user_id)).fetchone()
+        if row is None:
+            return None
+        try:
+            return json.loads(row["pack_json"])
+        except Exception:
+            return None
+
+
 # ------------------------------------------------------------- feedback ----
 class Feedback:
     @staticmethod
@@ -262,6 +296,18 @@ class Feedback:
     @staticmethod
     def count() -> int:
         return get_conn().execute("SELECT COUNT(*) c FROM feedback").fetchone()["c"]
+
+    @staticmethod
+    def stats() -> dict:
+        """Hài lòng / không hài lòng / chưa đánh giá (= trung bình)."""
+        row = get_conn().execute(
+            "SELECT (SELECT COUNT(*) FROM messages WHERE role = 'assistant') answers,"
+            " (SELECT COUNT(DISTINCT message_id) FROM feedback WHERE verdict = 'phu_hop') phu_hop,"
+            " (SELECT COUNT(DISTINCT message_id) FROM feedback WHERE verdict = 'khong_phu_hop')"
+            " khong_phu_hop").fetchone()
+        out = dict(row)
+        out["unrated"] = max(0, out["answers"] - out["phu_hop"] - out["khong_phu_hop"])
+        return out
 
 
 # -------------------------------------------------------------- job log ----
@@ -295,15 +341,8 @@ def purge_old(retention_days: int) -> int:
     return cur.rowcount
 
 
-# ------------------------------------------------------------ tài liệu ----
+# ------------------------------------------------------------ tệp đính kèm ----
 class Documents:
-    """Sổ đăng ký tài nguyên. Dataset nội bộ và tệp đính kèm dùng chung bảng này.
-
-    Điểm quan trọng: bản ghi scope='global' KHÔNG lưu chunk ở đây — nó trỏ
-    thẳng vào chỉ mục đã dựng sẵn (chromadb_eval + bm25_index.pkl). Đăng ký nó
-    chỉ để trợ lý BIẾT là có tài nguyên đó, không phải để nhúng lại.
-    """
-
     @staticmethod
     def create(*, scope: str, filename: str, user_id: int | None = None,
                conversation_id: int | None = None, mime_type: str = "",
@@ -338,16 +377,11 @@ class Documents:
         return [dict(r) for r in rows]
 
     @staticmethod
-    def list_global() -> list[dict]:
-        rows = get_conn().execute(
-            "SELECT * FROM documents WHERE scope = 'global' ORDER BY id").fetchall()
-        return [dict(r) for r in rows]
-
-    @staticmethod
-    def by_filename_global(filename: str) -> dict | None:
-        return _row(get_conn().execute(
-            "SELECT * FROM documents WHERE scope = 'global' AND filename = ?",
-            (filename,)).fetchone())
+    def set_details(doc_id: int, *, storage_path: str, description: str) -> None:
+        conn = get_conn()
+        conn.execute("UPDATE documents SET storage_path = ?, description = ? WHERE id = ?",
+                     (storage_path, description, doc_id))
+        conn.commit()
 
     @staticmethod
     def mark(doc_id: int, status: str, *, n_chunks: int = 0, error: str = "") -> None:
@@ -386,13 +420,6 @@ class DocumentChunks:
         return ids
 
     @staticmethod
-    def list_for_document(document_id: int) -> list[dict]:
-        rows = get_conn().execute(
-            "SELECT * FROM document_chunks WHERE document_id = ? ORDER BY ordinal",
-            (document_id,)).fetchall()
-        return [dict(r) for r in rows]
-
-    @staticmethod
     def list_for_conversation(conversation_id: int) -> list[dict]:
         rows = get_conn().execute(
             "SELECT ch.*, d.filename FROM document_chunks ch"
@@ -400,14 +427,3 @@ class DocumentChunks:
             " WHERE d.conversation_id = ? AND d.status = 'processed'"
             " ORDER BY ch.document_id, ch.ordinal", (conversation_id,)).fetchall()
         return [dict(r) for r in rows]
-
-    @staticmethod
-    def by_ids(ids: list[int]) -> dict[int, dict]:
-        if not ids:
-            return {}
-        marks = ",".join("?" * len(ids))
-        rows = get_conn().execute(
-            f"SELECT ch.*, d.filename FROM document_chunks ch"
-            f" JOIN documents d ON d.id = ch.document_id"
-            f" WHERE ch.id IN ({marks})", ids).fetchall()
-        return {r["id"]: dict(r) for r in rows}

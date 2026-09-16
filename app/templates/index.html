@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Trợ lý Thủ tục hành chính — Nhóm 7</title>
+<title>Trợ lý Thủ tục hành chính</title>
 <link rel="stylesheet" href="/static/css/styles.css?v=__V__">
 </head>
 <body>
@@ -13,12 +13,12 @@
     <button id="new-chat" class="primary block">+ Cuộc trò chuyện mới</button>
     <nav id="conv-list" class="conv-list"></nav>
     <div class="sidebar-foot">
+      <div id="memory" class="memory" hidden></div>
       <div id="queue-info" class="queue-info"></div>
       <div class="user-row">
         <span id="user-name"></span>
         <button id="logout" class="link" type="button">Đăng xuất</button>
       </div>
-
     </div>
   </aside>
 
@@ -26,6 +26,7 @@
     <header class="chat-head">
       <button id="toggle-sidebar" class="icon" type="button" aria-label="Ẩn/hiện thanh bên">☰</button>
       <h1 id="conv-title">Trợ lý Thủ tục hành chính</h1>
+      <span id="model-name" class="model-name"></span>
       <button id="dev-open" class="icon" type="button" aria-pressed="false"
               title="Bảng nhà phát triển" hidden>⚙</button>
       <button id="theme" class="icon" type="button" aria-label="Đổi giao diện sáng/tối">◐</button>
@@ -33,7 +34,7 @@
 
     <div id="messages" class="messages">
       <div class="empty">
-        <h2>Bạn cần tra cứu thủ tục nào?</h2>
+        <h2>Bạn cần làm thủ tục gì?</h2>
         <p>Ví dụ: <em>“Con tôi mới sinh, làm giấy khai sinh cần gì?”</em></p>
       </div>
     </div>
@@ -42,8 +43,6 @@
       <div id="attachments" class="attachments" hidden></div>
       <div class="composer-row">
         <button id="attach" class="composer-btn" type="button" title="Đính kèm tệp" aria-label="Đính kèm tệp">+</button>
-        <button id="web-toggle" class="composer-btn web" type="button" aria-pressed="false"
-                title="Bắt buộc tra cứu trên mạng cho câu hỏi này">Web</button>
         <textarea id="input" rows="2" placeholder="Nhập câu hỏi…" autocomplete="off"></textarea>
         <button id="send" class="primary" type="submit">Gửi</button>
       </div>
@@ -66,12 +65,12 @@
     </div>
 
     <details class="dev-sect" open>
-      <summary>Tra cứu web — chẩn đoán</summary>
+      <summary>Tìm kiếm qua MCP — chẩn đoán</summary>
       <div class="dev-web">
         <input id="dev-web-q" type="text" placeholder="thủ tục cấp hộ chiếu phổ thông">
         <button id="dev-web-go" class="dev-btn" type="button">Tra thử</button>
       </div>
-      <pre id="dev-web-out" class="dev-pre">Bấm "Tra thử" để xem tra web có chạy không, và hỏng ở bước nào.</pre>
+      <pre id="dev-web-out" class="dev-pre">Bấm "Tra thử" để gọi công cụ web_search qua MCP và xem hỏng ở bước nào.</pre>
     </details>
 
     <details class="dev-sect" open>

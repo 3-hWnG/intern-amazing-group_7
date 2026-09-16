@@ -17,7 +17,6 @@ class ConversationRename(BaseModel):
 
 class ChatRequest(BaseModel):
     text: str
-    force_web: bool = False      # nút "Web" ở ô nhập -> bắt buộc tra mạng
 
 
 class FeedbackRequest(BaseModel):
@@ -29,12 +28,6 @@ class FeedbackRequest(BaseModel):
 class ResetRequest(BaseModel):
     scope: str = "my_conversations"   # my_conversations | all_conversations | everything
     confirm: str = ""                 # phải gõ đúng "XOA" mới chạy
-
-
-# Giữ tương thích ngược với frontend cũ
-class Query(BaseModel):
-    text: str
-    session_id: str = "default"
 
 
 class DevToggle(BaseModel):

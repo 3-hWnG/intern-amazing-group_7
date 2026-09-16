@@ -1,7 +1,7 @@
-# Python 3.12 — versions verified together in .venv (2026-09-13).
-# Install into a virtualenv, NOT the global Python:
+# Python 3.12. Cài vào virtualenv, KHÔNG cài vào Python toàn cục:
 #   python -m venv .venv
 #   .venv\Scripts\python.exe -m pip install -r requirements.txt
+# Fine-tune / lượng tử hoá có danh sách riêng: finetune/requirements-finetune.txt
 
 # Web server
 fastapi==0.141.1
@@ -9,33 +9,18 @@ starlette==1.6.0
 uvicorn==0.52.4
 pydantic==2.13.5
 
-# Data
-pandas==3.0.5
-openpyxl==3.1.5
-numpy==2.5.3
-
-# Embeddings + vector store
-torch==2.14.0
-transformers==5.17.0
-tokenizers==0.23.2
-huggingface_hub==1.31.0
-sentence-transformers==6.0.1
-chromadb==1.5.9
-
-# LLM + web search
+# LLM cục bộ (Ollama) + MCP + tìm kiếm web + trích nội dung trang
 ollama==0.6.2
-duckduckgo-search==8.1.1
-
-# Truy hồi từ khoá (BM25 bỏ dấu) + tokenizer cho reranker
-rank_bm25==0.2.2
-sentencepiece==0.2.2
-protobuf==7.36.1
+mcp==2.2.0
+ddgs==9.16.0
+httpx==0.28.1
+trafilatura==2.2.0
 
 # Xác thực (băm mật khẩu)
 bcrypt==5.0.0
 
-# Đọc tệp đính kèm (v6). TUỲ CHỌN: thiếu hai dòng này hệ thống vẫn chạy, chỉ là
-# tải lên .pdf/.docx sẽ báo lỗi kèm hướng dẫn cài. csv/tsv/xlsx/txt/md/json
-# chạy được ngay, không cần gì thêm.
-pypdf==6.1.3
+# Đọc tệp đính kèm (csv/xlsx/pdf/docx)
+pandas==3.0.5
+openpyxl==3.1.5
+pypdf==6.18.1
 python-docx==1.2.0

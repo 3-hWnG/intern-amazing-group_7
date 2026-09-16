@@ -38,8 +38,9 @@ window.API = (function () {
       return data;
     },
 
-    /* Stream trả về text/plain theo từng mẩu. */
-    async stream(url, body, onChunk, onHeaders) {
+    /* Luồng NDJSON: mỗi dòng một sự kiện {type, ...}. Dòng không phải JSON
+       được coi là chữ thô để không bao giờ nuốt mất thông báo lỗi. */
+    async stream(url, body, onEvent) {
       const res = await fetch(url, {
         method: "POST",
         credentials: "same-origin",
@@ -47,19 +48,30 @@ window.API = (function () {
         body: JSON.stringify(body),
       });
       if (res.status === 401) { location.href = "/login"; return; }
-      if (onHeaders) onHeaders(res.headers);
       if (!res.ok) {
         const err = await res.json().catch(() => ({}));
-        onChunk(`\n[Lỗi] ${err.detail || res.statusText}`);
+        onEvent({ type: "error", text: err.detail || res.statusText });
         return;
       }
+      const flush = (line) => {
+        if (!line.trim()) return;
+        try { onEvent(JSON.parse(line)); }
+        catch (_) { onEvent({ type: "delta", text: line }); }
+      };
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
+      let buf = "";
       while (true) {
         const { done, value } = await reader.read();
         if (done) break;
-        onChunk(decoder.decode(value, { stream: true }));
+        buf += decoder.decode(value, { stream: true });
+        let i;
+        while ((i = buf.indexOf("\n")) >= 0) {
+          flush(buf.slice(0, i));
+          buf = buf.slice(i + 1);
+        }
       }
+      flush(buf + decoder.decode());
     },
   };
 })();

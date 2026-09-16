@@ -22,7 +22,7 @@ CONFIRM_WORD = "XOA"
 # ------------------------------------------------------ chế độ dev ----
 @router.get("/api/dev/status")
 async def dev_status(user: dict = Depends(current_user)):
-    """Mọi công tắc đang ảnh hưởng tới hành vi — xem nhanh, khỏi mở config.py."""
+    """Mọi công tắc đang ảnh hưởng tới hành vi — xem nhanh, khỏi mở .env."""
     return developer_mode.snapshot()
 
 
@@ -35,7 +35,7 @@ async def dev_toggle(body: DevToggle, user: dict = Depends(current_user)):
 
 @router.get("/api/dev/trace")
 async def dev_trace(limit: int = 10, user: dict = Depends(current_user)):
-    """Vết chạy của các lượt gần nhất: chọn công cụ gì, điểm bao nhiêu, vì sao."""
+    """Vết chạy các lượt gần nhất: ý định, truy vấn MCP, kiểm chứng, thời gian."""
     return {"enabled": developer_mode.enabled(),
             "traces": developer_mode.traces(limit)}
 
@@ -47,7 +47,7 @@ async def dev_trace_clear(user: dict = Depends(current_user)):
 
 @router.post("/api/dev/websearch")
 async def dev_websearch(body: WebSearchTest, user: dict = Depends(current_user)):
-    """Chạy thử tra web và nói THẲNG hỏng ở bước nào."""
+    """Gọi thử công cụ web_search qua MCP và nói THẲNG hỏng ở bước nào."""
     return await connection.run(developer_mode.websearch_check, body.query or "")
 
 
@@ -58,6 +58,7 @@ async def stats(user: dict = Depends(current_user)):
         "conversations": await connection.run(Conversations.count),
         "messages": await connection.run(Messages.count),
         "feedback": await connection.run(Feedback.count),
+        "ratings": await connection.run(Feedback.stats),
     }
 
 
@@ -78,10 +79,8 @@ async def reset(body: ResetRequest, user: dict = Depends(current_user)):
     if body.scope == "all_conversations":
         def _all():
             conn = connection.get_conn()
-            conn.execute("DELETE FROM feedback")
-            conn.execute("DELETE FROM messages")
-            conn.execute("DELETE FROM conversations")
-            conn.execute("DELETE FROM job_log")
+            for table in ("feedback", "evidence", "messages", "conversations", "job_log"):
+                conn.execute(f"DELETE FROM {table}")
             conn.commit()
         await connection.run(_all)
         return {"ok": True, "scope": body.scope}

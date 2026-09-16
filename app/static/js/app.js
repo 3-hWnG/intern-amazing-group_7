@@ -2,6 +2,28 @@
 (function () {
   const $ = (id) => document.getElementById(id);
 
+  /* Bộ nhớ dài hạn: tỉnh/thành, xã/phường trợ lý đã ghi nhớ cho người dùng. */
+  async function showMemory(profile) {
+    const host = $("memory");
+    if (!host) return;
+    if (profile === undefined) {
+      try { profile = (await API.get("/api/profile")).profile; } catch (_) { profile = {}; }
+    }
+    const bits = [profile && profile.province, profile && profile.ward].filter(Boolean);
+    host.innerHTML = "";
+    host.hidden = !bits.length;
+    if (!bits.length) return;
+    const label = document.createElement("span");
+    label.textContent = "🧠 Ghi nhớ: " + bits.join(" · ");
+    label.title = "Trợ lý dùng thông tin này cho cả các cuộc trò chuyện sau";
+    const rm = document.createElement("button");
+    rm.type = "button";
+    rm.className = "link";
+    rm.textContent = "Xoá";
+    rm.onclick = async () => { await API.del("/api/profile"); showMemory({}); };
+    host.append(label, rm);
+  }
+
   async function boot() {
     let cfg = {};
     try {
@@ -9,8 +31,9 @@
       const me = await API.get("/api/me");
       $("user-name").textContent = me.user.display_name || me.user.email;
     } catch (_) {
-      return;   // API.js đã tự chuyển sang /login
+      return;   // api.js đã tự chuyển sang /login
     }
+    if ($("model-name")) $("model-name").textContent = cfg.llm_model || "";
 
     Conversations.onSelect = (id) => {
       Chat.load(id);
@@ -20,7 +43,7 @@
     if (items.length) Conversations.select(items[0].id);
     else Chat.empty();
 
-    await Dev.init(cfg.dev_tools);
+    await Promise.all([Dev.init(cfg.dev_tools), showMemory()]);
 
     $("new-chat").onclick = () => Conversations.create();
 
@@ -61,25 +84,12 @@
       $("sidebar").classList.toggle("hidden");
 
     $("theme").onclick = () => {
-      const dark = document.body.classList.toggle("light");
-      try { localStorage.setItem("theme", dark ? "light" : "dark"); } catch (_) {}
+      const light = document.body.classList.toggle("light");
+      try { localStorage.setItem("theme", light ? "light" : "dark"); } catch (_) {}
     };
     try {
       if (localStorage.getItem("theme") === "light") document.body.classList.add("light");
     } catch (_) {}
-
-    /* -------- nút Web: ép tra mạng cho đúng lượt tiếp theo -------- */
-    const webBtn = $("web-toggle");
-    let forceWeb = false;
-    if (webBtn) {
-      webBtn.onclick = () => {
-        forceWeb = !forceWeb;
-        webBtn.setAttribute("aria-pressed", String(forceWeb));
-        webBtn.title = forceWeb
-          ? "Lượt này sẽ tra trên mạng — bấm lại để tắt"
-          : "Bắt buộc tra cứu trên mạng cho câu hỏi này";
-      };
-    }
 
     const input = $("input");
     input.addEventListener("input", () => {
@@ -108,20 +118,15 @@
       input.style.height = "auto";
       $("send").disabled = true;
       try {
-        await Chat.send(convId, text, { forceWeb });
-        await Chat.load(convId);      // nạp lại để tin nhắn có id -> bật nút 👍/👎
-        if (cfg.attachments_enabled !== false) await Files.refresh(convId);
+        const done = await Chat.send(convId, text);
         await Conversations.refresh();
-        Conversations.render();
+        const current = Conversations.items.find((c) => c.id === convId);
+        if (current) $("conv-title").textContent = current.title;
+        if (done && done.profile) showMemory(done.profile);
         if (cfg.dev_tools) { await Dev.stats(); Dev.afterTurn(); }
       } finally {
         sending = false;
         $("send").disabled = false;
-        /* Web là lựa chọn cho MỘT lượt, không phải chế độ dính mãi. */
-        if (forceWeb && webBtn) {
-          forceWeb = false;
-          webBtn.setAttribute("aria-pressed", "false");
-        }
         input.focus();
       }
     };

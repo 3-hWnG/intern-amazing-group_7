@@ -41,11 +41,15 @@ def init_db() -> None:
             # Migration đơn giản: CREATE TABLE IF NOT EXISTS không thêm cột mới
             # vào bảng đã tồn tại, nên phải ALTER thủ công.
             for table, column, ddl in [
-                ("conversations", "last_row_id", "INTEGER DEFAULT -1"),
+                ("messages", "kind", "TEXT DEFAULT ''"),
+                ("messages", "verdict", "TEXT DEFAULT ''"),
+                ("messages", "intent_json", "TEXT DEFAULT ''"),
             ]:
                 cols = {r[1] for r in conn.execute(f"PRAGMA table_info({table})")}
                 if column not in cols:
                     conn.execute(f"ALTER TABLE {table} ADD COLUMN {column} {ddl}")
+            # v7 bỏ dataset nội bộ: xoá bản đăng ký "tri thức chung" cũ nếu còn.
+            conn.execute("DELETE FROM documents WHERE scope = 'global'")
             conn.commit()
         finally:
             conn.close()
@@ -70,8 +74,8 @@ async def run(fn, *args, **kwargs):
 def reset_database() -> None:
     """Xoá toàn bộ dữ liệu, giữ lược đồ. Chỉ dùng cho công cụ phát triển."""
     conn = get_conn()
-    for table in ["feedback", "messages", "document_chunks", "documents",
-                  "conversations", "auth_sessions", "login_attempts",
+    for table in ["feedback", "evidence", "messages", "document_chunks", "documents",
+                  "conversations", "user_profile", "auth_sessions", "login_attempts",
                   "job_log", "users"]:
         conn.execute(f"DELETE FROM {table}")
     conn.execute("DELETE FROM sqlite_sequence")
