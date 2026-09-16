@@ -118,6 +118,77 @@ def _recency(text: str) -> float:
     return 0.0
 
 
+# ------------------------------------------------------ khởi động ấm ------
+def warm_up() -> int:
+    """Import sẵn thư viện đọc trang. Lần import đầu (venv mới, chưa có bytecode)
+    có thể mất vài giây — nếu để tới lúc đọc trang thì mọi trang đều "quá hạn"."""
+    started = time.time()
+    try:
+        import trafilatura  # noqa: F401
+        from trafilatura.metadata import extract_metadata  # noqa: F401
+        trafilatura.extract("<html><body><p>khởi động</p></body></html>")
+    except Exception:
+        pass
+    return int((time.time() - started) * 1000)
+
+
+# --------------------------------------------------- làm sạch kết quả -----
+_MONTHS = "Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec"
+_MONTH_NO = {m: i for i, m in enumerate(_MONTHS.split("|"), 1)}
+# "Mar 4, 2025 · ", "March 20, 2025 - " — tem ngày công cụ tìm kiếm gắn đầu snippet
+_STAMP_RE = re.compile(rf"(?:^|(?<=\s))({_MONTHS})[a-z]*\.?\s+(\d{{1,2}}),\s+(20\d\d)\s*[·\-–]\s*")
+
+
+def _stamp_date(m: re.Match) -> str:
+    return f"{m.group(3)}-{_MONTH_NO[m.group(1)]:02d}-{int(m.group(2)):02d}"
+
+
+def clean_snippet(snippet: str) -> tuple[str, str]:
+    """-> (snippet, ngày đăng theo tem).
+
+    ddgs đôi khi GỘP đoạn trích của nhiều bài (mỗi bài một tem ngày) vào một kết
+    quả: mô hình đọc thấy mức phí 2023 và 2026 cạnh nhau rồi trộn sai. Chỉ giữ
+    đoạn có tem ngày mới nhất.
+    """
+    snippet = (snippet or "").strip()
+    stamps = list(_STAMP_RE.finditer(snippet))
+    if not stamps:
+        return snippet, ""
+    first = stamps[0]
+    if first.start() > 0 and len(snippet[:first.start()].strip()) > 40:
+        # có chữ trước tem đầu tiên: đó là đoạn không tem, giữ phần đó
+        return snippet[:first.start()].strip(), ""
+    # tách theo tem, giữ đoạn MỚI NHẤT (thông tin thủ tục cũ hay đã bị thay thế)
+    segments = []
+    for i, m in enumerate(stamps):
+        end = stamps[i + 1].start() if i + 1 < len(stamps) else len(snippet)
+        text = snippet[m.end():end].strip()
+        if text:
+            segments.append((_stamp_date(m), text))
+    if not segments:
+        return "", _stamp_date(first)
+    date, text = max(segments, key=lambda x: x[0])
+    return text, date
+
+
+def _clean_title(title: str) -> str:
+    """Tiêu đề bị gộp kiểu "Bài A ...Bài B ...Bài C" -> "Bài A ..."."""
+    parts = re.split(r"(?<=\.\.\.)(?=\S)|(?<=…)(?=\S)", title or "")
+    return parts[0].strip() if parts else (title or "")
+
+
+def plausible_date(value: str, retrieved_today: bool = True) -> str:
+    """Bỏ ngày đăng không tin được: ở tương lai, hoặc đúng HÔM NAY (thư viện đọc
+    ngày hay lấy ngày hiện tại khi trang không ghi ngày)."""
+    value = str(value or "")[:10]
+    if not re.fullmatch(r"\d{4}-\d{2}-\d{2}", value):
+        return ""
+    today = datetime.now().strftime("%Y-%m-%d")
+    if value > today or (retrieved_today and value == today):
+        return ""
+    return value
+
+
 # ----------------------------------------------------------- nhà cung cấp --
 def _search_ddgs(query: str, n: int) -> list[dict]:
     from ddgs import DDGS
@@ -189,9 +260,10 @@ def web_search(query: str, max_results: int = SEARCH_RESULTS_PER_QUERY,
         if trust == "blocked":
             blocked += 1
             continue
-        out.append({"title": (row.get("title") or "").strip(), "url": url,
-                    "snippet": (row.get("snippet") or "").strip(),
-                    "published_at": row.get("published_at") or "",
+        snippet, stamped = clean_snippet(row.get("snippet") or "")
+        out.append({"title": _clean_title((row.get("title") or "").strip()), "url": url,
+                    "snippet": snippet,
+                    "published_at": plausible_date(row.get("published_at")) or stamped,
                     "domain": host_of(url), "trust": trust, "rank": rank})
     _log(log, f"[{provider}] {query!r} -> {len(out)} kết quả"
               + (f", bỏ {blocked} nguồn bị chặn" if blocked else "")
@@ -234,7 +306,7 @@ def fetch_page(url: str, log: list | None = None) -> dict:
             published = (meta.date or "") if meta else ""
         except Exception:
             pass
-        return {"url": str(r.url), "text": text.strip(), "published_at": published,
+        return {"url": str(r.url), "text": text.strip(), "published_at": plausible_date(published),
                 "insecure": insecure}
 
     started = time.time()
@@ -245,8 +317,13 @@ def fetch_page(url: str, log: list | None = None) -> dict:
                   + (" [chứng chỉ SSL lỗi, đọc không xác thực]" if page.get("insecure") else ""))
         return page
     except Exception as exc:
-        _log(log, f"đọc {host_of(url)} -> LỖI {exc} (dùng snippet)")
-        return {"url": url, "text": "", "published_at": "", "error": str(exc)}
+        # tên miền không phân giải được -> trang đã ngừng (vd. cổng tỉnh cũ sau sáp nhập)
+        dead = isinstance(exc, httpx.ConnectError) and any(
+            k in str(exc) for k in ("getaddrinfo", "Name or service not known",
+                                    "nodename nor servname", "No address associated"))
+        _log(log, f"đọc {host_of(url)} -> LỖI {exc} "
+                  + ("(trang không truy cập được, bỏ nguồn)" if dead else "(dùng snippet)"))
+        return {"url": url, "text": "", "published_at": "", "error": str(exc), "dead": dead}
 
 
 # ------------------------------------------------------------- chọn đoạn ---
@@ -381,6 +458,9 @@ def build_evidence_pack(question: str, queries: list[str] | None = None,
     # 3. chia đoạn + BM25 CHUNG để điểm liên quan so sánh được giữa các trang
     all_passages: list[str] = []
     spans = []
+    alive = [(r, p) for r, p in zip(to_read, pages) if not p.get("dead")]
+    if alive and len(alive) < len(to_read):
+        to_read, pages = [r for r, _ in alive], [p for _, p in alive]
     for row, page in zip(to_read, pages):
         text = page.get("text") or ""
         fetched = len(text) >= 200
@@ -394,7 +474,7 @@ def build_evidence_pack(question: str, queries: list[str] | None = None,
         content, relevance = _best_window(all_passages[offset:offset + count],
                                           scores[offset:offset + count],
                                           EVIDENCE_SOURCE_CHARS)
-        published = row.get("published_at") or page.get("published_at") or ""
+        published = page.get("published_at") or row.get("published_at") or ""
         candidates.append({**row, "content": content, "relevance": relevance,
                            "fetched": fetched, "published_at": published,
                            "url": page.get("url") or row["url"]})

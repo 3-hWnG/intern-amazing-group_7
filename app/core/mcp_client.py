@@ -216,6 +216,11 @@ def connect(timeout: float = 30) -> dict:
             _bridge.submit(_PING, {}, timeout)
         except Exception:
             pass
+    if MCP_TRANSPORT == "direct" or MCP_FALLBACK_DIRECT:
+        # engine có thể chạy ngay trong tiến trình này -> import sẵn thư viện đọc trang
+        import threading
+        from mcp_search import engine
+        threading.Thread(target=engine.warm_up, daemon=True).start()
     return status()
 
 

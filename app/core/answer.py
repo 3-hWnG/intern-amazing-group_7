@@ -22,5 +22,6 @@ def generate(question: str, standalone: str, pack: dict, summary: str,
 
 
 def chitchat(question: str, history: list[dict]) -> str:
-    return llm.chat("chitchat", T.CHITCHAT_SYSTEM, question,
+    return llm.chat("chitchat", T.CHITCHAT_SYSTEM,
+                    f"{question}\n\n(Trả lời bằng tiếng Việt, kể cả khi tin nhắn viết bằng tiếng Anh.)",
                     T.history_messages("", history[-4:]))

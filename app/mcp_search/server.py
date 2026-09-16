@@ -64,6 +64,7 @@ def main() -> None:
     logging.getLogger().setLevel(logging.WARNING)
     for noisy in ("httpx", "httpcore", "primp", "ddgs", "trafilatura", "htmldate"):
         logging.getLogger(noisy).setLevel(logging.WARNING)
+    engine.warm_up()          # import sẵn trafilatura trước khi nhận câu hỏi đầu tiên
     if args.transport == "stdio":
         server.run("stdio")
         return

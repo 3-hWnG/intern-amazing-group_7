@@ -11,6 +11,7 @@ window.Chat = (function () {
     answer: ["Chưa qua kiểm chứng", "badge-muted"],
     clarify: ["Cần thêm thông tin", "badge-clarify"],
     no_evidence: ["Không tìm được nguồn", "badge-fail"],
+    not_in_sources: ["Nguồn chưa có thông tin này", "badge-muted"],
     error: ["Lỗi hệ thống", "badge-fail"],
   };
 

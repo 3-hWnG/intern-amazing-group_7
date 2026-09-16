@@ -38,7 +38,7 @@ class TurnInput:
 
 @dataclass
 class TurnResult:
-    kind: str = "answer"        # answer | clarify | chitchat | out_of_scope | no_evidence | error
+    kind: str = "answer"        # answer | not_in_sources | clarify | chitchat | out_of_scope | no_evidence | error
     text: str = ""
     verdict: str = ""           # PASS | FAIL | "" (không kiểm chứng)
     intent: dict = field(default_factory=dict)
@@ -119,8 +119,7 @@ def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> 
                 if not v.evidence_sufficient and v.better_search_query and not researched:
                     status("Kiểm chứng chưa đạt — đang tra cứu bổ sung…")
                     t = time.time()
-                    extra = evidence.gather(question, [v.better_search_query], None,
-                                            official_bias=False)
+                    extra = evidence.gather(question, [v.better_search_query], None)
                     pack = evidence.merge(pack, extra)
                     res.evidence, researched = pack, True
                     dev.event("research", ms=lap("search", t), query=v.better_search_query,
@@ -135,7 +134,9 @@ def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> 
             if not v.passed:
                 draft = verifier.apply_fail_policy(draft, v)
 
-        res.kind, res.text = "answer", draft
+        # Chỉ nói "tài liệu chưa nêu rõ" thì không tính là một câu trả lời đã kiểm chứng
+        res.kind = "not_in_sources" if verifier.is_not_found_answer(draft) else "answer"
+        res.text = draft
         res.sources = evidence.public_sources(pack, draft)
         return res
 

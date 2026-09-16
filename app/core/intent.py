@@ -58,6 +58,27 @@ def _copied_example(raw: dict, question: str, year: int) -> bool:
                for message, _, answer in T.understand_examples(year))
 
 
+def _copied_clarify(text: str, year: int) -> bool:
+    """Câu hỏi lại chép nguyên từ ví dụ mẫu (đã thấy: hỏi "bạn muốn làm thủ tục gì"
+    ngay sau khi người dùng nói rõ là khai sinh)."""
+    got = fold(_s(text))
+    return bool(got) and any(got == fold(ans["clarifying_question"])
+                             for _, _, ans in T.understand_examples(year)
+                             if ans["clarifying_question"])
+
+
+def _keyword_queries(queries: list[str], standalone: str, year: int) -> list[str]:
+    """Mô hình nhỏ hay chép nguyên câu hỏi làm truy vấn -> thêm năm để ưu tiên bài mới."""
+    fixed = []
+    for q in queries or [standalone]:
+        q = re.sub(r"[?？]+$", "", q).strip()
+        if q and not re.search(r"\b20\d\d\b", q):
+            q = f"{q} {year}"
+        if q:
+            fixed.append(q)
+    return list(dict.fromkeys(fixed))
+
+
 def understand(question: str, history: list[dict], summary: str, profile: dict) -> Understanding:
     now = datetime.now()
     system = T.understand_system(now.strftime("%d/%m/%Y"), now.year)
@@ -72,14 +93,23 @@ def understand(question: str, history: list[dict], summary: str, profile: dict) 
     if intent not in T.INTENTS:
         intent = "unknown"
     queries = list(dict.fromkeys(_s(q) for q in raw.get("search_queries") or [] if _s(q)))
+    standalone = _s(raw.get("standalone_question")) or question
+    if intent in PROCEDURE_INTENTS:
+        queries = _keyword_queries(queries, standalone, now.year)
+    clarify = _s(raw.get("clarifying_question"))
+    needs = bool(raw.get("needs_clarification"))
+    if _copied_clarify(clarify, now.year):
+        clarify = ""
+        if intent in PROCEDURE_INTENTS and intent != "other":
+            needs = False       # đã biết thủ tục; câu hỏi lại chép mẫu không có giá trị
     return Understanding(
         intent=intent,
-        standalone_question=_s(raw.get("standalone_question")) or question,
+        standalone_question=standalone,
         province=_s(raw.get("province")),
         ward=_s(raw.get("ward")),
         missing_information=[_s(x) for x in raw.get("missing_information") or [] if _s(x)][:4],
-        needs_clarification=bool(raw.get("needs_clarification")),
-        clarifying_question=_s(raw.get("clarifying_question")),
+        needs_clarification=needs,
+        clarifying_question=clarify,
         # chừa một chỗ cho truy vấn bám nguồn chính thống (core/evidence.py)
         search_queries=queries[:max(1, SEARCH_MAX_QUERIES - 1)],
     )

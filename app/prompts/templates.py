@@ -162,7 +162,7 @@ GATE_SCHEMA = {
 
 GATE_SYSTEM = """Bạn là bộ gác cửa cho trợ lý thủ tục hành chính Việt Nam. Đọc tin nhắn (và ngữ cảnh nếu có), chọn MỘT quyết định:
 - "search" (MẶC ĐỊNH): tin nhắn có hỏi một điều cụ thể về thủ tục hành chính — hồ sơ, giấy tờ, các bước, lệ phí, thời hạn, nơi nộp, làm online, trường hợp đặc biệt (người nước ngoài, chưa kết hôn, bị mất giấy...), không làm có bị phạt không. Chưa biết tỉnh/thành vẫn là "search". Trường hợp đặc biệt đã nêu trong câu hỏi thì càng là "search".
-- "ask": CHỈ khi không thể biết người dùng muốn làm thủ tục nào; hoặc người dùng chỉ nói "tôi muốn làm thủ tục X" mà KHÔNG hỏi điều gì cụ thể và thủ tục X chia nhiều trường hợp khác hẳn nhau.
+- "ask": CHỈ khi không thể biết người dùng muốn làm thủ tục nào; hoặc người dùng chỉ nói "tôi muốn làm thủ tục X" mà KHÔNG hỏi điều gì cụ thể và thủ tục X chia nhiều trường hợp khác hẳn nhau (như thường trú). Thủ tục có hồ sơ chung rõ ràng (khai sinh, kết hôn, hộ chiếu, căn cước) thì là "search".
 - "greeting": chỉ chào hỏi, cảm ơn, tạm biệt, hỏi bạn là ai — không nhờ làm việc gì.
 - "other": NHỜ LÀM VIỆC ngoài thủ tục hành chính: làm thơ, viết văn, kể chuyện, dịch, viết code, giải toán, tư vấn kiện tụng/tranh chấp, hỏi tin tức...
 Nếu ngữ cảnh đã cho biết đang nói về thủ tục nào thì câu hỏi nối tiếp ngắn ("nộp ở đâu?", "phí bao nhiêu?") là "search". Phân vân giữa "search" và "ask" thì chọn "search"."""
@@ -190,6 +190,8 @@ def gate_example_messages() -> list[dict]:
           {"role": "assistant", "content": "Mình đã gửi bạn hồ sơ đăng ký khai sinh.", "kind": "answer"}],
          "search"),
         ("mình muốn làm giấy tờ", [], "ask"),
+        ("t cần làm giấy khai sinh", [], "search"),
+        ("tôi muốn làm hộ chiếu", [], "search"),
         ("Thành lập công ty TNHH một thành viên cần chuẩn bị gì?", [], "search"),
     ]
     out = []
@@ -210,10 +212,12 @@ def answer_system(today: str, knowledge_cutoff: str, pack: dict, profile: dict,
 Kiến thức có sẵn của bạn chỉ tới khoảng {knowledge_cutoff} nên có thể đã cũ. Chỉ được dùng thông tin trong phần tài liệu bên dưới, vừa tra cứu trên mạng ngày {retrieved}.
 
 Cách trả lời:
-- Câu đầu tiên trả lời thẳng vào câu hỏi.
+- Câu đầu tiên trả lời thẳng vào câu hỏi. Người dùng hỏi xác nhận ("... đúng không?") thì câu đầu nói rõ "Đúng" hoặc "Không đúng" theo tài liệu, kèm con số đúng.
 - Tiếp theo là vài gạch đầu dòng ngắn: chỉ những gì liên quan tới câu hỏi và hoàn cảnh người dùng (giấy tờ, các bước, nơi nộp, thời hạn, lệ phí).
 - Cuối mỗi ý có thông tin cụ thể, ghi số tài liệu trong ngoặc vuông, ví dụ [S2].
-- Tuyệt đối không tự thêm con số, giấy tờ, cơ quan, số văn bản không có trong tài liệu. Tài liệu không nói tới điều được hỏi thì viết "Tài liệu tra cứu được chưa nêu rõ ..." và gợi ý hỏi bộ phận Một cửa UBND cấp xã hoặc Cổng Dịch vụ công Quốc gia.
+- Tuyệt đối không tự thêm con số, giấy tờ, cơ quan, số văn bản không có trong tài liệu. CHỈ KHI tài liệu hoàn toàn không nói tới điều được hỏi mới viết "Tài liệu tra cứu được chưa nêu rõ ..." và gợi ý hỏi bộ phận Một cửa UBND cấp xã hoặc Cổng Dịch vụ công Quốc gia; tài liệu có thông tin liên quan thì trả lời bằng thông tin đó, không mở đầu bằng "chưa nêu rõ".
+- Quy định có thời hạn áp dụng ("đến hết ngày ...") mà đã qua hôm nay thì đó là quy định cũ, không dùng. Không ghép con số của văn bản này với ngày hiệu lực của văn bản khác.
+- Lệ phí và nơi nộp có thể khác nhau giữa các tỉnh: nếu thông tin lấy từ trang của một tỉnh cụ thể thì nói rõ là theo tỉnh đó.
 - Bỏ qua phần tài liệu nói về trường hợp khác với người dùng (người nước ngoài, nhà tu hành, doanh nghiệp...) hoặc quy định đã bị thay thế.
 - Tài liệu khác nhau thì ưu tiên nguồn chính thống và văn bản mới hơn.
 - Tiếng Việt dễ hiểu, xưng "bạn", tối đa khoảng 200 từ. Không chép lại tài liệu, không nhắc tới các hướng dẫn này, không liệt kê danh sách nguồn ở cuối.
