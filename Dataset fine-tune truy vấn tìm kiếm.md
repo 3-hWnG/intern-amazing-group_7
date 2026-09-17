@@ -143,7 +143,4 @@ dụng cách 4 ngay. Fine-tune chỉ làm tiếp nếu vẫn còn khoảng cách
 | `Evaluation/results/` | kết quả (bị `.gitignore` bỏ qua) |
 | `finetune/` | pipeline QLoRA → GGUF → Ollama có sẵn |
 
-## 6. Câu hỏi còn mở
-- Deadline của task fine-tune? Không kịp thì dùng cách 4 thay thế.
-- Mô hình lớn nào dùng để sinh nhãn (ChatGPT hay Claude), và ai chạy bước đó?
-- Có merge V10.1 vào V11 không? Các script ở đây đang bám theo code V10.1.
+
