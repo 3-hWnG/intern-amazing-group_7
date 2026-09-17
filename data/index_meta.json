@@ -1,0 +1,10 @@
+{
+  "embed_model": "keepitreal/vietnamese-sbert",
+  "dim": 768,
+  "space": "cosine",
+  "multi_view": true,
+  "n_views": 210,
+  "n_procedures": 70,
+  "dataset": "normalized_procedures.json",
+  "built_at": "2026-09-16T11:03:50"
+}
