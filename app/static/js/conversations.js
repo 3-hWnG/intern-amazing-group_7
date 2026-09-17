@@ -51,18 +51,20 @@ window.Conversations = (function () {
     return items;
   }
 
-  function select(id) {
+  function select(id, opts = {}) {
     activeId = id;
     const found = items.find((c) => c.id === id);
     if (found) titleEl().textContent = found.title;
     render();
-    onSelect(id);
+    if (!opts.skipLoad) {
+      onSelect(id);
+    }
   }
 
-  async function create() {
+  async function create(opts = {}) {
     const data = await API.post("/api/conversations", {});
     await refresh();
-    select(data.conversation.id);
+    select(data.conversation.id, opts);
     return data.conversation;
   }
 

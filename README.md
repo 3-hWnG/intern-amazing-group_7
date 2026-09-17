@@ -16,6 +16,7 @@ HTML/JS UI ─> FastAPI ─> Hàng đợi tuần tự ─> ORCHESTRATOR
 ```
 
 Chi tiết kiến trúc, sơ đồ, cách tinh chỉnh từng thành phần: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
+Báo cáo kỹ thuật chi tiết các thay đổi mã nguồn so với commit gốc: [`BAO_CAO_THAY_DOI.md`](BAO_CAO_THAY_DOI.md)
 Lượng tử hoá + fine-tune: [`finetune/README.md`](finetune/README.md)
 
 ## Đáp ứng yêu cầu
@@ -29,12 +30,15 @@ Lượng tử hoá + fine-tune: [`finetune/README.md`](finetune/README.md)
 | Không nói dối theo kiến thức chung | trả lời CHỈ từ Evidence Pack; không tra được thì nói thật |
 | Model kiểm tra lại mới trả lời | `app/core/verifier.py` — luật + LLM, FAIL thì tra bổ sung / viết lại |
 | Dùng intent, không keyword; AI làm rõ prompt, hỏi lại khi không rõ | `app/core/intent.py` — LLM hiểu ý định + LLM gác hỏi lại, JSON schema |
+| Gợi ý 3 prompt tra cứu nhanh (Cách 3) | `app/core/intent.py` (`generate_prompt_choices`), giao diện `app/static/js/chat.js` |
+| Hội thoại nhiều lượt, kế thừa thủ tục | `app/core/intent.py` (`_has_backreference`, `_extract_recent_procedure`), `app/prompts/templates.py` |
 | Nhớ ngữ cảnh, 1 phiên mỗi người, lần sau vẫn nhớ | lịch sử theo tài khoản + `user_profile` (tỉnh/xã) xuyên hội thoại |
 | Ngữ cảnh quá dài thì AI tóm tắt | `app/core/summarizer.py` (`MAX_CONTEXT_TOKENS`) |
 | Đăng nhập định danh | `app/core/auth.py` (bcrypt + cookie phiên) |
 | Xử lý tuần tự | `app/core/queue.py` (`QUEUE_CONCURRENCY=1`) |
 | Backend API + Docker + biến môi trường | `app/api/`, `Dockerfile`, `docker-compose.yml`, `.env.example` |
 | HTML demo, chứng minh RAG, lịch sử như ChatGPT | thanh bên lịch sử; nguồn + **Evidence Pack** dưới mỗi câu trả lời |
+| Xuất dữ liệu hội thoại (.txt) cho LLM Judge | `app/core/eval_export.py`, nút xuất tại sidebar và dev panel |
 | Phản hồi Phù hợp / Không phù hợp | nút 👍/👎; không chấm = trung bình; thống kê ở bảng Dev |
 | So sánh thời gian fine-tune với thời gian cập nhật | `finetune/runs.jsonl` ↔ ngày đăng nguồn, hiển thị trong Evidence Pack |
 
@@ -98,11 +102,12 @@ app/
 ├── config.py                mọi cấu hình, đọc từ biến môi trường / .env
 ├── api/                     auth · chat (NDJSON) · files · dev · health
 ├── core/
-│   ├── orchestrator.py      pipeline 6 bước
-│   ├── intent.py            hiểu ý định + hỏi lại + bộ nhớ tỉnh/xã
+│   ├── orchestrator.py      pipeline 6 bước (hỗ trợ direct_search)
+│   ├── intent.py            hiểu ý định + kế thừa hội thoại + hỏi lại + gợi ý prompt
 │   ├── evidence.py          gọi MCP -> Evidence Pack (+ tệp đính kèm)
 │   ├── answer.py            soạn câu trả lời
-│   ├── verifier.py          kiểm chứng (luật + LLM)
+│   ├── verifier.py          kiểm chứng (luật thực thể + LLM verifier)
+│   ├── eval_export.py       xuất hội thoại & Evidence Pack sang .txt cho LLM Judge
 │   ├── summarizer.py        tóm tắt khi ngữ cảnh dài
 │   ├── llm.py               cổng Ollama, tham số theo vai
 │   ├── mcp_client.py        phiên MCP lâu dài (stdio / http)
@@ -112,7 +117,8 @@ app/
 │   └── engine.py            tìm kiếm -> xếp hạng -> đọc trang -> chọn đoạn
 ├── prompts/templates.py     TẤT CẢ prompt
 ├── db/                      schema.sql · connection.py · repositories.py (mọi SQL)
-├── static/ · templates/     giao diện HTML/CSS/JS
+├── static/ · templates/     giao diện HTML/CSS/JS (3 chip gợi ý, nút xuất file, feedback)
+BAO_CAO_THAY_DOI.md          báo cáo chi tiết các thay đổi so với commit gốc d81aa94
 Evaluation/                  eval_set.jsonl · evaluate.py
 finetune/                    export_dataset · train_qlora · merge_and_export · benchmark_quant
 docs/ARCHITECTURE.md

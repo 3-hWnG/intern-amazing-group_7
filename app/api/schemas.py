@@ -17,6 +17,7 @@ class ConversationRename(BaseModel):
 
 class ChatRequest(BaseModel):
     text: str
+    direct_search: bool = False
 
 
 class FeedbackRequest(BaseModel):

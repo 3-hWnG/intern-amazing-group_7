@@ -221,6 +221,57 @@ window.Dev = (function () {
     };
     $("dev-web-go").onclick = testWeb;
 
+    const expConv = $("dev-export-conv");
+    if (expConv) {
+      expConv.onclick = async () => {
+        const convId = Conversations.activeId;
+        if (!convId) { alert("Chưa chọn cuộc trò chuyện nào để xuất."); return; }
+        try {
+          const res = await fetch(`/api/dev/export/conversation/${convId}`);
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({ detail: res.statusText }));
+            alert("Không thể xuất file: " + (err.detail || res.statusText));
+            return;
+          }
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `danh_gia_hoi_thoai_${convId}.txt`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } catch (e) {
+          alert("Lỗi xuất file: " + e.message);
+        }
+      };
+    }
+    const expAll = $("dev-export-all");
+    if (expAll) {
+      expAll.onclick = async () => {
+        try {
+          const res = await fetch("/api/dev/export/all");
+          if (!res.ok) {
+            const err = await res.json().catch(() => ({ detail: res.statusText }));
+            alert("Không thể xuất file: " + (err.detail || res.statusText));
+            return;
+          }
+          const blob = await res.blob();
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = `tat_ca_hoi_thoai_danh_gia_${new Date().toISOString().slice(0, 10)}.txt`;
+          document.body.appendChild(a);
+          a.click();
+          a.remove();
+          URL.revokeObjectURL(url);
+        } catch (e) {
+          alert("Lỗi xuất file: " + e.message);
+        }
+      };
+    }
+
     wireReset();
     await Promise.all([refreshStatus(), stats()]);
   }

@@ -235,7 +235,8 @@ PROVIDERS = {"ddgs": _search_ddgs, "searxng": _search_searxng,
 def web_search(query: str, max_results: int = SEARCH_RESULTS_PER_QUERY,
                log: list | None = None) -> list[dict]:
     """Một truy vấn -> kết quả đã gắn tên miền + độ tin cậy, đã bỏ nguồn bị chặn."""
-    query = (query or "").strip()
+    query = re.sub(r'["\'“”‘’]+', ' ', str(query or "")).strip()
+    query = re.sub(r'\s+', ' ', query)
     if not query:
         return []
     provider = SEARCH_PROVIDER if SEARCH_PROVIDER in PROVIDERS else "ddgs"
@@ -481,7 +482,8 @@ def build_evidence_pack(question: str, queries: list[str] | None = None,
     top_rel = max(c["relevance"] for c in candidates) or 1.0
     for c in candidates:
         c["final"] = c["score"] + 2.0 * c["relevance"] / top_rel + 0.5 * _recency(c["published_at"])
-    keep = [c for c in candidates if c["relevance"] >= 0.2 * top_rel] or candidates[:1]
+    # Tăng ngưỡng liên quan từ 0.2 lên 0.35 để loại bỏ triệt để các bài viết rác/lạc đề (như cầm đồ, thi THPT)
+    keep = [c for c in candidates if c["relevance"] >= 0.35 * top_rel] or candidates[:2]
     keep.sort(key=lambda c: -c["final"])
 
     # 4. đóng gói theo ngân sách ký tự

@@ -239,3 +239,115 @@ a.cite:hover{background:var(--accent);color:#fff}
 .dev-pre.bad{border-color:var(--danger)}
 .dev-config{max-height:360px;overflow-y:auto}
 #dev-open[aria-pressed="true"]{background:var(--panel-2);color:var(--ink)}
+
+/* --- Bảng lựa chọn Cách 3 (Interactive Multiple-Choice) --- */
+.choice-table-wrap {
+  margin-top: 12px;
+  background: var(--panel-2);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 12px 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.choice-table-head {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  font-size: 13px;
+  color: var(--ink);
+}
+.choice-table-head strong {
+  font-size: 13px;
+  font-weight: 600;
+  color: #38bdf8;
+}
+.choice-table-head span {
+  font-size: 11.5px;
+  color: var(--ink-3);
+}
+.choice-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.choice-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 9px 12px;
+  cursor: pointer;
+  color: var(--ink);
+  font-size: 13px;
+  transition: all 0.15s ease-in-out;
+  line-height: 1.4;
+}
+.choice-item:hover {
+  background: var(--panel);
+  border-color: #38bdf8;
+  transform: translateX(3px);
+}
+.choice-item.selected {
+  border-color: #38bdf8;
+  background: rgba(56, 189, 248, 0.15);
+  font-weight: 500;
+}
+.choice-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--line);
+  color: #38bdf8;
+  font-weight: 600;
+  font-size: 11.5px;
+  flex-shrink: 0;
+}
+.choice-item.selected .choice-badge {
+  background: #38bdf8;
+  color: #0f172a;
+}
+.choice-text {
+  flex: 1;
+}
+.choice-custom-row {
+  display: flex;
+  gap: 8px;
+  margin-top: 4px;
+}
+.choice-custom-input {
+  flex: 1;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 7px;
+  padding: 8px 11px;
+  font-size: 12.5px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color 0.15s;
+}
+.choice-custom-input:focus {
+  border-color: #38bdf8;
+}
+.choice-custom-btn {
+  background: #0284c7;
+  color: #fff;
+  border: none;
+  border-radius: 7px;
+  padding: 0 14px;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s;
+}
+.choice-custom-btn:hover {
+  background: #0369a1;
+}

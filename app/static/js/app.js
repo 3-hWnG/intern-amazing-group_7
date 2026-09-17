@@ -112,7 +112,7 @@
       sending = true;
 
       let convId = Conversations.activeId;
-      if (!convId) convId = (await Conversations.create()).id;
+      if (!convId) convId = (await Conversations.create({ skipLoad: true })).id;
 
       input.value = "";
       input.style.height = "auto";

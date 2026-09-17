@@ -62,10 +62,50 @@ def truncate(text: str, max_chars: int) -> str:
 _LIST_RE = re.compile(r"^(\d+)([.)])\s+")
 
 
+def _clean_non_citation_brackets(text: str) -> str:
+    """Giữ nguyên trích dẫn [S#]. Bóc bỏ dấu ngoặc vuông ở các nội dung khác để không xoá mất chữ của câu trả lời."""
+    def repl(m: re.Match) -> str:
+        inner = m.group(1).strip()
+        if not inner:
+            return ""
+        if re.fullmatch(r"S\d+(\s*[,;]\s*S\d+)*", inner, re.IGNORECASE):
+            return m.group(0)
+        # Chỉ loại bỏ các nhãn khung rác ngắn
+        if fold(inner) in ["chua neu ro", "tai lieu chua neu ro", "nghien cuu tai lieu"]:
+            return ""
+        return inner
+    res = re.sub(r"\[([^\]\[]*)\]", repl, text or "")
+    return re.sub(r"\[([^\]\[]*)\]", repl, res)
+
+
+
+def _clean_snippet_noise(line: str) -> str:
+    """Lọc bỏ các nhãn khung rác và câu hỏi chép từ tiêu đề tài liệu."""
+    line = re.sub(r"^(Tài liệu trích dẫn|Trích dẫn tài liệu|Trích dẫn|Tài liệu tham khảo)\s*[:：\-]*\s*", "", line, flags=re.IGNORECASE).strip()
+    if re.fullmatch(r"\[?S\d+\]?", line, re.IGNORECASE):
+        return ""
+    if line.endswith("?") and any(line.lower().endswith(q) for q in ["gồm những gì?", "như thế nào?", "ra sao?", "ở đâu?"]):
+        return ""
+    # Bỏ dòng nhại lại lời nhắc prompt
+    if re.search(r"^(lưu ý:\s*)?nếu tài liệu ghi rõ", line, re.IGNORECASE):
+        return ""
+    if re.search(r"^nêu số tiền cụ thể", line, re.IGNORECASE):
+        return ""
+    return line
+
+
 def tidy_answer(text: str) -> str:
-    """Dọn lỗi hay gặp ở mô hình nhỏ: lặp nguyên dòng; số thứ tự lệch sau khi lược bỏ dòng."""
+    """Dọn lỗi hay gặp ở mô hình nhỏ: lặp nguyên dòng; số thứ tự lệch sau khi lược bỏ dòng; ngoặc vuông lạ."""
+    # 1. Bỏ chữ Hán / CJK bị mô hình nhỏ sinh nhầm
+    text = re.sub(r"[\u4e00-\u9fff]+", "", text or "")
+    # 2. Xóa placeholder mẫu S# chưa thay thế
+    text = re.sub(r"\[?\bS#\b\]?", "", text)
+    text = _clean_non_citation_brackets(text)
     kept, seen = [], set()
     for line in (text or "").splitlines():
+        line = _clean_snippet_noise(line)
+        if not line:
+            continue
         # mảnh vụn còn lại sau khi lược bỏ phần trong ngoặc: ". Bạn nên...", ": - ..."
         line = re.sub(r"^\s*[.,;:]+\s*", "", line)
         if line.strip() and not re.search(r"\w", line):

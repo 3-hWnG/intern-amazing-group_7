@@ -72,6 +72,14 @@ async def get_conversation(conv_id: int, user: dict = Depends(current_user)):
         except Exception:
             m["sources"] = []
         m["has_evidence"] = bool(m["has_evidence"])
+        choices = []
+        if m.get("intent_json"):
+            try:
+                ij = json.loads(m["intent_json"])
+                choices = ij.get("choices") or []
+            except Exception:
+                pass
+        m["choices"] = choices
         m.pop("intent_json", None)
     from db.repositories import Documents
     documents = await connection.run(Documents.list_for_conversation, conv_id)
@@ -98,6 +106,34 @@ async def delete_conversation(conv_id: int, user: dict = Depends(current_user)):
     return {"ok": True}
 
 
+@router.get("/api/conversations/{conv_id}/export")
+async def export_conversation(conv_id: int, user: dict = Depends(current_user)):
+    await _owned(conv_id, user)
+    from core.eval_export import build_conversation_export
+    from fastapi.responses import PlainTextResponse
+    content = await connection.run(build_conversation_export, conv_id, user["id"])
+    filename = f"danh_gia_hoi_thoai_{conv_id}.txt"
+    return PlainTextResponse(
+        content,
+        media_type="text/plain; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+    )
+
+
+@router.get("/api/conversations/export/all")
+async def export_all_conversations(user: dict = Depends(current_user)):
+    from datetime import datetime
+    from core.eval_export import build_all_conversations_export
+    from fastapi.responses import PlainTextResponse
+    content = await connection.run(build_all_conversations_export, user["id"])
+    filename = f"tat_ca_hoi_thoai_danh_gia_{datetime.now().strftime('%Y%m%d_%H%M%S')}.txt"
+    return PlainTextResponse(
+        content,
+        media_type="text/plain; charset=utf-8",
+        headers={"Content-Disposition": f'attachment; filename="{filename}"'}
+    )
+
+
 @router.get("/api/messages/{message_id}/evidence")
 async def message_evidence(message_id: int, user: dict = Depends(current_user)):
     """Evidence Pack đã dùng để trả lời — chứng minh RAG ngay trên giao diện."""
@@ -120,7 +156,7 @@ async def clear_profile(user: dict = Depends(current_user)):
 
 
 # --------------------------------------------------------------- chat ----
-def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit) -> None:
+def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit, direct_search: bool = False) -> None:
     """Chạy trong worker của hàng đợi (luồng riêng): ngữ cảnh -> orchestrator -> lưu."""
     def send(**payload) -> None:
         emit(_event(**payload))
@@ -133,12 +169,17 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit) 
 
     result = orchestrator.run_turn(
         orchestrator.TurnInput(question=question, history=history, summary=summary,
-                               profile=profile, conversation_id=conv_id),
+                               profile=profile, conversation_id=conv_id,
+                               direct_search=direct_search),
         status=lambda text: send(type="status", text=text))
+
+    intent_payload = dict(result.intent) if result.intent else {}
+    if result.choices:
+        intent_payload["choices"] = result.choices
 
     message_id = Messages.add(conv_id, "assistant", result.text, kind=result.kind,
                               verdict=result.verdict, sources=result.sources,
-                              intent=result.intent,
+                              intent=intent_payload,
                               token_estimate=summarizer.estimate_tokens(result.text))
     if result.evidence is not None:
         Evidence.add(message_id, result.evidence.get("question", ""), result.evidence)
@@ -150,7 +191,8 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit) 
         time.sleep(0.006)                       # giữ hiệu ứng gõ chữ
     send(type="done", message_id=message_id, kind=result.kind, verdict=result.verdict,
          sources=result.sources, has_evidence=result.evidence is not None,
-         intent=result.intent.get("intent", ""), timings=result.timings, profile=profile)
+         intent=result.intent.get("intent", ""), timings=result.timings, profile=profile,
+         choices=result.choices)
 
 
 @router.post("/api/conversations/{conv_id}/chat")
@@ -160,6 +202,7 @@ async def chat(conv_id: int, body: ChatRequest, user: dict = Depends(current_use
     if not question:
         raise HTTPException(status_code=400, detail="Câu hỏi trống.")
 
+    direct_search = bool(body.direct_search)
     if not await connection.run(Messages.list_for, conv_id):
         await connection.run(Conversations.rename, conv_id, user["id"], _title_from(question))
     user_msg_id = await connection.run(Messages.add, conv_id, "user", question,
@@ -167,7 +210,7 @@ async def chat(conv_id: int, body: ChatRequest, user: dict = Depends(current_use
 
     def produce(emit):
         try:
-            _run_job(conv_id, user["id"], user_msg_id, question, emit)
+            _run_job(conv_id, user["id"], user_msg_id, question, emit, direct_search=direct_search)
         except Exception as exc:
             traceback.print_exc()
             emit(_event(type="error", text=f"Lỗi xử lý: {exc}"))

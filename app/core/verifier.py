@@ -22,7 +22,7 @@ from datetime import datetime
 
 from config import VERIFY_FAIL_POLICY
 from core import llm
-from domain.text import DAYS_RE, DOC_NO_RE, MONEY_RE, fold, tidy_answer, tokenize
+from domain.text import DAYS_RE, DOC_NO_RE, MONEY_RE, _clean_non_citation_brackets, fold, tidy_answer, tokenize
 from prompts import templates as T
 
 
@@ -90,7 +90,7 @@ def _duration(text: str) -> str:
     return f"{m.group(1)}{m.group(2)}" if m else fold(text)
 
 
-def rule_check(answer: str, pack: dict, v: Verification) -> None:
+def rule_check(answer: str, pack: dict, v: Verification, question: str = "") -> None:
     sources = pack.get("sources") or []
     evidence = "\n".join(f"{s.get('title', '')}\n{s.get('snippet', '')}\n{s.get('content', '')}"
                          for s in sources)
@@ -107,6 +107,10 @@ def rule_check(answer: str, pack: dict, v: Verification) -> None:
         # lý do này: con số / số văn bản vẫn bị đối chiếu cứng ngay bên dưới.
         v.soft_issues.append("Câu trả lời không ghi nguồn [S#] cho các ý.")
 
+    ans_stripped = answer.strip()
+    if ans_stripped.lower().startswith("tài liệu liên quan") or (len(ans_stripped) < 70 and not says_not_found(ans_stripped)):
+        v.rule_issues.append("Câu trả lời quá ngắn hoặc chỉ sao chép tiêu đề tài liệu, chưa nêu nội dung thủ tục.")
+
     # Ngoặc vuông CHỈ được chứa số tài liệu. Mọi thứ khác là chỗ trống hoặc nhãn
     # mô hình tự bịa ra: "[Tài liệu chưa nêu rõ...]", "[Nghiên cứu tài liệu]", "[Bước 1]:".
     v.placeholders = [m for m in BRACKET_RE.findall(answer) if not _is_citation(m)]
@@ -114,9 +118,13 @@ def rule_check(answer: str, pack: dict, v: Verification) -> None:
         v.rule_issues.append("Ngoặc vuông chỉ dùng cho số tài liệu, câu trả lời có: "
                              + "; ".join(f"[{p}]" for p in v.placeholders[:3])[:120])
 
+    ev_fold = fold(evidence)
     numbers = {_digits(n) for n in re.findall(r"\d[\d.,]*", evidence)}
     for money in dict.fromkeys(m.strip() for m in MONEY_RE.findall(answer)):
-        if _digits(money) not in numbers:
+        d_money = _digits(money)
+        if d_money == "0" and any(k in ev_fold for k in ["mien", "khong thu", "khong phai nop", "khong mat", "0 dong", "0d", "0đ"]):
+            continue
+        if d_money not in numbers:
             v.unverified_details.append(money)
     durations = {_duration(d) for d in DAYS_RE.findall(evidence)}
     for d in dict.fromkeys(x.strip() for x in DAYS_RE.findall(answer)):
@@ -127,6 +135,95 @@ def rule_check(answer: str, pack: dict, v: Verification) -> None:
         if re.sub(r"\s", "", fold(doc)) not in flat:
             v.unverified_details.append(doc)
     v.rule_issues += [f"Chi tiết không có trong nguồn: {d}" for d in v.unverified_details]
+
+    # ----------------------------------------------------------------------
+    # KIỂM TRA THỰC THỂ VÀ Ý KIẾN TỔNG QUÁT (GENERIC DOMAIN GROUNDING)
+    # ----------------------------------------------------------------------
+    ans_fold = fold(answer)
+    q_fold = fold(question)
+
+    # 1. Kiểm tra cơ quan/nơi tiếp nhận tổng quát (Generic Agency Grounding):
+    ADMIN_AUTHORITY_KEYWORDS = [
+        "ubnd", "uy ban nhan dan", "cong an", "bo cong an", "dich vu cong", "dichvucong",
+        "vneid", "chinh phu", "toa an", "vien kiem sat", "bo phan mot cua", "trung tam hanh chinh",
+        "co quan dang ky kinh doanh", "co quan dang ky", "co quan thue", "chi cuc thue", "bao hiem xa hoi", "bhxh"
+    ]
+    agency_patterns = [
+        r"\*\*(?:cơ quan tiếp nhận|nơi nộp hồ sơ|nơi giải quyết|nơi tiếp nhận|cơ quan giải quyết)\s*:\*\*\s*([^\n\.]+)",
+        r"(?:bạn cần đến|hãy đến|liên hệ trực tiếp|nộp hồ sơ tại|nộp tại|đến trực tiếp)\s+([^\n\.,]+?)\s+(?:để|làm|nộp|giải quyết|hỗ trợ)",
+    ]
+    for pat in agency_patterns:
+        for match in re.finditer(pat, answer, re.IGNORECASE):
+            raw_target = match.group(1).strip()
+            target_fold = fold(raw_target)
+            if len(target_fold) < 4 or any(g in target_fold for g in ["co quan chuc nang", "co quan co tham quyen", "dia phuong", "noi cu tru"]):
+                continue
+            in_evidence = target_fold in ev_fold
+            is_valid_authority = any(kw in target_fold for kw in ADMIN_AUTHORITY_KEYWORDS)
+            if not in_evidence and not is_valid_authority:
+                v.rule_issues.append(f"Chỉ dẫn sai cơ quan/nơi tiếp nhận: '{raw_target}' không có trong tài liệu và không thuộc hệ thống cơ quan hành chính công.")
+
+    # 2. Chống thiên kiến đồng thuận tổng quát (Generic Confirmation Sycophancy Check):
+    is_confirm_q = any(cq in q_fold for cq in ["dung khong", "phai khong", "co phai", "dung ko", "phai ko"])
+    if is_confirm_q:
+        q_numbers = re.findall(r"\b(\d+)\s*(ngay|thang|nam|dong|trieu|tuoi)\b", q_fold)
+        for num, unit in q_numbers:
+            unit_in_ev = re.findall(rf"\b(\d+)\s*{unit}\b", ev_fold)
+            if unit_in_ev and num not in unit_in_ev:
+                first_part = ans_fold[:120]
+                if re.search(r"\b(dung|chinh xac)\b", first_part) and not re.search(r"\b(khong dung|chua dung|sai|khong phai)\b", first_part):
+                    v.rule_issues.append(f"Xác nhận sai con số: câu hỏi nêu {num} {unit} nhưng tài liệu quy định con số khác ({', '.join(set(unit_in_ev))} {unit}).")
+
+    # 3. Chống lạc đề sang chuyên ngành hẹp (Generic Topic Drift Check):
+    SPECIFIC_NICHES = [
+        ("cam do", "dịch vụ cầm đồ"),
+        ("vu truong", "vũ trường"),
+        ("karaoke", "dịch vụ karaoke"),
+        ("xuat khau lao dong", "xuất khẩu lao động"),
+        ("kiem toan", "dịch vụ kiểm toán"),
+    ]
+    for niche_kw, niche_name in SPECIFIC_NICHES:
+        if niche_kw in ans_fold and niche_kw not in q_fold:
+            v.rule_issues.append(f"Lạc đề sang chuyên ngành hẹp: câu trả lời đề cập '{niche_name}' nhưng người dùng không hỏi về lĩnh vực này.")
+
+    # 4. Chặn hướng dẫn sai thẩm quyền đặc thù (làm CCCD / Hộ chiếu tại cơ sở y tế / bệnh viện):
+    if any(k in q_fold for k in ["can cuoc", "cccd", "ho chieu", "passport"]):
+        if any(h in ans_fold for h in ["benh vien", "co so y te", "tram y te", "trung tam y te"]):
+            v.rule_issues.append("Chỉ dẫn sai thẩm quyền: Thủ tục cấp căn cước / hộ chiếu không thực hiện tại cơ sở y tế hoặc bệnh viện.")
+
+    # 5. Bắt lỗi lẫn lộn thủ tục chéo:
+    # 5a. Hộ tịch (kết hôn, khai sinh) / cư trú / căn cước mà nói đất đai, xây dựng:
+    if any(w in q_fold for w in ["ket hon", "hon nhan", "khai sinh", "thuong tru", "tam tru", "can cuoc", "cccd", "ho chieu"]):
+        if any(w in ans_fold for w in ["ban ve thiet ke", "thiet ke xay dung", "quyen su dung dat", "so do", "giay phep xay dung", "thi cong nha"]):
+            v.rule_issues.append("Lẫn lộn thủ tục: câu hỏi về hộ tịch/cư trú/căn cước nhưng câu trả lời lại chứa giấy tờ xây dựng, đất đai.")
+    # 5b. Xây nhà mà nói hộ kinh doanh:
+    if any(w in q_fold for w in ["xay nha", "khoi cong", "xay dung", "giay phep xay dung"]):
+        if any(w in ans_fold for w in ["ho kinh doanh", "dang ky kinh doanh", "dong cua tiem"]):
+            v.rule_issues.append("Lẫn lộn thủ tục: câu hỏi về xây dựng nhà ở nhưng câu trả lời đề cập đến hộ kinh doanh.")
+
+    # 6. Bắt lỗi hỏi lệ phí nhưng câu trả lời không nêu mức tiền cụ thể hoặc thoái thác:
+    is_fee_q = any(k in q_fold for k in ["le phi", "phi", "chi phi", "ton phi", "mat phi", "bao nhieu tien"])
+    if is_fee_q:
+        has_concrete_fee = any(k in ans_fold for k in ["dong", "vnd", "mien phi", "0 dong", "khong thu", "nghin", "trieu"])
+        if not has_concrete_fee:
+            v.rule_issues.append("Câu hỏi hỏi về lệ phí nhưng câu trả lời không nêu mức tiền cụ thể hoặc chính sách miễn phí (0 đồng).")
+        if "chua co thong tin cu the" in ans_fold and any(w in ans_fold for w in ["lien he", "mot cua"]):
+            v.rule_issues.append("Câu trả lời thoái thác chỉ khuyên liên hệ một cửa mà chưa cung cấp thông tin mức phí cụ thể.")
+
+    # 7. Bắt lỗi câu trả lời về thủ tục/hồ sơ quá cụt lủn (chỉ 1 câu dẫn chiếu luật):
+    is_doc_q = any(k in q_fold for k in ["ho so", "giay to", "thu tuc", "thi sao", "can gi", "nhu the nao", "nhu nao"])
+    if is_doc_q and len(ans_stripped.split(".")) <= 2 and len(ans_stripped) < 110 and not says_not_found(ans_stripped):
+        v.rule_issues.append("Câu trả lời về thủ tục/hồ sơ quá ngắn, chưa liệt kê đủ các thành phần giấy tờ cần thiết.")
+
+    # 8. Bắt lỗi áp dụng nhầm lệ phí có yếu tố nước ngoài khi người dân không hỏi:
+    is_foreign_q = any(k in q_fold for k in ["nuoc ngoai", "yeu to nuoc ngoai", "viet kieu", "nguoi nuoc ngoai"])
+    if not is_foreign_q and any(k in q_fold for k in ["ket hon", "khai sinh", "ho tich"]):
+        if any(w in ans_fold for w in ["yeu to nuoc ngoai", "nguoi nuoc ngoai", "1.500.000", "1.000.000", "1 trieu", "1,5 trieu"]):
+            v.rule_issues.append("Áp dụng nhầm thủ tục có yếu tố nước ngoài: người dùng không hỏi về người nước ngoài, thủ tục hộ tịch trong nước của công dân Việt Nam được miễn lệ phí (0 đồng).")
+
+    # 9. Bắt placeholder trích dẫn chưa hoàn chỉnh:
+    if re.search(r"\[?S#\]?", answer):
+        v.rule_issues.append("Câu trả lời chứa mã trích dẫn placeholder chưa hoàn chỉnh 'S#'.")
 
     first, _, rest = answer.strip().partition("\n")
     if says_not_found(first) and has_substance(rest):
@@ -139,15 +236,14 @@ def rule_check(answer: str, pack: dict, v: Verification) -> None:
         v.rule_issues.append("Câu trả lời chép lại khung prompt / nhắc tới việc kiểm chứng.")
 
     # Mô hình nhỏ đôi khi trả về đúng một chỗ trống kiểu "[Tài liệu chưa nêu rõ...]".
-    flat = re.sub(r"\s+", " ", answer).strip()
-    v.too_short = len(flat) < 60 or bool(re.fullmatch(r"[\[(].{0,120}[\])]", flat))
+    v.too_short = (len(flat) < 40 and not says_not_found(flat)) or bool(re.fullmatch(r"[\[(].{0,120}[\])]", flat))
     if v.too_short:
         v.rule_issues.append("Câu trả lời quá ngắn hoặc chỉ là chỗ trống.")
 
 
 def verify(question: str, standalone: str, pack: dict, draft: str) -> Verification:
     v = Verification()
-    rule_check(draft, pack, v)
+    rule_check(draft, pack, v, question=standalone or question)
 
     raw = llm.chat_json("verify", T.verify_system(datetime.now().strftime("%d/%m/%Y")),
                         T.verify_user(question, standalone, pack, draft), T.VERIFY_SCHEMA)
@@ -174,7 +270,10 @@ _POINTER_RE = re.compile(r"truy cập|tham khảo|để biết thêm|liên hệ|
 
 def says_not_found(text: str) -> bool:
     low = (text or "").lower()
-    return "chưa nêu rõ" in low or "không tìm thấy thông tin" in low
+    return any(w in low for w in [
+        "chưa nêu rõ", "không tìm thấy thông tin", "chưa có thông tin",
+        "chưa ghi nhận", "không có thông tin", "chưa quy định", "chưa rõ"
+    ])
 
 
 def detail_lines(text: str) -> list[str]:
@@ -216,8 +315,8 @@ def apply_fail_policy(draft: str, v: Verification) -> str:
     if VERIFY_FAIL_POLICY == "refuse":
         return T.VERIFY_REFUSAL
 
-    # bỏ nhãn tự bịa trong ngoặc, giữ lại câu chữ quanh nó và các trích dẫn [S#]
-    body = BRACKET_RE.sub(lambda m: m.group(0) if _is_citation(m.group(1)) else "", draft)
+    # Bóc bỏ ngoặc vuông không phải trích dẫn (giữ lại nội dung bên trong, giữ nguyên [S#])
+    body = _clean_non_citation_brackets(draft)
     body = re.sub(r"^[ \t]*:[ \t]*", "", body, flags=re.MULTILINE)
 
     drop = [d.lower() for d in v.unverified_details] + [m.lower() for m in T.ECHO_MARKERS]
@@ -234,9 +333,10 @@ def apply_fail_policy(draft: str, v: Verification) -> str:
             if not any(key and key in line.lower() for key in drop) and not unsupported(line)]
     cleaned = tidy_answer("\n".join(_drop_empty_headings(kept)))
 
-    if not has_substance(cleaned):
-        return T.NOT_IN_SOURCES_TEXT        # đã nói thẳng là nguồn không có, không cần cảnh báo thêm
+    # TUYỆT ĐỐI KHÔNG xoá sạch câu trả lời rồi tráo thành NOT_IN_SOURCES_TEXT:
+    # Nếu gọt xong mà quá ngắn, giữ lại bản nháp kèm cảnh báo để người dân tự đối chiếu nguồn
+    final_text = cleaned if has_substance(cleaned) else draft.strip()
     note = T.VERIFY_WARNING
-    if len(cleaned) < len(draft.strip()):
+    if len(cleaned) < len(draft.strip()) and has_substance(cleaned):
         note += " " + T.VERIFY_STRIPPED
-    return f"{cleaned}\n\n{note}"
+    return f"{final_text}\n\n{note}"

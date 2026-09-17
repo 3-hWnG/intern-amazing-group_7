@@ -179,24 +179,85 @@ window.Chat = (function () {
     return fb;
   }
 
-  function fillAssistant(wrap, body, text, meta) {
+  function choiceBox(choices, convId) {
+    if (!choices || !choices.length) return null;
+    const wrap = el("div", "choice-table-wrap");
+    const head = el("div", "choice-table-head");
+    head.innerHTML = `<strong>💡 Gợi ý tìm kiếm DuckDuckGo</strong><span>(Bấm 1 câu để AI tra cứu ngay, hoặc tự nhập bên dưới)</span>`;
+    wrap.appendChild(head);
+
+    const list = el("div", "choice-list");
+    choices.slice(0, 3).forEach((choice, idx) => {
+      const item = el("button", "choice-item");
+      item.type = "button";
+      const badge = el("span", "choice-badge", String(idx + 1));
+      const text = el("span", "choice-text", choice);
+      item.append(badge, text);
+      item.onclick = (e) => {
+        e.preventDefault();
+        if (isSending) return;
+        wrap.querySelectorAll(".choice-item").forEach((c) => c.classList.remove("selected"));
+        item.classList.add("selected");
+        send(convId, choice, { directSearch: true });
+      };
+      list.appendChild(item);
+    });
+    wrap.appendChild(list);
+
+    const customRow = el("div", "choice-custom-row");
+    const input = el("input", "choice-custom-input");
+    input.type = "text";
+    input.placeholder = "Hoặc tự nhập nội dung tra cứu theo ý bạn…";
+    const btn = el("button", "choice-custom-btn", "Gửi tra cứu");
+    btn.type = "button";
+
+    const submitCustom = () => {
+      const val = input.value.trim();
+      if (!val || isSending) return;
+      input.value = "";
+      send(convId, val, { directSearch: true });
+    };
+
+    btn.onclick = (e) => {
+      e.preventDefault();
+      submitCustom();
+    };
+    input.onkeydown = (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        submitCustom();
+      }
+    };
+    customRow.append(input, btn);
+    wrap.appendChild(customRow);
+
+    return wrap;
+  }
+
+  function fillAssistant(wrap, body, text, meta, convId) {
     const sources = normSources(meta.sources);
     body.innerHTML = rich(text, sources);
     const tags = el("div", "msg-tags");
     const b = badge(meta);
     if (b) tags.appendChild(b);
     if (tags.childNodes.length) wrap.appendChild(tags);
+
+    if (meta.choices && meta.choices.length) {
+      const cBox = choiceBox(meta.choices, convId || activeLoadId);
+      if (cBox) wrap.appendChild(cBox);
+    }
+
     const src = sourceList(sources);
     if (src) wrap.appendChild(src);
     if (meta.id && meta.has_evidence) wrap.appendChild(evidencePanel(meta.id));
     if (meta.id && meta.kind !== "error") wrap.appendChild(feedback(meta.id));
   }
 
-  function render(role, text, meta) {
+  function render(role, text, meta, convId) {
     const wrap = el("div", `msg ${role}`);
     const body = el("div", "bubble");
     wrap.appendChild(body);
-    if (role === "assistant") fillAssistant(wrap, body, text, meta || {});
+    if (role === "assistant") fillAssistant(wrap, body, text, meta || {}, convId);
     else body.textContent = text || "";
     box().appendChild(wrap);
     scroll();
@@ -211,63 +272,95 @@ window.Chat = (function () {
       '<p>Ví dụ: <em>“Con tôi mới sinh, làm giấy khai sinh cần gì?”</em></p></div>';
   }
 
+  let activeLoadId = null;
+  let isSending = false;
+
   async function load(convId) {
-    clear();
-    if (!convId) { empty(); return; }
-    const data = await API.get(`/api/conversations/${convId}`);
-    if (!data.messages.length) { empty(); return; }
-    data.messages.forEach((m) => render(m.role, m.content, {
-      id: m.id, kind: m.kind, verdict: m.verdict, sources: m.sources,
-      has_evidence: m.has_evidence,
-    }));
+    activeLoadId = convId;
+    if (isSending) return;
+    if (!convId) {
+      clear();
+      empty();
+      return;
+    }
+    try {
+      const data = await API.get(`/api/conversations/${convId}`);
+      if (activeLoadId !== convId || isSending) return;
+      clear();
+      if (!data.messages || !data.messages.length) {
+        empty();
+        return;
+      }
+      data.messages.forEach((m) => render(m.role, m.content, {
+        id: m.id,
+        kind: m.kind,
+        verdict: m.verdict,
+        sources: m.sources,
+        has_evidence: m.has_evidence,
+        choices: m.choices || [],
+      }, convId));
+    } catch (err) {
+      console.error("Lỗi tải cuộc trò chuyện:", err);
+    }
   }
 
-  async function send(convId, text) {
-    if (box().querySelector(".empty")) clear();
-    render("user", text);
-
-    const wrap = el("div", "msg assistant");
-    const status = el("div", "status");
-    const statusText = el("span", "status-text", "Đang gửi…");
-    status.append(el("span", "spinner"), statusText);
-    const body = el("div", "bubble");
-    body.hidden = true;
-    wrap.append(status, body);
-    box().appendChild(wrap);
-    scroll();
-
-    let acc = "";
+  async function send(convId, text, opts = {}) {
+    activeLoadId = convId;
+    isSending = true;
     let done = null;
-    await API.stream(`/api/conversations/${convId}/chat`, { text }, (evt) => {
-      if (evt.type === "status" || evt.type === "queue") {
-        statusText.textContent = evt.text;
-      } else if (evt.type === "delta") {
-        body.hidden = false;
-        acc += evt.text;
-        body.textContent = acc;
-        scroll();
-      } else if (evt.type === "done") {
-        done = evt;
-      } else if (evt.type === "error") {
-        body.hidden = false;
-        acc += (acc ? "\n\n" : "") + "[Lỗi] " + evt.text;
-        body.textContent = acc;
-      }
-    });
+    const directSearch = Boolean(opts && opts.directSearch);
+    try {
+      if (box().querySelector(".empty")) clear();
+      render("user", text);
 
-    status.remove();
-    body.hidden = false;
-    if (done) {
-      fillAssistant(wrap, body, acc, {
-        id: done.message_id, kind: done.kind, verdict: done.verdict,
-        sources: done.sources, has_evidence: done.has_evidence,
+      const wrap = el("div", "msg assistant");
+      const status = el("div", "status");
+      const statusText = el("span", "status-text", directSearch ? "Đang gửi DuckDuckGo qua MCP…" : "Đang gửi…");
+      status.append(el("span", "spinner"), statusText);
+      const body = el("div", "bubble");
+      body.hidden = true;
+      wrap.append(status, body);
+      box().appendChild(wrap);
+      scroll();
+
+      let acc = "";
+      await API.stream(`/api/conversations/${convId}/chat`, { text, direct_search: directSearch }, (evt) => {
+        if (evt.type === "status" || evt.type === "queue") {
+          statusText.textContent = evt.text;
+        } else if (evt.type === "delta") {
+          body.hidden = false;
+          acc += evt.text;
+          body.textContent = acc;
+          scroll();
+        } else if (evt.type === "done") {
+          done = evt;
+        } else if (evt.type === "error") {
+          body.hidden = false;
+          acc += (acc ? "\n\n" : "") + "[Lỗi] " + evt.text;
+          body.textContent = acc;
+        }
       });
-    } else if (!acc) {
-      body.textContent = "[Lỗi] Không nhận được phản hồi từ máy chủ.";
+
+      status.remove();
+      body.hidden = false;
+      if (done) {
+        fillAssistant(wrap, body, acc, {
+          id: done.message_id,
+          kind: done.kind,
+          verdict: done.verdict,
+          sources: done.sources,
+          has_evidence: done.has_evidence,
+          choices: done.choices || [],
+        }, convId);
+      } else if (!acc) {
+        body.textContent = "[Lỗi] Không nhận được phản hồi từ máy chủ.";
+      }
+      scroll();
+    } finally {
+      isSending = false;
     }
-    scroll();
     return done;
   }
 
-  return { load, send, clear, empty };
+  return { load, send, clear, empty, get isSending() { return isSending; } };
 })();

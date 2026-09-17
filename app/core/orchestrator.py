@@ -18,6 +18,7 @@ Thuần nghiệp vụ: không đọc/ghi CSDL (chat_routes lo), nên evaluate.py
 from __future__ import annotations
 
 import time
+from datetime import datetime
 from dataclasses import dataclass, field
 from typing import Callable
 
@@ -34,6 +35,7 @@ class TurnInput:
     summary: str = ""
     profile: dict = field(default_factory=dict)
     conversation_id: int | None = None
+    direct_search: bool = False
 
 
 @dataclass
@@ -47,6 +49,7 @@ class TurnResult:
     verification: dict = field(default_factory=dict)
     profile_update: dict = field(default_factory=dict)
     timings: dict = field(default_factory=dict)
+    choices: list[str] = field(default_factory=list)
 
 
 def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> TurnResult:
@@ -60,47 +63,67 @@ def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> 
         return ms
 
     try:
-        # 1-2. hiểu ý định + ngữ cảnh ------------------------------------
-        status("Đang phân tích câu hỏi…")
-        t = time.time()
-        u = intent.analyze(inp.question, inp.history, inp.summary, inp.profile)
-        res.intent = u.as_dict()
-        res.profile_update = intent.profile_update(u, inp.question, inp.history, inp.profile)
-        dev.event("understand", ms=lap("understand", t), **res.intent)
-
-        if u.route == "chitchat":
+        if inp.direct_search:
+            # Cách 3: Người dùng đã chọn 1 gợi ý hoặc tự nhập nội dung tra cứu -> Đi thẳng vào MCP DuckDuckGo!
+            question = inp.question
+            u = intent.understand(question, [], "", {})
+            search_queries = u.search_queries or [question]
+            res.intent = {"intent": u.intent, "standalone_question": question, "search_queries": search_queries}
+            dev.event("direct_search", query=question, intent=u.intent)
+        else:
+            # 1-2. hiểu ý định + ngữ cảnh ------------------------------------
+            status("Đang phân tích câu hỏi…")
             t = time.time()
-            res.kind, res.text = "chitchat", answer.chitchat(inp.question, inp.history)
-            dev.event("chitchat", ms=lap("answer", t))
-            return res
-        if u.route == "out_of_scope":
-            res.kind, res.text = "out_of_scope", T.OUT_OF_SCOPE_TEXT
-            return res
+            u = intent.analyze(inp.question, inp.history, inp.summary, inp.profile)
+            res.intent = u.as_dict()
+            res.profile_update = intent.profile_update(u, inp.question, inp.history, inp.profile)
+            dev.event("understand", ms=lap("understand", t), **res.intent)
 
-        # 3. hỏi lại khi thiếu thông tin ---------------------------------
-        if u.route == "clarify":
-            res.kind, res.text = "clarify", u.clarifying_question
-            dev.event("clarify", missing=u.missing_information)
-            return res
+            if u.route == "chitchat":
+                t = time.time()
+                res.kind, res.text = "chitchat", answer.chitchat(inp.question, inp.history)
+                dev.event("chitchat", ms=lap("answer", t))
+                return res
+            if u.route == "out_of_scope":
+                res.kind, res.text = "out_of_scope", T.OUT_OF_SCOPE_TEXT
+                return res
+
+            # 3. hỏi lại khi thiếu thông tin ---------------------------------
+            if u.route == "clarify":
+                res.kind, res.text = "clarify", u.clarifying_question
+                res.choices = u.choices
+                dev.event("clarify", missing=u.missing_information, choices=u.choices)
+                return res
+
+            question = u.standalone_question or inp.question
+            search_queries = u.search_queries
 
         # 4. tra cứu qua MCP -> Evidence Pack ------------------------------
-        question = u.standalone_question or inp.question
-        status("Đang tra cứu nguồn chính thống qua MCP…")
+        status("Đang gửi DuckDuckGo qua MCP…" if inp.direct_search else "Đang tra cứu nguồn chính thống qua MCP…")
         t = time.time()
-        pack = evidence.gather(question, u.search_queries, inp.conversation_id)
+        pack = evidence.gather(question, search_queries, inp.conversation_id)
         res.evidence = pack
         dev.event("search", ms=lap("search", t), transport=pack.get("transport", ""),
                   queries=pack.get("queries"), n_sources=len(pack.get("sources") or []),
                   error=pack.get("error", ""), diagnostics="\n".join(pack.get("diagnostics") or []))
         if not pack.get("sources"):
             res.kind, res.text = "no_evidence", T.NO_EVIDENCE_TEXT
+            res.choices = intent.generate_prompt_choices(inp.question, u, datetime.now().year)
             return res
 
         # 5. soạn câu trả lời ---------------------------------------------
         status(f"Đã đọc {len(pack['sources'])} nguồn — đang soạn câu trả lời…")
         t = time.time()
+        # Lọc lịch sử: nếu câu hỏi hiện tại chuyển sang một thủ tục mới khác với lịch sử,
+        # không truyền lịch sử của thủ tục cũ vào để tránh mô hình 1.5B bị lẫn lộn giấy tờ
+        hist = inp.history
+        if hist and u.intent in intent.PROCEDURE_INTENTS:
+            _, prev_intent = intent._extract_recent_procedure(hist)
+            if prev_intent and prev_intent != u.intent:
+                hist = []
+
         draft = answer.generate(inp.question, question, pack, inp.summary,
-                                inp.history, inp.profile)
+                                hist, inp.profile)
         dev.event("answer", ms=lap("answer", t), chars=len(draft))
 
         # 6. kiểm chứng -> sửa ---------------------------------------------
@@ -134,8 +157,12 @@ def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> 
             if not v.passed:
                 draft = verifier.apply_fail_policy(draft, v)
 
-        # Chỉ nói "tài liệu chưa nêu rõ" thì không tính là một câu trả lời đã kiểm chứng
-        res.kind = "not_in_sources" if verifier.is_not_found_answer(draft) else "answer"
+            # Nếu AI không chắc chắn (kiểm chứng FAIL hoặc câu trả lời không tìm thấy đủ căn cứ), cung cấp 3 gợi ý MCP
+            if (not v.passed or not v.evidence_sufficient or verifier.says_not_found(draft)) and not res.choices:
+                res.choices = intent.generate_prompt_choices(inp.question, u, datetime.now().year)
+
+        # Đã tra cứu có nguồn thì phục vụ câu trả lời cho người dân kèm nguồn đối chiếu, không tự gán not_in_sources
+        res.kind = "answer"
         res.text = draft
         res.sources = evidence.public_sources(pack, draft)
         return res
