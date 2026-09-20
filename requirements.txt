@@ -1,0 +1,26 @@
+# Python 3.12. Cài vào virtualenv, KHÔNG cài vào Python toàn cục:
+#   python -m venv .venv
+#   .venv\Scripts\python.exe -m pip install -r requirements.txt
+# Fine-tune / lượng tử hoá có danh sách riêng: finetune/requirements-finetune.txt
+
+# Web server
+fastapi==0.141.1
+starlette==1.6.0
+uvicorn==0.52.4
+pydantic==2.13.5
+
+# LLM cục bộ (Ollama) + MCP + tìm kiếm web + trích nội dung trang
+ollama==0.6.2
+mcp==2.2.0
+ddgs==9.16.0
+httpx==0.28.1
+trafilatura==2.2.0
+
+# Xác thực (băm mật khẩu)
+bcrypt==5.0.0
+
+# Đọc tệp đính kèm (csv/xlsx/pdf/docx)
+pandas==3.0.5
+openpyxl==3.1.5
+pypdf==6.18.1
+python-docx==1.2.0

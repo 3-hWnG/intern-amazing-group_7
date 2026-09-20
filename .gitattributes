@@ -1,0 +1,17 @@
+# Chuẩn hoá xuống dòng. / Line-ending normalisation.
+* text=auto
+
+# .bat và .ps1 BẮT BUỘC CRLF — clone ra LF là Windows chạy sai.
+*.bat text eol=crlf
+*.ps1 text eol=crlf
+*.cmd text eol=crlf
+
+*.sh  text eol=lf
+
+# Tệp nhị phân: Git không được đụng vào.
+*.xlsx binary
+*.xls  binary
+*.pdf  binary
+*.db   binary
+*.png  binary
+*.jpg  binary

@@ -1,0 +1,155 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1093.5455 1693.985" width="1093.5455" height="1693.985" style="--bg:#1F1F1F;--fg:#CCCCCC;--line:#CCCCCC;--accent:#0078D4;--muted:#CCCCCCCC;--surface:#181818;--border:#CCCCCC;background:var(--bg)">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap');
+  text { font-family: 'Inter', system-ui, sans-serif; }
+  svg {
+    /* Derived from --bg and --fg (overridable via --line, --accent, etc.) */
+    --_text:          var(--fg);
+    --_text-sec:      var(--muted, color-mix(in srgb, var(--fg) 60%, var(--bg)));
+    --_text-muted:    var(--muted, color-mix(in srgb, var(--fg) 40%, var(--bg)));
+    --_text-faint:    color-mix(in srgb, var(--fg) 25%, var(--bg));
+    --_line:          var(--line, color-mix(in srgb, var(--fg) 50%, var(--bg)));
+    --_arrow:         var(--accent, color-mix(in srgb, var(--fg) 85%, var(--bg)));
+    --_node-fill:     var(--surface, color-mix(in srgb, var(--fg) 3%, var(--bg)));
+    --_node-stroke:   var(--border, color-mix(in srgb, var(--fg) 20%, var(--bg)));
+    --_group-fill:    var(--bg);
+    --_group-hdr:     color-mix(in srgb, var(--fg) 5%, var(--bg));
+    --_inner-stroke:  color-mix(in srgb, var(--fg) 12%, var(--bg));
+    --_key-badge:     color-mix(in srgb, var(--fg) 10%, var(--bg));
+  }
+</style>
+<defs>
+  <marker id="arrowhead" markerWidth="8" markerHeight="5" refX="7" refY="2.5" orient="auto">
+    <polygon points="0 0, 8 2.5, 0 5" fill="var(--_arrow)" stroke="var(--_arrow)" stroke-width="0.75" stroke-linejoin="round" />
+  </marker>
+  <marker id="arrowhead-start" markerWidth="8" markerHeight="5" refX="1" refY="2.5" orient="auto-start-reverse">
+    <polygon points="8 0, 0 2.5, 8 5" fill="var(--_arrow)" stroke="var(--_arrow)" stroke-width="0.75" stroke-linejoin="round" />
+  </marker>
+</defs>
+<polyline class="edge" data-from="Start" data-to="Q" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="259.246,76.9 259.246,124.9" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Q" data-to="Step1" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="259.246,161.8 259.24600000000004,209.8" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Step1" data-to="Step2" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="259.24600000000004,263.6 259.246,311.6" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Step2" data-to="ChitChat" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="Chào hỏi / Xã giao" points="205.6714,436.60740000000004 205.6714,1103.9849999999994 108.02850000000001,1103.9849999999994 108.02850000000001,1219.9794999999995" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Step2" data-to="OutScope" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="Ngoài phạm vi thủ tục" points="241.38779999999997,472.3238 241.38779999999997,1136.2849999999994 186.05700000000002,1136.2849999999994 186.05699999999996,1301.4849999999994" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Step2" data-to="Clarify" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="Thiếu thông tin địa phương/hồ sơ" points="277.1042,472.3238 277.1042,1221.1849999999995 332.435,1221.1849999999995 332.43499999999995,1386.3849999999995" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Step2" data-to="Step3" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="Đủ thông tin tra cứu" points="312.8206,436.6074 312.8206,502.182 839.2686666666666,502.182 839.2686666666666,582.482" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Step3" data-to="Step4" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="839.2686666666666,636.2819999999999 839.2686666666666,684.2819999999999" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Step4" data-to="Step5" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="839.2686666666666,721.182 839.2686666666666,769.182" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Step5" data-to="Step6" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="839.2686666666666,822.982 839.2686666666666,870.982" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Step6" data-to="Respond" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="PASS" points="904.2916666666665,1066.0510000000002 904.2916666666665,1390.9849999999997 929.942,1390.9849999999997 929.942,1556.1849999999997" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Step6" data-to="Retry" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="FAIL" points="774.2456666666666,1066.051 774.2456666666666,1143.0739999999998 651.6250333333334,1143.0739999999998 651.6250333333334,1219.9794999999995" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Retry" data-to="FixDraft" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="Có" points="677.5602,1349.6553333333327 677.5602,1390.9849999999997 767.9968333333333,1390.9849999999997 767.9968333333333,1459.2849999999996 758.5953333333333,1459.2849999999996 758.5953333333333,1471.2849999999996" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="FixDraft" data-to="Step6" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="839.2686666666666,1471.2849999999996 839.2686666666666,1131.074" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Retry" data-to="Warning" data-style="solid" data-arrow-start="false" data-arrow-end="true" data-label="Hết lượt" points="625.6898666666667,1349.6553333333327 625.6898666666667,1390.9849999999997 496.67850000000004,1390.9849999999997 496.67850000000004,1471.2849999999996" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="ChitChat" data-to="SaveEnd" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="108.0285,1256.8794999999996 108.0285,1532.1849999999997 271.7317,1532.1849999999997 271.7317,1556.1849999999997" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="OutScope" data-to="SaveEnd" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="186.05699999999996,1338.3849999999995 186.05699999999996,1532.1849999999997 271.7317,1532.1849999999997 271.7317,1556.1849999999997" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Clarify" data-to="SaveEnd" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="332.43499999999995,1423.2849999999996 332.43499999999995,1532.1849999999997 271.7317,1532.1849999999997 271.7317,1556.1849999999997" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Warning" data-to="SaveEnd" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="496.67850000000004,1508.1849999999997 496.67850000000004,1532.1849999999997 271.7317,1532.1849999999997 271.7317,1556.1849999999997" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="Respond" data-to="End" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="929.942,1593.0849999999998 929.942,1605.0849999999998 578.8071,1605.0849999999998 578.8071,1617.0849999999998" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<polyline class="edge" data-from="SaveEnd" data-to="End" data-style="solid" data-arrow-start="false" data-arrow-end="true" points="271.7317,1593.0849999999998 271.7317,1605.0849999999998 578.8071,1605.0849999999998 578.8071,1617.0849999999998" fill="none" stroke="var(--_line)" stroke-width="1" marker-end="url(#arrowhead)" />
+<g class="edge-label" data-from="Step2" data-to="ChitChat" data-label="Chào hỏi / Xã giao">
+  <rect x="57.52850000000001" y="1110.9849999999994" width="100.21600000000001" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="107.63650000000001" y="1126.1349999999995" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">Chào hỏi / Xã giao</text>
+</g>
+<g class="edge-label" data-from="Step2" data-to="OutScope" data-label="Ngoài phạm vi thủ tục">
+  <rect x="129.0569999999999" y="1143.2849999999994" width="113.87800000000004" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="185.99599999999992" y="1158.4349999999995" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">Ngoài phạm vi thủ tục</text>
+</g>
+<g class="edge-label" data-from="Step2" data-to="Clarify" data-label="Thiếu thông tin địa phương/hồ sơ">
+  <rect x="246.93500000000006" y="1228.1849999999995" width="170.90200000000004" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="332.3860000000001" y="1243.3349999999996" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">Thiếu thông tin địa phương/hồ sơ</text>
+</g>
+<g class="edge-label" data-from="Step2" data-to="Step3" data-label="Đủ thông tin tra cứu">
+  <rect x="786.7686666666666" y="509.182" width="104.37400000000002" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="838.9556666666666" y="524.332" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">Đủ thông tin tra cứu</text>
+</g>
+<g class="edge-label" data-from="Step6" data-to="Respond" data-label="PASS">
+  <rect x="906.442" y="1397.9849999999997" width="46.162" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="929.523" y="1413.1349999999998" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">PASS</text>
+</g>
+<g class="edge-label" data-from="Step6" data-to="Retry" data-label="FAIL">
+  <rect x="630.6250333333334" y="1150.0739999999998" width="41.41" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="651.3300333333334" y="1165.224" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">FAIL</text>
+</g>
+<g class="edge-label" data-from="Retry" data-to="FixDraft" data-label="Có">
+  <rect x="752.4968333333333" y="1397.9849999999997" width="30.718000000000004" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="767.8558333333333" y="1413.1349999999998" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">Có</text>
+</g>
+<g class="edge-label" data-from="Retry" data-to="Warning" data-label="Hết lượt">
+  <rect x="470.67850000000004" y="1397.9849999999997" width="51.508" height="30.3" rx="2" ry="2" fill="var(--bg)" stroke="var(--_inner-stroke)" stroke-width="1" />
+  <text x="496.43250000000006" y="1413.1349999999998" text-anchor="middle" font-size="11" font-weight="400" fill="var(--_text-sec)" dy="3.8499999999999996">Hết lượt</text>
+</g>
+<g class="node" data-id="Start" data-label="Người dân gửi câu hỏi" data-shape="stadium">
+  <rect x="176.76799999999997" y="40" width="164.95600000000002" height="36.900000000000006" rx="18.450000000000003" ry="18.450000000000003" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="259.246" y="58.45" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Người dân gửi câu hỏi</text>
+</g>
+<g class="node" data-id="Q" data-label="Xếp hàng đợi (Queue)" data-shape="rectangle">
+  <rect x="176.39749999999998" y="124.9" width="165.697" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="259.246" y="143.35000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Xếp hàng đợi (Queue)</text>
+</g>
+<g class="node" data-id="Step1" data-label="1. Tổng hợp ngữ cảnh
+(Lịch sử gần nhất + Tóm tắt + Hồ sơ tỉnh/xã)" data-shape="rectangle">
+  <rect x="112.67150000000004" y="209.8" width="293.149" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="259.24600000000004" y="236.70000000000002" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="259.24600000000004" dy="-3.9000000000000012">1. Tổng hợp ngữ cảnh</tspan><tspan x="259.24600000000004" dy="16.900000000000002">(Lịch sử gần nhất + Tóm tắt + Hồ sơ tỉnh/xã)</tspan></text>
+</g>
+<g class="node" data-id="Step2" data-label="2. Phân tích ý định
+&amp; Bộ gác (Gate)" data-shape="diamond">
+  <polygon points="259.246,311.6 348.537,400.891 259.246,490.182 169.95499999999998,400.891" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="259.246" y="400.891" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="259.246" dy="-3.9000000000000012">2. Phân tích ý định</tspan><tspan x="259.246" dy="16.900000000000002">&amp; Bộ gác (Gate)</tspan></text>
+</g>
+<g class="node" data-id="ChitChat" data-label="Trả lời ngắn gọn" data-shape="rectangle">
+  <rect x="40" y="1219.9794999999995" width="136.057" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="108.0285" y="1238.4294999999995" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Trả lời ngắn gọn</text>
+</g>
+<g class="node" data-id="OutScope" data-label="Từ chối lịch sự" data-shape="rectangle">
+  <rect x="120.99249999999995" y="1301.4849999999994" width="130.12900000000002" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="186.05699999999996" y="1319.9349999999995" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Từ chối lịch sự</text>
+</g>
+<g class="node" data-id="Clarify" data-label="Hỏi lại người dân (Kèm 3 gợi ý)" data-shape="rectangle">
+  <rect x="227.35649999999998" y="1386.3849999999995" width="210.15699999999998" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="332.43499999999995" y="1404.8349999999996" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Hỏi lại người dân (Kèm 3 gợi ý)</text>
+</g>
+<g class="node" data-id="Step3" data-label="3. Tra cứu qua MCP Server
+(Tìm kiếm web, ưu tiên .gov.vn, trích xuất đoạn văn)" data-shape="rectangle">
+  <rect x="670.4641666666666" y="582.482" width="337.6089999999999" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="839.2686666666666" y="609.382" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="839.2686666666666" dy="-3.9000000000000012">3. Tra cứu qua MCP Server</tspan><tspan x="839.2686666666666" dy="16.900000000000002">(Tìm kiếm web, ưu tiên .gov.vn, trích xuất đoạn văn)</tspan></text>
+</g>
+<g class="node" data-id="Step4" data-label="4. Đóng gói Evidence Pack (S1..S5)" data-shape="rectangle">
+  <rect x="719.3701666666666" y="684.2819999999999" width="239.79699999999994" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="839.2686666666666" y="702.732" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">4. Đóng gói Evidence Pack (S1..S5)</text>
+</g>
+<g class="node" data-id="Step5" data-label="&quot;5. Soạn câu trả lời
+(Chỉ dùng dữ kiện từ Evidence Pack, đánh dấu [S#" data-shape="rectangle">
+  <rect x="673.4281666666666" y="769.182" width="331.6809999999999" height="53.800000000000004" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="839.2686666666666" y="796.082" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="839.2686666666666" dy="-3.9000000000000012">&quot;5. Soạn câu trả lời</tspan><tspan x="839.2686666666666" dy="16.900000000000002">(Chỉ dùng dữ kiện từ Evidence Pack, đánh dấu [S#</tspan></text>
+</g>
+<g class="node" data-id="Step6" data-label="6. Kiểm chứng (Verifier)
+(Check số tiền, thời hạn, điều kiện)" data-shape="diamond">
+  <polygon points="839.2686666666666,870.982 969.3146666666667,1001.028 839.2686666666666,1131.074 709.2226666666666,1001.028" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="839.2686666666666" y="1001.028" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)"><tspan x="839.2686666666666" dy="-3.9000000000000012">6. Kiểm chứng (Verifier)</tspan><tspan x="839.2686666666666" dy="16.900000000000002">(Check số tiền, thời hạn, điều kiện)</tspan></text>
+</g>
+<g class="node" data-id="Respond" data-label="Lưu CSDL &amp; Trả kết quả kèm nguồn" data-shape="rectangle">
+  <rect x="806.3385" y="1556.1849999999997" width="247.20700000000002" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="929.942" y="1574.6349999999998" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Lưu CSDL &amp; Trả kết quả kèm nguồn</text>
+</g>
+<g class="node" data-id="Retry" data-label="Còn lượt thử lại?" data-shape="diamond">
+  <polygon points="651.6250333333335,1219.9794999999995 729.4305333333334,1297.7849999999994 651.6250333333335,1375.5904999999993 573.8195333333335,1297.7849999999994" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="651.6250333333335" y="1297.7849999999994" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Còn lượt thử lại?</text>
+</g>
+<g class="node" data-id="FixDraft" data-label="Tra cứu bổ sung / Viết lại câu trả lời" data-shape="rectangle">
+  <rect x="677.922" y="1471.2849999999996" width="242.01999999999992" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="798.932" y="1489.7349999999997" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Tra cứu bổ sung / Viết lại câu trả lời</text>
+</g>
+<g class="node" data-id="Warning" data-label="Gắn cảnh báo thiếu bằng chứng &amp; Gợi ý prompt" data-shape="rectangle">
+  <rect x="343.43500000000006" y="1471.2849999999996" width="306.48699999999997" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="496.67850000000004" y="1489.7349999999997" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Gắn cảnh báo thiếu bằng chứng &amp; Gợi ý prompt</text>
+</g>
+<g class="node" data-id="SaveEnd" data-label="Lưu CSDL &amp; Phản hồi" data-shape="rectangle">
+  <rect x="188.5127" y="1556.1849999999997" width="166.438" height="36.900000000000006" rx="0" ry="0" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="271.7317" y="1574.6349999999998" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Lưu CSDL &amp; Phản hồi</text>
+</g>
+<g class="node" data-id="End" data-label="Hoàn thành lượt xử lý" data-shape="stadium">
+  <rect x="498.55209999999994" y="1617.0849999999998" width="160.51000000000002" height="36.900000000000006" rx="18.450000000000003" ry="18.450000000000003" fill="var(--_node-fill)" stroke="var(--_node-stroke)" stroke-width="0.75" />
+  <text x="578.8071" y="1635.5349999999999" text-anchor="middle" font-size="13" font-weight="500" fill="var(--_text)" dy="4.55">Hoàn thành lượt xử lý</text>
+</g>
+</svg>

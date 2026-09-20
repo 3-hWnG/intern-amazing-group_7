@@ -1,0 +1,47 @@
+# ---------------------------------------------------------------- python ---
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# --------------------------------------------- dữ liệu sống & của người dùng --
+# Database/runtime/ chứa app.db: tài khoản thật, mật khẩu đã băm bcrypt, lịch sử
+# trò chuyện và tệp người dùng tải lên. TUYỆT ĐỐI KHÔNG commit.
+# Live user data — real accounts, bcrypt hashes, chat history. NEVER commit.
+Database/runtime/
+*.db
+*.db-shm
+*.db-wal
+
+# ------------------------------------------ kết quả đánh giá & fine-tune ----
+Evaluation/results/
+Utility/finetune/data/
+Utility/finetune/output/
+Utility/finetune/runs.jsonl
+Utility/finetune/benchmark_results.md
+
+# ------------------------------------------------------------- bí mật ------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# ------------------------------------------------- rác của editor / OS -----
+.~lock.*#
+*.swp
+*~
+Thumbs.db
+.DS_Store
+
+# ------------------------------------------ chỉ mục truy xuất sinh tự động --
+# Vector store / BM25 index: là KẾT QUẢ dựng lại được từ Database/corpus/,
+# không phải mã nguồn. / Build output, regenerated from the corpus.
+Database/corpus/chromadb*/
+Database/corpus/*.pkl
+Database/corpus/index_meta.json
+
+# ------------------------------------------------------- bản cũ V10.2 ------
+# Thư mục dự án V10.2 nằm cạnh đây, GIỮ NGUYÊN làm bản lưu, có kho Git RIÊNG.
+# Không đưa vào kho V10.3. / Old V10.2 project kept as an archive; own git repo.
+intern-amazing-group_7-Re-imagine-V10.2/

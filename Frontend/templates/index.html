@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trợ lý Thủ tục hành chính</title>
+<link rel="stylesheet" href="/static/css/styles.css?v=__V__">
+</head>
+<body>
+<div class="layout">
+
+  <aside class="sidebar" id="sidebar">
+    <button id="new-chat" class="primary block">+ Cuộc trò chuyện mới</button>
+    <nav id="conv-list" class="conv-list"></nav>
+    <div class="sidebar-foot">
+      <div id="memory" class="memory" hidden></div>
+      <div id="queue-info" class="queue-info"></div>
+      <div class="user-row">
+        <span id="user-name"></span>
+        <button id="logout" class="link" type="button">Đăng xuất</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="chat">
+    <header class="chat-head">
+      <button id="toggle-sidebar" class="icon" type="button" aria-label="Ẩn/hiện thanh bên">☰</button>
+      <h1 id="conv-title">Trợ lý Thủ tục hành chính</h1>
+      <span id="model-name" class="model-name"></span>
+      <button id="dev-open" class="icon" type="button" aria-pressed="false"
+              title="Bảng nhà phát triển" hidden>⚙</button>
+      <button id="theme" class="icon" type="button" aria-label="Đổi giao diện sáng/tối">◐</button>
+    </header>
+
+    <div id="messages" class="messages">
+      <div class="empty">
+        <h2>Bạn cần làm thủ tục gì?</h2>
+        <p>Ví dụ: <em>“Con tôi mới sinh, làm giấy khai sinh cần gì?”</em></p>
+      </div>
+    </div>
+
+    <form id="composer" class="composer">
+      <div id="attachments" class="attachments" hidden></div>
+      <div class="composer-row">
+        <button id="attach" class="composer-btn" type="button" title="Đính kèm tệp" aria-label="Đính kèm tệp">+</button>
+        <textarea id="input" rows="2" placeholder="Nhập câu hỏi…" autocomplete="off"></textarea>
+        <button id="send" class="primary" type="submit">Gửi</button>
+      </div>
+      <input id="file-input" type="file" hidden>
+    </form>
+  </main>
+
+  <!-- Bảng nhà phát triển. Chỉ hiện khi server bật DEV_TOOLS_ENABLED. -->
+  <div id="dev-backdrop" class="dev-backdrop"></div>
+  <aside id="dev-panel" class="dev-panel" aria-hidden="true">
+    <div class="dev-head">
+      <strong>Bảng nhà phát triển</strong>
+      <button id="dev-close" class="icon" type="button" title="Đóng">×</button>
+    </div>
+
+    <div class="dev-actions">
+      <button id="dev-toggle" class="dev-btn" type="button" aria-pressed="true">Ghi vết: BẬT</button>
+      <button id="dev-refresh" class="dev-btn" type="button">Tải lại</button>
+      <button id="dev-clear" class="dev-btn" type="button">Xoá vết</button>
+      <button id="dev-export-conv" class="dev-btn" type="button" title="Xuất hội thoại hiện tại ra .txt">📥 Xuất TXT cuộc này</button>
+      <button id="dev-export-all" class="dev-btn" type="button" title="Xuất tất cả hội thoại ra .txt">📥 Xuất tất cả TXT</button>
+    </div>
+
+    <details class="dev-sect" open>
+      <summary>Tìm kiếm qua MCP — chẩn đoán</summary>
+      <div class="dev-web">
+        <input id="dev-web-q" type="text" placeholder="thủ tục cấp hộ chiếu phổ thông">
+        <button id="dev-web-go" class="dev-btn" type="button">Tra thử</button>
+      </div>
+      <pre id="dev-web-out" class="dev-pre">Bấm "Tra thử" để gọi công cụ web_search qua MCP và xem hỏng ở bước nào.</pre>
+    </details>
+
+    <details class="dev-sect" open>
+      <summary>Vết chạy các lượt gần nhất</summary>
+      <div id="dev-traces"></div>
+    </details>
+
+    <details class="dev-sect">
+      <summary>Cấu hình đang chạy</summary>
+      <div id="dev-config" class="dev-config"></div>
+    </details>
+
+    <details class="dev-sect">
+      <summary>Dữ liệu</summary>
+      <small id="dev-stats" class="muted small"></small>
+      <button id="dev-reset" class="danger block" type="button">Reset dữ liệu</button>
+    </details>
+  </aside>
+
+</div>
+<script src="/static/js/api.js?v=__V__"></script>
+<script src="/static/js/files.js?v=__V__"></script>
+<script src="/static/js/conversations.js?v=__V__"></script>
+<script src="/static/js/chat.js?v=__V__"></script>
+<script src="/static/js/dev.js?v=__V__"></script>
+<script src="/static/js/app.js?v=__V__"></script>
+</body>
+</html>

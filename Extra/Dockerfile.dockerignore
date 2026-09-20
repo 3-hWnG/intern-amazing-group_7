@@ -1,0 +1,16 @@
+.venv
+venv
+.git
+.vscode
+.env
+**/__pycache__
+**/*.pyc
+Database/runtime
+*.db
+*.db-shm
+*.db-wal
+Evaluation/results
+Utility/finetune/data
+Utility/finetune/output
+Documentation
+Extra
