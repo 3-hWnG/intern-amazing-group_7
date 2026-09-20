@@ -23,7 +23,7 @@ from dataclasses import dataclass, field
 from typing import Callable
 
 import developer_mode
-from config import MAX_VERIFY_RETRIES, VERIFIER_ENABLED
+from config import MAX_VERIFY_RETRIES, VERIFIER_ENABLED, PROMPT_CHOICES_AUTO
 from core import answer, evidence, intent, llm, verifier
 from prompts import templates as T
 
@@ -82,6 +82,12 @@ def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> 
             if u.route == "chitchat":
                 t = time.time()
                 res.kind, res.text = "chitchat", answer.chitchat(inp.question, inp.history)
+                if PROMPT_CHOICES_AUTO:
+                    res.choices = [
+                        f"Thủ tục cấp đổi thẻ căn cước mới nhất {datetime.now().year}",
+                        f"Thủ tục đăng ký khai sinh và thường trú trực tuyến {datetime.now().year}",
+                        f"Thủ tục đăng ký thành lập hộ kinh doanh cá thể {datetime.now().year}",
+                    ]
                 dev.event("chitchat", ms=lap("answer", t))
                 return res
             if u.route == "out_of_scope":
@@ -165,6 +171,8 @@ def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> 
         res.kind = "answer"
         res.text = draft
         res.sources = evidence.public_sources(pack, draft)
+        if PROMPT_CHOICES_AUTO and not res.choices and res.kind != "out_of_scope":
+            res.choices = getattr(u, "choices", None) or intent.generate_prompt_choices(inp.question, u, datetime.now().year)
         return res
 
     except llm.LLMError as exc:

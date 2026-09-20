@@ -89,6 +89,9 @@ CLARIFY_ENABLED = _bool("CLARIFY_ENABLED", True)
 # Ví dụ mẫu (few-shot) cho bước hiểu ý định. Mô hình nhỏ chưa fine-tune cần; mô
 # hình đã fine-tune bằng finetune/ thì đặt false (dữ liệu huấn luyện không có ví dụ).
 UNDERSTAND_FEWSHOT = _bool("UNDERSTAND_FEWSHOT", True)
+# Tự động tạo 3 gợi ý prompt choices sau mọi câu trả lời thủ tục (Cách 3: MCP DuckDuckGo)
+PROMPT_CHOICES_AUTO = _bool("PROMPT_CHOICES_AUTO", True)
+
 
 # ==========================================================================
 # MCP + TÌM KIẾM (nguồn tri thức duy nhất cho câu trả lời)

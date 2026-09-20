@@ -16,8 +16,8 @@ import re
 from dataclasses import asdict, dataclass, field
 from datetime import datetime
 
-from config import (CLARIFY_ENABLED, PROFILE_MEMORY_ENABLED, SEARCH_MAX_QUERIES,
-                    UNDERSTAND_FEWSHOT)
+from config import (CLARIFY_ENABLED, PROFILE_MEMORY_ENABLED, PROMPT_CHOICES_AUTO,
+                    SEARCH_MAX_QUERIES, UNDERSTAND_FEWSHOT)
 from core import llm
 from domain.text import BM25, fold, tokenize
 from prompts import templates as T
@@ -638,6 +638,8 @@ def analyze(question: str, history: list[dict], summary: str, profile: dict) -> 
         u.choices = generate_prompt_choices(question, u, datetime.now().year)
     else:
         u.route = "search"
+        if PROMPT_CHOICES_AUTO and not u.choices and not small_talk:
+            u.choices = generate_prompt_choices(question, u, datetime.now().year)
     return u
 
 
