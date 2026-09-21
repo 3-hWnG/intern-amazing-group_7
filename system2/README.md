@@ -5,10 +5,14 @@ Schema + importer cho hệ tra cứu CSDL nội bộ (SQLite FTS5), theo bản k
 từ bản "V3 - CHỐT THỰC THI"). Không sửa `db/schema.sql` ngoài quy trình chốt
 lại kiến trúc — mọi thay đổi phải phản ánh lại vào doc đó trước.
 
-## Chạy thử (Windows, PowerShell hoặc CMD đều được)
+## Chạy thử (Windows PowerShell / CMD)
 
-```
+> [!TIP]
+> **Lưu ý trên Windows PowerShell:** Trước khi chạy, nên gõ `$env:PYTHONUTF8=1` để tránh lỗi font chữ tiếng Việt của console.
+
+```powershell
 cd D:\reimagine_V10.2
+$env:PYTHONUTF8=1
 .venv\Scripts\python.exe system2\importer.py --init
 .venv\Scripts\python.exe system2\importer.py --seed data\normalized_procedures.json
 ```
@@ -17,10 +21,14 @@ Lệnh thứ 2 nạp luôn **70 thủ tục có sẵn** trong `data/normalized_p
 (xem mục "Dữ liệu có sẵn" bên dưới) — không cần chờ `crawler/` viết xong mới có
 dữ liệu để test end-to-end (FTS5 search, LLM1 extractor, UI card...).
 
-Kiểm tra nhanh sau khi nạp:
+Kiểm tra và xem giao diện sau khi nạp:
 
-```
-.venv\Scripts\python.exe -c "import sqlite3; c=sqlite3.connect('system2/db/procedures.db'); print(c.execute('SELECT COUNT(*) FROM procedures').fetchone())"
+```powershell
+# In thống kê và xem 10 thủ tục mẫu trong terminal:
+.venv\Scripts\python.exe system2\inspect_db.py
+
+# Mở giao diện duyệt 70 thẻ thủ tục trên trình duyệt web:
+Start-Process "system2\preview.html"
 ```
 
 Chạy lại `--seed` nhiều lần **không tạo trùng dữ liệu** — đã test idempotent
