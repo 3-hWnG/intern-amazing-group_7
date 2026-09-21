@@ -1,0 +1,1388 @@
+<!DOCTYPE html>
+<html lang='vi'>
+<head>
+    <meta charset='UTF-8'>
+    <title>CSDL 70 Thủ Tục Hành Chính - System 2</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: #0f172a; color: #f8fafc; padding: 30px; }
+        .header { margin-bottom: 25px; display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #334155; padding-bottom: 20px; }
+        h1 { font-size: 24px; color: #38bdf8; }
+        .search-box { width: 350px; padding: 10px 15px; border-radius: 8px; border: 1px solid #475569; background: #1e293b; color: #fff; font-size: 14px; outline: none; }
+        .search-box:focus { border-color: #38bdf8; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 20px; }
+        .card { background: #1e293b; border: 1px solid #334155; border-radius: 12px; padding: 20px; display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s, border-color 0.2s; }
+        .card:hover { transform: translateY(-3px); border-color: #38bdf8; }
+        .badge-row { display: flex; gap: 8px; margin-bottom: 12px; flex-wrap: wrap; }
+        .badge { font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 6px; }
+        .badge-domain { background: #0369a1; color: #e0f2fe; }
+        .badge-code { background: #334155; color: #cbd5e1; font-family: monospace; }
+        .card-title { font-size: 16px; font-weight: 700; color: #f1f5f9; margin-bottom: 10px; line-height: 1.4; }
+        .card-body { font-size: 13px; color: #94a3b8; line-height: 1.6; margin-bottom: 15px; flex-grow: 1; }
+        .meta-item { margin-bottom: 6px; }
+        .meta-item strong { color: #cbd5e1; }
+        .card-footer { border-top: 1px solid #334155; padding-top: 12px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #64748b; }
+        .fee-tag { color: #34d399; font-weight: 600; }
+        .check-count { background: #334155; padding: 2px 6px; border-radius: 4px; color: #e2e8f0; }
+    </style>
+</head>
+<body>
+    <div class='header'>
+        <div>
+            <h1>📋 Cơ Sở Dữ Liệu 70 Thủ Tục Hành Chính (System 2)</h1>
+            <p style='color: #94a3b8; font-size: 13px; margin-top: 5px;'>File: <code>procedures.db</code> &bull; Nạp tự động từ <code>normalized_procedures.json</code></p>
+        </div>
+        <input type='text' id='search' class='search-box' placeholder='🔍 Tìm kiếm thủ tục, lĩnh vực...' oninput='filterCards()'>
+    </div>
+
+    <div class='grid' id='cardGrid'>
+
+        <div class='card' data-name='thủ tục xác nhận tình trạng hôn nhân' data-domain='hộ tịch'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#1 LEGACY-PROC-0001</span>
+                    <span class='badge badge-domain'>Hộ tịch</span>
+                </div>
+                <div class='card-title'>Thủ tục xác nhận tình trạng hôn nhân</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Trong 03 ngày làm việc (nếu nhận hồ sơ sau 15 giờ thì trả kết quả vào ngày hôm sau)</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Bộ phận Một cửa - UBND cấp x...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='thủ tục đăng ký khai sinh' data-domain='hộ tịch'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#2 LEGACY-PROC-0002</span>
+                    <span class='badge badge-domain'>Hộ tịch</span>
+                </div>
+                <div class='card-title'>Thủ tục đăng ký khai sinh</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 1 ngày</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Bản chính: Không thu phí Bản sao: 8.000đ/bản</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ hành chính...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='thủ tục đăng ký khai tử' data-domain='hộ tịch'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#3 LEGACY-PROC-0003</span>
+                    <span class='badge badge-domain'>Hộ tịch</span>
+                </div>
+                <div class='card-title'>Thủ tục đăng ký khai tử</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> trong ngày làm việc (nếu nhận hồ sơ sau 15 giờ thì trả kết quả vào hôm sau)</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Bản chính: Không thu phí Bản sao: 8.000đ/bản</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ hành chính...</span>
+                <span class='check-count'>📑 3 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='thủ tục đăng ký kết hôn' data-domain='hộ tịch'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#4 LEGACY-PROC-0004</span>
+                    <span class='badge badge-domain'>Hộ tịch</span>
+                </div>
+                <div class='card-title'>Thủ tục đăng ký kết hôn</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Trong ngày làm việc (nếu nhận hồ sơ sau 15 giờ thì trả kết quả vào ngày hôm sau).</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Bản chính: Không thu phí Bản sao: 8.000đ/bản</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ hành chính...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='thủ tục nhận cha mẹ con' data-domain='hộ tịch'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#5 LEGACY-PROC-0005</span>
+                    <span class='badge badge-domain'>Hộ tịch</span>
+                </div>
+                <div class='card-title'>Thủ tục nhận cha mẹ con</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Trong 07 ngày làm việc.</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Bản chính: Không thu phí Bản sao: 8.000đ/bản</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ hành chính...</span>
+                <span class='check-count'>📑 4 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='đăng ký kết hôn có yếu tố nước ngoài' data-domain='hộ tịch'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#6 LEGACY-PROC-0006</span>
+                    <span class='badge badge-domain'>Hộ tịch</span>
+                </div>
+                <div class='card-title'>Đăng ký kết hôn có yếu tố nước ngoài</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 5 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Bản chính: Không thu phí Bản sao: 8.000đ/bản sao</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ hành chính...</span>
+                <span class='check-count'>📑 9 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='nội quy lao động' data-domain='lao động - tiền lương'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#7 LEGACY-PROC-0007</span>
+                    <span class='badge badge-domain'>Lao động - Tiền lương</span>
+                </div>
+                <div class='card-title'>Nội quy lao động</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 7 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Bộ phận Một cửa - Phòng Lao ...</span>
+                <span class='check-count'>📑 3 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='xác định, xác định lại mức độ khuyết tật và cấp giấy xác nhận khuyết tật' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#8 LEGACY-PROC-0008</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Xác định, xác định lại mức độ khuyết tật và cấp Giấy xác nhận khuyết tật</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 25 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ hành chính...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='thủ tục hỗ trợ chi phí khuyến khích hoả táng đối với người dân có hộ khẩu thành phố hồ chí minh' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#9 LEGACY-PROC-0009</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Thủ tục hỗ trợ chi phí khuyến khích hoả táng đối với người dân có hộ khẩu Thành phố Hồ Chí Minh</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 12 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tiếp</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ hành chính...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='giải quyết chế độ trợ cấp thờ cúng liệt sĩ.' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#10 LEGACY-PROC-0010</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Giải quyết chế độ trợ cấp thờ cúng liệt sĩ.</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 17 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ hành chính...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp đổi bằng “tổ quốc ghi công”' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#11 LEGACY-PROC-0011</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Cấp đổi Bằng “Tổ quốc ghi công”</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 129 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tiếp</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ hành chính...</span>
+                <span class='check-count'>📑 6 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp giấy xác nhận thân nhân của người có công' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#12 LEGACY-PROC-0012</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Cấp giấy xác nhận thân nhân của người có công</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 05 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ hành ch1in...</span>
+                <span class='check-count'>📑 7 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='giải quyết chế độ trợ cấp thờ cúng liệt sĩ' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#13 LEGACY-PROC-0013</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Giải quyết chế độ trợ cấp thờ cúng liệt sĩ</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 05 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Tổ Nội vụ - Phòng Văn hóa - ...</span>
+                <span class='check-count'>📑 3 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='hỗ trợ chi phí khuyến khích hỏa táng' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#14 LEGACY-PROC-0014</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Hỗ trợ chi phí khuyến khích hỏa táng</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 12 (muời hai) ngày làm việc, kể từ ngày nhận được hồ sơ</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ Hành chính...</span>
+                <span class='check-count'>📑 4 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='hỗ trợ chi phí mai táng cho đối tượng bảo trợ xã hội' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#15 LEGACY-PROC-0015</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Hỗ trợ chi phí mai táng cho đối tượng bảo trợ xã hội</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Ba (03) ngày làm việc, kể từ ngày nhận đủ hồ sơ và hợp lệ</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ hành chính...</span>
+                <span class='check-count'>📑 3 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='thực hiện, điều chỉnh, thôi hưởng trợ cấp xã hội hàng tháng, hỗ trợ kinh phí chăm sóc, nuôi dưỡng hàng tháng' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#16 LEGACY-PROC-0016</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Thực hiện, điều chỉnh, thôi hưởng trợ cấp xã hội hàng tháng, hỗ trợ kinh phí chăm sóc, nuôi dưỡng hàng tháng</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Mười (10) ngày làm việc, kể từ ngày nhận đủ hồ sơ và hợp lệ</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ Hành chính...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='hưởng trợ cấp khi người có công đang hưởng trợ cấp ưu đãi từ trần' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#17 LEGACY-PROC-0017</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Hưởng trợ cấp khi người có công đang hưởng trợ cấp ưu đãi từ trần</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Đ/v trợ cấp 1 lần và trợ cấp mai táng: 16 ngày, Đ/v trợ cấp tuất hàng tháng: 12 ngày</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Tổ Nội vụ - Phòng Văn hóa - ...</span>
+                <span class='check-count'>📑 8 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='thực hiện, điều chỉnh, thôi hưởng trợ cấp hưu trí xã hội' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#18 LEGACY-PROC-0018</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Thực hiện, điều chỉnh, thôi hưởng trợ cấp hưu trí xã hội</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Mười (10) ngày làm việc, kể từ ngày nhận đủ hồ sơ và hợp lệ</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ Hành chính...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='hỗ trợ chi phí mai táng đối với đối tượng hưởng trợ cấp hưu trí xã hội' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#19 LEGACY-PROC-0019</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Hỗ trợ chi phí mai táng đối với đối tượng hưởng trợ cấp hưu trí xã hội</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Ba (3) ngày làm việc, kể từ ngày nhận đủ hồ sơ và hợp lệ</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ Hành chính...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='giải quyết chế độ hỗ trợ để theo học đến trình độ đại học tại các cơ sở giáo dục thuộc hệ thống giáo dục quốc dân' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#20 LEGACY-PROC-0020</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Giải quyết chế độ hỗ trợ để theo học đến trình độ đại học tại các cơ sở giáo dục thuộc hệ thống giáo dục quốc dân</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 5 ngày</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Tổ nội vụ - Phòng Văn hóa - ...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='xác định, xác định lại mức độ khuyết tật và cấp giấy xác nhận khuyết tật' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#21 LEGACY-PROC-0021</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Xác định, xác định lại mức độ khuyết tật và cấp giấy xác nhận khuyết tật</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 25 ngày làm việc, kể từ ngày nhận đủ hồ sơ và hợp lệ;</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ Hành chính...</span>
+                <span class='check-count'>📑 4 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='giải quyết chế độ người hoạt động kháng chiến giải phóng dân tộc, bảo vệ tổ quốc và làm nghĩa vụ quốc tế' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#22 LEGACY-PROC-0022</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Giải quyết chế độ người hoạt động kháng chiến giải phóng dân tộc, bảo vệ tổ quốc và làm nghĩa vụ quốc tế</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 5 ngày</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Tổ Nội vụ - Phòng Văn hóa - ...</span>
+                <span class='check-count'>📑 4 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='hồ sơ cấp giấy phép xây dựng' data-domain='kinh tế - hạ tầng và đô thị'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#23 LEGACY-PROC-0023</span>
+                    <span class='badge badge-domain'>Kinh tế - Hạ tầng và đô thị</span>
+                </div>
+                <div class='card-title'>HỒ SƠ CẤP GIẤY PHÉP XÂY DỰNG</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 20</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Theo quy định của HĐND cấp tỉnh (khoảng 50.000 - 150.000 đồng/giấy phép)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Bộ phận Một cửa - UBND cấp h...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='thông tin quy hoạch' data-domain='kinh tế - hạ tầng và đô thị'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#24 LEGACY-PROC-0024</span>
+                    <span class='badge badge-domain'>Kinh tế - Hạ tầng và đô thị</span>
+                </div>
+                <div class='card-title'>THÔNG TIN QUY HOẠCH</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 10 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (cung cấp thông tin trực tiếp tại cơ quan có thẩm quyền)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 TTPVHCC...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp giấy phép xây dựng' data-domain='kinh tế - hạ tầng và đô thị'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#25 LEGACY-PROC-0025</span>
+                    <span class='badge badge-domain'>Kinh tế - Hạ tầng và đô thị</span>
+                </div>
+                <div class='card-title'>CẤP GIẤY PHÉP XÂY DỰNG</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 15</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Theo quy định của HĐND cấp tỉnh (khoảng 50.000 - 150.000 đồng/giấy phép)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 TTPVHCC...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='vay vốn hỗ trợ tạo việc làm, duy trì và mở rộng việc làm từ quỹ quốc gia về việc làm đối với người lao động' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#26 LEGACY-PROC-0026</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Vay vốn hỗ trợ tạo việc làm, duy trì và mở rộng việc làm từ Quỹ quốc gia về việc làm đối với người lao động</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 5 ngày</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tiếp</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng giao dịch Ngân hàng Ch...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='chuyển trường đối với học sinh thcs' data-domain='giáo dục và đào tạo'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#27 LEGACY-PROC-0027</span>
+                    <span class='badge badge-domain'>giáo dục và đào tạo</span>
+                </div>
+                <div class='card-title'>Chuyển trường đối với học sinh THCS</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 3–5 ngày làm việc kể từ khi nhận đủ hồ sơ hợp lệ.</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tiếp</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ hành chính...</span>
+                <span class='check-count'>📑 9 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='thông báo khởi công' data-domain='kinh tế - hạ tầng và đô thị'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#28 LEGACY-PROC-0028</span>
+                    <span class='badge badge-domain'>Kinh tế - Hạ tầng và đô thị</span>
+                </div>
+                <div class='card-title'>THÔNG BÁO KHỞI CÔNG</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 1</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 UBND cấp xã hoặc Đội Quản lý...</span>
+                <span class='check-count'>📑 4 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='đăng ký đất đai, tài sản gắn liền với đất lần đầu' data-domain='kinh tế - hạ tầng và đô thị'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#29 LEGACY-PROC-0029</span>
+                    <span class='badge badge-domain'>Kinh tế - Hạ tầng và đô thị</span>
+                </div>
+                <div class='card-title'>ĐĂNG KÝ ĐẤT ĐAI, TÀI SẢN GẮN LIỀN VỚI ĐẤT LẦN ĐẦU</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> THEO QUY ĐỊNH</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Theo quy định của HĐND cấp tỉnh (phí thẩm định hồ sơ và lệ phí cấp GCN quyền sử dụng đất)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Bộ phận Một cửa cấp huyện / ...</span>
+                <span class='check-count'>📑 9 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='vay vốn hỗ trợ tạo việc làm, duy trì và mở rộng việc làm từ quỹ quốc gia về việc làm đối với cơ sở sản xuất, kinh doanh.' data-domain='văn hóa - xã hội'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#30 LEGACY-PROC-0030</span>
+                    <span class='badge badge-domain'>Văn hóa - Xã hội</span>
+                </div>
+                <div class='card-title'>Vay vốn hỗ trợ tạo việc làm, duy trì và mở rộng việc làm từ Quỹ quốc gia về việc làm đối với cơ sở sản xuất, kinh doanh.</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 5 ngày</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tiếp</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng giao dịch Ngân hàng Ch...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='hồ sơ cấp số nhà' data-domain='kinh tế - hạ tầng và đô thị'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#31 LEGACY-PROC-0031</span>
+                    <span class='badge badge-domain'>Kinh tế - Hạ tầng và đô thị</span>
+                </div>
+                <div class='card-title'>HỒ SƠ CẤP SỐ NHÀ</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> theo quy định</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Theo quy định của HĐND cấp tỉnh</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Bộ phận Một cửa - UBND cấp h...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='xác nhận vị trí nhà - đất' data-domain='kinh tế - hạ tầng và đô thị'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#32 LEGACY-PROC-0032</span>
+                    <span class='badge badge-domain'>Kinh tế - Hạ tầng và đô thị</span>
+                </div>
+                <div class='card-title'>XÁC NHẬN VỊ TRÍ NHÀ - ĐẤT</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 05</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Bộ phận Một cửa - Cơ quan có...</span>
+                <span class='check-count'>📑 4 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='xác nhận tình trạng nhà ở' data-domain='kinh tế - hạ tầng và đô thị'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#33 LEGACY-PROC-0033</span>
+                    <span class='badge badge-domain'>Kinh tế - Hạ tầng và đô thị</span>
+                </div>
+                <div class='card-title'>XÁC NHẬN TÌNH TRẠNG NHÀ Ở</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 05</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 UBND cấp xã/phường/thị trấn ...</span>
+                <span class='check-count'>📑 13 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='thủ tục đăng ký thành lập hộ kinh doanh' data-domain='kinh tế - hạ tầng và đô thị'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#34 LEGACY-PROC-0034</span>
+                    <span class='badge badge-domain'>Kinh tế - Hạ tầng và đô thị</span>
+                </div>
+                <div class='card-title'>Thủ tục Đăng ký thành lập hộ kinh doanh</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 100.000 đồng/lần (hoặc theo quy định của HĐND cấp tỉnh)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Trung tâm Phục vụ Hành chính...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='đăng ký thay đổi nội dung đăng ký hộ kinh doanh' data-domain='kinh tế - hạ tầng và đô thị'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#35 LEGACY-PROC-0035</span>
+                    <span class='badge badge-domain'>Kinh tế - Hạ tầng và đô thị</span>
+                </div>
+                <div class='card-title'>Đăng ký thay đổi nội dung đăng ký hộ kinh doanh</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 50.000 đồng/lần (hoặc theo quy định của HĐND cấp tỉnh)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 TTPVHCC phường Tăng Nhơn Phú...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='tạm ngừng kinh doanh/tiếp tục kinh doanh trước thời hạn đã thông báo của hộ kinh doanh' data-domain='kinh tế - hạ tầng và đô thị'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#36 LEGACY-PROC-0036</span>
+                    <span class='badge badge-domain'>Kinh tế - Hạ tầng và đô thị</span>
+                </div>
+                <div class='card-title'>Tạm ngừng kinh doanh/tiếp tục kinh doanh trước thời hạn đã thông báo của hộ kinh doanh</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 TTPVHCC phường Tăng Nhơn Phú...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='chấm dứt hoạt động hộ kinh doanh' data-domain='kinh tế - hạ tầng và đô thị'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#37 LEGACY-PROC-0037</span>
+                    <span class='badge badge-domain'>Kinh tế - Hạ tầng và đô thị</span>
+                </div>
+                <div class='card-title'>Chấm dứt hoạt động hộ kinh doanh</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 TTPVHCC phường Tăng Nhơn Phú...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp lại giấy chứng nhận đăng ký hộ kinh doanh' data-domain='kinh tế - hạ tầng và đô thị'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#38 LEGACY-PROC-0038</span>
+                    <span class='badge badge-domain'>Kinh tế - Hạ tầng và đô thị</span>
+                </div>
+                <div class='card-title'>Cấp lại Giấy chứng nhận đăng ký hộ kinh doanh</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 50.000 đồng/lần (hoặc theo quy định của HĐND cấp tỉnh)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 TTPVHCC phường Tăng Nhơn Phú...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='thủ tục xét, cấp học bổng chính sách' data-domain='giáo dục và đào tạo'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#39 LEGACY-PROC-0039</span>
+                    <span class='badge badge-domain'>Giáo dục và Đào tạo</span>
+                </div>
+                <div class='card-title'>Thủ tục xét, cấp học bổng chính sách</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> không quy định cụ thể (chi trả theo học kỳ)</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí (Không thu lệ phí)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tiếp</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng Văn hóa - Xã hội thuộc...</span>
+                <span class='check-count'>📑 3 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='chứng thực chữ ký - chứng thực hợp đồng giao dịch/di chúc' data-domain='chứng thực - sao y'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#40 LEGACY-PROC-0040</span>
+                    <span class='badge badge-domain'>Chứng thực - sao y</span>
+                </div>
+                <div class='card-title'>chứng thực chữ ký - chứng thực Hợp đồng giao dịch/Di chúc</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Trong ngày tiếp nhận yêu cầu hoặc trong ngày làm việc tiếp theo, nếu tiếp nhận yêu cầu sau 15 giờ hoặc có thể kéo dài hơn theo thỏa thuận bằng văn bản với người yêu cầu chứng thực.</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 10.000 đồng/trường hợp (đối với chứng thực chữ ký) 50.000 đồng/trường hợp (đối với hợp đồng giao dịch/Di chúc)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Việc chứng thực được thực hi...</span>
+                <span class='check-count'>📑 4 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='thu hồi giấy chứng nhận đăng ký, biển số xe thực hiện bằng dịch vụ công trực tuyến một phần hoặc trực tiếp tại cơ quan đăng ký xe thực hiện tại cấp trung ương, cấp tỉnh, cấp xã' data-domain='đăng ký, quản lý phương tiện giao thông cơ giới đường bộ'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#41 LEGACY-PROC-0041</span>
+                    <span class='badge badge-domain'>Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ</span>
+                </div>
+                <div class='card-title'>Thu hồi giấy chứng nhận đăng ký, biển số xe thực hiện bằng dịch vụ công trực tuyến một phần hoặc trực tiếp tại cơ quan đăng ký xe thực hiện tại cấp trung ương, cấp tỉnh, cấp xã</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 02 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Không thu lệ phí</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Cơ quan làm thủ tục đăng ký ...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='đăng ký xe lần đầu trực tuyến toàn trình đối với xe nhập khẩu' data-domain='đăng ký, quản lý phương tiện giao thông cơ giới đường bộ'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#42 LEGACY-PROC-0042</span>
+                    <span class='badge badge-domain'>Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ</span>
+                </div>
+                <div class='card-title'>Đăng ký xe lần đầu trực tuyến toàn trình đối với xe nhập khẩu</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Từ 02 - 07 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Thông tư số 60/2023/TT-BTC ngày 07/9/2023 của Bộ Tài chính quy định mức thu, chế độ thu, nộp, quản lý lệ phí đăng ký, cấp biển số phương tiện giao thông cơ giới đường bộ.; Thông tư số 06/2025/TT-BTC ngày 24/01/2025 sửa đổi, bổ sung một số điều của các Thông tư của Bộ trưởng Bộ Tài chính quy định về phí, lệ phí.</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Cơ quan làm thủ tục đăng ký ...</span>
+                <span class='check-count'>📑 5 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='đăng ký xe lần đầu trực tuyến toàn trình đối với xe sản xuất lắp ráp trong nước' data-domain='đăng ký, quản lý phương tiện giao thông cơ giới đường bộ'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#43 LEGACY-PROC-0043</span>
+                    <span class='badge badge-domain'>Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ</span>
+                </div>
+                <div class='card-title'>Đăng ký xe lần đầu trực tuyến toàn trình đối với xe sản xuất lắp ráp trong nước</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Từ 02 - 07 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Thông tư số 60/2023/TT-BTC ngày 07/9/2023 của Bộ Tài chính quy định mức thu, chế độ thu, nộp, quản lý lệ phí đăng ký, cấp biển số phương tiện giao thông cơ giới đường bộ.; Thông tư số 06/2025/TT-BTC ngày 24/01/2025 sửa đổi, bổ sung một số điều của các Thông tư của Bộ trưởng Bộ Tài chính quy định về phí, lệ phí.</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Cơ quan làm thủ tục đăng ký ...</span>
+                <span class='check-count'>📑 5 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp hộ chiếu phổ thông ở trong nước (thực hiện tại cấp trung ương)' data-domain='quản lý xuất nhập cảnh'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#44 LEGACY-PROC-0044</span>
+                    <span class='badge badge-domain'>Quản lý xuất nhập cảnh</span>
+                </div>
+                <div class='card-title'>Cấp hộ chiếu phổ thông ở trong nước (thực hiện tại cấp trung ương)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Từ 03 - 05 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 160.000 đồng/hộ chiếu. Trường hợp cấp lại do bị hỏng hoặc bị mất: 320.000/hộ chiếu (Thông tư số 44/2023/TT-BTC ngày 29/6/2023 của Bộ Tài chính).</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Cục quản lý xuất nhập c...</span>
+                <span class='check-count'>📑 6 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp hộ chiếu phổ thông ở trong nước (thực hiện tại cấp tỉnh)' data-domain='quản lý xuất nhập cảnh'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#45 LEGACY-PROC-0045</span>
+                    <span class='badge badge-domain'>Quản lý xuất nhập cảnh</span>
+                </div>
+                <div class='card-title'>Cấp hộ chiếu phổ thông ở trong nước (thực hiện tại cấp tỉnh)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 08 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 160.000/hộ chiếu, trường hợp cấp lại do bị hư hỏng hoặc bị mất: 320.000đ/hộ chiếu (áp dụng đến hết ngày 31/12/2023 theo Thông tư số 44/2023/TT-BTC ngày 29/6/2023 của Bộ tài chính)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Công an Tỉnh...</span>
+                <span class='check-count'>📑 6 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp mới giấy chứng nhận đủ điều kiện về an ninh, trật tự (thực hiện tại cấp tỉnh)' data-domain='quản lý ngành nghề kinh doanh có điều kiện'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#46 LEGACY-PROC-0046</span>
+                    <span class='badge badge-domain'>Quản lý ngành nghề kinh doanh có điều kiện</span>
+                </div>
+                <div class='card-title'>Cấp mới Giấy chứng nhận đủ điều kiện về an ninh, trật tự (thực hiện tại cấp tỉnh)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 05 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 300.000đ</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng cảnh sát quản lý hành ...</span>
+                <span class='check-count'>📑 35 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp mới giấy chứng nhận đủ điều kiện về an ninh, trật tự thực hiện tại cục' data-domain='quản lý ngành nghề kinh doanh có điều kiện'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#47 LEGACY-PROC-0047</span>
+                    <span class='badge badge-domain'>Quản lý ngành nghề kinh doanh có điều kiện</span>
+                </div>
+                <div class='card-title'>Cấp mới Giấy chứng nhận đủ điều kiện về an ninh, trật tự thực hiện tại Cục</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 05 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 300.000đ</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Cục Cảnh sát quản lý hành ch...</span>
+                <span class='check-count'>📑 29 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp thị thực điện tử theo đề nghị của cơ quan, tổ chức' data-domain='quản lý xuất nhập cảnh'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#48 LEGACY-PROC-0048</span>
+                    <span class='badge badge-domain'>Quản lý xuất nhập cảnh</span>
+                </div>
+                <div class='card-title'>Cấp thị thực điện tử theo đề nghị của cơ quan, tổ chức</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 25USD/một thị thực giá trị một lần; 50USD/một thị thực giá trị nhiều lần</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Cục quản lý xuất nhập cảnh...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp thị thực điện tử theo đề nghị của người nước ngoài' data-domain='quản lý xuất nhập cảnh'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#49 LEGACY-PROC-0049</span>
+                    <span class='badge badge-domain'>Quản lý xuất nhập cảnh</span>
+                </div>
+                <div class='card-title'>Cấp thị thực điện tử theo đề nghị của người nước ngoài</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 25 USD (Thị thực có giá trị một lần: 25USD/thị thực điện tử); 50 USD (Thị thực có giá trị nhiều lần: 50USD/thị thực điện tử)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tuyến</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Cục quản lý xuất nhập cảnh...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='đăng ký lại mẫu con dấu (thực hiện tại cấp tỉnh)' data-domain='đăng ký, quản lý con dấu'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#50 LEGACY-PROC-0050</span>
+                    <span class='badge badge-domain'>Đăng ký, quản lý con dấu</span>
+                </div>
+                <div class='card-title'>Đăng ký lại mẫu con dấu (thực hiện tại cấp tỉnh)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng cảnh sát quản lý hành ...</span>
+                <span class='check-count'>📑 3 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='đăng ký thêm con dấu (thực hiện tại cấp tỉnh)' data-domain='đăng ký, quản lý con dấu'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#51 LEGACY-PROC-0051</span>
+                    <span class='badge badge-domain'>Đăng ký, quản lý con dấu</span>
+                </div>
+                <div class='card-title'>Đăng ký thêm con dấu (thực hiện tại cấp tỉnh)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng cảnh sát quản lý hành ...</span>
+                <span class='check-count'>📑 3 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp đổi giấy chứng nhận đủ điều kiện về an ninh, trật tự thực hiện tại cục' data-domain='quản lý ngành nghề kinh doanh có điều kiện'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#52 LEGACY-PROC-0052</span>
+                    <span class='badge badge-domain'>Quản lý ngành nghề kinh doanh có điều kiện</span>
+                </div>
+                <div class='card-title'>Cấp đổi giấy chứng nhận đủ điều kiện về an ninh, trật tự thực hiện tại Cục</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 04 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 300.000đ</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Cục Cảnh sát quản lý hành ch...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='đăng ký dấu nổi, dấu thu nhỏ, dấu xi (thực hiện tại cấp tỉnh)' data-domain='đăng ký, quản lý con dấu'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#53 LEGACY-PROC-0053</span>
+                    <span class='badge badge-domain'>Đăng ký, quản lý con dấu</span>
+                </div>
+                <div class='card-title'>Đăng ký dấu nổi, dấu thu nhỏ, dấu xi (thực hiện tại cấp tỉnh)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng cảnh sát quản lý hành ...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp lại thẻ căn cước (thực hiện tại cấp tỉnh)' data-domain='cấp, quản lý căn cước'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#54 LEGACY-PROC-0054</span>
+                    <span class='badge badge-domain'>Cấp, quản lý căn cước</span>
+                </div>
+                <div class='card-title'>Cấp lại thẻ căn cước (thực hiện tại cấp tỉnh)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 07 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Chưa quy định (hoặc theo quy định Bộ Tài chính)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng cảnh sát quản lý hành ...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp đổi giấy chứng nhận đủ điều kiện về an ninh, trật tự (thực hiện tại cấp tỉnh)' data-domain='quản lý ngành nghề kinh doanh có điều kiện'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#55 LEGACY-PROC-0055</span>
+                    <span class='badge badge-domain'>Quản lý ngành nghề kinh doanh có điều kiện</span>
+                </div>
+                <div class='card-title'>Cấp đổi Giấy chứng nhận đủ điều kiện về an ninh, trật tự (thực hiện tại cấp tỉnh)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 04 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 300.000đ</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Công an huyện...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='đổi, cấp lại giấy chứng nhận đăng ký mẫu con dấu (thực hiện tại cấp tỉnh)' data-domain='đăng ký, quản lý con dấu'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#56 LEGACY-PROC-0056</span>
+                    <span class='badge badge-domain'>Đăng ký, quản lý con dấu</span>
+                </div>
+                <div class='card-title'>Đổi, cấp lại Giấy chứng nhận đăng ký mẫu con dấu (thực hiện tại cấp tỉnh)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng cảnh sát quản lý hành ...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp lại thẻ căn cước (thực hiện tại cấp trung ương)' data-domain='cấp, quản lý căn cước'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#57 LEGACY-PROC-0057</span>
+                    <span class='badge badge-domain'>Cấp, quản lý căn cước</span>
+                </div>
+                <div class='card-title'>Cấp lại thẻ căn cước (thực hiện tại cấp trung ương)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 07 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Chưa quy định (hoặc theo quy định Bộ Tài chính)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Cục cảnh sát quản lý hành ch...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp lại giấy chứng nhận đủ điều kiện về an ninh, trật tự thực hiện tại cục' data-domain='quản lý ngành nghề kinh doanh có điều kiện'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#58 LEGACY-PROC-0058</span>
+                    <span class='badge badge-domain'>Quản lý ngành nghề kinh doanh có điều kiện</span>
+                </div>
+                <div class='card-title'>Cấp lại giấy chứng nhận đủ điều kiện về an ninh, trật tự thực hiện tại Cục</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 04 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 300.000đ</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Cục Cảnh sát quản lý hành ch...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='gia hạn tạm trú' data-domain='đăng ký, quản lý cư trú'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#59 LEGACY-PROC-0059</span>
+                    <span class='badge badge-domain'>Đăng ký, quản lý cư trú</span>
+                </div>
+                <div class='card-title'>Gia hạn tạm trú</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Công an Xã...</span>
+                <span class='check-count'>📑 10 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp đổi thẻ căn cước (thực hiện tại cấp tỉnh)' data-domain='cấp, quản lý căn cước'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#60 LEGACY-PROC-0060</span>
+                    <span class='badge badge-domain'>Cấp, quản lý căn cước</span>
+                </div>
+                <div class='card-title'>Cấp đổi thẻ căn cước (thực hiện tại cấp tỉnh)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 07 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Chưa quy định (hoặc theo quy định Bộ Tài chính)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng cảnh sát quản lý hành ...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='thông báo lưu trú' data-domain='đăng ký, quản lý cư trú'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#61 LEGACY-PROC-0061</span>
+                    <span class='badge badge-domain'>Đăng ký, quản lý cư trú</span>
+                </div>
+                <div class='card-title'>Thông báo lưu trú</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Theo quy định hiện hành</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Công an Xã...</span>
+                <span class='check-count'>📑 4 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='đăng ký, cấp biển số xe lần đầu thực hiện tại cục' data-domain='đăng ký, quản lý phương tiện giao thông cơ giới đường bộ'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#62 LEGACY-PROC-0062</span>
+                    <span class='badge badge-domain'>Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ</span>
+                </div>
+                <div class='card-title'>Đăng ký, cấp biển số xe lần đầu thực hiện tại Cục</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> Từ 02 - 07 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Thông tư số 60/2023/TT-BTC ngày 07/9/2023 của Bộ Tài chính quy định mức thu, chế độ thu, nộp, miễn, quản lý lệ phí đăng ký, cấp biển phương tiện giao thông cơ giới đường bộ.</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Cục cảnh sát giao thông...</span>
+                <span class='check-count'>📑 5 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp đổi thẻ căn cước (thực hiện tại cấp trung ương)' data-domain='cấp, quản lý căn cước'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#63 LEGACY-PROC-0063</span>
+                    <span class='badge badge-domain'>Cấp, quản lý căn cước</span>
+                </div>
+                <div class='card-title'>Cấp đổi thẻ căn cước (thực hiện tại cấp trung ương)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 07 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tiếp</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Cục cảnh sát quản lý hành ch...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp lại giấy chứng nhận đủ điều kiện về an ninh, trật tự (thực hiện tại cấp tỉnh)' data-domain='quản lý ngành nghề kinh doanh có điều kiện'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#64 LEGACY-PROC-0064</span>
+                    <span class='badge badge-domain'>Quản lý ngành nghề kinh doanh có điều kiện</span>
+                </div>
+                <div class='card-title'>Cấp lại Giấy chứng nhận đủ điều kiện về an ninh, trật tự (thực hiện tại cấp tỉnh)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 04 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: 300.000đ</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng cảnh sát quản lý hành ...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='xóa đăng ký thường trú' data-domain='đăng ký, quản lý cư trú'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#65 LEGACY-PROC-0065</span>
+                    <span class='badge badge-domain'>Đăng ký, quản lý cư trú</span>
+                </div>
+                <div class='card-title'>Xóa đăng ký thường trú</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 05 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Công an Xã...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='đăng ký mẫu con dấu mới (thực hiện tại cấp tỉnh)' data-domain='đăng ký, quản lý con dấu'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#66 LEGACY-PROC-0066</span>
+                    <span class='badge badge-domain'>Đăng ký, quản lý con dấu</span>
+                </div>
+                <div class='card-title'>Đăng ký mẫu con dấu mới (thực hiện tại cấp tỉnh)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng cảnh sát quản lý hành ...</span>
+                <span class='check-count'>📑 9 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp thẻ căn cước cho người từ đủ 14 tuổi trở lên thực hiện tại công an cấp tỉnh' data-domain='cấp, quản lý căn cước'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#67 LEGACY-PROC-0067</span>
+                    <span class='badge badge-domain'>Cấp, quản lý căn cước</span>
+                </div>
+                <div class='card-title'>Cấp thẻ Căn cước cho người từ đủ 14 tuổi trở lên thực hiện tại Công an cấp tỉnh</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 07 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng cảnh sát quản lý hành ...</span>
+                <span class='check-count'>📑 2 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp giấy phép trang bị, giấy phép sử dụng vũ khí, công cụ hỗ trợ để triển lãm, trưng bày hoặc làm đạo cụ trong hoạt động văn hóa, nghệ thuật thực hiện tại công an cấp tỉnh' data-domain='quản lý vũ khí, vật liệu nổ,  công cụ hỗ trợ và pháo'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#68 LEGACY-PROC-0068</span>
+                    <span class='badge badge-domain'>Quản lý vũ khí, vật liệu nổ,  công cụ hỗ trợ và pháo</span>
+                </div>
+                <div class='card-title'>Cấp Giấy phép trang bị, giấy phép sử dụng vũ khí, công cụ hỗ trợ để triển lãm, trưng bày hoặc làm đạo cụ trong hoạt động văn hóa, nghệ thuật thực hiện tại Công an cấp tỉnh</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Đối với giấy phép trang bị: 10.000 đồng/khẩu-chiếc. Đối với giấy phép sử dụng vũ khí, công cụ hỗ trợ đã mất tính năng, tác dụng: 10.000 đồng/giấy.</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng cảnh sát quản lý hành ...</span>
+                <span class='check-count'>📑 6 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp giấy phép vận chuyển tiền chất thuốc nổ thực hiện tại công an cấp tỉnh' data-domain='quản lý vũ khí, vật liệu nổ,  công cụ hỗ trợ và pháo'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#69 LEGACY-PROC-0069</span>
+                    <span class='badge badge-domain'>Quản lý vũ khí, vật liệu nổ,  công cụ hỗ trợ và pháo</span>
+                </div>
+                <div class='card-title'>Cấp Giấy phép vận chuyển tiền chất thuốc nổ thực hiện tại Công an cấp tỉnh</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 03 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Miễn phí</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Cả hai</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Phòng cảnh sát quản lý hành ...</span>
+                <span class='check-count'>📑 6 hồ sơ</span>
+            </div>
+        </div>
+    
+        <div class='card' data-name='cấp thẻ căn cước cho người từ đủ 14 tuổi trở lên (thực hiện tại cấp trung ương)' data-domain='cấp, quản lý căn cước'>
+            <div>
+                <div class='badge-row'>
+                    <span class='badge badge-code'>#70 LEGACY-PROC-0070</span>
+                    <span class='badge badge-domain'>Cấp, quản lý căn cước</span>
+                </div>
+                <div class='card-title'>Cấp thẻ căn cước cho người từ đủ 14 tuổi trở lên (thực hiện tại cấp trung ương)</div>
+                <div class='card-body'>
+                    <div class='meta-item'><strong>⏱️ Thời hạn:</strong> 07 ngày làm việc</div>
+                    <div class='meta-item'><strong>💰 Lệ phí:</strong> <span class='fee-tag'>Lệ phí: Chưa quy định (hoặc theo quy định Bộ Tài chính)</span></div>
+                    <div class='meta-item' style='margin-top: 8px;'>Hình thức nộp: Trực tiếp</div>
+                </div>
+            </div>
+            <div class='card-footer'>
+                <span>🏢 Cục cảnh sát quản lý hành ch...</span>
+                <span class='check-count'>📑 1 hồ sơ</span>
+            </div>
+        </div>
+    
+    </div>
+
+    <script>
+        function filterCards() {
+            const query = document.getElementById('search').value.toLowerCase();
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                const name = card.getAttribute('data-name');
+                const domain = card.getAttribute('data-domain');
+                if (name.includes(query) || domain.includes(query)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+</html>
