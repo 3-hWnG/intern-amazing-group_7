@@ -124,12 +124,28 @@ SYSTEM_WEBSEARCH = "websearch"
 SYSTEM_RETRIEVAL = "retrieval"
 SYSTEMS = (SYSTEM_WEBSEARCH, SYSTEM_RETRIEVAL)
 
-# Hệ thống 2 chưa xây xong -> mặc định vẫn là Hệ thống 1. Proposal muốn
-# retrieval làm mặc định: đổi DEFAULT_SYSTEM=retrieval khi CSDL chạy được.
-RETRIEVAL_ENABLED = _bool("RETRIEVAL_ENABLED", False)
-DEFAULT_SYSTEM = _str("DEFAULT_SYSTEM", SYSTEM_WEBSEARCH).strip().lower()
+# Hệ thống 2 đã chạy (Phase 2) -> Proposal muốn nó làm MẶC ĐỊNH.
+RETRIEVAL_ENABLED = _bool("RETRIEVAL_ENABLED", True)
+DEFAULT_SYSTEM = _str("DEFAULT_SYSTEM", SYSTEM_RETRIEVAL).strip().lower()
 if DEFAULT_SYSTEM not in SYSTEMS:
-    DEFAULT_SYSTEM = SYSTEM_WEBSEARCH
+    DEFAULT_SYSTEM = SYSTEM_RETRIEVAL
+
+# --- Hệ thống 2: CSDL thủ tục (Phase 1 dựng ra) -------------------------------
+# KHÔNG phải app.db. Tệp này chỉ chứa dữ liệu công khai, dựng lại được bằng
+#     python -m Database.pipeline.run_pipeline --all
+PROCEDURES_DB_PATH = Path(_str("PROCEDURES_DB_PATH", str(RUNTIME_DIR / "procedures.db")))
+# Biểu mẫu .docx cào kèm thủ tục. KHÔNG commit vào git (nặng) -> máy mới phải
+# chạy lại pipeline; thiếu thư mục này thì nút tải tệp tự ẩn, không báo lỗi.
+PROCEDURE_FILES_DIR = Path(_str("PROCEDURE_FILES_DIR", str(DATABASE_DIR / "raw" / "files")))
+
+# Số vòng MCQ tối đa trước khi trả bảng. Mỗi vòng là một câu hỏi lại người dân;
+# hỏi quá nhiều thì họ bỏ cuộc, nên chặn cứng ở đây.
+RETRIEVAL_MAX_MCQ_ROUNDS = _int("RETRIEVAL_MAX_MCQ_ROUNDS", 2)
+# Số lần cho LLM 1 sinh lại từ khoá khi không tìm thấy (Proposal: "quá 3 lượt
+# thì cho 1 tin nhắn xin lỗi").
+RETRIEVAL_MAX_KEY_ATTEMPTS = _int("RETRIEVAL_MAX_KEY_ATTEMPTS", 3)
+# Bật LLM 2 (chăm sóc khách hàng sau khi đã có bảng). Tắt = chỉ trả bảng.
+RETRIEVAL_FOLLOWUP_ENABLED = _bool("RETRIEVAL_FOLLOWUP_ENABLED", True)
 
 # ==========================================================================
 # HIỂU Ý ĐỊNH + HỎI LẠI

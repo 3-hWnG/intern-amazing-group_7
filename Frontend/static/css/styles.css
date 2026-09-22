@@ -365,3 +365,157 @@ a.cite:hover{background:var(--accent);color:#fff}
 .choice-custom-btn:hover {
   background: #0369a1;
 }
+
+/* ══════════════════════════════════════════════════════════════════════
+   HỆ THỐNG 2 — BẢNG THỦ TỤC (procedure.js)
+   Dùng lại biến màu ở :root nên tự chạy đúng cả nền tối lẫn body.light.
+   ══════════════════════════════════════════════════════════════════════ */
+.proc-card{
+  margin-top:12px;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;overflow:hidden;
+}
+
+/* cảnh báo hết hạn — luôn nằm trên cùng */
+.proc-warn{
+  background:rgba(217,122,65,.14);border-bottom:1px solid var(--line);
+  padding:12px 16px;color:var(--ink);
+}
+.proc-warn p{margin:6px 0 0;font-size:13.5px;color:var(--ink-2)}
+
+.proc-head{padding:16px 16px 12px;border-bottom:1px solid var(--line)}
+.proc-title{margin:0;font-size:17px;line-height:1.4}
+.proc-tags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.proc-tag{
+  font-size:12px;padding:2px 9px;border-radius:999px;
+  background:var(--panel-2);border:1px solid var(--line);color:var(--ink-2);
+}
+.proc-tag.muted{color:var(--ink-3)}
+
+/* trí nhớ MCQ đã áp dụng */
+.proc-memory{
+  display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  padding:9px 16px;font-size:13px;color:var(--ink-2);
+  background:var(--panel-2);border-bottom:1px solid var(--line);
+}
+
+.proc-section{padding:14px 16px;border-bottom:1px solid var(--line)}
+.proc-section:last-child{border-bottom:0}
+.proc-h{
+  margin:0 0 9px;font-size:12px;text-transform:uppercase;
+  letter-spacing:.06em;color:var(--ink-3);font-weight:600;
+}
+.proc-text p{margin:0 0 8px;font-size:14px;line-height:1.6}
+.proc-text p:last-child{margin-bottom:0}
+
+/* ô không có dữ liệu: PHẢI hiện lý do, không được để trống */
+.proc-absent{margin:0;font-size:13px;color:var(--ink-3);font-style:italic}
+
+/* ---- checklist tick được (thành phần hồ sơ + việc cần làm) ---- */
+.proc-check{display:flex;flex-direction:column;gap:2px}
+.proc-check-row{
+  display:flex;gap:10px;align-items:flex-start;cursor:pointer;
+  padding:7px 8px;border-radius:8px;
+}
+.proc-check-row:hover{background:var(--panel-2)}
+.proc-check-row input{margin-top:3px;flex:0 0 auto;accent-color:var(--accent)}
+.proc-check-row.done .proc-check-name{text-decoration:line-through;color:var(--ink-3)}
+.proc-check-row.done .proc-step-detail{color:var(--ink-3)}
+.proc-check-text{display:flex;flex-direction:column;gap:2px;font-size:14px}
+.proc-check-name{line-height:1.5}
+.proc-check-meta{font-size:12px;color:var(--ink-3)}
+.proc-step-detail{font-size:13.5px;line-height:1.55;color:var(--ink-2)}
+
+/* ---- lưới thông tin chính ---- */
+.proc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(215px,1fr));gap:12px}
+.proc-fact{
+  background:var(--panel-2);border:1px solid var(--line);
+  border-radius:9px;padding:10px 12px;
+}
+.proc-fact-label{
+  display:block;font-size:11.5px;text-transform:uppercase;
+  letter-spacing:.05em;color:var(--ink-3);margin-bottom:4px;
+}
+.proc-fact-value{font-size:14px;line-height:1.5;word-break:break-word}
+
+/* ---- tệp đính kèm ---- */
+.proc-files{display:flex;flex-direction:column;gap:9px}
+.proc-file{display:flex;flex-direction:column;gap:2px}
+.proc-file-link{color:var(--accent);text-decoration:none;font-size:14px}
+.proc-file-link:hover{text-decoration:underline}
+.proc-file-desc{font-size:12.5px;color:var(--ink-3);line-height:1.45}
+
+/* ---- nộp trực tuyến ---- */
+.proc-online{display:flex;flex-direction:column;gap:8px;align-items:flex-start}
+.proc-online-btn{
+  display:inline-block;background:var(--accent);color:var(--accent-ink);
+  border:0;border-radius:8px;padding:9px 15px;text-decoration:none;font-size:14px;
+}
+.proc-online-btn:hover{filter:brightness(1.08)}
+.proc-online-svc{font-size:12.5px;color:var(--ink-3)}
+
+/* ---- thông tin nguồn / meta ---- */
+.proc-section-meta{background:var(--panel-2)}
+.proc-meta{display:flex;flex-direction:column;gap:6px;font-size:13px}
+.proc-meta-row{display:flex;gap:10px;align-items:flex-start}
+.proc-meta-label{flex:0 0 130px;color:var(--ink-3)}
+.proc-legal{display:flex;flex-direction:column;gap:3px}
+.proc-meta-link{color:var(--accent);text-decoration:none;font-size:13px;margin-top:4px}
+.proc-meta-link:hover{text-decoration:underline}
+
+/* ---- chân bảng: web search · báo sai · ô chat mới ---- */
+.proc-footer{padding:14px 16px;background:var(--panel-2);border-top:1px solid var(--line)}
+.proc-foot-line{margin:0 0 8px;font-size:13px;color:var(--ink-2);line-height:1.55}
+.proc-link-btn{
+  background:none;border:0;padding:0;color:var(--accent);
+  text-decoration:underline;font-size:inherit;
+}
+.proc-fix{margin:10px 0}
+.proc-fix-row{display:flex;gap:8px}
+.proc-fix-input{
+  flex:1;background:var(--bg);border:1px solid var(--line);
+  border-radius:8px;padding:8px 11px;font-size:13.5px;
+}
+.proc-fix-input:focus{outline:none;border-color:var(--accent)}
+.proc-fix-btn{
+  background:var(--panel);border:1px solid var(--line);color:var(--ink);
+  border-radius:8px;padding:8px 14px;font-size:13.5px;
+}
+.proc-fix-btn:hover{border-color:var(--accent)}
+
+/* ══════════════════ câu hỏi MCQ ══════════════════ */
+.proc-mcq{
+  margin-top:12px;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:14px 16px;
+}
+.proc-mcq-q{margin:0 0 11px;font-size:15px;font-weight:500;line-height:1.5}
+.proc-mcq-list{display:flex;flex-direction:column;gap:7px}
+.proc-mcq-opt{
+  display:flex;gap:11px;align-items:flex-start;text-align:left;
+  background:var(--panel-2);border:1px solid var(--line);color:var(--ink);
+  border-radius:9px;padding:10px 12px;transition:border-color .12s,background .12s;
+}
+.proc-mcq-opt:hover:not(:disabled){border-color:var(--accent);background:var(--bg)}
+.proc-mcq-opt:disabled{opacity:.55;cursor:default}
+.proc-mcq-opt.selected{border-color:var(--accent);background:rgba(63,138,224,.14);opacity:1}
+.proc-mcq-num{
+  flex:0 0 22px;height:22px;display:inline-flex;align-items:center;
+  justify-content:center;border-radius:50%;background:var(--bg);
+  border:1px solid var(--line);font-size:12px;color:var(--ink-2);
+}
+.proc-mcq-opt.selected .proc-mcq-num{background:var(--accent);color:var(--accent-ink);border-color:transparent}
+.proc-mcq-text{display:flex;flex-direction:column;gap:2px}
+.proc-mcq-label{font-size:14px;line-height:1.45}
+.proc-mcq-hint{font-size:12px;color:var(--ink-3)}
+.proc-mcq-remember{
+  display:flex;align-items:center;gap:8px;margin-top:12px;
+  font-size:13px;color:var(--ink-2);cursor:pointer;
+}
+.proc-mcq-remember input{accent-color:var(--accent)}
+
+/* mời mở ô chat mới khi hỏi sang thủ tục khác */
+.proc-newchat{
+  margin-top:12px;display:flex;flex-direction:column;gap:10px;
+  align-items:flex-start;background:var(--panel);border:1px solid var(--line);
+  border-radius:12px;padding:14px 16px;
+}
+.proc-newchat p{margin:0;font-size:13px;color:var(--ink-3)}

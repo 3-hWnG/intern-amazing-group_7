@@ -86,10 +86,12 @@ def create_app() -> FastAPI:
     app = FastAPI(title="Trợ lý Thủ tục hành chính", lifespan=lifespan)
     app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
-    from api import auth_routes, chat_routes, file_routes, routes
+    from api import auth_routes, chat_routes, file_routes, procedure_routes, routes
     app.include_router(routes.router)
     app.include_router(auth_routes.router)
     app.include_router(chat_routes.router)
+    # Hệ thống 2: tải biểu mẫu thủ tục + trí nhớ lựa chọn MCQ.
+    app.include_router(procedure_routes.router)
     if ATTACHMENTS_ENABLED:
         app.include_router(file_routes.router)
 

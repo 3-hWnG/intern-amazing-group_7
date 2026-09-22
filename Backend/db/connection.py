@@ -81,6 +81,7 @@ def reset_database() -> None:
     """Xoá toàn bộ dữ liệu, giữ lược đồ. Chỉ dùng cho công cụ phát triển."""
     conn = get_conn()
     for table in ["feedback", "evidence", "messages", "document_chunks", "documents",
+                  "retrieval_pending", "user_mcq_memory",
                   "conversations", "user_profile", "auth_sessions", "login_attempts",
                   "job_log", "users"]:
         conn.execute(f"DELETE FROM {table}")

@@ -26,6 +26,10 @@ class TurnInput:
     summary: str = ""
     profile: dict = field(default_factory=dict)
     conversation_id: int | None = None
+    # Chủ cuộc trò chuyện. Hệ thống 2 cần để đọc/ghi trí nhớ lựa chọn MCQ
+    # (`user_mcq_memory`) — thứ duy nhất trong một lượt gắn với NGƯỜI, không
+    # phải với cuộc trò chuyện. None = chạy ngoài web (evaluate.py, CLI).
+    user_id: int | None = None
     direct_search: bool = False
     # "websearch" = Hệ thống 1 (tra web qua MCP) · "retrieval" = Hệ thống 2 (CSDL nội bộ)
     system: str = DEFAULT_SYSTEM

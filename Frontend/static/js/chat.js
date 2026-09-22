@@ -252,7 +252,15 @@ window.Chat = (function () {
     if (st) tags.appendChild(st);
     if (tags.childNodes.length) wrap.appendChild(tags);
 
-    if (meta.choices && meta.choices.length) {
+    /* Hệ thống 2 trả về `table` do CODE dựng: bảng thủ tục, câu hỏi MCQ, hoặc
+       lời mời mở ô chat mới. Vẽ bằng procedure.js — KHÔNG đi qua rich(). */
+    const procNode = window.Procedure
+      ? Procedure.render(meta.table, convId || activeLoadId) : null;
+    if (procNode) {
+      wrap.appendChild(procNode);
+      // Bảng đã có đủ lựa chọn rồi; hiện thêm gợi ý DuckDuckGo chỉ gây rối.
+      if (meta.table && meta.table.kind === "mcq") body.hidden = true;
+    } else if (meta.choices && meta.choices.length) {
       const cBox = choiceBox(meta.choices, convId || activeLoadId);
       if (cBox) wrap.appendChild(cBox);
     }
@@ -316,6 +324,7 @@ window.Chat = (function () {
         has_evidence: m.has_evidence,
         choices: m.choices || [],
         system: m.system || "",
+        table: m.table || null,
       }, convId));
     } catch (err) {
       console.error("Lỗi tải cuộc trò chuyện:", err);
@@ -374,6 +383,7 @@ window.Chat = (function () {
           has_evidence: done.has_evidence,
           choices: done.choices || [],
           system: done.system || "",
+          table: done.table || null,
         }, convId);
       } else if (!acc) {
         body.textContent = "[Lỗi] Không nhận được phản hồi từ máy chủ.";

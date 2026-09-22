@@ -9,10 +9,12 @@
 #   Tham so:
 #       -IncludeFinetune   cai them thu vien huan luyen (torch, ~3GB)
 #       -SkipOllama        bo qua buoc cai Ollama / tai mo hinh
+#       -SkipScrape        bo qua buoc cao CSDL thu tuc (He thong 2)
 # ---------------------------------------------------------------------------
 param(
     [switch]$IncludeFinetune,
-    [switch]$SkipOllama
+    [switch]$SkipOllama,
+    [switch]$SkipScrape
 )
 
 $ErrorActionPreference = "Stop"
@@ -186,6 +188,61 @@ $initDb = "import sys;sys.path.insert(0, r'$Root');sys.path.insert(0, r'$Root\Ba
           "from db import connection;connection.init_db();from config import DB_PATH;print(DB_PATH)"
 $dbOut = & $Py -c $initDb
 if ($LASTEXITCODE -eq 0) { Write-Ok "CSDL san sang: $dbOut" } else { Write-Die "khoi tao CSDL that bai" }
+
+# 7 --------------------------------------------- CSDL thu tuc hanh chinh ----
+# He thong 2 (mac dinh) tra cuu tu Database\runtime\procedures.db.
+# File .db VA thu muc bieu mau (Database\raw\files - 774 thu muc .docx) DEU
+# KHONG commit vao git: kho se nang va khong diff duoc. Vi vay may moi phai tu
+# cao lai. Cao day du ~1.400 thu tuc mat khoang 15-25 phut (gioi han 2 req/s
+# de khong lam phien cong dich vu cong).
+#
+# Chay lai nhieu lan khong sao: import_db.py so sanh content_hash, khong doi
+# thi bo qua. Dung -SkipScrape neu chi muon cai lai thu vien.
+Write-Step 7 "Co so du lieu thu tuc hanh chinh (He thong 2)"
+$procDb = Join-Path $Root "Database\runtime\procedures.db"
+$needScrape = $false
+
+# Dem thu tuc dang co. Dung here-string + "python -" de khoi phai long nhau
+# dau nhay giua PowerShell, Python va SQL.
+$countPy = @'
+import sqlite3, sys
+try:
+    print(sqlite3.connect(sys.argv[1]).execute(
+        "select count(*) from procedures where status='active'").fetchone()[0])
+except Exception:
+    print(0)
+'@
+
+if ($SkipScrape) {
+    Write-Skip "-SkipScrape -> bo qua buoc cao du lieu"
+} elseif (Test-Path $procDb) {
+    $n = 0
+    try { $n = [int]($countPy | & $Py - $procDb) } catch { $n = 0 }
+    if ($n -gt 0) {
+        Write-Skip "da co $n thu tuc trong CSDL -> khong cao lai"
+        Write-Host "    (muon cap nhat: python -m Database.pipeline.run_pipeline --all)" -ForegroundColor DarkGray
+    } else {
+        $needScrape = $true
+    }
+} else {
+    $needScrape = $true
+}
+
+if ($needScrape) {
+    Write-Host "    Dang cao du lieu tu dichvucong.gov.vn..." -ForegroundColor DarkGray
+    Write-Host "    Viec nay mat 15-25 phut va CAN MANG." -ForegroundColor DarkGray
+    Write-Host "    Ctrl+C de bo qua: luc do He thong 2 bao chua co CSDL," -ForegroundColor DarkGray
+    Write-Host "    va ban van dung duoc He thong 1 (Web search) binh thuong." -ForegroundColor DarkGray
+    $env:PYTHONPATH = $Root
+    & $Py -m Database.pipeline.run_pipeline --all
+    if ($LASTEXITCODE -eq 0) {
+        Write-Ok "CSDL thu tuc san sang"
+    } else {
+        # Cao hong KHONG duoc lam hong ca buoc cai dat: He thong 1 van chay duoc.
+        Write-Warn "cao du lieu chua xong (mat mang hoac cong bi gioi han)."
+        Write-Warn "chay lai sau bang: python -m Database.pipeline.run_pipeline --all"
+    }
+}
 
 # ---------------------------------------------------------------- xong ------
 Write-Host ""

@@ -344,6 +344,110 @@ class JobLog:
         return dict(row) if row else {}
 
 
+# ----------------------------------------------- Hệ thống 2: vòng MCQ ----
+class RetrievalPending:
+    """Vòng MCQ đang chờ trả lời của MỘT cuộc trò chuyện.
+
+    Có vì một lượt HTTP không giữ được trạng thái, mà kiến trúc Hệ thống 2 là
+    "tra lần 1 -> hỏi MCQ -> tra lần 2". Đặt ở app.db (không phải bộ nhớ RAM)
+    để khởi động lại máy chủ giữa chừng không làm mất câu hỏi của người dân.
+    """
+
+    @staticmethod
+    def get(conv_id: int) -> dict | None:
+        row = get_conn().execute(
+            "SELECT * FROM retrieval_pending WHERE conversation_id = ?",
+            (conv_id,)).fetchone()
+        if row is None:
+            return None
+        out = dict(row)
+        for field in ("keys", "candidates", "options", "picked"):
+            try:
+                out[field] = json.loads(out.pop(f"{field}_json") or ("{}" if field in ("keys", "picked") else "[]"))
+            except Exception:
+                out[field] = {} if field in ("keys", "picked") else []
+        return out
+
+    @staticmethod
+    def save(conv_id: int, *, question: str, keys: dict, candidates: list,
+             proc_id: str = "", axis: str = "", options: list | None = None,
+             picked: dict | None = None, attempts: int = 0, rounds: int = 0) -> None:
+        conn = get_conn()
+        now = _now()
+        conn.execute(
+            "INSERT INTO retrieval_pending(conversation_id, question, keys_json,"
+            " candidates_json, proc_id, axis, options_json, picked_json, attempts,"
+            " rounds, created_at, updated_at) VALUES (?,?,?,?,?,?,?,?,?,?,?,?)"
+            " ON CONFLICT(conversation_id) DO UPDATE SET"
+            " question = excluded.question, keys_json = excluded.keys_json,"
+            " candidates_json = excluded.candidates_json, proc_id = excluded.proc_id,"
+            " axis = excluded.axis, options_json = excluded.options_json,"
+            " picked_json = excluded.picked_json, attempts = excluded.attempts,"
+            " rounds = excluded.rounds, updated_at = excluded.updated_at",
+            (conv_id, question, json.dumps(keys, ensure_ascii=False),
+             json.dumps(candidates, ensure_ascii=False), proc_id, axis,
+             json.dumps(options or [], ensure_ascii=False),
+             json.dumps(picked or {}, ensure_ascii=False),
+             attempts, rounds, now, now))
+        conn.commit()
+
+    @staticmethod
+    def clear(conv_id: int) -> None:
+        conn = get_conn()
+        conn.execute("DELETE FROM retrieval_pending WHERE conversation_id = ?", (conv_id,))
+        conn.commit()
+
+
+class MCQMemory:
+    """Lựa chọn MCQ người dùng đã bảo "nhớ giúp tôi" — dùng lại ở mọi cuộc trò chuyện.
+
+    Chỉ chứa trục MÔ TẢ NGƯỜI DÙNG (tư cách, cấp nộp). Bộ lọc nằm ở
+    `Database.pipeline.retrieval.MEMORABLE_AXES`, tầng gọi phải kiểm trước.
+    """
+
+    @staticmethod
+    def all_for(user_id: int) -> dict:
+        rows = get_conn().execute(
+            "SELECT axis, value FROM user_mcq_memory WHERE user_id = ?", (user_id,))
+        return {r["axis"]: r["value"] for r in rows}
+
+    @staticmethod
+    def list_for(user_id: int) -> list[dict]:
+        return [dict(r) for r in get_conn().execute(
+            "SELECT axis, value, n_used, updated_at FROM user_mcq_memory"
+            " WHERE user_id = ? ORDER BY axis", (user_id,))]
+
+    @staticmethod
+    def remember(user_id: int, axis: str, value: str) -> None:
+        conn = get_conn()
+        now = _now()
+        conn.execute(
+            "INSERT INTO user_mcq_memory(user_id, axis, value, n_used, created_at, updated_at)"
+            " VALUES (?,?,?,0,?,?) ON CONFLICT(user_id, axis) DO UPDATE SET"
+            " value = excluded.value, updated_at = excluded.updated_at",
+            (user_id, axis, str(value)[:200], now, now))
+        conn.commit()
+
+    @staticmethod
+    def mark_used(user_id: int, axis: str) -> None:
+        """Đếm số câu hỏi mà trí nhớ này đã giúp người dùng khỏi phải bấm."""
+        conn = get_conn()
+        conn.execute(
+            "UPDATE user_mcq_memory SET n_used = n_used + 1, updated_at = ?"
+            " WHERE user_id = ? AND axis = ?", (_now(), user_id, axis))
+        conn.commit()
+
+    @staticmethod
+    def forget(user_id: int, axis: str = "") -> None:
+        conn = get_conn()
+        if axis:
+            conn.execute("DELETE FROM user_mcq_memory WHERE user_id = ? AND axis = ?",
+                         (user_id, axis))
+        else:
+            conn.execute("DELETE FROM user_mcq_memory WHERE user_id = ?", (user_id,))
+        conn.commit()
+
+
 # ------------------------------------------------------------ retention ----
 def purge_old(retention_days: int) -> int:
     if not retention_days:

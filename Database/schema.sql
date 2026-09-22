@@ -121,3 +121,44 @@ CREATE TABLE IF NOT EXISTS document_chunks (
     created_at    TEXT NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_chunk_doc ON document_chunks(document_id);
+
+-- ══════════════════════════════════════════════════════════════════════════
+-- HỆ THỐNG 2 (RETRIEVAL) — trạng thái giữa các lượt hỏi
+-- ══════════════════════════════════════════════════════════════════════════
+
+-- Vòng MCQ đang chờ người dùng trả lời.
+-- Kiến trúc mới là: tra lần 1 -> hỏi MCQ -> tra lần 2. Một lượt HTTP không giữ
+-- được trạng thái đó, nên phải ghi lại. Mỗi cuộc trò chuyện tối đa MỘT vòng
+-- đang chờ (khoá chính là conversation_id) — hỏi câu mới thì vòng cũ bị ghi đè.
+CREATE TABLE IF NOT EXISTS retrieval_pending (
+    conversation_id INTEGER PRIMARY KEY REFERENCES conversations(id) ON DELETE CASCADE,
+    question        TEXT NOT NULL DEFAULT '',   -- câu hỏi GỐC của người dùng
+    keys_json       TEXT NOT NULL DEFAULT '',   -- {primary_keyword, entities, domain}
+    candidates_json TEXT NOT NULL DEFAULT '',   -- [{proc_id, name, domain}]
+    proc_id         TEXT NOT NULL DEFAULT '',   -- đã chốt được thủ tục nào chưa
+    axis            TEXT NOT NULL DEFAULT '',   -- procedure|case|subject|agency_level
+    options_json    TEXT NOT NULL DEFAULT '',   -- các lựa chọn đang hiển thị
+    picked_json     TEXT NOT NULL DEFAULT '{}', -- {axis: giá trị đã chọn}
+    attempts        INTEGER NOT NULL DEFAULT 0, -- số lần LLM sinh lại khoá (tối đa 3)
+    rounds          INTEGER NOT NULL DEFAULT 0, -- số vòng MCQ đã hỏi
+    created_at      TEXT NOT NULL,
+    updated_at      TEXT NOT NULL
+);
+
+-- Lựa chọn MCQ người dùng bảo "nhớ giúp tôi" (Proposal: "hỏi xem người dùng có
+-- muốn nhớ lựa chọn để về sau đỡ phải chọn hay không").
+--
+-- CHỈ nhớ trục MÔ TẢ NGƯỜI DÙNG (tư cách, cấp nộp hồ sơ) — những thứ hiếm khi
+-- đổi. TUYỆT ĐỐI không nhớ trục MÔ TẢ CÂU HỎI (thủ tục nào, trường hợp nào):
+-- nhớ "lần trước chọn Đăng ký kết hôn" rồi áp cho câu hỏi sau là trả lời sai
+-- thủ tục. Danh sách trục nhớ được: Database/pipeline/retrieval.MEMORABLE_AXES.
+CREATE TABLE IF NOT EXISTS user_mcq_memory (
+    id         INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id    INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    axis       TEXT NOT NULL,
+    value      TEXT NOT NULL,
+    n_used     INTEGER NOT NULL DEFAULT 0,   -- đếm số lần đỡ được một câu hỏi
+    created_at TEXT NOT NULL,
+    updated_at TEXT NOT NULL
+);
+CREATE UNIQUE INDEX IF NOT EXISTS idx_mcq_mem ON user_mcq_memory(user_id, axis);

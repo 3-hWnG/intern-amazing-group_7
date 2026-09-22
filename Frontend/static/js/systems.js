@@ -13,7 +13,7 @@ window.Systems = (function () {
 
   const FALLBACK = [
     { id: WEBSEARCH, label: "Web search", description: "Tra cứu từ các trang .gov.vn qua MCP", enabled: true },
-    { id: RETRIEVAL, label: "CSDL thủ tục", description: "Tra cứu từ cơ sở dữ liệu nội bộ", enabled: false },
+    { id: RETRIEVAL, label: "CSDL thủ tục", description: "Tra cứu từ cơ sở dữ liệu thủ tục nội bộ", enabled: true },
   ];
   const ICON = { [WEBSEARCH]: "🌐", [RETRIEVAL]: "🗄" };
 
@@ -91,7 +91,7 @@ window.Systems = (function () {
 
   function init(cfg) {
     if (cfg && Array.isArray(cfg.systems) && cfg.systems.length) list = cfg.systems;
-    current = norm((cfg && cfg.default_system) || WEBSEARCH);
+    current = norm((cfg && cfg.default_system) || RETRIEVAL);
     const b = btn();
     if (b) b.onclick = toggle;
     render();

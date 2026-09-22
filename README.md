@@ -1,13 +1,22 @@
 # Trợ lý Thủ tục hành chính — V10.3
 
 Trợ lý ảo trả lời câu hỏi về **thủ tục hành chính Việt Nam**. Mô hình ngôn ngữ
-3–4B chạy **cục bộ** (local) lo phần *hiểu và diễn đạt*; phần *thông tin thủ tục
-hiện hành* lấy từ web qua **MCP search**, ưu tiên nguồn `.gov.vn`; mỗi câu trả
-lời đi qua một lượt **kiểm chứng** (verify) trước khi hiển thị.
+3–4B chạy **cục bộ** (local) lo phần *hiểu câu hỏi*; phần *thông tin thủ tục* thì
+KHÔNG do mô hình sinh ra. Có **hai hệ thống trả lời**, đổi bằng nút trên giao diện:
 
-> *A Vietnamese public-administration assistant. A local 3–4B LLM handles
-> language; live procedure facts come from web search over an MCP server;
-> every answer is verified against its evidence before being shown.*
+| | Hệ thống 2 — **CSDL thủ tục** (mặc định) | Hệ thống 1 — **Web search** |
+|---|---|---|
+| Nguồn | 1.407 thủ tục cào sẵn về máy (SQLite + FTS5) | tra `.gov.vn` trực tiếp qua MCP |
+| Câu trả lời | **bảng do code dựng** — không qua mô hình | mô hình soạn, rồi **kiểm chứng** với nguồn |
+| Mạnh ở | chính xác tuyệt đối, có checklist + biểu mẫu tải về | thủ tục mới, thứ chưa có trong kho |
+| Tài liệu | [`PHASE2_RETRIEVAL.md`](Documentation/PHASE2_RETRIEVAL.md) | [`ARCHITECTURE.md`](Documentation/ARCHITECTURE.md) |
+
+Đổi hệ thống sẽ **mở ô chat mới** để mô hình không trộn thông tin hai nguồn.
+
+> *A Vietnamese public-administration assistant with two answer paths. The
+> default retrieves from a local database of 1,407 scraped procedures and
+> renders the answer table in code — the LLM never writes the facts. The other
+> searches .gov.vn live over MCP and verifies every answer against its evidence.*
 
 ---
 
@@ -15,7 +24,7 @@ lời đi qua một lượt **kiểm chứng** (verify) trước khi hiển th�
 
 | Bạn muốn gì | Làm gì |
 |---|---|
-| Chạy lần đầu trên máy mới | Bấm đôi **`Setup First Time.bat`** (một lần duy nhất) |
+| Chạy lần đầu trên máy mới | Bấm đôi **`Setup First Time.bat`** (một lần duy nhất, 30–60 phút) |
 | Chạy ứng dụng hằng ngày | Bấm đôi **`Launch Web.bat`** → http://127.0.0.1:8000 |
 | Đổi cấu hình (mô hình, cổng, tìm kiếm…) | Sửa **`.env`** ở thư mục gốc — xem `.env.example` |
 | Hiểu thư mục nào chứa gì | [`Documentation/STRUCTURE.md`](Documentation/STRUCTURE.md) |
@@ -25,6 +34,15 @@ lời đi qua một lượt **kiểm chứng** (verify) trước khi hiển th�
 
 `Setup First Time.bat` **không tải lại thứ đã có**: Python, `.venv`, thư viện,
 Ollama, mô hình — cái nào máy đã có thì bỏ qua. Chạy lại nhiều lần vẫn an toàn.
+
+⚠️ **Lần đầu nó phải cào ~1.400 thủ tục về máy (15–25 phút).** Dữ liệu thủ tục và
+biểu mẫu `.docx` **không nằm trong git** (kho sẽ nặng và không diff được), nên máy
+nào cũng phải cào một lần. Bỏ qua bằng `-SkipScrape` — lúc đó Hệ thống 2 sẽ báo
+chưa có CSDL và mời bạn dùng Web search. Cào lại/cập nhật bất cứ lúc nào:
+
+```bash
+python -m Database.pipeline.run_pipeline --all
+```
 
 ---
 

@@ -188,6 +188,7 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit,
     result = orchestrator.run_turn(
         orchestrator.TurnInput(question=question, history=history, summary=summary,
                                profile=profile, conversation_id=conv_id,
+                               user_id=user_id,
                                direct_search=direct_search, system=system),
         status=lambda text: send(type="status", text=text))
 
