@@ -27,12 +27,17 @@ vì `Backend/` được đưa vào `sys.path` trong `Backend/main.py`.
 | Thư mục | Nội dung |
 |---|---|
 | `api/` | Các route HTTP: xác thực, hội thoại, tệp đính kèm, công cụ dev |
-| `core/` | Pipeline trả lời: `orchestrator` · `intent` · `evidence` · `answer` · `verifier` · `llm` · `queue` · `mcp_client` |
+| `core/` | Pipeline trả lời. `orchestrator` = bộ CHỌN hệ thống · `turn` = hợp đồng `TurnInput`/`TurnResult` · `system_websearch` = Hệ thống 1 · `system_retrieval` = Hệ thống 2 (chưa xây) · `intent` · `evidence` · `answer` · `verifier` · `llm` · `queue` · `mcp_client` |
 | `db/` | `connection.py` (nơi DUY NHẤT mở CSDL) + `repositories.py` (mọi câu SQL) |
 | `domain/` | Xử lý văn bản thuần tuý (BM25, chuẩn hoá tiếng Việt) |
 | `mcp_search/` | MCP server: tra web → xếp hạng → đọc trang → Evidence Pack |
 | `prompts/` | Mẫu prompt gửi cho mô hình |
 | `main.py` | Điểm khởi động: dựng app, mount static, bật hàng đợi |
+
+> **Hai hệ thống trả lời.** Nút "Web search" cạnh ô nhập chuyển giữa Hệ thống 1
+> (`system_websearch.py`, tra web) và Hệ thống 2 (`system_retrieval.py`, CSDL nội
+> bộ — chưa xây). Đổi hệ thống sẽ mở cuộc trò chuyện mới. Chi tiết: mục 0 của
+> `ARCHITECTURE.md`.
 
 ### `Frontend/` — giao diện
 HTML + CSS + JavaScript thuần, **không framework, không bước build**.

@@ -34,6 +34,7 @@
       return;   // api.js đã tự chuyển sang /login
     }
     if ($("model-name")) $("model-name").textContent = cfg.llm_model || "";
+    Systems.init(cfg);          // nút Web search: Hệ thống 1 <-> Hệ thống 2
 
     Conversations.onSelect = (id) => {
       Chat.load(id);

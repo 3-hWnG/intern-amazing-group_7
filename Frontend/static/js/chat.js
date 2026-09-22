@@ -12,6 +12,7 @@ window.Chat = (function () {
     clarify: ["Cần thêm thông tin", "badge-clarify"],
     no_evidence: ["Không tìm được nguồn", "badge-fail"],
     not_in_sources: ["Nguồn chưa có thông tin này", "badge-muted"],
+    unavailable: ["Hệ thống này chưa sẵn sàng", "badge-muted"],
     error: ["Lỗi hệ thống", "badge-fail"],
   };
 
@@ -65,6 +66,13 @@ window.Chat = (function () {
     const key = meta.kind === "answer" ? (meta.verdict || "answer") : meta.kind;
     const found = BADGE[key];
     return found ? el("span", `badge ${found[1]}`, found[0]) : null;
+  }
+
+  /* Nhãn cho biết câu trả lời này do hệ thống nào tạo ra — người chấm bài và
+     người dùng đều thấy ngay là đang xem web search hay CSDL nội bộ. */
+  function systemTag(system) {
+    if (!system || !window.Systems) return null;
+    return el("span", "badge badge-system", Systems.label(system));
   }
 
   function sourceList(sources) {
@@ -240,6 +248,8 @@ window.Chat = (function () {
     const tags = el("div", "msg-tags");
     const b = badge(meta);
     if (b) tags.appendChild(b);
+    const st = systemTag(meta.system);
+    if (st) tags.appendChild(st);
     if (tags.childNodes.length) wrap.appendChild(tags);
 
     if (meta.choices && meta.choices.length) {
@@ -267,9 +277,14 @@ window.Chat = (function () {
   function clear() { box().innerHTML = ""; }
 
   function empty() {
+    const sys = window.Systems
+      ? `<p class="empty-system">Đang dùng: <strong>${esc(Systems.label(Systems.current))}</strong>` +
+        " — đổi bằng nút bên dưới ô nhập.</p>"
+      : "";
     box().innerHTML =
       '<div class="empty"><h2>Bạn cần làm thủ tục gì?</h2>' +
-      '<p>Ví dụ: <em>“Con tôi mới sinh, làm giấy khai sinh cần gì?”</em></p></div>';
+      '<p>Ví dụ: <em>“Con tôi mới sinh, làm giấy khai sinh cần gì?”</em></p>' +
+      sys + "</div>";
   }
 
   let activeLoadId = null;
@@ -286,6 +301,8 @@ window.Chat = (function () {
     try {
       const data = await API.get(`/api/conversations/${convId}`);
       if (activeLoadId !== convId || isSending) return;
+      // Nút Web search phải khớp với hệ thống ĐÃ ghi trên cuộc trò chuyện này.
+      if (window.Systems) Systems.reflect((data.conversation || {}).system);
       clear();
       if (!data.messages || !data.messages.length) {
         empty();
@@ -298,6 +315,7 @@ window.Chat = (function () {
         sources: m.sources,
         has_evidence: m.has_evidence,
         choices: m.choices || [],
+        system: m.system || "",
       }, convId));
     } catch (err) {
       console.error("Lỗi tải cuộc trò chuyện:", err);
@@ -315,7 +333,9 @@ window.Chat = (function () {
 
       const wrap = el("div", "msg assistant");
       const status = el("div", "status");
-      const statusText = el("span", "status-text", directSearch ? "Đang gửi DuckDuckGo qua MCP…" : "Đang gửi…");
+      const first = directSearch ? "Đang gửi DuckDuckGo qua MCP…"
+        : (window.Systems && Systems.isRetrieval ? "Đang tra cơ sở dữ liệu thủ tục…" : "Đang gửi…");
+      const statusText = el("span", "status-text", first);
       status.append(el("span", "spinner"), statusText);
       const body = el("div", "bubble");
       body.hidden = true;
@@ -324,7 +344,9 @@ window.Chat = (function () {
       scroll();
 
       let acc = "";
-      await API.stream(`/api/conversations/${convId}/chat`, { text, direct_search: directSearch }, (evt) => {
+      const system = window.Systems ? Systems.current : "";
+      await API.stream(`/api/conversations/${convId}/chat`,
+                       { text, direct_search: directSearch, system }, (evt) => {
         if (evt.type === "status" || evt.type === "queue") {
           statusText.textContent = evt.text;
         } else if (evt.type === "delta") {
@@ -351,6 +373,7 @@ window.Chat = (function () {
           sources: done.sources,
           has_evidence: done.has_evidence,
           choices: done.choices || [],
+          system: done.system || "",
         }, convId);
       } else if (!acc) {
         body.textContent = "[Lỗi] Không nhận được phản hồi từ máy chủ.";

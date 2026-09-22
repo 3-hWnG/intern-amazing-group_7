@@ -119,6 +119,8 @@ a.cite:hover{background:var(--accent);color:#fff}
 .badge-fail{background:var(--bad)}
 .badge-clarify{background:var(--warn)}
 .badge-muted{background:var(--muted)}
+/* nhãn "câu trả lời này do hệ thống nào tạo ra" */
+.badge-system{background:none;border:1px solid var(--line);color:var(--ink-2)}
 
 /* nguồn */
 .sources{font-size:12.5px;display:flex;flex-direction:column;gap:3px}
@@ -169,6 +171,16 @@ a.cite:hover{background:var(--accent);color:#fff}
 .composer-btn:disabled{opacity:.45;cursor:default}
 #attach{font-size:22px;font-weight:300;line-height:1}
 
+/* ---------- nút chuyển hệ thống (Web search <-> CSDL thủ tục) ---------- */
+.system-toggle{gap:6px;white-space:nowrap;font-size:13px;padding:0 14px}
+.system-toggle.on{background:color-mix(in srgb,var(--accent) 18%,transparent);
+  border-color:var(--accent);color:var(--ink)}
+.system-toggle:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+/* dòng "Đang dùng: …" ở màn hình trống */
+.empty-system{margin-top:14px;font-size:13px;color:var(--ink-3)}
+.empty-system strong{color:var(--ink-2);font-weight:600}
+
 /* ---------- tệp đính kèm ---------- */
 .attachments{display:flex;flex-wrap:wrap;gap:6px}
 .file-pill{display:flex;align-items:center;gap:7px;background:var(--panel-2);
@@ -185,6 +197,8 @@ a.cite:hover{background:var(--accent);color:#fff}
 .file-pill.failed .meta{color:var(--danger)}
 
 @media (max-width:760px){
+  .system-toggle{padding:0 10px;font-size:0}
+  .system-toggle::first-letter{font-size:17px}
   .sidebar{position:absolute;z-index:10;height:100%}
   .sidebar.hidden{margin-left:-270px}
   .model-name{display:none}

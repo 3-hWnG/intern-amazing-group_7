@@ -62,7 +62,10 @@ window.Conversations = (function () {
   }
 
   async function create(opts = {}) {
-    const data = await API.post("/api/conversations", {});
+    // Hệ thống trả lời của cuộc trò chuyện mới = hệ thống đang chọn trên nút
+    // Web search (hoặc chỉ định thẳng qua opts.system).
+    const system = opts.system || (window.Systems ? Systems.current : "");
+    const data = await API.post("/api/conversations", system ? { system } : {});
     await refresh();
     select(data.conversation.id, opts);
     return data.conversation;

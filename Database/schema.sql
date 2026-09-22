@@ -41,7 +41,10 @@ CREATE TABLE IF NOT EXISTS conversations (
     updated_at    TEXT NOT NULL,
     summary       TEXT DEFAULT '',
     summary_upto  INTEGER DEFAULT 0,
-    archived      INTEGER NOT NULL DEFAULT 0
+    archived      INTEGER NOT NULL DEFAULT 0,
+    -- Hệ thống trả lời của cuộc trò chuyện này: websearch (HT1) | retrieval (HT2).
+    -- Đổi hệ thống = mở cuộc trò chuyện MỚI, nên cột này không bao giờ đổi giữa chừng.
+    system        TEXT NOT NULL DEFAULT 'websearch'
 );
 CREATE INDEX IF NOT EXISTS idx_conv_user ON conversations(user_id, updated_at DESC);
 

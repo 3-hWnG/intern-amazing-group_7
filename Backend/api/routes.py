@@ -10,10 +10,12 @@ import asyncio
 from fastapi import APIRouter
 from fastapi.responses import HTMLResponse
 
-from config import (ATTACHMENTS_ENABLED, AUTH_ENABLED, DEV_TOOLS_ENABLED,
-                    LLM_MODEL, MCP_TRANSPORT, QUEUE_CONCURRENCY, QUEUE_ENABLED,
+from config import (ATTACHMENTS_ENABLED, AUTH_ENABLED, DEFAULT_SYSTEM,
+                    DEV_TOOLS_ENABLED, LLM_MODEL, MCP_TRANSPORT,
+                    QUEUE_CONCURRENCY, QUEUE_ENABLED, RETRIEVAL_ENABLED,
                     SEARCH_PROVIDER, STATIC_VERSION, SUMMARY_ENABLED,
-                    TEMPLATES_DIR, VERIFIER_ENABLED)
+                    SYSTEM_RETRIEVAL, SYSTEM_WEBSEARCH, TEMPLATES_DIR,
+                    VERIFIER_ENABLED)
 
 router = APIRouter()
 
@@ -41,6 +43,16 @@ async def public_config():
         "attachments_enabled": ATTACHMENTS_ENABLED,
         "verifier_enabled": VERIFIER_ENABLED,
         "llm_model": LLM_MODEL,
+        # Hai hệ thống trả lời — giao diện dựng nút chuyển từ danh sách này.
+        "default_system": DEFAULT_SYSTEM,
+        "systems": [
+            {"id": SYSTEM_WEBSEARCH, "label": "Web search",
+             "description": "Tra cứu trực tiếp từ các trang .gov.vn qua MCP",
+             "enabled": True},
+            {"id": SYSTEM_RETRIEVAL, "label": "CSDL thủ tục",
+             "description": "Tra cứu từ cơ sở dữ liệu thủ tục nội bộ",
+             "enabled": RETRIEVAL_ENABLED},
+        ],
     }
 
 
@@ -53,6 +65,8 @@ async def health():
         "model": llm.model_info(),
         "mcp": {**mcp_client.status(), "transport": MCP_TRANSPORT},
         "search_provider": SEARCH_PROVIDER,
+        "systems": {SYSTEM_WEBSEARCH: True, SYSTEM_RETRIEVAL: RETRIEVAL_ENABLED},
+        "default_system": DEFAULT_SYSTEM,
         "verifier": VERIFIER_ENABLED,
         "auth": AUTH_ENABLED,
         "queue": QUEUE_ENABLED,

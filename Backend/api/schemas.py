@@ -9,15 +9,19 @@ class Credentials(BaseModel):
 
 class ConversationCreate(BaseModel):
     title: str = "Cuộc trò chuyện mới"
+    system: str = ""          # "" = DEFAULT_SYSTEM · websearch (HT1) | retrieval (HT2)
 
 
 class ConversationRename(BaseModel):
-    title: str
+    """PATCH hội thoại: đổi tên và/hoặc đổi hệ thống. Bỏ trống = giữ nguyên."""
+    title: str | None = None
+    system: str | None = None
 
 
 class ChatRequest(BaseModel):
     text: str
     direct_search: bool = False
+    system: str = ""          # "" = dùng hệ thống đã ghi trên cuộc trò chuyện
 
 
 class FeedbackRequest(BaseModel):

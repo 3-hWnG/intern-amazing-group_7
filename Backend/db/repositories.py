@@ -9,6 +9,7 @@ from __future__ import annotations
 import json
 from datetime import datetime, timedelta, timezone
 
+from config import DEFAULT_SYSTEM, SYSTEMS
 from db.connection import get_conn
 
 
@@ -157,11 +158,13 @@ class UserProfiles:
 # -------------------------------------------------------- conversations ----
 class Conversations:
     @staticmethod
-    def create(user_id: int, title: str = "Cuộc trò chuyện mới") -> dict:
+    def create(user_id: int, title: str = "Cuộc trò chuyện mới",
+               system: str = DEFAULT_SYSTEM) -> dict:
         conn = get_conn()
         cur = conn.execute(
-            "INSERT INTO conversations(user_id, title, created_at, updated_at) VALUES (?,?,?,?)",
-            (user_id, title, _now(), _now()))
+            "INSERT INTO conversations(user_id, title, system, created_at, updated_at)"
+            " VALUES (?,?,?,?,?)",
+            (user_id, title, system if system in SYSTEMS else DEFAULT_SYSTEM, _now(), _now()))
         conn.commit()
         return Conversations.by_id(cur.lastrowid)
 
@@ -180,7 +183,7 @@ class Conversations:
     @staticmethod
     def list_for(user_id: int, limit: int = 100) -> list[dict]:
         rows = get_conn().execute(
-            "SELECT c.id, c.title, c.created_at, c.updated_at,"
+            "SELECT c.id, c.title, c.system, c.created_at, c.updated_at,"
             " (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id) n_messages"
             " FROM conversations c WHERE c.user_id = ? AND c.archived = 0"
             " ORDER BY c.updated_at DESC LIMIT ?", (user_id, limit)).fetchall()
@@ -192,6 +195,17 @@ class Conversations:
         conn.execute("UPDATE conversations SET title = ?, updated_at = ?"
                      " WHERE id = ? AND user_id = ?",
                      (title[:120], _now(), conv_id, user_id))
+        conn.commit()
+
+    @staticmethod
+    def set_system(conv_id: int, user_id: int, system: str) -> None:
+        """Đổi hệ thống trả lời. CHỈ gọi khi cuộc trò chuyện chưa có tin nhắn nào —
+        đổi giữa chừng sẽ làm mô hình trộn thông tin của hai nguồn khác nhau."""
+        if system not in SYSTEMS:
+            return
+        conn = get_conn()
+        conn.execute("UPDATE conversations SET system = ? WHERE id = ? AND user_id = ?",
+                     (system, conv_id, user_id))
         conn.commit()
 
     @staticmethod

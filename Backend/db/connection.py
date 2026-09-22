@@ -47,6 +47,9 @@ def init_db() -> None:
                 ("messages", "kind", "TEXT DEFAULT ''"),
                 ("messages", "verdict", "TEXT DEFAULT ''"),
                 ("messages", "intent_json", "TEXT DEFAULT ''"),
+                # V10.3: hệ thống trả lời của từng cuộc trò chuyện (websearch | retrieval).
+                # CSDL cũ không có cột này -> hội thoại cũ mặc định là Hệ thống 1.
+                ("conversations", "system", "TEXT NOT NULL DEFAULT 'websearch'"),
             ]:
                 cols = {r[1] for r in conn.execute(f"PRAGMA table_info({table})")}
                 if column not in cols:

@@ -110,6 +110,28 @@ MODEL_KNOWLEDGE_CUTOFF = _str("MODEL_KNOWLEDGE_CUTOFF", "2023-12")
 FINETUNE_RUNS_PATH = UTILITY_DIR / "finetune" / "runs.jsonl"
 
 # ==========================================================================
+# HAI HỆ THỐNG TRẢ LỜI / TWO ANSWERING SYSTEMS
+#
+#   websearch  Hệ thống 1 — tra web .gov.vn qua MCP   Backend/core/system_websearch.py
+#   retrieval  Hệ thống 2 — CSDL thủ tục nội bộ       Backend/core/system_retrieval.py
+#
+# Người dùng chuyển giữa hai hệ thống bằng nút "Web search" trên giao diện.
+# Mỗi cuộc trò chuyện ghi nhớ hệ thống của nó (cột conversations.system); đổi
+# hệ thống giữa chừng thì MỞ CUỘC TRÒ CHUYỆN MỚI để mô hình không trộn lẫn
+# thông tin của hai nguồn.
+# ==========================================================================
+SYSTEM_WEBSEARCH = "websearch"
+SYSTEM_RETRIEVAL = "retrieval"
+SYSTEMS = (SYSTEM_WEBSEARCH, SYSTEM_RETRIEVAL)
+
+# Hệ thống 2 chưa xây xong -> mặc định vẫn là Hệ thống 1. Proposal muốn
+# retrieval làm mặc định: đổi DEFAULT_SYSTEM=retrieval khi CSDL chạy được.
+RETRIEVAL_ENABLED = _bool("RETRIEVAL_ENABLED", False)
+DEFAULT_SYSTEM = _str("DEFAULT_SYSTEM", SYSTEM_WEBSEARCH).strip().lower()
+if DEFAULT_SYSTEM not in SYSTEMS:
+    DEFAULT_SYSTEM = SYSTEM_WEBSEARCH
+
+# ==========================================================================
 # HIỂU Ý ĐỊNH + HỎI LẠI
 # ==========================================================================
 CLARIFY_ENABLED = _bool("CLARIFY_ENABLED", True)
@@ -231,4 +253,4 @@ HOST = _str("APP_HOST", "127.0.0.1")
 PORT = _int("APP_PORT", 8000)
 
 # Sửa JS/CSS -> tăng số này để trình duyệt tải lại, không dùng bản cache cũ.
-STATIC_VERSION = "7.4"
+STATIC_VERSION = "7.5"

@@ -25,7 +25,7 @@ from fastapi.responses import StreamingResponse
 
 from api.deps import current_user
 from api.schemas import ChatRequest, ConversationCreate, ConversationRename, FeedbackRequest
-from config import QUEUE_ENABLED
+from config import DEFAULT_SYSTEM, QUEUE_ENABLED
 from core import llm, orchestrator, queue, summarizer
 from db import connection
 from db.repositories import (Conversations, Evidence, Feedback, JobLog, Messages,
@@ -59,7 +59,9 @@ async def list_conversations(user: dict = Depends(current_user)):
 
 @router.post("/api/conversations")
 async def create_conversation(body: ConversationCreate, user: dict = Depends(current_user)):
-    return {"conversation": await connection.run(Conversations.create, user["id"], body.title)}
+    system = orchestrator.normalize_system(body.system)
+    return {"conversation": await connection.run(Conversations.create, user["id"],
+                                                 body.title, system)}
 
 
 @router.get("/api/conversations/{conv_id}")
@@ -72,26 +74,41 @@ async def get_conversation(conv_id: int, user: dict = Depends(current_user)):
         except Exception:
             m["sources"] = []
         m["has_evidence"] = bool(m["has_evidence"])
-        choices = []
+        choices, system, table = [], "", None
         if m.get("intent_json"):
             try:
                 ij = json.loads(m["intent_json"])
                 choices = ij.get("choices") or []
+                system = ij.get("system") or ""
+                table = ij.get("table")
             except Exception:
                 pass
         m["choices"] = choices
+        m["system"] = system
+        m["table"] = table
         m.pop("intent_json", None)
     from db.repositories import Documents
     documents = await connection.run(Documents.list_for_conversation, conv_id)
-    return {"conversation": {k: conv[k] for k in ("id", "title", "created_at", "updated_at")},
+    return {"conversation": {k: conv[k] for k in ("id", "title", "system", "created_at", "updated_at")},
             "messages": messages, "documents": documents}
 
 
 @router.patch("/api/conversations/{conv_id}")
-async def rename_conversation(conv_id: int, body: ConversationRename,
+async def update_conversation(conv_id: int, body: ConversationRename,
                               user: dict = Depends(current_user)):
+    """Đổi tên và/hoặc đổi hệ thống trả lời."""
     await _owned(conv_id, user)
-    await connection.run(Conversations.rename, conv_id, user["id"], body.title)
+    if body.title is not None:
+        await connection.run(Conversations.rename, conv_id, user["id"], body.title)
+    if body.system is not None:
+        # Đổi hệ thống giữa chừng = trộn thông tin hai nguồn -> chỉ cho đổi khi
+        # cuộc trò chuyện còn trống; ngược lại frontend phải mở ô chat mới.
+        if await connection.run(Messages.list_for, conv_id):
+            raise HTTPException(
+                status_code=409,
+                detail="Cuộc trò chuyện đã có tin nhắn — hãy mở cuộc trò chuyện mới để đổi hệ thống.")
+        await connection.run(Conversations.set_system, conv_id, user["id"],
+                             orchestrator.normalize_system(body.system))
     return {"ok": True}
 
 
@@ -156,7 +173,8 @@ async def clear_profile(user: dict = Depends(current_user)):
 
 
 # --------------------------------------------------------------- chat ----
-def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit, direct_search: bool = False) -> None:
+def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit,
+             direct_search: bool = False, system: str = DEFAULT_SYSTEM) -> None:
     """Chạy trong worker của hàng đợi (luồng riêng): ngữ cảnh -> orchestrator -> lưu."""
     def send(**payload) -> None:
         emit(_event(**payload))
@@ -170,12 +188,16 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit, 
     result = orchestrator.run_turn(
         orchestrator.TurnInput(question=question, history=history, summary=summary,
                                profile=profile, conversation_id=conv_id,
-                               direct_search=direct_search),
+                               direct_search=direct_search, system=system),
         status=lambda text: send(type="status", text=text))
 
     intent_payload = dict(result.intent) if result.intent else {}
     if result.choices:
         intent_payload["choices"] = result.choices
+    # Hệ thống nào đã trả lời — giao diện gắn nhãn khi tải lại lịch sử.
+    intent_payload["system"] = result.system or system
+    if result.table is not None:
+        intent_payload["table"] = result.table
 
     message_id = Messages.add(conv_id, "assistant", result.text, kind=result.kind,
                               verdict=result.verdict, sources=result.sources,
@@ -192,30 +214,45 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit, 
     send(type="done", message_id=message_id, kind=result.kind, verdict=result.verdict,
          sources=result.sources, has_evidence=result.evidence is not None,
          intent=result.intent.get("intent", ""), timings=result.timings, profile=profile,
-         choices=result.choices)
+         choices=result.choices, system=result.system or system, table=result.table)
 
 
 @router.post("/api/conversations/{conv_id}/chat")
 async def chat(conv_id: int, body: ChatRequest, user: dict = Depends(current_user)):
-    await _owned(conv_id, user)
+    conv = await _owned(conv_id, user)
     question = (body.text or "").strip()
     if not question:
         raise HTTPException(status_code=400, detail="Câu hỏi trống.")
 
     direct_search = bool(body.direct_search)
-    if not await connection.run(Messages.list_for, conv_id):
+
+    # Hệ thống trả lời: ưu tiên yêu cầu của lượt này, không có thì lấy của cuộc
+    # trò chuyện. Cuộc trò chuyện còn trống thì ghi luôn lựa chọn đó vào CSDL.
+    existing = await connection.run(Messages.list_for, conv_id)
+    system = orchestrator.normalize_system(body.system or conv.get("system"))
+    if not existing:
         await connection.run(Conversations.rename, conv_id, user["id"], _title_from(question))
+        if system != conv.get("system"):
+            await connection.run(Conversations.set_system, conv_id, user["id"], system)
+    elif body.system and system != orchestrator.normalize_system(conv.get("system")):
+        # Đang giữa cuộc trò chuyện mà đòi đổi hệ thống -> giao diện phải mở ô chat mới.
+        raise HTTPException(
+            status_code=409,
+            detail="Cuộc trò chuyện đã có tin nhắn — hãy mở cuộc trò chuyện mới để đổi hệ thống.")
+
     user_msg_id = await connection.run(Messages.add, conv_id, "user", question,
                                        token_estimate=summarizer.estimate_tokens(question))
 
     def produce(emit):
         try:
-            _run_job(conv_id, user["id"], user_msg_id, question, emit, direct_search=direct_search)
+            _run_job(conv_id, user["id"], user_msg_id, question, emit,
+                     direct_search=direct_search, system=system)
         except Exception as exc:
             traceback.print_exc()
             emit(_event(type="error", text=f"Lỗi xử lý: {exc}"))
 
-    headers = {"X-Conversation-Id": str(conv_id), "Cache-Control": "no-cache"}
+    headers = {"X-Conversation-Id": str(conv_id), "X-System": system,
+               "Cache-Control": "no-cache"}
 
     if not QUEUE_ENABLED:
         async def direct():

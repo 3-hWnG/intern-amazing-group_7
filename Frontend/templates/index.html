@@ -43,6 +43,10 @@
       <div id="attachments" class="attachments" hidden></div>
       <div class="composer-row">
         <button id="attach" class="composer-btn" type="button" title="Đính kèm tệp" aria-label="Đính kèm tệp">+</button>
+        <!-- Nút chuyển Hệ thống 1 (web search) <-> Hệ thống 2 (CSDL thủ tục).
+             Đổi hệ thống sẽ mở một cuộc trò chuyện mới — xem static/js/systems.js -->
+        <button id="system-toggle" class="composer-btn system-toggle on" type="button"
+                aria-pressed="true">🌐 Web search</button>
         <textarea id="input" rows="2" placeholder="Nhập câu hỏi…" autocomplete="off"></textarea>
         <button id="send" class="primary" type="submit">Gửi</button>
       </div>
@@ -96,6 +100,7 @@
 <script src="/static/js/api.js?v=__V__"></script>
 <script src="/static/js/files.js?v=__V__"></script>
 <script src="/static/js/conversations.js?v=__V__"></script>
+<script src="/static/js/systems.js?v=__V__"></script>
 <script src="/static/js/chat.js?v=__V__"></script>
 <script src="/static/js/dev.js?v=__V__"></script>
 <script src="/static/js/app.js?v=__V__"></script>

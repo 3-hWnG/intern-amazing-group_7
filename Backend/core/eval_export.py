@@ -41,6 +41,11 @@ def build_conversation_export(conv_id: int, user_id: int) -> str:
     lines.append(f"• Tiêu đề: {conv.get('title', 'Cuộc trò chuyện')}")
     lines.append(f"• Thời gian tạo: {_format_dt(conv.get('created_at'))}")
     lines.append(f"• Thời gian cập nhật: {_format_dt(conv.get('updated_at'))}")
+    # Hệ thống trả lời — người chấm cần biết câu trả lời đến từ web hay CSDL nội bộ.
+    _SYS = {"websearch": "Hệ thống 1 — Web search (.gov.vn qua MCP)",
+            "retrieval": "Hệ thống 2 — CSDL thủ tục nội bộ"}
+    _sys = conv.get("system") or "websearch"
+    lines.append(f"• Hệ thống trả lời: {_SYS.get(_sys, _sys)}")
     lines.append(f"• Tổng số tin nhắn: {len(messages)}")
     lines.append(f"• Mô hình ngôn ngữ chính: {LLM_MODEL}")
     lines.append(f"• Kiểm chứng (Verifier): {VERIFIER_MODEL if VERIFIER_ENABLED else 'TẮT'}")

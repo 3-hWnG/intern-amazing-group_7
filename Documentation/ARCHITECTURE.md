@@ -4,7 +4,46 @@
 *thông tin thủ tục hiện hành*; một lượt suy luận thứ hai *kiểm chứng* trước khi
 trả lời; SQLite + hàng đợi tuần tự lo *bộ nhớ và thứ tự xử lý*.
 
-## 1. Sơ đồ tổng thể
+## 0. Hai hệ thống trả lời (V10.3)
+
+Từ V10.3 có **hai hệ thống chạy song song**, người dùng chuyển bằng **nút
+"Web search"** ngay cạnh ô nhập:
+
+| | Hệ thống 1 | Hệ thống 2 |
+|---|---|---|
+| Tên trong mã | `websearch` | `retrieval` |
+| Module | `core/system_websearch.py` | `core/system_retrieval.py` |
+| Nguồn tri thức | web .gov.vn, tra qua MCP | CSDL thủ tục nội bộ |
+| Trạng thái | **đang chạy** (toàn bộ mục 1–6 dưới đây) | **CHƯA XÂY** — khung đã sẵn |
+
+```
+                      ┌─ system == "websearch" ─> system_websearch.run_turn()  HỆ THỐNG 1
+chat_routes ─> orchestrator ─┤
+   (TurnInput)           └─ system == "retrieval" ─> system_retrieval.run_turn()  HỆ THỐNG 2
+                                                          (TurnResult)
+```
+
+- **Hợp đồng chung** `TurnInput` / `TurnResult` ở `core/turn.py`. Hệ thống nào
+  cũng chỉ là một hàm `run_turn(inp, status) -> TurnResult`.
+- **`core/orchestrator.py` không còn nghiệp vụ** — chỉ đọc `inp.system` rồi gọi
+  đúng module (`SYSTEMS`). Thêm hệ thống thứ ba = thêm một dòng vào `SYSTEMS`.
+- **Mỗi cuộc trò chuyện ghi nhớ hệ thống của nó** (`conversations.system`).
+  Đổi hệ thống ⇒ **mở cuộc trò chuyện mới** (giống Gemini): hai nguồn tin khác
+  nhau để chung một ô chat thì mô hình trộn dữ liệu và trả lời lẫn lộn. Luật
+  này được ép ở **cả hai phía**: giao diện tự mở ô chat mới
+  (`static/js/systems.js`), máy chủ trả **HTTP 409** nếu vẫn cố đổi giữa chừng.
+- **Hệ thống 2 chưa xong thì nói thật.** `RETRIEVAL_ENABLED=false` (mặc định)
+  ⇒ trả lời lịch sự là chưa sẵn sàng + mời bấm nút Web search, `kind=unavailable`.
+  Không bao giờ trả lời chay.
+
+Bốn chỗ cần cắm code cho Hệ thống 2 (xem docstring `core/system_retrieval.py`):
+`extract_keys()` (LLM 1) → `lookup()` (CSDL) → `build_table()` (code, không LLM)
+→ `follow_up()` (LLM 2 chăm sóc khách hàng). Xong cả bốn thì đặt
+`RETRIEVAL_ENABLED=true`, muốn làm mặc định thì `DEFAULT_SYSTEM=retrieval`.
+
+---
+
+## 1. Sơ đồ tổng thể — Hệ thống 1 (web search)
 
 ```mermaid
 flowchart TD
@@ -70,7 +109,8 @@ USER ─> HTML/JS UI ─> FastAPI ─> Hàng đợi ─> ORCHESTRATOR
 | Kiểm chứng | `core/verifier.py` | câu hỏi + bằng chứng + bản nháp | PASS / FAIL + lý do |
 | Lưu | `db/repositories.py` | kết quả | messages, evidence, user_profile |
 
-Toàn bộ điều phối ở `core/orchestrator.py` (~150 dòng, không đụng CSDL).
+Toàn bộ điều phối của Hệ thống 1 ở `core/system_websearch.py` (~150 dòng, không đụng
+CSDL). `core/orchestrator.py` chỉ còn việc chọn hệ thống — xem mục 0.
 
 **Vì sao có bộ gác riêng:** đo trên `Evaluation/eval_set.jsonl` với qwen2.5:1.5b —
 để bước hiểu ý định tự quyết định hỏi lại trong một JSON lớn thì mô hình hỏi lại
@@ -130,12 +170,13 @@ chí 1.5 > khác 1) + thứ hạng tìm kiếm + độ mới (năm trong tiêu �
 users ─┬─ auth_sessions
        ├─ user_profile (tỉnh/thành, xã/phường — nhớ xuyên hội thoại)
        └─ conversations ─┬─ messages ─┬─ evidence (Evidence Pack JSON)
+       │   (.system: websearch | retrieval)
                          │            └─ feedback (phu_hop / khong_phu_hop; không chấm = trung bình)
                          └─ documents ── document_chunks (tệp đính kèm)
 job_log (thời gian chờ / xử lý của hàng đợi)
 ```
 
-`messages.kind`: answer · clarify · chitchat · out_of_scope · no_evidence · error
+`messages.kind`: answer · clarify · chitchat · out_of_scope · no_evidence · unavailable · error
 `messages.verdict`: PASS · FAIL · rỗng
 
 ## 6. API
@@ -148,7 +189,8 @@ job_log (thời gian chờ / xử lý của hàng đợi)
 | `GET /sessions/{id}` | `GET /api/conversations/{id}` |
 | `POST /feedback` | `POST /api/feedback` |
 | — | `GET /api/messages/{id}/evidence`, `GET/DELETE /api/profile` |
-| `GET /health` | `GET /health` (Ollama, mô hình, MCP) |
+| `GET /health` | `GET /health` (Ollama, mô hình, MCP, hệ thống nào đang bật) |
+| — | `PATCH /api/conversations/{id}` đổi tên / đổi hệ thống (409 nếu đã có tin nhắn) |
 | — | `/api/files/...` tệp đính kèm · `/api/dev/...` bảng nhà phát triển |
 
 ## 7. Vì sao không dùng …
