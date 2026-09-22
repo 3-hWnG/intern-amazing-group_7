@@ -45,3 +45,21 @@ Database/corpus/index_meta.json
 # Thư mục dự án V10.2 nằm cạnh đây, GIỮ NGUYÊN làm bản lưu, có kho Git RIÊNG.
 # Không đưa vào kho V10.3. / Old V10.2 project kept as an archive; own git repo.
 intern-amazing-group_7-Re-imagine-V10.2/
+
+# ------------------------------------ Phase 1: dữ liệu cào (tái tạo được) ---
+# raw/ chứa JSON thô + tệp .docx/.pdf tải từ Cổng DVCQG. Cào full 6.308 thủ tục
+# thì thư mục này phình lên hàng trăm MB — TUYỆT ĐỐI không commit, sẽ làm nổ repo.
+# Tái tạo bằng: python -m Database.pipeline.run_pipeline
+Database/raw/
+Database/staging/*.tmp
+
+# procedures.db đã bị *.db ở trên bắt rồi, ghi lại cho rõ ràng:
+# dựng lại từ staging/procedures.jsonl trong ~10 giây bằng import_db.py
+Database/runtime/procedures.db
+
+# ✅ CÓ commit: Database/staging/procedures.jsonl (text, diff đọc được)
+
+# XLSX xuất ra để đọc bằng mắt — sinh lại bằng:
+#   python -m Database.pipeline.export_xlsx
+Database/MAU_*.xlsx
+Database/CSDL_*.xlsx
