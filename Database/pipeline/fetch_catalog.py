@@ -32,6 +32,7 @@ def fetch_catalog(
     department_code: str = "",
     limit: int | None = None,
     category_id: str = "",
+    level: str = "",
 ) -> list[dict]:
     """Lấy danh mục cho tới khi đủ `limit` hoặc hết dữ liệu."""
     rows: list[dict] = []
@@ -45,7 +46,7 @@ def fetch_catalog(
             break
 
         data = client.list_catalog_page(
-            last_id=last_id, limit=page_size,
+            last_id=last_id, limit=page_size, level=level,
             department_code=department_code, category_id=category_id)
 
         items = data.get("items") or []
@@ -78,6 +79,8 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--department", default="all",
                     help="all (mặc định) | bca | btp | mã thô như G01")
     ap.add_argument("--category", default="", help="categoryId nếu muốn lọc lĩnh vực")
+    ap.add_argument("--level", default="", choices=["", "COMMUNE", "PROVINCE", "MINISTRY"],
+                    help="cấp thực hiện. COMMUNE = cấp XÃ/PHƯỜNG (TP.HCM gọi Phường)")
     ap.add_argument("--limit", type=int, default=None, help="số bản ghi tối đa")
     ap.add_argument("--rps", type=float, default=2.0)
     args = ap.parse_args(argv)
@@ -89,7 +92,7 @@ def main(argv: list[str] | None = None) -> int:
     log.info("bộ lọc departmentCode=%r (%s)", dept, args.department)
 
     with DvcClient(rps=args.rps) as client:
-        rows = fetch_catalog(client, department_code=dept,
+        rows = fetch_catalog(client, department_code=dept, level=args.level,
                              limit=args.limit, category_id=args.category)
 
     with paths.CATALOG_PATH.open("w", encoding="utf-8") as fh:
@@ -99,7 +102,8 @@ def main(argv: list[str] | None = None) -> int:
     # Ghi lại bộ lọc đã dùng, để EDA biết "nhiều bộ ngành" là CỐ Ý hay LỖI.
     (paths.RAW_DIR / "_catalog_meta.json").write_text(
         json.dumps({"department_arg": args.department, "department_code": dept,
-                    "limit": args.limit, "n_rows": len(rows)}, ensure_ascii=False),
+                    "level": args.level, "limit": args.limit,
+                    "n_rows": len(rows)}, ensure_ascii=False),
         encoding="utf-8")
 
     log.info("ĐÃ GHI %d bản ghi → %s", len(rows), paths.CATALOG_PATH)

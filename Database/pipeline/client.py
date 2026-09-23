@@ -131,15 +131,24 @@ class DvcClient:
         department_code: str = "",
         category_id: str = "",
         query: str = "",
+        level: str = "",
     ) -> dict:
-        """Một trang danh mục. Phân trang bằng con trỏ `lastId`, không phải số trang."""
-        return self.post_json(EP_CATALOG, {
+        """Một trang danh mục. Phân trang bằng con trỏ `lastId`, không phải số trang.
+
+        `level` = cấp thực hiện: COMMUNE (xã/phường) · PROVINCE · MINISTRY.
+        Đã kiểm chứng: level="COMMUNE" tương đương cờ isWard trong chi tiết
+        (402/402 khớp), cho 1.313 thủ tục toàn quốc.
+        """
+        body = {
             "limit": limit,
             "lastId": last_id,
             "q": query,
             "categoryId": category_id,
             "departmentCode": department_code,
-        })
+        }
+        if level:
+            body["level"] = level
+        return self.post_json(EP_CATALOG, body)
 
     def get_detail(self, formality_id: str) -> dict:
         """Chi tiết đầy đủ của một thủ tục."""

@@ -63,3 +63,7 @@ Database/runtime/procedures.db
 #   python -m Database.pipeline.export_xlsx
 Database/MAU_*.xlsx
 Database/CSDL_*.xlsx
+
+# Văn bản nguồn dạng PDF quét (92 MB) — quá nặng cho git.
+# Danh sách đã trích ra rồi: Database/THU_TUC_CAP_XA_363.csv (có commit).
+Database/*.pdf

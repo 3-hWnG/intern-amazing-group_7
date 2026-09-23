@@ -386,10 +386,21 @@ def main(argv: list[str] | None = None) -> int:
     from Database.pipeline import paths
 
     ap = argparse.ArgumentParser(description="Bước ③: chuẩn hoá raw → staging")
-    ap.parse_args(argv)
+    ap.add_argument("--all-raw", action="store_true",
+                    help="chuẩn hoá MỌI tệp trong raw/details, kể cả ngoài phạm vi "
+                         "catalog hiện tại (mặc định: chỉ lấy thủ tục trong catalog)")
+    args = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     log = logging.getLogger("pipeline.normalize")
     paths.ensure_dirs()
+
+    # PHẠM VI = catalog.jsonl hiện tại. raw/details/ còn giữ thủ tục của những
+    # lần cào trước (phạm vi khác) — không lọc thì chúng lọt vào DB.
+    scope: set[str] | None = None
+    if not args.all_raw and paths.CATALOG_PATH.exists():
+        scope = {json.loads(l)["id"] for l in
+                 paths.CATALOG_PATH.read_text(encoding="utf-8").splitlines() if l.strip()}
+        log.info("phạm vi theo catalog: %d thủ tục", len(scope))
 
     src = sorted(paths.RAW_DETAILS_DIR.glob("*.json"))
     if not src:
@@ -397,13 +408,19 @@ def main(argv: list[str] | None = None) -> int:
                   paths.RAW_DETAILS_DIR)
         return 1
 
-    records, bad = [], 0
+    records, bad, skipped = [], 0, 0
     for path in src:
         try:
-            records.append(normalize(json.loads(path.read_text(encoding="utf-8"))))
+            raw = json.loads(path.read_text(encoding="utf-8"))
+            if scope is not None and raw.get("id") not in scope:
+                skipped += 1
+                continue
+            records.append(normalize(raw))
         except Exception as exc:
             bad += 1
             log.error("hỏng %s: %s", path.name, exc)
+    if skipped:
+        log.info("bỏ qua %d thủ tục NGOÀI phạm vi (vẫn giữ trong raw/)", skipped)
 
     with paths.STAGING_PATH.open("w", encoding="utf-8") as fh:
         for r in records:
