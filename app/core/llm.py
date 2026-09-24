@@ -65,6 +65,17 @@ def _messages(system: str, user: str, history: list[dict] | None) -> list[dict]:
     return msgs
 
 
+def strip_thinking(text: str) -> str:
+    """ponytail: regex 1 dòng bóc tách <think>...</think>, không cần parser nặng."""
+    if not text:
+        return ""
+    cleaned = re.sub(r"<(think|thought|reasoning)>.*?</\1>", "", text, flags=re.DOTALL | re.IGNORECASE).strip()
+    if not cleaned and re.search(r"<(think|thought|reasoning)>", text, flags=re.IGNORECASE):
+        m = re.search(r"<(?:think|thought|reasoning)>(.*)", text, flags=re.DOTALL | re.IGNORECASE)
+        return m.group(1).strip() if m else text.strip()
+    return re.sub(r"</?(think|thought|reasoning)>", "", cleaned, flags=re.IGNORECASE).strip() if cleaned else text.strip()
+
+
 def _call(role: str, system: str, user: str, history=None, fmt=None) -> str:
     model = model_for(role)
     try:
@@ -73,7 +84,9 @@ def _call(role: str, system: str, user: str, history=None, fmt=None) -> str:
                             options={"num_ctx": LLM_NUM_CTX, **ROLE_OPTIONS[role]})
     except Exception as exc:
         raise LLMError(f"Không gọi được mô hình {model} tại {OLLAMA_HOST}: {exc}") from exc
-    return (res["message"]["content"] or "").strip()
+    raw = (res["message"]["content"] or "").strip()
+    return strip_thinking(raw)
+
 
 
 def chat(role: str, system: str, user: str, history: list[dict] | None = None) -> str:

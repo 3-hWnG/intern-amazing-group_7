@@ -96,8 +96,10 @@ def _clean_snippet_noise(line: str) -> str:
 
 def tidy_answer(text: str) -> str:
     """Dọn lỗi hay gặp ở mô hình nhỏ: lặp nguyên dòng; số thứ tự lệch sau khi lược bỏ dòng; ngoặc vuông lạ."""
+    # ponytail: lọc sạch thẻ suy nghĩ trước khi định dạng văn bản
+    text = re.sub(r"<(think|thought|reasoning)>.*?</\1>", "", text or "", flags=re.DOTALL | re.IGNORECASE).strip()
     # 1. Bỏ chữ Hán / CJK bị mô hình nhỏ sinh nhầm
-    text = re.sub(r"[\u4e00-\u9fff]+", "", text or "")
+    text = re.sub(r"[\u4e00-\u9fff]+", "", text)
     # 2. Xóa placeholder mẫu S# chưa thay thế
     text = re.sub(r"\[?\bS#\b\]?", "", text)
     text = _clean_non_citation_brackets(text)

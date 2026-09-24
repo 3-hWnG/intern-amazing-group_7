@@ -42,8 +42,19 @@ window.Chat = (function () {
       typeof s === "string" ? { id: `S${i + 1}`, title: s, url: isUrl(s) ? s : "" } : s);
   }
 
+  /* ponytail: bóc tách thẻ think ở frontend để đảm bảo không lọt token suy nghĩ */
+  function stripThinking(text) {
+    if (!text) return "";
+    let clean = text.replace(/<(think|thought|reasoning)>[\s\S]*?<\/\1>/gi, "").trim();
+    if (!clean && /<(think|thought|reasoning)>/i.test(text)) {
+      clean = text.replace(/<[^>]+>/g, "").trim();
+    }
+    return clean || text;
+  }
+
   /* Escape TRƯỚC rồi mới chèn thẻ: nội dung đến từ mô hình + web, không tin được. */
   function rich(text, sources) {
+    text = stripThinking(text);
     const byId = {};
     sources.forEach((s) => { if (s.id) byId[String(s.id).toUpperCase()] = s; });
     let html = esc(text);
@@ -338,7 +349,7 @@ window.Chat = (function () {
 
       const wrap = el("div", "msg assistant");
       const status = el("div", "status");
-      const statusText = el("span", "status-text", directSearch ? "Đang gửi DuckDuckGo qua MCP…" : "Đang gửi…");
+      const statusText = el("span", "status-text", "Đang suy nghĩ…");
       status.append(el("span", "spinner"), statusText);
       const body = el("div", "bubble");
       body.hidden = true;
@@ -349,25 +360,30 @@ window.Chat = (function () {
       let acc = "";
       await API.stream(`/api/conversations/${convId}/chat`, { text, direct_search: directSearch, mode }, (evt) => {
         if (evt.type === "status" || evt.type === "queue") {
-          statusText.textContent = evt.text;
+          // ponytail: ẩn chi tiết kỹ thuật nội bộ (đã đọc nguồn, kiểm chứng...), chỉ hiển thị trạng thái suy nghĩ gọn gàng
+          statusText.textContent = evt.type === "queue" ? evt.text : "Đang suy nghĩ…";
         } else if (evt.type === "delta") {
+          // ponytail: có chữ đầu tiên thì ẩn ngay status spinner, chỉ stream chữ câu trả lời
+          if (status.parentNode) status.remove();
           body.hidden = false;
           acc += evt.text;
-          body.textContent = acc;
+          body.textContent = stripThinking(acc);
           scroll();
         } else if (evt.type === "done") {
           done = evt;
         } else if (evt.type === "error") {
+          if (status.parentNode) status.remove();
           body.hidden = false;
           acc += (acc ? "\n\n" : "") + "[Lỗi] " + evt.text;
           body.textContent = acc;
         }
       });
 
-      status.remove();
+      if (status.parentNode) status.remove();
       body.hidden = false;
       if (done) {
-        fillAssistant(wrap, body, acc, {
+        const finalText = (done.kind === "procedure_card" && done.card_html) ? done.card_html : acc;
+        fillAssistant(wrap, body, finalText, {
           id: done.message_id,
           kind: done.kind,
           verdict: done.verdict,

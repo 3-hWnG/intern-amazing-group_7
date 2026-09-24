@@ -45,7 +45,8 @@ if str(SYSTEM2_DIR) not in sys.path:
 import pipeline as system2_pipeline  # noqa: E402
 
 router = APIRouter()
-REPLAY_CHARS = 24
+REPLAY_CHARS = 4
+
 
 
 def _title_from(question: str) -> str:
@@ -196,26 +197,31 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit,
         result = system2_pipeline.run_turn_system2(
             conv_id, question, history, status=lambda text: send(type="status", text=text))
 
+    clean_text = llm.strip_thinking(result.text) if result.kind != "procedure_card" else result.text
     intent_payload = dict(result.intent) if result.intent else {}
     if result.choices:
         intent_payload["choices"] = result.choices
 
-    message_id = Messages.add(conv_id, "assistant", result.text, kind=result.kind,
+    message_id = Messages.add(conv_id, "assistant", clean_text, kind=result.kind,
                               verdict=result.verdict, sources=result.sources,
                               intent=intent_payload,
-                              token_estimate=summarizer.estimate_tokens(result.text))
+                              token_estimate=summarizer.estimate_tokens(clean_text))
     if result.evidence is not None:
         Evidence.add(message_id, result.evidence.get("question", ""), result.evidence)
     if result.profile_update:
         profile = UserProfiles.update(user_id, **result.profile_update)
 
-    for i in range(0, len(result.text), REPLAY_CHARS):
-        send(type="delta", text=result.text[i:i + REPLAY_CHARS])
-        time.sleep(0.006)                       # giữ hiệu ứng gõ chữ
+    # ponytail: thẻ thủ tục đã là HTML dựng sẵn — không replay delta dạng chữ thô làm rác màn hình
+    if result.kind != "procedure_card":
+        for i in range(0, len(clean_text), REPLAY_CHARS):
+            send(type="delta", text=clean_text[i:i + REPLAY_CHARS])
+            time.sleep(0.012)                       # giữ hiệu ứng gõ chữ mượt mà
     send(type="done", message_id=message_id, kind=result.kind, verdict=result.verdict,
          sources=result.sources, has_evidence=result.evidence is not None,
          intent=result.intent.get("intent", ""), timings=result.timings, profile=profile,
-         choices=result.choices)
+         choices=result.choices,
+         card_html=result.text if result.kind == "procedure_card" else None)
+
 
 
 @router.post("/api/conversations/{conv_id}/chat")
