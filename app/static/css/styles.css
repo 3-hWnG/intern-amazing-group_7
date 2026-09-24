@@ -440,6 +440,7 @@ a.cite:hover{background:var(--accent);color:#fff}
 }
 .download-link:hover{background:var(--line)}
 .download-link small{color:var(--ink-3)}
+span.download-link, span.download-link:hover{color:var(--ink); background:var(--panel-2); cursor:default}
 
 .proc-footer{
   display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between;

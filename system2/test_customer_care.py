@@ -39,8 +39,34 @@ check("system prompt có nhắc Out-of-table Guard", "KHÔNG có trong bảng" i
 check("user prompt có nhét đúng tên thủ tục thật vào bảng dữ liệu",
       full["procedure"]["name"] in user_sent, user_sent[:200])
 check("user prompt có nhét đúng câu hỏi gốc", "lệ phí bao nhiêu" in user_sent)
-check("trả về đúng text model sinh ra (không hậu xử lý gì thêm)",
+check("câu trả lời không có số liệu -> Grounding Guard giữ nguyên text model sinh ra",
       out == "Lệ phí đăng ký kết hôn là miễn phí.")
+
+# --- 1b. Grounding Guard: số tiền / số ngày KHÔNG có trong bảng -> bỏ câu bịa,
+#         thay bằng nguyên văn ô CSDL; số có trong bảng -> giữ nguyên ---
+duration = full["procedure"]["duration_desc"] or ""
+fake = ("Chào bạn. Lệ phí là 123.456 đồng cho mỗi cặp.\n"
+        "- Thời gian giải quyết khoảng 97 ngày làm việc.\n"
+        "Bạn nộp tại UBND cấp xã nhé.")
+with patch.object(cc.llm, "chat", return_value=fake):
+    out_g = cc.answer_procedure_query(full, "lệ phí và mất mấy ngày", "le_phi")
+check("Guard bỏ số tiền bịa (123.456 đồng)", "123.456" not in out_g, out_g)
+check("Guard bỏ số ngày bịa (97 ngày)", "97 ngày" not in out_g, out_g)
+check("Guard giữ các câu không chứa số liệu",
+      "Chào bạn." in out_g and "Bạn nộp tại UBND cấp xã nhé." in out_g, out_g)
+check("Guard nối nguyên văn ô lệ phí từ CSDL",
+      "Lệ phí theo bảng niêm yết:" in out_g
+      and all(f["amount_text"] in out_g for f in full["fees"]), out_g)
+check("Guard nối nguyên văn ô thời hạn từ CSDL",
+      f"Thời hạn giải quyết theo bảng niêm yết: {duration or 'Chưa rõ'}" in out_g, out_g)
+
+fee_real = full["fees"][0]["amount_text"]  # vd "0 VNĐ"
+real = f"Lệ phí là {fee_real}. Thời hạn: {duration}."
+check("Guard giữ nguyên câu có số liệu KHỚP bảng",
+      cc.ground_numbers(real, full) == real, cc.ground_numbers(real, full))
+check("Guard hiểu cách viết khác đơn vị (50k == 50.000 đồng)",
+      cc.ground_numbers("Phí 50k.", {**full, "fees": [{"fee_type": "Lệ phí", "amount_text": "50.000 đồng"}]})
+      == "Phí 50k.")
 
 # --- 2. Out-of-table: chỉ kiểm tra không crash + có nhắc facet đang hỏi vào
 #        system prompt (nội dung model TỪ CHỐI BỊA thật hay không là hành vi

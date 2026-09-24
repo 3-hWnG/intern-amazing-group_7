@@ -2,7 +2,7 @@
 chcp 65001 >nul
 set PYTHONUTF8=1
 set PYTHONIOENCODING=utf-8
-echo === Chay bo 72 test System 2 ===
+echo === Chay bo test System 2 (xem so luong [OK] that trong output moi buoc) ===
 echo.
 echo [1/3] Test Extractor...
 .\.venv\Scripts\python.exe system2\test_extractor.py

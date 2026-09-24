@@ -28,7 +28,7 @@ Phiên bản `V10.2.1` bổ sung **System 2** chạy song song với **System 1 
 - **Thẻ Thủ Tục Tương Tác (`procedure_card`)**: Hiển thị bảng thủ tục có checklist tương tác (tick chọn), mức lệ phí, đường link nộp online và căn cứ pháp lý.
 - **Thuật toán Rerank F1 2 Chiều**: Phân biệt chuẩn xác giữa thủ tục gốc và biến thể (lưu động, yếu tố nước ngoài).
 - **Pipeline 2 Turn & LLM 2 Customer Care**: Tự động ghi nhớ thủ tục đang mở, giải đáp chuyên sâu ở các lượt hỏi tiếp theo kèm Out-of-table Guard (chống ảo giác).
-- **Kiểm thử tự động**: Chạy nhanh 72 tests bằng lệnh `.\test.bat`.
+- **Kiểm thử tự động**: Chạy nhanh bằng lệnh `.\test.bat` (xem số `[OK]` thật trong output mỗi bước).
 - **Khởi động nhanh**: Chạy `.\run.bat` (tự động bật Web Server tại `http://127.0.0.1:8000`).
 
 ## Đáp ứng yêu cầu

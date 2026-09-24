@@ -282,6 +282,72 @@ còn lệ phí thì sao" phải VẪN là `procedure`, không phải `chitchat`)
 mock được phần wiring, phải chạy tay theo 3 kịch bản ở mục Verification Plan
 của bản plan (chitchat / follow-up / chuyển chủ đề).
 
+## Ngày Thứ 6 (24/09/2026) — 2 lỗi phát hiện qua review hội thoại thật v10.2.1 (production)
+
+Review 1 hội thoại thật đã export từ hệ thống deploy (conv "Tra cứu Web trực
+tiếp với System 1", 18 lượt) phát hiện ngay lượt 1 đã hỏng — nội dung sau đó
+là AI cố "hợp lý hoá" một chủ đề không tồn tại. Xác minh trực tiếp trên source
+thật (không suy đoán từ transcript) ra 2 lỗi độc lập:
+
+**Bug 1 (nghiêm trọng, tái hiện 100%) — nút "chuyển System 1" gửi nhầm nhãn
+nút làm câu truy vấn, mất hoàn toàn câu hỏi gốc:**
+- `system2/pipeline.py::run_turn_system2()` — nhánh `not_in_sources` trước đây
+  gán `choices=["Tra cứu Web trực tiếp với System 1"]` (chuỗi CỐ ĐỊNH, chỉ để
+  làm NHÃN nút). `app/static/js/chat.js::choiceBox()` lại dùng ĐÚNG chuỗi đó
+  làm cả nhãn HIỂN THỊ lẫn giá trị GỬI ĐI khi bấm
+  (`window.triggerWebSearch(choice)` → `send(convId, choice, {directSearch:true})`)
+  — không có tách biệt label/value. Bấm nút "chuyển sang tra cứu Web" thực ra
+  khiến System 1 tìm kiếm/tổng hợp câu trả lời cho đúng cái tên nút, không
+  phải câu hỏi người dùng.
+- **Fix**: `choices` giờ chứa từ khoá THẬT đã trích (`extracted.primary_keyword`),
+  fallback về đúng câu hỏi gốc (`question`) nếu extractor không trích được gì
+  — không bao giờ còn là nhãn tĩnh. Không cần sửa `chat.js` (giữ nguyên quy
+  ước `choices: list[str]` hiện có, khớp cách `app/core/orchestrator.py` đã
+  làm với `generate_prompt_choices()`).
+- Test mới: `test_pipeline.py` case D (choices = từ khoá thật, không phải
+  nhãn cũ), D2 (fallback về câu hỏi gốc khi keyword rỗng), E (giữ hành vi cho
+  case found=True/confident=False).
+
+**Bug 2 (kiến trúc, giải thích các lượt sau vẫn lộ format lỗi của System 2
+dù hội thoại được tạo cho System 1) — mode không gắn với hội thoại:**
+- `app/static/js/app.js` — `window.currentMode` là 1 biến TOÀN CỤC DUY NHẤT,
+  reset cứng về `"system2"` mỗi lần tải trang, KHÔNG lưu localStorage, KHÔNG
+  gắn với từng hội thoại. `app/api/chat_routes.py::chat()` nhận `mode` tươi
+  mới từ MỖI request client gửi lên (không có cột `mode` lưu theo
+  conversation trong DB). Hệ quả: reload trang, hoặc xem qua 1 hội thoại
+  System 2 khác rồi quay lại đúng hội thoại "System 1" vừa tạo, làm các lượt
+  gõ tiếp theo trong CÙNG 1 thread âm thầm đổi backend xử lý mà UI không báo
+  gì — khớp với việc các lượt sau trong transcript lỗi vẫn hiện đúng
+  `extractor.format_not_found()` (dấu vân tay riêng của System 2).
+- **Fix (client-side, KHÔNG động vào DB thật đang chạy)**: `conversations.js`
+  ghi nhớ mode của TỪNG hội thoại NGAY LÚC TẠO vào `localStorage` (key
+  `convModes`, cùng cách file này đã lưu `theme`), expose
+  `Conversations.getMode(id)`. `chat.js::send()` ưu tiên đọc mode của ĐÚNG
+  `convId` đang gửi tin qua `Conversations.getMode()` trước, `window.currentMode`
+  chỉ còn là fallback cuối cho hội thoại cũ (tạo trước bản vá, chưa có trong
+  map). `app.js`: bỏ `{ mode: window.currentMode }` ép cứng ở composer (nguồn
+  gốc lỗi — ép TOÀN BỘ lượt gửi theo biến toàn cục bất kể đang ở hội thoại
+  nào); `Conversations.onSelect` khôi phục lại đúng mode + nút gạt UI khi mở
+  lại 1 hội thoại cũ.
+- **Giới hạn còn lại (minh bạch, không giấu)**: hội thoại tạo TRƯỚC bản vá
+  này (kể cả hội thoại lỗi trong transcript đã review) không có mode ghi nhớ
+  sẵn trong `localStorage` → vẫn fallback về hành vi cũ (`system2` mặc định)
+  nếu mở lại. Không ảnh hưởng hội thoại tạo MỚI sau khi vá.
+- Không sửa schema DB (`conversations` không có cột `mode`) — cân nhắc cho
+  đợt sau nếu cần mode ổn định qua nhiều trình duyệt/thiết bị của cùng 1 user
+  (hiện tại `localStorage` chỉ theo từng trình duyệt).
+
+**Test**: chạy lại toàn bộ 3 file test System 2 trên DB thật (758 thủ tục)
+trong sandbox — PASS 100% (Extractor 29, Customer Care 9, Pipeline 37 — xem
+số `[OK]` thật trong output, `test.bat` không còn hardcode con số để tránh
+lặp lại lỗi số liệu cũ hai lần trong Ngày Thứ 5). Phần JS: `node --check` cả
+3 file sửa (cú pháp hợp lệ) + mô phỏng logic thứ tự ưu tiên mode qua 4 kịch
+bản (tạo mới, reload trang, xem hội thoại khác rồi quay lại, hội thoại cũ
+chưa ghi nhớ) — không có môi trường browser thật trong sandbox nên CHƯA kiểm
+được bằng tay trên UI thật, cần bạn thử lại đúng luồng: hỏi 1 câu ngoài CSDL
+→ bấm nút chuyển System 1 → xác nhận câu hỏi thật (không phải nhãn nút) được
+tìm kiếm; rồi mở lại hội thoại đó sau F5 → gõ tiếp → xác nhận vẫn ở System 1.
+
 ## Việc kế tiếp (Thứ 3–5)
 
 - [x] `system2/service.py` — query FTS5 (bm25 ASC, có tự-test chống đảo
@@ -340,3 +406,13 @@ của bản plan (chitchat / follow-up / chuyển chủ đề).
       rồi mới quay lại 6 kịch bản gốc mục 3.2 bản plan Ngày Thứ 4 (đặc biệt
       Kịch bản 6 Out-of-table Guard và Kịch bản 3 LLM 2 trích lệ phí/link
       online — chưa test model thật cho vai `customer_care_s2`).
+- [x] **Ngày Thứ 6 (24/09/2026)**: 2 lỗi phát hiện qua review hội thoại thật
+      production v10.2.1 — nút "chuyển System 1" gửi nhầm NHÃN NÚT làm câu
+      truy vấn thay vì câu hỏi thật (`pipeline.py`), và mode System 1/System 2
+      là biến toàn cục không gắn với hội thoại nên có thể âm thầm đổi giữa
+      chừng (`app.js`/`chat.js`/`conversations.js`, fix client-side qua
+      localStorage, không động DB thật) — xem mục "Ngày Thứ 6" ở trên.
+- [ ] **Chạy tay lại trên máy (bắt buộc)**: verify 2 fix Ngày Thứ 6 trên UI
+      thật (không có browser trong sandbox) — hỏi câu ngoài CSDL, bấm nút
+      chuyển System 1, xác nhận câu tìm kiếm đúng là câu hỏi thật; F5 giữa
+      hội thoại System 1, xác nhận không rơi lại System 2 im lặng.

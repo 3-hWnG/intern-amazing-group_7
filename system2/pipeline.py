@@ -160,11 +160,21 @@ def run_turn_system2(conv_id: int, question: str, history: list[dict] | None,
             )
 
         if not result["found"] or not result["confident"]:
+            # Lỗi phát hiện 24/09/2026: choices trước đây là NHÃN CTA TĨNH
+            # ("Tra cứu Web trực tiếp với System 1") — chat.js::choiceBox()
+            # gửi ĐÚNG CHUỖI của choice làm truy vấn thật khi bấm
+            # (window.triggerWebSearch(choice)), nên bấm nút này KHÔNG tra
+            # cứu câu hỏi của người dùng mà tra cứu đúng cái nhãn nút, khiến
+            # System 1 tìm kiếm/tổng hợp câu trả lời cho một chủ đề vô nghĩa.
+            # Sửa: gửi từ khóa THẬT (extractor đã chuẩn hoá) làm choices, và
+            # nếu extractor không trích được keyword nào thì fallback về
+            # đúng câu hỏi gốc của người dùng — KHÔNG BAO GIỜ còn là nhãn.
+            fallback_query = result["extracted"].get("primary_keyword") or question
             return TurnResult(
                 kind="not_in_sources",
                 text=result["message"],
                 intent={"facet": result["extracted"]["facet"]},
-                choices=["Tra cứu Web trực tiếp với System 1"],
+                choices=[fallback_query],
             )
 
         new_proc_code = result["primary"]["procedure"]["proc_code"]

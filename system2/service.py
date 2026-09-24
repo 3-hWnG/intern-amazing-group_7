@@ -37,8 +37,9 @@ DEFAULT_DB = HERE / "db" / "procedures.db"
 #   name, normalized_name, description, authority
 BM25_WEIGHTS = (10.0, 10.0, 1.0, 1.0)
 
-# Ngưỡng khởi điểm để coi 2 THỦ TỤC KHÁC NHAU (khác proc_code) là "gần điểm,
-# có thể nhầm" -> hiện thanh gợi ý. CHƯA hiệu chỉnh bằng dữ liệu thật — mỗi
+# Ngưỡng khởi điểm để coi 2 THỦ TỤC KHÁC NHAU (khác tên) là "gần điểm,
+# có thể nhầm" -> hiện thanh gợi ý. Đo trên F1 tên: (f1_1 - f1_2) / f1_1
+# (trước 24/09 đo trên bm25 — đổi thang nên con số 0.20 cần calibrate lại). Mỗi
 # lần resolve_query() chạy đều in ra gap_ratio thật, thu thập vài chục case
 # rồi tinh lại con số này (xem docstring _log_gap()).
 AMBIGUOUS_GAP_RATIO = 0.20
@@ -152,6 +153,20 @@ def _name_metrics(keyword: str, name: str) -> tuple[float, float, float]:
     return cov_fwd, cov_bwd, f1
 
 
+# Cấp thẩm quyền, số nhỏ = gần dân hơn. "xã hội" (BHXH, Cục CS QLHC về TTXH)
+# KHÔNG phải cấp xã. Không khớp gì (Cục/Bộ/không rõ) -> 3.
+_LEVEL_PATTERNS = [
+    re.compile(r"\b(xã(?!\s+hội)|phường|thị trấn)\b"),
+    re.compile(r"\b(huyện|quận)\b"),
+    re.compile(r"\b(tỉnh|sở|thành phố)\b"),
+]
+
+
+def _authority_level(authority: str | None) -> int:
+    text = unicodedata.normalize("NFC", authority or "").lower()
+    return next((i for i, pat in enumerate(_LEVEL_PATTERNS) if pat.search(text)), 3)
+
+
 def _group_by_proc_code(rows: list[sqlite3.Row], keyword: str | None = None) -> list[tuple[str, dict]]:
     """Gom các dòng cùng proc_code (khác nhau ở province) vào 1 nhóm — đây
     là các BIẾN THỂ của CÙNG 1 thủ tục, không phải 2 thủ tục khác nhau, nên
@@ -159,18 +174,34 @@ def _group_by_proc_code(rows: list[sqlite3.Row], keyword: str | None = None) -> 
     groups: dict[str, dict] = {}
     for r in rows:
         pc = r["proc_code"]
-        g = groups.setdefault(pc, {"best_score": r["score"], "rows": [], "name": r["name"]})
+        g = groups.setdefault(pc, {"best_score": r["score"], "rows": [], "name": r["name"],
+                                   "level": _authority_level(r["authority"])})
         g["rows"].append(r)
         g["best_score"] = min(g["best_score"], r["score"])
 
-    # ponytail: rerank ưu tiên F1 token của tên (tránh biến thể lưu động/nước ngoài đè bản chuẩn), BM25 làm tie-breaker
+    # ponytail: rerank theo thứ tự:
+    # 1) tên chứa NGUYÊN CỤM keyword liền mạch (>=2 token) — F1 chia cho độ dài tên nên
+    #    tên chính thống dài (vd "Cấp giấy phép xây dựng ... nhà ở riêng lẻ") thua oan tên
+    #    ngắn lệch nghĩa ("Cấp giấy phép hoạt động xây dựng cho nhà thầu nước ngoài");
+    # 2) F1 token của tên (tránh biến thể lưu động/nước ngoài đè bản chuẩn);
+    # 3) F1 bằng nhau (vd 3 bản "Cấp, cấp đổi, cấp lại thẻ căn cước") -> cấp gần dân hơn; 4) BM25.
+    # Giới hạn: trong nhóm cùng khớp cụm, F1 vẫn ưu tiên tên ngắn hơn.
     if keyword:
-        return sorted(
-            groups.items(),
-            key=lambda kv: (round(_name_metrics(keyword, kv[1]["name"])[2], 3), -kv[1]["best_score"]),
-            reverse=True,
-        )
+        q_phrase = _token_phrase(keyword)
+        use_phrase = len(q_phrase.split()) >= 2
+        for g in groups.values():
+            g["f1"] = round(_name_metrics(keyword, g["name"])[2], 3)
+            g["exact_phrase"] = use_phrase and q_phrase in _token_phrase(g["name"])
+        return sorted(groups.items(), key=lambda kv: (-kv[1]["exact_phrase"], -kv[1]["f1"],
+                                                      kv[1]["level"], kv[1]["best_score"]))
     return sorted(groups.items(), key=lambda kv: kv[1]["best_score"])
+
+
+def _token_phrase(text: str) -> str:
+    """Chuỗi token đã bỏ dấu, bọc khoảng trắng 2 đầu -> so cụm liền mạch bằng
+    `in` mà không khớp nửa từ, và không vỡ vì dấu câu ("đất đai, tài sản")."""
+    from importer import fold
+    return " " + " ".join(fold(t) for t in _fts_tokens(text)) + " "
 
 
 def _name_coverage(keyword: str, name: str) -> float:
@@ -195,13 +226,13 @@ def _log_gap(keyword: str, top_code: str, top_score: float,
              second_code: str, second_score: float, gap_ratio: float) -> None:
     """In ra để thu thập số liệu thật, hiệu chỉnh AMBIGUOUS_GAP_RATIO sau này
     (giống cách nhóm đã hiệu chỉnh cỡ mẫu/ngưỡng cho search_baseline.py)."""
-    print(f"[ambiguous-check] '{keyword}' -> #1 {top_code} ({top_score:.3f}) "
-          f"vs #2 {second_code} ({second_score:.3f})  gap_ratio={gap_ratio:.1%}"
+    print(f"[ambiguous-check] '{keyword}' -> #1 {top_code} (F1={top_score:.3f}) "
+          f"vs #2 {second_code} (F1={second_score:.3f})  gap_ratio={gap_ratio:.1%}"
           f"{'  <- DƯỚI NGƯỠNG, sẽ gợi ý' if gap_ratio < AMBIGUOUS_GAP_RATIO else ''}")
 
 
 def resolve_query(conn: sqlite3.Connection, keyword: str, province: str | None = None,
-                   candidate_limit: int = 20) -> dict:
+                   candidate_limit: int = 100) -> dict:
     """Trả về {"found", "confident", "primary": <dict thủ tục đầy đủ | None>,
     "suggestion": {"proc_code","name","id"} | None, "debug": {...}}.
 
@@ -228,16 +259,21 @@ def resolve_query(conn: sqlite3.Connection, keyword: str, province: str | None =
               "top_code": top_code, "top_score": top_group["best_score"],
               "name_coverage": coverage, "f1_score": f1, "confident": confident}
 
-    if len(groups) > 1:
-        second_code, second_group = groups[1]
-        s1, s2 = top_group["best_score"], second_group["best_score"]
-        gap_ratio = abs(s2 - s1) / max(abs(s1), 1e-6)
+    # Ứng viên #2 = thủ tục KHÁC TÊN đầu tiên: nút gợi ý gửi lại đúng TÊN làm
+    # câu hỏi (chat.js::switchProcedure), bản trùng tên khác cấp sẽ lại ra #1.
+    second = next(((c, g) for c, g in groups[1:] if g["name"] != top_group["name"]), None)
+    if second:
+        second_code, second_group = second
+        # Gap đo trên CÙNG thang đã dùng để xếp hạng (F1), không phải bm25 thô.
+        s1, s2 = top_group["f1"], second_group["f1"]
+        # ponytail: abs(s1 - s2) tránh gap âm khi top-1 thắng bằng exact phrase nhưng F1 thấp hơn
+        gap_ratio = abs(s1 - s2) / max(s1, 1e-6)
         _log_gap(keyword, top_code, s1, second_code, s2, gap_ratio)
-        debug.update(second_code=second_code, second_score=s2, gap_ratio=gap_ratio)
+        debug.update(second_code=second_code, second_f1=s2, gap_ratio=gap_ratio)
         if gap_ratio < AMBIGUOUS_GAP_RATIO:
             second_row = _pick_province_variant(second_group["rows"], province)
             # ponytail: chỉ gợi ý khi ứng viên thứ 2 có liên quan thực sự tới từ khóa
-            if _name_coverage(keyword, second_row["name"]) >= MIN_NAME_COVERAGE:
+            if _name_coverage(keyword, second_row["name"]) >= MIN_NAME_COVERAGE and second_group["f1"] >= MIN_F1_SCORE:
                 suggestion = {"proc_code": second_code, "name": second_row["name"], "id": second_row["id"]}
 
     if not confident:
@@ -280,6 +316,15 @@ def _hl(facet: str | None, target: str) -> str:
     return " highlight-facet" if facet == target else ""
 
 
+def _file_item(f: dict) -> str:
+    inner = f'📄 {_esc(f["file_name"])}' + (
+        f' <small>({_esc(f["file_size"])})</small>' if f.get("file_size") else "")
+    url = f.get("download_url") or ""
+    if re.match(r"https?://", url):
+        return f'<a href="{_esc(url)}" class="download-link" target="_blank" rel="noopener">{inner}</a>'
+    return f'<span class="download-link">{inner}</span>'
+
+
 def render_card(full: dict, facet: str | None = None, suggestion: dict | None = None) -> str:
     """LƯU Ý (22/09/2026, yêu cầu Leader): KHÔNG tự động cảnh báo hết hiệu lực
     ở đây nữa — ETL (importer/crawler) chịu trách nhiệm cào thủ tục mới + xoá
@@ -313,13 +358,16 @@ def render_card(full: dict, facet: str | None = None, suggestion: dict | None = 
         for c in full["checklists"]
     ) or '<p class="checklist-empty">Chưa có checklist hồ sơ.</p>'
 
-    files_html = "".join(
-        f'<a href="{_esc(f["download_url"])}" class="download-link" download>'
-        f'📄 {_esc(f["file_name"])}'
-        + (f' <small>({_esc(f["file_size"])})</small>' if f.get("file_size") else "")
-        + "</a>"
-        for f in full["files"]
-    ) or '<p class="files-empty">Chưa có biểu mẫu đính kèm.</p>'
+    # Chỉ URL http(s) mới thành link tải. CSDL hiện lưu đường dẫn tương đối
+    # "files/<mã>/<tên>.docx" nhưng app không phục vụ thư mục đó -> 767/767
+    # link từng 404; giờ hiện tên biểu mẫu dạng chữ + 1 dòng hướng dẫn.
+    # ponytail: có kho file thật thì mount StaticFiles + đổi điều kiện này.
+    uniq_files = {f["file_name"]: f for f in full["files"]}.values()  # CSDL có dòng trùng
+    files_html = "".join(_file_item(f) for f in uniq_files)
+    if files_html and "<a " not in files_html:
+        files_html += ('<p class="files-empty">Biểu mẫu ban hành kèm thủ tục — '
+                       'nhận tại cơ quan tiếp nhận hoặc tải trên Cổng Dịch vụ công.</p>')
+    files_html = files_html or '<p class="files-empty">Chưa có biểu mẫu đính kèm.</p>'
 
     meta_line = " · ".join(
         x for x in [
@@ -374,7 +422,8 @@ def render_card(full: dict, facet: str | None = None, suggestion: dict | None = 
 
   <div class="proc-footer">
     <small>{meta_line or 'Chưa có căn cứ pháp lý.'}</small>
-    <button class="btn-switch-s1" onclick="triggerWebSearch('{_esc(p['name'])}')">
+    <button class="btn-switch-s1" data-proc-name="{_esc(p['name'])}"
+            onclick="triggerWebSearch(this.dataset.procName)">
       🌐 Tra cứu Web trực tiếp (System 1)
     </button>
   </div>

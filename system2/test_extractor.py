@@ -142,6 +142,54 @@ check("resolve() intent_type=out_of_scope -> extracted.intent_type giữ nguyên
 check("resolve() intent_type=out_of_scope -> KHÔNG gọi resolve_query",
       mock_resolve_query2.call_count == 0, mock_resolve_query2.call_count)
 
+# --- 11. (24/09) Tie-break cấp thẩm quyền khi F1 bằng nhau: 3 bản trùng tên
+#          "Cấp, cấp đổi, cấp lại thẻ căn cước" (Cục / Tỉnh / Xã) -> Xã thắng ---
+r6 = s2.resolve_query(conn, "cấp lại thẻ căn cước")
+check("F1 hoà -> ưu tiên cấp gần dân nhất (Công an cấp Xã)",
+      r6["primary"]["procedure"]["authority"] == "Công an cấp Xã", r6["primary"]["procedure"]["authority"])
+check("'Bảo hiểm xã hội tỉnh' là cấp tỉnh, KHÔNG nhầm 'xã hội' thành cấp xã",
+      s2._authority_level("Bảo hiểm xã hội tỉnh") == 2)
+check("'Ủy ban Nhân dân xã, phường, thị trấn.' là cấp xã",
+      s2._authority_level("Ủy ban Nhân dân xã, phường, thị trấn.") == 0)
+
+# --- 12. gap_ratio đo trên F1 (thang 0..1), ứng viên #2 phải KHÁC TÊN #1 ---
+r7 = s2.resolve_query(conn, "đăng ký khai sinh")
+check("gap_ratio tính trên F1 -> nằm trong [0, 1]",
+      0 <= r7["debug"]["gap_ratio"] <= 1, r7["debug"])
+check("debug có second_f1 (không còn second_score bm25)", "second_f1" in r7["debug"], r7["debug"])
+if r6["suggestion"]:
+    check("gợi ý không trùng tên thủ tục đang hiện",
+          r6["suggestion"]["name"] != r6["primary"]["procedure"]["name"], r6["suggestion"])
+
+# --- 12b. Cụm liền mạch thắng tên ngắn lệch nghĩa (tên chính thống dài bị F1 phạt) ---
+r8 = s2.resolve_query(conn, "cấp giấy phép xây dựng")
+top8 = r8["primary"]["procedure"]["name"]
+check("'cấp giấy phép xây dựng' -> thủ tục chứa đúng cụm, KHÔNG phải 'nhà thầu nước ngoài'",
+      "giấy phép xây dựng" in top8.lower() and "nhà thầu" not in top8.lower(), top8)
+check("cụm liền mạch không vỡ vì dấu câu",
+      s2._token_phrase("đất đai tài sản") in s2._token_phrase("Đăng ký đất đai, tài sản gắn liền"))
+
+# --- 13. Biểu mẫu: đường dẫn tương đối (không có route phục vụ) KHÔNG thành
+#          link 404; URL http(s) vẫn là link; dòng trùng tên bị gộp ---
+base = {"procedure": r["primary"]["procedure"], "fees": [], "checklists": []}
+html_rel = s2.render_card({**base, "files": [
+    {"file_name": "mau.docx", "download_url": "files/1.0/mau.docx"},
+    {"file_name": "mau.docx", "download_url": "files/1.0/mau.docx"}]})
+check("download_url tương đối -> không render <a href>", 'href="files/' not in html_rel, html_rel)
+check("download_url tương đối -> vẫn hiện tên biểu mẫu + hướng dẫn",
+      "mau.docx" in html_rel and "Cổng Dịch vụ công" in html_rel, html_rel)
+check("biểu mẫu trùng tên chỉ hiện 1 lần", html_rel.count("mau.docx") == 1, html_rel)
+html_http = s2.render_card({**base, "files": [
+    {"file_name": "mau.docx", "download_url": "https://dichvucong.gov.vn/mau.docx"}]})
+check("download_url http(s) -> vẫn là link tải", 'href="https://dichvucong.gov.vn/mau.docx"' in html_http)
+
+# --- 14. Tên thủ tục có dấu nháy ' " KHÔNG được nhúng vào chuỗi JS onclick ---
+html_q = s2.render_card({**base, "files": [],
+                         "procedure": {**base["procedure"], "name": "Mẹ 'anh hùng' \"VN\""}})
+check("nút Web Search đọc tên từ data-proc-name, không nhúng tên vào JS",
+      'onclick="triggerWebSearch(this.dataset.procName)"' in html_q
+      and 'data-proc-name="Mẹ &#x27;anh hùng&#x27; &quot;VN&quot;"' in html_q, html_q)
+
 conn.close()
 
 print()

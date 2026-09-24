@@ -36,6 +36,15 @@
     if ($("model-name")) $("model-name").textContent = cfg.llm_model || "";
 
     Conversations.onSelect = (id) => {
+      /* Khôi phục đúng mode của hội thoại này (nút gạt System 1/System 2 +
+         window.currentMode) khi mở lại nó — tránh lệch giữa hội thoại đang
+         xem và biến toàn cục window.currentMode (lỗi phát hiện 24/09/2026,
+         xem ghi chú trong conversations.js/chat.js). Hội thoại cũ tạo
+         trước bản vá này chưa có mode ghi nhớ -> mặc định "system2" như
+         hành vi cũ. */
+      if (typeof window.setMode === "function") {
+        window.setMode(Conversations.getMode(id) || "system2");
+      }
       Chat.load(id);
       if (cfg.attachments_enabled !== false) Files.refresh(id);
     };
@@ -143,7 +152,12 @@
       input.style.height = "auto";
       $("send").disabled = true;
       try {
-        const done = await Chat.send(convId, text, { mode: window.currentMode });
+        /* KHÔNG còn truyền { mode: window.currentMode } ở đây — Chat.send()
+           tự đọc đúng mode của convId qua Conversations.getMode() (xem
+           chat.js). Ép mode toàn cục ở mọi lượt gửi từ composer chính là
+           nguyên nhân lỗi 24/09/2026: 1 hội thoại có thể bị đổi hệ thống xử
+           lý giữa chừng theo biến toàn cục thay vì mode nó được tạo ra. */
+        const done = await Chat.send(convId, text);
         await Conversations.refresh();
         const current = Conversations.items.find((c) => c.id === convId);
         if (current) $("conv-title").textContent = current.title;

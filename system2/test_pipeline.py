@@ -100,23 +100,41 @@ check("C. Đổi thủ tục: proc_code là thủ tục MỚI, không phải th�
       res_c.intent.get("proc_code") == BIRTH_CODE and res_c.intent.get("proc_code") != MARRIAGE_CODE)
 check("C. Đổi thủ tục: KHÔNG gọi customer_care (đã đổi proc_code)", mock_cc2.call_count == 0)
 
-# --- D. found=False -> not_in_sources + choices gợi ý System 1 ---
+# --- D. found=False -> not_in_sources + choices = TỪ KHÓA THẬT (Fix 24/09/2026:
+#        trước đây choices là nhãn CTA tĩnh "Tra cứu Web trực tiếp với System 1"
+#        -> chat.js gửi ĐÚNG chuỗi đó làm truy vấn thật khi bấm, tra nhầm cái
+#        nhãn nút thay vì câu hỏi người dùng. _resolved() mock primary_keyword="x") ---
 with patch.object(pipeline.extractor, "resolve",
                   return_value=_resolved(None, found=False, confident=False,
                                           message="Xin lỗi, tôi không tìm thấy 'x' cho câu hỏi 'y'.")):
     res_d = pipeline.run_turn_system2(CONV_ID, "xin visa du học mặt trăng", [])
 check("D. found=False: kind=not_in_sources", res_d.kind == "not_in_sources", res_d.kind)
 check("D. found=False: text = message chuẩn từ extractor", res_d.text.startswith("Xin lỗi, tôi không tìm thấy"))
-check("D. found=False: choices có gợi ý chuyển System 1",
-      res_d.choices == ["Tra cứu Web trực tiếp với System 1"], res_d.choices)
+check("D. found=False: choices = từ khóa thật đã trích (KHÔNG còn là nhãn CTA tĩnh)",
+      res_d.choices == ["x"], res_d.choices)
 
-# --- E. found=True nhưng confident=False -> vẫn not_in_sources (không hiện thẻ nhầm) ---
+# --- D2. found=False, extractor trả primary_keyword rỗng -> choices fallback
+#         về ĐÚNG câu hỏi gốc của người dùng, không bao giờ rơi về nhãn CTA ---
+resolved_empty_kw = _resolved(None, found=False, confident=False,
+                               message="Xin lỗi, tôi không tìm thấy '' cho câu hỏi 'y'.")
+resolved_empty_kw["extracted"]["primary_keyword"] = ""
+with patch.object(pipeline.extractor, "resolve", return_value=resolved_empty_kw):
+    res_d2 = pipeline.run_turn_system2(CONV_ID, "câu hỏi gốc của người dùng", [])
+check("D2. found=False, primary_keyword rỗng: choices fallback về câu hỏi gốc",
+      res_d2.choices == ["câu hỏi gốc của người dùng"], res_d2.choices)
+check("D2. found=False: choices KHÔNG BAO GIỜ còn là nhãn CTA tĩnh cũ",
+      res_d2.choices != ["Tra cứu Web trực tiếp với System 1"], res_d2.choices)
+
+# --- E. found=True nhưng confident=False -> vẫn not_in_sources (không hiện thẻ nhầm),
+#        choices vẫn là từ khóa thật ---
 with patch.object(pipeline.extractor, "resolve",
                   return_value=_resolved(marriage["primary"], found=True, confident=False,
                                           message="Xin lỗi, tôi không tìm thấy 'x' cho câu hỏi 'y'.")):
     res_e = pipeline.run_turn_system2(CONV_ID, "câu mơ hồ", [])
 check("E. found=True nhưng confident=False: vẫn kind=not_in_sources (không hiện thẻ có thể sai)",
       res_e.kind == "not_in_sources", res_e.kind)
+check("E. found=True nhưng confident=False: choices = từ khóa thật",
+      res_e.choices == ["x"], res_e.choices)
 
 # --- F. Lịch sử có message kind=procedure_card (HTML) -> LLM1 nhận bản đã lọc,
 #        không phải HTML thô ---

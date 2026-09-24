@@ -20,6 +20,7 @@ Dùng:
 from __future__ import annotations
 
 import argparse
+import re
 import sys
 from pathlib import Path
 
@@ -36,6 +37,14 @@ FACET_LABELS = {
     "tong_quan": "tổng quan", "le_phi": "lệ phí", "ho_so": "hồ sơ",
     "thoi_gian": "thời gian giải quyết", "noi_nop": "nơi nộp",
 }
+
+
+def _fee_lines(full: dict) -> list[str]:
+    fees = full.get("fees") or []
+    if not fees:
+        return ["  - Chưa có thông tin lệ phí."]
+    return [f"  - {f['fee_type']}: {f['amount_text']}"
+            + (f" (điều kiện: {f['condition']})" if f.get("condition") else "") for f in fees]
 
 
 def _table_digest(full: dict) -> str:
@@ -56,13 +65,7 @@ def _table_digest(full: dict) -> str:
         lines.append(f"Mô tả: {p['description']}")
 
     lines.append("Lệ phí:")
-    fees = full.get("fees") or []
-    if fees:
-        for f in fees:
-            cond = f" (điều kiện: {f['condition']})" if f.get("condition") else ""
-            lines.append(f"  - {f['fee_type']}: {f['amount_text']}{cond}")
-    else:
-        lines.append("  - Chưa có thông tin lệ phí.")
+    lines.extend(_fee_lines(full))
 
     lines.append("Checklist hồ sơ cần chuẩn bị:")
     checklist = full.get("checklists") or []
@@ -105,14 +108,74 @@ def _clean_history(history: list[dict] | None, limit: int = 6) -> list[dict]:
     return out[-limit:]
 
 
+# ---------------------------------------------------------------------------
+# Grounding Guard: prompt chỉ DẶN không bịa; đây là lớp code KIỂM TRA thật.
+# Mọi số tiền / số ngày-giờ-tháng trong câu trả lời phải có trong bảng dữ
+# liệu; câu nào chứa số lạ bị bỏ, thay bằng nguyên văn ô lệ phí / thời hạn.
+# ponytail: regex chỉ bắt số có đơn vị ("50.000 đồng", "50k", "5 ngày"); số
+# viết bằng chữ ("năm ngày") lọt qua. Cần chặt hơn thì so khớp từng câu với
+# bảng bằng LLM verifier như System 1.
+# ---------------------------------------------------------------------------
+
+_NUM = r"\d{1,3}(?:[.,]\d{3})+|\d+"
+_MONEY_RE = re.compile(rf"({_NUM})\s*(triệu|tr|nghìn|ngàn|k|vnđ|vnd|đồng|đ)(?!\w)", re.IGNORECASE)
+_TIME_RE = re.compile(rf"({_NUM})\s*(ngày|giờ|tuần|tháng)(?!\w)", re.IGNORECASE)
+_UNIT = {"triệu": 10**6, "tr": 10**6, "nghìn": 1000, "ngàn": 1000, "k": 1000}
+_SENT_SPLIT_RE = re.compile(r"(?<=[.!?])\s+")
+
+
+def _to_int(num: str) -> int:
+    return int(re.sub(r"[.,]", "", num))
+
+
+def _money_values(text: str) -> set[int]:
+    return {_to_int(n) * _UNIT.get(u.lower(), 1) for n, u in _MONEY_RE.findall(text)}
+
+
+def _time_values(text: str) -> set[int]:
+    return {_to_int(n) for n, _ in _TIME_RE.findall(text)}
+
+
+def ground_numbers(answer: str, full: dict) -> str:
+    """Trả `answer` nguyên vẹn nếu mọi số liệu đều có trong bảng; ngược lại
+    bỏ các câu chứa số lạ và nối thêm nguyên văn ô tương ứng từ CSDL."""
+    digest = _table_digest(full)
+    allowed = {_to_int(n) for n in re.findall(_NUM, digest)} | _money_values(digest)
+    bad_fee = bad_time = False
+    kept_lines = []
+    for line in (answer or "").split("\n"):
+        kept = []
+        for sent in _SENT_SPLIT_RE.split(line):
+            fee_bad = bool(_money_values(sent) - allowed)
+            time_bad = bool(_time_values(sent) - allowed)
+            bad_fee |= fee_bad
+            bad_time |= time_bad
+            if not (fee_bad or time_bad):
+                kept.append(sent)
+        if kept or not line.strip():
+            kept_lines.append(" ".join(kept))
+    if not (bad_fee or bad_time):
+        return answer
+
+    out = "\n".join(kept_lines).strip()
+    if bad_fee:
+        out += "\n\nLệ phí theo bảng niêm yết:\n" + "\n".join(_fee_lines(full))
+    if bad_time:
+        out += ("\n\nThời hạn giải quyết theo bảng niêm yết: "
+                + (full["procedure"].get("duration_desc") or "Chưa rõ"))
+    print(f"[grounding-guard] đã thay số liệu không có trong bảng (fee={bad_fee}, time={bad_time})")
+    return out.strip()
+
+
 def answer_procedure_query(procedure_full: dict, question: str, facet: str | None,
                             history: list[dict] | None = None) -> str:
     """Trả lời câu hỏi chuyên sâu của người dân dựa trên bảng dữ liệu thủ tục
     có cấu trúc (Turn 2+, đã xác nhận cùng proc_code với Thẻ đang mở)."""
     digest = _table_digest(procedure_full)
     user_prompt = f"Bảng dữ liệu thủ tục:\n{digest}\n\nCâu hỏi của người dân: {question}"
-    return llm.chat("customer_care_s2", _system_prompt(facet), user_prompt,
-                    _clean_history(history))
+    raw = llm.chat("customer_care_s2", _system_prompt(facet), user_prompt,
+                   _clean_history(history))
+    return ground_numbers(raw, procedure_full)
 
 
 def main() -> None:

@@ -337,12 +337,19 @@ window.Chat = (function () {
     isSending = true;
     let done = null;
     const directSearch = Boolean(opts && opts.directSearch);
-    /* mode: ưu tiên opts.mode nếu gọi tường minh (hiện chưa chỗ nào cần), mặc
-       định lấy currentMode toàn cục (app.js quản lý, đồng bộ với nút gạt
-       System 2/System 1 trên header) -- MỌI đường gửi tin (composer, gợi ý
-       choiceBox, switchProcedure, triggerWebSearch) đều đi qua đây nên chỉ
-       cần đọc window.currentMode ở MỘT chỗ, không phải sửa từng nơi gọi. */
-    const mode = (opts && opts.mode) || window.currentMode || "system2";
+    /* mode: ưu tiên opts.mode nếu gọi tường minh (hiện chưa chỗ nào cần), rồi
+       đến mode ĐÃ GHI NHỚ của ĐÚNG hội thoại convId lúc nó được tạo
+       (Conversations.getMode — xem conversations.js, lỗi phát hiện
+       24/09/2026: dùng window.currentMode làm nguồn sự thật DUY NHẤT khiến
+       reload trang / xem hội thoại khác rồi quay lại làm lượt tiếp theo
+       CÙNG hội thoại âm thầm đổi hệ thống xử lý). window.currentMode chỉ còn
+       là fallback cuối cho hội thoại cũ chưa từng được ghi nhớ (tạo trước
+       bản vá này). MỌI đường gửi tin (composer, gợi ý choiceBox,
+       switchProcedure, triggerWebSearch) đều đi qua đây nên chỉ cần sửa một
+       chỗ, không phải sửa từng nơi gọi. */
+    const mode = (opts && opts.mode)
+      || (window.Conversations && window.Conversations.getMode(convId))
+      || window.currentMode || "system2";
     try {
       if (box().querySelector(".empty")) clear();
       render("user", text);

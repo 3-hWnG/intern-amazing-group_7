@@ -27,7 +27,7 @@ Khi chuyển từ 70 thủ tục sang 758 thủ tục, xuất hiện hàng loạ
 | Tiêu chí | Kết quả cũ (Corpus 70) | Kết quả mới (Corpus 758) | Đánh giá |
 |---|---|---|---|
 | Phạm vi dữ liệu | 39/39 chủ đề | 32/39 chủ đề (7 chủ đề ngoài 38 lĩnh vực được nạp) | Đúng thiết kế lọc 38 lĩnh vực |
-| `confident=True` (in-scope) | 56/56 (100%) | **43/46 (93.5%)** | Rất cao, chính xác |
+| `confident=True` (in-scope) | 56/56 (100%) | **44/46 (95.7%)** | Cực cao, tăng từ 43 sau fix ranking |
 | Độ chuẩn xác biến thể | Bị lỗi "lưu động" | **100% về đúng bản chuẩn** (khai sinh, kết hôn, khai tử) | Triệt tiêu lỗi biến thể |
 | False Positives (out-of-scope) | N/A | **2/10 câu** (giảm từ mức toàn bộ bị kéo nhầm) | An toàn cao |
 | `name_coverage` (median) | 1.00 | **1.00** | Duy trì hoàn hảo |
@@ -37,16 +37,31 @@ Khi chuyển từ 70 thủ tục sang 758 thủ tục, xuất hiện hàng loạ
 
 ## 3. Kết quả Calibrate Lượt A — keyword = câu hỏi thô
 
-- `confident=True`: 4/46 (9%) — câu đơn 3/33 (9%), câu nối tiếp 1/13 (8%).
+- `confident=True`: 5/46 (11%) — câu đơn 4/33 (12%), câu nối tiếp 1/13 (8%).
 - Xác nhận khoảng trống kiến trúc: FTS5 tầng DB không tự hiểu teencode/văn nói thô của người dân ("vk e mới đẻ hôm qua..."). Đây là nhiệm vụ của tầng `extractor.py` (LLM1) chuyển câu thô về keyword chuẩn.
 
 ---
 
-## 4. Trạng thái Unit Tests
+## 4. Tối ưu Xếp hạng & Độ nhạy Gợi ý (24/09/2026)
 
-- `test.bat`: **PASS 100% cả 72 test** (Extractor 27, Customer Care 9, Pipeline 36).
+1. **candidate_limit tăng từ 20 -> 100**: Tránh bị BM25 phạt chiều dài tên thủ tục chính thống loại khỏi top candidates.
+2. **Khớp cụm từ liền mạch (`exact_phrase`) ưu tiên số 1**: So khớp cụm token đã chuẩn hoá/bỏ dấu (`_token_phrase`), diệt các thủ tục tên ngắn nhưng lệch nghĩa (ví dụ "nhà thầu nước ngoài" vs "cấp giấy phép xây dựng").
+3. **Ưu tiên cấp thẩm quyền gần dân nhất**: Xã (0) > Huyện (1) > Tỉnh (2) > Trung ương (3) khi F1 bằng nhau.
+4. **Chuẩn hoá toán học `gap_ratio`**:
+   - `gap_ratio = abs(s1 - s2) / max(s1, 1e-6)`: Không bị âm khi #1 thắng bằng exact phrase nhưng F1 thấp hơn #2.
+   - Điều kiện gợi ý bổ sung: `second_group["f1"] >= MIN_F1_SCORE` để tránh gợi ý rác.
+
+---
+
+## 5. Trạng thái Unit Tests
+
+- `test.bat`: **PASS 94/94 (100%)**
+  - Extractor: 33 test
+  - Customer Care: 16 test
+  - Pipeline: 45 test
 - Đã nghiệm thu độc lập các câu truy vấn nhạy cảm:
   - `đăng ký kết hôn` -> `#1 Thủ tục đăng ký kết hôn` (F1=1.000).
   - `đăng ký khai sinh` -> `#1 Thủ tục đăng ký khai sinh` (F1=1.000).
   - `đăng ký khai tử` -> `#1 Thủ tục đăng ký khai tử` (F1=1.000).
+  - `cấp giấy phép xây dựng` -> `#1 Cấp GPXD có thời hạn đối với công trình, nhà ở riêng lẻ` (F1=0.435, khớp cụm liền mạch).
   - `ly hôn` -> `confident=False` (F1=0.33 < 0.40, chuyển System 1).
