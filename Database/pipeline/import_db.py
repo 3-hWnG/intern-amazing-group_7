@@ -136,6 +136,14 @@ def import_records(conn: sqlite3.Connection, records: list[dict]) -> dict:
             "SELECT row_id, content_hash, version FROM procedures"
             " WHERE proc_id = ? AND IFNULL(province,'ALL') = IFNULL(?,'ALL')"
             "   AND status = 'active'", (proc_id, province)).fetchone()
+        if current is None:
+            # Cùng MỘT bản ghi nguồn (cùng mã + cùng source_id) nhưng `province`
+            # đổi — vd lần đầu gắn tỉnh công bố. Đây là PHIÊN BẢN MỚI của nó,
+            # không phải thủ tục mới; không bắt thì bản cũ vẫn 'active' song song.
+            current = conn.execute(
+                "SELECT row_id, content_hash, version FROM procedures"
+                " WHERE proc_id = ? AND source_id = ? AND status = 'active'",
+                (proc_id, rec.get("source_id", ""))).fetchone()
 
         if current and current["content_hash"] == rec["content_hash"]:
             # Nội dung không đổi nhưng VẪN CÒN trên cổng → cập nhật last_seen_at.

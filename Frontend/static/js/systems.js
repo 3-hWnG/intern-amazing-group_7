@@ -42,6 +42,7 @@ window.Systems = (function () {
       (active.enabled ? "" : " (đang xây dựng)") +
       `\nBấm để chuyển sang: ${other.label}` +
       "\nĐổi hệ thống sẽ mở một cuộc trò chuyện mới.";
+    if (window.Exact) Exact.render();       // 🎯 chỉ có ở Hệ thống 2
   }
 
   /* Hiển thị đúng hệ thống của cuộc trò chuyện đang mở. */

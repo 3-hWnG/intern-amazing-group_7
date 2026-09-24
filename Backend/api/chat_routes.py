@@ -74,18 +74,21 @@ async def get_conversation(conv_id: int, user: dict = Depends(current_user)):
         except Exception:
             m["sources"] = []
         m["has_evidence"] = bool(m["has_evidence"])
-        choices, system, table = [], "", None
+        choices, system, table, answer_source = [], "", None, ""
         if m.get("intent_json"):
             try:
                 ij = json.loads(m["intent_json"])
                 choices = ij.get("choices") or []
                 system = ij.get("system") or ""
                 table = ij.get("table")
+                answer_source = ij.get("answer_source") or ""
             except Exception:
                 pass
         m["choices"] = choices
         m["system"] = system
         m["table"] = table
+        # Hệ thống 2: "database" (trích thẳng CSDL) | "database_llm" (LLM 2 diễn giải)
+        m["answer_source"] = answer_source
         m.pop("intent_json", None)
     from db.repositories import Documents
     documents = await connection.run(Documents.list_for_conversation, conv_id)
@@ -174,7 +177,8 @@ async def clear_profile(user: dict = Depends(current_user)):
 
 # --------------------------------------------------------------- chat ----
 def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit,
-             direct_search: bool = False, system: str = DEFAULT_SYSTEM) -> None:
+             direct_search: bool = False, system: str = DEFAULT_SYSTEM,
+             mode: str = "") -> None:
     """Chạy trong worker của hàng đợi (luồng riêng): ngữ cảnh -> orchestrator -> lưu."""
     def send(**payload) -> None:
         emit(_event(**payload))
@@ -189,7 +193,8 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit,
         orchestrator.TurnInput(question=question, history=history, summary=summary,
                                profile=profile, conversation_id=conv_id,
                                user_id=user_id,
-                               direct_search=direct_search, system=system),
+                               direct_search=direct_search, system=system,
+                               mode=mode or "chat"),
         status=lambda text: send(type="status", text=text))
 
     intent_payload = dict(result.intent) if result.intent else {}
@@ -215,7 +220,8 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit,
     send(type="done", message_id=message_id, kind=result.kind, verdict=result.verdict,
          sources=result.sources, has_evidence=result.evidence is not None,
          intent=result.intent.get("intent", ""), timings=result.timings, profile=profile,
-         choices=result.choices, system=result.system or system, table=result.table)
+         choices=result.choices, system=result.system or system, table=result.table,
+         answer_source=(result.intent or {}).get("answer_source", ""))
 
 
 @router.post("/api/conversations/{conv_id}/chat")
@@ -247,7 +253,7 @@ async def chat(conv_id: int, body: ChatRequest, user: dict = Depends(current_use
     def produce(emit):
         try:
             _run_job(conv_id, user["id"], user_msg_id, question, emit,
-                     direct_search=direct_search, system=system)
+                     direct_search=direct_search, system=system, mode=body.mode)
         except Exception as exc:
             traceback.print_exc()
             emit(_event(type="error", text=f"Lỗi xử lý: {exc}"))

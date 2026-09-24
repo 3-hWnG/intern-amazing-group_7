@@ -7,19 +7,19 @@ các quyết định thiết kế: Documentation/PHASE2_RETRIEVAL.md.
     [ Người dân hỏi ]  "t người bình định muốn dk kết hôn"
           │
           ▼
-    [ LLM 1: rút khoá ]  -> {"primary_keyword": "đăng ký kết hôn",
-          │                  "domain": "Hộ tịch", "entities": ["Bình Định"]}
-          │  CHỈ hiểu câu hỏi. Không sinh câu trả lời. `domain` phải CHỌN trong
-          │  103 lĩnh vực có thật -> mô hình 1.5B không trỏ được vào thứ không có.
-          ▼
-    [ Tra CSDL — không qua LLM ]  FTS5 ba tầng, mỗi kết quả kèm `confident`
+    [ Tra TỪ KHOÁ — không LLM ]  retrieval.parse_query(): bỏ lời đệm, bung
+          │   viết tắt, tách tên tỉnh -> {"keyword": "nguoi dang ky ket hon",
+          │                               "provinces": ["Bình Định"]}
+          │   -> FTS5 ba tầng
           │
-          ├─ 0 kết quả  -> LLM 1 sinh lại khoá (tối đa 3 lượt) -> vẫn không có:
-          │                xin lỗi, NÊU RÕ khoá đã tìm + câu hỏi gốc (để debug được)
+          ├─ không khớp chắc (mơ hồ, gõ sai "đkj") -> LLM 1 viết lại khoá
+          │     (tối đa 3 lượt) -> vẫn không có: xin lỗi, NÊU RÕ khoá + câu gốc
           │
-          ├─ nhiều ứng viên / còn phân nhánh -> HỎI MCQ (tối đa 2 vòng)
-          │                trạng thái nằm ở app.db (`retrieval_pending`), vì một
-          │                lượt HTTP không giữ được trạng thái giữa các vòng
+          ├─ MCQ 1 "thủ tục chính"  (Đăng ký khai sinh / Đăng ký lại khai sinh…)
+          ├─ MCQ 2 "dạng cụ thể"    (lưu động / có yếu tố nước ngoài / bản tỉnh…)
+          ├─ MCQ phụ "trường hợp", "tư cách" (tối đa RETRIEVAL_MAX_MCQ_ROUNDS)
+          │     trạng thái nằm ở app.db (`retrieval_pending`), vì một lượt
+          │     HTTP không giữ được trạng thái giữa các vòng
           │
           ▼
     [ Dựng bảng bằng CODE ]  procedure_table.build() — zero hallucination
@@ -41,6 +41,7 @@ người dùng tự bấm Web search — việc chuyển hệ thống luôn là 
 from __future__ import annotations
 
 import json
+import re
 import sqlite3
 import time
 from typing import Callable
@@ -50,7 +51,8 @@ from config import (PROCEDURES_DB_PATH, RETRIEVAL_ENABLED,
                     RETRIEVAL_FOLLOWUP_ENABLED, RETRIEVAL_MAX_KEY_ATTEMPTS,
                     RETRIEVAL_MAX_MCQ_ROUNDS, SYSTEM_RETRIEVAL)
 from core import llm, procedure_table
-from core.turn import TurnInput, TurnResult
+from core.turn import (MODE_CHAT, MODE_EXACT, MODE_RESUBMIT, MODES, TurnInput,
+                       TurnResult)
 from db.repositories import MCQMemory, RetrievalPending
 from prompts import retrieval_templates as RT
 
@@ -98,8 +100,13 @@ def _conn() -> sqlite3.Connection | None:
     return conn
 
 
-def _domains(conn: sqlite3.Connection, limit: int = 103) -> list[str]:
-    """Danh sách lĩnh vực THẬT để LLM 1 chọn. Lấy từ CSDL, không hardcode."""
+def _domains(conn: sqlite3.Connection, limit: int | None = None) -> list[str]:
+    """Danh sách lĩnh vực THẬT để LLM 1 chọn. Lấy từ CSDL, không hardcode.
+
+    Không cắt mặc định: số lĩnh vực đổi theo phạm vi cào (1.407 thủ tục = 103,
+    cấp Xã/Phường 1.350 thủ tục = 121). Cắt cứng thì lĩnh vực ít thủ tục nhất
+    không bao giờ được chọn.
+    """
     cached = getattr(_local, "domains", None)
     if cached is None:
         cached = [r[0] for r in conn.execute(
@@ -140,8 +147,8 @@ def extract_keys(question: str, history: list[dict], profile: dict,
     if not keyword:
         keyword = question.strip()
 
-    # Tỉnh trong hồ sơ người dùng là ngữ cảnh phụ, KHÔNG phải bộ lọc:
-    # 100% bản ghi có province = NULL nên không có gì để lọc theo.
+    # Tỉnh trong hồ sơ người dùng là ngữ cảnh phụ, KHÔNG phải bộ lọc: chỉ xếp
+    # bản của tỉnh đó lên trước ở MCQ "dạng cụ thể" (retrieval.axis_for_variants).
     if profile.get("province") and profile["province"] not in entities:
         entities.append(profile["province"])
 
@@ -151,8 +158,13 @@ def extract_keys(question: str, history: list[dict], profile: dict,
 # ---------------------------------------------------------------------------
 # 2. Truy vấn CSDL — KHÔNG qua LLM
 # ---------------------------------------------------------------------------
+# Số ứng viên lấy về để gom thành "thủ tục chính". Rộng hơn số nút MCQ (6)
+# vì nhiều ứng viên rơi chung một nhóm (lưu động, có yếu tố nước ngoài…).
+CANDIDATE_POOL = 30
+
+
 def lookup(keys: dict, conn: sqlite3.Connection | None = None,
-           limit: int = 8) -> list[dict]:
+           limit: int = CANDIDATE_POOL) -> list[dict]:
     """Khoá -> danh sách ứng viên đã xếp hạng (rỗng nếu không khớp gì).
 
     Trả về DANH SÁCH chứ không phải một bản ghi: kiến trúc mới cần biết có bao
@@ -164,25 +176,6 @@ def lookup(keys: dict, conn: sqlite3.Connection | None = None,
     if conn is None:
         return []
     return R.search_in_domain(conn, keys["primary_keyword"], keys.get("domain", ""), limit)
-
-
-def _rank_by_entities(hits: list[dict], entities: list[str], conn) -> list[dict]:
-    """Xếp lại ứng viên theo các chi tiết phụ người dân có nhắc.
-
-    Chỉ CỘNG ĐIỂM, không loại bỏ: "Bình Định" không lọc được theo tỉnh (cột
-    province rỗng toàn bộ) nhưng "có yếu tố nước ngoài" hay "lưu động" thì nằm
-    ngay trong TÊN thủ tục — dùng được.
-    """
-    if not entities:
-        return hits
-    from Database.pipeline.textutil import fold
-    folded = [fold(e) for e in entities]
-
-    def bonus(h: dict) -> int:
-        hay = fold(f"{h['name']} {h.get('domain', '')}")
-        return sum(1 for e in folded if e and e in hay)
-
-    return sorted(hits, key=lambda h: (-bonus(h), h["score"]))
 
 
 # ---------------------------------------------------------------------------
@@ -217,10 +210,55 @@ def is_new_procedure(conn, question: str, current_proc_id: str) -> bool:
 
 
 def follow_up(question: str, history: list[dict], table: dict) -> str:
-    """Hỏi tiếp sau khi đã có bảng: trả lời CHỈ trong phạm vi bảng."""
-    text = procedure_table.to_text(table)
-    return llm.chat("answer", RT.CARE_SYSTEM, RT.care_user(question, text),
-                    history=None).strip()
+    """Hỏi tiếp sau khi đã có bảng: trả lời CHỈ trong phạm vi bảng.
+
+    Bám câu hỏi (đo trên mô hình thật, xem PLAN_SYSTEM2_REBUILD §B3):
+      - chỉ đưa các MỤC liên quan tới câu hỏi (`sections_for`), không cả bảng;
+      - kèm CÂU HỎI trước đó của người dân (không kèm câu trả lời của trợ lý:
+        đưa cả lượt đáp vào thì mô hình 1.5B lẫn vai người hỏi/người đáp);
+      - vai `care`: tối đa 320 token thay vì 900.
+    """
+    previous = next((m.get("content") or "" for m in reversed(history or [])
+                     if m.get("role") == "user"), "")
+    if procedure_table.is_rewrite(question):
+        # "Ngắn hơn nữa", "chi tiết hơn" -> VIẾT LẠI câu trả lời trước, trên đúng
+        # các mục của câu hỏi trước. Câu trả lời trước đưa vào như VĂN BẢN cần
+        # sửa, không như một lượt chat (đưa như lượt chat thì mô hình lẫn vai).
+        last_answer = next((m.get("content") or "" for m in reversed(history or [])
+                            if m.get("role") == "assistant"), "")
+        secs = procedure_table.sections_for(previous)
+        text = procedure_table.to_text(table, only=(secs + ["scope"]) if secs else None)
+        return _llm_text(lambda: llm.chat(
+            "care", RT.CARE_SYSTEM,
+            RT.rewrite_user(question, text, previous[:200], last_answer[:1500]),
+            history=None))
+
+    secs = procedure_table.sections_for(question)
+    text = procedure_table.to_text(table, only=(secs + ["scope"]) if secs else None)
+    return _llm_text(lambda: llm.chat("care", RT.CARE_SYSTEM,
+                                      RT.care_user(question, text, previous[:200]),
+                                      history=None))
+
+
+# Mô hình 1.5B đôi khi chen chữ Hán ("缴纳") hoặc chép lại luật trong prompt
+# ("Chỉ dùng thông tin có trong bảng.") vào câu trả lời — đo được ở bản thử.
+_CJK = re.compile(r"[\u3000-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff00-\uffef]+")
+_ECHO = re.compile(r"^\s*(?:Chỉ dùng thông tin có trong bảng\.?|LUẬT BẮT BUỘC:?)\s*",
+                   re.IGNORECASE)
+
+
+def _llm_text(call: Callable[[], str], fallback: str = "") -> str:
+    """Gọi LLM, sinh lại MỘT lần nếu có chữ Hán/Nhật; còn thì cắt bỏ phần đó."""
+    text = ""
+    for _ in range(2):
+        text = (call() or "").strip()
+        if not _CJK.search(text):
+            break
+    text = _CJK.sub("", text)
+    text = "\n".join(_ECHO.sub("", line) for line in text.splitlines()).strip()
+    # Dấu """ bao "văn bản cần viết lại" trong prompt — mô hình hay chép theo.
+    text = text.strip('"').strip() if text.startswith('"""') else text
+    return text or fallback
 
 
 # ---------------------------------------------------------------------------
@@ -322,52 +360,101 @@ def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> 
         pending = RetrievalPending.get(conv_id) if conv_id else None
         memory = MCQMemory.all_for(inp.user_id) if inp.user_id else {}
 
-        # ── A. Đang chờ người dùng trả lời MCQ? ─────────────────────────
-        if pending and pending.get("axis"):
+        # Ba trạng thái của một ô chat, đọc từ `retrieval_pending`:
+        #   không có dòng           -> CHAT  (chưa tra gì)
+        #   có `axis`               -> đang giữa vòng MCQ của 🎯
+        #   có `proc_id`, không axis -> CARE  (đã ra bảng = đã dùng 🎯 thành công)
+        mode = inp.mode if inp.mode in MODES else MODE_CHAT
+        dev.event("mode", mode=mode,
+                  state=("mcq" if pending and pending.get("axis") else
+                         "care" if pending and pending.get("proc_id") else "chat"))
+
+        # "Tra lại" dưới bảng: người dùng báo mình hiểu sai -> xoá bảng cũ, tra
+        # lại từ đầu trong CÙNG ô chat. Không tính là lần 🎯 thứ hai.
+        if mode == MODE_RESUBMIT:
+            if conv_id:
+                RetrievalPending.clear(conv_id)
+            pending, mode = None, MODE_EXACT
+
+        # ── A. Đang chờ trả lời MCQ? (bấm nút MCQ = tin nhắn thường) ────
+        if pending and pending.get("axis") and mode == MODE_CHAT:
             picked_value = _match_answer(inp.question, pending["options"])
             if picked_value is not None:
                 dev.event("mcq_answer", axis=pending["axis"], value=str(picked_value))
                 return _resolve(conn, inp, res, dev, lap, pending, picked_value, status)
-            # Không khớp lựa chọn nào -> coi như câu hỏi MỚI, bỏ vòng MCQ cũ.
+        if pending and pending.get("axis"):
+            # Gõ câu khác, hoặc bấm 🎯 với câu mới -> bỏ vòng MCQ cũ.
             dev.event("mcq_abandoned", question=inp.question[:120])
             RetrievalPending.clear(conv_id)
             pending = None
 
-        # ── B. Đã có bảng rồi -> chế độ chăm sóc khách hàng (LLM 2) ─────
-        if pending and pending.get("proc_id") and not pending.get("axis"):
+        # ── B. Đã có bảng rồi ────────────────────────────────────────────
+        if pending and pending.get("proc_id"):
+            if mode == MODE_EXACT:
+                # Proposal: mỗi ô chat chỉ 🎯 thành công MỘT lần.
+                return _exact_used(conn, inp, res, dev, pending)
             return _care(conn, inp, res, dev, lap, pending, status)
 
-        # ── C. Câu hỏi mới: LLM 1 -> tra CSDL ───────────────────────────
-        status("Đang xác định thủ tục bạn cần…")
-        domains = _domains(conn)
-        hits, keys, tried, best_keys = [], {}, [], {}
+        # ── C0. Tin nhắn thường, chưa có bảng -> LLM 2 trò chuyện ─────────
+        if mode == MODE_CHAT:
+            return _chat(conn, inp, res, dev, lap, status)
 
-        # Dừng khi có kết quả CHẮC CHẮN, không phải khi có kết quả bất kỳ:
-        # tầng 3 của FTS là OR nên gần như luôn moi ra thứ gì đó. Kết quả
-        # không chắc vẫn giữ lại làm phương án cuối, nhưng thử diễn đạt khác
-        # trước đã — sinh lại một lần rẻ hơn nhiều so với hỏi người dân.
-        for attempt in range(1, RETRIEVAL_MAX_KEY_ATTEMPTS + 1):
-            t = time.time()
-            k = extract_keys(inp.question, inp.history, inp.profile, domains,
-                             tried if attempt > 1 else None)
-            dev.event("extract_keys", ms=lap("understand", t), attempt=attempt, **k)
+        # 🎯 với câu chỉ có lời chào/cảm ơn -> KHÔNG đem đi tra. Đo được ở bản
+        # chạy thật: "Chào" + 🎯 ra MCQ toàn thủ tục chẳng liên quan.
+        if R.is_chitchat(inp.question):
+            res.kind = "chitchat"
+            res.intent = {"intent": "exact_needs_procedure", "standalone_question": inp.question}
+            res.text = RT.EXACT_NEEDS_PROCEDURE
+            dev.event("exact_chitchat", question=inp.question[:80])
+            return res
 
-            t = time.time()
-            h = lookup(k, conn)
-            confident = any(x.get("confident") for x in h)
-            dev.event("lookup", ms=lap("search", t), attempt=attempt, n_hits=len(h),
-                      confident=confident, keyword=k["primary_keyword"])
+        # ── C. 🎯 Tìm chính xác: TỪ KHOÁ trước, LLM 1 chỉ khi từ khoá trượt ──
+        # Nhóm chốt (2026-09-24): tra thẳng bằng từ khoá là đường chính. LLM 1
+        # chỉ được gọi khi CSDL không khớp chắc — câu hỏi mơ hồ hoặc gõ sai
+        # ("đkj"). Sai sót còn lại đã có MCQ "thủ tục chính -> dạng cụ thể" hứng.
+        status("Đang tìm thủ tục trong cơ sở dữ liệu…")
+        q = R.parse_query(inp.question)
+        provinces = list(q["provinces"])
+        if inp.profile.get("province") and inp.profile["province"] not in provinces:
+            provinces.append(inp.profile["province"])
 
-            if h and not hits:                 # giữ phương án cuối đầu tiên tìm được
-                hits, best_keys = h, k
-            if confident:
-                hits, best_keys = h, k
-                break
-            tried.append(k["primary_keyword"])
-            if attempt < RETRIEVAL_MAX_KEY_ATTEMPTS:
-                status(f"Chưa chắc — đang thử cách diễn đạt khác ({attempt}/{RETRIEVAL_MAX_KEY_ATTEMPTS})…")
+        t = time.time()
+        hits = R.search(conn, q["keyword"], CANDIDATE_POOL) if q["keyword"] else []
+        keys = {"primary_keyword": q["keyword"], "domain": "", "entities": provinces,
+                "source": "keyword"}
+        dev.event("keyword_search", ms=lap("search", t), keyword=q["keyword"],
+                  provinces=provinces, n_hits=len(hits), strong=R.is_strong(hits))
+        tried = [q["keyword"]] if q["keyword"] else []
 
-        keys = best_keys or k
+        if not R.is_strong(hits):
+            # Dừng khi có kết quả CHẮC, không phải khi có kết quả bất kỳ: tầng 3
+            # của FTS là OR nên gần như luôn moi ra thứ gì đó. Kết quả yếu vẫn
+            # giữ làm phương án cuối, nhưng thử diễn đạt khác trước đã.
+            status("Chưa khớp từ khoá — đang nhờ mô hình hiểu lại câu hỏi…")
+            domains = _domains(conn)
+            for attempt in range(1, RETRIEVAL_MAX_KEY_ATTEMPTS + 1):
+                t = time.time()
+                k = extract_keys(inp.question, inp.history, inp.profile, domains,
+                                 tried if attempt > 1 else None)
+                dev.event("extract_keys", ms=lap("understand", t), attempt=attempt, **k)
+
+                t = time.time()
+                h = lookup(k, conn)
+                strong = R.is_strong(h)
+                dev.event("lookup", ms=lap("search", t), attempt=attempt, n_hits=len(h),
+                          strong=strong, keyword=k["primary_keyword"])
+
+                k = {**k, "entities": list(dict.fromkeys(k["entities"] + provinces)),
+                     "source": "llm1"}
+                if h and not hits:             # giữ phương án cuối đầu tiên tìm được
+                    hits, keys = h, k
+                if strong:
+                    hits, keys = h, k
+                    break
+                tried.append(k["primary_keyword"])
+                if attempt < RETRIEVAL_MAX_KEY_ATTEMPTS:
+                    status(f"Chưa chắc — đang thử cách diễn đạt khác ({attempt}/{RETRIEVAL_MAX_KEY_ATTEMPTS})…")
+
         res.intent = {"intent": "retrieval", "standalone_question": inp.question, **keys}
 
         # Không ra gì cả -> xin lỗi, NÊU RÕ khoá đã tìm + câu hỏi gốc.
@@ -379,8 +466,7 @@ def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> 
                 RetrievalPending.clear(conv_id)
             return res
 
-        hits = _rank_by_entities(hits, keys.get("entities", []), conn)
-        low_conf = not any(x.get("confident") for x in hits)
+        low_conf = not R.is_strong(hits)
         if low_conf:
             dev.event("low_confidence", keyword=keys.get("primary_keyword", ""),
                       n_hits=len(hits))
@@ -416,27 +502,51 @@ def _resolve_from_hits(conn, inp: TurnInput, res: TurnResult, dev, lap,
                        status: Callable[[str], None],
                        picked: dict | None = None, rounds: int = 0,
                        low_confidence: bool = False) -> TurnResult:
-    """Có ứng viên rồi: hỏi MCQ tiếp, hay dựng bảng luôn?"""
+    """Có ứng viên rồi: hỏi "thủ tục chính" -> "dạng cụ thể", rồi mới dựng bảng.
+
+    Hai MCQ này KHÔNG tính vào `RETRIEVAL_MAX_MCQ_ROUNDS`: chọn đúng thủ tục là
+    việc bắt buộc; giới hạn vòng chỉ để khỏi hỏi quá nhiều trục PHỤ (trường
+    hợp, tư cách) sau khi đã chốt thủ tục.
+    """
     picked = dict(picked or {})
     conv_id = inp.conversation_id
+    provinces = keys.get("entities") or []
 
-    # Còn nhiều thủ tục khác nhau -> phải hỏi "thủ tục nào" TRƯỚC mọi trục khác.
-    # Không ứng viên nào chắc chắn -> vẫn hỏi, kèm lối thoát "không cái nào đúng".
-    proc_axes = R.axes_for_candidates(hits, low_confidence)
-    if proc_axes and rounds < RETRIEVAL_MAX_MCQ_ROUNDS and R.AXIS_PROCEDURE not in picked:
-        axis = proc_axes[0]
+    def ask(axis: dict) -> TurnResult:
         if conv_id:
             RetrievalPending.save(
                 conv_id, question=inp.question, keys=keys,
                 candidates=[{"proc_id": h["proc_id"], "name": h["name"],
                              "domain": h.get("domain", "")} for h in hits],
                 axis=axis["axis"], options=axis["options"], picked=picked,
-                rounds=rounds + 1)
+                rounds=rounds)
         _mcq_result(res, axis)
         dev.event("mcq_ask", axis=axis["axis"], n_options=len(axis["options"]))
         return res
 
-    proc_id = picked.get(R.AXIS_PROCEDURE) or hits[0]["proc_id"]
+    if R.AXIS_PROCEDURE not in picked:
+        # MCQ 1 — thủ tục chính. Không ứng viên nào chắc -> kèm lối thoát
+        # "không có cái nào đúng ý tôi" (kể cả khi chỉ còn một nhóm).
+        head = picked.get(R.AXIS_FAMILY)
+        if head is None:
+            fam = R.axes_for_families(conn, hits, low_confidence, provinces)
+            if fam:
+                return ask(fam[0])
+            head = R.family_of(conn, hits[0]["proc_id"]) if hits else ""
+
+        # MCQ 2 — dạng cụ thể: TOÀN BỘ thành viên của nhóm trong CSDL.
+        variants = R.axis_for_variants(conn, head, provinces)
+        if variants:
+            return ask(variants)
+        picked[R.AXIS_PROCEDURE] = R.only_member(conn, head) or (hits[0]["proc_id"] if hits else "")
+
+    proc_id = picked[R.AXIS_PROCEDURE]
+    if not proc_id:
+        res.kind = "no_evidence"
+        res.text = RT.not_found_text(keys.get("primary_keyword", ""), inp.question)
+        if conv_id:
+            RetrievalPending.clear(conv_id)
+        return res
     return _deliver(conn, inp, res, dev, lap, keys, proc_id, picked, memory,
                     status, rounds, hits)
 
@@ -507,6 +617,9 @@ def _deliver(conn, inp: TurnInput, res: TurnResult, dev, lap, keys: dict,
                         memory_used=shown_memory)
     res.table = table
     res.kind = "answer"
+    # Nhãn trên giao diện: "Từ database" — bảng do CODE dựng từ dữ liệu cào
+    # thẳng dichvucong.gov.vn, không phải câu trả lời "chưa kiểm chứng".
+    res.intent = {**res.intent, "answer_source": "database"}
     res.text = ((RT.EXPIRED_WARNING + "\n\n") if expired else "") + \
         procedure_table.summary_line(table)
     res.sources = [{"id": "S1", "title": f"Cổng Dịch vụ công — {record['name']}",
@@ -556,14 +669,11 @@ def _resolve(conn, inp: TurnInput, res: TurnResult, dev, lap, pending: dict,
         return _deliver(conn, original, res, dev, lap, keys, proc_id, picked,
                         memory, status, rounds)
 
-    # Chưa chốt thủ tục nào (không nên xảy ra) -> tra lại từ ứng viên đã lưu.
+    # Vừa chọn "thủ tục chính" -> hỏi tiếp "dạng cụ thể" (hoặc giao luôn nếu
+    # nhóm chỉ có một thủ tục). Ứng viên lấy lại từ lượt trước.
     hits = pending.get("candidates") or []
-    if not hits:
-        res.kind = "no_evidence"
-        res.text = RT.not_found_text(keys.get("primary_keyword", ""), original.question)
-        return res
-    return _deliver(conn, original, res, dev, lap, keys, hits[0]["proc_id"],
-                    picked, memory, status, rounds, hits)
+    return _resolve_from_hits(conn, original, res, dev, lap, keys, hits, memory,
+                              status, picked, rounds)
 
 
 def _care(conn, inp: TurnInput, res: TurnResult, dev, lap, pending: dict,
@@ -585,26 +695,118 @@ def _care(conn, inp: TurnInput, res: TurnResult, dev, lap, pending: dict,
     res.intent = {"intent": "retrieval_followup",
                   "standalone_question": inp.question, "proc_id": proc_id}
 
-    # Boundary control: hỏi sang thủ tục KHÁC -> mời mở ô chat mới.
+    # Cảm ơn / chào: trả lời CỐ ĐỊNH. Đưa câu "cảm ơn bạn" cho LLM 2 cùng cả
+    # bảng thì mô hình 1.5B lan man kể lại bảng (đo được: 6 giây, sai ngữ cảnh).
+    if R.is_chitchat(inp.question):
+        res.kind = "chitchat"
+        res.text = (f"Không có gì ạ! Bạn cần hỏi thêm gì về **{record['name']}** thì cứ hỏi "
+                    "nhé. Muốn tra thủ tục khác, bạn mở cuộc trò chuyện mới.")
+        dev.event("care_chitchat")
+        return res
+
+    # Boundary control: hỏi sang thủ tục KHÁC? CHỈ CẢNH BÁO, KHÔNG CHẶN.
+    # Nhóm chốt (2026-09-24): người dân đã được cảnh báo thì câu trả lời vẫn
+    # phải hiện — cảnh báo + nút ô chat mới được GẮN SAU câu trả lời (đúng
+    # Proposal: "Warning: chúng tôi không chịu trách nhiệm nếu bạn hỏi thủ tục
+    # mới và AI trả lời sai trong ô chat này"). Bộ gác khớp theo chữ không dấu
+    # nên có báo nhầm ("ngắn hơn" ~ "ngân … hơn"); chặn hẳn thì báo nhầm là mất
+    # câu trả lời, gắn thêm thì chỉ thừa một dòng.
     status("Đang kiểm tra câu hỏi…")
     t = time.time()
-    if is_new_procedure(conn, inp.question, proc_id):
-        res.kind = "clarify"
-        res.text = RT.NEW_PROCEDURE_TEXT
-        res.table = {"kind": "new_procedure", "current": record["name"]}
-        dev.event("new_procedure", ms=lap("understand", t), proc_id=proc_id)
-        return res
-    dev.event("boundary_ok", ms=lap("understand", t))
+    other = (not procedure_table.is_rewrite(inp.question)
+             and not procedure_table.refers_to_table(table, inp.question)
+             and is_new_procedure(conn, inp.question, proc_id))
+    dev.event("new_procedure" if other else "boundary_ok",
+              ms=lap("understand", t), proc_id=proc_id)
 
     if not RETRIEVAL_FOLLOWUP_ENABLED:
         res.kind = "answer"
         res.table = table
         res.text = procedure_table.summary_line(table)
-        return res
+        res.intent["answer_source"] = "database"
+        return _warn_other(res, record, inp) if other else res
+
+    # "Chắc không?" -> nói đúng nguồn gốc dữ liệu (CODE), không để LLM 2 đoán.
+    # Câu hỏi chỉ về MỘT ô (lệ phí, thời gian, giấy tờ…) -> CODE trích nguyên ô.
+    previous = next((m.get("content") or "" for m in reversed(inp.history or [])
+                     if m.get("role") == "user"), "")
+    quoted = (procedure_table.confirm_answer(table, inp.question)
+              or procedure_table.field_answer(table, inp.question, previous))
+    if quoted:
+        res.kind = "answer"
+        res.text = quoted
+        res.intent["answer_source"] = "database"
+        dev.event("care_quote", sections=procedure_table.sections_for(inp.question))
+        return _warn_other(res, record, inp) if other else res
 
     status("Đang trả lời dựa trên bảng thông tin…")
     t = time.time()
     res.text = follow_up(inp.question, inp.history, table)
     res.kind = "answer"
-    dev.event("follow_up", ms=lap("answer", t), chars=len(res.text))
+    res.intent["answer_source"] = "database_llm"
+    dev.event("follow_up", ms=lap("answer", t), chars=len(res.text),
+              sections=procedure_table.sections_for(inp.question))
+    return _warn_other(res, record, inp) if other else res
+
+
+def _warn_other(res: TurnResult, record: dict, inp: TurnInput) -> TurnResult:
+    """Gắn cảnh báo "có vẻ là thủ tục khác" + nút ô chat mới SAU câu trả lời."""
+    res.text = f"{res.text}\n\n{RT.new_procedure_note(record['name'])}"
+    # `question` đi kèm để nút "ô chat mới" tra luôn câu này bằng 🎯.
+    res.table = {"kind": "new_procedure", "current": record["name"],
+                 "question": inp.question}
+    return res
+
+
+CHAT_FALLBACK = ("Chào bạn! Mình là trợ lý thủ tục hành chính cấp Xã/Phường. Bạn cần làm "
+                 "thủ tục gì thì bấm **🎯 Tìm chính xác** để mình tra trong cơ sở dữ liệu nhé.")
+
+
+def _chat(conn, inp: TurnInput, res: TurnResult, dev, lap,
+          status: Callable[[str], None]) -> TurnResult:
+    """Tin nhắn thường khi CHƯA có bảng — đúng Proposal slide 3:
+
+        User prompt -> LLM 2 trả lời (bằng hiểu biết chung, KỂ CẢ câu hỏi thủ tục)
+                    ║ song song: bộ nhận diện (luật CSDL, không LLM)
+                    ╚► có vẻ hỏi thủ tục -> gắn "bạn dùng <Tìm chính xác> nhé" + chip 🎯
+
+    Câu trả lời CÓ THỂ SAI (chưa tra CSDL), nên luôn mang nhãn
+    `answer_source = "llm_only"` -> giao diện ghi "⚠️ AI tự trả lời, chưa qua CSDL".
+    """
+    res.intent = {"intent": "chat", "standalone_question": inp.question,
+                  "answer_source": "llm_only"}
+
+    t = time.time()
+    guess = R.looks_like_procedure(conn, inp.question)
+    dev.event("procedure_detector", ms=lap("understand", t), hit=bool(guess),
+              label=(guess or {}).get("label", ""))
+
+    status("Đang soạn trả lời…")
+    t = time.time()
+    # Chỉ vài lượt gần nhất: đủ để hiểu "cảm ơn" đang cảm ơn gì, không đủ để mô
+    # hình nhỏ bị cuốn theo một đoạn hội thoại dài.
+    history = [{"role": m["role"], "content": m["content"][:400]}
+               for m in (inp.history or [])[-4:]]
+    res.text = _llm_text(lambda: llm.chat("chat", RT.CHAT_SYSTEM, inp.question,
+                                          history=history), fallback=CHAT_FALLBACK)
+    res.kind = "chitchat"
+    dev.event("chat", ms=lap("answer", t), chars=len(res.text))
+
+    if guess:
+        res.text = f"{res.text}\n\n{RT.EXACT_HINT}"
+        # Giao diện vẽ chip "🎯 Tìm chính xác" gửi lại đúng câu này ở mode exact.
+        res.table = {"kind": "exact_hint", "question": inp.question}
+    return res
+
+
+def _exact_used(conn, inp: TurnInput, res: TurnResult, dev, pending: dict) -> TurnResult:
+    """🎯 lần hai trong cùng ô chat -> mời mở ô chat mới (mang theo câu hỏi) hoặc huỷ."""
+    info = R.family_index(conn)["info"].get(pending["proc_id"], {})
+    current = info.get("name") or pending["proc_id"]
+    res.kind = "clarify"
+    res.intent = {"intent": "exact_used", "standalone_question": inp.question,
+                  "proc_id": pending["proc_id"]}
+    res.text = RT.exact_used_text(current)
+    res.table = {"kind": "exact_used", "current": current, "question": inp.question}
+    dev.event("exact_used", proc_id=pending["proc_id"])
     return res

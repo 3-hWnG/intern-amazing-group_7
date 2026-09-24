@@ -35,6 +35,7 @@
     }
     if ($("model-name")) $("model-name").textContent = cfg.llm_model || "";
     Systems.init(cfg);          // nút Web search: Hệ thống 1 <-> Hệ thống 2
+    Exact.init();               // nút 🎯 Tìm chính xác (Hệ thống 2)
 
     Conversations.onSelect = (id) => {
       Chat.load(id);
@@ -119,7 +120,7 @@
       input.style.height = "auto";
       $("send").disabled = true;
       try {
-        const done = await Chat.send(convId, text);
+        const done = await Chat.send(convId, text, { mode: Exact.take() });
         await Conversations.refresh();
         const current = Conversations.items.find((c) => c.id === convId);
         if (current) $("conv-title").textContent = current.title;

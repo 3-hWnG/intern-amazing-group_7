@@ -1,14 +1,13 @@
 """Prompt của HỆ THỐNG 2 (CSDL nội bộ). Tách khỏi `templates.py` của Hệ thống 1.
 
-Hai vai, và CHỈ hai vai — giữa chúng là code thuần, không có LLM:
+Ba vai — giữa chúng là code thuần, không có LLM:
 
-    LLM 1  extract   câu hỏi -> {primary_keyword, domain, entities}
-    LLM 2  care      hỏi tiếp, CHỈ trong phạm vi bảng đã trả
+    LLM 1  extract   CHỈ khi tra từ khoá trượt: câu hỏi -> {primary_keyword, …}
+    LLM 2  chat      chưa có bảng: chào hỏi, cảm ơn — cấm nêu luật (CHAT_SYSTEM)
+    LLM 2  care      đã có bảng: hỏi tiếp, CHỈ trong phạm vi bảng (CARE_SYSTEM)
 
-Điểm khác cốt lõi so với Hệ thống 1: LLM 1 ở đây KHÔNG được sinh tự do. Nó phải
-CHỌN `domain` trong 103 tên lĩnh vực có thật của cổng (`staging/vocabulary.json`).
-Với mô hình 1.5B, đổi bài toán từ "sinh" sang "phân loại" là khác biệt giữa
-70% và 95% — và quan trọng hơn: nó không thể trỏ vào lĩnh vực CSDL không có.
+`domain` của LLM 1 phải CHỌN trong danh sách lĩnh vực có thật lấy từ CSDL, và
+chỉ dùng để xếp hạng (xem retrieval.search_in_domain).
 """
 
 from __future__ import annotations
@@ -75,17 +74,32 @@ Người dân đã nhận được BẢNG THÔNG TIN đầy đủ về một th�
 
 LUẬT BẮT BUỘC:
 1. Chỉ dùng thông tin có trong bảng. TUYỆT ĐỐI không thêm con số, thời hạn, loại giấy tờ, mức phí nào không có trong bảng.
-2. Bảng không có thông tin người dân hỏi -> nói thẳng: "Bảng thông tin không nêu rõ điều này" rồi mời họ hỏi cơ quan tiếp nhận hoặc bấm nút Web search.
-3. Trả lời ngắn, thân thiện, tối đa 5 câu. Không lặp lại cả bảng.
-4. Không bịa link. Chỉ dùng đường dẫn có sẵn trong bảng.
-5. Viết tiếng Việt có dấu."""
+2. Ô ghi "CHƯA CÓ THÔNG TIN", hoặc bảng không nói tới điều người dân hỏi -> nói thẳng: "Hiện chưa có thông tin về điều này" rồi mời họ hỏi cơ quan tiếp nhận hoặc bấm nút Web search. TUYỆT ĐỐI không suy ra "miễn phí", "không cần giấy tờ" hay "không có" từ một ô chưa có thông tin.
+3. Trả lời ĐÚNG điều người dân hỏi, không kể thêm các mục khác của bảng. Tối đa 4 câu. Nếu người dân xin tóm tắt thì tối đa 5 gạch đầu dòng ngắn, chỉ tóm tắt đúng phần họ xin.
+4. Chép con số và đơn vị đúng như bảng. Bảng không ghi đơn vị thì KHÔNG tự thêm "ngày" hay "giờ".
+5. Không chào hỏi mở đầu, không kết bằng lời mời chung chung. Không bịa link.
+6. Viết tiếng Việt có dấu."""
 
 
-def care_user(question: str, table_text: str) -> str:
+def care_user(question: str, table_text: str, previous: str = "") -> str:
+    before = (f"Câu hỏi trước đó của người dân (chỉ để hiểu ngữ cảnh): {previous}\n\n"
+              if previous else "")
+    return (f"BẢNG THÔNG TIN THỦ TỤC (nguồn sự thật duy nhất — có thể chỉ gồm các mục liên quan):\n"
+            f"────────────────────────────────\n{table_text}\n"
+            f"────────────────────────────────\n\n"
+            f"{before}Câu hỏi của người dân (chỉ trả lời đúng câu này):\n{question}")
+
+
+def rewrite_user(request: str, table_text: str, previous_q: str, previous_answer: str) -> str:
+    """Người dân muốn VIẾT LẠI câu trả lời trước ("ngắn hơn nữa", "chi tiết hơn")."""
     return (f"BẢNG THÔNG TIN THỦ TỤC (nguồn sự thật duy nhất):\n"
             f"────────────────────────────────\n{table_text}\n"
             f"────────────────────────────────\n\n"
-            f"Câu hỏi của người dân:\n{question}")
+            f"Câu hỏi trước của người dân: {previous_q}\n\n"
+            f"Câu trả lời trước của trợ lý (văn bản cần viết lại):\n\"\"\"\n{previous_answer}\n\"\"\"\n\n"
+            f"Người dân yêu cầu: {request}\n"
+            "Hãy VIẾT LẠI câu trả lời trước theo đúng yêu cầu này. Không thêm thông tin "
+            "ngoài bảng, không giải thích bạn đang làm gì.")
 
 
 # --- Bộ gác `newProcedure` — ĐÃ BỎ PHẦN LLM ---------------------------------
@@ -117,17 +131,58 @@ def not_found_text(keyword: str, question: str) -> str:
             f"cho câu hỏi **“{question}”** trong cơ sở dữ liệu thủ tục nội bộ.\n\n"
             "Có thể thủ tục này chưa được cập nhật vào kho, hoặc mình hiểu chưa đúng ý bạn.\n\n"
             "Bạn có thể:\n"
-            "- Hỏi lại bằng tên thủ tục chính thức (ví dụ: “đăng ký kết hôn”, “cấp thẻ căn cước”), hoặc\n"
+            "- Bấm **🎯 Tìm chính xác** lần nữa và nhập tên thủ tục chính thức "
+            "(ví dụ: “đăng ký kết hôn”, “cấp thẻ căn cước”), hoặc\n"
             "- Bấm nút **🌐 Web search** để tra trực tiếp từ các trang .gov.vn.")
 
 
-NEW_PROCEDURE_TEXT = (
-    "Câu hỏi này có vẻ về một **thủ tục khác** với thủ tục đang hiển thị ở trên.\n\n"
-    "Để mình không trộn lẫn giấy tờ của hai thủ tục, bạn hãy bấm **Cuộc trò chuyện mới** "
-    "rồi hỏi lại nhé — mình sẽ tra từ đầu cho chính xác.")
+def new_procedure_note(current: str) -> str:
+    """Cảnh báo GẮN SAU câu trả lời khi câu hỏi có vẻ về thủ tục khác — không chặn."""
+    if len(current) > 90:          # có tên thủ tục dài gần 300 ký tự
+        current = current[:90].rsplit(" ", 1)[0] + "…"
+    return (f"⚠️ Câu hỏi này có vẻ về một **thủ tục khác**. Câu trả lời trên chỉ dựa trên "
+            f"bảng của **{current}**, nên có thể không đúng với thủ tục bạn đang nghĩ tới. "
+            "Muốn tra thủ tục đó, bạn mở cuộc trò chuyện mới bằng nút bên dưới.")
 
 EXPIRED_WARNING = (
     "⚠️ **Thủ tục này không còn xuất hiện trong danh mục của Cổng Dịch vụ công.**\n\n"
     "Cổng không công bố ngày hết hiệu lực, nên mình chỉ biết ngày mình phát hiện nó "
     "biến mất — không chắc luật đã thay thế hay chưa. Thông tin cũ vẫn hiển thị bên dưới "
     "để bạn tham khảo, nhưng **hãy đối chiếu lại** bằng nút **🌐 Web search** trước khi đi làm hồ sơ.")
+
+
+# ==========================================================================
+# CHẾ ĐỘ TRÒ CHUYỆN (chưa có bảng) — đúng Proposal slide 3:
+#   "User prompt -> LLM 2 trả lời" (kể cả câu hỏi thủ tục), rồi bộ nhận diện
+#   song song gắn "có vẻ bạn đang hỏi thủ tục, bạn dùng <Tìm chính xác> nhé".
+# Chưa có bảng = LLM 2 trả lời bằng hiểu biết CHUNG của nó -> giao diện gắn nhãn
+# "⚠️ AI tự trả lời, chưa qua CSDL" (intent.answer_source = "llm_only").
+# ==========================================================================
+CHAT_SYSTEM = """Bạn là trợ lý Thủ tục hành chính cấp Xã/Phường của Việt Nam, đang trò chuyện với người dân.
+
+VIỆC CỦA BẠN: chào hỏi, cảm ơn, và trả lời câu hỏi về thủ tục hành chính bằng hiểu biết chung của bạn.
+
+LUẬT BẮT BUỘC:
+1. Lúc này bạn CHƯA tra cơ sở dữ liệu. Không được nói là thông tin lấy từ cơ sở dữ liệu hay từ Cổng Dịch vụ công.
+2. Câu hỏi về thủ tục -> trả lời ngắn gọn ý chính theo hiểu biết chung, không đưa con số lệ phí hay thời hạn cụ thể nếu không chắc.
+3. Câu hỏi không liên quan tới thủ tục hành chính -> lịch sự từ chối và nói bạn chỉ hỗ trợ thủ tục hành chính.
+4. Trả lời thân thiện, tối đa 5 câu. Chỉ viết tiếng Việt có dấu, không dùng chữ Hán hay tiếng Anh."""
+
+# Gợi ý CỐ ĐỊNH gắn NGAY DƯỚI câu trả lời của LLM 2 khi bộ nhận diện bắt được
+# câu hỏi thủ tục (câu chữ theo Proposal). Chip 🎯 do giao diện vẽ ngay sau.
+EXACT_HINT = ("💡 Có vẻ bạn đang hỏi thủ tục — bạn dùng tính năng **🎯 Tìm chính xác** "
+              "để tra thông tin chính xác trong cơ sở dữ liệu thủ tục nhé.")
+
+
+def exact_used_text(current: str) -> str:
+    """Proposal: mỗi ô chat chỉ tra chính xác thành công MỘT lần."""
+    return (f"Cuộc trò chuyện này đã tra thủ tục **{current}**. Mỗi cuộc trò chuyện chỉ tra "
+            "một thủ tục để mình không trộn lẫn giấy tờ của hai thủ tục.\n\n"
+            "Bạn muốn **mở cuộc trò chuyện mới** để tra câu này, hay **huỷ** và tiếp tục hỏi "
+            "về thủ tục đang xem?")
+
+
+# 🎯 được bấm với một câu không có tên thủ tục nào ("Chào", "cảm ơn").
+EXACT_NEEDS_PROCEDURE = (
+    "Bạn bấm **🎯 Tìm chính xác**, nhập **tên thủ tục** cần tra (ví dụ: “đăng ký khai sinh”, "
+    "“chứng thực bản sao”) rồi bấm **Gửi** nhé — mình sẽ tra trong cơ sở dữ liệu thủ tục.")

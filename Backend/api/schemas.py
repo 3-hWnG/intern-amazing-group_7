@@ -22,6 +22,9 @@ class ChatRequest(BaseModel):
     text: str
     direct_search: bool = False
     system: str = ""          # "" = dùng hệ thống đã ghi trên cuộc trò chuyện
+    # Hệ thống 2: "" / "chat" = trò chuyện · "exact" = nút 🎯 Tìm chính xác ·
+    # "resubmit" = ô "Tra lại" dưới bảng (tra lại từ đầu, không tính là lần 2)
+    mode: str = ""
 
 
 class FeedbackRequest(BaseModel):

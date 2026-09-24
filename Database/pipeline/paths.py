@@ -34,6 +34,16 @@ REPORT_PATH = DATABASE_DIR / "COVERAGE_REPORT.md"
 DEPT_BO_CONG_AN = "G01"        # Bộ Công an — căn cước, cư trú, XNC, con dấu, PCCC…
 DEPT_BO_TU_PHAP = "G15"        # Bộ Tư pháp — hộ tịch, chứng thực, kết hôn, khai sinh…
 
+DEPT_UBND_HCM = "H29"          # UBND TP.HCM — thủ tục riêng của Thành phố
+
+# --------------------------------------------------------------------------
+# PHẠM VI CÀO. Nhóm chốt: chỉ thủ tục cấp XÃ/PHƯỜNG (TP.HCM gọi Phường là cấp xã).
+#   level=COMMUNE        -> 1.313 thủ tục toàn quốc (đã kiểm chứng = cờ isWard)
+#   departmentCode=H29   -> 37 thủ tục riêng của UBND TP.HCM chưa nằm trong nhóm trên
+# Hợp lại (khử trùng theo `id`) = 1.350. Mỗi phần tử: (departmentCode, level).
+# --------------------------------------------------------------------------
+SCOPE_XA = (("", "COMMUNE"), (DEPT_UBND_HCM, ""))
+
 DEPARTMENT_CODES = {
     "bca": DEPT_BO_CONG_AN,
     "btp": DEPT_BO_TU_PHAP,

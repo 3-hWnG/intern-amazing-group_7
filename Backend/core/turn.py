@@ -19,6 +19,17 @@ from dataclasses import dataclass, field
 from config import DEFAULT_SYSTEM
 
 
+# Chế độ của MỘT lượt ở Hệ thống 2 (Proposal slide 3):
+#   chat      tin nhắn thường. Chưa có bảng -> LLM 2 trò chuyện + gợi ý 🎯;
+#             đã có bảng -> chăm sóc khách hàng trên bảng đó.
+#   exact     nút 🎯 Tìm chính xác -> tra CSDL -> MCQ -> bảng. Mỗi ô chat chỉ
+#             tra thành công MỘT lần; lần 2 -> mời mở ô chat mới hoặc huỷ.
+#   resubmit  ô "Tra lại" dưới bảng (báo sai ngữ nghĩa) -> xoá bảng cũ, tra lại
+#             như mới trong CÙNG ô chat. Không tính là lần tra thứ hai.
+MODE_CHAT, MODE_EXACT, MODE_RESUBMIT = "chat", "exact", "resubmit"
+MODES = (MODE_CHAT, MODE_EXACT, MODE_RESUBMIT)
+
+
 @dataclass
 class TurnInput:
     question: str
@@ -33,6 +44,8 @@ class TurnInput:
     direct_search: bool = False
     # "websearch" = Hệ thống 1 (tra web qua MCP) · "retrieval" = Hệ thống 2 (CSDL nội bộ)
     system: str = DEFAULT_SYSTEM
+    # Chỉ Hệ thống 2 dùng. Xem MODES ở trên.
+    mode: str = "chat"
 
 
 @dataclass

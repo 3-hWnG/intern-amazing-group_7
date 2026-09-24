@@ -10,10 +10,10 @@ CÒN LẠI mà kiến trúc mới cần, và KHÔNG có ở tầng dưới:
 
 NGUYÊN TẮC: Backend KHÔNG viết câu SQL nào. Đổi schema thì chỉ sửa tệp này.
 
-⚠️ GIỚI HẠN DỮ LIỆU THẬT (đo trên 1.407 thủ tục đang có — đừng hứa hơn thế):
-  · `province` NULL ở 100% bản ghi ⇒ KHÔNG lọc được theo tỉnh. Trục địa phương
-    dùng được duy nhất là `agency_levels` (Tỉnh / Xã-Phường / Bộ / Ngành dọc).
-  · `receiving_address` rỗng ở 1.055/1.407 ⇒ ô "địa điểm nộp" thường trống.
+⚠️ GIỚI HẠN DỮ LIỆU THẬT (CSDL cấp Xã/Phường, 1.350 thủ tục — đừng hứa hơn thế):
+  · `province` = tỉnh CÔNG BỐ bản đó (614 bản của UBND tỉnh, mã H…); NULL = bản
+    của bộ/ngành (736). Là tỉnh công bố, KHÔNG phải "chỉ áp dụng ở" — nói đúng vậy.
+  · `receiving_address` rỗng ở 842/1.350 ⇒ ô "địa điểm nộp" thường trống.
   · 476/2.029 `procedure_steps` có `name`; phần còn lại là một khối văn bản
     ⇒ các bước phải TÁCH LÚC ĐỌC, không có sẵn thành dòng.
 Mọi chỗ thiếu đều đi kèm cờ `status_*` để tầng trên nói thật, không đoán.
@@ -104,6 +104,374 @@ def search_in_domain(conn: sqlite3.Connection, query: str, domain: str,
     return hits[:limit]
 
 
+# ─────────────────────────────────────────── tra THẲNG bằng từ khoá (không LLM) ──
+# Nhóm chốt (2026-09-24): tra bằng từ khoá là đường CHÍNH. LLM 1 chỉ được gọi
+# khi từ khoá KHÔNG khớp được gì chắc chắn — tức câu hỏi mơ hồ/gõ sai ("đkj").
+# Sai sót còn lại đã có MCQ "thủ tục chính → dạng cụ thể" hứng.
+
+# Viết tắt hay gặp -> dạng đầy đủ (đã bỏ dấu). Chỉ những cái KHÔNG mơ hồ.
+_ABBREV = {
+    "dk": "dang ky", "dky": "dang ky", "gks": "giay khai sinh",
+    "cccd": "can cuoc", "cmnd": "chung minh nhan dan", "gplx": "giay phep lai xe",
+    "gpxd": "giay phep xay dung", "gcn": "giay chung nhan", "qsdd": "quyen su dung dat",
+    "hkd": "ho kinh doanh", "bhxh": "bao hiem xa hoi", "bhyt": "bao hiem y te",
+    "xd": "xay dung", "tthc": "",
+}
+# Lời đệm bỏ được khi tra từ khoá. CHỈ những âm tiết KHÔNG trùng chữ nghiệp vụ
+# sau khi bỏ dấu — đừng gộp `_FILLER` vào đây: "hoi" vừa là "hỏi" vừa là "hồi"
+# (thu hồi) và "hội"; "ban" là "bạn"/"bản sao"/"bán lẻ"; "tu" là "tư pháp".
+# Bỏ nhầm những chữ đó là "thu hồi đất" thành "thu đất".
+_QUERY_FILLER = set("toi minh muon t tao ko k hok dc duoc giup dum xin oi nhe nhi vay gi".split())
+# Cụm bỏ nguyên cụm (bỏ từng âm tiết sẽ hại "thu hồi", "bảo hiểm", "thẻ"…).
+_DROP_PHRASES = ("ho so thu tuc", "thu tuc", "cho minh hoi", "cho toi hoi", "cho hoi",
+                 "vui long", "lam on", "bao nhieu", "nhu the nao", "the nao", "nhu nao",
+                 "o dau", "bao lau", "can gi", "can nhung gi", "phai lam sao", "lam sao")
+
+# Tỉnh/thành người dân hay nhắc (63 tên trước sáp nhập + tên gọi tắt). Nhắc tên
+# tỉnh là NGỮ CẢNH để xếp bản của tỉnh đó lên trước, KHÔNG phải từ khoá tra —
+# để nguyên trong câu thì tầng AND của FTS trượt hết bản toàn quốc.
+_PROVINCE_NAMES = [
+    "An Giang", "Bà Rịa - Vũng Tàu", "Bà Rịa Vũng Tàu", "Bạc Liêu", "Bắc Giang",
+    "Bắc Kạn", "Bắc Ninh", "Bến Tre", "Bình Dương", "Bình Định", "Bình Phước",
+    "Bình Thuận", "Cà Mau", "Cao Bằng", "Cần Thơ", "Đà Nẵng", "Đắk Lắk", "Đắk Nông",
+    "Điện Biên", "Đồng Nai", "Đồng Tháp", "Gia Lai", "Hà Giang", "Hà Nam", "Hà Nội",
+    "Hà Tĩnh", "Hải Dương", "Hải Phòng", "Hậu Giang", "Hòa Bình", "Hưng Yên",
+    "Khánh Hòa", "Kiên Giang", "Kon Tum", "Lai Châu", "Lâm Đồng", "Lạng Sơn",
+    "Lào Cai", "Long An", "Nam Định", "Nghệ An", "Ninh Bình", "Ninh Thuận", "Phú Thọ",
+    "Phú Yên", "Quảng Bình", "Quảng Nam", "Quảng Ngãi", "Quảng Ninh", "Quảng Trị",
+    "Sóc Trăng", "Sơn La", "Tây Ninh", "Thái Bình", "Thái Nguyên", "Thanh Hóa",
+    "Thừa Thiên Huế", "Huế", "Tiền Giang", "Hồ Chí Minh", "Trà Vinh", "Tuyên Quang",
+    "Vĩnh Long", "Vĩnh Phúc", "Yên Bái",
+]
+# Cách gọi khác -> tên đúng như cột `province` trong CSDL.
+_PROVINCE_ALIASES = {
+    "tphcm": "Hồ Chí Minh", "hcm": "Hồ Chí Minh", "sai gon": "Hồ Chí Minh",
+    "sg": "Hồ Chí Minh", "thanh pho ho chi minh": "Hồ Chí Minh",
+    "thua thien hue": "Huế", "ba ria vung tau": "Bà Rịa - Vũng Tàu",
+}
+
+
+def _fold(text: str) -> str:
+    from Database.pipeline.textutil import fold
+    return re.sub(r"[^0-9a-z]+", " ", fold(text or "")).strip()
+
+
+def _province_patterns() -> list[tuple[str, str]]:
+    pats = {_fold(p): p for p in _PROVINCE_NAMES}
+    pats.update(_PROVINCE_ALIASES)
+    # Dài trước: "thai binh" phải thắng "binh".
+    return sorted(pats.items(), key=lambda kv: -len(kv[0]))
+
+
+_PROVINCE_PATTERNS = _province_patterns()
+
+
+def parse_query(question: str) -> dict:
+    """Câu hỏi -> {"keyword": chuỗi tra FTS, "provinces": [tỉnh được nhắc]}.
+
+    Tất định, không LLM: bỏ tên tỉnh (giữ lại làm ngữ cảnh), bung viết tắt,
+    bỏ lời đệm. "t người bình định muốn dk kết hôn"
+        -> {"keyword": "nguoi dang ky ket hon", "provinces": ["Bình Định"]}
+    """
+    text = f" {_fold(question)} "
+    provinces: list[str] = []
+    for pat, name in _PROVINCE_PATTERNS:
+        if f" {pat} " in text:
+            text = text.replace(f" {pat} ", " ")
+            if name not in provinces:
+                provinces.append(name)
+    for ph in _DROP_PHRASES:
+        text = text.replace(f" {ph} ", " ")
+
+    words: list[str] = []
+    for t in text.split():
+        t = _ABBREV.get(t, t)
+        words.extend(t.split())
+    words = [w for w in words if w not in _QUERY_FILLER]
+    return {"keyword": " ".join(words), "provinces": provinces}
+
+
+# Từ khoá khớp ≥ 75% số âm tiết trong TÊN một thủ tục = đủ để đưa ra MCQ, khỏi
+# gọi LLM. (Không đòi tầng 1: "người … đăng ký kết hôn" có chữ "người" không
+# nằm trong tên nhưng 4/5 âm tiết vẫn trúng "Thủ tục đăng ký kết hôn".)
+STRONG_OVERLAP = 0.75
+
+
+def is_strong(hits: list[dict]) -> bool:
+    return any(h.get("term_overlap", 0) >= STRONG_OVERLAP for h in hits)
+
+
+# Câu chỉ gồm những từ này là chào hỏi/xã giao, dù tình cờ khớp tên thủ tục nào
+# đó ("bạn tên gì" -> "bản" + "tên" có trong "Cấp bản sao… đổi tên…").
+_CHITCHAT = set(
+    "chao xin hello hi alo cam on ban ten la ai khoe khong ok oke vang da tam biet bye"
+    " thanks thank you tro ly may co the lam duoc gi giup nhe a oi nha".split())
+
+
+# Cụm xã giao chứa chữ trùng tên thủ tục: "mình cần HỖ TRỢ" khớp "HỖ TRỢ chi phí
+# hoả táng…" (bắt được ở bản chạy thật). Bỏ nguyên cụm trước khi xét.
+_CHAT_PHRASES = ("can ho tro", "ho tro minh", "ho tro toi", "ho tro em", "ho tro voi",
+                 "giup do", "can giup", "giup minh", "giup toi", "tu van")
+
+
+def _without_chat_phrases(question: str) -> str:
+    text = f" {_fold(question)} "
+    for ph in _CHAT_PHRASES:
+        text = text.replace(f" {ph} ", " ")
+    return text.strip()
+
+
+def is_chitchat(question: str) -> bool:
+    """Chỉ chào hỏi / cảm ơn / xã giao — không có từ nghiệp vụ nào."""
+    words = parse_query(_without_chat_phrases(question))["keyword"].split()
+    return all(w in _CHITCHAT for w in words)
+
+
+# Bộ nhận diện chỉ GỢI Ý (bỏ sót thì người dân không biết có nút 🎯; gợi ý thừa
+# chỉ tốn một dòng chữ) -> nới hơn ngưỡng tra thật. "làm giấy khai sinh cho con"
+# chỉ khớp 3/5 âm tiết với "… Giấy khai sinh" vì "làm/cho/con" không bỏ được
+# ("lâm nghiệp", "cho thuê", "cha, mẹ, con").
+DETECT_OVERLAP = 0.6
+DETECT_MIN_TERMS = 2
+
+
+def looks_like_procedure(conn: sqlite3.Connection, question: str) -> dict | None:
+    """Bộ nhận diện SONG SONG của Proposal: câu này có vẻ đang hỏi thủ tục không?
+
+    Nhóm chốt: dùng LUẬT THEO CSDL, không dùng LLM — cùng lý do với bộ gác
+    `newProcedure` (PHASE2 §4.6: Qwen 1.5B phân biệt 0%), và chạy trên MỌI tin
+    nhắn thường nên phải nhanh. Luật: sau khi bỏ lời đệm, từ khoá khớp
+    ≥ `DETECT_OVERLAP` và ít nhất `DETECT_MIN_TERMS` âm tiết vào tên một thủ tục.
+    Trả {"proc_id", "label"} của ứng viên đầu (chỉ để ghi vết), None nếu không.
+    """
+    q = parse_query(_without_chat_phrases(question))
+    words = q["keyword"].split()
+    if not words or all(w in _CHITCHAT for w in words):
+        return None
+    need = min(DETECT_MIN_TERMS, len(set(words)))
+    hits = [h for h in search(conn, q["keyword"], 10)
+            if h.get("term_overlap", 0) >= DETECT_OVERLAP
+            and round(h["term_overlap"] * len(set(words))) >= need]
+    if not hits:
+        return None
+    idx = family_index(conn)
+    head = idx["head_of"].get(hits[0]["proc_id"], "")
+    return {"proc_id": hits[0]["proc_id"], "label": idx["label"].get(head, hits[0]["name"])}
+
+
+# ─────────────────────────────── nhóm "THỦ TỤC CHÍNH" -> các "dạng cụ thể" ──
+# Nhóm chốt: xếp hạng không cần hoàn hảo, vì đã được hỏi MCQ — nên hỏi người
+# dân chọn THỦ TỤC CHÍNH trước, rồi mới chọn DẠNG cụ thể của nó:
+#
+#   "khai sinh" -> MCQ 1: [Đăng ký khai sinh] [Khai thuế tiêu thụ đặc biệt…] …
+#               -> MCQ 2: [Thủ tục đăng ký khai sinh] [… lưu động]
+#                         [… kết hợp nhận cha, mẹ, con] [… có yếu tố nước ngoài] …
+#
+# MCQ 2 lấy TOÀN BỘ thành viên của nhóm trong CSDL, không chỉ những cái FTS moi
+# ra — nhờ vậy bản gốc "Thủ tục đăng ký khai sinh" có mặt kể cả khi xếp hạng
+# đẩy nó ra khỏi top (đo thật: nó không lọt top 5 cho câu "khai sinh").
+#
+# "Thủ tục chính" của một tên = tên NGẮN NHẤT trong kho là tiền tố của nó (tính
+# theo từ, đã bỏ "Thủ tục", tiền tố tỉnh "Quảng Ninh - ", đuôi "(Cấp xã)").
+# Bản địa phương trùng tên với bản của bộ => rơi vào cùng một nhóm.
+
+AXIS_FAMILY = "family"
+_MIN_HEAD_WORDS = 3          # "Đăng ký" trơn không được làm thủ tục chính
+# Tiền tố tỉnh của bản địa phương: "Quảng Ninh - …" hoặc "(Hà Nội) …".
+#   "Thái Nguyên (cấp xã) - …" cũng có. Chỉ áp cho bản CÓ `province`.
+_PREFIX_RE = re.compile(r"^(?:\([^)]{2,30}\)\s*|[^-–]{2,40}?\s[-–]\s)")
+_TRAIL_RE = re.compile(r"\s*\((?:cap|thuoc tham quyen)[^)]*\)\s*$")
+
+_family_cache: dict = {}
+
+
+def _base(name: str, province: str | None) -> str:
+    raw = (name or "").strip()
+    if province and _PREFIX_RE.match(raw):
+        raw = _PREFIX_RE.sub("", raw, count=1)
+    b = _fold(raw)
+    b = re.sub(r"^thu tuc\s+", "", b)
+    return _TRAIL_RE.sub("", b).strip()
+
+
+def _display(name: str, province: str | None) -> str:
+    """Tên hiển thị của thủ tục chính: bỏ tiền tố tỉnh và chữ "Thủ tục" đầu câu."""
+    raw = (name or "").strip()
+    if province and _PREFIX_RE.match(raw):
+        raw = _PREFIX_RE.sub("", raw, count=1)
+    raw = re.sub(r"^(?:Thủ tục|thủ tục)\s*:?\s*", "", raw).strip()
+    return raw[:1].upper() + raw[1:]
+
+
+def family_index(conn: sqlite3.Connection) -> dict:
+    """{head_of: {proc_id: head}, members: {head: [proc_id]}, info: {proc_id: {...}},
+        label: {head: tên hiển thị}}. Tính một lần, dựng lại khi CSDL đổi."""
+    stamp = conn.execute("SELECT COUNT(*), MAX(row_id) FROM procedures"
+                         " WHERE status='active'").fetchone()
+    stamp = tuple(stamp)
+    if _family_cache.get("stamp") == stamp:
+        return _family_cache["index"]
+
+    info = {r["proc_id"]: dict(r) for r in conn.execute(
+        "SELECT proc_id, name, domain, province, department_promulgate, agency_levels,"
+        "       executing_agency FROM procedures WHERE status='active'")}
+    base = {pid: _base(r["name"], r["province"]) for pid, r in info.items()}
+
+    # Ứng viên làm "đầu nhóm" gom theo 3 từ đầu -> khỏi so O(n²) cả kho.
+    by_lead: dict[str, list[str]] = {}
+    for b in set(base.values()):
+        if len(b.split()) >= _MIN_HEAD_WORDS:
+            by_lead.setdefault(" ".join(b.split()[:_MIN_HEAD_WORDS]), []).append(b)
+    for lst in by_lead.values():
+        lst.sort(key=len)
+
+    head_of: dict[str, str] = {}
+    for pid, b in base.items():
+        head = b
+        for cand in by_lead.get(" ".join(b.split()[:_MIN_HEAD_WORDS]), []):
+            if b == cand or b.startswith(cand + " "):
+                head = cand
+                break
+        head_of[pid] = head
+
+    members: dict[str, list[str]] = {}
+    for pid, h in head_of.items():
+        members.setdefault(h, []).append(pid)
+
+    label: dict[str, str] = {}
+    for h, pids in members.items():
+        # Tên đẹp nhất: thành viên có base == head, ưu tiên bản của bộ (không tỉnh).
+        exact = [p for p in pids if base[p] == h] or pids
+        exact.sort(key=lambda p: (info[p]["province"] is not None, len(info[p]["name"])))
+        label[h] = _display(info[exact[0]]["name"], info[exact[0]]["province"])
+
+    index = {"head_of": head_of, "members": members, "info": info, "label": label}
+    _family_cache.update(stamp=stamp, index=index)
+    return index
+
+
+# Lĩnh vực mà cổng gắn cấp Xã/Phường nhưng hồ sơ do NGÀNH DỌC giải quyết, không
+# phải UBND phường. Nhóm chốt: giữ lại, nhưng nói rõ ở mọi chỗ người dân nhìn thấy.
+VERTICAL_DOMAINS = {"Thuế": "cơ quan Thuế", "Hải quan": "cơ quan Hải quan"}
+
+
+def vertical_agency(domain: str) -> str:
+    """"cơ quan Thuế" nếu thủ tục thuộc lĩnh vực ngành dọc, "" nếu không."""
+    for part in (domain or "").split(";"):
+        if part.strip() in VERTICAL_DOMAINS:
+            return VERTICAL_DOMAINS[part.strip()]
+    return ""
+
+
+def publisher_tag(info: dict) -> str:
+    """Nhãn ngắn cho MCQ: ai công bố bản này."""
+    if info.get("province"):
+        return f"Bản do {info.get('department_promulgate') or 'UBND ' + info['province']} công bố"
+    return "Bản chung toàn quốc"
+
+
+def _province_rank(info: dict, preferred: list[str]) -> int:
+    """0 = đúng tỉnh người dân nhắc · 1 = bản toàn quốc · 2 = tỉnh khác."""
+    p = info.get("province")
+    if p and _fold(p) in {_fold(x) for x in preferred}:
+        return 0
+    return 1 if not p else 2
+
+
+def axes_for_families(conn: sqlite3.Connection, hits: list[dict],
+                      low_confidence: bool = False,
+                      provinces: list[str] | None = None) -> list[dict]:
+    """MCQ 1 — "thủ tục chính". Rỗng nếu chỉ có một nhóm (và đang chắc chắn).
+
+    `low_confidence=True` (từ khoá lẫn LLM 1 đều không khớp chắc) -> thêm lựa
+    chọn "không có cái nào đúng" để người dùng thoát ra nhánh xin lỗi.
+    VÌ SAO PHẢI CÓ LỐI THOÁT ĐÓ (đo thật, không đoán):
+        "thẻ căn cước cho trẻ em"   -> tier 3, overlap 0.67   ← câu hỏi THẬT
+        "đăng ký bay lên sao Hỏa"   -> tier 3, overlap 0.67   ← câu hỏi RÁC
+    Không ngưỡng nào tách nổi hai câu này, nên cứ hiện thứ tìm được RỒI ĐỂ
+    NGƯỜI DÙNG nói "không phải cái này". Thà tốn một cú bấm còn hơn trả nhầm.
+    """
+    idx = family_index(conn)
+    heads: list[str] = []
+    for h in hits:
+        head = idx["head_of"].get(h["proc_id"])
+        if head and head not in heads:
+            heads.append(head)
+    if not heads or (len(heads) == 1 and not low_confidence):
+        return []
+
+    # Nhóm CHỈ có bản của tỉnh khác (không có bản toàn quốc, không có bản của
+    # tỉnh người dân nhắc) xuống cuối — giữ thứ tự FTS trong cùng hạng.
+    preferred = provinces or []
+    heads.sort(key=lambda h: min(_province_rank(idx["info"][p], preferred)
+                                 for p in idx["members"][h]))
+
+    options = []
+    for head in heads[:6]:
+        pids = idx["members"][head]
+        first = idx["info"][pids[0]]
+        bits = [first.get("domain") or ""]
+        if len(pids) > 1:
+            bits.append(f"{len(pids)} dạng cụ thể")
+        elif first.get("province"):
+            bits.append(f"bản của {first['province']}")
+        va = vertical_agency(first.get("domain", ""))
+        if va:
+            bits.append(f"do {va} giải quyết")
+        options.append({"value": head, "label": idx["label"][head],
+                        "hint": " · ".join(b for b in bits if b)})
+
+    question = "Bạn cần làm thủ tục nào?"
+    if low_confidence:
+        question = "Mình không chắc lắm — có phải bạn cần một trong những thủ tục này không?"
+        options.append({"value": NONE_OF_THESE, "label": "Không có thủ tục nào đúng ý tôi",
+                        "hint": "Mình sẽ nói rõ vì sao chưa tìm được"})
+    return [{"axis": AXIS_FAMILY, "question": question,
+             "memorable": False, "options": options}]
+
+
+def family_of(conn: sqlite3.Connection, proc_id: str) -> str:
+    return family_index(conn)["head_of"].get(proc_id, "")
+
+
+def axis_for_variants(conn: sqlite3.Connection, head: str,
+                      provinces: list[str] | None = None,
+                      limit: int = 8) -> dict | None:
+    """MCQ 2 — "dạng cụ thể" trong một thủ tục chính. None nếu chỉ có một dạng.
+
+    Xếp: bản của tỉnh người dân nhắc -> bản toàn quốc -> bản tỉnh khác;
+    trong cùng hạng thì tên ngắn (bản gốc) đứng trước.
+    """
+    idx = family_index(conn)
+    pids = list(idx["members"].get(head, []))
+    if len(pids) < 2:
+        return None
+    preferred = provinces or []
+    pids.sort(key=lambda p: (_province_rank(idx["info"][p], preferred),
+                             len(idx["info"][p]["name"])))
+    options, used = [], set()
+    for p in pids[:limit]:
+        inf = idx["info"][p]
+        label = _display(inf["name"], inf["province"])
+        # Nút MCQ gửi về đúng NHÃN, nên hai nhãn trùng nhau (bản bộ + bản tỉnh
+        # cùng tên) sẽ luôn trỏ vào cái đầu. Gắn tên tỉnh cho khác nhau.
+        if label in used:
+            label = f"{label} ({inf['province'] or 'toàn quốc'})"
+        k = 2
+        while label in used:
+            label, k = f"{label} #{k}", k + 1
+        used.add(label)
+        options.append({"value": p, "label": label, "hint": publisher_tag(inf)})
+    return {"axis": AXIS_PROCEDURE,
+            "question": f"“{idx['label'][head]}” có {len(pids)} dạng — bạn cần dạng nào?",
+            "memorable": False, "options": options}
+
+
+def only_member(conn: sqlite3.Connection, head: str) -> str:
+    pids = family_index(conn)["members"].get(head, [])
+    return pids[0] if len(pids) == 1 else ""
+
+
 # ────────────────────────────────────────────────── làm sạch từng mảnh dữ liệu ──
 
 # Cổng nhồi hết các bước vào MỘT ô văn bản, và dùng ba kiểu đánh dấu khác nhau.
@@ -187,11 +555,9 @@ def clean_fees(record: dict) -> list[dict]:
                     "amount_text": text,
                     "submission_method": (f.get("submission_method") or "").strip()})
 
-    # Mọi dòng đều 0 đồng và không ghi chú -> thủ tục MIỄN PHÍ, nói rõ ra.
-    if not out and record.get("fees"):
-        out = [{"fee_type": "FEE", "amount_value": 0.0,
-                "amount_text": "Không quy định mức phí (0 đồng)",
-                "submission_method": ""}]
+    # Mọi dòng đều 0 đồng và KHÔNG ghi chú -> KHÔNG được suy ra "miễn phí".
+    # Nhóm chốt (2026-09-24): nói thẳng là CHƯA CÓ THÔNG TIN. Trả rỗng; tầng
+    # bảng thấy `fees` gốc có dòng mà bản sạch rỗng thì hiện câu `FEES_UNCLEAR`.
     return out
 
 
@@ -278,46 +644,6 @@ def levels_for(record: dict) -> list[str]:
 NONE_OF_THESE = "__none__"
 
 
-def axes_for_candidates(hits: list[dict], low_confidence: bool = False) -> list[dict]:
-    """Trục "thủ tục nào" — chỉ khi còn nhiều ứng viên khác nhau.
-
-    `low_confidence=True` khi KHÔNG ứng viên nào đạt `confident`. Lúc đó thêm
-    lựa chọn "không có cái nào đúng" để người dùng thoát ra nhánh xin lỗi.
-
-    VÌ SAO PHẢI CÓ LỐI THOÁT ĐÓ (đo thật, không đoán):
-        "thẻ căn cước cho trẻ em"   -> tier 3, overlap 0.67   ← câu hỏi THẬT
-        "đăng ký bay lên sao Hỏa"   -> tier 3, overlap 0.67   ← câu hỏi RÁC
-    Hai câu giống hệt nhau về mọi chỉ số máy đo được. Không ngưỡng nào tách nổi
-    chúng, nên đừng giả vờ tách được: cứ hiện thứ tìm được RỒI ĐỂ NGƯỜI DÙNG
-    nói "không phải cái này". Thà tốn một cú bấm còn hơn trả nhầm thủ tục.
-    """
-    options, seen = [], set()
-    for h in hits:
-        if h["proc_id"] in seen:
-            continue
-        seen.add(h["proc_id"])
-        # Có 9 tên trùng nhau trong kho -> kèm lĩnh vực cho phân biệt được.
-        options.append({"value": h["proc_id"],
-                        "label": h["name"],
-                        "hint": h.get("domain") or ""})
-
-    if len(options) < 2 and not low_confidence:
-        return []
-    if not options:
-        return []
-
-    options = options[:6]
-    question = AXIS_QUESTION[AXIS_PROCEDURE]
-    if low_confidence:
-        question = ("Mình không chắc lắm — có phải bạn cần một trong những thủ tục này không?")
-        options = options + [{"value": NONE_OF_THESE,
-                              "label": "Không có thủ tục nào đúng ý tôi",
-                              "hint": "Mình sẽ nói rõ vì sao chưa tìm được"}]
-
-    return [{"axis": AXIS_PROCEDURE, "question": question,
-             "memorable": False, "options": options}]
-
-
 def axes_for_record(conn: sqlite3.Connection, record: dict) -> list[dict]:
     """Các trục còn phân nhánh BÊN TRONG một thủ tục đã chốt."""
     axes: list[dict] = []
@@ -342,13 +668,9 @@ def axes_for_record(conn: sqlite3.Connection, record: dict) -> list[dict]:
             "memorable": True,
             "options": [{"value": s, "label": s, "hint": ""} for s in subjects[:6]]})
 
-    levels = levels_for(record)
-    if len(levels) > 1:
-        axes.append({
-            "axis": AXIS_LEVEL, "question": AXIS_QUESTION[AXIS_LEVEL],
-            "memorable": True,
-            "options": [{"value": lv, "label": lv, "hint": ""} for lv in levels[:6]]})
-
+    # KHÔNG hỏi trục "nộp cấp nào" nữa: CSDL giờ chỉ gồm thủ tục cấp Xã/Phường
+    # (level=COMMUNE), và đáp án của trục này không đổi được ô nào trong bảng —
+    # hỏi là bắt người dân bấm thừa. Cấp nộp vẫn hiện trong bảng (`scope`).
     return axes
 
 
@@ -410,7 +732,7 @@ _FILLER = set(
 # từ này (vd "lệ phí", "phí là bao nhiêu") luôn là hỏi tiếp về thủ tục đang xem
 # — dù trong kho có thủ tục nào đó tình cờ mang chữ "lệ phí" trong tên.
 _ATTRIBUTE_WORDS = set(
-    "le phi chi tien gia giay to ho so thanh phan hinh thuc nop thoi gian lau"
+    "le phi mien chi tien gia giay to ho so thanh phan hinh thuc nop thoi gian lau"
     " dia diem diem noi dau mau don bieu mau tep file tai lieu truc tuyen online"
     " website link buoc quy trinh dieu kien ket qua co quan lien he han"
     " cam on chao tam biet ro them nhu nao".split())

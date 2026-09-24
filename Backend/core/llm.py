@@ -28,6 +28,15 @@ ROLE_OPTIONS = {
     "verify": {"temperature": 0.0, "num_predict": 350},
     "summary": {"temperature": 0.1, "num_predict": 350},
     "chitchat": {"temperature": 0.4, "top_p": 0.9, "num_predict": 160},
+    # Hệ thống 2, trò chuyện TRƯỚC khi có bảng (Proposal: LLM 2 trả lời mọi câu,
+    # kể cả câu hỏi thủ tục — kèm nhãn "AI tự trả lời, chưa qua CSDL"). Tách khỏi
+    # `chitchat` của Hệ thống 1 để chỉnh riêng mà không đụng web search.
+    "chat": {"temperature": 0.3, "top_p": 0.9, "repeat_penalty": 1.15,
+             "repeat_last_n": 256, "num_predict": 350},
+    # Hệ thống 2, hỏi tiếp trên bảng: ngắn và bám câu hỏi. `answer` (900 token)
+    # để mô hình 1.5B kể lại cả bảng khi chỉ được hỏi một mục.
+    "care": {"temperature": 0.1, "top_p": 0.9, "repeat_penalty": 1.15,
+             "repeat_last_n": 256, "num_predict": 320},
 }
 
 

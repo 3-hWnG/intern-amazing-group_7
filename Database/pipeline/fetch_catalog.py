@@ -81,6 +81,9 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--category", default="", help="categoryId nếu muốn lọc lĩnh vực")
     ap.add_argument("--level", default="", choices=["", "COMMUNE", "PROVINCE", "MINISTRY"],
                     help="cấp thực hiện. COMMUNE = cấp XÃ/PHƯỜNG (TP.HCM gọi Phường)")
+    ap.add_argument("--scope", default="", choices=["", "xa"],
+                    help="xa = cấp XÃ/PHƯỜNG + thủ tục riêng TP.HCM (paths.SCOPE_XA); "
+                         "bỏ qua --department/--level")
     ap.add_argument("--limit", type=int, default=None, help="số bản ghi tối đa")
     ap.add_argument("--rps", type=float, default=2.0)
     args = ap.parse_args(argv)
@@ -88,12 +91,27 @@ def main(argv: list[str] | None = None) -> int:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s %(name)s: %(message)s")
     paths.ensure_dirs()
 
-    dept = paths.resolve_department(args.department)
-    log.info("bộ lọc departmentCode=%r (%s)", dept, args.department)
-
-    with DvcClient(rps=args.rps) as client:
-        rows = fetch_catalog(client, department_code=dept, level=args.level,
-                             limit=args.limit, category_id=args.category)
+    if args.scope == "xa":
+        # Hợp nhiều bộ lọc của cổng, khử trùng theo `id`, giữ thứ tự gặp đầu tiên.
+        dept, level = "xa", "COMMUNE+" + paths.DEPT_UBND_HCM
+        log.info("phạm vi xa: %s", paths.SCOPE_XA)
+        rows, seen = [], set()
+        with DvcClient(rps=args.rps) as client:
+            for d, lv in paths.SCOPE_XA:
+                part = fetch_catalog(client, department_code=d, level=lv,
+                                     category_id=args.category)
+                fresh = [r for r in part if r["id"] not in seen]
+                seen.update(r["id"] for r in fresh)
+                rows.extend(fresh)
+                log.info("  departmentCode=%r level=%r -> %d (mới %d)", d, lv, len(part), len(fresh))
+        if args.limit is not None:
+            rows = rows[:args.limit]
+    else:
+        dept, level = paths.resolve_department(args.department), args.level
+        log.info("bộ lọc departmentCode=%r (%s)", dept, args.department)
+        with DvcClient(rps=args.rps) as client:
+            rows = fetch_catalog(client, department_code=dept, level=level,
+                                 limit=args.limit, category_id=args.category)
 
     with paths.CATALOG_PATH.open("w", encoding="utf-8") as fh:
         for r in rows:
@@ -101,16 +119,16 @@ def main(argv: list[str] | None = None) -> int:
 
     # Ghi lại bộ lọc đã dùng, để EDA biết "nhiều bộ ngành" là CỐ Ý hay LỖI.
     (paths.RAW_DIR / "_catalog_meta.json").write_text(
-        json.dumps({"department_arg": args.department, "department_code": dept,
-                    "level": args.level, "limit": args.limit,
+        json.dumps({"scope": args.scope, "department_arg": args.department,
+                    "department_code": dept, "level": level, "limit": args.limit,
                     "n_rows": len(rows)}, ensure_ascii=False),
         encoding="utf-8")
 
     log.info("ĐÃ GHI %d bản ghi → %s", len(rows), paths.CATALOG_PATH)
 
-    # Kiểm tra ngay: bộ lọc có thật sự sạch không?
+    # Kiểm tra ngay: bộ lọc có thật sự sạch không? (phạm vi xa CỐ Ý gồm nhiều bộ ngành)
     depts = {r.get("departmentPromulgate") for r in rows}
-    if dept and len(depts) > 1:
+    if dept and args.scope != "xa" and len(depts) > 1:
         log.warning("⚠️ bộ lọc ra NHIỀU bộ ngành: %s", depts)
     else:
         log.info("bộ ban hành trong kết quả: %s", depts or "(rỗng)")

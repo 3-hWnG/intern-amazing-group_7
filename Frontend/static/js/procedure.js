@@ -11,9 +11,11 @@
    KHÔNG BAO GIỜ bỏ trống một mục: ô trống bị người dân đọc thành "miễn phí"
    hoặc "không cần giấy tờ gì", sai nguy hiểm hơn thiếu.
 
-   Hai dạng `table` mà máy chủ gửi xuống:
+   Các dạng `table` mà máy chủ gửi xuống:
        {kind: "mcq"}            -> câu hỏi trắc nghiệm, kèm ô "nhớ lựa chọn"
-       {kind: "new_procedure"}  -> mời mở ô chat mới
+       {kind: "new_procedure"}  -> đang xem bảng mà hỏi thủ tục khác: mời ô chat mới
+       {kind: "exact_hint"}     -> chip "🎯 Tìm chính xác" dưới câu trả lời trò chuyện
+       {kind: "exact_used"}     -> 🎯 lần hai: [ô chat mới và tra] [huỷ]
        (không có kind)          -> BẢNG THỦ TỤC đầy đủ
 */
 window.Procedure = (function () {
@@ -29,7 +31,7 @@ window.Procedure = (function () {
   /* Một ô có thể rỗng: trả về phần tử hiển thị giá trị HOẶC lý do vì sao trống. */
   function cellBody(cell, renderValue) {
     if (cell && cell.status === "present") return renderValue(cell.value);
-    const note = el("p", "proc-absent", (cell && cell.note) || "Không có thông tin.");
+    const note = el("p", "proc-absent", (cell && cell.note) || "Chưa có thông tin.");
     return note;
   }
 
@@ -115,6 +117,10 @@ window.Procedure = (function () {
     if (t.domain) tags.appendChild(el("span", "proc-tag", t.domain));
     tags.appendChild(el("span", "proc-tag muted", "Mã " + t.proc_id));
     if (t.scope && t.scope.nationwide) tags.appendChild(el("span", "proc-tag muted", "Toàn quốc"));
+    // Bản địa phương: nói rõ tỉnh nào CÔNG BỐ (không phải "chỉ áp dụng ở").
+    if (t.scope && t.scope.province) tags.appendChild(el("span", "proc-tag", "📍 Bản của " + t.scope.province));
+    // Thuế/Hải quan: cổng xếp cấp xã nhưng ngành dọc giải quyết — không nộp ở phường.
+    if (t.scope && t.scope.vertical) tags.appendChild(el("span", "proc-tag", "🏛️ Do " + t.scope.vertical + " giải quyết"));
     head.appendChild(tags);
     box.appendChild(head);
 
@@ -155,7 +161,7 @@ window.Procedure = (function () {
 
     addFact("Hình thức nộp", t.submission_methods && t.submission_methods.length
       ? el("span", "proc-fact-value", t.submission_methods.join(" · "))
-      : el("span", "proc-absent", "Cổng không công bố hình thức nộp."));
+      : el("span", "proc-absent", "Chưa có thông tin về hình thức nộp: Cổng không công bố."));
 
     addFact("Chi phí", cellBody(t.fees, (v) => {
       const ul = el("div", "proc-fact-value");
@@ -207,10 +213,12 @@ window.Procedure = (function () {
       }
       (v.services || []).slice(0, 5).forEach((s) => {
         const line = s.service_name +
-          (s.processing_qty ? ` — ${s.processing_qty} ${s.processing_unit || ""}`.trimEnd() : "");
+          (s.processing_qty
+            // Cổng có lúc chỉ ghi số, không ghi đơn vị — nói rõ, đừng để người đọc tự đoán "ngày".
+            ? ` — ${s.processing_qty} ${s.processing_unit || "(cổng không ghi đơn vị)"}` : "");
         wrap.appendChild(el("div", "proc-online-svc", line));
       });
-      if (!wrap.childNodes.length) wrap.appendChild(el("span", "proc-absent", "Không có đường dẫn trực tuyến."));
+      if (!wrap.childNodes.length) wrap.appendChild(el("span", "proc-absent", "Chưa có thông tin về đường dẫn nộp trực tuyến."));
       return wrap;
     })));
 
@@ -282,9 +290,10 @@ window.Procedure = (function () {
       const v = input.value.trim();
       if (!v || (window.Chat && Chat.isSending)) return;
       input.value = "";
-      // Gửi như câu hỏi mới: máy chủ thấy không khớp lựa chọn MCQ nào sẽ bỏ
-      // vòng cũ và chạy lại toàn bộ (LLM 1 -> tra CSDL -> bảng).
-      Chat.send(convId, v);
+      // mode "resubmit": máy chủ xoá bảng cũ rồi tra lại từ đầu trong CÙNG ô
+      // chat — không tính là lần 🎯 thứ hai (trước đây bị bộ gác coi là
+      // "thủ tục khác" và đuổi sang ô chat mới).
+      Chat.send(convId, v, { mode: "resubmit" });
     };
     btn.onclick = resend;
     input.onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); resend(); } };
@@ -354,10 +363,63 @@ window.Procedure = (function () {
   function newProcedure(t) {
     const box = el("div", "proc-newchat");
     box.appendChild(el("p", "", "Đang xem: " + (t.current || "")));
-    const b = el("button", "proc-online-btn", "＋ Mở cuộc trò chuyện mới");
+    const b = el("button", "proc-online-btn",
+      t.question ? "＋ Mở cuộc trò chuyện mới và tra câu này" : "＋ Mở cuộc trò chuyện mới");
     b.type = "button";
-    b.onclick = () => { if (window.Conversations) Conversations.create(); };
+    b.onclick = () => { b.disabled = true; searchInNewChat(t.question); };
     box.appendChild(b);
+    return box;
+  }
+
+  /* Mở ô chat mới rồi tra luôn câu hỏi bằng 🎯 — người dân khỏi gõ lại. */
+  async function searchInNewChat(question) {
+    if (!window.Conversations) return;
+    try {
+      const conv = await Conversations.create();
+      if (question && window.Chat) {
+        await Chat.send(conv.id, question, { mode: "exact" });
+        await Conversations.refresh();      // cập nhật tiêu đề ở thanh bên
+      }
+    } catch (e) { alert(e.message); }
+  }
+
+  /* ───────────────────────── GỢI Ý 🎯 dưới câu trả lời trò chuyện ─────── */
+  /* Bộ nhận diện (máy chủ) thấy câu này giống hỏi thủ tục -> một chip bấm là
+     tra đúng câu đó ở mode "exact". */
+  function exactHint(t, convId) {
+    const box = el("div", "proc-exact-hint");
+    const q = t.question || "";
+    const shown = q.length > 70 ? q.slice(0, 70) + "…" : q;
+    const b = el("button", "proc-exact-chip", "🎯 Tìm chính xác: “" + shown + "”");
+    b.type = "button";
+    b.onclick = () => {
+      if (window.Chat && Chat.isSending) return;
+      b.disabled = true;
+      Chat.send(convId, q, { mode: "exact" });
+    };
+    box.appendChild(b);
+    return box;
+  }
+
+  /* ──────────────── 🎯 lần hai trong cùng ô chat: ô chat mới hay huỷ ─── */
+  function exactUsed(t) {
+    const box = el("div", "proc-newchat");
+    box.appendChild(el("p", "", "Đang xem: " + (t.current || "")));
+    const row = el("div", "proc-choice-row");
+    const go = el("button", "proc-online-btn", "＋ Mở cuộc trò chuyện mới và tra câu này");
+    go.type = "button";
+    const cancel = el("button", "proc-link-btn", "Huỷ");
+    cancel.type = "button";
+    go.onclick = () => {
+      go.disabled = cancel.disabled = true;
+      searchInNewChat(t.question);
+    };
+    cancel.onclick = () => {
+      go.disabled = cancel.disabled = true;
+      box.appendChild(el("p", "", "Đã huỷ — bạn cứ tiếp tục hỏi về thủ tục đang xem."));
+    };
+    row.append(go, cancel);
+    box.appendChild(row);
     return box;
   }
 
@@ -366,6 +428,8 @@ window.Procedure = (function () {
     if (!t || typeof t !== "object") return null;
     if (t.kind === "mcq") return mcq(t, convId);
     if (t.kind === "new_procedure") return newProcedure(t);
+    if (t.kind === "exact_hint") return exactHint(t, convId);
+    if (t.kind === "exact_used") return exactUsed(t);
     if (!t.proc_id) return null;
     return table(t, convId);
   }

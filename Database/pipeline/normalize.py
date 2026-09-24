@@ -267,6 +267,27 @@ def _agency_levels(raw: dict) -> str:
     return ", ".join(levels)
 
 
+# "UBND tỉnh Quảng Ninh" / "UBND Thành phố Hồ Chí Minh" / "Sở Xây dựng - tỉnh Quảng Ngãi"
+_PROVINCE_IN_DEPT = re.compile(r"(?:tỉnh|thành phố)\s+(.+?)\s*$", re.IGNORECASE)
+
+
+def _province(raw: dict) -> str | None:
+    """Tỉnh/thành đã CÔNG BỐ thủ tục này — chỉ khi bên ban hành là cấp tỉnh (mã H…).
+
+    PHASE1_PLAN D2 để NULL vì "nơi ban hành ≠ nơi áp dụng" và chưa chứng minh
+    có bản địa phương hoá. Đã chứng minh (2026-09-24, CSDL cấp xã): cùng một tên
+    thủ tục có bản của bộ (G10) và bản riêng của H35, H20, H29, H18 — mỗi tỉnh
+    công bố bản của mình. UBND tỉnh chỉ công bố thủ tục trong địa bàn của nó,
+    nên đây là tỉnh CÔNG BỐ; tầng hiển thị phải nói đúng như vậy.
+    Thủ tục của bộ/ngành (mã G…) giữ NULL = bản chung toàn quốc.
+    """
+    code = clean(raw.get("departmentPromulgateCode"))
+    if not code.startswith("H"):
+        return None
+    m = _PROVINCE_IN_DEPT.search(clean(raw.get("departmentPromulgateName")))
+    return m.group(1).strip() if m else None
+
+
 # ------------------------------------------------------------------- chính --
 def normalize(raw: dict) -> dict:
     """JSON thô → một bản ghi đúng schema đích. Tất định: cùng input → cùng output."""
@@ -326,7 +347,7 @@ def normalize(raw: dict) -> dict:
         "keywords": clean(raw.get("keywords")),
         "state": clean(raw.get("state")),
 
-        "province": None,              # xem PHASE1_PLAN.md §13 — chưa chứng minh được
+        "province": _province(raw),    # tỉnh CÔNG BỐ (mã H…); NULL = bản của bộ/ngành
         "receiving_address": receiving,
         "coordinating_agency": clean(raw.get("coordinatingAgencies")),
         "processing_time_text": processing_time_text,

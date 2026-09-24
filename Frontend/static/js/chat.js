@@ -62,7 +62,28 @@ window.Chat = (function () {
     return html;
   }
 
+  /* Hệ thống 2 không có bộ kiểm chứng như Web search, nên nhãn "Chưa qua kiểm
+     chứng" (BADGE.answer) sai nghĩa ở đây: bảng do CODE dựng từ dữ liệu cào thẳng
+     dichvucong.gov.vn. Chỉ câu LLM 2 tự diễn giải mới cần lời nhắc. */
+  const DB_BADGE = {
+    database: ["📚 Từ database", "badge-pass"],
+    database_llm: ["🤖 Trả lời dựa trên database, có thể không đúng", "badge-muted"],
+    // Trò chuyện TRƯỚC khi tra (Proposal: LLM 2 trả lời mọi câu) — có thể bịa.
+    llm_only: ["⚠️ AI tự trả lời, chưa qua CSDL", "badge-fail"],
+  };
+
   function badge(meta) {
+    if (meta.system === "retrieval" && DB_BADGE[meta.answer_source]) {
+      const b = DB_BADGE[meta.answer_source];
+      return el("span", `badge ${b[1]}`, b[0]);
+    }
+    if (meta.system === "retrieval" && meta.kind === "answer") {
+      // Tin nhắn cũ chưa có `answer_source`: có bảng thủ tục = trích CSDL.
+      const src = meta.answer_source ||
+        (meta.table && meta.table.proc_id ? "database" : "database_llm");
+      const b = DB_BADGE[src];
+      return b ? el("span", `badge ${b[1]}`, b[0]) : null;
+    }
     const key = meta.kind === "answer" ? (meta.verdict || "answer") : meta.kind;
     const found = BADGE[key];
     return found ? el("span", `badge ${found[1]}`, found[0]) : null;
@@ -289,10 +310,14 @@ window.Chat = (function () {
       ? `<p class="empty-system">Đang dùng: <strong>${esc(Systems.label(Systems.current))}</strong>` +
         " — đổi bằng nút bên dưới ô nhập.</p>"
       : "";
+    const how = window.Systems && Systems.isRetrieval
+      ? "<p>Bấm <strong>🎯 Tìm chính xác</strong>, nhập tên thủ tục rồi bấm Gửi để tra giấy tờ, " +
+        "lệ phí, thời gian. Gửi bình thường là trò chuyện với trợ lý.</p>"
+      : "";
     box().innerHTML =
       '<div class="empty"><h2>Bạn cần làm thủ tục gì?</h2>' +
       '<p>Ví dụ: <em>“Con tôi mới sinh, làm giấy khai sinh cần gì?”</em></p>' +
-      sys + "</div>";
+      how + sys + "</div>";
   }
 
   let activeLoadId = null;
@@ -325,6 +350,7 @@ window.Chat = (function () {
         choices: m.choices || [],
         system: m.system || "",
         table: m.table || null,
+        answer_source: m.answer_source || "",
       }, convId));
     } catch (err) {
       console.error("Lỗi tải cuộc trò chuyện:", err);
@@ -336,6 +362,8 @@ window.Chat = (function () {
     isSending = true;
     let done = null;
     const directSearch = Boolean(opts && opts.directSearch);
+    // Hệ thống 2: "" = trò chuyện · "exact" = 🎯 · "resubmit" = ô "Tra lại".
+    const mode = (opts && opts.mode) || "";
     try {
       if (box().querySelector(".empty")) clear();
       render("user", text);
@@ -343,7 +371,7 @@ window.Chat = (function () {
       const wrap = el("div", "msg assistant");
       const status = el("div", "status");
       const first = directSearch ? "Đang gửi DuckDuckGo qua MCP…"
-        : (window.Systems && Systems.isRetrieval ? "Đang tra cơ sở dữ liệu thủ tục…" : "Đang gửi…");
+        : mode ? "Đang tra cơ sở dữ liệu thủ tục…" : "Đang gửi…";
       const statusText = el("span", "status-text", first);
       status.append(el("span", "spinner"), statusText);
       const body = el("div", "bubble");
@@ -355,7 +383,7 @@ window.Chat = (function () {
       let acc = "";
       const system = window.Systems ? Systems.current : "";
       await API.stream(`/api/conversations/${convId}/chat`,
-                       { text, direct_search: directSearch, system }, (evt) => {
+                       { text, direct_search: directSearch, system, mode }, (evt) => {
         if (evt.type === "status" || evt.type === "queue") {
           statusText.textContent = evt.text;
         } else if (evt.type === "delta") {
@@ -384,6 +412,7 @@ window.Chat = (function () {
           choices: done.choices || [],
           system: done.system || "",
           table: done.table || null,
+          answer_source: done.answer_source || "",
         }, convId);
       } else if (!acc) {
         body.textContent = "[Lỗi] Không nhận được phản hồi từ máy chủ.";

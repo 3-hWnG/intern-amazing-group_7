@@ -1,8 +1,11 @@
 """Chạy cả 4 bước của Phase 1.
 
-    python -m Database.pipeline.run_pipeline --department bca --limit 50
-    python -m Database.pipeline.run_pipeline --department bca --all
+    python -m Database.pipeline.run_pipeline --all             (phạm vi mặc định: cấp Xã/Phường)
+    python -m Database.pipeline.run_pipeline --department bca --all   (bỏ phạm vi xã, lọc theo bộ)
     python -m Database.pipeline.run_pipeline --skip-fetch      (chỉ chạy lại ③④)
+
+Mặc định `--scope xa` = cấp Xã/Phường + thủ tục riêng TP.HCM (paths.SCOPE_XA).
+Truyền `--department` khác "all" thì bỏ phạm vi xã, lọc theo bộ như trước.
 
 `--skip-fetch` là đường dùng nhiều nhất khi đang phát triển: đổi logic map trong
 normalize.py rồi chạy lại, mất vài giây, KHÔNG đụng tới mạng.
@@ -21,6 +24,8 @@ log = logging.getLogger("pipeline")
 
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description="Pipeline ETL Phase 1")
+    ap.add_argument("--scope", default="xa", choices=["xa", "all"],
+                    help="xa (mặc định) = cấp Xã/Phường + TP.HCM · all = không giới hạn cấp")
     ap.add_argument("--department", default="all", help="all (mặc định) | bca | btp | G01")
     ap.add_argument("--limit", type=int, default=50, help="số thủ tục (mặc định 50)")
     ap.add_argument("--all", action="store_true", help="bỏ giới hạn, cào toàn bộ")
@@ -35,8 +40,11 @@ def main(argv: list[str] | None = None) -> int:
     limit = None if args.all else args.limit
 
     if not args.skip_fetch:
-        log.info("═══ BƯỚC ① danh mục (bộ=%s, limit=%s) ═══", args.department, limit)
-        argv1 = ["--department", args.department, "--rps", str(args.rps)]
+        by_scope = args.scope == "xa" and args.department == "all"
+        log.info("═══ BƯỚC ① danh mục (%s, limit=%s) ═══",
+                 "phạm vi xa" if by_scope else f"bộ={args.department}", limit)
+        argv1 = (["--scope", "xa"] if by_scope else ["--department", args.department]) \
+            + ["--rps", str(args.rps)]
         if limit is not None:
             argv1 += ["--limit", str(limit)]
         if fetch_catalog.main(argv1) != 0:

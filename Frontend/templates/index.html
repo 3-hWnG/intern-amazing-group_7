@@ -47,6 +47,10 @@
              Đổi hệ thống sẽ mở một cuộc trò chuyện mới — xem static/js/systems.js -->
         <button id="system-toggle" class="composer-btn system-toggle on" type="button"
                 aria-pressed="true">🌐 Web search</button>
+        <!-- Hệ thống 2: tin nhắn thường = trò chuyện; tra thủ tục = nút này.
+             Xem static/js/exact.js -->
+        <button id="exact-btn" class="composer-btn exact-btn" type="button"
+                aria-pressed="false" hidden>🎯 Tìm chính xác</button>
         <textarea id="input" rows="2" placeholder="Nhập câu hỏi…" autocomplete="off"></textarea>
         <button id="send" class="primary" type="submit">Gửi</button>
       </div>
@@ -101,6 +105,7 @@
 <script src="/static/js/files.js?v=__V__"></script>
 <script src="/static/js/conversations.js?v=__V__"></script>
 <script src="/static/js/systems.js?v=__V__"></script>
+<script src="/static/js/exact.js?v=__V__"></script>
 <script src="/static/js/procedure.js?v=__V__"></script>
 <script src="/static/js/chat.js?v=__V__"></script>
 <script src="/static/js/dev.js?v=__V__"></script>
