@@ -490,10 +490,12 @@ def generate_prompt_choices(question: str, u: Understanding, year: int) -> list[
     # 5. Nơi nộp / cơ quan
     if any(k in q_fold for k in ["o dau", "nop o dau", "den dau", "co quan nao"]):
         topic = re.sub(r"^(nơi nộp hồ sơ|nơi nộp|đến đâu|ở đâu)\s+", "", standalone, flags=re.IGNORECASE).strip()
+        topic = _clean_core_topic(topic) if topic else ""
         if not topic or len(topic) < 3:
             topic = "thủ tục này"
+        # Không gài sẵn "UBND cấp xã": ly hôn nộp ở Tòa án, căn cước ở Công an.
         return [
-            f"Nơi nộp hồ sơ {topic} tại UBND cấp xã phường {year}",
+            f"Nơi nộp hồ sơ {topic} mới nhất {year}",
             f"Thủ tục {topic} nộp trực tuyến Cổng Dịch vụ công {year}",
             f"Thẩm quyền giải quyết {topic} theo quy định mới {year}",
         ]
@@ -581,6 +583,11 @@ def _is_generic_procedure_query(text: str) -> bool:
     return any(re.match(p, t_clean) for p in generic_patterns)
 
 
+_DETAIL_CUES = ["o dau", "le phi", "chi phi", "bao nhieu tien", "ho so", "giay to", "can gi",
+                "can nhung gi", "bao lau", "thoi han", "may ngay", "the nao", "nhu nao",
+                "online", "truc tuyen", "co quan nao", "mau don", "dieu kien"]
+
+
 def analyze(question: str, history: list[dict], summary: str, profile: dict) -> Understanding:
     # 0. Chặn câu hỏi quá chung chung (chỉ nói "Cho hỏi thủ tục", "tôi muốn làm giấy tờ"...)
     # Bắt buộc đi vào clarify (Cách 3) để người dùng chọn hoặc nêu rõ thủ tục!
@@ -595,7 +602,6 @@ def analyze(question: str, history: list[dict], summary: str, profile: dict) -> 
         return u
 
     u = understand(question, history, summary, profile)
-    u.gate = gate(question, history)
 
     # Nhóm thủ tục bao gồm cả 'other' (lưu trú, chuyển trường, GPLX, lý lịch tư pháp...)
     specific = u.intent in PROCEDURE_INTENTS
@@ -611,27 +617,30 @@ def analyze(question: str, history: list[dict], summary: str, profile: dict) -> 
         u.route = "chitchat"
         return u
 
-    # 3. Chống gate/understand nhận nhầm câu hỏi thủ tục thành chitchat hoặc out_of_scope:
-    # Nếu câu hỏi có từ khóa thủ tục hoặc dài (>= 4 từ) mà bị gate gán greeting/other -> ép về search
-    if u.gate in ("greeting", "other"):
-        u.gate = "search"
-
-    # 4. Quyết định TRA CỨU vs HỎI LẠI (Cách 3):
+    # 3. Quyết định TRA CỨU vs HỎI LẠI (Cách 3):
     # - Nếu là câu hỏi nối tiếp đã kế thừa được thủ tục (has_inherited_proc) -> Luôn TRA CỨU (search).
     # - Chỉ hỏi lại (clarify) kèm 3 gợi ý DuckDuckGo khi:
     #   + gate == "ask" và không phải câu hỏi nối tiếp có ngữ cảnh
     #   + hoặc intent == "unknown" và không phải câu hỏi nối tiếp
     #   + hoặc u.needs_clarification là True và không phải câu hỏi nối tiếp
     has_inherited_proc = bool(history and _has_backreference(question))
-    wants_clarify = (
-        not has_inherited_proc and (
-            u.gate == "ask"
-            or u.intent == "unknown"
-            or u.needs_clarification
-        )
+    # Đã biết thủ tục + câu có hỏi điều cụ thể (ở đâu, lệ phí, giấy tờ…) -> tra luôn.
+    # Chạy thật: "vợ chồng mình muốn ly hôn thuận tình thì nộp đơn ở đâu" vẫn bị
+    # mô hình 1.5B hỏi lại "Bạn đang muốn làm thủ tục ly hôn…?".
+    asks_detail = (u.intent in PROCEDURE_INTENTS and u.intent != "other"
+                   and any(k in fold(question) for k in _DETAIL_CUES))
+    # Bộ gác chỉ dùng để quyết định HỎI LẠI -> câu chắc chắn tra luôn thì khỏi gọi
+    # (bớt 1 lượt LLM, góp ý AI lead 24/09). greeting/other của bộ gác = search.
+    may_clarify = (not has_inherited_proc and not asks_detail
+                   and CLARIFY_ENABLED and not _just_clarified(history))
+    u.gate = gate(question, history) if may_clarify else "skipped"
+    wants_clarify = may_clarify and (
+        u.gate == "ask"
+        or u.intent == "unknown"
+        or u.needs_clarification
     )
 
-    if wants_clarify and CLARIFY_ENABLED and not _just_clarified(history):
+    if wants_clarify:
         u.route = "clarify"
         if not u.clarifying_question or _similar(u.clarifying_question, question) > 0.35 or small_talk:
             u.clarifying_question = _build_smart_clarify(question, u)

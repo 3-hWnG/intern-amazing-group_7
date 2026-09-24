@@ -231,6 +231,7 @@ Quy tắc trả lời:
 - Về hồ sơ giấy tờ: Liệt kê rõ ràng, đầy đủ từng loại giấy tờ cần chuẩn bị được nêu trong tài liệu. Tuyệt đối không trả lời cụt lủn 1 câu chỉ dẫn tên nghị định mà không nêu giấy tờ.
 - Với câu hỏi Có/Không hoặc hỏi có phải nộp lại giấy tờ không: Khẳng định rõ ràng Có hoặc Không kèm quy định trong tài liệu.
 - Hướng dẫn cơ quan tiếp nhận đúng chức năng tại địa phương (Bộ phận Một cửa UBND cấp xã / Công an cấp xã / Cổng Dịch vụ công Quốc gia).
+- Từ 01/7/2025 không còn cấp huyện/quận; Tòa án nhân dân cấp huyện nay là Tòa án nhân dân khu vực. Tài liệu ghi "cấp huyện" là theo quy định cũ, không chép lại như còn hiệu lực.
 - Tuyệt đối chỉ trả lời đúng thủ tục người dùng đang hỏi, bám sát từng chữ trong tài liệu, không tự ý bịa thêm giấy tờ ngoài tài liệu.
 - TUYỆT ĐỐI KHÔNG sao chép lại quy tắc, lời nhắc hay chữ mẫu trong câu lệnh này. TUYỆT ĐỐI KHÔNG dùng chữ 'S#' mà phải ghi mã cụ thể như [S1], [S2].
 - TUYỆT ĐỐI KHÔNG mở đầu bằng "Tài liệu trích dẫn:", "Trích dẫn tài liệu:", "Theo tài liệu:". Đi thẳng vào câu trả lời.
@@ -346,6 +347,13 @@ VERIFY_WARNING = ("⚠️ Lưu ý: câu trả lời chưa được xác nhận �
                   "các nguồn bên dưới để đối chiếu trước khi đi làm thủ tục.")
 
 VERIFY_STRIPPED = "Một số chi tiết không tìm thấy trong nguồn đã được lược bỏ."
+
+# Code gắn khi câu trả lời còn nhắc cơ quan cấp huyện/quận (nguồn web cũ trước 01/7/2025).
+OUTDATED_UNIT_NOTE = (
+    "**Lưu ý:** từ 01/7/2025 Việt Nam không còn cấp huyện/quận. Việc trước đây làm ở cấp "
+    "huyện nay chuyển về UBND cấp xã/phường hoặc cơ quan cấp tỉnh; Tòa án nhân dân cấp huyện "
+    "nay là **Tòa án nhân dân khu vực**. Nguồn trên có thể viết theo quy định cũ, bạn kiểm tra "
+    "lại nơi nộp trước khi đi.")
 
 VERIFY_REFUSAL = ("Không đủ thông tin để xác nhận câu trả lời cho câu hỏi này từ các nguồn "
                   "tra cứu được. Bạn có thể xem trực tiếp các nguồn bên dưới, hoặc hỏi bộ "

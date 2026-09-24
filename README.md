@@ -23,11 +23,11 @@ nút trên giao diện:
 
 ## Dùng Hệ thống 2 thế nào / How System 2 works
 
-1. **Hỏi bình thường** → trợ lý trò chuyện, nhãn **⚠️ AI tự trả lời, chưa qua
+1. **Hỏi bình thường** → trợ lý trò chuyện, nhãn **AI tự trả lời, chưa qua
    CSDL**. Hỏi trúng một thủ tục thì bên dưới hiện gợi ý **🎯 Tìm chính xác**.
 2. **Bấm 🎯 Tìm chính xác, gõ tên thủ tục, bấm Gửi** → tra CSDL bằng từ khoá
    (mô hình chỉ vào cuộc khi từ khoá không khớp) → chọn **thủ tục chính** → chọn
-   **dạng cụ thể** → nhận **bảng thủ tục** (nhãn **📚 Từ database**).
+   **dạng cụ thể** → nhận **bảng thủ tục** (nhãn **Từ database**).
 3. **Hỏi tiếp về bảng**:
    - câu hỏi về một ô (lệ phí, thời gian, giấy tờ, nơi nộp…) → trích nguyên văn
      ô đó (📚);

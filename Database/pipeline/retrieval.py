@@ -21,11 +21,13 @@ Mọi chỗ thiếu đều đi kèm cờ `status_*` để tầng trên nói th�
 
 from __future__ import annotations
 
+import json
 import re
 import sqlite3
 
 from Database.pipeline import search as _search
 from Database.pipeline.import_db import connect as _connect
+from Database.pipeline.paths import STAGING_DIR
 
 # ─────────────────────────────────────────────────────────────────── kết nối ──
 
@@ -67,7 +69,18 @@ def refine(hits: list[dict], query: str) -> list[dict]:
         ov = sum(1 for t in terms if t in hay) / len(terms) if terms else 0.0
         h["term_overlap"] = round(ov, 2)
         h["confident"] = bool(h.get("match_tier") == 1 and ov >= 0.75)
-    return sorted(hits, key=lambda h: (h["match_tier"], -h["term_overlap"], h["score"]))
+        # Phủ phía TÊN (xem search.name_coverage): tie-break khi term_overlap
+        # bằng nhau — "làm giấy khai sinh cho con" từng xếp "Khai thuế … xăng
+        # SINH học" lên trên "Đăng ký khai sinh" vì cả hai cùng 0.67, chốt bằng bm25.
+        h["name_hits"], cov = _search.name_coverage(terms, h.get("name", ""))
+        h["name_cov"] = round(cov, 2)
+    return sorted(hits, key=lambda h: (h["match_tier"], -h["term_overlap"], -h["name_cov"],
+                                       h["score"]))
+
+
+def _name_covered(h: dict) -> bool:
+    return (h.get("name_hits", 0) >= _search.NAME_MIN_TERMS
+            and h.get("name_cov", 0) >= _search.NAME_COVER)
 
 
 def search(conn: sqlite3.Connection, query: str, limit: int = 8) -> list[dict]:
@@ -98,7 +111,7 @@ def search_in_domain(conn: sqlite3.Connection, query: str, domain: str,
     hits = refine(_search.search(conn, query, limit * 3), query)
     if domain:
         # Lĩnh vực chỉ là tiêu chí phụ, xếp SAU tầng khớp và độ khớp tên.
-        hits = sorted(hits, key=lambda h: (h["match_tier"], -h["term_overlap"],
+        hits = sorted(hits, key=lambda h: (h["match_tier"], -h["term_overlap"], -h["name_cov"],
                                            0 if h.get("domain") == domain else 1,
                                            h["score"]))
     return hits[:limit]
@@ -122,10 +135,15 @@ _ABBREV = {
 # (thu hồi) và "hội"; "ban" là "bạn"/"bản sao"/"bán lẻ"; "tu" là "tư pháp".
 # Bỏ nhầm những chữ đó là "thu hồi đất" thành "thu đất".
 _QUERY_FILLER = set("toi minh muon t tao ko k hok dc duoc giup dum xin oi nhe nhi vay gi".split())
-# Cụm bỏ nguyên cụm (bỏ từng âm tiết sẽ hại "thu hồi", "bảo hiểm", "thẻ"…).
-_DROP_PHRASES = ("ho so thu tuc", "thu tuc", "cho minh hoi", "cho toi hoi", "cho hoi",
-                 "vui long", "lam on", "bao nhieu", "nhu the nao", "the nao", "nhu nao",
-                 "o dau", "bao lau", "can gi", "can nhung gi", "phai lam sao", "lam sao")
+# Cách người dân gọi -> chữ trong TÊN thủ tục (`_SYNONYMS`, áp trước) và cụm bỏ
+# nguyên cụm (`_DROP_PHRASES`; bỏ từng âm tiết sẽ hại "thu hồi", "bảo hiểm"…).
+# Dữ liệu, không phải logic: sửa ở `staging/synonyms.json` (luật thêm ghi trong file).
+_VOCAB = json.loads((STAGING_DIR / "synonyms.json").read_text(encoding="utf-8"))
+_SYNONYMS: dict[str, str] = _VOCAB["synonyms"]
+_DROP_PHRASES: tuple[str, ...] = tuple(_VOCAB["drop_phrases"])
+# Chữ đứng sau "lam" trong tên thủ tục (đo cả kho 24/09): lâm nghiệp, làm việc, …
+_LAM_NEXT = set("cong viec nhiem nghiep sinh thay con nghia dich chuyen tu dai chu nong"
+                " lam do thu hoa thuy cho".split())
 
 # Tỉnh/thành người dân hay nhắc (63 tên trước sáp nhập + tên gọi tắt). Nhắc tên
 # tỉnh là NGỮ CẢNH để xếp bản của tỉnh đó lên trước, KHÔNG phải từ khoá tra —
@@ -180,6 +198,8 @@ def parse_query(question: str) -> dict:
             text = text.replace(f" {pat} ", " ")
             if name not in provinces:
                 provinces.append(name)
+    for ph, to in _SYNONYMS.items():
+        text = text.replace(f" {ph} ", f" {to} ")
     for ph in _DROP_PHRASES:
         text = text.replace(f" {ph} ", " ")
 
@@ -188,6 +208,10 @@ def parse_query(question: str) -> dict:
         t = _ABBREV.get(t, t)
         words.extend(t.split())
     words = [w for w in words if w not in _QUERY_FILLER]
+    # "làm …" đầu câu là lời nói, không phải tên: "làm giấy chứng tử" -> "lam khai tu"
+    # từng ra thẳng "Khai thuế …". Giữ khi ghép thành chữ có trong tên thủ tục.
+    if len(words) > 2 and words[0] == "lam" and words[1] not in _LAM_NEXT:
+        words = words[1:]
     return {"keyword": " ".join(words), "provinces": provinces}
 
 
@@ -250,8 +274,9 @@ def looks_like_procedure(conn: sqlite3.Connection, question: str) -> dict | None
         return None
     need = min(DETECT_MIN_TERMS, len(set(words)))
     hits = [h for h in search(conn, q["keyword"], 10)
-            if h.get("term_overlap", 0) >= DETECT_OVERLAP
-            and round(h["term_overlap"] * len(set(words))) >= need]
+            if (h.get("term_overlap", 0) >= DETECT_OVERLAP
+                and round(h["term_overlap"] * len(set(words))) >= need)
+            or _name_covered(h)]
     if not hits:
         return None
     idx = family_index(conn)
@@ -381,7 +406,8 @@ def _province_rank(info: dict, preferred: list[str]) -> int:
 def axes_for_families(conn: sqlite3.Connection, hits: list[dict],
                       low_confidence: bool = False,
                       provinces: list[str] | None = None) -> list[dict]:
-    """MCQ 1 — "thủ tục chính". Rỗng nếu chỉ có một nhóm (và đang chắc chắn).
+    """MCQ 1 — "thủ tục chính". Rỗng nếu chỉ có một nhóm hoặc nhóm đầu thắng rõ
+    (và đang chắc chắn) — xem `_clear_winner`.
 
     `low_confidence=True` (từ khoá lẫn LLM 1 đều không khớp chắc) -> thêm lựa
     chọn "không có cái nào đúng" để người dùng thoát ra nhánh xin lỗi.
@@ -399,12 +425,20 @@ def axes_for_families(conn: sqlite3.Connection, hits: list[dict],
             heads.append(head)
     if not heads or (len(heads) == 1 and not low_confidence):
         return []
+    if not low_confidence and _clear_winner(hits, idx):
+        return []
 
     # Nhóm CHỈ có bản của tỉnh khác (không có bản toàn quốc, không có bản của
-    # tỉnh người dân nhắc) xuống cuối — giữ thứ tự FTS trong cùng hạng.
+    # tỉnh người dân nhắc) xuống cuối — giữ thứ tự FTS trong cùng hạng. Nhưng
+    # chỉ trong cùng TẦNG khớp: "thiết bị giám sát hành trình tàu cá" khớp đủ
+    # 100% ở tầng 1 chỉ có bản tỉnh, từng bị rác tầng 3 toàn quốc đẩy khỏi top.
     preferred = provinces or []
-    heads.sort(key=lambda h: min(_province_rank(idx["info"][p], preferred)
-                                 for p in idx["members"][h]))
+    tier = {}
+    for h in hits:
+        tier.setdefault(idx["head_of"].get(h["proc_id"]), h.get("match_tier", 3))
+    heads.sort(key=lambda h: (tier.get(h, 3) > 1,
+                              min(_province_rank(idx["info"][p], preferred)
+                                  for p in idx["members"][h])))
 
     options = []
     for head in heads[:6]:
@@ -428,6 +462,26 @@ def axes_for_families(conn: sqlite3.Connection, hits: list[dict],
                         "hint": "Mình sẽ nói rõ vì sao chưa tìm được"})
     return [{"axis": AXIS_FAMILY, "question": question,
              "memorable": False, "options": options}]
+
+
+def _clear_winner(hits: list[dict], idx: dict) -> bool:
+    """Nhóm đầu thắng rõ -> khỏi hỏi MCQ 1. Thắng rõ = khớp tầng 1 và
+    (a) không nhóm nào khác khớp tầng 1 ("trích lục khai sinh"), hoặc
+    (b) câu hỏi phủ HẾT tên nhóm đầu mà không phủ hết tên nhóm nào khác
+        ("đăng ký kết hôn" thắng "Đăng ký lại kết hôn")."""
+    best: dict[str, dict] = {}
+    for h in hits:
+        best.setdefault(idx["head_of"].get(h["proc_id"], ""), h)
+    top, *rest = best.values()
+
+    def strong(h: dict) -> bool:
+        return h.get("match_tier") == 1 and h.get("term_overlap", 0) >= STRONG_OVERLAP
+
+    if not strong(top):
+        return False
+    rivals = [h for h in rest if strong(h)]
+    return not rivals or (top.get("name_cov", 0) >= 1
+                          and all(h.get("name_cov", 0) < 1 for h in rivals))
 
 
 def family_of(conn: sqlite3.Connection, proc_id: str) -> str:
@@ -735,18 +789,67 @@ _ATTRIBUTE_WORDS = set(
     "le phi mien chi tien gia giay to ho so thanh phan hinh thuc nop thoi gian lau"
     " dia diem diem noi dau mau don bieu mau tep file tai lieu truc tuyen online"
     " website link buoc quy trinh dieu kien ket qua co quan lien he han"
-    " cam on chao tam biet ro them nhu nao".split())
+    " cam on chao tam biet ro them nhu nao mang theo chuan bi".split())
 
 
-def _content_terms(text: str) -> list[str]:
+# Bản CÓ DẤU của `_FILLER`. So trên chữ bỏ dấu thì xoá nhầm chữ nghiệp vụ: "cần"
+# = "căn" (căn cước), "thế" = "thẻ", "mất" = "mặt", "bạn" = "bản" — "làm lại
+# căn cước bị mất" từng chỉ còn "lai cuoc bi" (chạy thử thật 24/09). Chữ có dấu
+# so với danh sách này; chữ gõ KHÔNG dấu thì vẫn so `_FILLER` như cũ.
+_FILLER_ACCENTED = set(
+    "tôi mình muốn thế còn làm thì sao cách cần có không gì bao nhiêu này à ạ xin"
+    " cho hỏi vậy bạn ơi nhỉ là được và với về mất nữa hết hay từ ở".split())
+
+
+# Chữ đệm gõ không dấu trùng với chữ nghiệp vụ: cần/căn, thế/thẻ, mất/mặt, bạn/bản.
+_AMBIGUOUS_BARE = {"can", "the", "mat", "ban"}
+_bigram_cache: dict = {}
+
+
+def _name_bigrams(conn: sqlite3.Connection) -> set[str]:
+    """Mọi cặp hai âm tiết liền nhau (bỏ dấu) trong tên thủ tục đang hiệu lực."""
+    stamp = tuple(conn.execute("SELECT COUNT(*), MAX(row_id) FROM procedures"
+                               " WHERE status='active'").fetchone())
+    if _bigram_cache.get("stamp") != stamp:
+        grams = set()
+        for (name,) in conn.execute("SELECT name FROM procedures WHERE status='active'"):
+            toks = _fold(name).split()
+            grams.update(f"{a} {b}" for a, b in zip(toks, toks[1:]))
+        _bigram_cache.update(stamp=stamp, grams=grams)
+    return _bigram_cache["grams"]
+
+
+def _content_terms(text: str, conn: sqlite3.Connection | None = None) -> list[str]:
+    import unicodedata
+
     from Database.pipeline.textutil import fold
-    return [t for t in re.split(r"[^0-9a-z]+", fold(text or "")) if t and t not in _FILLER]
+    words = []
+    for w in re.findall(r"\w+", unicodedata.normalize("NFC", (text or "").lower())):
+        f = re.sub(r"[^0-9a-z]+", "", fold(w))
+        if f:
+            is_filler = (w in _FILLER_ACCENTED) if w != f else (f in _FILLER)
+            words.append((f, is_filler, w == f))
+    # Gõ KHÔNG dấu: "can" là "cần" hay "căn"? Giữ lại nếu nó ghép với chữ nghiệp vụ
+    # liền kề thành một cặp CÓ trong tên thủ tục ("can cuoc", "the bao hiem").
+    grams = _name_bigrams(conn) if conn is not None else set()
+    out = []
+    for i, (f, filler, bare) in enumerate(words):
+        if filler and bare and grams and f in _AMBIGUOUS_BARE:
+            pairs = []
+            if i > 0 and not words[i - 1][1]:
+                pairs.append(f"{words[i - 1][0]} {f}")
+            if i + 1 < len(words) and not words[i + 1][1]:
+                pairs.append(f"{f} {words[i + 1][0]}")
+            filler = not any(p in grams for p in pairs)
+        if not filler:
+            out.append(f)
+    return out
 
 
 def is_other_procedure(conn: sqlite3.Connection, question: str,
                        current_proc_id: str) -> bool:
     """Câu hỏi này đã chuyển sang một thủ tục KHÁC chưa? Không dùng LLM."""
-    terms = _content_terms(question)
+    terms = _content_terms(question, conn)
     if not terms:
         return False
     # Toàn từ chỉ ô trong bảng -> chắc chắn là hỏi tiếp, khỏi tra.
@@ -757,7 +860,10 @@ def is_other_procedure(conn: sqlite3.Connection, question: str,
     if not hits:
         return False
     top = hits[0]
-    return bool(top["confident"] and top["proc_id"] != current_proc_id)
+    # Tên thủ tục khác được câu hỏi phủ đủ cũng tính: bộ gác chỉ GẮN cảnh báo,
+    # không chặn, nên thừa một dòng rẻ hơn bỏ sót ("à còn làm lại căn cước bị
+    # mất thì sao" từng không có cảnh báo, LLM 2 trả lời lan man theo bảng cũ).
+    return bool((top["confident"] or _name_covered(top)) and top["proc_id"] != current_proc_id)
 
 
 def count_active(conn: sqlite3.Connection) -> int:

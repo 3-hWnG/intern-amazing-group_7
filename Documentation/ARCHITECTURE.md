@@ -17,7 +17,7 @@ Từ V10.3 có **hai hệ thống chạy song song**, người dùng chuyển b�
 | Trạng thái | **đang chạy** (toàn bộ mục 1–6 dưới đây) | **đang chạy** — kiến trúc + số đo: [`PLAN_SYSTEM2_REBUILD.md`](PLAN_SYSTEM2_REBUILD.md) |
 
 > **Mục 1–6 dưới đây chỉ nói về Hệ thống 1.** Hệ thống 2 (V10.5) chạy theo
-> luồng: trò chuyện (LLM 2, nhãn "⚠️ AI tự trả lời") → nút **🎯 Tìm chính xác**
+> luồng: trò chuyện (LLM 2, nhãn "AI tự trả lời") → nút **🎯 Tìm chính xác**
 > → tra từ khoá (LLM 1 chỉ khi trượt) → MCQ "thủ tục chính → dạng cụ thể" →
 > **bảng do code dựng** → hỏi tiếp (code trích ô, hoặc LLM 2 chỉ đọc mục liên quan).
 
@@ -107,12 +107,18 @@ USER ─> HTML/JS UI ─> FastAPI ─> Hàng đợi ─> ORCHESTRATOR
 | Nhận + xếp hàng | `api/chat_routes.py`, `core/queue.py` | tin nhắn | job tuần tự, luồng NDJSON |
 | Ngữ cảnh | `core/summarizer.py` | hội thoại | tóm tắt + 10 tin gần nhất (tóm tắt khi > `MAX_CONTEXT_TOKENS`) |
 | Hiểu ý định | `core/intent.py` | tin nhắn + ngữ cảnh + hồ sơ | intent, câu hỏi độc lập, tỉnh/xã, thiếu gì, câu hỏi lại, truy vấn |
-| Bộ gác hỏi lại | `core/intent.py` | tin nhắn + 4 lượt gần nhất | `search` / `ask` / `greeting` / `other` |
+| Bộ gác hỏi lại | `core/intent.py` | tin nhắn + 4 lượt gần nhất | `search` / `ask` / `greeting` / `other`; `skipped` (không gọi LLM) khi câu đã rõ thủ tục + hỏi chi tiết, câu nối tiếp, hoặc vừa hỏi lại |
 | Hỏi lại | `core/intent.py` | cả hai bộ cùng thấy thiếu | câu hỏi lại do LLM viết (không hỏi dồn 2 lượt) |
 | Tra cứu | `core/evidence.py` → `core/mcp_client.py` → `mcp_search/` | truy vấn | Evidence Pack |
 | Soạn | `core/answer.py` | Evidence Pack + lịch sử | bản nháp có `[S#]` |
 | Kiểm chứng | `core/verifier.py` | câu hỏi + bằng chứng + bản nháp | PASS / FAIL + lý do |
 | Lưu | `db/repositories.py` | kết quả | messages, evidence, user_profile |
+
+**Trích dẫn [S#]:** Trích dẫn `[S#]` được gán tự động qua lớp hậu xử lý (heuristic
+post-processing ≥ 85%), không phải do model tự sinh. `evidence.cite_lines` gắn `[S#]`
+cho dòng ≥ 8 từ khoá có ≥ 85% từ khoá khớp một nguồn (dòng chép từ nguồn khớp
+0,86–1,00; dòng tự thêm/bịa 0,28–0,77). Chỉ số "cited" trong `evaluate.py` phải ghi
+kèm câu này (AI lead chốt QĐ3, 24/09).
 
 Toàn bộ điều phối của Hệ thống 1 ở `core/system_websearch.py` (~150 dòng, không đụng
 CSDL). `core/orchestrator.py` chỉ còn việc chọn hệ thống — xem mục 0.

@@ -90,6 +90,18 @@ def _duration(text: str) -> str:
     return f"{m.group(1)}{m.group(2)}" if m else fold(text)
 
 
+# (từ khoá câu hỏi, trừ khi câu hỏi có, câu trả lời phải nhắc ít nhất một, lời báo)
+# — tất cả đã bỏ dấu. Ghi chú ly hôn (đã xử ở nước ngoài) mới ở UBND.
+_AUTHORITY_RULES = [
+    (["ly hon"], ["ghi chu"], ["toa an"],
+     "ly hôn do Tòa án nhân dân khu vực giải quyết, không phải UBND."),
+    (["ho chieu", "passport"], [], ["cong an", "xuat nhap canh", "dich vu cong", "dichvucong", "vneid"],
+     "hộ chiếu do cơ quan Quản lý xuất nhập cảnh (Công an) cấp, nộp trực tiếp hoặc qua Cổng Dịch vụ công."),
+    (["can cuoc", "cccd"], [], ["cong an", "dich vu cong", "dichvucong", "vneid"],
+     "căn cước do cơ quan Công an cấp, nộp trực tiếp, qua VNeID hoặc Cổng Dịch vụ công."),
+]
+
+
 def rule_check(answer: str, pack: dict, v: Verification, question: str = "") -> None:
     sources = pack.get("sources") or []
     evidence = "\n".join(f"{s.get('title', '')}\n{s.get('snippet', '')}\n{s.get('content', '')}"
@@ -108,7 +120,11 @@ def rule_check(answer: str, pack: dict, v: Verification, question: str = "") -> 
         v.soft_issues.append("Câu trả lời không ghi nguồn [S#] cho các ý.")
 
     ans_stripped = answer.strip()
-    if ans_stripped.lower().startswith("tài liệu liên quan") or (len(ans_stripped) < 70 and not says_not_found(ans_stripped)):
+    # Câu ngắn mà nêu con số tiền/thời hạn ("Lệ phí … là 15.000 đồng/lần") là trả lời
+    # đủ cho câu hỏi hẹp; con số đó vẫn bị đối chiếu với nguồn ngay bên dưới.
+    has_figure = bool(MONEY_RE.search(answer) or DAYS_RE.search(answer))
+    if ans_stripped.lower().startswith("tài liệu liên quan") or (
+            len(ans_stripped) < 70 and not has_figure and not says_not_found(ans_stripped)):
         v.rule_issues.append("Câu trả lời quá ngắn hoặc chỉ sao chép tiêu đề tài liệu, chưa nêu nội dung thủ tục.")
 
     # Ngoặc vuông CHỈ được chứa số tài liệu. Mọi thứ khác là chỗ trống hoặc nhãn
@@ -191,10 +207,19 @@ def rule_check(answer: str, pack: dict, v: Verification, question: str = "") -> 
         if any(h in ans_fold for h in ["benh vien", "co so y te", "tram y te", "trung tam y te"]):
             v.rule_issues.append("Chỉ dẫn sai thẩm quyền: Thủ tục cấp căn cước / hộ chiếu không thực hiện tại cơ sở y tế hoặc bệnh viện.")
 
+    # 4b. Thủ tục do cơ quan NGOÀI UBND giải quyết: câu trả lời phải nhắc đúng cơ quan.
+    # Chạy thật: nguồn ghi Tòa án, 1.5B vẫn viết "UBND cấp xã" và LLM kiểm chứng cho PASS.
+    for q_keys, skip, must, message in _AUTHORITY_RULES:
+        if (any(k in q_fold for k in q_keys) and not any(s in q_fold for s in skip)
+                and not any(m in ans_fold for m in must)):
+            v.rule_issues.append(f"Chỉ dẫn sai thẩm quyền: {message}")
+
     # 5. Bắt lỗi lẫn lộn thủ tục chéo:
     # 5a. Hộ tịch (kết hôn, khai sinh) / cư trú / căn cước mà nói đất đai, xây dựng:
     if any(w in q_fold for w in ["ket hon", "hon nhan", "khai sinh", "thuong tru", "tam tru", "can cuoc", "cccd", "ho chieu"]):
-        if any(w in ans_fold for w in ["ban ve thiet ke", "thiet ke xay dung", "quyen su dung dat", "so do", "giay phep xay dung", "thi cong nha"]):
+        # Chỉ tính chữ KHÔNG có trong nguồn: hồ sơ cư trú hợp lệ có "Giấy chứng nhận quyền
+        # sử dụng đất" để chứng minh chỗ ở hợp pháp (evaluate.py chạy thật 24/09).
+        if any(w in ans_fold and w not in ev_fold for w in ["ban ve thiet ke", "thiet ke xay dung", "quyen su dung dat", "so do", "giay phep xay dung", "thi cong nha"]):
             v.rule_issues.append("Lẫn lộn thủ tục: câu hỏi về hộ tịch/cư trú/căn cước nhưng câu trả lời lại chứa giấy tờ xây dựng, đất đai.")
     # 5b. Xây nhà mà nói hộ kinh doanh:
     if any(w in q_fold for w in ["xay nha", "khoi cong", "xay dung", "giay phep xay dung"]):
@@ -204,7 +229,10 @@ def rule_check(answer: str, pack: dict, v: Verification, question: str = "") -> 
     # 6. Bắt lỗi hỏi lệ phí nhưng câu trả lời không nêu mức tiền cụ thể hoặc thoái thác:
     is_fee_q = any(k in q_fold for k in ["le phi", "phi", "chi phi", "ton phi", "mat phi", "bao nhieu tien"])
     if is_fee_q:
-        has_concrete_fee = any(k in ans_fold for k in ["dong", "vnd", "mien phi", "0 dong", "khong thu", "nghin", "trieu"])
+        # "Không phải trả phí", "không có lệ phí", "miễn lệ phí" cũng là câu trả lời đủ.
+        has_concrete_fee = (any(k in ans_fold for k in ["dong", "vnd", "mien phi", "0 dong", "khong thu", "nghin", "trieu"])
+                            or bool(re.search(r"\b(?:khong|mien)(?: (?:phai|tra|co|mat|thu|chiu|nop|bat|ky"
+                                              r"|khoan|can|tinh))* (?:le )?phi\b", ans_fold)))
         if not has_concrete_fee:
             v.rule_issues.append("Câu hỏi hỏi về lệ phí nhưng câu trả lời không nêu mức tiền cụ thể hoặc chính sách miễn phí (0 đồng).")
         if "chua co thong tin cu the" in ans_fold and any(w in ans_fold for w in ["lien he", "mot cua"]):
@@ -218,7 +246,13 @@ def rule_check(answer: str, pack: dict, v: Verification, question: str = "") -> 
     # 8. Bắt lỗi áp dụng nhầm lệ phí có yếu tố nước ngoài khi người dân không hỏi:
     is_foreign_q = any(k in q_fold for k in ["nuoc ngoai", "yeu to nuoc ngoai", "viet kieu", "nguoi nuoc ngoai"])
     if not is_foreign_q and any(k in q_fold for k in ["ket hon", "khai sinh", "ho tich"]):
-        if any(w in ans_fold for w in ["yeu to nuoc ngoai", "nguoi nuoc ngoai", "1.500.000", "1.000.000", "1 trieu", "1,5 trieu"]):
+        # Chỉ nhắc cụm "yếu tố nước ngoài" chép từ nguồn (phân biệt trường hợp) là đúng —
+        # từng đánh trượt câu khai sinh đúng (chạy thật 24/09). Bắt khi nêu MỨC PHÍ nước
+        # ngoài, hoặc tự nói tới người nước ngoài mà nguồn không có.
+        foreign_fee = any(w in ans_fold for w in ["1.500.000", "1.000.000", "1 trieu", "1,5 trieu"])
+        foreign_made_up = any(w in ans_fold and w not in ev_fold
+                              for w in ["yeu to nuoc ngoai", "nguoi nuoc ngoai"])
+        if foreign_fee or foreign_made_up:
             v.rule_issues.append("Áp dụng nhầm thủ tục có yếu tố nước ngoài: người dùng không hỏi về người nước ngoài, thủ tục hộ tịch trong nước của công dân Việt Nam được miễn lệ phí (0 đồng).")
 
     # 9. Bắt placeholder trích dẫn chưa hoàn chỉnh:
@@ -231,7 +265,10 @@ def rule_check(answer: str, pack: dict, v: Verification, question: str = "") -> 
         v.contradiction = True
 
     low = answer.lower()
-    v.echo = any(marker.lower() in low for marker in T.ECHO_MARKERS)
+    # "Tài liệu:" là tiêu đề ĐỨNG RIÊNG một dòng của prompt. Giữa câu ("Theo thông tin
+    # trong các tài liệu:") là lời thường — từng đánh trượt câu trả lời đúng (chạy thật 24/09).
+    v.echo = (any(m.lower() in low for m in T.ECHO_MARKERS if m != "Tài liệu:")
+              or bool(re.search(r"(?m)^\s*tài liệu:\s*$", low)))
     if v.echo:
         v.rule_issues.append("Câu trả lời chép lại khung prompt / nhắc tới việc kiểm chứng.")
 
@@ -266,6 +303,19 @@ def verify(question: str, standalone: str, pack: dict, draft: str) -> Verificati
 
 _POINTER_RE = re.compile(r"truy cập|tham khảo|để biết thêm|liên hệ|hỏi bộ phận|cổng dịch vụ công",
                          re.IGNORECASE)
+
+
+# Cơ quan cấp huyện/quận — không còn từ 01/7/2025. So trên chữ đã bỏ dấu.
+_OLD_UNIT_RE = re.compile(r"\bcap huyen\b|\b(?:ubnd|uy ban nhan dan|tand|toa an nhan dan|toa an)"
+                          r" (?:cap )?(?:quan(?! su)|huyen)\b")   # "tòa án quân sự" không tính
+
+
+def note_outdated_units(text: str) -> str:
+    """Nguồn web cũ vẫn ghi "TAND cấp huyện", "UBND quận" -> mô hình chép lại.
+    Code không sửa câu (dễ sai tên cơ quan mới), chỉ gắn lưu ý cố định."""
+    if T.OUTDATED_UNIT_NOTE in text or not _OLD_UNIT_RE.search(fold(text)):
+        return text
+    return f"{text}\n\n{T.OUTDATED_UNIT_NOTE}"
 
 
 def says_not_found(text: str) -> bool:
@@ -336,6 +386,8 @@ def apply_fail_policy(draft: str, v: Verification) -> str:
     # TUYỆT ĐỐI KHÔNG xoá sạch câu trả lời rồi tráo thành NOT_IN_SOURCES_TEXT:
     # Nếu gọt xong mà quá ngắn, giữ lại bản nháp kèm cảnh báo để người dân tự đối chiếu nguồn
     final_text = cleaned if has_substance(cleaned) else draft.strip()
+    if not final_text:          # chạy thật: bản nháp rỗng -> chỉ còn dòng cảnh báo trơ trọi
+        return T.VERIFY_REFUSAL
     note = T.VERIFY_WARNING
     if len(cleaned) < len(draft.strip()) and has_substance(cleaned):
         note += " " + T.VERIFY_STRIPPED

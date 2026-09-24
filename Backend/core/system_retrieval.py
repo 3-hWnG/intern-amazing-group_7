@@ -57,6 +57,7 @@ from db.repositories import MCQMemory, RetrievalPending
 from prompts import retrieval_templates as RT
 
 from Database.pipeline import retrieval as R
+from Database.pipeline.textutil import fold
 
 # Lời nhắn khi Hệ thống 2 bị tắt bằng cờ cấu hình.
 UNAVAILABLE_TEXT = (
@@ -245,6 +246,26 @@ def follow_up(question: str, history: list[dict], table: dict) -> str:
 _CJK = re.compile(r"[\u3000-\u30ff\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff\uff00-\uffef]+")
 _ECHO = re.compile(r"^\s*(?:Chỉ dùng thông tin có trong bảng\.?|LUẬT BẮT BUỘC:?)\s*",
                    re.IGNORECASE)
+
+
+# Một âm tiết tiếng Việt (đã bỏ dấu): phụ âm đầu + nguyên âm + phụ âm cuối.
+# Từ tiếng Anh nhiều âm tiết ("register", "business") không khớp.
+_VN_SYLLABLE = re.compile(r"(?:ngh|ng|nh|ch|gh|gi|kh|ph|th|tr|qu|[bcdghklmnprstvx])?"
+                          r"[aeiouy]{1,3}(?:ng|nh|ch|[cmnpt])?")
+_LOANWORDS = {"online", "email", "website", "zalo", "app", "internet", "file", "vneid", "scan",
+              "photo", "https", "http", "www", "html", "dichvucong", "gov"}
+
+
+def _has_foreign_word(text: str) -> bool:
+    """Chạy thật: 1.5B viết "giấy chứng nhận đăng ký kinh register". Chữ viết
+    hoa giữa từ (UBND, CCCD, VNeID) là viết tắt -> bỏ qua."""
+    for w in re.findall(r"[^\W\d_]+", text):
+        if w[1:] != w[1:].lower() or len(w) < 4:
+            continue
+        f = fold(w)
+        if f not in _LOANWORDS and not _VN_SYLLABLE.fullmatch(f):
+            return True
+    return False
 
 
 def _llm_text(call: Callable[[], str], fallback: str = "") -> str:
@@ -739,6 +760,17 @@ def _care(conn, inp: TurnInput, res: TurnResult, dev, lap, pending: dict,
         dev.event("care_quote", sections=procedure_table.sections_for(inp.question))
         return _warn_other(res, record, inp) if other else res
 
+    # Thủ tục khác mà code không trích được ô nào -> KHÔNG gọi LLM 2. Nó chỉ có
+    # bảng của thủ tục đang xem nên trả lời lạc đề (chạy thật: "làm lại căn cước
+    # bị mất thì sao" trong ô khai sinh -> khuyên "gọi điện thoại"). Báo nhầm thì
+    # chỉ mất phần diễn giải, người dùng hỏi lại cụ thể hơn là code trích được ô.
+    if other:
+        res.kind = "answer"
+        res.text = RT.OTHER_PROCEDURE_TEXT
+        res.intent["answer_source"] = "fixed"      # không khớp DB_BADGE -> không gắn nhãn
+        dev.event("care_other_no_llm", proc_id=proc_id)
+        return _warn_other(res, record, inp)
+
     status("Đang trả lời dựa trên bảng thông tin…")
     t = time.time()
     res.text = follow_up(inp.question, inp.history, table)
@@ -771,7 +803,7 @@ def _chat(conn, inp: TurnInput, res: TurnResult, dev, lap,
                     ╚► có vẻ hỏi thủ tục -> gắn "bạn dùng <Tìm chính xác> nhé" + chip 🎯
 
     Câu trả lời CÓ THỂ SAI (chưa tra CSDL), nên luôn mang nhãn
-    `answer_source = "llm_only"` -> giao diện ghi "⚠️ AI tự trả lời, chưa qua CSDL".
+    `answer_source = "llm_only"` -> giao diện ghi "AI tự trả lời, chưa qua CSDL".
     """
     res.intent = {"intent": "chat", "standalone_question": inp.question,
                   "answer_source": "llm_only"}
@@ -791,6 +823,21 @@ def _chat(conn, inp: TurnInput, res: TurnResult, dev, lap,
                                           history=history), fallback=CHAT_FALLBACK)
     res.kind = "chitchat"
     dev.event("chat", ms=lap("answer", t), chars=len(res.text))
+    # `stop` / `num_predict` cắt giữa chừng -> bỏ câu dở ("…bạn sẽ cần:").
+    # Dấu ":" luôn mở một danh sách (giấy tờ/bước bịa) -> bỏ từ câu có ":" trở đi.
+    # Còn lại chỉ "Chào bạn!" (cắt trước "…cần thực hiện các bước sau:") = rỗng.
+    whole = re.match(r"(?s).*[.!?…]", res.text.split(":")[0])
+    # Chưa tra CSDL: bỏ TỪNG CÂU lẫn tiếng Anh, hoặc nêu con số khi đang hỏi thủ
+    # tục (lệ phí, số ngày…); giữ câu chào/mở đầu (QĐ1, AI lead 24/09). Prompt đã
+    # cấm, 1.5B vẫn làm. KHÔNG nối ô CSDL vào: `guess` chỉ đúng thủ tục 90/100 câu
+    # ("làm giấy chứng tử cho mẹ" -> "Khai quyết toán thuế…").
+    sents = re.split(r"(?<=[.!?…])\s+", whole.group(0).strip()) if whole else []
+    bad = [s for s in sents if _has_foreign_word(s) or (guess and re.search(r"\d", s))]
+    res.text = " ".join(s for s in sents if s not in bad)
+    if bad:
+        dev.event("chat_guarded", dropped=" | ".join(bad)[:300])
+    if len(res.text.split()) < 4:
+        res.text = RT.CHAT_GUARDED_TEXT if guess else CHAT_FALLBACK
 
     if guess:
         res.text = f"{res.text}\n\n{RT.EXACT_HINT}"

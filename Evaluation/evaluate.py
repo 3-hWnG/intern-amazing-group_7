@@ -35,7 +35,23 @@ sys.path.insert(0, str(HERE.parent))
 
 from config import LLM_MODEL, SEARCH_PROVIDER  # noqa: E402
 from core import intent as intent_step  # noqa: E402
-from core import mcp_client, orchestrator  # noqa: E402
+from core import llm, mcp_client, orchestrator  # noqa: E402
+
+# Đếm lượt gọi mô hình + thời gian theo vai (understand gồm cả bộ gác, verify, answer…)
+# để biết chậm ở đâu trước khi cắt bước.
+_CALLS: list[tuple[str, float]] = []
+_real_call = llm._call
+
+
+def _timed_call(role, *a, **k):
+    t = time.time()
+    try:
+        return _real_call(role, *a, **k)
+    finally:
+        _CALLS.append((role, time.time() - t))
+
+
+llm._call = _timed_call
 
 
 def _pct(num: int, den: int) -> str:
@@ -57,6 +73,7 @@ def main() -> None:
     rows = []
     for i, item in enumerate(items, 1):
         history = item.get("history") or []
+        _CALLS.clear()
         started = time.time()
         if args.only_intent:
             u = intent_step.analyze(item["question"], history, "", {})
@@ -66,8 +83,9 @@ def main() -> None:
             text, verdict, sources = u.clarifying_question if clarified else u.standalone_question, "", []
             queries = u.search_queries
         else:
+            # Bộ câu này chấm Hệ thống 1; mặc định giờ là Hệ thống 2 (CSDL).
             r = orchestrator.run_turn(orchestrator.TurnInput(question=item["question"],
-                                                             history=history))
+                                                             history=history, system="websearch"))
             got_intent, kind, text, verdict = r.intent.get("intent", ""), r.kind, r.text, r.verdict
             clarified = r.kind == "clarify"
             sources = r.sources
@@ -86,6 +104,9 @@ def main() -> None:
             "cited": bool(re.search(r"\[S\d+", text or "")),
             "queries": " | ".join(queries or []),
             "sources": " | ".join(s.get("url") or s.get("title", "") for s in sources),
+            "llm_calls": " ".join(r for r, _ in _CALLS),
+            **{f"s_{role}": round(sum(s for r, s in _CALLS if r == role), 2)
+               for role in ("understand", "answer", "verify")},
             "answer": text,
         }
         rows.append(row)
@@ -116,6 +137,10 @@ def main() -> None:
         ]
     summary += [
         f"- Độ trễ: p50 {statistics.median(latencies) if latencies else 0:.1f}s · p95 {p95:.1f}s",
+        "- Trung bình mỗi câu: " + " · ".join(
+            f"{k} {statistics.mean(r[k] for r in rows):.1f}" for k in
+            ("seconds", "s_understand", "s_answer", "s_verify")) + " giây · "
+        f"{statistics.mean(len(r['llm_calls'].split()) for r in rows) if rows else 0:.1f} lượt gọi mô hình",
         "",
         "Độ đúng nội dung / tỉ lệ bịa: người chấm đọc cột `answer` và `sources` trong CSV.",
     ]

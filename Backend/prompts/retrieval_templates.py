@@ -144,6 +144,11 @@ def new_procedure_note(current: str) -> str:
             f"bảng của **{current}**, nên có thể không đúng với thủ tục bạn đang nghĩ tới. "
             "Muốn tra thủ tục đó, bạn mở cuộc trò chuyện mới bằng nút bên dưới.")
 
+
+# Câu hỏi về thủ tục khác, code không trích được ô nào -> câu cố định thay LLM 2.
+OTHER_PROCEDURE_TEXT = ("Bảng thủ tục đang xem không có thông tin cho câu hỏi này, "
+                        "nên mình không trả lời để tránh nói sai.")
+
 EXPIRED_WARNING = (
     "⚠️ **Thủ tục này không còn xuất hiện trong danh mục của Cổng Dịch vụ công.**\n\n"
     "Cổng không công bố ngày hết hiệu lực, nên mình chỉ biết ngày mình phát hiện nó "
@@ -156,7 +161,7 @@ EXPIRED_WARNING = (
 #   "User prompt -> LLM 2 trả lời" (kể cả câu hỏi thủ tục), rồi bộ nhận diện
 #   song song gắn "có vẻ bạn đang hỏi thủ tục, bạn dùng <Tìm chính xác> nhé".
 # Chưa có bảng = LLM 2 trả lời bằng hiểu biết CHUNG của nó -> giao diện gắn nhãn
-# "⚠️ AI tự trả lời, chưa qua CSDL" (intent.answer_source = "llm_only").
+# "AI tự trả lời, chưa qua CSDL" (intent.answer_source = "llm_only").
 # ==========================================================================
 CHAT_SYSTEM = """Bạn là trợ lý Thủ tục hành chính cấp Xã/Phường của Việt Nam, đang trò chuyện với người dân.
 
@@ -164,9 +169,18 @@ VIỆC CỦA BẠN: chào hỏi, cảm ơn, và trả lời câu hỏi về th�
 
 LUẬT BẮT BUỘC:
 1. Lúc này bạn CHƯA tra cơ sở dữ liệu. Không được nói là thông tin lấy từ cơ sở dữ liệu hay từ Cổng Dịch vụ công.
-2. Câu hỏi về thủ tục -> trả lời ngắn gọn ý chính theo hiểu biết chung, không đưa con số lệ phí hay thời hạn cụ thể nếu không chắc.
+2. Câu hỏi về thủ tục -> trả lời 1-2 câu ý chính theo hiểu biết chung (thủ tục đó dùng để làm gì). KHÔNG liệt kê giấy tờ, KHÔNG nêu lệ phí, thời hạn hay bất kỳ con số nào.
 3. Câu hỏi không liên quan tới thủ tục hành chính -> lịch sự từ chối và nói bạn chỉ hỗ trợ thủ tục hành chính.
-4. Trả lời thân thiện, tối đa 5 câu. Chỉ viết tiếng Việt có dấu, không dùng chữ Hán hay tiếng Anh."""
+4. Trả lời thân thiện, tối đa 3 câu. Chỉ viết tiếng Việt có dấu, không dùng chữ Hán hay tiếng Anh.
+5. Không hỏi thông tin cá nhân (tên, tuổi, địa chỉ, số giấy tờ)."""
+# Đã thử (24/09) đặt 3 câu mẫu hỏi-đáp trước lịch sử: 1.5B chuyển sang liệt kê giấy
+# tờ bịa trên CÙNG một dòng ("Cần chuẩn bị: …"), lọt cả `stop` lẫn bộ lọc -> bỏ.
+
+# Câu LLM 2 bị bộ lọc loại (lẫn tiếng Anh/chữ Hán, hoặc nêu con số khi chưa tra CSDL).
+# Không nêu tên thủ tục: tên do bộ nhận diện đoán, có khi lệch ("hộ kinh doanh" ->
+# "Đăng ký cập nhật, bổ sung thông tin… hộ kinh doanh").
+CHAT_GUARDED_TEXT = ("Câu này có vẻ hỏi về một thủ tục hành chính. Mình chưa tra cơ sở dữ liệu "
+                     "nên không nêu giấy tờ, lệ phí hay thời hạn ở đây để tránh nói sai.")
 
 # Gợi ý CỐ ĐỊNH gắn NGAY DƯỚI câu trả lời của LLM 2 khi bộ nhận diện bắt được
 # câu hỏi thủ tục (câu chữ theo Proposal). Chip 🎯 do giao diện vẽ ngay sau.

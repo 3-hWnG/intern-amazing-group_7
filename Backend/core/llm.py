@@ -31,8 +31,10 @@ ROLE_OPTIONS = {
     # Hệ thống 2, trò chuyện TRƯỚC khi có bảng (Proposal: LLM 2 trả lời mọi câu,
     # kể cả câu hỏi thủ tục — kèm nhãn "AI tự trả lời, chưa qua CSDL"). Tách khỏi
     # `chitchat` của Hệ thống 1 để chỉnh riêng mà không đụng web search.
+    # `stop`: 1.5B gần như luôn mở danh sách giấy tờ bịa ("…bạn sẽ cần:\n\n1.") — dừng
+    # ngay chỗ xuống dòng thay vì sinh hết rồi mới bị bộ lọc thay (đo 24/09: 11/12 câu).
     "chat": {"temperature": 0.3, "top_p": 0.9, "repeat_penalty": 1.15,
-             "repeat_last_n": 256, "num_predict": 350},
+             "repeat_last_n": 256, "num_predict": 120, "stop": ["\n"]},
     # Hệ thống 2, hỏi tiếp trên bảng: ngắn và bám câu hỏi. `answer` (900 token)
     # để mô hình 1.5B kể lại cả bảng khi chỉ được hỏi một mục.
     "care": {"temperature": 0.1, "top_p": 0.9, "repeat_penalty": 1.15,

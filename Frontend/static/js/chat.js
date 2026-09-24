@@ -66,10 +66,10 @@ window.Chat = (function () {
      chứng" (BADGE.answer) sai nghĩa ở đây: bảng do CODE dựng từ dữ liệu cào thẳng
      dichvucong.gov.vn. Chỉ câu LLM 2 tự diễn giải mới cần lời nhắc. */
   const DB_BADGE = {
-    database: ["📚 Từ database", "badge-pass"],
-    database_llm: ["🤖 Trả lời dựa trên database, có thể không đúng", "badge-muted"],
+    database: ["Từ database", "badge-pass"],
+    database_llm: ["Thông tin do AI tổng hợp, có thể có sai sót", "badge-muted"],
     // Trò chuyện TRƯỚC khi tra (Proposal: LLM 2 trả lời mọi câu) — có thể bịa.
-    llm_only: ["⚠️ AI tự trả lời, chưa qua CSDL", "badge-fail"],
+    llm_only: ["AI tự trả lời, chưa qua CSDL", "badge-fail"],
   };
 
   function badge(meta) {

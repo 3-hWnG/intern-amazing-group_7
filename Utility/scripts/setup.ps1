@@ -20,6 +20,9 @@ param(
 $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $env:PYTHONIOENCODING = "utf-8"
+# pip doc requirements.txt (co chu thich tieng Viet) theo codepage he thong ->
+# may locale en-US (cp1252) bi UnicodeDecodeError. Ep che do UTF-8 cua Python.
+$env:PYTHONUTF8 = "1"
 
 $Root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 Set-Location $Root

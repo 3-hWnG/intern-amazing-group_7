@@ -444,6 +444,11 @@ def refers_to_table(table: dict, question: str) -> bool:
     return f" {m.group(1)} " in f" {hay} "
 
 
+# Cụm (đã bỏ dấu) hỏi thứ KHÔNG BAO GIỜ có trong bảng của cổng.
+_OUT_OF_TABLE = ("thu 7", "thu bay", "chu nhat", "cuoi tuan", "gio lam viec", "may gio",
+                 "mo cua", "so dien thoai", "sdt", "hotline", "can bo", "nguoi phu trach")
+
+
 def field_answer(table: dict, question: str, previous: str = "") -> str | None:
     """Câu hỏi chỉ về MỘT ô -> câu trả lời trích NGUYÊN VĂN ô đó. None nếu không phải.
 
@@ -453,9 +458,18 @@ def field_answer(table: dict, question: str, previous: str = "") -> str | None:
     """
     from Database.pipeline.textutil import fold
     q = f" {re.sub(r'[^0-9a-z]+', ' ', fold(question or ''))} "
+    # Lịch làm việc / liên hệ / cán bộ: bảng (cổng) KHÔNG có -> nói thẳng bằng
+    # code. Không để LLM 2 đoán ("Thứ 7 phường không làm việc" — V10.2.1, 1.5B).
+    if any(f" {c} " in q for c in _OUT_OF_TABLE):
+        return ("Bảng thông tin của cổng **không có** lịch làm việc, số điện thoại hay tên "
+                "cán bộ phụ trách. Bạn gọi hỏi trực tiếp cơ quan tiếp nhận (xem mục **Cơ quan "
+                "thực hiện** trong bảng) hoặc dùng nút **🌐 Web search**.")
     secs = sections_for(question)
     # "còn người khuyết tật thì sao?" không nhắc mục nào -> mượn mục của câu trước.
-    if not secs and previous and len(q.split()) <= 8:
+    # CHỈ khi câu có dạng nối tiếp/điều kiện: mượn cho mọi câu ngắn thì "thứ 7
+    # phường có làm việc không" bị trả ô THỜI GIAN của câu trước (chạy thử 24/09).
+    if (not secs and previous and len(q.split()) <= 8
+            and (_FOLLOW_ON.search(q.strip()) or any(f" {c} " in q for c in _CONDITIONAL))):
         secs = sections_for(previous)
     if len(secs) != 1 or secs[0] not in _QUOTABLE:
         return None

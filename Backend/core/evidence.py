@@ -6,8 +6,11 @@ Mỗi nguồn có id S1, S2... để câu trả lời trích dẫn và bộ ki�
 
 from __future__ import annotations
 
+import re
+
 from config import ATTACH_TOP_K, EVIDENCE_MAX_CHARS, EVIDENCE_TOP_K, SEARCH_MAX_QUERIES
 from core import mcp_client
+from domain.text import terms
 
 
 def _renumber(pack: dict) -> dict:
@@ -61,6 +64,31 @@ def merge(old: dict, new: dict) -> dict:
     out["queries"] = list(dict.fromkeys((old.get("queries") or []) + (new.get("queries") or [])))
     out["diagnostics"] = (old.get("diagnostics") or []) + ["-- tra bổ sung --"] + (new.get("diagnostics") or [])
     return _renumber(out)
+
+
+# 1.5B gần như không ghi [S#] dù prompt dặn nhiều lần (evaluate.py 24/09: 6/35 câu).
+# Code gắn nguồn cho dòng CHÉP GẦN NGUYÊN VĂN một tài liệu. Ngưỡng đo trên câu trả
+# lời thật: dòng chép nguồn khớp 0.86–1.0, dòng tự thêm/bịa 0.28–0.77.
+CITE_MIN_COVER = 0.85
+CITE_MIN_TERMS = 8
+
+
+def cite_lines(answer: str, pack: dict | None) -> str:
+    """Gắn " [S#]" cuối dòng chưa có trích dẫn mà ≥ CITE_MIN_COVER âm tiết + cặp
+    âm tiết nằm trong một nguồn. Dòng ngắn và dòng tiêu đề (kết thúc bằng ":") bỏ qua."""
+    sources = (pack or {}).get("sources") or []
+    bags = {s["id"]: set(terms(f"{s.get('title', '')} {s.get('snippet', '')} {s.get('content', '')}"))
+            for s in sources if s.get("id")}
+    out = []
+    for line in (answer or "").splitlines():
+        words = set(terms(line))
+        if (bags and len(words) >= CITE_MIN_TERMS and not line.rstrip().endswith(":")
+                and not re.search(r"\[S\d+", line, re.IGNORECASE)):
+            sid = max(bags, key=lambda k: len(words & bags[k]))
+            if len(words & bags[sid]) / len(words) >= CITE_MIN_COVER:
+                line = re.sub(r"([.;,]?)\s*$", rf" [{sid}]\1", line, count=1)
+        out.append(line)
+    return "\n".join(out)
 
 
 def public_sources(pack: dict | None, answer: str = "") -> list[dict]:

@@ -64,7 +64,7 @@
 ### B2. Máy trạng thái ô chat: CHAT, EXACT, CARE — ✅ XONG (2026-09-24)
 
 ```
- tin nhắn thường ─► CHAT   LLM 2 trả lời (nhãn "⚠️ AI tự trả lời, chưa qua CSDL")
+ tin nhắn thường ─► CHAT   LLM 2 trả lời (nhãn "AI tự trả lời, chưa qua CSDL")
                            ║ song song: retrieval.looks_like_procedure() — LUẬT THEO CSDL
                            ╚► khớp → gắn gợi ý 🎯 + chip [🎯 Tìm chính xác: “…”]
  nút 🎯 / chip ────► EXACT  từ khoá → (LLM 1 nếu trượt) → MCQ → bảng
@@ -83,7 +83,7 @@
   - `Frontend/static/js/exact.js` (mới): nút 🎯. Ô nhập có chữ thì gửi ngay; ô trống thì "lên nòng" cho tin nhắn kế tiếp. Chỉ hiện ở Hệ thống 2.
   - `procedure.js`: chip gợi ý, hộp thoại lần 2, ô "Tra lại" gửi `resubmit`, và nút ô chat mới tra luôn câu hỏi.
 
-**Đúng Proposal (nhóm chốt lại 2026-09-24).** LLM 2 trả lời MỌI tin nhắn thường, kể cả câu hỏi thủ tục, bằng hiểu biết chung. Câu trả lời mang nhãn **"⚠️ AI tự trả lời, chưa qua CSDL"** (`answer_source = "llm_only"`). Khi bộ nhận diện bắt được câu hỏi thủ tục, câu gợi ý của Proposal và chip 🎯 được gắn ngay dưới. Bản trước thay câu trả lời bằng câu cố định; đã bỏ theo yêu cầu, vì nhãn cảnh báo đã nói rõ đây là AI tự trả lời. Các cụm xã giao như "cần hỗ trợ", "giúp đỡ", "tư vấn" không làm bộ nhận diện kích hoạt: trước đây "mình cần **hỗ trợ**" khớp nhầm "**Hỗ trợ** chi phí hoả táng".
+**Đúng Proposal (nhóm chốt lại 2026-09-24).** LLM 2 trả lời MỌI tin nhắn thường, kể cả câu hỏi thủ tục, bằng hiểu biết chung. Câu trả lời mang nhãn **"AI tự trả lời, chưa qua CSDL"** (`answer_source = "llm_only"`). Khi bộ nhận diện bắt được câu hỏi thủ tục, câu gợi ý của Proposal và chip 🎯 được gắn ngay dưới. Bản trước thay câu trả lời bằng câu cố định; đã bỏ theo yêu cầu, vì nhãn cảnh báo đã nói rõ đây là AI tự trả lời. Các cụm xã giao như "cần hỗ trợ", "giúp đỡ", "tư vấn" không làm bộ nhận diện kích hoạt: trước đây "mình cần **hỗ trợ**" khớp nhầm "**Hỗ trợ** chi phí hoả táng".
 
 **Bộ nhận diện** (luật CSDL, không LLM): khớp ≥ 60% và ít nhất 2 âm tiết vào tên thủ tục; câu chỉ gồm từ xã giao thì bỏ qua. Ngưỡng này nới hơn ngưỡng tra thật (75%), vì bỏ sót một gợi ý thì hại hơn gợi ý thừa. Trên bộ thử nhỏ: 10/10 câu hỏi thủ tục có chip, 0/10 câu xã giao bị gắn nhầm.
 
@@ -92,8 +92,8 @@
 ### B3. Siết LLM 2 — ✅ phần lớn XONG (2026-09-24, sau khi chạy thử thật)
 
 **Nhãn câu trả lời (Hệ thống 2).** Bỏ nhãn "Chưa qua kiểm chứng": nhãn đó là của bộ kiểm chứng Web search, sai nghĩa ở đây. Giờ có hai nhãn:
-- **📚 Từ database**: bảng do code dựng, hoặc câu code trích nguyên ô.
-- **🤖 Trả lời dựa trên database, có thể không đúng**: LLM 2 diễn giải.
+- **Từ database**: bảng do code dựng, hoặc câu code trích nguyên ô.
+- **Thông tin do AI tổng hợp, có thể có sai sót**: LLM 2 diễn giải.
 
 Nhãn được ghi vào `intent.answer_source`; Web search không đổi gì.
 

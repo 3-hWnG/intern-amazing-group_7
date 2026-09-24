@@ -64,6 +64,30 @@ def _overlap(terms: list[str], row: sqlite3.Row) -> float:
     return sum(1 for t in terms if t in hay) / len(terms) if terms else 0.0
 
 
+# Tiền tố chung của tên thủ tục, không mang nghĩa phân biệt.
+_NAME_PREFIX = {"thu", "tuc"}
+# Câu hỏi DÀI kiểu người thật ("à còn làm lại căn cước bị mất thì sao", "vợ em
+# mới sinh bé hôm qua… làm giấy khai sinh…") có nhiều từ không nằm trong tên
+# nào -> `_overlap` (chia cho số từ CÂU HỎI) luôn < 0.6 và cả tầng 3 bị loại
+# (bắt được khi chạy thử thật 24/09). Đo thêm phía TÊN: tên được câu hỏi phủ
+# ≥ NAME_COVER và khớp ≥ NAME_MIN_TERMS âm tiết trọn thì cũng nhận.
+NAME_COVER = 0.5
+NAME_MIN_TERMS = 2
+
+
+def name_coverage(terms, name: str) -> tuple[int, float]:
+    """(số âm tiết của TÊN khớp trọn với câu hỏi, tỉ lệ phủ tên) — bỏ "thủ tục"."""
+    toks = {t for t in re.split(r"[^0-9a-z]+", fold(name or "")) if t}
+    core = (toks - _NAME_PREFIX) or toks
+    hit = len(core & set(terms))
+    return hit, (hit / len(core) if core else 0.0)
+
+
+def name_covered(terms, name: str) -> bool:
+    hit, cov = name_coverage(terms, name)
+    return hit >= NAME_MIN_TERMS and cov >= NAME_COVER
+
+
 def _run(conn: sqlite3.Connection, expr: str, limit: int) -> list[sqlite3.Row]:
     return conn.execute(
         f"""SELECT p.proc_id, p.name, p.domain, p.department_promulgate,
@@ -105,7 +129,7 @@ def search(conn: sqlite3.Connection, query: str, limit: int = 10) -> list[dict]:
             # Tầng 2 khớp cả trong MÔ TẢ dài 15.000 ký tự, tầng 3 lại là OR —
             # cả hai đều dễ moi ra thứ chẳng liên quan. Bắt phải có đủ số từ
             # nằm trong TÊN/LĨNH VỰC mới được nhận.
-            if tier_no >= 2 and ov < MIN_OVERLAP:
+            if tier_no >= 2 and ov < MIN_OVERLAP and not name_covered(terms, r["name"]):
                 continue
             seen.add(r["proc_id"])
             hit = dict(r)

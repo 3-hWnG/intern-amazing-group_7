@@ -404,6 +404,14 @@ a.cite:hover{background:var(--accent);color:#fff}
   margin:0 0 9px;font-size:12px;text-transform:uppercase;
   letter-spacing:.06em;color:var(--ink-3);font-weight:600;
 }
+.proc-more>summary{cursor:pointer;color:var(--ink-2);font-size:13px;padding:6px 0}
+/* mục thu gọn sẵn: bấm tiêu đề để mở */
+.proc-collapsible>summary{cursor:pointer;list-style:none}
+.proc-collapsible>summary::-webkit-details-marker{display:none}
+.proc-collapsible>summary .proc-h{display:inline;margin:0}
+.proc-collapsible>summary .proc-h::after{content:" (bấm để xem)";text-transform:none;letter-spacing:0;font-weight:400}
+.proc-collapsible[open]>summary .proc-h::after{content:" (bấm để thu gọn)"}
+.proc-collapsible[open]>summary{margin-bottom:9px}
 .proc-text p{margin:0 0 8px;font-size:14px;line-height:1.6}
 .proc-text p:last-child{margin-bottom:0}
 

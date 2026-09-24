@@ -35,11 +35,21 @@ window.Procedure = (function () {
     return note;
   }
 
-  function section(title, node, extraClass) {
-    const s = el("section", "proc-section" + (extraClass ? " " + extraClass : ""));
-    s.appendChild(el("h4", "proc-h", title));
-    s.appendChild(node);
-    return s;
+  /* `collapsed`: mục dài (giải thích, các bước, tài liệu, nguồn) thu gọn sẵn —
+     bảng mở hết thì dài vài màn hình. Chỉ ẩn khỏi mắt, KHÔNG bỏ mục nào. */
+  function section(title, node, extraClass, collapsed) {
+    const cls = "proc-section" + (extraClass ? " " + extraClass : "");
+    if (!collapsed) {
+      const s = el("section", cls);
+      s.appendChild(el("h4", "proc-h", title));
+      s.appendChild(node);
+      return s;
+    }
+    const d = el("details", cls + " proc-collapsible");
+    const sum = el("summary");
+    sum.appendChild(el("h4", "proc-h", title));
+    d.append(sum, node);
+    return d;
   }
 
   function paragraph(text) {
@@ -56,12 +66,21 @@ window.Procedure = (function () {
 
   /* ─── Checklist tick được. Trạng thái tick lưu theo thủ tục ở localStorage,
      để người dân đóng tab rồi quay lại vẫn còn — họ đi làm hồ sơ nhiều ngày. */
-  function checklist(items, storeKey, render) {
+  /* `visible`: chỉ hiện chừng ấy dòng đầu, phần còn lại gói vào "Xem thêm" —
+     cổng hay nhồi 20-30 dòng ghi chú vào thành phần hồ sơ (đo: bảng cao 5.000px). */
+  function checklist(items, storeKey, render, visible) {
     const list = el("div", "proc-check");
+    let target = list;
     let saved = {};
     try { saved = JSON.parse(localStorage.getItem(storeKey) || "{}"); } catch (e) { saved = {}; }
 
     items.forEach((item, i) => {
+      if (visible && i === visible) {
+        const more = el("details", "proc-more");
+        more.appendChild(el("summary", "", `Xem thêm ${items.length - visible} mục`));
+        list.appendChild(more);
+        target = more;
+      }
       const row = el("label", "proc-check-row");
       const box = el("input");
       box.type = "checkbox";
@@ -74,7 +93,7 @@ window.Procedure = (function () {
       };
       row.appendChild(box);
       row.appendChild(render(item));
-      list.appendChild(row);
+      target.appendChild(row);
     });
     return list;
   }
@@ -143,11 +162,11 @@ window.Procedure = (function () {
 
     /* Giải thích thủ tục */
     box.appendChild(section("Giải thích thủ tục",
-      cellBody(t.explanation, (v) => paragraph(v))));
+      cellBody(t.explanation, (v) => paragraph(v)), "", true));
 
     /* Thành phần hồ sơ — tick được */
     box.appendChild(section("Thành phần hồ sơ (giấy tờ phải nộp)",
-      cellBody(t.components, (v) => checklist(v, `proc:${t.proc_id}:comp`, componentRow))));
+      cellBody(t.components, (v) => checklist(v, `proc:${t.proc_id}:comp`, componentRow, 6))));
 
     /* Hình thức nộp · Chi phí · Thời gian · Địa điểm — nhóm thành lưới */
     const grid = el("div", "proc-grid");
@@ -183,7 +202,7 @@ window.Procedure = (function () {
     /* Checklist những việc cần làm — tick được */
     if (t.steps && t.steps.length) {
       box.appendChild(section("Checklist những việc cần làm",
-        checklist(t.steps, `proc:${t.proc_id}:steps`, stepRow)));
+        checklist(t.steps, `proc:${t.proc_id}:steps`, stepRow), "", true));
     }
 
     /* Tài liệu liên quan (bấm để tải) */
@@ -199,7 +218,7 @@ window.Procedure = (function () {
         list.appendChild(row);
       });
       return list;
-    })));
+    }), "", true));
 
     /* Link tới web đăng ký online */
     box.appendChild(section("Nộp hồ sơ trực tuyến", cellBody(t.online, (v) => {
@@ -255,7 +274,7 @@ window.Procedure = (function () {
       mBox.appendChild(a);
     }
     if (t.scope && t.scope.note) mBox.appendChild(el("p", "proc-absent", "ℹ️ " + t.scope.note));
-    box.appendChild(section("Thông tin nguồn", mBox, "proc-section-meta"));
+    box.appendChild(section("Thông tin nguồn", mBox, "proc-section-meta", true));
 
     box.appendChild(footer(t, convId));
     return box;

@@ -143,7 +143,9 @@ def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> 
 
         # Đã tra cứu có nguồn thì phục vụ câu trả lời cho người dân kèm nguồn đối chiếu, không tự gán not_in_sources
         res.kind = "answer"
-        res.text = draft
+        # Nguồn hiển thị chọn theo [S#] do MÔ HÌNH ghi, không theo [S#] code gắn: dòng
+        # diễn giải không được gắn vẫn cần thấy nguồn của nó.
+        res.text = verifier.note_outdated_units(evidence.cite_lines(draft, pack))
         res.sources = evidence.public_sources(pack, draft)
         return res
 
