@@ -90,7 +90,7 @@ def _conn() -> sqlite3.Connection | None:
         return None
     try:
         conn = R.connect(PROCEDURES_DB_PATH)
-        # Bảng rỗng cũng coi như chưa có CSDL: đỡ trả lời "không tìm thấy" 1.407 lần.
+        # Bảng rỗng cũng coi như chưa có CSDL: đỡ trả lời "không tìm thấy" cho mọi câu hỏi.
         if R.count_active(conn) == 0:
             conn.close()
             return None

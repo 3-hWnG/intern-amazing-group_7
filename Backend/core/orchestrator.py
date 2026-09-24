@@ -4,7 +4,7 @@ Từ V10.3 có HAI hệ thống trả lời chạy song song, người dùng chu
 nút "Web search" trên giao diện:
 
     Hệ thống 1  websearch   core/system_websearch.py   tra web .gov.vn qua MCP
-    Hệ thống 2  retrieval   core/system_retrieval.py   CSDL thủ tục nội bộ (CHƯA XÂY)
+    Hệ thống 2  retrieval   core/system_retrieval.py   CSDL thủ tục nội bộ (MẶC ĐỊNH)
 
 Tệp này KHÔNG chứa nghiệp vụ — chỉ đọc `inp.system` rồi gọi đúng module. Hợp
 đồng chung (`TurnInput` / `TurnResult`) nằm ở `core/turn.py` và được xuất lại ở

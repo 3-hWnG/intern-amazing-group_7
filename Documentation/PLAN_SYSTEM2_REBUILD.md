@@ -1,6 +1,6 @@
 # KẾ HOẠCH DỰNG LẠI HỆ THỐNG 2 THEO PROPOSAL
 
-**Ngày:** 2026-09-24 · **Nhánh:** V10.3 · **Nguồn yêu cầu:** Project Nhóm 7, slide 3–5 và 7–8
+**Ngày:** 2026-09-24 · **Nhánh:** V10.5 (tách từ V10.3) · **Nguồn yêu cầu:** Project Nhóm 7, slide 3–5 và 7–8
 **Phạm vi dữ liệu:** thủ tục cấp **Xã/Phường**, gồm 1.350 thủ tục (level=COMMUNE hợp với H29 của TP.HCM)
 
 ---
@@ -146,8 +146,8 @@ Nhãn được ghi vào `intent.answer_source`; Web search không đổi gì.
 - 44 thủ tục nhóm `absent` phải lấy từ nguồn khác (CSDL quốc gia về TTHC, hoặc cổng TP.HCM).
 - Người dân nhắc tỉnh cũ đã sáp nhập (vd "Bình Định") thì hiện chưa ánh xạ sang tỉnh mới. Chỉ ảnh hưởng thứ tự ở MCQ 2, không làm sai kết quả.
 
-### B7. Cập nhật tài liệu
-README và PHASE2_RETRIEVAL.md vẫn ghi "1.407 thủ tục", "province NULL 100%", và luồng LLM 1 đi trước. Cần sửa theo mục 0.
+### B7. Cập nhật tài liệu — ✅ XONG (2026-09-24)
+README, `ARCHITECTURE.md` §0, `STRUCTURE.md`, `SETUP.md` (thêm bước 7 cào CSDL + `-SkipScrape`), `CODEBASE_INDEX.md` (sinh lại) đã theo V10.5. `PHASE2_RETRIEVAL.md` giữ nguyên làm hồ sơ V10.3, có bảng "chỗ nào đã cũ" ở đầu. `PHASE1_PLAN.md` D2 có ghi chú cập nhật về `province`. Script cài đặt ghi V10.5 và ~1.350 thủ tục; đã chạy thật `Setup First Time.bat` và cào thử từ một bản checkout sạch.
 
-**Thứ tự đề xuất:** B6 → B7 → B5 (phần còn lại của B3 chờ fine-tune).
+**Thứ tự đề xuất:** B6 → B5 (phần còn lại của B3 chờ fine-tune).
 Fine-tune (slide 7) giờ nhẹ hơn: LLM 1 chỉ còn chữa các câu gõ sai hoặc mơ hồ. B6 sẽ cho biết đó là bao nhiêu phần trăm số câu hỏi, và từ đó có đáng fine-tune hay không.

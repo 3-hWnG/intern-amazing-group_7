@@ -1,6 +1,6 @@
 @echo off
 chcp 65001 >nul
-title Tro ly Thu tuc hanh chinh - V10.3
+title Tro ly Thu tuc hanh chinh - V10.5
 cd /d "%~dp0"
 
 if not exist ".venv\Scripts\python.exe" (

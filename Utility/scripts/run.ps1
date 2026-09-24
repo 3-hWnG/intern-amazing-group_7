@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# Tro ly Thu tuc hanh chinh - V10.3
+# Tro ly Thu tuc hanh chinh - V10.5
 # (Chu thich trong script khong dau de hien dung tren moi console Windows.)
 #
 #   .\Utility\scripts\run.ps1                   -> CHAY UNG DUNG: http://127.0.0.1:8000

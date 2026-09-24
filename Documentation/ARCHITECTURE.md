@@ -4,17 +4,22 @@
 *thông tin thủ tục hiện hành*; một lượt suy luận thứ hai *kiểm chứng* trước khi
 trả lời; SQLite + hàng đợi tuần tự lo *bộ nhớ và thứ tự xử lý*.
 
-## 0. Hai hệ thống trả lời (V10.3)
+## 0. Hai hệ thống trả lời (V10.3 → V10.5)
 
 Từ V10.3 có **hai hệ thống chạy song song**, người dùng chuyển bằng **nút
 "Web search"** ngay cạnh ô nhập:
 
-| | Hệ thống 1 | Hệ thống 2 |
+| | Hệ thống 1 | Hệ thống 2 (**mặc định**) |
 |---|---|---|
 | Tên trong mã | `websearch` | `retrieval` |
 | Module | `core/system_websearch.py` | `core/system_retrieval.py` |
-| Nguồn tri thức | web .gov.vn, tra qua MCP | CSDL thủ tục nội bộ |
-| Trạng thái | **đang chạy** (toàn bộ mục 1–6 dưới đây) | **CHƯA XÂY** — khung đã sẵn |
+| Nguồn tri thức | web .gov.vn, tra qua MCP | CSDL 1.350 thủ tục cấp Xã/Phường (`procedures.db`) |
+| Trạng thái | **đang chạy** (toàn bộ mục 1–6 dưới đây) | **đang chạy** — kiến trúc + số đo: [`PLAN_SYSTEM2_REBUILD.md`](PLAN_SYSTEM2_REBUILD.md) |
+
+> **Mục 1–6 dưới đây chỉ nói về Hệ thống 1.** Hệ thống 2 (V10.5) chạy theo
+> luồng: trò chuyện (LLM 2, nhãn "⚠️ AI tự trả lời") → nút **🎯 Tìm chính xác**
+> → tra từ khoá (LLM 1 chỉ khi trượt) → MCQ "thủ tục chính → dạng cụ thể" →
+> **bảng do code dựng** → hỏi tiếp (code trích ô, hoặc LLM 2 chỉ đọc mục liên quan).
 
 ```
                       ┌─ system == "websearch" ─> system_websearch.run_turn()  HỆ THỐNG 1
@@ -32,14 +37,14 @@ chat_routes ─> orchestrator ─┤
   nhau để chung một ô chat thì mô hình trộn dữ liệu và trả lời lẫn lộn. Luật
   này được ép ở **cả hai phía**: giao diện tự mở ô chat mới
   (`static/js/systems.js`), máy chủ trả **HTTP 409** nếu vẫn cố đổi giữa chừng.
-- **Hệ thống 2 chưa xong thì nói thật.** `RETRIEVAL_ENABLED=false` (mặc định)
-  ⇒ trả lời lịch sự là chưa sẵn sàng + mời bấm nút Web search, `kind=unavailable`.
-  Không bao giờ trả lời chay.
+- **Hệ thống 2 không sẵn sàng thì nói thật.** `RETRIEVAL_ENABLED=false`, hoặc
+  máy chưa cào `procedures.db` ⇒ trả lời lịch sự là chưa sẵn sàng + mời bấm nút
+  Web search, `kind=unavailable`. Không bao giờ trả lời chay.
 
-Bốn chỗ cần cắm code cho Hệ thống 2 (xem docstring `core/system_retrieval.py`):
-`extract_keys()` (LLM 1) → `lookup()` (CSDL) → `build_table()` (code, không LLM)
-→ `follow_up()` (LLM 2 chăm sóc khách hàng). Xong cả bốn thì đặt
-`RETRIEVAL_ENABLED=true`, muốn làm mặc định thì `DEFAULT_SYSTEM=retrieval`.
+Bốn mốc của Hệ thống 2 (docstring `core/system_retrieval.py`): `extract_keys()`
+(LLM 1, chỉ khi tra từ khoá trượt) → `lookup()` (CSDL) → `build_table()` (code,
+không LLM) → `follow_up()` (LLM 2 chăm sóc khách hàng). Mặc định
+`RETRIEVAL_ENABLED=true`, `DEFAULT_SYSTEM=retrieval` (xem `config.py`).
 
 ---
 

@@ -1,22 +1,43 @@
-# Trợ lý Thủ tục hành chính — V10.3
+# Trợ lý Thủ tục hành chính — V10.5
 
-Trợ lý ảo trả lời câu hỏi về **thủ tục hành chính Việt Nam**. Mô hình ngôn ngữ
-3–4B chạy **cục bộ** (local) lo phần *hiểu câu hỏi*; phần *thông tin thủ tục* thì
-KHÔNG do mô hình sinh ra. Có **hai hệ thống trả lời**, đổi bằng nút trên giao diện:
+Trợ lý ảo trả lời câu hỏi về **thủ tục hành chính cấp Xã/Phường**. Mô hình ngôn
+ngữ nhỏ (mặc định `qwen2.5:1.5b`) chạy **cục bộ** (local). Thông tin thủ tục
+trong bảng thì KHÔNG do mô hình sinh ra. Có **hai hệ thống trả lời**, đổi bằng
+nút trên giao diện:
 
 | | Hệ thống 2 — **CSDL thủ tục** (mặc định) | Hệ thống 1 — **Web search** |
 |---|---|---|
-| Nguồn | 1.407 thủ tục cào sẵn về máy (SQLite + FTS5) | tra `.gov.vn` trực tiếp qua MCP |
+| Nguồn | **1.350 thủ tục cấp Xã/Phường** cào sẵn từ dichvucong.gov.vn (SQLite + FTS5) | tra `.gov.vn` trực tiếp qua MCP |
 | Câu trả lời | **bảng do code dựng** — không qua mô hình | mô hình soạn, rồi **kiểm chứng** với nguồn |
-| Mạnh ở | chính xác tuyệt đối, có checklist + biểu mẫu tải về | thủ tục mới, thứ chưa có trong kho |
-| Tài liệu | [`PHASE2_RETRIEVAL.md`](Documentation/PHASE2_RETRIEVAL.md) | [`ARCHITECTURE.md`](Documentation/ARCHITECTURE.md) |
+| Mạnh ở | đúng nguyên văn cổng, có checklist + biểu mẫu tải về | thủ tục mới, thứ chưa có trong kho |
+| Tài liệu | [`PLAN_SYSTEM2_REBUILD.md`](Documentation/PLAN_SYSTEM2_REBUILD.md) | [`ARCHITECTURE.md`](Documentation/ARCHITECTURE.md) |
 
 Đổi hệ thống sẽ **mở ô chat mới** để mô hình không trộn thông tin hai nguồn.
 
-> *A Vietnamese public-administration assistant with two answer paths. The
-> default retrieves from a local database of 1,407 scraped procedures and
-> renders the answer table in code — the LLM never writes the facts. The other
-> searches .gov.vn live over MCP and verifies every answer against its evidence.*
+> *A Vietnamese public-administration assistant for ward-level (Xã/Phường)
+> procedures. The default path chats with a local LLM and, on the 🎯 button,
+> looks the procedure up in a database of 1,350 procedures scraped from
+> dichvucong.gov.vn, rendering the answer table in code — the LLM never writes
+> the facts. The other path searches .gov.vn live over MCP and verifies every
+> answer against its evidence.*
+
+## Dùng Hệ thống 2 thế nào / How System 2 works
+
+1. **Hỏi bình thường** → trợ lý trò chuyện, nhãn **⚠️ AI tự trả lời, chưa qua
+   CSDL**. Hỏi trúng một thủ tục thì bên dưới hiện gợi ý **🎯 Tìm chính xác**.
+2. **Bấm 🎯 Tìm chính xác, gõ tên thủ tục, bấm Gửi** → tra CSDL bằng từ khoá
+   (mô hình chỉ vào cuộc khi từ khoá không khớp) → chọn **thủ tục chính** → chọn
+   **dạng cụ thể** → nhận **bảng thủ tục** (nhãn **📚 Từ database**).
+3. **Hỏi tiếp về bảng**:
+   - câu hỏi về một ô (lệ phí, thời gian, giấy tờ, nơi nộp…) → trích nguyên văn
+     ô đó (📚);
+   - xin tóm tắt/giải thích → mô hình trả lời chỉ trên bảng (nhãn **🤖 Trả lời
+     dựa trên database, có thể không đúng**).
+4. **Mỗi ô chat tra một thủ tục.** Bấm 🎯 lần hai sẽ được mời mở ô chat mới. Hỏi
+   sang thủ tục khác thì vẫn được trả lời, kèm cảnh báo.
+
+Ô nào cổng không công bố thì bảng ghi **"Chưa có thông tin…"**, không bao giờ
+để trống hay tự suy ra "miễn phí".
 
 ---
 
@@ -24,6 +45,7 @@ KHÔNG do mô hình sinh ra. Có **hai hệ thống trả lời**, đổi bằng
 
 | Bạn muốn gì | Làm gì |
 |---|---|
+| Lấy mã nguồn | `git clone -b V10.5 https://github.com/3-hWnG/intern-amazing-group_7.git` |
 | Chạy lần đầu trên máy mới | Bấm đôi **`Setup First Time.bat`** (một lần duy nhất, 30–60 phút) |
 | Chạy ứng dụng hằng ngày | Bấm đôi **`Launch Web.bat`** → http://127.0.0.1:8000 |
 | Đổi cấu hình (mô hình, cổng, tìm kiếm…) | Sửa **`.env`** ở thư mục gốc — xem `.env.example` |
@@ -35,7 +57,7 @@ KHÔNG do mô hình sinh ra. Có **hai hệ thống trả lời**, đổi bằng
 `Setup First Time.bat` **không tải lại thứ đã có**: Python, `.venv`, thư viện,
 Ollama, mô hình — cái nào máy đã có thì bỏ qua. Chạy lại nhiều lần vẫn an toàn.
 
-⚠️ **Lần đầu nó phải cào ~1.400 thủ tục về máy (15–25 phút).** Dữ liệu thủ tục và
+⚠️ **Lần đầu nó phải cào ~1.350 thủ tục cấp Xã/Phường về máy (15–25 phút).** Dữ liệu thủ tục và
 biểu mẫu `.docx` **không nằm trong git** (kho sẽ nặng và không diff được), nên máy
 nào cũng phải cào một lần. Bỏ qua bằng `-SkipScrape` — lúc đó Hệ thống 2 sẽ báo
 chưa có CSDL và mời bạn dùng Web search. Cào lại/cập nhật bất cứ lúc nào:
@@ -58,7 +80,8 @@ LLM for Procedures V10.3/
 │
 ├─ Backend/                mã nguồn máy chủ (FastAPI · pipeline · MCP · CSDL)
 ├─ Frontend/               giao diện: static/ (css, js) + templates/ (html)
-├─ Database/               schema.sql · corpus/ (dữ liệu nguồn) · runtime/ (app.db)
+├─ Database/               pipeline/ (cào + nạp CSDL thủ tục) · staging/ · schema.sql
+│                          runtime/ (app.db, procedures.db — không commit)
 ├─ Evaluation/             kịch bản chấm điểm pipeline
 ├─ Utility/                finetune/ · scripts/ (run.ps1, setup.ps1, make_index.py)
 ├─ Documentation/          tài liệu (bản cũ nằm trong legacy/)
@@ -76,7 +99,8 @@ Chi tiết từng thư mục + bảng đối chiếu với V10.2: [`Documentatio
 - **Python 3.12** — `Setup First Time.bat` tự cài qua `winget` nếu thiếu
 - **[Ollama](https://ollama.com/download)** — tự cài qua `winget` nếu thiếu
 - Mô hình mặc định `qwen2.5:1.5b` (đổi bằng `LLM_MODEL` trong `.env`)
-- Kết nối Internet — hệ thống **tra web** cho mọi câu trả lời
+- Kết nối Internet — để cài đặt, cào CSDL thủ tục lần đầu, và cho Hệ thống 1
+  (Web search). Đã cào xong thì **Hệ thống 2 chạy được không cần mạng**.
 
 ---
 

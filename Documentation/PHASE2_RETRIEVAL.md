@@ -3,6 +3,22 @@
 **Ngày:** 2026-09-22 · **Nhánh:** V10.3 · **Trạng thái:** đã chạy, là hệ thống MẶC ĐỊNH
 **Phạm vi:** nối kiến trúc trong Proposal vào CSDL mà Phase 1 đã dựng (1.407 thủ tục).
 
+> ⚠️ **ĐÃ CŨ MỘT PHẦN — bản hiện tại là V10.5**, xem
+> [`PLAN_SYSTEM2_REBUILD.md`](PLAN_SYSTEM2_REBUILD.md). Tài liệu này giữ nguyên
+> làm hồ sơ thiết kế V10.3; các số đo ở đây vẫn là lý do của nhiều quyết định.
+> Những chỗ **không còn đúng** ở V10.5:
+>
+> | Mục ở đây | V10.5 |
+> |---|---|
+> | CSDL 1.407 thủ tục theo lĩnh vực | **1.350 thủ tục cấp Xã/Phường** (level=COMMUNE + H29 TP.HCM) |
+> | §1 LLM 1 rút khoá cho MỌI câu hỏi | **Tra từ khoá trước**; LLM 1 chỉ khi từ khoá không khớp chắc |
+> | §1 mọi tin nhắn đều đem đi tra | Tin nhắn thường = **LLM 2 trò chuyện** (nhãn "⚠️ AI tự trả lời"); tra CSDL bằng nút **🎯 Tìm chính xác** |
+> | §1 MCQ "thủ tục nào" + "nộp cấp nào" | MCQ **"thủ tục chính" → "dạng cụ thể"**; đã bỏ MCQ "nộp cấp nào" |
+> | Q1 `province` NULL 100% | `province` = tỉnh **công bố** (614 bản của UBND tỉnh) |
+> | Q5 nhớ trục `agency_level` | Trục đó không còn được hỏi (vẫn còn trong `MEMORABLE_AXES`) |
+> | §4.6 bộ gác `newProcedure` đuổi sang ô chat mới | Chỉ **cảnh báo gắn sau** câu trả lời, không chặn |
+> | §5 ô trống ghi "cổng không công bố" | Ô trống mở đầu bằng **"Chưa có thông tin…"**, không suy ra "miễn phí" |
+
 > Phase 1 (ETL + CSDL) nằm ở `Database/PHASE1_PLAN.md` — **tệp đó do phiên khác sở hữu,
 > đừng sửa.** Tài liệu này chỉ nói về Phase 2: phần tra cứu và giao diện.
 

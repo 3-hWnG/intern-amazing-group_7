@@ -664,6 +664,16 @@ có bản địa phương hoá thì chỉ việc đổ dữ liệu vào cột, *
 > 🔧 **Muốn đổi:** điền `record["province"]` trong `normalize.py`. Chỉ nên làm
 > SAU khi test được `provinceCode` có trả về bản khác nhau thật hay không.
 
+> 📌 **Cập nhật 2026-09-24 (V10.5) — đã đổi, đúng điều kiện ở trên.** Đã chứng
+> minh có bản địa phương hoá thật: cùng một tên thủ tục có bản của bộ (G10) và
+> bản riêng của H35, H20, H29, H18, mỗi bản một mã. Nhóm chốt gắn nhãn, nên
+> `normalize._province()` điền **tỉnh CÔNG BỐ** cho bản có bên ban hành cấp tỉnh
+> (mã `H…`): 614/1.350 bản. Bản của bộ/ngành vẫn NULL. Lời cảnh báo ở trên vẫn
+> giữ: tầng hiển thị ghi "Bản này do UBND … công bố", **không** ghi "chỉ áp dụng
+> ở". `import_db` coi việc đổi `province` của cùng một bản ghi nguồn là phiên
+> bản mới (trước đây sinh bản `active` trùng). Chi tiết:
+> `Documentation/PLAN_SYSTEM2_REBUILD.md` §0.
+
 ---
 
 ## D3. 5 lĩnh vực của nhóm → 84 lĩnh vực thật

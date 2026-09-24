@@ -269,4 +269,4 @@ HOST = _str("APP_HOST", "127.0.0.1")
 PORT = _int("APP_PORT", 8000)
 
 # Sửa JS/CSS -> tăng số này để trình duyệt tải lại, không dùng bản cache cũ.
-STATIC_VERSION = "7.5"
+STATIC_VERSION = "7.6"

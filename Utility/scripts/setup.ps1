@@ -1,5 +1,5 @@
 # ---------------------------------------------------------------------------
-# CAI DAT LAN DAU - Tro ly Thu tuc hanh chinh V10.3
+# CAI DAT LAN DAU - Tro ly Thu tuc hanh chinh V10.5
 # (Chu thich khong dau de hien dung tren moi console Windows.)
 #
 # Chay MOT LAN tren may moi. Chay lai nhieu lan cung khong sao: moi buoc deu
@@ -41,7 +41,7 @@ function Update-PathFromRegistry {
 }
 
 Write-Host "=======================================================" -ForegroundColor White
-Write-Host " CAI DAT LAN DAU - LLM for Procedures V10.3" -ForegroundColor White
+Write-Host " CAI DAT LAN DAU - Tro ly Thu tuc hanh chinh V10.5" -ForegroundColor White
 Write-Host " Thu muc: $Root" -ForegroundColor DarkGray
 Write-Host "=======================================================" -ForegroundColor White
 
@@ -193,8 +193,9 @@ if ($LASTEXITCODE -eq 0) { Write-Ok "CSDL san sang: $dbOut" } else { Write-Die "
 # He thong 2 (mac dinh) tra cuu tu Database\runtime\procedures.db.
 # File .db VA thu muc bieu mau (Database\raw\files - 774 thu muc .docx) DEU
 # KHONG commit vao git: kho se nang va khong diff duoc. Vi vay may moi phai tu
-# cao lai. Cao day du ~1.400 thu tuc mat khoang 15-25 phut (gioi han 2 req/s
-# de khong lam phien cong dich vu cong).
+# cao lai. Pham vi mac dinh (--scope xa): thu tuc cap Xa/Phuong (level=COMMUNE)
+# + thu tuc rieng cua UBND TP.HCM (H29), ~1.350 thu tuc, mat khoang 15-25 phut
+# (gioi han 2 req/s de khong lam phien cong dich vu cong).
 #
 # Chay lai nhieu lan khong sao: import_db.py so sanh content_hash, khong doi
 # thi bo qua. Dung -SkipScrape neu chi muon cai lai thu vien.
@@ -229,7 +230,7 @@ if ($SkipScrape) {
 }
 
 if ($needScrape) {
-    Write-Host "    Dang cao du lieu tu dichvucong.gov.vn..." -ForegroundColor DarkGray
+    Write-Host "    Dang cao ~1.350 thu tuc cap Xa/Phuong tu dichvucong.gov.vn..." -ForegroundColor DarkGray
     Write-Host "    Viec nay mat 15-25 phut va CAN MANG." -ForegroundColor DarkGray
     Write-Host "    Ctrl+C de bo qua: luc do He thong 2 bao chua co CSDL," -ForegroundColor DarkGray
     Write-Host "    va ban van dung duoc He thong 1 (Web search) binh thuong." -ForegroundColor DarkGray

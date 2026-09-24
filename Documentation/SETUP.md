@@ -7,11 +7,13 @@ lần**, rồi dùng được.
 
 ## Cách nhanh / Quick path
 
-1. Chép cả thư mục `LLM for Procedures V10.3` sang máy mới.
+1. Chép cả thư mục dự án sang máy mới, **hoặc** lấy từ GitHub:
+   `git clone -b V10.5 https://github.com/3-hWnG/intern-amazing-group_7.git`
 2. Bấm đôi **`Setup First Time.bat`**.
 3. Bấm đôi **`Launch Web.bat`**.
 
-Xong. Lần đầu có thể mất 10–30 phút (tải thư viện + mô hình), tuỳ mạng.
+Xong. Lần đầu có thể mất 30–60 phút, tuỳ mạng: tải thư viện + mô hình, rồi
+**cào ~1.350 thủ tục cấp Xã/Phường** cho Hệ thống 2 (15–25 phút, bước 7).
 
 > Chạy lại `Setup First Time.bat` lúc nào cũng an toàn: **cái gì máy đã có thì
 > bỏ qua**, không tải lại. / Re-running the setup is always safe — it skips
@@ -33,6 +35,7 @@ Xong. Lần đầu có thể mất 10–30 phút (tải thư viện + mô hình)
 | 5b | Bật dịch vụ `ollama serve` nếu chưa chạy | đang chạy |
 | 5c | `ollama pull` mô hình trong `LLM_MODEL` / `VERIFIER_MODEL` | mô hình đã tải |
 | 6 | Tạo `Database/runtime/app.db` từ `Database/schema.sql` | bảng đã tồn tại |
+| 7 | Cào CSDL thủ tục: `python -m Database.pipeline.run_pipeline --all`. Phạm vi mặc định: cấp Xã/Phường + thủ tục riêng TP.HCM (~1.350 thủ tục, 2 req/s, 15–25 phút) → `Database/runtime/procedures.db` | đã có thủ tục trong `procedures.db`, hoặc truyền `-SkipScrape` |
 
 ### Tham số / Flags
 
@@ -42,6 +45,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File .\Utility\scripts\setup.ps1 
 
 # Bỏ qua phần Ollama (máy đã có sẵn, hoặc dùng Ollama trên máy khác)
 powershell -NoProfile -ExecutionPolicy Bypass -File .\Utility\scripts\setup.ps1 -SkipOllama
+
+# Bỏ qua bước cào CSDL thủ tục (Hệ thống 2 báo chưa có CSDL; Web search vẫn chạy)
+powershell -NoProfile -ExecutionPolicy Bypass -File .\Utility\scripts\setup.ps1 -SkipScrape
 ```
 
 ---
