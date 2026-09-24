@@ -5,6 +5,8 @@
     verify      kiểm chứng bản nháp với bằng chứng            JSON có schema, temperature 0
     summary     tóm tắt hội thoại khi ngữ cảnh quá dài
     chitchat    đáp lời chào ngắn gọn
+    extract_s2       (System 2) trích primary_keyword/province/facet cho FTS5     JSON có schema, temperature 0
+    customer_care_s2 (System 2) LLM 2 — trả lời chi tiết bám bảng dữ liệu thủ tục đã mở (Turn 2+)
 
 Mô hình KHÔNG chịu trách nhiệm về độ mới của thông tin — việc đó thuộc về MCP.
 """
@@ -28,6 +30,13 @@ ROLE_OPTIONS = {
     "verify": {"temperature": 0.0, "num_predict": 350},
     "summary": {"temperature": 0.1, "num_predict": 350},
     "chitchat": {"temperature": 0.4, "top_p": 0.9, "num_predict": 160},
+    # Output rất ngắn (3 field) -> num_predict thấp là đủ, đỡ chờ.
+    "extract_s2": {"temperature": 0.0, "num_predict": 120},
+    # (System 2) LLM 2 Customer Care: trả lời bám bảng dữ liệu đã kiểm duyệt,
+    # câu dài hơn extract_s2 nên num_predict rộng hơn hẳn; repeat_penalty +
+    # repeat_last_n giống vai "answer" (cùng lớp mô hình nhỏ hay lặp câu).
+    "customer_care_s2": {"temperature": 0.2, "top_p": 0.9, "repeat_penalty": 1.15,
+                         "repeat_last_n": 256, "num_predict": 450},
 }
 
 

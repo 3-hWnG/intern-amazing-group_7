@@ -18,6 +18,7 @@ class ConversationRename(BaseModel):
 class ChatRequest(BaseModel):
     text: str
     direct_search: bool = False
+    mode: str = "system2"  # "system2" (CSDL nội bộ) | "system1" (Web Search)
 
 
 class FeedbackRequest(BaseModel):

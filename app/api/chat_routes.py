@@ -17,8 +17,10 @@ from __future__ import annotations
 
 import asyncio
 import json
+import sys
 import time
 import traceback
+from pathlib import Path
 
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import StreamingResponse
@@ -30,6 +32,17 @@ from core import llm, orchestrator, queue, summarizer
 from db import connection
 from db.repositories import (Conversations, Evidence, Feedback, JobLog, Messages,
                              UserProfiles)
+
+# system2/ nằm cạnh app/ (không phải bên trong) — thêm vào sys.path để import
+# theo đúng kiểu "flat import" mà chính các module trong system2/ đang dùng
+# với nhau (system2/pipeline.py tự làm `import service`, `import extractor`
+# không qua tiền tố gói, nên bản thân system2/ phải có mặt trên sys.path,
+# không chỉ thư mục gốc repo). Đặt tên module là "pipeline" (không phải
+# "orchestrator") để không trùng/đè lên `core.orchestrator` đã import ở trên.
+SYSTEM2_DIR = Path(__file__).resolve().parent.parent.parent / "system2"
+if str(SYSTEM2_DIR) not in sys.path:
+    sys.path.insert(0, str(SYSTEM2_DIR))
+import pipeline as system2_pipeline  # noqa: E402
 
 router = APIRouter()
 REPLAY_CHARS = 24
@@ -156,8 +169,14 @@ async def clear_profile(user: dict = Depends(current_user)):
 
 
 # --------------------------------------------------------------- chat ----
-def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit, direct_search: bool = False) -> None:
-    """Chạy trong worker của hàng đợi (luồng riêng): ngữ cảnh -> orchestrator -> lưu."""
+def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit,
+             direct_search: bool = False, mode: str = "system2") -> None:
+    """Chạy trong worker của hàng đợi (luồng riêng): ngữ cảnh -> orchestrator -> lưu.
+
+    `mode`: "system1" (Web Search, orchestrator.run_turn) hoặc "system2"
+    (CSDL nội bộ, system2_pipeline.run_turn_system2). Cả 2 nhánh trả về cùng
+    kiểu `core.orchestrator.TurnResult` nên phần thân dưới (lưu tin nhắn +
+    stream) dùng chung nguyên vẹn, không phân nhánh gì thêm."""
     def send(**payload) -> None:
         emit(_event(**payload))
 
@@ -167,11 +186,15 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit, 
                for m in recent if m["id"] != user_msg_id]
     profile = UserProfiles.get(user_id)
 
-    result = orchestrator.run_turn(
-        orchestrator.TurnInput(question=question, history=history, summary=summary,
-                               profile=profile, conversation_id=conv_id,
-                               direct_search=direct_search),
-        status=lambda text: send(type="status", text=text))
+    if mode == "system1":
+        result = orchestrator.run_turn(
+            orchestrator.TurnInput(question=question, history=history, summary=summary,
+                                   profile=profile, conversation_id=conv_id,
+                                   direct_search=direct_search),
+            status=lambda text: send(type="status", text=text))
+    else:
+        result = system2_pipeline.run_turn_system2(
+            conv_id, question, history, status=lambda text: send(type="status", text=text))
 
     intent_payload = dict(result.intent) if result.intent else {}
     if result.choices:
@@ -203,6 +226,7 @@ async def chat(conv_id: int, body: ChatRequest, user: dict = Depends(current_use
         raise HTTPException(status_code=400, detail="Câu hỏi trống.")
 
     direct_search = bool(body.direct_search)
+    mode = body.mode if body.mode in ("system1", "system2") else "system2"
     if not await connection.run(Messages.list_for, conv_id):
         await connection.run(Conversations.rename, conv_id, user["id"], _title_from(question))
     user_msg_id = await connection.run(Messages.add, conv_id, "user", question,
@@ -210,7 +234,8 @@ async def chat(conv_id: int, body: ChatRequest, user: dict = Depends(current_use
 
     def produce(emit):
         try:
-            _run_job(conv_id, user["id"], user_msg_id, question, emit, direct_search=direct_search)
+            _run_job(conv_id, user["id"], user_msg_id, question, emit,
+                     direct_search=direct_search, mode=mode)
         except Exception as exc:
             traceback.print_exc()
             emit(_event(type="error", text=f"Lỗi xử lý: {exc}"))

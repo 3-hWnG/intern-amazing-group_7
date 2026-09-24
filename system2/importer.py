@@ -45,6 +45,9 @@ SCHEMA_DOC = """
   "description": "...",
   "duration_desc": "...",
   "authority": "...",
+  "application_method": null,            # optional: "Trực tiếp" | "Trực tuyến" | "Cả hai"
+  "receiving_location": null,            # optional — ĐỊA CHỈ/nơi nộp hồ sơ trực tiếp (khác authority = TÊN cơ quan)
+  "online_url": null,                    # optional — link Cổng DVC để nộp trực tuyến
   "meta_source": null,                   # optional — căn cứ pháp lý
   "effective_date": null,                # optional, "YYYY-MM-DD"
   "expiration_date": null,               # optional, "YYYY-MM-DD"
@@ -78,6 +81,9 @@ def calculate_content_hash(data: dict) -> str:
         "province": data.get("province"),
         "description": (data.get("description") or "").strip(),
         "authority": (data.get("authority") or "").strip(),
+        "application_method": (data.get("application_method") or "").strip(),
+        "receiving_location": (data.get("receiving_location") or "").strip(),
+        "online_url": (data.get("online_url") or "").strip(),
         "meta_source": (data.get("meta_source") or "").strip(),
         "effective_date": str(data.get("effective_date") or ""),
         "checklists": sorted(
@@ -145,9 +151,10 @@ def upsert_procedure(conn: sqlite3.Connection, data: dict, dry_run: bool = False
     cur = conn.execute(
         """INSERT INTO procedures
            (proc_code, name, normalized_name, domain, level, province, description,
-            duration_desc, authority, meta_source, effective_date, expiration_date,
+            duration_desc, authority, application_method, receiving_location, online_url,
+            meta_source, effective_date, expiration_date,
             status, content_hash)
-           VALUES (?,?,?,?,?,?,?,?,?,?,?,?, 'active', ?)""",
+           VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?, 'active', ?)""",
         (
             proc_code,
             data["name"],
@@ -158,6 +165,9 @@ def upsert_procedure(conn: sqlite3.Connection, data: dict, dry_run: bool = False
             data.get("description"),
             data.get("duration_desc"),
             data.get("authority"),
+            data.get("application_method"),
+            data.get("receiving_location"),
+            data.get("online_url"),
             data.get("meta_source"),
             data.get("effective_date"),
             data.get("expiration_date"),
@@ -215,10 +225,21 @@ def import_batch(conn: sqlite3.Connection, records: list[dict], dry_run: bool = 
 #     làm mã tạm, PHẢI thay bằng mã thật khi crawler/ chạy xong.
 #   - Không có meta_source (căn cứ pháp lý) / effective_date -> để trống, UI sẽ
 #     không hiện được dòng "Căn cứ: ..." cho các thủ tục này.
-#   - `authority` lấy nguyên văn từ "receiving_location" trong data cũ, phần lớn
-#     hard-code theo MỘT phường cụ thể ("... phường Tăng Nhơn Phú") — đúng cho nơi
-#     đã scrape, nhưng KHÔNG tổng quát cho người dùng ở tỉnh/phường khác dù đây là
-#     thủ tục cấp quốc gia (Luật Hộ tịch). Không dùng nguyên văn cho bản demo cuối.
+#   - `authority` (cơ quan có thẩm quyền) -> ĐỂ TRỐNG (None) cho toàn bộ 70 thủ tục
+#     này: data cũ KHÔNG có trường tên cơ quan riêng, chỉ có "receiving_location"
+#     (mang sang `receiving_location`, xem dưới). Trước 22/09/2026 importer nhét
+#     nhầm receiving_location vào authority — ĐÃ SỬA (yêu cầu Leader, tách rõ 2
+#     khái niệm "cơ quan có thẩm quyền" vs "địa điểm tiếp nhận hồ sơ").
+#   - `receiving_location` lấy nguyên văn "receiving_location" trong data cũ —
+#     CHẤT LƯỢNG KHÔNG ĐỀU: phần lớn hard-code theo MỘT phường cụ thể ("...
+#     phường Tăng Nhơn Phú") — đúng cho nơi đã scrape, nhưng KHÔNG tổng quát cho
+#     người dùng ở tỉnh/phường khác dù đây là thủ tục cấp quốc gia (Luật Hộ
+#     tịch); một số khác lại là TÊN CƠ QUAN chung chung (vd "Cục quản lý xuất
+#     nhập cảnh") chứ không phải địa chỉ. Không dùng nguyên văn cho bản demo
+#     cuối — cần crawler/ cào lại đúng 2 trường tách biệt.
+#   - `application_method` lấy nguyên văn "application_method" — SẠCH, dùng
+#     được ngay (chỉ 3 giá trị: "Trực tiếp" | "Trực tuyến" | "Cả hai").
+#   - `online_url`: KHÔNG có trong data cũ -> luôn None, chờ crawler/.
 #   - Không có `files` (biểu mẫu) — bảng procedure_files sẽ rỗng cho các thủ tục này.
 # ---------------------------------------------------------------------------
 
@@ -248,10 +269,12 @@ def load_legacy_normalized(path: Path) -> list[dict]:
             "domain": item.get("field") or "Khác",
             "level": None,
             "province": None,
-            "description": item.get("application_method")
-                and f"Hình thức nộp: {item['application_method']}" or None,
+            "description": None,
             "duration_desc": (item.get("processing_time") or {}).get("text"),
-            "authority": item.get("receiving_location"),
+            "authority": None,
+            "application_method": item.get("application_method"),
+            "receiving_location": item.get("receiving_location"),
+            "online_url": None,
             "meta_source": None,
             "effective_date": None,
             "expiration_date": None,

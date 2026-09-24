@@ -254,6 +254,18 @@ class Messages:
         return _row(row)
 
     @staticmethod
+    def latest_by_kind(conversation_id: int, kind: str) -> dict | None:
+        """Tin nhắn gần nhất có `kind` cho trước trong hội thoại — System 2 dùng
+        để tìm Thẻ thủ tục (kind="procedure_card") đang mở, xác định Turn 2+
+        vẫn cùng thủ tục hay đã chuyển sang thủ tục khác (so proc_code trong
+        intent_json). `_row(None)` trả None an toàn khi hội thoại chưa có
+        Thẻ nào (Turn 1)."""
+        row = get_conn().execute(
+            "SELECT * FROM messages WHERE conversation_id = ? AND kind = ?"
+            " ORDER BY id DESC LIMIT 1", (conversation_id, kind)).fetchone()
+        return _row(row)
+
+    @staticmethod
     def count() -> int:
         return get_conn().execute("SELECT COUNT(*) c FROM messages").fetchone()["c"]
 

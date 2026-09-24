@@ -45,7 +45,7 @@ CREATE TABLE IF NOT EXISTS conversations (
 );
 CREATE INDEX IF NOT EXISTS idx_conv_user ON conversations(user_id, updated_at DESC);
 
--- kind: answer | not_in_sources | clarify | chitchat | out_of_scope | no_evidence | error
+-- kind: answer | not_in_sources | clarify | chitchat | out_of_scope | no_evidence | error | procedure_card
 -- verdict: PASS | FAIL | '' (không qua kiểm chứng)
 CREATE TABLE IF NOT EXISTS messages (
     id              INTEGER PRIMARY KEY AUTOINCREMENT,

@@ -17,7 +17,19 @@ HTML/JS UI ─> FastAPI ─> Hàng đợi tuần tự ─> ORCHESTRATOR
 
 Chi tiết kiến trúc, sơ đồ, cách tinh chỉnh từng thành phần: [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md)
 Báo cáo kỹ thuật chi tiết các thay đổi mã nguồn so với commit gốc: [`BAO_CAO_THAY_DOI.md`](BAO_CAO_THAY_DOI.md)
+Báo cáo nghiệm thu & Breakdown chi tiết V10.2.1: [`docs/REPORT_2026-09-23_24.md`](docs/REPORT_2026-09-23_24.md)
 Lượng tử hoá + fine-tune: [`finetune/README.md`](finetune/README.md)
+
+## Điểm mới ở Phiên bản V10.2.1: Hệ Thống Kép (Dual-System)
+
+Phiên bản `V10.2.1` bổ sung **System 2** chạy song song với **System 1 (Web Search V10.2)**:
+- **UI Toggle**: Công tắc chuyển đổi linh hoạt giữa `[📋 CSDL Nội bộ]` và `[🌐 Web Search]` ngay trên giao diện.
+- **CSDL Quốc Gia 758 Thủ Tục**: Ingest và chuẩn hóa từ `data/CSDL_THU_TUC_HANH_CHINH.xlsx` thuộc 38 lĩnh vực hành chính công dân.
+- **Thẻ Thủ Tục Tương Tác (`procedure_card`)**: Hiển thị bảng thủ tục có checklist tương tác (tick chọn), mức lệ phí, đường link nộp online và căn cứ pháp lý.
+- **Thuật toán Rerank F1 2 Chiều**: Phân biệt chuẩn xác giữa thủ tục gốc và biến thể (lưu động, yếu tố nước ngoài).
+- **Pipeline 2 Turn & LLM 2 Customer Care**: Tự động ghi nhớ thủ tục đang mở, giải đáp chuyên sâu ở các lượt hỏi tiếp theo kèm Out-of-table Guard (chống ảo giác).
+- **Kiểm thử tự động**: Chạy nhanh 72 tests bằng lệnh `.\test.bat`.
+- **Khởi động nhanh**: Chạy `.\run.bat` (tự động bật Web Server tại `http://127.0.0.1:8000`).
 
 ## Đáp ứng yêu cầu
 

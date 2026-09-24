@@ -11,6 +11,8 @@ app/runtime/
 *.db
 *.db-shm
 *.db-wal
+!system2/db/procedures.db
+*.bak*
 
 # ------------------------------------------ evaluation & fine-tune outputs --
 Evaluation/results/
@@ -27,6 +29,7 @@ finetune/benchmark_results.md
 
 # ------------------------------------------------- editor / OS junk -------
 .~lock.*#
+~$*
 *.swp
 *~
 Thumbs.db

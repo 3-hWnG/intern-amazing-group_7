@@ -179,11 +179,17 @@ window.Chat = (function () {
     return fb;
   }
 
-  function choiceBox(choices, convId) {
+  /* useWebSearchSwitch=true: đây là gợi ý "not_in_sources" của System 2 (câu
+     hỏi ngoài 70 thủ tục) — bấm vào phải CHUYỂN SANG System 1 (hội thoại mới,
+     xem window.triggerWebSearch), khác với gợi ý clarify bình thường của
+     System 1 (chỉ tra cứu tiếp trong CÙNG hội thoại, direct_search=true). */
+  function choiceBox(choices, convId, useWebSearchSwitch) {
     if (!choices || !choices.length) return null;
     const wrap = el("div", "choice-table-wrap");
     const head = el("div", "choice-table-head");
-    head.innerHTML = `<strong>💡 Gợi ý tìm kiếm DuckDuckGo</strong><span>(Bấm 1 câu để AI tra cứu ngay, hoặc tự nhập bên dưới)</span>`;
+    head.innerHTML = useWebSearchSwitch
+      ? `<strong>💡 Không có trong CSDL nội bộ</strong><span>(Bấm để chuyển sang System 1 và tra cứu Web ngay, hoặc tự nhập bên dưới)</span>`
+      : `<strong>💡 Gợi ý tìm kiếm DuckDuckGo</strong><span>(Bấm 1 câu để AI tra cứu ngay, hoặc tự nhập bên dưới)</span>`;
     wrap.appendChild(head);
 
     const list = el("div", "choice-list");
@@ -198,7 +204,8 @@ window.Chat = (function () {
         if (isSending) return;
         wrap.querySelectorAll(".choice-item").forEach((c) => c.classList.remove("selected"));
         item.classList.add("selected");
-        send(convId, choice, { directSearch: true });
+        if (useWebSearchSwitch) window.triggerWebSearch(choice);
+        else send(convId, choice, { directSearch: true });
       };
       list.appendChild(item);
     });
@@ -215,7 +222,8 @@ window.Chat = (function () {
       const val = input.value.trim();
       if (!val || isSending) return;
       input.value = "";
-      send(convId, val, { directSearch: true });
+      if (useWebSearchSwitch) window.triggerWebSearch(val);
+      else send(convId, val, { directSearch: true });
     };
 
     btn.onclick = (e) => {
@@ -236,14 +244,23 @@ window.Chat = (function () {
 
   function fillAssistant(wrap, body, text, meta, convId) {
     const sources = normSources(meta.sources);
-    body.innerHTML = rich(text, sources);
+    if (meta.kind === "procedure_card") {
+      /* Thẻ thủ tục (System 2) đã là HTML DỰNG SẴN ở server
+         (system2/service.py::render_card) — chèn thẳng, KHÔNG qua rich()/
+         esc(text), vì esc() sẽ biến toàn bộ thẻ thành chữ HTML thô hiện ra
+         màn hình thay vì render thành giao diện. */
+      body.innerHTML = text;
+    } else {
+      /* Escape TRƯỚC rồi mới chèn thẻ: nội dung đến từ mô hình + web, không tin được. */
+      body.innerHTML = rich(text, sources);
+    }
     const tags = el("div", "msg-tags");
     const b = badge(meta);
     if (b) tags.appendChild(b);
     if (tags.childNodes.length) wrap.appendChild(tags);
 
     if (meta.choices && meta.choices.length) {
-      const cBox = choiceBox(meta.choices, convId || activeLoadId);
+      const cBox = choiceBox(meta.choices, convId || activeLoadId, meta.kind === "not_in_sources");
       if (cBox) wrap.appendChild(cBox);
     }
 
@@ -309,6 +326,12 @@ window.Chat = (function () {
     isSending = true;
     let done = null;
     const directSearch = Boolean(opts && opts.directSearch);
+    /* mode: ưu tiên opts.mode nếu gọi tường minh (hiện chưa chỗ nào cần), mặc
+       định lấy currentMode toàn cục (app.js quản lý, đồng bộ với nút gạt
+       System 2/System 1 trên header) -- MỌI đường gửi tin (composer, gợi ý
+       choiceBox, switchProcedure, triggerWebSearch) đều đi qua đây nên chỉ
+       cần đọc window.currentMode ở MỘT chỗ, không phải sửa từng nơi gọi. */
+    const mode = (opts && opts.mode) || window.currentMode || "system2";
     try {
       if (box().querySelector(".empty")) clear();
       render("user", text);
@@ -324,7 +347,7 @@ window.Chat = (function () {
       scroll();
 
       let acc = "";
-      await API.stream(`/api/conversations/${convId}/chat`, { text, direct_search: directSearch }, (evt) => {
+      await API.stream(`/api/conversations/${convId}/chat`, { text, direct_search: directSearch, mode }, (evt) => {
         if (evt.type === "status" || evt.type === "queue") {
           statusText.textContent = evt.text;
         } else if (evt.type === "delta") {
@@ -361,6 +384,41 @@ window.Chat = (function () {
     }
     return done;
   }
+
+  /* Được gọi từ onclick="" NHÚNG THẲNG trong HTML Thẻ thủ tục do server sinh
+     ra (system2/service.py::render_card, nút "💡 Có thể bạn quan tâm") — chỉ
+     nhận được `id` (proc.id nội bộ trong CSDL), KHÔNG có tên thủ tục, nên
+     phải đọc lại tên từ chính nút bấm (data-proc-id khớp id truyền vào) rồi
+     gửi tên đó như 1 câu hỏi bình thường trong CÙNG hội thoại System 2 —
+     pipeline.py tự nhận ra proc_code khác và mở Thẻ mới. */
+  window.switchProcedure = function (procId) {
+    if (isSending) return;
+    const btn = document.querySelector(
+      `.btn-switch-proc[data-proc-id="${CSS.escape(String(procId))}"]`);
+    const name = btn ? btn.textContent.trim() : "";
+    const convId = activeLoadId;
+    if (!convId || !name) return;
+    send(convId, name);
+  };
+
+  /* Cũng được gọi từ onclick="" nhúng trong HTML Thẻ thủ tục (nút chân thẻ
+     "🌐 Tra cứu Web trực tiếp") VÀ từ gợi ý not_in_sources (choiceBox) khi
+     System 2 không tìm thấy thủ tục nào đáng tin. Theo đúng quy ước "đổi chế
+     độ = mở hội thoại mới" (app.js), không tra cứu tiếp trong hội thoại
+     System 2 đang xem. */
+  window.triggerWebSearch = async function (procName) {
+    if (isSending) return;
+    if (typeof window.setMode === "function") window.setMode("system1");
+    let convId;
+    try {
+      convId = (await Conversations.create({ skipLoad: true })).id;
+    } catch (e) {
+      console.error("Không tạo được hội thoại mới cho System 1:", e);
+      return;
+    }
+    await send(convId, procName, { directSearch: true });
+    await Conversations.refresh();
+  };
 
   return { load, send, clear, empty, get isSending() { return isSending; } };
 })();

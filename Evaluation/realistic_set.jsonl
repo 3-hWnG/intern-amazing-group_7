@@ -1,0 +1,56 @@
+{"id": "s01", "kind": "single", "topic_key": "khai_sinh", "topic": "đăng ký khai sinh", "turns": ["vk e mới đẻ hôm qua, giờ làm giấy tờ cho bé ntn a"]}
+{"id": "s02", "kind": "single", "topic_key": "khai_sinh", "topic": "đăng ký khai sinh", "turns": ["con sinh ra hơn 2 thang roi chua lam giay khai sinh co bi phat k"]}
+{"id": "s03", "kind": "single", "topic_key": "khai_tu", "topic": "đăng ký khai tử", "turns": ["ba em mới mất tuần trước, gia đình cần làm giấy gì với phường ạ"]}
+{"id": "s04", "kind": "single", "topic_key": "ket_hon", "topic": "đăng ký kết hôn", "turns": ["2 đứa định cưới cuối năm, lên phường làm giấy đăng ký cần mang gì"]}
+{"id": "s05", "kind": "single", "topic_key": "ket_hon_nn", "topic": "đăng ký kết hôn có yếu tố nước ngoài", "turns": ["chồng sắp cưới của em là người Hàn, muốn làm giấy kết hôn ở VN thì sao"]}
+{"id": "s06", "kind": "single", "topic_key": "xac_nhan_hon_nhan", "topic": "xác nhận tình trạng hôn nhân", "turns": ["ngân hàng đòi giấy chứng minh mình còn độc thân để vay mua nhà, xin ở đâu"]}
+{"id": "s07", "kind": "single", "topic_key": "cha_me_con", "topic": "nhận cha mẹ con", "turns": ["bé nhà mình làm giấy khai sinh không có tên bố, giờ bố bé muốn nhận con thì làm sao"]}
+{"id": "s08", "kind": "single", "topic_key": "cccd_cap_lai", "topic": "cấp lại thẻ căn cước", "turns": ["mình làm rơi cccd ngoài chợ rồi, làm lại mất bao nhiêu tiền"]}
+{"id": "s09", "kind": "single", "topic_key": "cccd_cap_doi", "topic": "cấp đổi thẻ căn cước", "turns": ["the can cuoc bi gay mot goc, co can doi khong va doi o dau"]}
+{"id": "s10", "kind": "single", "topic_key": "cccd_cap_moi", "topic": "cấp thẻ căn cước cho người từ đủ 14 tuổi", "turns": ["thằng cu nhà tôi vừa đủ 14, dẫn đi làm thẻ căn cước cần mang theo gì"]}
+{"id": "s11", "kind": "single", "topic_key": "ho_chieu", "topic": "cấp hộ chiếu phổ thông trong nước", "turns": ["lần đầu đi du lịch nước ngoài, làm passport online được không"]}
+{"id": "s12", "kind": "single", "topic_key": "thi_thuc_dien_tu", "topic": "cấp thị thực điện tử", "turns": ["bạn tôi người Úc muốn qua VN chơi 2 tuần thì xin visa điện tử thế nào"]}
+{"id": "s13", "kind": "single", "topic_key": "gia_han_tam_tru", "topic": "gia hạn tạm trú", "turns": ["đăng ký tạm trú ở trọ sắp hết hạn rồi, gia hạn thêm có cần chủ nhà ký không"]}
+{"id": "s14", "kind": "single", "topic_key": "thong_bao_luu_tru", "topic": "thông báo lưu trú", "turns": ["nhà có khách ở quê lên ngủ lại vài hôm có phải khai báo với công an không"]}
+{"id": "s15", "kind": "single", "topic_key": "xoa_thuong_tru", "topic": "xoá đăng ký thường trú", "turns": ["ông nội mất rồi thì có phải làm thủ tục cắt khẩu không"]}
+{"id": "s16", "kind": "single", "topic_key": "lap_ho_kinh_doanh", "topic": "đăng ký thành lập hộ kinh doanh", "turns": ["e muốn mở tiệm bán trà sữa nhỏ trước nhà, có cần đk giấy phép kinh doanh k"]}
+{"id": "s17", "kind": "single", "topic_key": "tam_ngung_kinh_doanh", "topic": "tạm ngừng kinh doanh của hộ kinh doanh", "turns": ["quán ăn nhà mình muốn nghỉ bán 3 tháng để sửa nhà, có phải báo cho ai không"]}
+{"id": "s18", "kind": "single", "topic_key": "cham_dut_kinh_doanh", "topic": "chấm dứt hoạt động hộ kinh doanh", "turns": ["dẹp tiệm tạp hóa luôn rồi thì giấy phép hộ kinh doanh xử lý sao"]}
+{"id": "s19", "kind": "single", "topic_key": "doi_ho_kinh_doanh", "topic": "thay đổi nội dung đăng ký hộ kinh doanh", "turns": ["chuyển tiệm sang địa chỉ khác trong phường thì giấy phép kinh doanh có phải sửa không"]}
+{"id": "s20", "kind": "single", "topic_key": "cap_lai_gcn_hkd", "topic": "cấp lại giấy chứng nhận đăng ký hộ kinh doanh", "turns": ["giấy đăng ký hộ kinh doanh bị ướt nhòe hết chữ, xin cấp lại được không"]}
+{"id": "s21", "kind": "single", "topic_key": "con_dau_moi", "topic": "đăng ký mẫu con dấu mới", "turns": ["công ty mới thành lập thì khắc dấu xong phải đăng ký mẫu dấu ở đâu"]}
+{"id": "s22", "kind": "single", "topic_key": "dang_ky_xe_lan_dau", "topic": "đăng ký xe lần đầu và cấp biển số", "turns": ["vừa mua xe máy mới ở đại lý, tự đi đăng ký biển số cần giấy gì"]}
+{"id": "s23", "kind": "single", "topic_key": "thu_hoi_bien_so", "topic": "thu hồi giấy chứng nhận đăng ký và biển số xe", "turns": ["xe cũ bán cho người ở tỉnh khác thì mình phải làm gì với cái biển số"]}
+{"id": "s24", "kind": "single", "topic_key": "giay_phep_xay_dung", "topic": "cấp giấy phép xây dựng", "turns": ["nhà ở thành phố muốn xây lên thêm 1 tầng có phải xin phép không"]}
+{"id": "s25", "kind": "single", "topic_key": "thong_bao_khoi_cong", "topic": "thông báo khởi công", "turns": ["có giấy phép xây nhà rồi, trước khi đổ móng có phải báo cho phường không"]}
+{"id": "s26", "kind": "single", "topic_key": "thong_tin_quy_hoach", "topic": "cung cấp thông tin quy hoạch", "turns": ["sắp mua lô đất, muốn check xem có dính quy hoạch làm đường không thì hỏi ở đâu"]}
+{"id": "s27", "kind": "single", "topic_key": "dang_ky_dat_dai", "topic": "đăng ký đất đai tài sản gắn liền với đất lần đầu", "turns": ["đất ông bà để lại chưa có sổ đỏ, giờ muốn làm sổ lần đầu thì bắt đầu từ đâu"]}
+{"id": "s28", "kind": "single", "topic_key": "cap_so_nha", "topic": "cấp số nhà", "turns": ["nhà mới xây xong chưa có số nhà, xin cấp số nhà ở đâu"]}
+{"id": "s29", "kind": "single", "topic_key": "chung_thuc", "topic": "chứng thực chữ ký và hợp đồng giao dịch", "turns": ["cần công chứng chữ ký trên giấy ủy quyền thì ra phường được không, phí bao nhiêu"]}
+{"id": "s30", "kind": "single", "topic_key": "tro_cap_xa_hoi", "topic": "trợ cấp xã hội hàng tháng", "turns": ["mẹ tôi 82 tuổi không có lương hưu, có được nhận tiền trợ cấp hàng tháng không"]}
+{"id": "s31", "kind": "single", "topic_key": "huu_tri_xa_hoi", "topic": "trợ cấp hưu trí xã hội", "turns": ["người già 75 tuổi không đóng bảo hiểm thì có được trợ cấp hưu trí xã hội không"]}
+{"id": "s32", "kind": "single", "topic_key": "mai_tang", "topic": "hỗ trợ chi phí mai táng", "turns": ["bà ngoại đang hưởng trợ cấp xã hội mới mất, gia đình có được hỗ trợ tiền làm đám không"]}
+{"id": "s33", "kind": "single", "topic_key": "khuyet_tat", "topic": "xác nhận mức độ khuyết tật", "turns": ["con bị bại não bẩm sinh, muốn xin giấy xác nhận khuyết tật để hưởng chế độ"]}
+{"id": "s34", "kind": "single", "topic_key": "tho_cung_liet_si", "topic": "trợ cấp thờ cúng liệt sĩ", "turns": ["bác tôi là liệt sĩ, nhà tôi đang thờ cúng thì có được tiền hỗ trợ hằng năm không"]}
+{"id": "s35", "kind": "single", "topic_key": "khang_chien", "topic": "chế độ người hoạt động kháng chiến", "turns": ["bố tôi từng đi bộ đội chống Mỹ nhưng chưa được hưởng chế độ gì, giờ làm hồ sơ thế nào"]}
+{"id": "s36", "kind": "single", "topic_key": "vay_von_viec_lam", "topic": "vay vốn hỗ trợ tạo việc làm", "turns": ["mình đang thất nghiệp, muốn vay vốn ưu đãi mở xưởng nhỏ tạo việc làm"]}
+{"id": "s37", "kind": "single", "topic_key": "hoc_bong_chinh_sach", "topic": "xét cấp học bổng chính sách", "turns": ["con em là người dân tộc thiểu số học nội trú, có học bổng gì không"]}
+{"id": "s38", "kind": "single", "topic_key": "chuyen_truong_thcs", "topic": "chuyển trường cho học sinh THCS", "turns": ["gia đình chuyển nhà nên cháu lớp 7 phải chuyển trường giữa kỳ, hồ sơ gồm gì"]}
+{"id": "s39", "kind": "single", "topic_key": "noi_quy_lao_dong", "topic": "đăng ký nội quy lao động", "turns": ["công ty có 15 nhân viên thì nội quy lao động có phải đăng ký với nhà nước không"]}
+{"id": "s40", "kind": "single", "topic_key": "xac_nhan_vi_tri", "topic": "xác nhận vị trí nhà đất", "turns": ["ngân hàng yêu cầu giấy xác nhận vị trí nhà đất để làm hồ sơ vay"]}
+{"id": "m01", "kind": "followup", "topic_key": "khai_sinh", "topic": "đăng ký khai sinh", "turns": ["em muốn làm giấy khai sinh cho con", "nộp online được không ạ"]}
+{"id": "m02", "kind": "followup", "topic_key": "khai_sinh", "topic": "đăng ký khai sinh", "turns": ["làm khai sinh cho bé cần giấy tờ gì", "thế lệ phí bao nhiêu"]}
+{"id": "m03", "kind": "followup", "topic_key": "ket_hon", "topic": "đăng ký kết hôn", "turns": ["đăng ký kết hôn cần chuẩn bị gì", "mất mấy ngày thì có giấy"]}
+{"id": "m04", "kind": "followup", "topic_key": "ket_hon", "topic": "đăng ký kết hôn", "turns": ["mình với bạn gái định đăng ký kết hôn", "hộ khẩu 2 đứa khác tỉnh thì nộp ở đâu"]}
+{"id": "m05", "kind": "followup", "topic_key": "cccd_cap_lai", "topic": "cấp lại thẻ căn cước", "turns": ["tôi bị mất thẻ căn cước", "làm lại hết bao lâu"]}
+{"id": "m06", "kind": "followup", "topic_key": "cccd_cap_lai", "topic": "cấp lại thẻ căn cước", "turns": ["mất cccd thì làm lại thế nào", "làm qua vneid được k"]}
+{"id": "m07", "kind": "followup", "topic_key": "ho_chieu", "topic": "cấp hộ chiếu phổ thông trong nước", "turns": ["cho hỏi thủ tục làm hộ chiếu", "phí bao nhiêu vậy"]}
+{"id": "m08", "kind": "followup", "topic_key": "gia_han_tam_tru", "topic": "gia hạn tạm trú", "turns": ["tạm trú của tôi sắp hết hạn", "gia hạn cần mang theo gì"]}
+{"id": "m09", "kind": "followup", "topic_key": "lap_ho_kinh_doanh", "topic": "đăng ký thành lập hộ kinh doanh", "turns": ["tôi muốn đăng ký hộ kinh doanh bán quần áo", "nộp hồ sơ ở đâu", "có mất phí không"]}
+{"id": "m10", "kind": "followup", "topic_key": "tam_ngung_kinh_doanh", "topic": "tạm ngừng kinh doanh của hộ kinh doanh", "turns": ["hộ kinh doanh nhà tôi muốn tạm nghỉ vài tháng", "phải báo trước bao nhiêu ngày"]}
+{"id": "m11", "kind": "followup", "topic_key": "dang_ky_xe_lan_dau", "topic": "đăng ký xe lần đầu và cấp biển số", "turns": ["mới mua ô tô, muốn đăng ký biển số", "lệ phí trước bạ với lệ phí biển số là bao nhiêu"]}
+{"id": "m12", "kind": "followup", "topic_key": "khai_tu", "topic": "đăng ký khai tử", "turns": ["gia đình có người mất cần làm giấy chứng tử", "thời hạn phải đi khai là bao lâu"]}
+{"id": "m13", "kind": "followup", "topic_key": "xac_nhan_hon_nhan", "topic": "xác nhận tình trạng hôn nhân", "turns": ["tôi cần giấy xác nhận độc thân", "làm ở phường nơi tạm trú được không"]}
+{"id": "m14", "kind": "followup", "topic_key": "mai_tang", "topic": "hỗ trợ chi phí mai táng", "turns": ["mẹ tôi hưởng trợ cấp xã hội vừa mất", "vậy hỗ trợ bao nhiêu tiền"]}
+{"id": "m15", "kind": "followup", "topic_key": "giay_phep_xay_dung", "topic": "cấp giấy phép xây dựng", "turns": ["muốn xây nhà 3 tầng ở quận", "hồ sơ xin phép gồm những gì"]}
+{"id": "m16", "kind": "followup", "topic_key": "con_dau_moi", "topic": "đăng ký mẫu con dấu mới", "turns": ["công ty tôi cần đăng ký mẫu con dấu", "làm online trên cổng dịch vụ công được không"]}

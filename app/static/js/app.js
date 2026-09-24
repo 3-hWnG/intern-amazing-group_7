@@ -83,6 +83,31 @@
     $("toggle-sidebar").onclick = () =>
       $("sidebar").classList.toggle("hidden");
 
+    /* -------- Dual-System: [📋 CSDL Nội bộ] (System 2) / [🌐 Web Search] (System 1) --
+       window.setMode CHỈ đổi trạng thái + active class trên nút gạt — KHÔNG tự tạo hội
+       thoại mới, để chat.js (window.triggerWebSearch) cũng dùng lại được hàm này mà tự
+       quyết định có tạo hội thoại mới hay không. Chat.send() đọc window.currentMode ở
+       MỘT chỗ (chat.js) nên mọi đường gửi tin (composer, gợi ý, nút trong Thẻ) đều tự
+       động theo đúng mode hiện tại mà không cần sửa từng nơi gọi. */
+    window.currentMode = "system2";
+    window.setMode = (mode) => {
+      if (mode !== "system1" && mode !== "system2") return;
+      window.currentMode = mode;
+      const s2Btn = $("mode-btn-s2");
+      const s1Btn = $("mode-btn-s1");
+      if (s2Btn) s2Btn.classList.toggle("active", mode === "system2");
+      if (s1Btn) s1Btn.classList.toggle("active", mode === "system1");
+    };
+    const modeSwitch = $("mode-switch");
+    if (modeSwitch) {
+      modeSwitch.addEventListener("click", async (e) => {
+        const btn = e.target.closest(".mode-btn");
+        if (!btn || btn.classList.contains("active") || Chat.isSending) return;
+        window.setMode(btn.dataset.mode);
+        await Conversations.create();   // đổi mode = hội thoại mới sạch sẽ, không lẫn 2 hệ thống
+      });
+    }
+
     $("theme").onclick = () => {
       const light = document.body.classList.toggle("light");
       try { localStorage.setItem("theme", light ? "light" : "dark"); } catch (_) {}
@@ -118,7 +143,7 @@
       input.style.height = "auto";
       $("send").disabled = true;
       try {
-        const done = await Chat.send(convId, text);
+        const done = await Chat.send(convId, text, { mode: window.currentMode });
         await Conversations.refresh();
         const current = Conversations.items.find((c) => c.id === convId);
         if (current) $("conv-title").textContent = current.title;
