@@ -1,61 +1,49 @@
-# Literature Review: LegalQuery RAG (LQ-RAG): A Legal Query Retrieval-Augmented Generation Framework with Recursive Feedback
+# Literature Review: Legal Query RAG (LQ-RAG)
 
-- **Tác giả:** GIST AI Research Lab
-- **Năm xuất bản:** 2025
-- **Tạp chí / Hội nghị:** *ACM Transactions on Asian and Low-Resource Language Information Processing / arXiv:2406.14207*
-- **Phân loại nghiên cứu:** Domain Query Pre-processing & Feedback Loop
-- **Link định danh / DOI:** [https://doi.org/10.1145/3712541](https://doi.org/10.1145/3712541)
-- **Tệp toàn văn (PDF gốc):** [`LegalQuery RAG (LQ-RAG) - A Legal Query Retrieval-Augmented Generation Framework with Recursive Feedback.pdf`](LegalQuery%20RAG%20%28LQ-RAG%29%20-%20A%20Legal%20Query%20Retrieval-Augmented%20Generation%20Framework%20with%20Recursive%20Feedback.pdf)
+- **Tác giả:** Rahman S. M. Wahidur, Sumin Kim, Haeung Choi, David S. Bhatti, Heung-No Lee (GIST, South Korea)
+- **Năm xuất bản:** 2025 (Tháng 2/2025)
+- **Tạp chí / Hội nghị:** *IEEE Access*, Volume 13, pp. 36978–36994
+- **Phân loại nghiên cứu:** Domain-Specific Legal RAG & Multi-Agent Recursive Feedback
+- **Link Citation / DOI:** [https://doi.org/10.1109/ACCESS.2025.3542125](https://doi.org/10.1109/ACCESS.2025.3542125)
+- **Tệp toàn văn (PDF gốc):** [`Legal_Query_RAG_IEEE_Access_2025.pdf`](Legal_Query_RAG_IEEE_Access_2025.pdf)
 - **Thuộc nhóm chuyên đề:** Nhóm 4: Truy Xuất Lai & Hệ Thống Kép (Hybrid & Dual-System Retrieval)
 
 ---
 
 ## 1. Research Question & Problem Formulation (Câu hỏi nghiên cứu & Vấn đề giải quyết)
+Hệ thống hỏi đáp AI trong lĩnh vực pháp lý thường gặp tỷ lệ ảo giác (hallucination) rất cao (từ 58% đến 82%), dữ liệu bị thiên lệch và suy luận pháp lý phức tạp khiến các mô hình sinh văn bản phổ thông (như GPT-4, Llama) dễ trích dẫn sai luật hoặc bịa đặt tiền lệ.
 
-Người dân sử dụng từ vựng đời thường, từ lóng hoặc từ viết tắt ('làm giấy kết hôn', 'đổi hộ khẩu', 'giấy khai tử cho bố') hoàn toàn không khớp với tên gọi chuẩn tắc trong luật.
-
-Bài báo giải quyết trực diện câu hỏi: *Làm thế nào để ứng dụng công nghệ trí tuệ nhân tạo và xử lý ngôn ngữ tự nhiên vào nghiệp vụ pháp lý/hành chính công một cách đáng tin cậy, chính xác và có thể kiểm chứng được?*
+Bài báo giải quyết trực diện câu hỏi: *Làm thế nào để kết hợp kỹ thuật tinh chỉnh chuyên sâu (Fine-Tuning) và kiến trúc đa tác tử phản hồi đệ quy (Recursive Feedback) nhằm giảm thiểu ảo giác và nâng cao độ chính xác của câu trả lời pháp lý?*
 
 ---
 
 ## 2. Methodology & Technical Architecture (Phương pháp luận & Kiến trúc kỹ thuật)
-
-Thiết kế bộ tiền xử lý đệ quy: chuyển đổi từ đồng nghĩa đời thường sang thuật ngữ nhà nước và loại bỏ các mệnh đề hoàn cảnh rác trước khi đẩy vào engine tìm kiếm.
-
-### Đặc điểm kỹ thuật then chốt:
-- **Cơ chế xử lý:** Phân tách rõ ràng giữa tri thức tĩnh (quy định pháp luật, biểu mẫu có cấu trúc) và tri thức động (yêu cầu của người dân).
-- **Mô hình triển khai:** Tối ưu hóa chu trình tương tác đàm thoại nhằm giảm thiểu chi phí tính toán và bảo vệ tính toàn vẹn của thông tin pháp quy.
+LQ-RAG đề xuất kiến trúc 2 tầng kết hợp 4 thành phần chuyên biệt:
+1. **Tầng Fine-Tuning (FT Layer):**
+   - Tinh chỉnh mô hình nhúng pháp lý (**Legal Embedding LLM**) để cải thiện khả năng biểu diễn ngữ nghĩa và cấu trúc điều luật.
+   - Tinh chỉnh mô hình sinh (**Hybrid Fine-Tuned Generative LLM - HFM**) chuyên biệt cho văn phong và tư duy lập luận pháp lý.
+2. **Tầng RAG đa tác tử & Phản hồi đệ quy (Recursive Feedback):**
+   - **Custom Audit/Evaluation Agent:** Đánh giá chất lượng câu trả lời và kiểm tra độ tin cậy của chứng cứ truy xuất.
+   - **Prompt Engineering Agent:** Tự động điều chỉnh prompt nếu câu trả lời chưa đạt chuẩn kiểm định.
+   - **Vòng lặp đệ quy:** Nếu kiểm định phát hiện thiếu căn cứ hoặc sinh ảo giác, hệ thống gửi phản hồi để tinh chỉnh lại truy vấn và tái sinh đáp án.
 
 ---
 
 ## 3. Empirical Results & Findings (Kết quả thực nghiệm & Phát hiện chính)
-
-Tăng tỷ lệ tìm đúng thủ tục mục tiêu từ 54% lên 92.8% trên tập truy vấn thực tế của người dân.
-
-### Điểm nhấn số liệu:
-- Chứng minh bằng thực nghiệm rằng các phương pháp truyền thống hoặc mô hình LLM đơn lẻ không có kiểm chứng đều thất bại trước các văn bản quy chuẩn hành chính khắt khe.
-- Các cải tiến về pipeline truy xuất và cơ chế hậu xử lý (post-processing guardrails) đóng vai trò quyết định đến độ tin cậy của toàn hệ sinh thái.
+- Tăng **23% điểm liên quan** (relevance score) so với cấu hình RAG cơ bản (naive RAG).
+- Tăng **14% hiệu năng** so với RAG chỉ dùng mô hình LLM tinh chỉnh thông thường.
+- Mô hình nhúng pháp lý (Fine-Tuned Embedding) đạt mức cải thiện **13% về Hit Rate** và **15% về Mean Reciprocal Rank (MRR)**.
 
 ---
 
 ## 4. Strengths & Limitations (Ưu điểm & Hạn chế)
-
-### Ưu điểm (Strengths):
-- Giải pháp trực diện và hiệu quả cực cao cho bài toán khoảng cách ngôn ngữ giữa công dân và chính quyền.
-- Có giá trị tham khảo học thuật cao, số liệu thực nghiệm rõ ràng, minh bạch.
-
-### Hạn chế (Limitations):
-- Phụ thuộc vào chất lượng xây dựng từ điển đồng nghĩa ban đầu.
-- Cần được điều chỉnh và địa phương hóa khi áp dụng vào môi trường dịch vụ công tại các quốc gia đang phát triển như Việt Nam.
+- **Ưu điểm (Strengths):** Kết hợp chặt chẽ giữa Fine-tuning mô hình nhúng và cơ chế kiểm toán tự động (Audit Agent) với vòng lặp đệ quy để chặn ảo giác.
+- **Hạn chế (Limitations):** Chi phí tính toán và độ trễ cao do cơ chế phản hồi nhiều vòng lặp; phụ thuộc vào dữ liệu pháp luật tiếng Anh/Hàn Quốc đã gán nhãn để tinh chỉnh.
 
 ---
 
-## 5. Direct Relevance & Takeaways for V10.5 Project (Đóng góp & Ứng dụng cho Dự án V10.5)
-
-### Ánh xạ tính năng kỹ thuật (Feature Mapping):
-Trực tiếp tương ứng với tính năng `synonyms.json` của V10.5 (map 'độc thân' -> 'tình trạng hôn nhân', bỏ 'cho bố', 'quá hạn', 'ở phường') giúp đạt 89/89 câu trong top-3.
-
-### Bài học kinh nghiệm khi viết bài báo khoa học (Scientific Paper Takeaways):
-1. **Phần Related Works:** Trích dẫn bài báo này để làm rõ bối cảnh nghiên cứu hiện tại và chỉ ra khoảng trống tri thức (knowledge gap) mà V10.5 đang giải quyết.
-2. **Phần Methodology:** Sử dụng các luận điểm của tác giả để bảo vệ các quyết định kỹ thuật của V10.5 (ví dụ: tại sao chọn Local SLM 1.5B, tại sao cần Dual-System, tại sao cần Verifier độc lập).
-3. **Phần Evaluation:** Tham khảo các bộ tiêu chí đánh giá, chỉ số đo lường (nhận diện đúng thủ tục, tỷ lệ sinh ảo giác con số, độ trễ phản hồi) để đưa vào bảng kết quả của dự án.
+## 5. Direct Relevance & Takeaways for V10.6 Project (Ánh xạ tới dự án V10.6)
+- **Điểm tương đồng lý thuyết:** Ý tưởng về **Audit/Evaluation Agent** và kiểm tra chéo tương đồng với module **Fact Verifier & Grounding Guard (`verifier.py`)** trong V10.6. Cơ chế vòng lặp tinh chỉnh prompt tương đồng với vòng lặp cứu từ khóa nhiều lượt của LLM 1 (`RETRIEVAL_MAX_KEY_ATTEMPTS`).
+- **Khác biệt cốt lõi trong giải pháp thực tế:** 
+  - LQ-RAG giải quyết ảo giác bằng cách "cho mô hình sinh ra rồi dùng agent khác đệ quy kiểm tra và sửa lại" $\rightarrow$ dẫn đến độ trễ cao và vẫn có rủi ro mô hình audit bị ảo giác theo.
+  - V10.6 áp dụng giải pháp thực dụng và triệt để hơn: **UI Formatting Engine (Zero LLM)** — toàn bộ thông tin lệ phí, thành phần hồ sơ và thời hạn được render trực tiếp 100% bằng code từ CSDL chuẩn hóa, đạt mức **0% hallucination** mà không cần qua nhiều vòng lặp đệ quy tốn kém tài nguyên.

@@ -1,8 +1,8 @@
-# Tổng Hợp 20 Bài Báo Khoa Học (Research Papers) Cho Dự Án Trợ Lý Thủ Tục Hành Chính (V10.5)
+# Tổng Hợp 25 Bài Báo Khoa Học (Research Papers) Cho Dự Án Trợ Lý Thủ Tục Hành Chính (V10.6)
 
 > **Tài liệu tham khảo nghiên cứu (Literature Review & Related Works)**  
 > **Chủ đề dự án:** Trợ lý ảo AI tư vấn dịch vụ công & thủ tục hành chính sử dụng mô hình ngôn ngữ nhỏ cục bộ (Local SLM 1.5B–3B), kiến trúc truy xuất tăng cường kết hợp hệ thống kép (Dual-System RAG: CSDL cấu trúc FTS5 + Web Search) và cơ chế tự kiểm chứng (Verifier / Grounding Guard).  
-> **Trạng thái tài liệu:** Toàn bộ 20/20 bài báo đều là **Open-Access / Full-text PDF** được tải về máy và lưu trữ với **tên gốc chuẩn xác của bài báo** tại thư mục `D:\V10.5\research paper\`, đi kèm bản phân tích chuyên sâu `literature_review.md` chuẩn học thuật.
+> **Trạng thái tài liệu:** Toàn bộ 25/25 bài báo đều là **Open-Access / Full-text PDF** được tải về máy và lưu trữ với **tên gốc chuẩn xác của bài báo** tại thư mục `Documentation/research paper/`, đi kèm bản phân tích chuyên sâu `literature_review.md` chuẩn học thuật.
 
 ---
 
@@ -13,19 +13,20 @@
 3. [Nhóm 3: Kiểm Chứng, Verifier & Giảm Ảo Giác Trong RAG (Fact-Checking & Verifiers)](#nhóm-3-kiểm-chứng-verifier--giảm-ảo-giác-trong-rag-fact-checking--verifiers)
 4. [Nhóm 4: Truy Xuất Lai & Hệ Thống Kép (Hybrid & Dual-System Retrieval)](#nhóm-4-truy-xuất-lai--hệ-thống-kép-hybrid--dual-system-retrieval)
 5. [Nhóm 5: Mô Hình Ngôn Ngữ Nhỏ (SLMs) & Triển Khai Cục Bộ (Local/Edge SLMs)](#nhóm-5-mô-hình-ngôn-ngữ-nhỏ-slms--triển-khai-cục-bộ-localedge-slms)
-6. [Bảng tổng hợp đối sánh 20 bài báo theo khía cạnh dự án V10.5](#bảng-tổng-hợp-đối-sánh-20-bài-báo-theo-khía-cạnh-dự-án-v105)
-7. [Khung cấu trúc bài báo khoa học đề xuất cho Dự án V10.5](#khung-cấu-trúc-bài-báo-khoa-học-đề-xuất-cho-dự-án-v105)
+6. [Nhóm 6: AI Pháp Lý & Hành Chính Công Việt Nam (Vietnamese Legal & Public Admin AI)](#nhóm-6-ai-pháp-lý--hành-chính-công-việt-nam-vietnamese-legal--public-admin-ai)
+7. [Bảng tổng hợp đối sánh 25 bài báo theo khía cạnh dự án V10.6](#bảng-tổng-hợp-đối-sánh-25-bài-báo-theo-khía-cạnh-dự-án-v106)
+8. [Khung cấu trúc bài báo khoa học đề xuất cho Dự án V10.6](#khung-cấu-trúc-bài-báo-khoa-học-đề-xuất-cho-dự-án-v106)
 
 ---
 
 ## Nhóm 1: AI Hội Thoại & Chatbot Dịch Vụ Công / Hành Chính Điện Tử
 
 ### 1. GuidaPA: Privacy-Preserving Chatbot for Public Administration via Federated Learning
-- **Tác giả:** Marco L., Alessandro P., et al.
-- **Năm xuất bản:** 2024
-- **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2406.01386 [cs.AI]*
+- **Tác giả:** Daniel M. Jimenez-Gutierrez, Albenzio Cirillo, Raffaele Nicolussi, Alessio Beltrame, Andrea Vitaletti
+- **Năm xuất bản:** 2026
+- **Tạp chí / Hội nghị:** *2nd International Conference on Federated Learning and Intelligent Computing Systems (FLICS 2026) / arXiv:2606.01386 [cs.AI]*
 - **Phân loại nghiên cứu:** `Primary Architecture & Privacy-Preserving System`
-- **Link DOI / Citation gốc:** [https://arxiv.org/abs/2406.01386](https://arxiv.org/abs/2406.01386)
+- **Link DOI / Citation gốc:** [https://arxiv.org/abs/2606.01386](https://arxiv.org/abs/2606.01386)
 - **Tệp toàn văn (PDF bản gốc):** [`GuidaPA - Privacy-Preserving Chatbot for Public Administration via Federated Learning.pdf`](../research paper/01_E-Government_Chatbots/01_GuidaPA_2024_Privacy_Preserving_Chatbot_Public_Admin/GuidaPA%20-%20Privacy-Preserving%20Chatbot%20for%20Public%20Administration%20via%20Federated%20Learning.pdf)
 - **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/01_E-Government_Chatbots/01_GuidaPA_2024_Privacy_Preserving_Chatbot_Public_Admin/literature_review.md)
 
@@ -153,9 +154,9 @@ Chỉ ra hầu hết các mô hình phổ thông trượt trên 45% các bài ki
 ### 5. LegalCheck: A Context-Augmented Generation Pipeline for Drafting Municipal Legal Advice Letters
 - **Tác giả:** Florian Schneider, Julian Frattini, Daniel Mendez et al.
 - **Năm xuất bản:** 2026
-- **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2601.12932 [cs.SE]*
+- **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2605.12012 [cs.SE]*
 - **Phân loại nghiên cứu:** `Primary Architecture & Case Study`
-- **Link DOI / Citation gốc:** [https://arxiv.org/abs/2601.12932](https://arxiv.org/abs/2601.12932)
+- **Link DOI / Citation gốc:** [https://arxiv.org/abs/2605.12012](https://arxiv.org/abs/2605.12012)
 - **Tệp toàn văn (PDF bản gốc):** [`LegalCheck - A Context-Augmented Generation Pipeline for Drafting Municipal Legal Advice Letters.pdf`](../research paper/02_Legal_Regulatory_RAG/05_Schneider_2026_LegalCheck_Municipal_Advice/LegalCheck%20-%20A%20Context-Augmented%20Generation%20Pipeline%20for%20Drafting%20Municipal%20Legal%20Advice%20Letters.pdf)
 - **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/02_Legal_Regulatory_RAG/05_Schneider_2026_LegalCheck_Municipal_Advice/literature_review.md)
 
@@ -538,35 +539,36 @@ Tăng tỷ lệ thỏa mãn ý định phức tạp lên 28.4% và giảm thời
 
 ---
 
-### 17. LegalQuery RAG (LQ-RAG): A Legal Query Retrieval-Augmented Generation Framework with Recursive Feedback
-- **Tác giả:** GIST AI Research Lab
-- **Năm xuất bản:** 2025
-- **Tạp chí / Hội nghị:** *ACM Transactions on Asian and Low-Resource Language Information Processing / arXiv:2406.14207*
-- **Phân loại nghiên cứu:** `Domain Query Pre-processing & Feedback Loop`
-- **Link DOI / Citation gốc:** [https://doi.org/10.1145/3712541](https://doi.org/10.1145/3712541)
-- **Tệp toàn văn (PDF bản gốc):** [`LegalQuery RAG (LQ-RAG) - A Legal Query Retrieval-Augmented Generation Framework with Recursive Feedback.pdf`](../research paper/04_Hybrid_Dual-System_Retrieval/17_GIST_2025_LQ-RAG_Legal_Query_Feedback/LegalQuery%20RAG%20%28LQ-RAG%29%20-%20A%20Legal%20Query%20Retrieval-Augmented%20Generation%20Framework%20with%20Recursive%20Feedback.pdf)
+### 17. Legal Query RAG (LQ-RAG)
+- **Tác giả:** Rahman S. M. Wahidur, Sumin Kim, Haeung Choi, David S. Bhatti, Heung-No Lee
+- **Năm xuất bản:** 2025 (Tháng 2/2025)
+- **Tạp chí / Hội nghị:** *IEEE Access*, Volume 13, pp. 36978–36994
+- **Phân loại nghiên cứu:** `Domain-Specific Legal RAG & Multi-Agent Recursive Feedback`
+- **Link DOI / Citation gốc:** [https://doi.org/10.1109/ACCESS.2025.3542125](https://doi.org/10.1109/ACCESS.2025.3542125)
+- **Tệp toàn văn (PDF bản gốc):** [`Legal_Query_RAG_IEEE_Access_2025.pdf`](../research paper/04_Hybrid_Dual-System_Retrieval/17_GIST_2025_LQ-RAG_Legal_Query_Feedback/Legal_Query_RAG_IEEE_Access_2025.pdf)
 - **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/04_Hybrid_Dual-System_Retrieval/17_GIST_2025_LQ-RAG_Legal_Query_Feedback/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
-Người dân sử dụng từ vựng đời thường, từ lóng hoặc từ viết tắt ('làm giấy kết hôn', 'đổi hộ khẩu', 'giấy khai tử cho bố') hoàn toàn không khớp với tên gọi chuẩn tắc trong luật.
+Hệ thống AI pháp lý thường đối mặt với tỷ lệ ảo giác rất cao (58% - 82%) và khó khăn khi suy luận các điều luật phức tạp. Bài báo đề xuất khung **LQ-RAG** tích hợp 2 tầng: Fine-Tuning mô hình nhúng/mô hình sinh chuyên biệt cho pháp luật, kết hợp kiến trúc đa tác tử có cơ chế phản hồi đệ quy (Recursive Feedback Loop) và tác tử kiểm toán (Audit Agent) để tự động đánh giá và hiệu chỉnh câu trả lời.
 
 #### Phương pháp luận & Đóng góp kỹ thuật
-Thiết kế bộ tiền xử lý đệ quy: chuyển đổi từ đồng nghĩa đời thường sang thuật ngữ nhà nước và loại bỏ các mệnh đề hoàn cảnh rác trước khi đẩy vào engine tìm kiếm.
+1. Tầng Fine-Tuning (FT): Tinh chỉnh Legal Embedding LLM và Hybrid Fine-Tuned Generative LLM (HFM) trên tập dữ liệu pháp luật.
+2. Tầng RAG đệ quy: Sử dụng Evaluation/Audit Agent chấm điểm câu trả lời; nếu chưa đạt chuẩn, Prompt Agent tự động tinh chỉnh câu hỏi và yêu cầu truy xuất lại.
 
 #### Kết quả thực nghiệm chính
-Tăng tỷ lệ tìm đúng thủ tục mục tiêu từ 54% lên 92.8% trên tập truy vấn thực tế của người dân.
+Đạt mức cải thiện 23% điểm liên quan (relevance score) so với Naive RAG; mô hình nhúng pháp lý tăng 13% Hit Rate và 15% MRR.
 
 #### Đánh giá Ưu điểm & Hạn chế
-- **Ưu điểm (Strengths):** Giải pháp trực diện và hiệu quả cực cao cho bài toán khoảng cách ngôn ngữ giữa công dân và chính quyền.
-- **Hạn chế (Limitations):** Phụ thuộc vào chất lượng xây dựng từ điển đồng nghĩa ban đầu.
+- **Ưu điểm (Strengths):** Tác tử kiểm toán (Audit Agent) và vòng lặp đệ quy giúp kiểm soát ảo giác hiệu quả trong tác vụ phân tích pháp lý.
+- **Hạn chế (Limitations):** Vòng lặp đệ quy làm tăng đáng kể độ trễ phản hồi và chi phí tính toán; chưa giải quyết triệt để rủi ro ảo giác nếu chính mô hình audit cũng bị sai lệch.
 
-#### Ánh xạ trực tiếp tới kiến trúc V10.5
-> **Ý nghĩa kiến trúc:** Trực tiếp tương ứng với tính năng `synonyms.json` của V10.5 (map 'độc thân' -> 'tình trạng hôn nhân', bỏ 'cho bố', 'quá hạn', 'ở phường') giúp đạt 89/89 câu trong top-3.
+#### Ánh xạ trực tiếp tới kiến trúc V10.6
+> **Ý nghĩa kiến trúc:** Ý tưởng về Evaluation Agent tương đồng với module **Fact Verifier & Grounding Guard (`verifier.py`)** của V10.6. Tuy nhiên, V10.6 vượt trội hơn ở chỗ không để mô hình sinh bảng thủ tục rồi mới đi sửa, mà dùng **UI Formatting Engine (Zero LLM)** kéo dữ liệu trực tiếp từ CSDL, triệt tiêu 100% nguy cơ bịa đặt lệ phí và hồ sơ.
 
 #### Gợi ý trích dẫn khi viết bài báo khoa học (Citation Guidance)
-- **Vị trí đề xuất trong bài báo:** `Section 3.4 (Synonym Dictionary Expansion)`
+- **Vị trí đề xuất trong bài báo:** `Section 3.5 (Fact Verification & Grounding Guardrails)`
 - **Mẫu câu trích dẫn học thuật (Draft Context):**
-  > "Informal citizen expressions rarely match statutory names. Following LQ-RAG's query normalization framework (GIST, 2025), we inject domain synonyms to bridge the colloquial-administrative lexicon gap."
+  > "While iterative evaluation mechanisms in legal RAG frameworks (Wahidur et al., IEEE Access 2025) mitigate hallucinations through recursive feedback, our system eliminates parametric uncertainty entirely by coupling deterministic SQL schema rendering with an independent verification guard."
 
 ---
 
@@ -668,7 +670,177 @@ Mô hình nhỏ được tinh chỉnh đúng phương pháp đạt độ tuân t
 
 ---
 
-## Bảng tổng hợp đối sánh 20 bài báo theo khía cạnh dự án V10.5
+---
+
+## Nhóm 6: AI Pháp Lý & Hành Chính Công Việt Nam (Vietnamese Legal & Public Admin AI)
+
+### 21. ViGPTQA: State-of-the-Art LLMs for Vietnamese Question Answering
+- **Tác giả:** Minh-Thuan Nguyen, Khanh-Tung Tran, Vincent Nguyen, Xuan-Son Vu
+- **Năm xuất bản:** 2023
+- **Tạp chí / Hội nghị:** *Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing: Industry Track (EMNLP 2023)*, pages 754–764
+- **Phân loại nghiên cứu:** `Vietnamese Foundation Model & Instruction Tuning`
+- **Link DOI / Citation gốc:** [https://aclanthology.org/2023.emnlp-industry.71/](https://aclanthology.org/2023.emnlp-industry.71/)
+- **Tệp toàn văn (PDF bản gốc):** [`ViGPTQA - State-of-the-Art LLMs for Vietnamese Question Answering.pdf`](06_Vietnamese_Legal_and_Public_Admin_AI/21_ViGPTQA_2023_Vietnamese_Legal_QA/ViGPTQA%20-%20State-of-the-Art%20LLMs%20for%20Vietnamese%20Question%20Answering.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](06_Vietnamese_Legal_and_Public_Admin_AI/21_ViGPTQA_2023_Vietnamese_Legal_QA/literature_review.md)
+
+#### Abstract tóm tắt & Vấn đề giải quyết
+Các ứng dụng hỏi đáp AI cho ngôn ngữ tài nguyên thấp như tiếng Việt thường bị hạn chế do thiếu tập dữ liệu đánh giá và mô hình tinh chỉnh sâu. Nghiên cứu giới thiệu ViGPTQA - hệ thống hỏi đáp thực tế sử dụng LLM được huấn luyện và tinh chỉnh chỉ dẫn chuyên biệt cho tiếng Việt (ViGPT). Bài báo cung cấp bộ tiêu chuẩn benchmark đánh giá khả năng xử lý ngôn ngữ tự nhiên trong các ngữ cảnh thực tiễn tại Việt Nam.
+
+#### Phương pháp luận & Đóng góp kỹ thuật
+1. Tinh chỉnh chỉ dẫn (Instruction Fine-Tuning) cho mô hình tiếng Việt chuyên dụng, tối ưu hóa sự hiểu biết văn phong và ngữ cảnh văn hóa/hành chính.
+2. Xây dựng tập dữ liệu benchmark hỏi đáp chuẩn cho tiếng Việt, kiểm thử khả năng bám sát ngữ cảnh câu hỏi đời thực.
+
+#### Kết quả thực nghiệm chính
+ViGPT vượt trội so với các mô hình đa ngôn ngữ mã nguồn mở tương đương khi xử lý câu hỏi tiếng Việt, tạo ra các câu trả lời tự nhiên, chính xác và mạch lạc.
+
+#### Đánh giá Ưu điểm & Hạn chế
+- **Ưu điểm (Strengths):** Khẳng định tính tất yếu của việc bản địa hóa mô hình ngôn ngữ cho tiếng Việt, tạo nền móng vững chắc cho các hệ thống hỏi đáp chuyên ngành.
+- **Hạn chế (Limitations):** Cần kết hợp thêm các hệ thống truy xuất tài liệu thời gian thực để cập nhật văn bản quy phạm mới.
+
+#### Ánh xạ trực tiếp tới kiến trúc V10.6
+> **Ý nghĩa kiến trúc:** Cung cấp cơ sở khoa học để V10.6 ưu tiên lựa chọn mô hình có năng lực tiếng Việt xuất sắc (Qwen2.5) kết hợp cơ chế chuẩn hóa từ vựng `synonyms.json` giúp hiểu chính xác câu hỏi hành chính của người dân.
+
+#### Gợi ý trích dẫn khi viết bài báo khoa học (Citation Guidance)
+- **Vị trí đề xuất trong bài báo:** `Section 1 (Introduction) & Section 3.1 (Foundation Model Selection)`
+- **Mẫu câu trích dẫn học thuật (Draft Context):**
+  > "Vietnamese administrative queries present unique linguistic challenges. Following the findings of ViGPTQA (Nguyen et al., EMNLP 2023), domain systems must rely on native linguistic modeling combined with external retrieval to prevent hallucinated administrative advice."
+
+---
+
+### 22. Ứng dụng trí tuệ nhân tạo trong quản lý hành chính công
+- **Tác giả:** TS. Vũ Thị Hòa, Nguyễn Vũ Thành
+- **Năm xuất bản:** 2025
+- **Tạp chí / Hội nghị:** *Tạp chí Quản lý Nhà nước (Quanlynhanuoc.vn)* - Học viện Hành chính Quốc gia
+- **Phân loại nghiên cứu:** `Public Administration Policy & Practice Framework`
+- **Link DOI / Citation gốc:** Tạp chí Quản lý Nhà nước, Chuyên đề Hành chính công & Chuyển đổi số 2025
+- **Tệp toàn văn (PDF bản gốc):** [`Ung dung tri tue nhan tao trong quan ly hanh chinh cong - Tap chi QLNN.pdf`](06_Vietnamese_Legal_and_Public_Admin_AI/22_VuThiHoa_2025_AI_Quan_Ly_Hanh_Chinh_Cong/Ung%20dung%20tri%20tue%20nhan%20tao%20trong%20quan%20ly%20hanh%20chinh%20cong%20-%20Tap%20chi%20QLNN.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](06_Vietnamese_Legal_and_Public_Admin_AI/22_VuThiHoa_2025_AI_Quan_Ly_Hanh_Chinh_Cong/literature_review.md)
+
+#### Abstract tóm tắt & Vấn đề giải quyết
+Nghiên cứu phân tích tiềm năng và lộ trình ứng dụng trí tuệ nhân tạo (AI) nhằm nâng cao hiệu quả và tính minh bạch trong quản lý hành chính công tại Việt Nam. Dựa trên tổng quan tài liệu và phân tích các bài học quốc tế, bài báo xác định các lĩnh vực ứng dụng trọng tâm: chatbot trợ lý ảo hỗ trợ công dân, xử lý văn bản, hỗ trợ cán bộ ra quyết định và tự động hóa quy trình nghiệp vụ (RPA). Tác giả đề xuất xây dựng CSDL dùng chung, đảm bảo an toàn thông tin và hoàn thiện khung pháp lý về AI công vụ.
+
+#### Phương pháp luận & Đóng góp kỹ thuật
+1. Phương pháp nghiên cứu định tính, tổng kết bài học kinh nghiệm quốc tế (Estonia, Singapore, Mỹ) gắn với thực tiễn chuyển đổi số Việt Nam.
+2. Xác lập 4 trụ cột ứng dụng AI trong quản trị hành chính công và các nguyên tắc bảo đảm tính minh bạch, chính xác của thông tin cung cấp cho người dân.
+
+#### Kết quả thực nghiệm chính
+Khẳng định ứng dụng AI giúp giảm tải trực tiếp khối lượng công việc thủ công tại bộ phận Một cửa, rút ngắn thời gian xử lý thủ tục và nâng cao chỉ số hài lòng của người dân.
+
+#### Đánh giá Ưu điểm & Hạn chế
+- **Ưu điểm (Strengths):** Cung cấp luận cứ lý luận và chính sách thực tiễn vững chắc từ cơ quan đào tạo cán bộ hành chính hàng đầu Việt Nam.
+- **Hạn chế (Limitations):** Tập trung vào góc độ quản lý nhà nước và chính sách, chưa đi sâu vào triển khai kỹ thuật cụ thể.
+
+#### Ánh xạ trực tiếp tới kiến trúc V10.6
+> **Ý nghĩa kiến trúc:** Là chỗ dựa lý luận vững chắc chứng minh giá trị thực tiễn và tính cấp bách của Trợ lý Hành chính công V10.6 phục vụ bộ phận Một cửa cấp cơ sở (xã/phường).
+
+#### Gợi ý trích dẫn khi viết bài báo khoa học (Citation Guidance)
+- **Vị trí đề xuất trong bài báo:** `Section 1 (Introduction - Socio-economic Motivation)`
+- **Mẫu câu trích dẫn học thuật (Draft Context):**
+  > "As highlighted by Vu and Nguyen (2025), modernizing public administration through verified virtual assistants is imperative for Vietnamese digital government strategy, directly reducing administrative burdens at local one-stop service counters."
+
+---
+
+### 23. Integrating Information Retrieval and Large Language Models for Vietnamese Legal Document Query Systems
+- **Tác giả:** Pham Thi Xuan Hien, Duong Ngoc Thao Nhi, Pham Thi Ngoc Huyen
+- **Năm xuất bản:** 2025
+- **Tạp chí / Hội nghị:** *Proceedings of the 17th International Joint Conference on Knowledge Discovery, Knowledge Engineering and Knowledge Management (IC3K 2025) - KMIS Track*, SCITEPRESS
+- **Phân loại nghiên cứu:** `Vietnamese Legal RAG & Information Retrieval`
+- **Link DOI / Citation gốc:** [https://doi.org/10.5220/0013751200004000](https://doi.org/10.5220/0013751200004000)
+- **Tệp toàn văn (PDF bản gốc):** [`Integrating Information Retrieval and Large Language Models for Vietnamese Legal Document Query Systems.pdf`](06_Vietnamese_Legal_and_Public_Admin_AI/23_Hien_2025_Integrating_IR_LLM_Vietnamese_Legal/Integrating%20Information%20Retrieval%20and%20Large%20Language%20Models%20for%20Vietnamese%20Legal%20Document%20Query%20Systems.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](06_Vietnamese_Legal_and_Public_Admin_AI/23_Hien_2025_Integrating_IR_LLM_Vietnamese_Legal/literature_review.md)
+
+#### Abstract tóm tắt & Vấn đề giải quyết
+Đặc thù phức tạp và đa tầng của văn bản pháp luật Việt Nam (Luật, Nghị định, Thông tư) gây khó khăn lớn cho việc tra cứu tự động. Nghiên cứu đề xuất hệ thống hỏi đáp văn bản quy phạm pháp luật tích hợp kỹ thuật Truy xuất thông tin (IR) với Mô hình ngôn ngữ lớn (LLMs). Hệ thống lập chỉ mục hơn 45.000 văn bản pháp luật và 350.000 cặp hỏi-đáp pháp lý, giúp tự động hóa việc tra cứu và sinh phản hồi chính xác theo ngữ cảnh.
+
+#### Phương pháp luận & Đóng góp kỹ thuật
+1. Kiến trúc RAG chuyên biệt cho hệ thống pháp luật Việt Nam, kết hợp chỉ mục văn bản quy mô lớn và cơ sở dữ liệu vector.
+2. Xử lý phân cấp quan hệ pháp luật (Nghị định hướng dẫn thi hành Luật), đảm bảo việc dẫn chiếu điều khoản luôn cập nhật.
+
+#### Kết quả thực nghiệm chính
+Hệ thống giúp giảm 58% thời gian tìm kiếm thông tin pháp lý và đạt độ chính xác 89% trên 12 nhóm lĩnh vực pháp luật, độ hài lòng người dùng đạt 4.23/5.
+
+#### Đánh giá Ưu điểm & Hạn chế
+- **Ưu điểm (Strengths):** Nghiên cứu quy mô lớn trên kho văn bản pháp luật đồ sộ của Việt Nam, chứng minh tính hiệu quả của phương pháp tiếp cận IR + LLM.
+- **Hạn chế (Limitations):** Chưa trang bị lớp kiểm soát chặt chẽ các trường số liệu định lượng (lệ phí, ngày hẹn) để triệt tiêu hoàn toàn ảo giác.
+
+#### Ánh xạ trực tiếp tới kiến trúc V10.6
+> **Ý nghĩa kiến trúc:** Là bài báo đối sánh quốc tế quan trọng nhất liên quan trực tiếp đến bài toán của V10.6. V10.6 kế thừa mô hình kết hợp IR + LLM, đồng thời nâng cấp vượt bậc với cơ chế Grounding Guard đạt 100% chính xác về lệ phí và thời hạn.
+
+#### Gợi ý trích dẫn khi viết bài báo khoa học (Citation Guidance)
+- **Vị trí đề xuất trong bài báo:** `Section 2.2 (Legal & Regulatory RAG) & Section 4 (Baseline Comparisons)`
+- **Mẫu câu trích dẫn học thuật (Draft Context):**
+  > "While Pham et al. (KMIS 2025) achieved 89% accuracy by combining IR and LLMs on 45,000 Vietnamese legal documents, our proposed Dual-System V10.6 architecture introduces a deterministic Grounding Guard that eliminates numeric hallucination in administrative fee and deadline resolution."
+
+---
+
+### 24. Legal Documents Query Application for Vietnamese Law Using LLM and RAG Techniques
+- **Tác giả:** Ngô Tuấn Anh, Nguyễn Việt Hoàng, Ngô Thanh Tùng, Doãn Trung Tùng
+- **Năm xuất bản:** 2025
+- **Tạp chí / Hội nghị:** *The 10th International Conference on Intelligent Information Technology (ICIIT 2025)*, Session on Generative AI and Engineering Applications
+- **Phân loại nghiên cứu:** `Structural Legal Chunking & Application Framework`
+- **Link DOI / Citation gốc:** ICIIT 2025 Conference Proceedings
+- **Tệp toàn văn (PDF bản gốc):** [`Legal Documents Query Application for Vietnamese Law Using LLM and RAG Techniques.pdf`](06_Vietnamese_Legal_and_Public_Admin_AI/24_Ngo_2025_Legal_Query_App_Vietnamese_Law_RAG/Legal%20Documents%20Query%20Application%20for%20Vietnamese%20Law%20Using%20LLM%20and%20RAG%20Techniques.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](06_Vietnamese_Legal_and_Public_Admin_AI/24_Ngo_2025_Legal_Query_App_Vietnamese_Law_RAG/literature_review.md)
+
+#### Abstract tóm tắt & Vấn đề giải quyết
+Nghiên cứu giải quyết bài toán nâng cao tính chính xác và tốc độ truy vấn văn bản luật Việt Nam thông qua ứng dụng LLM và RAG. Điểm mấu chốt là giải quyết hiện tượng ảo giác điều luật và bảo đảm ngữ cảnh pháp lý khi phân chia văn bản (chunking) theo cấu trúc ngữ nghĩa Điều - Khoản - Điểm.
+
+#### Phương pháp luận & Đóng góp kỹ thuật
+1. Kỹ thuật phân đoạn theo cấu trúc pháp lý (Structural Legal Chunking) giúp bảo toàn nguyên vẹn ngữ cảnh của từng điều luật.
+2. Trích xuất metadata bổ sung (ngày ban hành, hiệu lực, văn bản sửa đổi) và kiểm soát prompt bắt buộc trích dẫn nguồn.
+
+#### Kết quả thực nghiệm chính
+Đạt độ chuẩn xác cao trong trích xuất điều khoản liên quan, loại bỏ các trường hợp trích dẫn sai văn bản đã hết hiệu lực.
+
+#### Đánh giá Ưu điểm & Hạn chế
+- **Ưu điểm (Strengths):** Phương pháp phân đoạn phù hợp chuẩn mực định dạng văn bản quy phạm pháp luật Việt Nam.
+- **Hạn chế (Limitations):** Thiếu cơ chế tìm kiếm toàn văn FTS5 cho các câu hỏi sử dụng ngôn ngữ đời thường không chứa chính xác từ khóa luật pháp.
+
+#### Ánh xạ trực tiếp tới kiến trúc V10.6
+> **Ý nghĩa kiến trúc:** Củng cố thiết kế cơ sở dữ liệu SQLite FTS5 trong V10.6, nơi các thủ tục hành chính được bóc tách cấu trúc rõ ràng (Trình tự, Hồ sơ, Lệ phí, Thời hạn, Căn cứ pháp lý).
+
+#### Gợi ý trích dẫn khi viết bài báo khoa học (Citation Guidance)
+- **Vị trí đề xuất trong bài báo:** `Section 2.2 (Legal RAG) & Section 3.4 (Data Preprocessing and Storage)`
+- **Mẫu câu trích dẫn học thuật (Draft Context):**
+  > "Aligning with the structural legal chunking principles advocated by Ngo et al. (ICIIT 2025), our administrative database decomposes procedures into explicit fields (dossier components, fees, deadlines) rather than monolithic raw text blocks."
+
+---
+
+### 25. LawPal: A Retrieval Augmented Generation Based System for Enhanced Legal Accessibility in India
+- **Tác giả:** Dnyanesh Panchal, Aaryan Gole, Vaibhav Narute, Raunak Joshi
+- **Năm xuất bản:** 2025
+- **Tạp chí / Hội nghị:** *arXiv preprint*, arXiv:2502.16573 [cs.AI]
+- **Phân loại nghiên cứu:** `Legal Accessibility & Citizen-Centric RAG Chatbot`
+- **Link DOI / Citation gốc:** [https://arxiv.org/abs/2502.16573](https://arxiv.org/abs/2502.16573)
+- **Tệp toàn văn (PDF bản gốc):** [`LawPal - A Retrieval Augmented Generation Based System for Enhanced Legal Accessibility in India.pdf`](06_Vietnamese_Legal_and_Public_Admin_AI/25_LawPal_2025_Legal_RAG_Accessibility/LawPal%20-%20A%20Retrieval%20Augmented%20Generation%20Based%20System%20for%20Enhanced%20Legal%20Accessibility%20in%20India.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](06_Vietnamese_Legal_and_Public_Admin_AI/25_LawPal_2025_Legal_RAG_Accessibility/literature_review.md)
+
+#### Abstract tóm tắt & Vấn đề giải quyết
+Tiếp cận kiến thức pháp lý tại các nước đang phát triển gặp nhiều trở ngại do người dân thiếu hiểu biết về luật và thiếu công cụ tư vấn miễn phí, tin cậy. Nghiên cứu đề xuất LawPal - trợ lý pháp lý ảo dựa trên RAG kết hợp cơ sở dữ liệu vector FAISS nhằm bình dân hóa việc tra cứu luật, biến các văn bản luật phức tạp thành câu trả lời dễ hiểu, gần gũi cho công dân.
+
+#### Phương pháp luận & Đóng góp kỹ thuật
+1. Kiến trúc RAG định hướng người dùng đại chúng: đơn giản hóa ngôn ngữ chuyên ngành và tăng cường khả năng đối thoại tương tác.
+2. Ứng dụng FAISS vectorstore tối ưu hóa chi phí phần cứng và tăng tốc độ phản hồi cho người dùng.
+
+#### Kết quả thực nghiệm chính
+Hệ thống vận hành với tốc độ truy vấn mili-giây, cung cấp câu trả lời rõ ràng và giúp người dân hiểu đúng quyền lợi pháp lý cơ bản của mình.
+
+#### Đánh giá Ưu điểm & Hạn chế
+- **Ưu điểm (Strengths):** Triết lý thiết kế hướng tới cộng đồng và tối ưu hóa chi phí triển khai thực tế.
+- **Hạn chế (Limitations):** Chưa có bộ kiểm soát số liệu cứng (grounding guard) và chưa hỗ trợ phân cấp thẩm quyền địa phương.
+
+#### Ánh xạ trực tiếp tới kiến trúc V10.6
+> **Ý nghĩa kiến trúc:** Cùng chung sứ mệnh "bình dân hóa dịch vụ công cho người dân", là tài liệu tham khảo giá trị cho phần đối thoại thân thiện ở Turn 2 của V10.6.
+
+#### Gợi ý trích dẫn khi viết bài báo khoa học (Citation Guidance)
+- **Vị trí đề xuất trong bài báo:** `Section 1 (Introduction) & Section 3.2 (Citizen-Centric Conversational Turn)`
+- **Mẫu câu trích dẫn học thuật (Draft Context):**
+  > "Democratizing citizen access to complex regulatory frameworks is central to both LawPal (Panchal et al., 2025) and our V10.6 framework, which synthesizes dense administrative documentation into actionable, conversational steps."
+
+---
+
+## Bảng tổng hợp đối sánh 25 bài báo theo khía cạnh dự án V10.6
+ 20 bài báo theo khía cạnh dự án V10.5
 
 | STT | Bài báo / Tác giả | Năm | Nơi công bố | Trọng tâm học thuật | Thành phần tương ứng trong V10.5 | Vị trí trích dẫn đề xuất |
 |:---:|---|:---:|---|---|---|---|
@@ -688,16 +860,21 @@ Mô hình nhỏ được tinh chỉnh đúng phương pháp đạt độ tuân t
 | **14** | *Corrective Retrieval Augmented Generatio...* (Shi-Qi Yan) | 2024 | arXiv preprint | Primary Architecture & Fallback Mechanism | Cơ chế fallback sang Web Search khi System 2 trả confident=False | `Section 3.2 (Corrective Web Search Fallback)` |
 | **15** | *From BM25 to Corrective RAG* (Lucas P. Schmidt) | 2024 | arXiv preprint | Comparative Benchmark & Strategy Study | Khẳng định SQLite FTS5 trên dữ liệu bảng biểu mẫu vượt trội dense vector | `Section 3.4 (SQLite FTS5 vs Dense Vector Retrieval)` |
 | **16** | *Optimizing Retrieval-Augmented Generatio...* (Hongyu Li) | 2025 | Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining | Multi-Agent System & Optimization | Điều phối 2 Turn (Turn 1: CSDL; Turn 2: Customer Care đối thoại) | `Section 3.2 (Two-Turn Multi-Agent Orchestration)` |
-| **17** | *LegalQuery RAG (LQ-RAG)* (GIST AI Research Lab) | 2025 | ACM Transactions on Asian and Low-Resource Language Information Processing / arXiv:2406.14207 | Domain Query Pre-processing & Feedback Loop | Bảng từ điển từ vựng dân sự synonyms.json chuẩn hóa truy vấn người dân | `Section 3.4 (Synonym Dictionary Expansion)` |
+| **17** | *Legal Query RAG (LQ-RAG)* (Rahman S. M. Wahidur) | 2025 | IEEE Access (DOI: 10.1109/ACCESS.2025.3542125) | Domain Query Pre-processing & Feedback Loop | Chuẩn hóa truy vấn người dân & vòng lặp phản hồi đệ quy kiểm soát ảo giác | `Section 3.4 (Domain Query Feedback Loop)` |
 | **18** | *Fine-Tuning Small Language Models for Domain-Specific AI* (Srijan Das) | 2025 | arXiv preprint | Edge AI & Small Model Deployment Study | Luận chứng chạy mô hình cục bộ Qwen2.5-1.5B tại biên đảm bảo bảo mật dữ liệu | `Section 1 (Introduction)` |
 | **19** | *Qwen2.5 Technical Report* (Qwen Team) | 2024 | arXiv preprint | Technical Report & Foundation Model | Cơ sở chọn base model Ollama qwen2.5:1.5b hỗ trợ tiếng Việt và JSON native | `Section 3.1 (Base Foundation Model Selection)` |
-| **20** | *Unveiling the Secret Recipe* (Mayank Mishra) | 2024 | arXiv preprint | Engineering Methodology & Empirical Guide | Kỹ thuật prompt tinh gọn và guardrails cho SLM tránh lặp và giảm độ trễ | `Section 3.6 (Prompt Optimization` |
+| **20** | *Unveiling the Secret Recipe* (Mayank Mishra) | 2024 | arXiv preprint | Engineering Methodology & Empirical Guide | Kỹ thuật prompt tinh gọn và guardrails cho SLM tránh lặp và giảm độ trễ | `Section 3.6 (Prompt Optimization)` |
+| **21** | *ViGPTQA* (Minh-Thuan Nguyen) | 2023 | EMNLP 2023 Industry Track | Vietnamese Foundation Model & SFT | Khẳng định tính tất yếu của việc hiểu ngôn ngữ và ngữ cảnh hành chính Việt Nam | `Section 3.1 (Base Foundation Model Selection)` |
+| **22** | *Ứng dụng AI trong QL hành chính công* (Vũ Thị Hòa) | 2025 | Tạp chí Quản lý Nhà nước | Public Admin Policy & Case Study | Luận cứ lý luận và chính sách cho việc giảm tải một cửa bằng trợ lý ảo | `Section 1 (Introduction & Motivation)` |
+| **23** | *Integrating IR and LLMs for VN Legal* (Phạm Thị Xuân Hiền) | 2025 | IC3K / KMIS 2025 (SCITEPRESS) | Legal RAG on Vietnamese Corpora | Baseline đối sánh: IR + LLM trên 45.000 văn bản pháp luật Việt Nam | `Section 2.2 (Legal RAG) & Section 4 (Evaluation)` |
+| **24** | *Legal Query App for Vietnamese Law* (Ngô Tuấn Anh) | 2025 | ICIIT 2025 (ACM/IEEE) | Structural Chunking & Legal RAG | Phân đoạn theo Điều - Khoản - Điểm tương đồng thiết kế CSDL SQLite thủ tục | `Section 3.4 (Structured Data Storage)` |
+| **25** | *LawPal* (Dnyanesh Panchal) | 2025 | arXiv preprint (arXiv:2502.16573) | Citizen-Centric Accessibility | Chuyển đổi ngôn ngữ luật khô khan thành lời thoại dễ hiểu ở Turn 2 | `Section 3.2 (Natural Dialogue Synthesis)` |
 
 ---
 
-## Khung cấu trúc bài báo khoa học đề xuất cho Dự án V10.5
+## Khung cấu trúc bài báo khoa học đề xuất cho Dự án V10.6
 
-> Dựa trên 20 bài báo khoa học đã thu thập và đánh giá, nhóm nghiên cứu V10.5 có thể tổ chức bài báo khoa học (dự kiến gửi Hội nghị/Tạp chí quốc tế thuộc IEEE/ACM/Springer hoặc SCITEPRESS) theo khung 5 phần sau:
+> Dựa trên 25 bài báo khoa học đã thu thập và đánh giá, nhóm nghiên cứu V10.6 có thể tổ chức bài báo khoa học (dự kiến gửi Hội nghị/Tạp chí quốc tế thuộc IEEE/ACM/Springer hoặc SCITEPRESS) theo khung 5 phần sau:
 
 ```
 [Title Proposal]
@@ -716,8 +893,8 @@ A Grounded Dual-System RAG Architecture with Local Edge SLMs for Verified Public
   - Tối ưu hóa chu trình phản hồi trên mô hình nhỏ **Qwen2.5-1.5B/3B chạy on-premise** qua Ollama, giảm độ trễ từ 1.55s xuống 0.38s (gấp 4 lần).
 
 ### 2. Related Work (Các nghiên cứu liên quan)
-- **2.1. AI & Chatbots in Public Administration:** Trích dẫn các công trình e-Government tiêu biểu (*GuidaPA - Marco et al., 2024; GovAI-Pipe - Enes et al., 2024; COPAL - Jacqueline et al., 2024*).
-- **2.2. Legal & Regulatory Retrieval-Augmented Generation:** Nút thắt của embedding dày và ưu thế của FTS kết hợp từ vựng (*LegalCheck - Schneider et al., 2026; LegalBench-RAG - Guha et al., 2024; HyPA-RAG - Zhang et al., 2024*).
+- **2.1. AI & Chatbots in Public Administration:** Trích dẫn các công trình e-Government tiêu biểu (*GuidaPA - Jimenez-Gutierrez et al., 2026; GovAI-Pipe - Kaplan, 2026; Vu & Nguyen, 2025; LawPal - Panchal et al., 2025*).
+- **2.2. Legal & Regulatory Retrieval-Augmented Generation:** Nút thắt của embedding dày và ưu thế của FTS kết hợp từ vựng (*LegalCheck - Schneider et al., 2026; LegalBench-RAG - Guha et al., 2024; HyPA-RAG - Zhang et al., 2024; Pham et al., KMIS 2025; Ngo et al., ICIIT 2025*).
 - **2.3. Hallucination Mitigation & Fact Verification:** Các mô hình kiểm chứng độc lập (*CoVe - Dhuliawala et al., 2023; Self-RAG - Asai et al., 2024; CRITIC - Gou et al., 2024; GASP - Sun et al., 2024*).
 - **2.4. Edge SLM Deployment & Domain SFT:** Năng lực của mô hình nhỏ triển khai tại trạm cơ sở (*Das et al., 2025; Qwen Team, 2024; Mishra et al., 2024*).
 

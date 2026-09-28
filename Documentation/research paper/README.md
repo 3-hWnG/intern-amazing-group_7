@@ -1,4 +1,4 @@
-# Thư Mục Nghiên Cứu Khoa Học (Research Papers & Literature Reviews) - Dự Án V10.5
+# Thư Mục Nghiên Cứu Khoa Học (Research Papers & Literature Reviews) - Dự Án V10.6
 
 > Thư mục chứa 20 bài báo khoa học chất lượng cao, phục vụ viết bài báo quốc tế (Journal/Conference paper) cho dự án Trợ lý Thủ tục Hành chính V10.5.
 > Toàn bộ các bài báo đều có file PDF toàn văn tải về với **TÊN GỐC CHUẨN CỦA BÀI BÁO** (không đổi tên thành 'paper.pdf') và bản phân tích chi tiết (`literature_review.md`) theo chuẩn kỹ năng `/literature-review`.
@@ -135,12 +135,12 @@ research paper/
    - **Đánh giá khoa học:** [`literature_review.md`](04_Hybrid_Dual-System_Retrieval/16_Li_2025_Multi-Agent_Hybrid_Retrieval_KDD/literature_review.md)
    - **Ý nghĩa cho V10.5:** Hình mẫu cho kiến trúc điều phối State Machine 2 lượt (Turn 1: Extractor + Card, Turn 2: Customer Care Agent) trong V10.5.
 
-17. **[LegalQuery RAG (LQ-RAG): A Legal Query Retrieval-Augmented Generation Framework with Recursive Feedback](04_Hybrid_Dual-System_Retrieval/17_GIST_2025_LQ-RAG_Legal_Query_Feedback/literature_review.md)**
-   - **Tác giả & Năm:** GIST AI Research Lab (2025)
-   - **Xuất bản:** *ACM Transactions on Asian and Low-Resource Language Information Processing / arXiv:2406.14207*
-   - **Tệp PDF gốc:** [`LegalQuery RAG (LQ-RAG) - A Legal Query Retrieval-Augmented Generation Framework with Recursive Feedback.pdf`](04_Hybrid_Dual-System_Retrieval/17_GIST_2025_LQ-RAG_Legal_Query_Feedback/LegalQuery%20RAG%20%28LQ-RAG%29%20-%20A%20Legal%20Query%20Retrieval-Augmented%20Generation%20Framework%20with%20Recursive%20Feedback.pdf)
+17. **[Legal Query RAG (LQ-RAG): A Legal Query Retrieval-Augmented Generation Framework with Recursive Feedback Loop](04_Hybrid_Dual-System_Retrieval/17_GIST_2025_LQ-RAG_Legal_Query_Feedback/literature_review.md)**
+   - **Tác giả & Năm:** Rahman S. M. Wahidur, Sumin Kim, Haeung Choi, David S. Bhatti, Heung-No Lee (2025)
+   - **Xuất bản:** *IEEE Access, Volume 13, pp. 36978–36994 (DOI: 10.1109/ACCESS.2025.3542125)*
+   - **Tệp PDF gốc:** [`Legal_Query_RAG_IEEE_Access_2025.pdf`](04_Hybrid_Dual-System_Retrieval/17_GIST_2025_LQ-RAG_Legal_Query_Feedback/Legal_Query_RAG_IEEE_Access_2025.pdf)
    - **Đánh giá khoa học:** [`literature_review.md`](04_Hybrid_Dual-System_Retrieval/17_GIST_2025_LQ-RAG_Legal_Query_Feedback/literature_review.md)
-   - **Ý nghĩa cho V10.5:** Trực tiếp tương ứng với tính năng `synonyms.json` của V10.5 (map 'độc thân' -> 'tình trạng hôn nhân', bỏ 'cho bố', 'quá hạn', 'ở phường') giúp đạt 89/89 câu trong top-3.
+   - **Ý nghĩa cho V10.6:** Cung cấp cơ chế chuẩn hóa tiền kỳ truy vấn hành chính/pháp luật và vòng lặp phản hồi đệ quy kiểm soát độ tin cậy của câu trả lời.
 
 ### Nhóm 5: Mô Hình Ngôn Ngữ Nhỏ (SLMs) & Triển Khai Cục Bộ (Local/Edge SLMs)
 
@@ -164,3 +164,41 @@ research paper/
    - **Tệp PDF gốc:** [`Unveiling the Secret Recipe - A Guide For Supervised Fine-Tuning Small LLMs on Domain Tasks.pdf`](05_Local_SLMs_Edge_AI/20_Mishra_2024_Guide_SFT_Small_LLMs/Unveiling%20the%20Secret%20Recipe%20-%20A%20Guide%20For%20Supervised%20Fine-Tuning%20Small%20LLMs%20on%20Domain%20Tasks.pdf)
    - **Đánh giá khoa học:** [`literature_review.md`](05_Local_SLMs_Edge_AI/20_Mishra_2024_Guide_SFT_Small_LLMs/literature_review.md)
    - **Ý nghĩa cho V10.5:** Cơ sở phương pháp luận cho việc thiết kế prompt tinh gọn của V10.5 (dừng sinh ngay khi xuống dòng, cắt bỏ danh sách sau dấu hai chấm) giúp tăng tốc độ phản hồi gấp 4 lần (từ 1.55s xuống 0.38s).
+
+
+### Nhóm 6: AI Pháp Lý & Hành Chính Công Việt Nam (Vietnamese Legal & Public Admin AI)
+
+21. **[ViGPTQA: State-of-the-Art LLMs for Vietnamese Question Answering](06_Vietnamese_Legal_and_Public_Admin_AI/21_ViGPTQA_2023_Vietnamese_Legal_QA/literature_review.md)**
+   - **Tác giả & Năm:** Minh-Thuan Nguyen, Khanh-Tung Tran, Vincent Nguyen, Xuan-Son Vu (2023)
+   - **Xuất bản:** *Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing: Industry Track (EMNLP 2023)*
+   - **Tệp PDF gốc:** [`ViGPTQA - State-of-the-Art LLMs for Vietnamese Question Answering.pdf`](06_Vietnamese_Legal_and_Public_Admin_AI/21_ViGPTQA_2023_Vietnamese_Legal_QA/ViGPTQA%20-%20State-of-the-Art%20LLMs%20for%20Vietnamese%20Question%20Answering.pdf)
+   - **Đánh giá khoa học:** [`literature_review.md`](06_Vietnamese_Legal_and_Public_Admin_AI/21_ViGPTQA_2023_Vietnamese_Legal_QA/literature_review.md)
+   - **Ý nghĩa cho V10.6:** Khẳng định tầm quan trọng của việc tối ưu hóa tiếng Việt bản địa và cấu trúc câu hỏi hành chính của người dân.
+
+22. **[Ứng dụng trí tuệ nhân tạo trong quản lý hành chính công](06_Vietnamese_Legal_and_Public_Admin_AI/22_VuThiHoa_2025_AI_Quan_Ly_Hanh_Chinh_Cong/literature_review.md)**
+   - **Tác giả & Năm:** TS. Vũ Thị Hòa, Nguyễn Vũ Thành (2025)
+   - **Xuất bản:** *Tạp chí Quản lý Nhà nước (Quanlynhanuoc.vn)*
+   - **Tệp PDF gốc:** [`Ung dung tri tue nhan tao trong quan ly hanh chinh cong - Tap chi QLNN.pdf`](06_Vietnamese_Legal_and_Public_Admin_AI/22_VuThiHoa_2025_AI_Quan_Ly_Hanh_Chinh_Cong/Ung%20dung%20tri%20tue%20nhan%20tao%20trong%20quan%20ly%20hanh%20chinh%20cong%20-%20Tap%20chi%20QLNN.pdf)
+   - **Đánh giá khoa học:** [`literature_review.md`](06_Vietnamese_Legal_and_Public_Admin_AI/22_VuThiHoa_2025_AI_Quan_Ly_Hanh_Chinh_Cong/literature_review.md)
+   - **Ý nghĩa cho V10.6:** Cung cấp cơ sở lý luận chính sách vững chắc chứng minh giá trị thực tiễn giảm tải bộ phận một cửa cho trợ lý ảo V10.6.
+
+23. **[Integrating Information Retrieval and Large Language Models for Vietnamese Legal Document Query Systems](06_Vietnamese_Legal_and_Public_Admin_AI/23_Hien_2025_Integrating_IR_LLM_Vietnamese_Legal/literature_review.md)**
+   - **Tác giả & Năm:** Pham Thi Xuan Hien, Duong Ngoc Thao Nhi, Pham Thi Ngoc Huyen (2025)
+   - **Xuất bản:** *Proceedings of the 17th International Joint Conference on Knowledge Discovery, Knowledge Engineering and Knowledge Management (IC3K 2025) - KMIS Track*
+   - **Tệp PDF gốc:** [`Integrating Information Retrieval and Large Language Models for Vietnamese Legal Document Query Systems.pdf`](06_Vietnamese_Legal_and_Public_Admin_AI/23_Hien_2025_Integrating_IR_LLM_Vietnamese_Legal/Integrating%20Information%20Retrieval%20and%20Large%20Language%20Models%20for%20Vietnamese%20Legal%20Document%20Query%20Systems.pdf)
+   - **Đánh giá khoa học:** [`literature_review.md`](06_Vietnamese_Legal_and_Public_Admin_AI/23_Hien_2025_Integrating_IR_LLM_Vietnamese_Legal/literature_review.md)
+   - **Ý nghĩa cho V10.6:** Baseline đối sánh trực tiếp về phương pháp kết hợp IR và LLM trên kho tài liệu pháp quy Việt Nam.
+
+24. **[Legal Documents Query Application for Vietnamese Law Using LLM and RAG Techniques](06_Vietnamese_Legal_and_Public_Admin_AI/24_Ngo_2025_Legal_Query_App_Vietnamese_Law_RAG/literature_review.md)**
+   - **Tác giả & Năm:** Ngô Tuấn Anh, Nguyễn Việt Hoàng, Ngô Thanh Tùng, Doãn Trung Tùng (2025)
+   - **Xuất bản:** *The 10th International Conference on Intelligent Information Technology (ICIIT 2025)*
+   - **Tệp PDF gốc:** [`Legal Documents Query Application for Vietnamese Law Using LLM and RAG Techniques.pdf`](06_Vietnamese_Legal_and_Public_Admin_AI/24_Ngo_2025_Legal_Query_App_Vietnamese_Law_RAG/Legal%20Documents%20Query%20Application%20for%20Vietnamese%20Law%20Using%20LLM%20and%20RAG%20Techniques.pdf)
+   - **Đánh giá khoa học:** [`literature_review.md`](06_Vietnamese_Legal_and_Public_Admin_AI/24_Ngo_2025_Legal_Query_App_Vietnamese_Law_RAG/literature_review.md)
+   - **Ý nghĩa cho V10.6:** Củng cố thiết kế phân đoạn có cấu trúc theo Điều/Khoản trong CSDL SQLite FTS5 của V10.6.
+
+25. **[LawPal: A Retrieval Augmented Generation Based System for Enhanced Legal Accessibility in India](06_Vietnamese_Legal_and_Public_Admin_AI/25_LawPal_2025_Legal_RAG_Accessibility/literature_review.md)**
+   - **Tác giả & Năm:** Dnyanesh Panchal, Aaryan Gole, Vaibhav Narute, Raunak Joshi (2025)
+   - **Xuất bản:** *arXiv preprint, arXiv:2502.16573 [cs.AI]*
+   - **Tệp PDF gốc:** [`LawPal - A Retrieval Augmented Generation Based System for Enhanced Legal Accessibility in India.pdf`](06_Vietnamese_Legal_and_Public_Admin_AI/25_LawPal_2025_Legal_RAG_Accessibility/LawPal%20-%20A%20Retrieval%20Augmented%20Generation%20Based%20System%20for%20Enhanced%20Legal%20Accessibility%20in%20India.pdf)
+   - **Đánh giá khoa học:** [`literature_review.md`](06_Vietnamese_Legal_and_Public_Admin_AI/25_LawPal_2025_Legal_RAG_Accessibility/literature_review.md)
+   - **Ý nghĩa cho V10.6:** Triết lý đơn giản hóa thủ tục hành chính/pháp luật phức tạp thành ngôn ngữ dễ hiểu, thân thiện cho công dân.
