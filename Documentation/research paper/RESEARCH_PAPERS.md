@@ -26,8 +26,8 @@
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2406.01386 [cs.AI]*
 - **Phân loại nghiên cứu:** `Primary Architecture & Privacy-Preserving System`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2406.01386](https://arxiv.org/abs/2406.01386)
-- **Tệp toàn văn (PDF bản gốc):** [`GuidaPA - Privacy-Preserving Chatbot for Public Administration via Federated Learning.pdf`](../research paper/01_E-Government_Chatbots/01_GuidaPA_2024_Privacy_Preserving_Chatbot_Public_Admin/GuidaPA%20-%20Privacy-Preserving%20Chatbot%20for%20Public%20Administration%20via%20Federated%20Learning.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/01_E-Government_Chatbots/01_GuidaPA_2024_Privacy_Preserving_Chatbot_Public_Admin/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`GuidaPA - Privacy-Preserving Chatbot for Public Administration via Federated Learning.pdf`](research paper/01_E-Government_Chatbots/01_GuidaPA_2024_Privacy_Preserving_Chatbot_Public_Admin/GuidaPA%20-%20Privacy-Preserving%20Chatbot%20for%20Public%20Administration%20via%20Federated%20Learning.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/01_E-Government_Chatbots/01_GuidaPA_2024_Privacy_Preserving_Chatbot_Public_Admin/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Triển khai chatbot cho cơ quan hành chính công đòi hỏi bảo vệ tuyệt đối dữ liệu nội bộ và hồ sơ người dân, ngăn chặn việc thu thập dữ liệu tập trung lên máy chủ đám mây của bên thứ ba.
@@ -58,8 +58,8 @@ Hệ thống vận hành độc lập, tuân thủ 100% chuẩn GDPR/Quy định
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2406.01417 [cs.CY]*
 - **Phân loại nghiên cứu:** `Engineering Governance Framework & Field Evaluation`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2406.01417](https://arxiv.org/abs/2406.01417)
-- **Tệp toàn văn (PDF bản gốc):** [`GovAI-Pipe - A Layered AI Governance Pipeline for Citizen-Facing AI in Turkey's e-Government Gateway.pdf`](../research paper/01_E-Government_Chatbots/02_GovAI-Pipe_2024_Governance_Pipeline_eGovernment/GovAI-Pipe%20-%20A%20Layered%20AI%20Governance%20Pipeline%20for%20Citizen-Facing%20AI%20in%20Turkey%27s%20e-Government%20Gateway.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/01_E-Government_Chatbots/02_GovAI-Pipe_2024_Governance_Pipeline_eGovernment/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`GovAI-Pipe - A Layered AI Governance Pipeline for Citizen-Facing AI in Turkey's e-Government Gateway.pdf`](research paper/01_E-Government_Chatbots/02_GovAI-Pipe_2024_Governance_Pipeline_eGovernment/GovAI-Pipe%20-%20A%20Layered%20AI%20Governance%20Pipeline%20for%20Citizen-Facing%20AI%20in%20Turkey%27s%20e-Government%20Gateway.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/01_E-Government_Chatbots/02_GovAI-Pipe_2024_Governance_Pipeline_eGovernment/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Các cổng dịch vụ công trực tuyến khi tích hợp chatbot AI đối mặt với nguy cơ tư vấn sai điều kiện thụ lý hồ sơ, thiếu lớp kiểm soát tuân thủ giữa chính sách nhà nước và đầu ra của mô hình.
@@ -90,8 +90,8 @@ Triệt tiêu 94.7% câu trả lời vượt thẩm quyền hoặc mâu thuẫn 
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2408.09925 [cs.CL]*
 - **Phân loại nghiên cứu:** `Empirical Benchmark & Civil Service Survey`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2408.09925](https://arxiv.org/abs/2408.09925)
-- **Tệp toàn văn (PDF bản gốc):** [`From Values to Benchmarks - Evaluating Large Language Models for Governmental Use in Dutch.pdf`](../research paper/01_E-Government_Chatbots/03_Grip-on-LLMs_2024_Evaluating_LLMs_Governmental_Use/From%20Values%20to%20Benchmarks%20-%20Evaluating%20Large%20Language%20Models%20for%20Governmental%20Use%20in%20Dutch.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/01_E-Government_Chatbots/03_Grip-on-LLMs_2024_Evaluating_LLMs_Governmental_Use/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`From Values to Benchmarks - Evaluating Large Language Models for Governmental Use in Dutch.pdf`](research paper/01_E-Government_Chatbots/03_Grip-on-LLMs_2024_Evaluating_LLMs_Governmental_Use/From%20Values%20to%20Benchmarks%20-%20Evaluating%20Large%20Language%20Models%20for%20Governmental%20Use%20in%20Dutch.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/01_E-Government_Chatbots/03_Grip-on-LLMs_2024_Evaluating_LLMs_Governmental_Use/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Làm thế nào để đánh giá một mô hình LLM có đủ điều kiện đưa vào phục vụ công dân hay không dựa trên các giá trị công vụ (tính sự thật, không thiên kiến, minh bạch và giải trình)?
@@ -122,8 +122,8 @@ Khẳng định rằng độ chính xác sự thật (factuality) và khả năn
 - **Tạp chí / Hội nghị:** *Findings of the Association for Computational Linguistics (ACL 2024) / arXiv:2406.04394*
 - **Phân loại nghiên cứu:** `Benchmark & Alignment Methodology`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2406.04394](https://arxiv.org/abs/2406.04394)
-- **Tệp toàn văn (PDF bản gốc):** [`Beyond Single-Policy - Evaluating Composed Organization-Specific Policy Alignment in LLM Chatbots.pdf`](../research paper/01_E-Government_Chatbots/04_COPAL_2024_Evaluating_Composed_Policy_Alignment/Beyond%20Single-Policy%20-%20Evaluating%20Composed%20Organization-Specific%20Policy%20Alignment%20in%20LLM%20Chatbots.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/01_E-Government_Chatbots/04_COPAL_2024_Evaluating_Composed_Policy_Alignment/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`Beyond Single-Policy - Evaluating Composed Organization-Specific Policy Alignment in LLM Chatbots.pdf`](research paper/01_E-Government_Chatbots/04_COPAL_2024_Evaluating_Composed_Policy_Alignment/Beyond%20Single-Policy%20-%20Evaluating%20Composed%20Organization-Specific%20Policy%20Alignment%20in%20LLM%20Chatbots.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/01_E-Government_Chatbots/04_COPAL_2024_Evaluating_Composed_Policy_Alignment/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Trong hành chính nhà nước, một thủ tục thường bị ràng buộc bởi nhiều chính sách cùng lúc (Luật chung + Quy định riêng của tỉnh/thành phố). Chatbot thường chỉ tuân thủ được 1 chính sách và bỏ quên các chính sách địa phương.
@@ -156,8 +156,8 @@ Chỉ ra hầu hết các mô hình phổ thông trượt trên 45% các bài ki
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2601.12932 [cs.SE]*
 - **Phân loại nghiên cứu:** `Primary Architecture & Case Study`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2601.12932](https://arxiv.org/abs/2601.12932)
-- **Tệp toàn văn (PDF bản gốc):** [`LegalCheck - A Context-Augmented Generation Pipeline for Drafting Municipal Legal Advice Letters.pdf`](../research paper/02_Legal_Regulatory_RAG/05_Schneider_2026_LegalCheck_Municipal_Advice/LegalCheck%20-%20A%20Context-Augmented%20Generation%20Pipeline%20for%20Drafting%20Municipal%20Legal%20Advice%20Letters.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/02_Legal_Regulatory_RAG/05_Schneider_2026_LegalCheck_Municipal_Advice/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`LegalCheck - A Context-Augmented Generation Pipeline for Drafting Municipal Legal Advice Letters.pdf`](research paper/02_Legal_Regulatory_RAG/05_Schneider_2026_LegalCheck_Municipal_Advice/LegalCheck%20-%20A%20Context-Augmented%20Generation%20Pipeline%20for%20Drafting%20Municipal%20Legal%20Advice%20Letters.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/02_Legal_Regulatory_RAG/05_Schneider_2026_LegalCheck_Municipal_Advice/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Chính quyền cấp cơ sở (xã/phường/thành phố) thường xuyên bị quá tải khi soạn thảo công văn giải đáp thủ tục cho người dân nhưng các công cụ sinh văn bản AI hiện nay thiếu tính nhất quán về thẩm quyền.
@@ -188,8 +188,8 @@ Hệ thống đạt 91.2% mức độ tuân thủ quy chuẩn hành chính đị
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2408.10343 [cs.CL]*
 - **Phân loại nghiên cứu:** `Standard Benchmark & Evaluation Methodology`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2408.10343](https://arxiv.org/abs/2408.10343)
-- **Tệp toàn văn (PDF bản gốc):** [`LegalBench-RAG - A Benchmark for Assessing Retrieval-Augmented Generation in the Legal Domain.pdf`](../research paper/02_Legal_Regulatory_RAG/06_Guha_2024_LegalBench-RAG/LegalBench-RAG%20-%20A%20Benchmark%20for%20Assessing%20Retrieval-Augmented%20Generation%20in%20the%20Legal%20Domain.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/02_Legal_Regulatory_RAG/06_Guha_2024_LegalBench-RAG/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`LegalBench-RAG - A Benchmark for Assessing Retrieval-Augmented Generation in the Legal Domain.pdf`](research paper/02_Legal_Regulatory_RAG/06_Guha_2024_LegalBench-RAG/LegalBench-RAG%20-%20A%20Benchmark%20for%20Assessing%20Retrieval-Augmented%20Generation%20in%20the%20Legal%20Domain.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/02_Legal_Regulatory_RAG/06_Guha_2024_LegalBench-RAG/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Các benchmark RAG thông thường (NQ, HotpotQA) không phản ánh được tính phức tạp của văn bản pháp lý và thủ tục quy định.
@@ -220,8 +220,8 @@ Phát hiện tầng Retrieval là nguyên nhân gây ra 72% lỗi sai của toà
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2602.04918 [cs.CL]*
 - **Phân loại nghiên cứu:** `Empirical Benchmark & Chunking Analysis`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2602.04918](https://arxiv.org/abs/2602.04918)
-- **Tệp toàn văn (PDF bản gốc):** [`CanLegalRAGBench - Evaluating Retrieval-Augmented Generation on Canadian Case Law.pdf`](../research paper/02_Legal_Regulatory_RAG/07_Champoux_2026_CanLegalRAGBench/CanLegalRAGBench%20-%20Evaluating%20Retrieval-Augmented%20Generation%20on%20Canadian%20Case%20Law.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/02_Legal_Regulatory_RAG/07_Champoux_2026_CanLegalRAGBench/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`CanLegalRAGBench - Evaluating Retrieval-Augmented Generation on Canadian Case Law.pdf`](research paper/02_Legal_Regulatory_RAG/07_Champoux_2026_CanLegalRAGBench/CanLegalRAGBench%20-%20Evaluating%20Retrieval-Augmented%20Generation%20on%20Canadian%20Case%20Law.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/02_Legal_Regulatory_RAG/07_Champoux_2026_CanLegalRAGBench/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Việc phân đoạn văn bản (chunking) theo số từ cố định phá vỡ tính logic của các điều khoản và hồ sơ thủ tục hành chính.
@@ -252,8 +252,8 @@ Hierarchy-aware chunking giúp mô hình tăng 38% độ chính xác khi trả l
 - **Tạp chí / Hội nghị:** *Findings of the Association for Computational Linguistics (ACL 2024)*
 - **Phân loại nghiên cứu:** `Primary Architecture & Adaptive Algorithm`
 - **Link DOI / Citation gốc:** [https://aclanthology.org/2024.findings-acl.645/](https://aclanthology.org/2024.findings-acl.645/)
-- **Tệp toàn văn (PDF bản gốc):** [`HyPA-RAG - A Hybrid Parameter Adaptive Retrieval-Augmented Generation System for AI Legal and Policy Applications.pdf`](../research paper/02_Legal_Regulatory_RAG/08_Zhang_2024_HyPA-RAG_Legal_Policy/HyPA-RAG%20-%20A%20Hybrid%20Parameter%20Adaptive%20Retrieval-Augmented%20Generation%20System%20for%20AI%20Legal%20and%20Policy%20Applications.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/02_Legal_Regulatory_RAG/08_Zhang_2024_HyPA-RAG_Legal_Policy/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`HyPA-RAG - A Hybrid Parameter Adaptive Retrieval-Augmented Generation System for AI Legal and Policy Applications.pdf`](research paper/02_Legal_Regulatory_RAG/08_Zhang_2024_HyPA-RAG_Legal_Policy/HyPA-RAG%20-%20A%20Hybrid%20Parameter%20Adaptive%20Retrieval-Augmented%20Generation%20System%20for%20AI%20Legal%20and%20Policy%20Applications.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/02_Legal_Regulatory_RAG/08_Zhang_2024_HyPA-RAG_Legal_Policy/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Độ dài và mật độ từ vựng của câu hỏi chính sách/thủ tục rất chênh lệch: từ câu hỏi cụt 2 từ đến câu tình huống dài dòng.
@@ -286,8 +286,8 @@ Hierarchy-aware chunking giúp mô hình tăng 38% độ chính xác khi trả l
 - **Tạp chí / Hội nghị:** *Transactions of the Association for Computational Linguistics (TACL) / arXiv:2309.11495*
 - **Phân loại nghiên cứu:** `Foundational Methodology & Algorithm`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2309.11495](https://arxiv.org/abs/2309.11495)
-- **Tệp toàn văn (PDF bản gốc):** [`Chain-of-Verification (CoVe) Reduces Hallucination in Large Language Models.pdf`](../research paper/03_Fact-Checking_Verifiers/09_Dhuliawala_2023_Chain-of-Verification_CoVe/Chain-of-Verification%20%28CoVe%29%20Reduces%20Hallucination%20in%20Large%20Language%20Models.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/03_Fact-Checking_Verifiers/09_Dhuliawala_2023_Chain-of-Verification_CoVe/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`Chain-of-Verification (CoVe) Reduces Hallucination in Large Language Models.pdf`](research paper/03_Fact-Checking_Verifiers/09_Dhuliawala_2023_Chain-of-Verification_CoVe/Chain-of-Verification%20%28CoVe%29%20Reduces%20Hallucination%20in%20Large%20Language%20Models.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/03_Fact-Checking_Verifiers/09_Dhuliawala_2023_Chain-of-Verification_CoVe/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Mô hình ngôn ngữ tự sinh văn bản thường bị cuốn theo ảo giác nội tại mà không có cơ chế tự rà soát lại các khẳng định của chính mình.
@@ -318,8 +318,8 @@ Giảm ảo giác thực tế tới hơn 50% trên các bộ dữ liệu hỏi �
 - **Tạp chí / Hội nghị:** *International Conference on Learning Representations (ICLR 2024 Oral) / arXiv:2310.11511*
 - **Phân loại nghiên cứu:** `Foundational Model Framework`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2310.11511](https://arxiv.org/abs/2310.11511)
-- **Tệp toàn văn (PDF bản gốc):** [`Self-RAG - Learning to Retrieve, Generate, and Critique through Self-Reflection.pdf`](../research paper/03_Fact-Checking_Verifiers/10_Asai_2024_Self-RAG_Reflection_Critique/Self-RAG%20-%20Learning%20to%20Retrieve%2C%20Generate%2C%20and%20Critique%20through%20Self-Reflection.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/03_Fact-Checking_Verifiers/10_Asai_2024_Self-RAG_Reflection_Critique/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`Self-RAG - Learning to Retrieve, Generate, and Critique through Self-Reflection.pdf`](research paper/03_Fact-Checking_Verifiers/10_Asai_2024_Self-RAG_Reflection_Critique/Self-RAG%20-%20Learning%20to%20Retrieve%2C%20Generate%2C%20and%20Critique%20through%20Self-Reflection.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/03_Fact-Checking_Verifiers/10_Asai_2024_Self-RAG_Reflection_Critique/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Các hệ thống RAG truyền thống truy xuất thụ động và mù quáng ngay cả khi câu hỏi là chitchat hoặc câu hỏi không thể trả lời.
@@ -350,8 +350,8 @@ Vượt trội hoàn toàn so với RAG tiêu chuẩn trên cả tác vụ độ
 - **Tạp chí / Hội nghị:** *International Conference on Learning Representations (ICLR 2024) / arXiv:2305.11738*
 - **Phân loại nghiên cứu:** `Interactive Verification Architecture`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2305.11738](https://arxiv.org/abs/2305.11738)
-- **Tệp toàn văn (PDF bản gốc):** [`CRITIC - Large Language Models Can Self-Correct with Tool-Interactive Critiquing.pdf`](../research paper/03_Fact-Checking_Verifiers/11_Gou_2024_CRITIC_Self-Correct_Tool_Interactive/CRITIC%20-%20Large%20Language%20Models%20Can%20Self-Correct%20with%20Tool-Interactive%20Critiquing.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/03_Fact-Checking_Verifiers/11_Gou_2024_CRITIC_Self-Correct_Tool_Interactive/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`CRITIC - Large Language Models Can Self-Correct with Tool-Interactive Critiquing.pdf`](research paper/03_Fact-Checking_Verifiers/11_Gou_2024_CRITIC_Self-Correct_Tool_Interactive/CRITIC%20-%20Large%20Language%20Models%20Can%20Self-Correct%20with%20Tool-Interactive%20Critiquing.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/03_Fact-Checking_Verifiers/11_Gou_2024_CRITIC_Self-Correct_Tool_Interactive/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Mô hình ngôn ngữ tự kiểm chứng nội tại (internal self-checking) thường tự tin thái quá vào sai lầm của chính mình nếu không tương tác với các công cụ tra cứu khách quan bên ngoài.
@@ -382,8 +382,8 @@ Tăng độ chính xác thực tế từ 20% đến 40% trên các tác vụ h�
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2407.04223 [cs.CL]*
 - **Phân loại nghiên cứu:** `Empirical Detection Methodology`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2407.04223](https://arxiv.org/abs/2407.04223)
-- **Tệp toàn văn (PDF bản gốc):** [`Detecting Hallucinations in Retrieval-Augmented Generation through Grounding-Aware Sensitivity by Perturbation (GASP).pdf`](../research paper/03_Fact-Checking_Verifiers/12_Sun_2024_GASP_Grounding_Aware_Sensitivity/Detecting%20Hallucinations%20in%20Retrieval-Augmented%20Generation%20through%20Grounding-Aware%20Sensitivity%20by%20Perturbation%20%28GASP%29.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/03_Fact-Checking_Verifiers/12_Sun_2024_GASP_Grounding_Aware_Sensitivity/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`Detecting Hallucinations in Retrieval-Augmented Generation through Grounding-Aware Sensitivity by Perturbation (GASP).pdf`](research paper/03_Fact-Checking_Verifiers/12_Sun_2024_GASP_Grounding_Aware_Sensitivity/Detecting%20Hallucinations%20in%20Retrieval-Augmented%20Generation%20through%20Grounding-Aware%20Sensitivity%20by%20Perturbation%20%28GASP%29.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/03_Fact-Checking_Verifiers/12_Sun_2024_GASP_Grounding_Aware_Sensitivity/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Làm thế nào để phát hiện từng câu cụ thể trong câu trả lời có được hỗ trợ bởi tài liệu hay là mô hình đang tự bịa?
@@ -414,8 +414,8 @@ Gây nhiễu có kiểm soát (perturbation) trên tài liệu truy xuất để
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2410.22751 [cs.AI]*
 - **Phân loại nghiên cứu:** `System Framework & Cross-Verification`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2410.22751](https://arxiv.org/abs/2410.22751)
-- **Tệp toàn văn (PDF bản gốc):** [`Multi-Modal Fact-Verification Framework for Reducing Hallucinations in Large Language Models.pdf`](../research paper/03_Fact-Checking_Verifiers/13_Zhang_2024_Multi-Modal_Fact-Verification/Multi-Modal%20Fact-Verification%20Framework%20for%20Reducing%20Hallucinations%20in%20Large%20Language%20Models.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/03_Fact-Checking_Verifiers/13_Zhang_2024_Multi-Modal_Fact-Verification/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`Multi-Modal Fact-Verification Framework for Reducing Hallucinations in Large Language Models.pdf`](research paper/03_Fact-Checking_Verifiers/13_Zhang_2024_Multi-Modal_Fact-Verification/Multi-Modal%20Fact-Verification%20Framework%20for%20Reducing%20Hallucinations%20in%20Large%20Language%20Models.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/03_Fact-Checking_Verifiers/13_Zhang_2024_Multi-Modal_Fact-Verification/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Một nguồn tài liệu duy nhất (chỉ CSDL nội bộ hoặc chỉ tìm kiếm web) đều có lỗ hổng: CSDL nội bộ thiếu thông tin mới, còn web chứa nhiều thông tin sai lệch.
@@ -448,8 +448,8 @@ Tỷ lệ câu trả lời bị người dùng phản ánh sai sót giảm từ 
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2401.15884 [cs.CL]*
 - **Phân loại nghiên cứu:** `Primary Architecture & Fallback Mechanism`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2401.15884](https://arxiv.org/abs/2401.15884)
-- **Tệp toàn văn (PDF bản gốc):** [`Corrective Retrieval Augmented Generation (CRAG).pdf`](../research paper/04_Hybrid_Dual-System_Retrieval/14_Yan_2024_CRAG_Corrective_RAG/Corrective%20Retrieval%20Augmented%20Generation%20%28CRAG%29.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/04_Hybrid_Dual-System_Retrieval/14_Yan_2024_CRAG_Corrective_RAG/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`Corrective Retrieval Augmented Generation (CRAG).pdf`](research paper/04_Hybrid_Dual-System_Retrieval/14_Yan_2024_CRAG_Corrective_RAG/Corrective%20Retrieval%20Augmented%20Generation%20%28CRAG%29.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/04_Hybrid_Dual-System_Retrieval/14_Yan_2024_CRAG_Corrective_RAG/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Hệ thống RAG thường sụp đổ khi tài liệu truy xuất nội bộ không chứa câu trả lời nhưng mô hình vẫn cố gắng bịa ra câu trả lời dựa trên tài liệu rác.
@@ -480,8 +480,8 @@ Cải thiện vượt bậc chất lượng câu trả lời trên các tập be
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2404.01733 [cs.IR]*
 - **Phân loại nghiên cứu:** `Comparative Benchmark & Strategy Study`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2404.01733](https://arxiv.org/abs/2404.01733)
-- **Tệp toàn văn (PDF bản gốc):** [`From BM25 to Corrective RAG - Benchmarking Retrieval Strategies for Text-and-Table Documents.pdf`](../research paper/04_Hybrid_Dual-System_Retrieval/15_Schmidt_2024_BM25_to_Corrective_RAG_Tables/From%20BM25%20to%20Corrective%20RAG%20-%20Benchmarking%20Retrieval%20Strategies%20for%20Text-and-Table%20Documents.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/04_Hybrid_Dual-System_Retrieval/15_Schmidt_2024_BM25_to_Corrective_RAG_Tables/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`From BM25 to Corrective RAG - Benchmarking Retrieval Strategies for Text-and-Table Documents.pdf`](research paper/04_Hybrid_Dual-System_Retrieval/15_Schmidt_2024_BM25_to_Corrective_RAG_Tables/From%20BM25%20to%20Corrective%20RAG%20-%20Benchmarking%20Retrieval%20Strategies%20for%20Text-and-Table%20Documents.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/04_Hybrid_Dual-System_Retrieval/15_Schmidt_2024_BM25_to_Corrective_RAG_Tables/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Các tài liệu hành chính và dịch vụ công thường có cấu trúc dạng bảng (biểu mẫu, danh sách hồ sơ, khung giá phí) - nơi mà các mô hình embedding ngữ nghĩa hiện đại hoạt động rất kém.
@@ -512,8 +512,8 @@ BM25 kết hợp với bộ lọc siêu dữ liệu (metadata filtering) đánh 
 - **Tạp chí / Hội nghị:** *Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining (KDD 2025) / arXiv:2408.05141*
 - **Phân loại nghiên cứu:** `Multi-Agent System & Optimization`
 - **Link DOI / Citation gốc:** [https://doi.org/10.1145/3690624.3709332](https://doi.org/10.1145/3690624.3709332)
-- **Tệp toàn văn (PDF bản gốc):** [`Optimizing Retrieval-Augmented Generation with Multi-Agent Hybrid Retrieval.pdf`](../research paper/04_Hybrid_Dual-System_Retrieval/16_Li_2025_Multi-Agent_Hybrid_Retrieval_KDD/Optimizing%20Retrieval-Augmented%20Generation%20with%20Multi-Agent%20Hybrid%20Retrieval.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/04_Hybrid_Dual-System_Retrieval/16_Li_2025_Multi-Agent_Hybrid_Retrieval_KDD/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`Optimizing Retrieval-Augmented Generation with Multi-Agent Hybrid Retrieval.pdf`](research paper/04_Hybrid_Dual-System_Retrieval/16_Li_2025_Multi-Agent_Hybrid_Retrieval_KDD/Optimizing%20Retrieval-Augmented%20Generation%20with%20Multi-Agent%20Hybrid%20Retrieval.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/04_Hybrid_Dual-System_Retrieval/16_Li_2025_Multi-Agent_Hybrid_Retrieval_KDD/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Một truy vấn của người dân thường gồm nhiều ý định con (ví dụ: 'thủ tục kết hôn cần gì và cơ quan nào cấp giấy độc thân?') đòi hỏi cả dữ liệu bảng lẫn dữ liệu giải thích mở.
@@ -538,35 +538,35 @@ Tăng tỷ lệ thỏa mãn ý định phức tạp lên 28.4% và giảm thời
 
 ---
 
-### 17. LegalQuery RAG (LQ-RAG): A Legal Query Retrieval-Augmented Generation Framework with Recursive Feedback
-- **Tác giả:** GIST AI Research Lab
-- **Năm xuất bản:** 2025
-- **Tạp chí / Hội nghị:** *ACM Transactions on Asian and Low-Resource Language Information Processing / arXiv:2406.14207*
-- **Phân loại nghiên cứu:** `Domain Query Pre-processing & Feedback Loop`
-- **Link DOI / Citation gốc:** [https://doi.org/10.1145/3712541](https://doi.org/10.1145/3712541)
-- **Tệp toàn văn (PDF bản gốc):** [`LegalQuery RAG (LQ-RAG) - A Legal Query Retrieval-Augmented Generation Framework with Recursive Feedback.pdf`](../research paper/04_Hybrid_Dual-System_Retrieval/17_GIST_2025_LQ-RAG_Legal_Query_Feedback/LegalQuery%20RAG%20%28LQ-RAG%29%20-%20A%20Legal%20Query%20Retrieval-Augmented%20Generation%20Framework%20with%20Recursive%20Feedback.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/04_Hybrid_Dual-System_Retrieval/17_GIST_2025_LQ-RAG_Legal_Query_Feedback/literature_review.md)
+### 17. LegalMALR: Multi-Agent Query Understanding and LLM-Based Reranking for Chinese Statute Retrieval
+- **Tác giả:** Yunhan Li, Mingjie Xie, Gaoli Kang, Zihan Gong, Gengshen Wu, Min Yang
+- **Năm xuất bản:** 2026
+- **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2601.17692 [cs.CL]*
+- **Phân loại nghiên cứu:** `Multi-Agent Query Reformulation & LLM Reranking`
+- **Link DOI / Citation gốc:** [https://arxiv.org/abs/2601.17692](https://arxiv.org/abs/2601.17692)
+- **Tệp toàn văn (PDF bản gốc):** [`LegalMALR - Multi-Agent Query Understanding and LLM-Based Reranking for Chinese Statute Retrieval.pdf`](research paper/04_Hybrid_Dual-System_Retrieval/17_Li_2026_LegalMALR_Query_Understanding/LegalMALR%20-%20Multi-Agent%20Query%20Understanding%20and%20LLM-Based%20Reranking%20for%20Chinese%20Statute%20Retrieval.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/04_Hybrid_Dual-System_Retrieval/17_Li_2026_LegalMALR_Query_Understanding/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
-Người dân sử dụng từ vựng đời thường, từ lóng hoặc từ viết tắt ('làm giấy kết hôn', 'đổi hộ khẩu', 'giấy khai tử cho bố') hoàn toàn không khớp với tên gọi chuẩn tắc trong luật.
+Người dân sử dụng từ vựng đời thường, câu hỏi mang tính khẩu ngữ, gián tiếp hoặc ngữ cảnh phức tạp khiến các mô hình truy xuất truyền thống thất bại trong việc tìm đúng điều khoản pháp luật.
 
 #### Phương pháp luận & Đóng góp kỹ thuật
-Thiết kế bộ tiền xử lý đệ quy: chuyển đổi từ đồng nghĩa đời thường sang thuật ngữ nhà nước và loại bỏ các mệnh đề hoàn cảnh rác trước khi đẩy vào engine tìm kiếm.
+Xây dựng hệ thống đa tác tử hiểu truy vấn (Multi-Agent Query Understanding System) kết hợp tối ưu chính sách tăng cường (GRPO) để viết lại và phân rã truy vấn, sau đó sử dụng LLM reranker để suy luận pháp lý và xếp hạng kết quả.
 
 #### Kết quả thực nghiệm chính
-Tăng tỷ lệ tìm đúng thủ tục mục tiêu từ 54% lên 92.8% trên tập truy vấn thực tế của người dân.
+Vượt trội rõ rệt so với các baseline RAG tiêu chuẩn trên tập dữ liệu câu hỏi pháp luật phức tạp (CSAID), cải thiện vượt bậc độ bao phủ và độ chính xác của tài liệu truy xuất.
 
 #### Đánh giá Ưu điểm & Hạn chế
-- **Ưu điểm (Strengths):** Giải pháp trực diện và hiệu quả cực cao cho bài toán khoảng cách ngôn ngữ giữa công dân và chính quyền.
-- **Hạn chế (Limitations):** Phụ thuộc vào chất lượng xây dựng từ điển đồng nghĩa ban đầu.
+- **Ưu điểm (Strengths):** Giải quyết tận gốc bài toán khoảng cách ngôn ngữ giữa câu hỏi dân sự đời thường và câu chữ pháp điển hóa quy chuẩn.
+- **Hạn chế (Limitations):** Cần năng lực tính toán để chạy nhiều tác tử viết lại truy vấn nếu không có bảng từ điển tiền xử lý.
 
 #### Ánh xạ trực tiếp tới kiến trúc V10.5
-> **Ý nghĩa kiến trúc:** Trực tiếp tương ứng với tính năng `synonyms.json` của V10.5 (map 'độc thân' -> 'tình trạng hôn nhân', bỏ 'cho bố', 'quá hạn', 'ở phường') giúp đạt 89/89 câu trong top-3.
+> **Ý nghĩa kiến trúc:** Trực tiếp cung cấp cơ sở lý luận cho module chuẩn hóa từ vựng `synonyms.json` và cơ chế xếp hạng `search_f1` (BM25 + Token Overlap F1) trong V10.5 để thu hẹp khoảng cách từ vựng người dân.
 
 #### Gợi ý trích dẫn khi viết bài báo khoa học (Citation Guidance)
-- **Vị trí đề xuất trong bài báo:** `Section 3.4 (Synonym Dictionary Expansion)`
+- **Vị trí đề xuất trong bài báo:** `Section 3.4 (Synonym Dictionary Expansion & Query Reformulation)`
 - **Mẫu câu trích dẫn học thuật (Draft Context):**
-  > "Informal citizen expressions rarely match statutory names. Following LQ-RAG's query normalization framework (GIST, 2025), we inject domain synonyms to bridge the colloquial-administrative lexicon gap."
+  > "To bridge the colloquial-legal lexicon gap where citizens use informal expressions, we implement query normalization and reranking principles established in LegalMALR (Li et al., 2026)."
 
 ---
 
@@ -578,8 +578,8 @@ Tăng tỷ lệ tìm đúng thủ tục mục tiêu từ 54% lên 92.8% trên t�
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2503.01933 [cs.AI]*
 - **Phân loại nghiên cứu:** `Edge AI & Small Model Deployment Study`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2503.01933](https://arxiv.org/abs/2503.01933)
-- **Tệp toàn văn (PDF bản gốc):** [`Fine-Tuning Small Language Models for Domain-Specific AI - An Edge AI Perspective.pdf`](../research paper/05_Local_SLMs_Edge_AI/18_Das_2025_Fine-Tuning_SLMs_Edge_AI/Fine-Tuning%20Small%20Language%20Models%20for%20Domain-Specific%20AI%20-%20An%20Edge%20AI%20Perspective.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/05_Local_SLMs_Edge_AI/18_Das_2025_Fine-Tuning_SLMs_Edge_AI/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`Fine-Tuning Small Language Models for Domain-Specific AI - An Edge AI Perspective.pdf`](research paper/05_Local_SLMs_Edge_AI/18_Das_2025_Fine-Tuning_SLMs_Edge_AI/Fine-Tuning%20Small%20Language%20Models%20for%20Domain-Specific%20AI%20-%20An%20Edge%20AI%20Perspective.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/05_Local_SLMs_Edge_AI/18_Das_2025_Fine-Tuning_SLMs_Edge_AI/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Việc gửi toàn bộ dữ liệu hỏi đáp hành chính của người dân lên máy chủ đám mây vi phạm nghiêm trọng quyền riêng tư dữ liệu cá nhân (GDPR) và tốn kém chi phí duy trì.
@@ -610,8 +610,8 @@ Mô hình nhỏ 1.5B–3B khi được neo vào tri thức RAG cục bộ có th
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2412.15115 [cs.CL]*
 - **Phân loại nghiên cứu:** `Technical Report & Foundation Model`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2412.15115](https://arxiv.org/abs/2412.15115)
-- **Tệp toàn văn (PDF bản gốc):** [`Qwen2.5 Technical Report - Advancing Open Foundation Models across Scales.pdf`](../research paper/05_Local_SLMs_Edge_AI/19_Qwen_2024_Qwen2.5_Technical_Report/Qwen2.5%20Technical%20Report%20-%20Advancing%20Open%20Foundation%20Models%20across%20Scales.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/05_Local_SLMs_Edge_AI/19_Qwen_2024_Qwen2.5_Technical_Report/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`Qwen2.5 Technical Report - Advancing Open Foundation Models across Scales.pdf`](research paper/05_Local_SLMs_Edge_AI/19_Qwen_2024_Qwen2.5_Technical_Report/Qwen2.5%20Technical%20Report%20-%20Advancing%20Open%20Foundation%20Models%20across%20Scales.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/05_Local_SLMs_Edge_AI/19_Qwen_2024_Qwen2.5_Technical_Report/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Xây dựng mô hình nền tảng mã nguồn mở mạnh mẽ ở mọi kích cỡ tham số, đặc biệt là các kích cỡ cực nhỏ (0.5B, 1.5B, 3B) nhưng vẫn giữ được năng lực tuân thủ chỉ dẫn.
@@ -642,8 +642,8 @@ Qwen2.5-1.5B và 3B lập kỷ lục thế giới về điểm số benchmark tr
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2410.02678 [cs.CL]*
 - **Phân loại nghiên cứu:** `Engineering Methodology & Empirical Guide`
 - **Link DOI / Citation gốc:** [https://arxiv.org/abs/2410.02678](https://arxiv.org/abs/2410.02678)
-- **Tệp toàn văn (PDF bản gốc):** [`Unveiling the Secret Recipe - A Guide For Supervised Fine-Tuning Small LLMs on Domain Tasks.pdf`](../research paper/05_Local_SLMs_Edge_AI/20_Mishra_2024_Guide_SFT_Small_LLMs/Unveiling%20the%20Secret%20Recipe%20-%20A%20Guide%20For%20Supervised%20Fine-Tuning%20Small%20LLMs%20on%20Domain%20Tasks.pdf)
-- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](../research paper/05_Local_SLMs_Edge_AI/20_Mishra_2024_Guide_SFT_Small_LLMs/literature_review.md)
+- **Tệp toàn văn (PDF bản gốc):** [`Unveiling the Secret Recipe - A Guide For Supervised Fine-Tuning Small LLMs on Domain Tasks.pdf`](research paper/05_Local_SLMs_Edge_AI/20_Mishra_2024_Guide_SFT_Small_LLMs/Unveiling%20the%20Secret%20Recipe%20-%20A%20Guide%20For%20Supervised%20Fine-Tuning%20Small%20LLMs%20on%20Domain%20Tasks.pdf)
+- **Bản phân tích khoa học chi tiết:** [`literature_review.md`](research paper/05_Local_SLMs_Edge_AI/20_Mishra_2024_Guide_SFT_Small_LLMs/literature_review.md)
 
 #### Abstract tóm tắt & Vấn đề giải quyết
 Các kỹ thuật fine-tune thông thường của mô hình lớn thường thất bại khi áp dụng lên mô hình nhỏ dưới 3B do hiện tượng quên thảm khốc (catastrophic forgetting) và suy thoái cú pháp.
@@ -688,7 +688,7 @@ Mô hình nhỏ được tinh chỉnh đúng phương pháp đạt độ tuân t
 | **14** | *Corrective Retrieval Augmented Generatio...* (Shi-Qi Yan) | 2024 | arXiv preprint | Primary Architecture & Fallback Mechanism | Cơ chế fallback sang Web Search khi System 2 trả confident=False | `Section 3.2 (Corrective Web Search Fallback)` |
 | **15** | *From BM25 to Corrective RAG* (Lucas P. Schmidt) | 2024 | arXiv preprint | Comparative Benchmark & Strategy Study | Khẳng định SQLite FTS5 trên dữ liệu bảng biểu mẫu vượt trội dense vector | `Section 3.4 (SQLite FTS5 vs Dense Vector Retrieval)` |
 | **16** | *Optimizing Retrieval-Augmented Generatio...* (Hongyu Li) | 2025 | Proceedings of the 31st ACM SIGKDD Conference on Knowledge Discovery and Data Mining | Multi-Agent System & Optimization | Điều phối 2 Turn (Turn 1: CSDL; Turn 2: Customer Care đối thoại) | `Section 3.2 (Two-Turn Multi-Agent Orchestration)` |
-| **17** | *LegalQuery RAG (LQ-RAG)* (GIST AI Research Lab) | 2025 | ACM Transactions on Asian and Low-Resource Language Information Processing / arXiv:2406.14207 | Domain Query Pre-processing & Feedback Loop | Bảng từ điển từ vựng dân sự synonyms.json chuẩn hóa truy vấn người dân | `Section 3.4 (Synonym Dictionary Expansion)` |
+| **17** | *LegalMALR* (Yunhan Li) | 2026 | arXiv preprint | Multi-Agent Query Reformulation & LLM Reranking | Multi-agent hiểu và viết lại truy vấn ngôn ngữ đời thường, LLM reranking | `Section 3.4 (Synonym Dictionary Expansion` |
 | **18** | *Fine-Tuning Small Language Models for Domain-Specific AI* (Srijan Das) | 2025 | arXiv preprint | Edge AI & Small Model Deployment Study | Luận chứng chạy mô hình cục bộ Qwen2.5-1.5B tại biên đảm bảo bảo mật dữ liệu | `Section 1 (Introduction)` |
 | **19** | *Qwen2.5 Technical Report* (Qwen Team) | 2024 | arXiv preprint | Technical Report & Foundation Model | Cơ sở chọn base model Ollama qwen2.5:1.5b hỗ trợ tiếng Việt và JSON native | `Section 3.1 (Base Foundation Model Selection)` |
 | **20** | *Unveiling the Secret Recipe* (Mayank Mishra) | 2024 | arXiv preprint | Engineering Methodology & Empirical Guide | Kỹ thuật prompt tinh gọn và guardrails cho SLM tránh lặp và giảm độ trễ | `Section 3.6 (Prompt Optimization` |
