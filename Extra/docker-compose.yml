@@ -16,6 +16,10 @@ name: tthc-assistant
 services:
   ollama:
     image: ollama/ollama:latest
+    environment:
+      # Cho phép Ollama xử lý nhiều yêu cầu song song, khớp với QUEUE_CONCURRENCY của app.
+      OLLAMA_NUM_PARALLEL: ${OLLAMA_NUM_PARALLEL:-2}
+      OLLAMA_MAX_LOADED_MODELS: ${OLLAMA_MAX_LOADED_MODELS:-1}
     volumes:
       - ollama:/root/.ollama
     ports:

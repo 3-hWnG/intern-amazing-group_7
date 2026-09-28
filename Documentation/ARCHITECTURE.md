@@ -4,7 +4,7 @@
 *thông tin thủ tục hiện hành*; một lượt suy luận thứ hai *kiểm chứng* trước khi
 trả lời; SQLite + hàng đợi tuần tự lo *bộ nhớ và thứ tự xử lý*.
 
-## 0. Hai hệ thống trả lời (V10.3 → V10.5)
+## 0. Hai hệ thống trả lời (V10.3 → V10.6)
 
 Từ V10.3 có **hai hệ thống chạy song song**, người dùng chuyển bằng **nút
 "Web search"** ngay cạnh ô nhập:
@@ -16,7 +16,7 @@ Từ V10.3 có **hai hệ thống chạy song song**, người dùng chuyển b�
 | Nguồn tri thức | web .gov.vn, tra qua MCP | CSDL 1.350 thủ tục cấp Xã/Phường (`procedures.db`) |
 | Trạng thái | **đang chạy** (toàn bộ mục 1–6 dưới đây) | **đang chạy** — kiến trúc + số đo: [`PLAN_SYSTEM2_REBUILD.md`](PLAN_SYSTEM2_REBUILD.md) |
 
-> **Mục 1–6 dưới đây chỉ nói về Hệ thống 1.** Hệ thống 2 (V10.5) chạy theo
+> **Mục 1–6 dưới đây chỉ nói về Hệ thống 1.** Hệ thống 2 (V10.6) chạy theo
 > luồng: trò chuyện (LLM 2, nhãn "⚠️ AI tự trả lời") → nút **🎯 Tìm chính xác**
 > → tra từ khoá (LLM 1 chỉ khi trượt) → MCQ "thủ tục chính → dạng cụ thể" →
 > **bảng do code dựng** → hỏi tiếp (code trích ô, hoặc LLM 2 chỉ đọc mục liên quan).

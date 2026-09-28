@@ -231,6 +231,10 @@ RETENTION_DAYS = _int("RETENTION_DAYS", 90)     # 0 = giữ vĩnh viễn
 # ==========================================================================
 AUTH_ENABLED = _bool("AUTH_ENABLED", True)
 AUTH_SESSION_DAYS = _int("AUTH_SESSION_DAYS", 14)
+# Đóng đăng ký tự do khi đã deploy: chỉ admin tạo tài khoản (qua .env / portal).
+REGISTRATION_ENABLED = _bool("REGISTRATION_ENABLED", True)
+# "Đang online" = có gọi API trong khoảng này (giây).
+ONLINE_WINDOW_SECONDS = _int("ONLINE_WINDOW_SECONDS", 300)
 AUTH_COOKIE_NAME = "tthc_session"
 AUTH_COOKIE_SECURE = _bool("AUTH_COOKIE_SECURE", False)   # True khi chạy sau HTTPS
 AUTH_MIN_PASSWORD_LENGTH = 8
@@ -241,7 +245,7 @@ AUTH_LOCKOUT_SECONDS = 900
 # HÀNG ĐỢI — xử lý tuần tự, LLM làm từng tin nhắn một
 # ==========================================================================
 QUEUE_ENABLED = _bool("QUEUE_ENABLED", True)
-QUEUE_CONCURRENCY = _int("QUEUE_CONCURRENCY", 1)
+QUEUE_CONCURRENCY = _int("QUEUE_CONCURRENCY", 4)
 QUEUE_MAX_DEPTH = _int("QUEUE_MAX_DEPTH", 20)
 QUEUE_JOB_TIMEOUT = _int("QUEUE_JOB_TIMEOUT", 180)
 
@@ -262,6 +266,9 @@ ATTACH_EXT_OPTIONAL = {".pdf", ".docx"}
 # CÔNG CỤ PHÁT TRIỂN — ĐẶT False Ở BẢN CUỐI
 # ==========================================================================
 DEV_TOOLS_ENABLED = _bool("DEV_TOOLS_ENABLED", True)
+# Email được coi là admin (phân tách dấu phẩy). Bắt buộc có ít nhất một email,
+# vì đăng ký mới luôn is_admin=0. Bỏ trống + AUTH bật = không ai vào được /api/dev.
+ADMIN_EMAILS = {e.strip().lower() for e in _str("ADMIN_EMAILS", "").split(",") if e.strip()}
 DEVMODE_DEFAULT_ON = True
 DEVMODE_TRACE_SIZE = 40
 
@@ -269,4 +276,4 @@ HOST = _str("APP_HOST", "127.0.0.1")
 PORT = _int("APP_PORT", 8000)
 
 # Sửa JS/CSS -> tăng số này để trình duyệt tải lại, không dùng bản cache cũ.
-STATIC_VERSION = "7.6"
+STATIC_VERSION = "8.5"

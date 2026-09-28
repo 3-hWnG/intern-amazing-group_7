@@ -8,7 +8,7 @@ lần**, rồi dùng được.
 ## Cách nhanh / Quick path
 
 1. Chép cả thư mục dự án sang máy mới, **hoặc** lấy từ GitHub:
-   `git clone -b V10.5 https://github.com/3-hWnG/intern-amazing-group_7.git`
+   `git clone -b V10.6 https://github.com/3-hWnG/intern-amazing-group_7.git`
 2. Bấm đôi **`Setup First Time.bat`**.
 3. Bấm đôi **`Launch Web.bat`**.
 

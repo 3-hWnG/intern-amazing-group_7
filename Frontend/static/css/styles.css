@@ -212,7 +212,8 @@ a.cite:hover{background:var(--accent);color:#fff}
   overflow-y:auto;font-size:13px;z-index:30;
   transform:translateX(100%);transition:transform .22s ease;
   box-shadow:-10px 0 30px #0007}
-.dev-panel.open{transform:translateX(0)}
+.dev-panel.open, .dev-panel[aria-hidden="false"]{transform:translateX(0)}
+.dev-tab-panel[hidden]{display:none !important}
 .dev-backdrop{position:fixed;inset:0;background:#0006;z-index:29;
   opacity:0;pointer-events:none;transition:opacity .22s ease}
 .dev-backdrop.open{opacity:1;pointer-events:auto}
@@ -390,6 +391,13 @@ a.cite:hover{background:var(--accent);color:#fff}
   background:var(--panel-2);border:1px solid var(--line);color:var(--ink-2);
 }
 .proc-tag.muted{color:var(--ink-3)}
+.proc-tag.version{background:var(--accent-2, rgba(37,99,235,0.1));border-color:var(--accent);color:var(--accent);font-weight:600}
+.proc-tag.status-expired{background:rgba(239,68,68,0.1);border-color:var(--bad);color:var(--bad)}
+
+.timeline-wrap{display:flex;flex-direction:column;gap:8px}
+.timeline-item{padding:10px 14px;border-left:3px solid var(--line);background:var(--panel-2);border-radius:0 8px 8px 0;transition:all 0.2s}
+.timeline-item.active{border-left-color:var(--accent);box-shadow:0 1px 3px rgba(0,0,0,0.05)}
+
 
 /* trí nhớ MCQ đã áp dụng */
 .proc-memory{
@@ -543,3 +551,415 @@ a.cite:hover{background:var(--accent);color:#fff}
 
 /* hộp thoại "🎯 lần hai": hai nút cạnh nhau */
 .proc-choice-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+
+/* ==========================================================================
+   TASK 1: ACCORDION, MEMORY MODAL, LLM 3 ADVICE, DEV PORTAL TABS
+   ========================================================================== */
+
+/* ─── Collapsible Accordion in Procedure Table ─── */
+.proc-collapsible .proc-section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  padding: 6px 0;
+  user-select: none;
+}
+.proc-collapsible .proc-section-header:hover .proc-h {
+  color: var(--accent);
+}
+.proc-collapse-icon {
+  font-size: 11px;
+  color: var(--muted);
+  transition: transform 0.2s ease;
+  padding: 2px 6px;
+}
+.proc-collapsible.collapsed .proc-h {
+  opacity: 0.85;
+}
+.proc-accordion-ctrls {
+  display: flex;
+  gap: 8px;
+  margin: 8px 0;
+}
+.proc-ctrl-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 11px;
+  padding: 3px 8px;
+  cursor: pointer;
+  color: var(--muted);
+}
+.proc-ctrl-btn:hover {
+  color: var(--ink);
+  border-color: var(--ink);
+}
+
+/* ─── MCQ LLM 3 Advice & Cancel ─── */
+.proc-mcq-advice-wrap {
+  margin-top: 10px;
+}
+.proc-mcq-advice-btn {
+  background: transparent;
+  border: 1px dashed var(--accent);
+  color: var(--accent);
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+}
+.proc-mcq-advice-btn:hover {
+  background: color-mix(in srgb, var(--accent) 8%, transparent);
+}
+.proc-mcq-advice-box {
+  margin-top: 8px;
+  padding: 10px;
+  background: color-mix(in srgb, var(--panel) 92%, var(--accent) 8%);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.proc-mcq-advice-input-row {
+  display: flex;
+  gap: 6px;
+}
+.proc-mcq-advice-input {
+  flex: 1;
+  padding: 6px 10px;
+  font-size: 12px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--ink);
+}
+.proc-mcq-advice-submit {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.proc-mcq-advice-result {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: var(--ink);
+  background: var(--panel);
+  padding: 8px 12px;
+  border-radius: 6px;
+  border-left: 3px solid var(--accent);
+}
+.proc-mcq-advice-text {
+  margin: 0;
+}
+.proc-mcq-cancel-row {
+  margin-top: 12px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--border);
+}
+.proc-mcq-cancel-btn {
+  background: transparent;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+}
+.proc-mcq-cancel-btn:hover {
+  background: color-mix(in srgb, #ef4444 10%, transparent);
+}
+.proc-mcq-cancelled {
+  font-size: 12px;
+  color: var(--muted);
+  font-style: italic;
+}
+
+/* ─── Modals (Memory Modal & Onboarding) ─── */
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.55);
+  backdrop-filter: blur(2px);
+  z-index: 1000;
+  display: none;
+}
+.modal-backdrop.open {
+  display: block !important;
+}
+.modal-box {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--panel);
+  color: var(--ink);
+  width: 92%;
+  max-width: 580px;
+  max-height: 85vh;
+  border-radius: 12px;
+  box-shadow: 0 12px 35px rgba(0,0,0,0.35);
+  z-index: 1001;
+  display: none;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+.modal-box[aria-hidden="true"] {
+  display: none !important;
+}
+.modal-box.open, .modal-box[aria-hidden="false"] {
+  display: flex !important;
+}
+.modal-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--border);
+}
+.modal-head h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.modal-tabs {
+  display: flex;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--panel) 95%, black 5%);
+}
+.mem-tab-btn {
+  flex: 1;
+  padding: 10px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  cursor: pointer;
+  color: var(--muted);
+  font-size: 13px;
+}
+.mem-tab-btn.active {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+  font-weight: 600;
+}
+.modal-body {
+  padding: 18px 20px;
+  overflow-y: auto;
+  flex: 1;
+}
+.form-group {
+  margin-bottom: 14px;
+}
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--ink);
+}
+.form-input {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 13px;
+  box-sizing: border-box;
+}
+.form-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 15px;
+}
+.flex-between {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.mem-mcq-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.mem-mcq-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  background: color-mix(in srgb, var(--panel) 96%, var(--border) 4%);
+  border-radius: 8px;
+  border: 1px solid var(--border);
+}
+.mem-mcq-info {
+  font-size: 12px;
+}
+.mem-mcq-val {
+  font-size: 13px;
+  margin: 3px 0;
+}
+.mem-mcq-val .val-text {
+  font-weight: 600;
+  color: var(--accent);
+}
+.mem-inline-edit {
+  padding: 2px 6px;
+  font-size: 13px;
+  border: 1px solid var(--accent);
+  border-radius: 4px;
+  background: var(--bg);
+  color: var(--ink);
+}
+.mem-mcq-actions {
+  display: flex;
+  gap: 8px;
+}
+.memory-pill-btn {
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+  width: 100%;
+  text-align: left;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.memory-pill-btn:hover {
+  border-color: var(--accent);
+  color: var(--ink);
+}
+.onboarding-box {
+  max-width: 460px;
+}
+.modal-foot-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 15px;
+}
+
+/* ─── Dev Portal Navigation & Metrics ─── */
+.dev-tab-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: color-mix(in srgb, var(--panel) 95%, black 5%);
+}
+.dev-tab-nav-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 6px;
+  padding: 5px 10px;
+  font-size: 12px;
+  color: var(--muted);
+  cursor: pointer;
+}
+.dev-tab-nav-btn:hover {
+  color: var(--ink);
+}
+.dev-tab-nav-btn.active {
+  background: var(--accent);
+  color: #fff;
+  font-weight: 600;
+}
+.dev-tab-panel {
+  padding: 14px;
+  overflow-y: auto;
+  flex: 1;
+}
+.dev-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
+  gap: 10px;
+}
+.dev-metric-card {
+  background: color-mix(in srgb, var(--panel) 96%, var(--border) 4%);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px;
+  text-align: center;
+}
+.dev-metric-card.warn {
+  border-color: #f59e0b;
+  background: color-mix(in srgb, #f59e0b 8%, var(--panel) 92%);
+}
+.dev-metric-card .m-label {
+  font-size: 11px;
+  color: var(--muted);
+  display: block;
+  margin-bottom: 4px;
+}
+.dev-metric-card .m-val {
+  font-size: 18px;
+  color: var(--ink);
+}
+.dev-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  text-align: left;
+}
+.dev-table th, .dev-table td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+.dev-table th {
+  background: color-mix(in srgb, var(--panel) 90%, black 10%);
+  color: var(--muted);
+  font-weight: 600;
+}
+.badge {
+  display: inline-block;
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+}
+.badge.admin {
+  background: #dc2626;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+.badge.user {
+  background: #6b7280;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+.badge.success {
+  background: #16a34a;
+  color: #fff;
+}
+.badge.warn {
+  background: #d97706;
+  color: #fff;
+}
+.dev-user-actions {
+  display: flex;
+  gap: 8px;
+}
+
+/* ── V10.5b: ô chat LLM 3, form thêm trí nhớ, duyệt hội thoại ── */
+.proc-mcq-advice-log { max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 6px; padding: 8px 0; }
+.proc-mcq-bubble { padding: 7px 10px; border-radius: 10px; font-size: 0.9rem; line-height: 1.4; max-width: 90%; white-space: pre-wrap; }
+.proc-mcq-bubble.assistant { background: var(--panel-2, #f1f5f9); align-self: flex-start; }
+.proc-mcq-bubble.user { background: var(--accent, #2563eb); color: #fff; align-self: flex-end; }
+.proc-mcq-bubble.error { color: var(--danger, #ef4444); }
+.mem-add-row { display: flex; gap: 6px; margin: 8px 0 4px; flex-wrap: wrap; }
+.mem-add-row select { flex: 1 1 140px; }
+.mem-add-row input { flex: 2 1 160px; }
+.dev-msg { padding: 6px 8px; border-radius: 6px; margin-bottom: 4px; font-size: 0.85rem; line-height: 1.4; }
+.dev-msg.user { background: var(--panel-2, #f1f5f9); }
+.dev-msg.assistant { border-left: 3px solid var(--accent, #2563eb); padding-left: 10px; }

@@ -2,26 +2,11 @@
 (function () {
   const $ = (id) => document.getElementById(id);
 
-  /* Bộ nhớ dài hạn: tỉnh/thành, xã/phường trợ lý đã ghi nhớ cho người dùng. */
-  async function showMemory(profile) {
-    const host = $("memory");
-    if (!host) return;
-    if (profile === undefined) {
-      try { profile = (await API.get("/api/profile")).profile; } catch (_) { profile = {}; }
+  /* Bộ nhớ dài hạn: tích hợp mô đun Memory (ChatGPT-style) */
+  async function showMemory() {
+    if (window.Memory) {
+      await Memory.loadData();
     }
-    const bits = [profile && profile.province, profile && profile.ward].filter(Boolean);
-    host.innerHTML = "";
-    host.hidden = !bits.length;
-    if (!bits.length) return;
-    const label = document.createElement("span");
-    label.textContent = "🧠 Ghi nhớ: " + bits.join(" · ");
-    label.title = "Trợ lý dùng thông tin này cho cả các cuộc trò chuyện sau";
-    const rm = document.createElement("button");
-    rm.type = "button";
-    rm.className = "link";
-    rm.textContent = "Xoá";
-    rm.onclick = async () => { await API.del("/api/profile"); showMemory({}); };
-    host.append(label, rm);
   }
 
   async function boot() {
@@ -45,7 +30,9 @@
     if (items.length) Conversations.select(items[0].id);
     else Chat.empty();
 
+    if (window.Memory) Memory.init();
     await Promise.all([Dev.init(cfg.dev_tools), showMemory()]);
+    if (window.Memory) Memory.checkOnboarding();
 
     $("new-chat").onclick = () => Conversations.create();
 
@@ -124,7 +111,7 @@
         await Conversations.refresh();
         const current = Conversations.items.find((c) => c.id === convId);
         if (current) $("conv-title").textContent = current.title;
-        if (done && done.profile) showMemory(done.profile);
+        if (done && window.Memory) Memory.loadData();
         if (cfg.dev_tools) { await Dev.stats(); Dev.afterTurn(); }
       } finally {
         sending = false;

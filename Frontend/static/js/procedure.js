@@ -28,6 +28,18 @@ window.Procedure = (function () {
 
   const isUrl = (u) => /^https?:\/\//i.test(u || "");
 
+  const fixDvcUrl = (u, procId, isSubmit = false) => {
+    if (!u) return "";
+    if (u.includes("/dich-vu-cong-truc-tuyen/")) {
+      const id = procId || u.split("/").filter(Boolean).pop().replace("nop-ho-so", "").trim();
+      if (isSubmit || u.includes("/nop-ho-so")) {
+        return id ? `https://dichvucong.gov.vn/nop-ho-so?formalityId=${encodeURIComponent(id)}` : u;
+      }
+      return id ? `https://dichvucong.gov.vn/thu-tuc-hanh-chinh/${encodeURIComponent(id)}` : u;
+    }
+    return u;
+  };
+
   /* Một ô có thể rỗng: trả về phần tử hiển thị giá trị HOẶC lý do vì sao trống. */
   function cellBody(cell, renderValue) {
     if (cell && cell.status === "present") return renderValue(cell.value);
@@ -35,10 +47,29 @@ window.Procedure = (function () {
     return note;
   }
 
-  function section(title, node, extraClass) {
-    const s = el("section", "proc-section" + (extraClass ? " " + extraClass : ""));
-    s.appendChild(el("h4", "proc-h", title));
-    s.appendChild(node);
+  function section(title, node, extraClass, defaultOpen = true) {
+    const s = el("section", "proc-section proc-collapsible" + (extraClass ? " " + extraClass : ""));
+    const head = el("div", "proc-section-header");
+    head.appendChild(el("h4", "proc-h", title));
+    const toggleIcon = el("span", "proc-collapse-icon", defaultOpen ? "▼" : "▶");
+    head.appendChild(toggleIcon);
+
+    const body = el("div", "proc-section-content");
+    body.appendChild(node);
+    if (!defaultOpen) {
+      body.hidden = true;
+      s.classList.add("collapsed");
+    }
+
+    head.onclick = () => {
+      const isHidden = body.hidden;
+      body.hidden = !isHidden;
+      toggleIcon.textContent = isHidden ? "▼" : "▶";
+      s.classList.toggle("collapsed", !isHidden);
+    };
+
+    s.appendChild(head);
+    s.appendChild(body);
     return s;
   }
 
@@ -116,12 +147,45 @@ window.Procedure = (function () {
     const tags = el("div", "proc-tags");
     if (t.domain) tags.appendChild(el("span", "proc-tag", t.domain));
     tags.appendChild(el("span", "proc-tag muted", "Mã " + t.proc_id));
+    if (t.meta && t.meta.version) {
+      tags.appendChild(el("span", "proc-tag version", "v" + t.meta.version));
+    }
+    if (t.meta && t.meta.status && t.meta.status !== "active") {
+      tags.appendChild(el("span", "proc-tag status-expired", t.meta.status));
+    }
     if (t.scope && t.scope.nationwide) tags.appendChild(el("span", "proc-tag muted", "Toàn quốc"));
     // Bản địa phương: nói rõ tỉnh nào CÔNG BỐ (không phải "chỉ áp dụng ở").
     if (t.scope && t.scope.province) tags.appendChild(el("span", "proc-tag", "📍 Bản của " + t.scope.province));
     // Thuế/Hải quan: cổng xếp cấp xã nhưng ngành dọc giải quyết — không nộp ở phường.
     if (t.scope && t.scope.vertical) tags.appendChild(el("span", "proc-tag", "🏛️ Do " + t.scope.vertical + " giải quyết"));
     head.appendChild(tags);
+
+    const toggleBar = el("div", "proc-accordion-ctrls");
+    const expAll = el("button", "proc-ctrl-btn", "Mở rộng tất cả");
+    expAll.type = "button";
+    expAll.onclick = () => {
+      box.querySelectorAll(".proc-collapsible").forEach((sec) => {
+        sec.classList.remove("collapsed");
+        const b = sec.querySelector(".proc-section-content");
+        if (b) b.hidden = false;
+        const ic = sec.querySelector(".proc-collapse-icon");
+        if (ic) ic.textContent = "▼";
+      });
+    };
+    const colAll = el("button", "proc-ctrl-btn", "Thu gọn tất cả");
+    colAll.type = "button";
+    colAll.onclick = () => {
+      box.querySelectorAll(".proc-collapsible").forEach((sec) => {
+        sec.classList.add("collapsed");
+        const b = sec.querySelector(".proc-section-content");
+        if (b) b.hidden = true;
+        const ic = sec.querySelector(".proc-collapse-icon");
+        if (ic) ic.textContent = "▶";
+      });
+    };
+    toggleBar.append(expAll, colAll);
+    head.appendChild(toggleBar);
+
     box.appendChild(head);
 
     /* Lựa chọn MCQ đã áp dụng + trí nhớ đã đỡ được câu hỏi nào */
@@ -204,9 +268,10 @@ window.Procedure = (function () {
     /* Link tới web đăng ký online */
     box.appendChild(section("Nộp hồ sơ trực tuyến", cellBody(t.online, (v) => {
       const wrap = el("div", "proc-online");
-      if (isUrl(v.url)) {
+      const safeOnlineUrl = fixDvcUrl(v.url, t.proc_id, true);
+      if (isUrl(safeOnlineUrl)) {
         const a = el("a", "proc-online-btn", "🌐 Mở trang nộp hồ sơ trực tuyến");
-        a.href = v.url;
+        a.href = safeOnlineUrl;
         a.target = "_blank";
         a.rel = "noopener noreferrer";
         wrap.appendChild(a);
@@ -232,6 +297,9 @@ window.Procedure = (function () {
       r.appendChild(el("span", "", value));
       mBox.appendChild(r);
     };
+    if (meta.version) {
+      metaLine("Phiên bản", `v${meta.version} (${meta.status || "active"})`);
+    }
     metaLine("Quyết định công bố", [meta.decision_number, meta.decision_date].filter(Boolean).join(" · "));
     metaLine("Cơ quan ban hành", meta.issuing_agency || meta.department);
     metaLine("Cổng cập nhật", meta.source_updated_at);
@@ -247,15 +315,24 @@ window.Procedure = (function () {
     }
     // Nói thẳng là KHÔNG biết ngày hết hạn, thay vì im lặng.
     if (meta.expiry_note) mBox.appendChild(el("p", "proc-absent", "ℹ️ " + meta.expiry_note));
-    if (isUrl(meta.portal_url)) {
+    const safePortalUrl = fixDvcUrl(meta.portal_url, t.proc_id, false);
+    if (isUrl(safePortalUrl)) {
       const a = el("a", "proc-meta-link", "Xem trên Cổng Dịch vụ công ↗");
-      a.href = meta.portal_url;
+      a.href = safePortalUrl;
       a.target = "_blank";
       a.rel = "noopener noreferrer";
       mBox.appendChild(a);
     }
     if (t.scope && t.scope.note) mBox.appendChild(el("p", "proc-absent", "ℹ️ " + t.scope.note));
-    box.appendChild(section("Thông tin nguồn", mBox, "proc-section-meta"));
+
+    const histBtn = el("button", "proc-link-btn", "📜 Xem lịch sử phiên bản");
+    histBtn.type = "button";
+    histBtn.style.marginTop = "8px";
+    histBtn.style.display = "inline-block";
+    histBtn.onclick = () => showVersionTimeline(t.proc_id, t.name);
+    mBox.appendChild(histBtn);
+
+    box.appendChild(section("Thông tin nguồn", mBox, "proc-section-meta", false));
 
     box.appendChild(footer(t, convId));
     return box;
@@ -336,7 +413,7 @@ window.Procedure = (function () {
         // Nhớ TRƯỚC khi gửi, để chính lượt này cũng được hưởng.
         if (remember && t.memorable) {
           try {
-            await API.post("/api/mcq-memory", { axis: t.axis, value: o.value });
+            await API.post("/api/mcq-memory", { axis: t.axis, value: o.value, conv_id: convId });
           } catch (e) { /* nhớ hỏng thì vẫn phải trả lời được câu hỏi */ }
         }
         Chat.send(convId, o.label);
@@ -356,6 +433,100 @@ window.Procedure = (function () {
       lab.appendChild(el("span", "", t.remember_label || "Nhớ lựa chọn này cho những lần sau"));
       box.appendChild(lab);
     }
+
+    /* Ô chat nhỏ của LLM 3 (chăm sóc khách hàng) — hội thoại NHIỀU LƯỢT.
+       Không tự gọi mô hình khi mở khung: chỉ hỏi khi người dân gửi câu. */
+    const adviceWrap = el("div", "proc-mcq-advice-wrap");
+    const adviceToggle = el("button", "proc-mcq-advice-btn", "💬 Phân vân chưa biết chọn gì? Hỏi trợ lý");
+    adviceToggle.type = "button";
+
+    const adviceBox = el("div", "proc-mcq-advice-box");
+    adviceBox.hidden = true;
+
+    const advLog = el("div", "proc-mcq-advice-log");
+    const advHistory = [];            // [{role, content}] gửi kèm mỗi lượt để LLM 3 nhớ đoạn chat
+
+    const addBubble = (role, text) => {
+      const b = el("div", "proc-mcq-bubble " + role, text);
+      advLog.appendChild(b);
+      advLog.scrollTop = advLog.scrollHeight;
+      return b;
+    };
+    addBubble("assistant", "Bạn cứ mô tả hoàn cảnh của mình, mình sẽ giúp chọn phương án phù hợp nhé.");
+
+    const adviceInputRow = el("div", "proc-mcq-advice-input-row");
+    const advInput = el("input", "proc-mcq-advice-input");
+    advInput.type = "text";
+    advInput.maxLength = 300;
+    advInput.placeholder = "Ví dụ: tôi là Việt kiều, muốn nộp ở xã…";
+    const advBtn = el("button", "proc-mcq-advice-submit", "Gửi");
+    advBtn.type = "button";
+    adviceInputRow.append(advInput, advBtn);
+
+    const doAdvice = async () => {
+      const msg = advInput.value.trim();
+      if (!msg || advBtn.disabled) return;
+      advInput.value = "";
+      addBubble("user", msg);
+      const pending = addBubble("assistant", "Đang suy nghĩ…");
+      advBtn.disabled = true;
+      try {
+        const res = await API.post("/api/mcq-advice", {
+          conv_id: convId,
+          user_situation: msg,
+          history: advHistory.slice(-6),
+        });
+        const reply = res.advice || "Bạn hãy chọn phương án phù hợp nhất với hoàn cảnh của mình.";
+        pending.textContent = reply;
+        advHistory.push({ role: "user", content: msg }, { role: "assistant", content: reply });
+      } catch (err) {
+        pending.textContent = "Không thể lấy lời khuyên lúc này: " + (err.message || "Lỗi mạng");
+        pending.classList.add("error");
+      } finally {
+        advBtn.disabled = false;
+        advLog.scrollTop = advLog.scrollHeight;
+        advInput.focus();
+      }
+    };
+
+    advBtn.onclick = doAdvice;
+    advInput.onkeydown = (e) => { if (e.key === "Enter") { e.preventDefault(); doAdvice(); } };
+    adviceToggle.onclick = () => {
+      adviceBox.hidden = !adviceBox.hidden;
+      if (!adviceBox.hidden) advInput.focus();
+    };
+
+    adviceBox.append(advLog, adviceInputRow);
+    adviceWrap.append(adviceToggle, adviceBox);
+    box.appendChild(adviceWrap);
+
+    /* Nút Hủy / Reset: Có vẻ không phải thứ tôi cần */
+    const cancelRow = el("div", "proc-mcq-cancel-row");
+    const cancelBtn = el("button", "proc-mcq-cancel-btn", "❌ Có vẻ không phải thứ tôi cần");
+    cancelBtn.type = "button";
+    cancelBtn.onclick = async () => {
+      cancelBtn.disabled = true;
+      try {
+        await API.post("/api/conversations/" + convId + "/mcq-cancel");
+      } catch (_) {}
+      list.querySelectorAll("button").forEach((b) => (b.disabled = true));
+      adviceWrap.hidden = true;
+      cancelRow.innerHTML = "";
+      const msg = el("div", "proc-mcq-cancelled", "Đã hủy lựa chọn. Bạn hãy nhập lại câu hỏi chi tiết hơn ở ô bên dưới nhé!");
+      cancelRow.appendChild(msg);
+      
+      const inp = document.getElementById("input");
+      if (inp) {
+        inp.focus();
+        inp.placeholder = "Nhập lại câu hỏi chính xác về thủ tục bạn cần...";
+      }
+      // Bật lại 🎯: tin nhắn kế tiếp sẽ tra chính xác từ đầu (trước đây gọi Exact.toggle/isActive
+      // không tồn tại -> TypeError, 🎯 không bao giờ được bật).
+      if (window.Exact && Exact.arm) Exact.arm();
+    };
+    cancelRow.appendChild(cancelBtn);
+    box.appendChild(cancelRow);
+
     return box;
   }
 
@@ -423,6 +594,80 @@ window.Procedure = (function () {
     return box;
   }
 
+  /* ───────────────────────── LỊCH SỬ PHIÊN BẢN ────────────────────────── */
+  async function showVersionTimeline(procId, procName) {
+    const modal = document.getElementById("version-modal");
+    const backdrop = document.getElementById("version-backdrop");
+    const title = document.getElementById("version-modal-title");
+    const list = document.getElementById("version-timeline-list");
+    if (!modal || !list) return;
+
+    if (title) title.textContent = `📜 Lịch sử phiên bản: ${procName || procId}`;
+    list.innerHTML = '<p class="muted small">Đang tải lịch sử phiên bản...</p>';
+    modal.removeAttribute("hidden");
+    modal.classList.add("open");
+    modal.setAttribute("aria-hidden", "false");
+    if (backdrop) backdrop.classList.add("open");
+
+    try {
+      const res = await API.get(`/api/procedures/${encodeURIComponent(procId)}/versions`);
+      list.innerHTML = "";
+      const versions = res.versions || [];
+      if (!versions.length) {
+        list.innerHTML = '<p class="muted small">Chưa có thông tin lịch sử phiên bản.</p>';
+        return;
+      }
+
+      const timeline = document.createElement("div");
+      timeline.className = "timeline-wrap";
+      versions.forEach((v) => {
+        const item = document.createElement("div");
+        item.className = `timeline-item ${v.status === "active" ? "active" : ""}`;
+        const badgeCls = v.status === "active" ? "badge badge-pass" : (v.status === "expired" ? "badge badge-fail" : "badge badge-muted");
+        const updatedStr = (v.source_updated_at || v.created_at || "").replace("T", " ").slice(0, 19);
+        item.innerHTML = `
+          <div class="timeline-head" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
+            <strong>Phiên bản v${v.version}</strong>
+            <span class="${badgeCls}">${v.status || "active"}</span>
+          </div>
+          <div class="small muted" style="margin-bottom:4px;">
+            ${v.decision_number ? `QĐ: ${v.decision_number}` : ""} ${v.decision_date ? `(${v.decision_date})` : ""}
+          </div>
+          <div class="small muted" style="font-size:11px;">
+            Cập nhật: ${updatedStr || "Không rõ"} · Hash: <code>${(v.content_hash || "").slice(0, 10)}...</code>
+          </div>
+        `;
+        item.style.padding = "10px";
+        item.style.borderLeft = v.status === "active" ? "3px solid var(--accent, #2563eb)" : "3px solid var(--border, #cbd5e1)";
+        item.style.marginBottom = "8px";
+        item.style.background = "var(--panel-2, #f8fafc)";
+        item.style.borderRadius = "0 6px 6px 0";
+        timeline.appendChild(item);
+      });
+      list.appendChild(timeline);
+    } catch (err) {
+      list.innerHTML = `<p class="small danger">Lỗi khi tải lịch sử: ${err.message}</p>`;
+    }
+  }
+
+  function closeVersionTimeline() {
+    const modal = document.getElementById("version-modal");
+    const backdrop = document.getElementById("version-backdrop");
+    if (modal) {
+      modal.setAttribute("hidden", "");
+      modal.classList.remove("open");
+      modal.setAttribute("aria-hidden", "true");
+    }
+    if (backdrop) backdrop.classList.remove("open");
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    const closeBtn = document.getElementById("version-modal-close");
+    if (closeBtn) closeBtn.onclick = closeVersionTimeline;
+    const backdrop = document.getElementById("version-backdrop");
+    if (backdrop) backdrop.onclick = closeVersionTimeline;
+  });
+
   /* Điểm vào duy nhất mà chat.js gọi. */
   function render(t, convId) {
     if (!t || typeof t !== "object") return null;
@@ -434,5 +679,5 @@ window.Procedure = (function () {
     return table(t, convId);
   }
 
-  return { render };
+  return { render, showVersionTimeline, closeVersionTimeline };
 })();

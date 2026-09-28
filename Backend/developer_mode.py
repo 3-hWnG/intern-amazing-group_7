@@ -21,6 +21,7 @@ from typing import Any
 from config import DEVMODE_DEFAULT_ON, DEVMODE_TRACE_SIZE
 
 _lock = threading.Lock()
+_tls = threading.local()      # id vết của lượt vừa xong TRÊN LUỒNG NÀY (worker chạy cả lượt trong 1 luồng)
 _enabled = bool(DEVMODE_DEFAULT_ON)
 _traces: deque[dict] = deque(maxlen=int(DEVMODE_TRACE_SIZE))
 _seq = 0
@@ -50,11 +51,13 @@ def toggle() -> bool:
 class Turn:
     """Gom mọi thứ xảy ra trong MỘT lượt. Không bật dev mode thì gần như free."""
 
-    __slots__ = ("question", "conversation_id", "started", "events", "meta")
+    __slots__ = ("question", "conversation_id", "user_id", "started", "events", "meta")
 
-    def __init__(self, question: str, conversation_id: int | None = None):
+    def __init__(self, question: str, conversation_id: int | None = None,
+                 user_id: int | None = None):
         self.question = question
         self.conversation_id = conversation_id
+        self.user_id = user_id
         self.started = time.time()
         self.events: list[dict] = []
         self.meta: dict[str, Any] = {}
@@ -77,21 +80,41 @@ class Turn:
         if not _enabled:
             return
         global _seq
+        record = {
+            "ts": time.time(),
+            "question": self.question,
+            "conversation_id": self.conversation_id,
+            "total_ms": round((time.time() - self.started) * 1000),
+            "events": self.events,
+            **self.meta,
+        }
         with _lock:
             _seq += 1
-            _traces.appendleft({
-                "id": _seq,
-                "ts": time.time(),
-                "question": self.question,
-                "conversation_id": self.conversation_id,
-                "total_ms": round((time.time() - self.started) * 1000),
-                "events": self.events,
-                **self.meta,
-            })
+            _traces.appendleft({"id": _seq, **record})
+
+        # Lưu BỀN vào app.db để mở lại từng câu trả lời sau khi restart.
+        # Hỏng thì bỏ qua: ghi vết không được làm hỏng câu trả lời.
+        _tls.last_trace_id = None
+        if self.conversation_id:
+            try:
+                from db.repositories import Traces
+                _tls.last_trace_id = Traces.add(
+                    self.conversation_id, self.user_id, self.meta.get("system", ""),
+                    self.question, record["total_ms"], record)
+            except Exception:
+                pass
 
 
-def turn(question: str, conversation_id: int | None = None) -> Turn:
-    return Turn(question, conversation_id)
+def take_last_trace_id() -> int | None:
+    """Id vết của lượt vừa chạy xong trên luồng này (đọc xong thì xoá)."""
+    tid = getattr(_tls, "last_trace_id", None)
+    _tls.last_trace_id = None
+    return tid
+
+
+def turn(question: str, conversation_id: int | None = None,
+         user_id: int | None = None) -> Turn:
+    return Turn(question, conversation_id, user_id)
 
 
 def traces(limit: int = 10) -> list[dict]:

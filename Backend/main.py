@@ -32,7 +32,7 @@ from config import (ATTACHMENTS_ENABLED, DB_PATH, DEV_TOOLS_ENABLED, HOST, LLM_M
 async def lifespan(app: FastAPI):
     from core import llm, mcp_client, queue
     from db import connection
-    from db.repositories import AuthSessions, purge_old
+    from db.repositories import AuthSessions, Traces, purge_old
 
     print("Đang khởi động...")
     try:
@@ -42,6 +42,7 @@ async def lifespan(app: FastAPI):
         removed = purge_old(RETENTION_DAYS)
         if removed:
             print(f"  - đã xoá {removed} hội thoại quá hạn lưu trữ")
+        Traces.purge_older_than(RETENTION_DAYS)
 
         # Ollama / MCP hỏng thì VẪN chạy: người dùng thấy thông báo lỗi rõ ràng
         # trong khung chat, thay vì server không lên.

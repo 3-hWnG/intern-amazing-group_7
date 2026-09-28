@@ -28,7 +28,7 @@
       <h1 id="conv-title">Trợ lý Thủ tục hành chính</h1>
       <span id="model-name" class="model-name"></span>
       <button id="dev-open" class="icon" type="button" aria-pressed="false"
-              title="Bảng nhà phát triển" hidden>⚙</button>
+              title="Bảng nhà phát triển & Quản trị" hidden>⚙</button>
       <button id="theme" class="icon" type="button" aria-label="Đổi giao diện sáng/tối">◐</button>
     </header>
 
@@ -54,59 +54,316 @@
         <textarea id="input" rows="2" placeholder="Nhập câu hỏi…" autocomplete="off"></textarea>
         <button id="send" class="primary" type="submit">Gửi</button>
       </div>
-      <input id="file-input" type="file" hidden>
     </form>
   </main>
+</div>
 
-  <!-- Bảng nhà phát triển. Chỉ hiện khi server bật DEV_TOOLS_ENABLED. -->
+  <!-- Modal Bộ nhớ trợ lý (ChatGPT Memory Style) -->
+  <div id="mem-modal-backdrop" class="modal-backdrop"></div>
+  <div id="memory-modal" class="modal-box" aria-hidden="true" hidden>
+    <div class="modal-head">
+      <h3>🧠 Bộ nhớ dài hạn của Trợ lý</h3>
+      <button id="mem-modal-close" class="icon" type="button" title="Đóng">×</button>
+    </div>
+    <div class="modal-tabs">
+      <button class="mem-tab-btn active" data-tab="mem-tab-profile" type="button">Hồ sơ & Địa bàn</button>
+      <button class="mem-tab-btn" data-tab="mem-tab-mcq" type="button">Lựa chọn đã nhớ (MCQ)</button>
+    </div>
+    <div class="modal-body">
+      <!-- Tab 1: Profile -->
+      <div id="mem-tab-profile" class="mem-tab-panel">
+        <p class="muted small">Trợ lý sử dụng thông tin này để tự động định tuyến thủ tục cấp Xã/Phường và Cơ quan tiếp nhận hồ sơ chính xác theo địa bàn của bạn.</p>
+        <div class="form-group">
+          <label for="mem-prov-select">Tỉnh / Thành phố:</label>
+          <select id="mem-prov-select" class="form-input"></select>
+        </div>
+        <div class="form-group">
+          <label for="mem-ward-input">Quận / Huyện / Xã / Phường:</label>
+          <input id="mem-ward-input" type="text" class="form-input" placeholder="Ví dụ: Phường Bến Nghé, Quận 1">
+        </div>
+        <div class="form-group">
+          <label for="mem-notes-input">Ghi chú đặc thù cá nhân cho AI:</label>
+          <textarea id="mem-notes-input" class="form-input" rows="3" placeholder="Ví dụ: Tôi là thương binh hạng 1, Ưu tiên làm thủ tục online, Doanh nghiệp FDI..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button id="mem-save-profile" class="primary" type="button">Lưu thông tin</button>
+          <button id="mem-clear-profile" class="danger" type="button">Xóa hồ sơ</button>
+          <span id="mem-profile-status" class="small muted"></span>
+        </div>
+      </div>
+
+      <!-- Tab 2: MCQ Memory -->
+      <div id="mem-tab-mcq" class="mem-tab-panel" hidden>
+        <div class="flex-between" style="margin-bottom: 10px;">
+          <p class="muted small" style="margin:0;">Các phương án MCQ bạn đã từng tick "Nhớ lựa chọn này cho những lần sau".</p>
+          <button id="mem-clear-mcq" class="danger small" type="button">Xóa tất cả trí nhớ MCQ</button>
+        </div>
+        <div class="mem-add-row">
+          <select id="mem-add-axis" class="form-input" aria-label="Loại lựa chọn"></select>
+          <input id="mem-add-value" class="form-input" list="mem-add-values" type="text" maxlength="200"
+                 placeholder="Chọn hoặc gõ giá trị cần nhớ…">
+          <datalist id="mem-add-values"></datalist>
+          <button id="mem-add-btn" class="primary" type="button">＋ Thêm</button>
+        </div>
+        <div id="mem-add-status" class="small muted" style="min-height:1.2em; margin-bottom:8px;"></div>
+        <div id="mem-mcq-list" class="mem-mcq-list"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Chào mừng Onboarding ban đầu -->
+  <div id="onboarding-modal" class="modal-box onboarding-box" aria-hidden="true" hidden>
+    <div class="modal-head">
+      <h3>👋 Chào mừng bạn đến với Trợ lý Dịch vụ công!</h3>
+    </div>
+    <div class="modal-body">
+      <p>Để trợ lý cung cấp chính xác thủ tục hành chính, mức thu lệ phí và cơ quan tiếp nhận hồ sơ đúng địa phương của bạn, hãy chọn <strong>Tỉnh / Thành phố</strong> bạn đang sinh sống:</p>
+      <div class="form-group" style="margin: 15px 0;">
+        <select id="onb-prov-select" class="form-input" style="font-size:1rem; padding:8px; width:100%;"></select>
+      </div>
+      <div class="modal-foot-actions">
+        <button id="onb-save-btn" class="primary" type="button">Thiết lập ngay</button>
+        <button id="onb-skip-btn" class="link secondary" type="button">Để AI tự hỏi sau</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Lịch sử phiên bản thủ tục -->
+  <div id="version-backdrop" class="modal-backdrop"></div>
+  <div id="version-modal" class="modal-box" aria-hidden="true" hidden style="max-width: 620px;">
+    <div class="modal-head">
+      <h3 id="version-modal-title">📜 Lịch sử phiên bản thủ tục</h3>
+      <button id="version-modal-close" class="icon" type="button" title="Đóng">×</button>
+    </div>
+    <div class="modal-body">
+      <div id="version-timeline-list" class="version-timeline" style="max-height: 400px; overflow-y: auto;"></div>
+    </div>
+  </div>
+
+  <!-- Modal Thêm / Chỉnh sửa Synonym -->
+  <div id="synonym-backdrop" class="modal-backdrop"></div>
+  <div id="synonym-modal" class="modal-box" aria-hidden="true" hidden style="max-width: 500px;">
+    <div class="modal-head">
+      <h3 id="synonym-modal-title">🔤 Thêm từ đồng nghĩa / viết tắt</h3>
+      <button id="synonym-modal-close" class="icon" type="button" title="Đóng">×</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group" style="margin-bottom: 12px;">
+        <label class="small muted" for="syn-raw-input">Từ thô người dân nhập (câu hỏi / viết tắt):</label>
+        <input id="syn-raw-input" type="text" class="form-input" style="width:100%; box-sizing:border-box;" placeholder="vd: mat gplx">
+      </div>
+      <div class="form-group" style="margin-bottom: 15px;">
+        <label class="small muted" for="syn-canon-input">Từ khóa chuẩn quy về (canonical keyword):</label>
+        <input id="syn-canon-input" type="text" class="form-input" style="width:100%; box-sizing:border-box;" placeholder="vd: cap lai giay phep lai xe">
+      </div>
+      <div id="syn-modal-error" class="small danger" style="margin-bottom: 10px; display:none; color: var(--danger, #ef4444);"></div>
+      <div class="modal-foot-actions" style="display:flex; justify-content:flex-end; gap:8px;">
+        <button id="syn-modal-cancel" class="dev-btn" type="button">Hủy</button>
+        <button id="syn-modal-save" class="primary" type="button">Lưu Synonym</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bảng nhà phát triển & Quản trị Portal. Chỉ hiện khi server bật DEV_TOOLS_ENABLED. -->
   <div id="dev-backdrop" class="dev-backdrop"></div>
   <aside id="dev-panel" class="dev-panel" aria-hidden="true">
     <div class="dev-head">
-      <strong>Bảng nhà phát triển</strong>
+      <strong>Dev & Admin Portal</strong>
       <button id="dev-close" class="icon" type="button" title="Đóng">×</button>
     </div>
 
-    <div class="dev-actions">
-      <button id="dev-toggle" class="dev-btn" type="button" aria-pressed="true">Ghi vết: BẬT</button>
-      <button id="dev-refresh" class="dev-btn" type="button">Tải lại</button>
-      <button id="dev-clear" class="dev-btn" type="button">Xoá vết</button>
-      <button id="dev-export-conv" class="dev-btn" type="button" title="Xuất hội thoại hiện tại ra .txt">📥 Xuất TXT cuộc này</button>
-      <button id="dev-export-all" class="dev-btn" type="button" title="Xuất tất cả hội thoại ra .txt">📥 Xuất tất cả TXT</button>
+    <!-- Navigation Tabs -->
+    <nav class="dev-tab-nav">
+      <button class="dev-tab-nav-btn active" data-tab="dev-tab-metrics" type="button">📊 Metrics</button>
+      <button class="dev-tab-nav-btn" data-tab="dev-tab-traces" type="button">🔍 Vết chạy</button>
+      <button class="dev-tab-nav-btn" data-tab="dev-tab-unmatched" type="button">⚠️ Từ khóa trượt</button>
+      <button class="dev-tab-nav-btn" data-tab="dev-tab-procedures" type="button">🗄️ CSDL Thủ tục</button>
+      <button class="dev-tab-nav-btn" data-tab="dev-tab-users" type="button">👥 Người dùng</button>
+      <button class="dev-tab-nav-btn" data-tab="dev-tab-convs" type="button">💬 Hội thoại & vết</button>
+      <button class="dev-tab-nav-btn" data-tab="dev-tab-docs" type="button">📖 API Docs</button>
+    </nav>
+
+    <!-- Tab 1: Metrics -->
+    <div id="dev-tab-metrics" class="dev-tab-panel">
+      <div class="dev-metrics-grid">
+        <div class="dev-metric-card">
+          <span class="m-label" id="m-online-label" title="Có gọi API trong vài phút gần nhất">Đang online</span>
+          <strong id="m-online-users" class="m-val">0</strong>
+        </div>
+        <div class="dev-metric-card">
+          <span class="m-label" title="Phiên đăng nhập còn hạn — chưa chắc đang dùng">Đã đăng nhập</span>
+          <strong id="m-logged-in-users" class="m-val">0</strong>
+        </div>
+        <div class="dev-metric-card">
+          <span class="m-label">Queue Depth</span>
+          <strong id="m-queue-depth" class="m-val">0</strong>
+        </div>
+        <div class="dev-metric-card">
+          <span class="m-label">Workers Pool</span>
+          <strong id="m-queue-concurrency" class="m-val">4</strong>
+        </div>
+        <div class="dev-metric-card">
+          <span class="m-label">Tổng Tài khoản</span>
+          <strong id="m-total-users" class="m-val">0</strong>
+        </div>
+        <div class="dev-metric-card">
+          <span class="m-label">Tổng Hội thoại</span>
+          <strong id="m-total-convs" class="m-val">0</strong>
+        </div>
+        <div class="dev-metric-card">
+          <span class="m-label">Tổng Tin nhắn</span>
+          <strong id="m-total-msgs" class="m-val">0</strong>
+        </div>
+        <div class="dev-metric-card warn">
+          <span class="m-label">Khoá trượt chờ duyệt</span>
+          <strong id="m-unmatched-queries" class="m-val">0</strong>
+        </div>
+      </div>
+
+      <details class="dev-sect" open style="margin-top:15px;">
+        <summary>Tìm kiếm qua MCP — chẩn đoán</summary>
+        <div class="dev-web">
+          <input id="dev-web-q" type="text" placeholder="thủ tục cấp hộ chiếu phổ thông">
+          <button id="dev-web-go" class="dev-btn" type="button">Tra thử</button>
+        </div>
+        <pre id="dev-web-out" class="dev-pre">Bấm "Tra thử" để gọi công cụ web_search qua MCP và xem hỏng ở bước nào.</pre>
+      </details>
+
+      <details class="dev-sect">
+        <summary>Reset dữ liệu hệ thống</summary>
+        <button id="dev-reset" class="danger block" type="button">Reset dữ liệu</button>
+      </details>
     </div>
 
-    <details class="dev-sect" open>
-      <summary>Tìm kiếm qua MCP — chẩn đoán</summary>
-      <div class="dev-web">
-        <input id="dev-web-q" type="text" placeholder="thủ tục cấp hộ chiếu phổ thông">
-        <button id="dev-web-go" class="dev-btn" type="button">Tra thử</button>
+    <!-- Tab 2: Traces -->
+    <div id="dev-tab-traces" class="dev-tab-panel" hidden>
+      <div class="dev-actions">
+        <button id="dev-toggle" class="dev-btn" type="button" aria-pressed="true">Ghi vết: BẬT</button>
+        <button id="dev-refresh" class="dev-btn" type="button">Tải lại</button>
+        <button id="dev-clear" class="dev-btn" type="button">Xoá vết</button>
+        <button id="dev-export-conv" class="dev-btn" type="button" title="Xuất hội thoại hiện tại ra .txt">📥 Xuất TXT cuộc này</button>
+        <button id="dev-export-all" class="dev-btn" type="button" title="Xuất tất cả hội thoại ra .txt">📥 Xuất tất cả TXT</button>
       </div>
-      <pre id="dev-web-out" class="dev-pre">Bấm "Tra thử" để gọi công cụ web_search qua MCP và xem hỏng ở bước nào.</pre>
-    </details>
 
-    <details class="dev-sect" open>
-      <summary>Vết chạy các lượt gần nhất</summary>
-      <div id="dev-traces"></div>
-    </details>
+      <details class="dev-sect" open>
+        <summary>Vết chạy các lượt gần nhất</summary>
+        <div id="dev-traces"></div>
+      </details>
 
-    <details class="dev-sect">
-      <summary>Cấu hình đang chạy</summary>
-      <div id="dev-config" class="dev-config"></div>
-    </details>
+      <details class="dev-sect">
+        <summary>Cấu hình đang chạy</summary>
+        <div id="dev-config" class="dev-config"></div>
+      </details>
+    </div>
 
-    <details class="dev-sect">
-      <summary>Dữ liệu</summary>
-      <small id="dev-stats" class="muted small"></small>
-      <button id="dev-reset" class="danger block" type="button">Reset dữ liệu</button>
-    </details>
+    <!-- Tab 3: Unmatched Queries Telemetry & Dynamic Synonyms -->
+    <div id="dev-tab-unmatched" class="dev-tab-panel" hidden>
+      <div class="dev-sect-head">
+        <p class="muted small" style="margin:0;">Các câu hỏi người dân tra cứu bị trượt FTS5 và phải nhờ LLM 1 trích xuất khoá. Hãy bổ sung các từ này vào từ điển đồng nghĩa động.</p>
+      </div>
+      <div id="dev-unmatched-list" style="margin-top:10px;"></div>
+
+      <details class="dev-sect" open style="margin-top:18px;">
+        <summary>Từ điển đồng nghĩa động (Dynamic Synonyms)</summary>
+        <div style="display:flex; gap:8px; margin: 10px 0; align-items:center;">
+          <input id="dev-syn-raw" type="text" placeholder="Từ viết tắt / cụm từ thô (vd: ly hon)" style="flex:1;">
+          <input id="dev-syn-canon" type="text" placeholder="Từ khóa chuẩn (vd: ly hon thuan tinh)" style="flex:1;">
+          <button id="dev-syn-add-btn" class="dev-btn primary" type="button">Thêm</button>
+        </div>
+        <div id="dev-syn-list"></div>
+      </details>
+    </div>
+
+    <!-- Tab 4: Procedures Database -->
+    <div id="dev-tab-procedures" class="dev-tab-panel" hidden>
+      <div class="dev-actions" style="display:flex; flex-wrap:wrap; gap:8px; align-items:center;">
+        <button id="dev-export-procs-btn" class="dev-btn primary" type="button">📥 Xuất CSDL (.jsonl)</button>
+        <label class="dev-btn" style="cursor:pointer; margin:0;" title="Nạp tệp staging/procedures.jsonl vào DB">
+          📤 Nạp CSDL (.jsonl)
+          <input id="dev-import-procs-file" type="file" accept=".jsonl,.json" style="display:none;">
+        </label>
+        <button id="dev-rollback-procs-btn" class="dev-btn danger" type="button" title="Phục hồi từ bản sao lưu procedures.db.bak gần nhất">⏪ Rollback bản sao lưu</button>
+      </div>
+      <div id="dev-proc-import-status" style="margin-top:8px;"></div>
+      <details class="dev-sect" open style="margin-top:10px;">
+        <summary>Thống kê CSDL procedures.db</summary>
+        <div id="dev-proc-stats" class="dev-config"></div>
+      </details>
+      <details class="dev-sect" style="margin-top:10px;">
+        <summary>Danh sách bản sao lưu (.bak)</summary>
+        <div id="dev-proc-backups" style="margin-top:8px;"></div>
+      </details>
+    </div>
+
+    <!-- Tab 5: Users Management -->
+    <div id="dev-tab-users" class="dev-tab-panel" hidden>
+      <div class="dev-sect-head">
+        <p class="muted small" style="margin:0;">Quản lý tài khoản, phân quyền quản trị viên (Admin) và quyền nuke lịch sử chat của tài khoản.</p>
+      </div>
+      <div id="dev-users-list" style="margin-top:10px;"></div>
+    </div>
+
+    <!-- Tab: xem hội thoại của bất kỳ user + vết chạy của từng câu trả lời -->
+    <div id="dev-tab-convs" class="dev-tab-panel" hidden>
+      <div class="dev-sect-head">
+        <p class="muted small" style="margin:0;">Chọn người dùng → hội thoại → bấm 🔍 ở một câu trả lời để xem nó được sinh ra qua những bước nào (ý định, khoá tra, MCQ, kiểm chứng, thời gian). Vết được lưu bền, không mất khi khởi động lại.</p>
+      </div>
+      <div class="dev-actions" style="display:flex; gap:8px; flex-wrap:wrap; margin-top:10px;">
+        <select id="dev-conv-user" class="form-input" style="flex:1; min-width:160px;"></select>
+        <select id="dev-conv-select" class="form-input" style="flex:2; min-width:200px;"></select>
+        <button id="dev-conv-export" class="dev-btn" type="button" title="Xuất hội thoại này ra .txt">📥 TXT</button>
+      </div>
+      <div id="dev-conv-messages" style="margin-top:10px;"></div>
+      <details id="dev-msg-trace-wrap" class="dev-sect" open hidden style="margin-top:12px;">
+        <summary>Vết chạy của câu trả lời đã chọn</summary>
+        <div id="dev-msg-trace"></div>
+      </details>
+    </div>
+
+    <!-- Tab 6: API Documentation -->
+    <div id="dev-tab-docs" class="dev-tab-panel" hidden>
+      <div class="dev-sect">
+        <h4>Tài liệu Tích hợp API (Connection Guide)</h4>
+        <p class="small muted">Hệ thống cung cấp REST API. Câu trả lời của <code>/chat</code> là luồng <strong>NDJSON</strong> (mỗi dòng một sự kiện JSON: <code>status</code>, <code>delta</code>, <code>done</code>…), không phải SSE. Địa chỉ máy chủ hiện tại: <code class="dev-base-url">http://localhost:8000</code></p>
+        <div style="margin: 10px 0;">
+          <a href="/docs" target="_blank" class="dev-btn" style="display:inline-block; text-decoration:none;">📄 Mở Swagger Interactive UI (/docs)</a>
+          <a href="/redoc" target="_blank" class="dev-btn" style="display:inline-block; text-decoration:none; margin-left:8px;">📘 Mở ReDoc API Specs (/redoc)</a>
+        </div>
+        <hr style="border:0; border-top:1px solid var(--border); margin:15px 0;">
+        <h5>Quickstart (cURL): đăng nhập lấy cookie → tạo cuộc trò chuyện → hỏi</h5>
+        <pre class="dev-pre" style="white-space: pre-wrap; font-size:11px;"># 1) Đăng nhập, cookie phiên lưu vào cookies.txt (tài khoản tạo ở trang /login)
+curl -c cookies.txt -X POST "<span class="dev-base-url">http://localhost:8000</span>/api/login" \
+  -H "Content-Type: application/json" \
+  -d '{"email": "ban@example.com", "password": "mat-khau"}'
+
+# 2) Tạo cuộc trò chuyện (lấy conversation.id trong kết quả)
+curl -b cookies.txt -X POST "<span class="dev-base-url">http://localhost:8000</span>/api/conversations" \
+  -H "Content-Type: application/json" -d '{"system": "retrieval"}'
+
+# 3) Hỏi (mode "exact" = 🎯 Tìm chính xác; bỏ mode = trò chuyện thường)
+curl -N -b cookies.txt -X POST "<span class="dev-base-url">http://localhost:8000</span>/api/conversations/1/chat" \
+  -H "Content-Type: application/json" \
+  -d '{"text": "Tôi muốn làm giấy khai sinh", "mode": "exact"}'</pre>
+        <hr style="border:0; border-top:1px solid var(--border); margin:15px 0;">
+        <h5>Cho người dùng ở máy khác kết nối</h5>
+        <ul class="small muted" style="padding-left:18px; line-height:1.6;">
+          <li>Đặt <code>APP_HOST=0.0.0.0</code> trong <code>.env</code> (Docker đã đặt sẵn), mở cổng <code>APP_PORT</code> (mặc định 8000) ở tường lửa.</li>
+          <li>Người dùng mở <code>http://&lt;IP-máy-chủ&gt;:8000</code> → <code>/login</code> → đăng ký.</li>
+          <li>Dùng HTTPS thì đặt <code>AUTH_COOKIE_SECURE=true</code>. Muốn khoá đăng ký tự do: <code>REGISTRATION_ENABLED=false</code>.</li>
+          <li>Số người xử lý cùng lúc: <code>QUEUE_CONCURRENCY</code> (và <code>OLLAMA_NUM_PARALLEL</code> phía Ollama).</li>
+        </ul>
+      </div>
+    </div>
+
   </aside>
 
-</div>
 <script src="/static/js/api.js?v=__V__"></script>
 <script src="/static/js/files.js?v=__V__"></script>
 <script src="/static/js/conversations.js?v=__V__"></script>
 <script src="/static/js/systems.js?v=__V__"></script>
 <script src="/static/js/exact.js?v=__V__"></script>
 <script src="/static/js/procedure.js?v=__V__"></script>
+<script src="/static/js/memory.js?v=__V__"></script>
 <script src="/static/js/chat.js?v=__V__"></script>
 <script src="/static/js/dev.js?v=__V__"></script>
 <script src="/static/js/app.js?v=__V__"></script>

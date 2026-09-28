@@ -33,8 +33,9 @@ from prompts import templates as T
 
 
 def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> TurnResult:
-    dev = developer_mode.turn(inp.question, inp.conversation_id)
+    dev = developer_mode.turn(inp.question, inp.conversation_id, inp.user_id)
     res = TurnResult(system=SYSTEM_WEBSEARCH)
+    dev.set(system=SYSTEM_WEBSEARCH)
     clock = time.time()
 
     def lap(name: str, since: float) -> int:

@@ -386,6 +386,10 @@ window.Chat = (function () {
                        { text, direct_search: directSearch, system, mode }, (evt) => {
         if (evt.type === "status" || evt.type === "queue") {
           statusText.textContent = evt.text;
+        } else if (evt.type === "conversation_renamed") {
+          if (window.Conversations && evt.title) {
+            Conversations.updateTitle(evt.conversation_id || convId, evt.title);
+          }
         } else if (evt.type === "delta") {
           body.hidden = false;
           acc += evt.text;
@@ -403,6 +407,9 @@ window.Chat = (function () {
       status.remove();
       body.hidden = false;
       if (done) {
+        if (done.renamed_title && window.Conversations) {
+          Conversations.updateTitle(convId, done.renamed_title);
+        }
         fillAssistant(wrap, body, acc, {
           id: done.message_id,
           kind: done.kind,

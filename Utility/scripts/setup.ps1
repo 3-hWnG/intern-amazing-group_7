@@ -1,5 +1,5 @@
-# ---------------------------------------------------------------------------
-# CAI DAT LAN DAU - Tro ly Thu tuc hanh chinh V10.5
+﻿# ---------------------------------------------------------------------------
+# CAI DAT LAN DAU - Tro ly Thu tuc hanh chinh V10.6
 # (Chu thich khong dau de hien dung tren moi console Windows.)
 #
 # Chay MOT LAN tren may moi. Chay lai nhieu lan cung khong sao: moi buoc deu
@@ -20,6 +20,7 @@ param(
 $ErrorActionPreference = "Stop"
 [Console]::OutputEncoding = [System.Text.Encoding]::UTF8
 $env:PYTHONIOENCODING = "utf-8"
+$env:PYTHONUTF8 = "1"
 
 $Root = Split-Path -Parent (Split-Path -Parent $PSScriptRoot)
 Set-Location $Root
@@ -41,7 +42,7 @@ function Update-PathFromRegistry {
 }
 
 Write-Host "=======================================================" -ForegroundColor White
-Write-Host " CAI DAT LAN DAU - Tro ly Thu tuc hanh chinh V10.5" -ForegroundColor White
+Write-Host " CAI DAT LAN DAU - Tro ly Thu tuc hanh chinh V10.6" -ForegroundColor White
 Write-Host " Thu muc: $Root" -ForegroundColor DarkGray
 Write-Host "=======================================================" -ForegroundColor White
 

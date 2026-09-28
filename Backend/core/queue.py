@@ -45,6 +45,7 @@ class QueueManager:
         self._queue: asyncio.Queue[Job] = asyncio.Queue()
         self._workers: list[asyncio.Task] = []
         self._running = False
+        self._inflight = 0      # job đã nhận nhưng chưa xong (đang chờ + đang chạy)
 
     # ---------------------------------------------------------- vòng đời --
     async def start(self) -> None:
@@ -70,7 +71,10 @@ class QueueManager:
         if self._queue.qsize() >= self.max_depth:
             raise QueueFull("Hệ thống đang quá tải, vui lòng thử lại sau ít phút.")
         job = Job(producer=producer)
-        job.position = self._queue.qsize()
+        # Số lượt phải XONG trước khi tới bạn = inflight - (số worker) + 1.
+        # Tính cả job ĐANG CHẠY (qsize() chỉ đếm job đang chờ nên báo thiếu).
+        job.position = max(0, self._inflight - self.concurrency + 1)
+        self._inflight += 1
         self._queue.put_nowait(job)
         return job
 
@@ -116,6 +120,7 @@ class QueueManager:
             finally:
                 job.finished_at = time.time()
                 loop.call_soon_threadsafe(job.out.put_nowait, _DONE)
+                self._inflight = max(0, self._inflight - 1)
                 self._queue.task_done()
 
 

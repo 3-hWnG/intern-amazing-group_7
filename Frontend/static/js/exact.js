@@ -56,5 +56,13 @@ window.Exact = (function () {
     render();
   }
 
-  return { init, render, take, get armed() { return armed; } };
+  /* Bật 🎯 từ code khác (ví dụ nút \"Có vẻ không phải thứ tôi cần\"). Không tự gửi gì. */
+  function arm() {
+    armed = true;
+    render();
+    const i = input();
+    if (i) i.focus();
+  }
+
+  return { init, render, take, arm, get armed() { return armed; } };
 })();

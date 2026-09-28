@@ -6,6 +6,16 @@ window.Conversations = (function () {
   const titleEl = () => document.getElementById("conv-title");
   let onSelect = () => {};
 
+  function updateTitle(id, newTitle) {
+    const it = items.find((c) => c.id === id);
+    if (it) it.title = newTitle;
+    if (id === activeId) {
+      const h1 = titleEl();
+      if (h1) h1.textContent = newTitle;
+    }
+    render();
+  }
+
   function render() {
     const el = listEl();
     el.innerHTML = "";
@@ -72,7 +82,7 @@ window.Conversations = (function () {
   }
 
   return {
-    refresh, create, select, render,
+    refresh, create, select, render, updateTitle,
     get activeId() { return activeId; },
     get items() { return items; },
     set onSelect(fn) { onSelect = fn; },

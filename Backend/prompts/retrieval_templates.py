@@ -186,3 +186,46 @@ def exact_used_text(current: str) -> str:
 EXACT_NEEDS_PROCEDURE = (
     "Bạn bấm **🎯 Tìm chính xác**, nhập **tên thủ tục** cần tra (ví dụ: “đăng ký khai sinh”, "
     "“chứng thực bản sao”) rồi bấm **Gửi** nhé — mình sẽ tra trong cơ sở dữ liệu thủ tục.")
+
+# ==========================================================================
+# LLM 3 — TƯ VẤN LỰA CHỌN MCQ (CUSTOMER ADVISOR)
+# ==========================================================================
+MCQ_ADVICE_SYSTEM = """Bạn là chuyên viên tư vấn hỗ trợ người dân lựa chọn thủ tục hành chính công.
+Nhiệm vụ: Dựa trên câu hỏi gốc của người dân và danh sách các phương án MCQ được đưa ra, hãy giải thích ngắn gọn, súc tích sự khác nhau giữa các phương án và khuyên người dân nên chọn phương án nào phù hợp với hoàn cảnh của họ.
+Quy tắc:
+- Trả lời ngắn gọn, thân thiện (dưới 120 từ).
+- Nêu rõ: "Nếu bạn... thì nên chọn [Phương án X]".
+- Tuyệt đối không bịa đặt các phương án ngoài danh sách được cung cấp."""
+
+
+def mcq_advice_system(question: str, options: list[dict]) -> str:
+    """LLM 3 dạng hội thoại nhiều lượt: ngữ cảnh (câu hỏi + phương án) nằm ở system,
+    mỗi lượt của người dân chỉ là câu họ gõ."""
+    lines = []
+    for i, o in enumerate(options or [], 1):
+        hint = o.get("hint", "")
+        lines.append(f"{i}. {o.get('label', '')}" + (f" ({hint})" if hint else ""))
+    return (MCQ_ADVICE_SYSTEM
+            + "\n\nNgười dân đang tìm: " + (question or "")
+            + "\nCác phương án đang hiển thị (CHỈ được nhắc tới các phương án này):\n"
+            + "\n".join(lines)
+            + "\nNếu người dân hỏi điều nằm ngoài các phương án, hãy nói bạn chưa rõ và gợi ý "
+              "họ bấm \"Có vẻ không phải thứ tôi cần\" để tra lại.")
+
+
+def mcq_advice_user(question: str, options: list[dict], user_situation: str = "") -> str:
+    opts_lines = []
+    for i, o in enumerate(options or [], 1):
+        lbl = o.get("label", "")
+        hint = o.get("hint", "")
+        opts_lines.append(f"{i}. {lbl}" + (f" ({hint})" if hint else ""))
+    opts_text = "\n".join(opts_lines)
+    parts = [
+        f"Câu hỏi/thủ tục người dân đang tìm kiếm:\n{question}",
+        f"Các phương án MCQ cần lựa chọn:\n{opts_text}"
+    ]
+    if user_situation:
+        parts.append(f"Hoàn cảnh/thắc mắc cụ thể của người dân:\n{user_situation}")
+    else:
+        parts.append("Hãy tư vấn nhanh tiêu chí phân biệt để người dân biết nên chọn phương án nào.")
+    return "\n\n".join(parts)

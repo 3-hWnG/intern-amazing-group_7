@@ -41,12 +41,12 @@ _SUBMISSION = {
     "POSTAL": "Bưu chính", "OTHER": "Khác",
 }
 
-# Đường dẫn công khai trên Cổng DVCQG. Lấy từ bảng route của SPA (react-router):
-#     "/dich-vu-cong-truc-tuyen/:code"
-#     "/dich-vu-cong-truc-tuyen/:code/nop-ho-so"
-# Tham số là MÃ TTHC (proc_id), không phải uuid. Đã kiểm chứng trả về HTTP 200.
-_PORTAL = "https://dichvucong.gov.vn/dich-vu-cong-truc-tuyen/{code}"
-_PORTAL_SUBMIT = _PORTAL + "/nop-ho-so"
+# Đường dẫn công khai trên Cổng DVCQG (Trung tâm dữ liệu quốc gia - Bộ Công an):
+#     "/thu-tuc-hanh-chinh/:code"
+#     "/nop-ho-so?formalityId=:code"
+# Tham số là MÃ TTHC (proc_id). Đã kiểm chứng trả về HTTP 200, vượt qua NDC WAF.
+_PORTAL = "https://dichvucong.gov.vn/thu-tuc-hanh-chinh/{code}"
+_PORTAL_SUBMIT = "https://dichvucong.gov.vn/nop-ho-so?formalityId={code}"
 
 
 def _epoch_ms_to_date(value) -> str:
@@ -389,12 +389,13 @@ def normalize(raw: dict) -> dict:
 
 
 def content_hash(record: dict) -> str:
-    """SHA-256 của bản ghi, BỎ QUA các trường hay đổi vặt.
+    """SHA-256 của bản ghi, BỎ QUA các trường hay đổi vặt và trường kỹ thuật vòng đời.
 
     Nếu tính cả `search_text`/`content_hash` thì hash tự tham chiếu chính nó.
     """
-    payload = {k: v for k, v in record.items()
-               if k not in ("content_hash", "search_text", "scraped_at")}
+    exclude = {"content_hash", "search_text", "scraped_at", "last_seen_at",
+               "version", "status", "row_id", "archived_at", "expired_at", "expiry_note"}
+    payload = {k: v for k, v in record.items() if k not in exclude}
     blob = json.dumps(payload, ensure_ascii=False, sort_keys=True)
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()
 

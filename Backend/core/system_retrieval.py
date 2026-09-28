@@ -53,7 +53,7 @@ from config import (PROCEDURES_DB_PATH, RETRIEVAL_ENABLED,
 from core import llm, procedure_table
 from core.turn import (MODE_CHAT, MODE_EXACT, MODE_RESUBMIT, MODES, TurnInput,
                        TurnResult)
-from db.repositories import MCQMemory, RetrievalPending
+from db.repositories import MCQMemory, RetrievalPending, UnmatchedQueries
 from prompts import retrieval_templates as RT
 
 from Database.pipeline import retrieval as R
@@ -79,13 +79,42 @@ NO_DB_TEXT = (
 import threading
 
 _local = threading.local()
+_DB_EPOCH = 0
+
+
+def close_thread_connection() -> None:
+    """Đóng kết nối của luồng hiện tại và xoá cache cục bộ."""
+    conn = getattr(_local, "conn", None)
+    if conn is not None:
+        try:
+            conn.close()
+        except Exception:
+            pass
+        _local.conn = None
+    if hasattr(_local, "domains"):
+        delattr(_local, "domains")
+
+
+def invalidate_all_connections() -> None:
+    """Tăng epoch để toàn bộ thread tự động ngắt kết nối cũ và mở lại khi có request mới."""
+    global _DB_EPOCH
+    _DB_EPOCH += 1
+    close_thread_connection()
 
 
 def _conn() -> sqlite3.Connection | None:
     """None nếu máy chưa dựng CSDL — tầng trên phải báo thật, không được sập."""
     conn = getattr(_local, "conn", None)
+    epoch = getattr(_local, "epoch", -1)
     if conn is not None:
-        return conn
+        if epoch == _DB_EPOCH:
+            return conn
+        try:
+            conn.close()
+        except Exception:
+            pass
+        _local.conn = None
+
     if not PROCEDURES_DB_PATH.exists():
         return None
     try:
@@ -97,6 +126,7 @@ def _conn() -> sqlite3.Connection | None:
     except Exception:
         return None
     _local.conn = conn
+    _local.epoch = _DB_EPOCH
     return conn
 
 
@@ -207,6 +237,22 @@ def is_new_procedure(conn, question: str, current_proc_id: str) -> bool:
         # Hỏng thì KHÔNG chặn người dùng: thà trả lời trong phạm vi bảng còn
         # hơn đuổi họ sang ô chat mới vì một lỗi kỹ thuật.
         return False
+
+
+def ask_mcq_advice(question: str, options: list[dict], user_situation: str = "",
+                   history: list[dict] | None = None) -> str:
+    """LLM 3: chăm sóc khách hàng ngay dưới câu hỏi MCQ, NHIỀU LƯỢT.
+
+    `history` là các lượt trước trong ô chat nhỏ ({role, content}); ngữ cảnh MCQ do
+    máy chủ dựng nên client không thể đổi câu hỏi/phương án.
+    """
+    user_msg = (user_situation or "").strip() or \
+        "Hãy giúp tôi phân biệt các phương án và nên chọn cái nào."
+    return _llm_text(
+        lambda: llm.chat("care", RT.mcq_advice_system(question, options), user_msg,
+                         history=history or None),
+        fallback="Bạn hãy chọn phương án phù hợp nhất với nhu cầu và hoàn cảnh của mình từ danh sách trên."
+    )
 
 
 def follow_up(question: str, history: list[dict], table: dict) -> str:
@@ -335,8 +381,9 @@ def _mcq_result(res: TurnResult, axis: dict, name_hint: str = "") -> None:
 # Điều phối một lượt của Hệ thống 2
 # ---------------------------------------------------------------------------
 def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> TurnResult:
-    dev = developer_mode.turn(inp.question, inp.conversation_id)
+    dev = developer_mode.turn(inp.question, inp.conversation_id, inp.user_id)
     res = TurnResult(system=SYSTEM_RETRIEVAL)
+    dev.set(system=SYSTEM_RETRIEVAL)
     clock = time.time()
 
     def lap(name: str, since: float) -> int:
@@ -432,11 +479,25 @@ def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> 
             # giữ làm phương án cuối, nhưng thử diễn đạt khác trước đã.
             status("Chưa khớp từ khoá — đang nhờ mô hình hiểu lại câu hỏi…")
             domains = _domains(conn)
+            unmatched_id = None
+            last_attempt, rescued_strong = 0, False
             for attempt in range(1, RETRIEVAL_MAX_KEY_ATTEMPTS + 1):
+                last_attempt = attempt
                 t = time.time()
                 k = extract_keys(inp.question, inp.history, inp.profile, domains,
                                  tried if attempt > 1 else None)
                 dev.event("extract_keys", ms=lap("understand", t), attempt=attempt, **k)
+                if attempt == 1 and conv_id:
+                    try:
+                        unmatched_id = UnmatchedQueries.record(
+                            user_id=inp.user_id,
+                            conv_id=conv_id,
+                            query=inp.question,
+                            extracted_keys=k,
+                            attempt=attempt,
+                        )
+                    except Exception as telem_err:
+                        dev.event("telemetry_record_error", error=str(telem_err))
 
                 t = time.time()
                 h = lookup(k, conn)
@@ -450,10 +511,24 @@ def run_turn(inp: TurnInput, status: Callable[[str], None] = lambda _: None) -> 
                     hits, keys = h, k
                 if strong:
                     hits, keys = h, k
+                    rescued_strong = True
                     break
                 tried.append(k["primary_keyword"])
                 if attempt < RETRIEVAL_MAX_KEY_ATTEMPTS:
                     status(f"Chưa chắc — đang thử cách diễn đạt khác ({attempt}/{RETRIEVAL_MAX_KEY_ATTEMPTS})…")
+
+            # Ghi kết quả cuối của vòng cứu để dev duyệt "LLM 1 làm đúng chưa".
+            if unmatched_id:
+                try:
+                    UnmatchedQueries.update_outcome(
+                        unmatched_id, attempts=last_attempt, strong=rescued_strong,
+                        outcome=("llm1_strong" if rescued_strong
+                                 else ("llm1_weak" if hits else "not_found")),
+                        final_keys=keys if hits else None,
+                        top_candidates=[{"proc_id": x.get("proc_id"), "name": x.get("name")}
+                                        for x in (hits or [])[:3]])
+                except Exception as telem_err:
+                    dev.event("telemetry_record_error", error=str(telem_err))
 
         res.intent = {"intent": "retrieval", "standalone_question": inp.question, **keys}
 
@@ -633,6 +708,10 @@ def _deliver(conn, inp: TurnInput, res: TurnResult, dev, lap, keys: dict,
         RetrievalPending.save(conv_id, question=inp.question, keys=keys,
                               candidates=[], proc_id=proc_id, axis="",
                               options=[], picked=picked, rounds=rounds)
+        try:   # ca LLM 1 (nếu có) giờ đã biết người dân chốt thủ tục nào
+            UnmatchedQueries.set_final_for_conv(conv_id, proc_id, record.get("name", ""))
+        except Exception:
+            pass
     return res
 
 

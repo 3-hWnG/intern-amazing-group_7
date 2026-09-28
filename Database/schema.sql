@@ -162,3 +162,49 @@ CREATE TABLE IF NOT EXISTS user_mcq_memory (
     updated_at TEXT NOT NULL
 );
 CREATE UNIQUE INDEX IF NOT EXISTS idx_mcq_mem ON user_mcq_memory(user_id, axis);
+
+-- Ghi nhận các câu hỏi tra FTS5 trượt và phải nhờ LLM 1 trích xuất khoá (Telemetry)
+CREATE TABLE IF NOT EXISTS unmatched_queries (
+    id                  INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id             INTEGER REFERENCES users(id) ON DELETE SET NULL,
+    conversation_id     INTEGER REFERENCES conversations(id) ON DELETE CASCADE,
+    query               TEXT NOT NULL,
+    extracted_keys_json TEXT NOT NULL DEFAULT '{}',
+    attempt_count       INTEGER DEFAULT 1,
+    resolved            INTEGER NOT NULL DEFAULT 0,
+    notes               TEXT DEFAULT '',
+    created_at          TEXT NOT NULL,
+    -- Kết quả cuối của ca này, để dev duyệt "LLM 1 làm đúng chưa":
+    --   outcome: '' (đang chờ) | llm1_strong | llm1_weak | not_found | user_rejected | resolved_ok
+    outcome             TEXT DEFAULT '',
+    llm1_strong         INTEGER DEFAULT 0,     -- khoá LLM 1 có ra kết quả CHẮC không
+    top_candidates      TEXT DEFAULT '',       -- JSON: vài thủ tục đứng đầu LLM 1 tìm được
+    final_proc_id       TEXT DEFAULT '',       -- thủ tục người dân thật sự chốt (nếu có)
+    final_proc_name     TEXT DEFAULT ''
+);
+CREATE INDEX IF NOT EXISTS idx_unmatched_unresolved ON unmatched_queries(resolved, created_at DESC);
+
+-- Vết chạy của từng lượt hỏi-đáp, LƯU BỀN để dev mở lại bất kỳ câu trả lời nào
+-- và xem nó được sinh ra qua những bước nào (trước đây chỉ nằm trong RAM, mất khi restart).
+CREATE TABLE IF NOT EXISTS turn_traces (
+    id              INTEGER PRIMARY KEY AUTOINCREMENT,
+    conversation_id INTEGER REFERENCES conversations(id) ON DELETE CASCADE,
+    message_id      INTEGER,               -- tin nhắn trả lời của lượt này (gắn sau khi lưu)
+    user_id         INTEGER,
+    system          TEXT DEFAULT '',
+    question        TEXT DEFAULT '',
+    total_ms        INTEGER DEFAULT 0,
+    trace_json      TEXT NOT NULL,
+    created_at      TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_trace_msg  ON turn_traces(message_id);
+CREATE INDEX IF NOT EXISTS idx_trace_conv ON turn_traces(conversation_id, id);
+
+-- Từ điển đồng nghĩa động (Dynamic Synonyms) để mở rộng từ khóa trước khi tra FTS5
+CREATE TABLE IF NOT EXISTS procedure_synonyms (
+    id                INTEGER PRIMARY KEY AUTOINCREMENT,
+    raw_term          TEXT NOT NULL UNIQUE,
+    canonical_keyword TEXT NOT NULL,
+    created_at        TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_synonym_raw ON procedure_synonyms(raw_term);

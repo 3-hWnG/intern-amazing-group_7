@@ -165,8 +165,30 @@ def _province_patterns() -> list[tuple[str, str]]:
 
 _PROVINCE_PATTERNS = _province_patterns()
 
+_synonym_cache: dict[str, str] = {}
+_synonym_cache_time: float = 0.0
 
-def parse_query(question: str) -> dict:
+
+def _get_dynamic_synonyms() -> dict[str, str]:
+    global _synonym_cache, _synonym_cache_time
+    import time
+    import logging
+    now = time.time()
+    if now - _synonym_cache_time < 3.0 and _synonym_cache:
+        return _synonym_cache
+    try:
+        try:
+            from db.repositories import ProcedureSynonyms
+        except ImportError:
+            from Backend.db.repositories import ProcedureSynonyms
+        _synonym_cache = ProcedureSynonyms.get_map()
+        _synonym_cache_time = now
+    except Exception as exc:
+        logging.getLogger("pipeline.retrieval").warning("Không nạp được dynamic synonyms từ DB: %s", exc)
+    return _synonym_cache
+
+
+def parse_query(question: str, custom_synonyms: dict[str, str] | None = None) -> dict:
     """Câu hỏi -> {"keyword": chuỗi tra FTS, "provinces": [tỉnh được nhắc]}.
 
     Tất định, không LLM: bỏ tên tỉnh (giữ lại làm ngữ cảnh), bung viết tắt,
@@ -182,6 +204,13 @@ def parse_query(question: str) -> dict:
                 provinces.append(name)
     for ph in _DROP_PHRASES:
         text = text.replace(f" {ph} ", " ")
+
+    # Mở rộng Dynamic Synonyms từ CSDL hoặc tham số truyền vào
+    syn_map = custom_synonyms if custom_synonyms is not None else _get_dynamic_synonyms()
+    if syn_map:
+        for raw_term, canonical in sorted(syn_map.items(), key=lambda kv: -len(kv[0])):
+            if f" {raw_term} " in text:
+                text = text.replace(f" {raw_term} ", f" {_fold(canonical)} ")
 
     words: list[str] = []
     for t in text.split():

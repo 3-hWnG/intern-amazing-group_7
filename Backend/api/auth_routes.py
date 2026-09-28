@@ -8,7 +8,7 @@ from fastapi.responses import HTMLResponse, JSONResponse
 from api.deps import current_user
 from api.schemas import Credentials
 from api.routes import render_page
-from config import AUTH_COOKIE_NAME, AUTH_ENABLED, TEMPLATES_DIR
+from config import AUTH_COOKIE_NAME, AUTH_ENABLED, REGISTRATION_ENABLED, TEMPLATES_DIR
 from core import auth
 from db import connection
 
@@ -24,6 +24,9 @@ async def login_page():
 async def register(body: Credentials, request: Request):
     if not AUTH_ENABLED:
         return JSONResponse({"error": "Xác thực đang tắt."}, status_code=400)
+    if not REGISTRATION_ENABLED:
+        return JSONResponse({"error": "Đăng ký tài khoản đang đóng. Hãy liên hệ quản trị viên."},
+                            status_code=403)
     try:
         user = await connection.run(auth.register, body.email, body.password, body.display_name)
         _, token = await connection.run(

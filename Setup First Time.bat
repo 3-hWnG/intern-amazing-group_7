@@ -1,6 +1,8 @@
-@echo off
+﻿@echo off
 chcp 65001 >nul
-title Cai dat lan dau - Tro ly Thu tuc hanh chinh V10.5
+set PYTHONUTF8=1
+set PYTHONIOENCODING=utf-8
+title Cai dat lan dau - Tro ly Thu tuc hanh chinh V10.6
 cd /d "%~dp0"
 
 echo.

@@ -26,10 +26,11 @@ from fastapi.responses import StreamingResponse
 from api.deps import current_user
 from api.schemas import ChatRequest, ConversationCreate, ConversationRename, FeedbackRequest
 from config import DEFAULT_SYSTEM, QUEUE_ENABLED
+import developer_mode
 from core import llm, orchestrator, queue, summarizer
 from db import connection
 from db.repositories import (Conversations, Evidence, Feedback, JobLog, Messages,
-                             UserProfiles)
+                             Traces, UnmatchedQueries, UserProfiles)
 
 router = APIRouter()
 REPLAY_CHARS = 24
@@ -175,6 +176,27 @@ async def clear_profile(user: dict = Depends(current_user)):
     return {"ok": True}
 
 
+@router.post("/api/profile")
+async def update_profile(body: dict, user: dict = Depends(current_user)):
+    allowed = {k: v for k, v in body.items() if k in ("province", "ward", "notes")}
+    updated = await connection.run(UserProfiles.update, user["id"], **allowed)
+    return {"profile": updated}
+
+
+@router.get("/api/memory")
+async def get_all_memory(user: dict = Depends(current_user)):
+    profile = await connection.run(UserProfiles.get, user["id"])
+    from db.repositories import MCQMemory
+    from Database.pipeline import retrieval as R
+    mcq_items = await connection.run(MCQMemory.list_for, user["id"])
+    return {
+        "profile": profile,
+        "mcq_items": mcq_items,
+        "labels": R.AXIS_QUESTION,
+        "memorable_axes": list(R.MEMORABLE_AXES),
+    }
+
+
 # --------------------------------------------------------------- chat ----
 def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit,
              direct_search: bool = False, system: str = DEFAULT_SYSTEM,
@@ -183,6 +205,13 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit,
     def send(**payload) -> None:
         emit(_event(**payload))
 
+    if mode == "resubmit":
+        # "Tra lại" = người dân báo mình hiểu sai -> ghi nhận cho dev duyệt.
+        try:
+            UnmatchedQueries.mark_rejected_for_conv(conv_id)
+        except Exception:
+            pass
+    developer_mode.take_last_trace_id()      # xoá id cũ còn sót trên luồng này
     send(type="status", text="Đang đọc lại ngữ cảnh cuộc trò chuyện…")
     summary, recent = summarizer.build_context(conv_id)
     history = [{"role": m["role"], "content": m["content"], "kind": m.get("kind") or ""}
@@ -211,8 +240,23 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit,
                               token_estimate=summarizer.estimate_tokens(result.text))
     if result.evidence is not None:
         Evidence.add(message_id, result.evidence.get("question", ""), result.evidence)
+    trace_id = developer_mode.take_last_trace_id()
+    if trace_id:                                  # gắn vết chạy vào đúng tin nhắn trả lời
+        try:
+            Traces.attach_message(trace_id, message_id)
+        except Exception:
+            pass
     if result.profile_update:
         profile = UserProfiles.update(user_id, **result.profile_update)
+
+    renamed_title = ""
+    if result.table and isinstance(result.table, dict):
+        meta = result.table.get("meta") or {}
+        t_name = meta.get("name") or result.table.get("name")
+        if t_name:
+            renamed_title = str(t_name).strip()[:120]
+            Conversations.rename(conv_id, user_id, renamed_title)
+            send(type="conversation_renamed", conversation_id=conv_id, title=renamed_title)
 
     for i in range(0, len(result.text), REPLAY_CHARS):
         send(type="delta", text=result.text[i:i + REPLAY_CHARS])
@@ -220,7 +264,7 @@ def _run_job(conv_id: int, user_id: int, user_msg_id: int, question: str, emit,
     send(type="done", message_id=message_id, kind=result.kind, verdict=result.verdict,
          sources=result.sources, has_evidence=result.evidence is not None,
          intent=result.intent.get("intent", ""), timings=result.timings, profile=profile,
-         choices=result.choices, system=result.system or system, table=result.table,
+         choices=result.choices, system=result.system or system, table=result.table, renamed_title=renamed_title,
          answer_source=(result.intent or {}).get("answer_source", ""))
 
 

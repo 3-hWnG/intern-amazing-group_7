@@ -14,8 +14,10 @@ from __future__ import annotations
 
 import argparse
 import datetime as _dt
+import hashlib
 import json
 import logging
+from pathlib import Path
 import sqlite3
 
 from Database.pipeline import paths
@@ -43,9 +45,9 @@ PROC_COLUMNS = (
 
 
 def connect(db_path=None) -> sqlite3.Connection:
-    db_path = db_path or paths.PROCEDURES_DB
+    db_path = Path(db_path) if db_path else paths.PROCEDURES_DB
     db_path.parent.mkdir(parents=True, exist_ok=True)
-    conn = sqlite3.connect(db_path)
+    conn = sqlite3.connect(str(db_path))
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA journal_mode=WAL")
     conn.execute("PRAGMA foreign_keys=ON")
@@ -122,6 +124,29 @@ def _insert_children(conn: sqlite3.Connection, row_id: int, rec: dict) -> None:
                       sv.get("processing_qty", 0), sv.get("processing_unit", "")))
 
 
+def compute_search_text(rec: dict) -> str:
+    """Chuỗi dùng để tra cứu FTS: đã bỏ dấu + xử lý đ/Đ."""
+    subjects = rec.get("subjects") or []
+    sub_names = [s["subject_name"] if isinstance(s, dict) else str(s) for s in subjects]
+    return fold(" ".join(filter(None, [
+        rec.get("name", ""),
+        rec.get("domain", ""),
+        rec.get("keywords", ""),
+        rec.get("proc_id", ""),
+        rec.get("executing_agency", ""),
+        " ".join(sub_names),
+    ])))
+
+
+def compute_content_hash(rec: dict) -> str:
+    """SHA-256 nội dung của bản ghi, bỏ qua các trường kỹ thuật/vòng đời."""
+    exclude = {"content_hash", "search_text", "scraped_at", "last_seen_at",
+               "version", "status", "row_id", "archived_at", "expired_at", "expiry_note"}
+    payload = {k: v for k, v in rec.items() if k not in exclude}
+    blob = json.dumps(payload, ensure_ascii=False, sort_keys=True)
+    return hashlib.sha256(blob.encode("utf-8")).hexdigest()
+
+
 def import_records(conn: sqlite3.Connection, records: list[dict]) -> dict:
     now = _dt.datetime.now().isoformat(timespec="seconds")
     stats = {"inserted": 0, "updated": 0, "unchanged": 0}
@@ -130,6 +155,11 @@ def import_records(conn: sqlite3.Connection, records: list[dict]) -> dict:
         proc_id = rec.get("proc_id")
         if not proc_id:
             continue
+
+        # Tự tính lại search_text và content_hash bằng code chuẩn
+        rec["search_text"] = compute_search_text(rec)
+        rec_hash = compute_content_hash(rec)
+        rec["content_hash"] = rec_hash
 
         province = rec.get("province")
         current = conn.execute(
@@ -145,7 +175,7 @@ def import_records(conn: sqlite3.Connection, records: list[dict]) -> dict:
                 " WHERE proc_id = ? AND source_id = ? AND status = 'active'",
                 (proc_id, rec.get("source_id", ""))).fetchone()
 
-        if current and current["content_hash"] == rec["content_hash"]:
+        if current and current["content_hash"] == rec_hash:
             # Nội dung không đổi nhưng VẪN CÒN trên cổng → cập nhật last_seen_at.
             # Đây là dữ liệu nuôi cơ chế tombstone ở dưới.
             conn.execute("UPDATE procedures SET last_seen_at=? WHERE row_id=?",

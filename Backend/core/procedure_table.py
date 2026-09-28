@@ -46,6 +46,20 @@ FEES_UNCLEAR_TEXT = ("Chưa có thông tin về lệ phí: Cổng Dịch vụ c�
 UNKNOWN_TEXT = "Chưa tra được thông tin này (dữ liệu cào về chưa đầy đủ)."
 
 
+def _clean_dvc_url(url: str, proc_id: str = "", is_submit: bool = False) -> str:
+    """Chuẩn hoá link sang Cổng DVCQG tránh bị NDC WAF từ chối truy cập."""
+    url = (url or "").strip()
+    if not url:
+        return ""
+    # Cổng DVCQG (Bộ Công an) có NDC WAF chặn direct GET tới /dich-vu-cong-truc-tuyen/*
+    if "/dich-vu-cong-truc-tuyen/" in url:
+        code = proc_id or url.rstrip("/").split("/")[-1].replace("/nop-ho-so", "")
+        if is_submit or url.endswith("/nop-ho-so"):
+            return f"https://dichvucong.gov.vn/nop-ho-so?formalityId={code}" if code else url
+        return f"https://dichvucong.gov.vn/thu-tuc-hanh-chinh/{code}" if code else url
+    return url
+
+
 def _cell(value, status: str, key: str) -> dict:
     """Một ô của bảng: giá trị + trạng thái + lý do nếu trống."""
     has = bool(value)
@@ -171,6 +185,10 @@ def build(record: dict, *, expired: dict | None = None,
                if (m.get("submission_method") or "").strip()]
     submission = sorted({(m.get("submission_method") or "").strip() for m in methods})
 
+    proc_id_str = str(record.get("proc_id") or "")
+    clean_portal = _clean_dvc_url(record.get("portal_url"), proc_id_str, is_submit=False)
+    clean_online = _clean_dvc_url(record.get("online_url"), proc_id_str, is_submit=True)
+
     table = {
         "proc_id": record.get("proc_id", ""),
         "name": record.get("name", ""),
@@ -215,14 +233,16 @@ def build(record: dict, *, expired: dict | None = None,
                        record.get("status_files", "unknown"), "files"),
 
         # ── Link tới web đăng ký online ─────────────────────────────────
-        "online": _cell({"url": (record.get("online_url") or "").strip(),
-                         "portal_url": (record.get("portal_url") or "").strip(),
+        "online": _cell({"url": clean_online,
+                         "portal_url": clean_portal,
                          "services": record.get("online_services", [])}
                         if record.get("has_online_submission") else None,
                         record.get("status_online", "unknown"), "online"),
 
         # ── Thông tin meta (luật từ ngày nào, ai ban hành) ──────────────
         "meta": {
+            "version": int(record.get("version") or 1),
+            "status": str(record.get("status") or "active"),
             "decision_number": (record.get("decision_number") or "").strip(),
             "decision_date": (record.get("decision_date") or "").strip(),
             "issuing_agency": (record.get("issuing_agency") or "").strip(),
@@ -230,7 +250,7 @@ def build(record: dict, *, expired: dict | None = None,
             "publication_date": (record.get("publication_date") or "").strip(),
             "source_updated_at": (record.get("source_updated_at") or "").strip(),
             "scraped_at": (record.get("scraped_at") or "").strip(),
-            "portal_url": (record.get("portal_url") or "").strip(),
+            "portal_url": clean_portal,
             "legal_basis": [{"code": l.get("doc_code", ""), "name": l.get("doc_name", ""),
                              "year": l.get("doc_year", "")} for l in legal],
             # Cổng KHÔNG công bố ngày hết hiệu lực. Nói thẳng, đừng để giao diện

@@ -50,6 +50,12 @@ def init_db() -> None:
                 # V10.3: hệ thống trả lời của từng cuộc trò chuyện (websearch | retrieval).
                 # CSDL cũ không có cột này -> hội thoại cũ mặc định là Hệ thống 1.
                 ("conversations", "system", "TEXT NOT NULL DEFAULT 'websearch'"),
+                # V10.5b: kết quả cuối của ca LLM 1 phải cứu (để dev duyệt).
+                ("unmatched_queries", "outcome", "TEXT DEFAULT ''"),
+                ("unmatched_queries", "llm1_strong", "INTEGER DEFAULT 0"),
+                ("unmatched_queries", "top_candidates", "TEXT DEFAULT ''"),
+                ("unmatched_queries", "final_proc_id", "TEXT DEFAULT ''"),
+                ("unmatched_queries", "final_proc_name", "TEXT DEFAULT ''"),
             ]:
                 cols = {r[1] for r in conn.execute(f"PRAGMA table_info({table})")}
                 if column not in cols:
@@ -80,10 +86,10 @@ async def run(fn, *args, **kwargs):
 def reset_database() -> None:
     """Xoá toàn bộ dữ liệu, giữ lược đồ. Chỉ dùng cho công cụ phát triển."""
     conn = get_conn()
-    for table in ["feedback", "evidence", "messages", "document_chunks", "documents",
-                  "retrieval_pending", "user_mcq_memory",
-                  "conversations", "user_profile", "auth_sessions", "login_attempts",
-                  "job_log", "users"]:
+    for table in ["feedback", "evidence", "turn_traces", "messages", "document_chunks", "documents",
+                  "retrieval_pending", "user_mcq_memory", "unmatched_queries",
+                  "conversations", "user_profile",
+                  "auth_sessions", "login_attempts", "job_log", "users"]:
         conn.execute(f"DELETE FROM {table}")
     conn.execute("DELETE FROM sqlite_sequence")
     conn.commit()

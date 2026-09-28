@@ -51,6 +51,26 @@ class Users:
     def count() -> int:
         return get_conn().execute("SELECT COUNT(*) c FROM users").fetchone()["c"]
 
+    @staticmethod
+    def list_all(limit: int = 100, offset: int = 0) -> list[dict]:
+        rows = get_conn().execute(
+            "SELECT u.id, u.email, u.display_name, u.is_admin, u.created_at,"
+            " (SELECT COUNT(*) FROM conversations c WHERE c.user_id = u.id) n_conversations"
+            " FROM users u ORDER BY u.id DESC LIMIT ? OFFSET ?", (limit, offset)).fetchall()
+        return [dict(r) for r in rows]
+
+    @staticmethod
+    def set_admin(user_id: int, is_admin: bool) -> None:
+        conn = get_conn()
+        conn.execute("UPDATE users SET is_admin = ? WHERE id = ?", (1 if is_admin else 0, user_id))
+        conn.commit()
+
+    @staticmethod
+    def delete_user(user_id: int) -> None:
+        conn = get_conn()
+        conn.execute("DELETE FROM users WHERE id = ?", (user_id,))
+        conn.commit()
+
 
 # ------------------------------------------------------- auth sessions ----
 class AuthSessions:
@@ -91,6 +111,30 @@ class AuthSessions:
         conn = get_conn()
         conn.execute("DELETE FROM auth_sessions WHERE expires_at <= ?", (_now(),))
         conn.commit()
+
+    @staticmethod
+    def active_metrics(ttl_seconds: int = 0, window_seconds: int = 300) -> dict:
+        """Đếm người dùng.
+
+        - logged_in_*: phiên còn hạn (đã đăng nhập, có thể đã đóng tab từ lâu).
+        - online_*:    có gọi API trong `window_seconds` gần nhất. `touch()` đẩy
+          expires_at = lúc gọi + ttl, nên "gọi gần đây" <=> expires_at > now + ttl - window.
+        """
+        conn = get_conn()
+        row = conn.execute(
+            "SELECT COUNT(*) AS logged_in_sessions, COUNT(DISTINCT user_id) AS logged_in_users"
+            " FROM auth_sessions WHERE expires_at > ?", (_now(),)).fetchone()
+        out = dict(row) if row else {"logged_in_sessions": 0, "logged_in_users": 0}
+        if ttl_seconds > 0:
+            recent = conn.execute(
+                "SELECT COUNT(*) AS s, COUNT(DISTINCT user_id) AS u FROM auth_sessions"
+                " WHERE expires_at > ?", (_in(ttl_seconds - window_seconds),)).fetchone()
+            out["online_sessions"], out["online_users"] = recent["s"], recent["u"]
+        else:
+            out["online_sessions"], out["online_users"] = out["logged_in_sessions"], out["logged_in_users"]
+        # tên cũ, giữ để mã cũ không vỡ
+        out["active_sessions"], out["active_users"] = out["logged_in_sessions"], out["logged_in_users"]
+        return out
 
 
 class LoginAttempts:
@@ -231,6 +275,22 @@ class Conversations:
     def count() -> int:
         return get_conn().execute("SELECT COUNT(*) c FROM conversations").fetchone()["c"]
 
+    @staticmethod
+    def list_for_admin(user_id: int, limit: int = 200) -> list[dict]:
+        """Dev/admin xem hội thoại của BẤT KỲ người dùng nào (không kiểm tra chủ sở hữu)."""
+        rows = get_conn().execute(
+            "SELECT c.id, c.title, c.system, c.created_at, c.updated_at,"
+            " (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id) n_messages"
+            " FROM conversations c WHERE c.user_id = ? ORDER BY c.updated_at DESC LIMIT ?",
+            (user_id, limit)).fetchall()
+        return [dict(r) for r in rows]
+
+    @staticmethod
+    def nuke_user_conversations(user_id: int) -> None:
+        conn = get_conn()
+        conn.execute("DELETE FROM conversations WHERE user_id = ?", (user_id,))
+        conn.commit()
+
 
 # ------------------------------------------------------------- messages ----
 class Messages:
@@ -272,6 +332,66 @@ class Messages:
         return get_conn().execute("SELECT COUNT(*) c FROM messages").fetchone()["c"]
 
 
+# ------------------------------------------------------------- traces ----
+class Traces:
+    """Vết chạy bền vững của từng lượt (bảng turn_traces)."""
+    MAX_BYTES = 200_000
+
+    @staticmethod
+    def add(conversation_id, user_id, system: str, question: str,
+            total_ms: int, trace: dict) -> int:
+        blob = json.dumps(trace, ensure_ascii=False, default=str)
+        if len(blob) > Traces.MAX_BYTES:
+            trace = {**trace, "events": (trace.get("events") or [])[:80], "truncated": True}
+            blob = json.dumps(trace, ensure_ascii=False, default=str)[:Traces.MAX_BYTES]
+        conn = get_conn()
+        cur = conn.execute(
+            "INSERT INTO turn_traces(conversation_id, user_id, system, question, total_ms,"
+            " trace_json, created_at) VALUES (?,?,?,?,?,?,?)",
+            (conversation_id, user_id, system or "", (question or "")[:500],
+             int(total_ms or 0), blob, _now()))
+        conn.commit()
+        return cur.lastrowid
+
+    @staticmethod
+    def attach_message(trace_id: int, message_id: int) -> None:
+        conn = get_conn()
+        conn.execute("UPDATE turn_traces SET message_id = ? WHERE id = ?", (message_id, trace_id))
+        conn.commit()
+
+    @staticmethod
+    def for_message(message_id: int) -> dict | None:
+        row = get_conn().execute(
+            "SELECT id, conversation_id, message_id, user_id, system, question, total_ms,"
+            " trace_json, created_at FROM turn_traces WHERE message_id = ? ORDER BY id DESC LIMIT 1",
+            (message_id,)).fetchone()
+        if row is None:
+            return None
+        out = dict(row)
+        try:
+            out["trace"] = json.loads(out.pop("trace_json") or "{}")
+        except Exception:
+            out["trace"] = {}
+        return out
+
+    @staticmethod
+    def message_ids_with_trace(conversation_id: int) -> set[int]:
+        rows = get_conn().execute(
+            "SELECT message_id FROM turn_traces WHERE conversation_id = ? AND message_id IS NOT NULL",
+            (conversation_id,)).fetchall()
+        return {r["message_id"] for r in rows}
+
+    @staticmethod
+    def purge_older_than(days: int) -> int:
+        if not days:
+            return 0
+        cutoff = (datetime.now(timezone.utc) - timedelta(days=days)).isoformat(timespec="seconds")
+        conn = get_conn()
+        cur = conn.execute("DELETE FROM turn_traces WHERE created_at < ?", (cutoff,))
+        conn.commit()
+        return cur.rowcount
+
+
 # ------------------------------------------------------------- evidence ----
 class Evidence:
     @staticmethod
@@ -281,6 +401,18 @@ class Evidence:
                      " VALUES (?,?,?,?)",
                      (message_id, query or "", json.dumps(pack, ensure_ascii=False), _now()))
         conn.commit()
+
+    @staticmethod
+    def for_message_admin(message_id: int) -> dict | None:
+        row = get_conn().execute(
+            "SELECT pack_json FROM evidence WHERE message_id = ? ORDER BY id DESC LIMIT 1",
+            (message_id,)).fetchone()
+        if row is None:
+            return None
+        try:
+            return json.loads(row["pack_json"])
+        except Exception:
+            return None
 
     @staticmethod
     def for_message(message_id: int, user_id: int) -> dict | None:
@@ -438,6 +570,14 @@ class MCQMemory:
         conn.commit()
 
     @staticmethod
+    def update_value(user_id: int, axis: str, new_value: str) -> None:
+        conn = get_conn()
+        conn.execute(
+            "UPDATE user_mcq_memory SET value = ?, updated_at = ? WHERE user_id = ? AND axis = ?",
+            (str(new_value)[:200], _now(), user_id, axis))
+        conn.commit()
+
+    @staticmethod
     def forget(user_id: int, axis: str = "") -> None:
         conn = get_conn()
         if axis:
@@ -545,3 +685,132 @@ class DocumentChunks:
             " WHERE d.conversation_id = ? AND d.status = 'processed'"
             " ORDER BY ch.document_id, ch.ordinal", (conversation_id,)).fetchall()
         return [dict(r) for r in rows]
+
+# ------------------------------------------------ unmatched queries ----
+class UnmatchedQueries:
+    @staticmethod
+    def record(user_id: int | None, conv_id: int | None, query: str,
+               extracted_keys: dict | None = None, attempt: int = 1) -> int:
+        conn = get_conn()
+        keys_str = json.dumps(extracted_keys or {}, ensure_ascii=False)
+        cur = conn.execute(
+            "INSERT INTO unmatched_queries(user_id, conversation_id, query,"
+            " extracted_keys_json, attempt_count, resolved, created_at)"
+            " VALUES (?,?,?,?,?,0,?)",
+            (user_id, conv_id, query[:500], keys_str, attempt, _now())
+        )
+        conn.commit()
+        return cur.lastrowid
+
+    @staticmethod
+    def update_outcome(item_id: int, *, attempts: int, strong: bool, outcome: str,
+                       final_keys: dict | None = None,
+                       top_candidates: list[dict] | None = None) -> None:
+        """Sau khi vòng cứu của LLM 1 kết thúc: ghi nó ra kết quả gì."""
+        conn = get_conn()
+        conn.execute(
+            "UPDATE unmatched_queries SET attempt_count = ?, llm1_strong = ?, outcome = ?,"
+            " extracted_keys_json = COALESCE(?, extracted_keys_json), top_candidates = ?"
+            " WHERE id = ?",
+            (attempts, 1 if strong else 0, outcome,
+             json.dumps(final_keys, ensure_ascii=False) if final_keys else None,
+             json.dumps((top_candidates or [])[:3], ensure_ascii=False), item_id))
+        conn.commit()
+
+    @staticmethod
+    def set_final_for_conv(conv_id: int, proc_id: str, proc_name: str) -> None:
+        """Người dân đã chốt thủ tục -> ghi vào ca gần nhất của cuộc trò chuyện này."""
+        conn = get_conn()
+        conn.execute(
+            "UPDATE unmatched_queries SET final_proc_id = ?, final_proc_name = ?,"
+            " outcome = CASE WHEN outcome = 'user_rejected' THEN outcome ELSE 'resolved_ok' END"
+            " WHERE id = (SELECT MAX(id) FROM unmatched_queries WHERE conversation_id = ?"
+            " AND final_proc_id = '')", (proc_id, (proc_name or "")[:200], conv_id))
+        conn.commit()
+
+    @staticmethod
+    def mark_rejected_for_conv(conv_id: int) -> None:
+        """Người dân bấm \"không phải thứ tôi cần\" / \"Tra lại\" — tín hiệu LLM 1 hiểu sai."""
+        conn = get_conn()
+        conn.execute(
+            "UPDATE unmatched_queries SET outcome = 'user_rejected'"
+            " WHERE id = (SELECT MAX(id) FROM unmatched_queries WHERE conversation_id = ?)",
+            (conv_id,))
+        conn.commit()
+
+    @staticmethod
+    def list_recent(limit: int = 50, unresolved_only: bool = False) -> list[dict]:
+        conn = get_conn()
+        where = "WHERE resolved = 0" if unresolved_only else ""
+        rows = conn.execute(
+            f"SELECT * FROM unmatched_queries {where} ORDER BY id DESC LIMIT ?", (limit,)).fetchall()
+        out = []
+        for r in rows:
+            item = dict(r)
+            try:
+                item["extracted_keys"] = json.loads(item.pop("extracted_keys_json") or "{}")
+            except Exception:
+                item["extracted_keys"] = {}
+            try:
+                item["top_candidates"] = json.loads(item.get("top_candidates") or "[]")
+            except Exception:
+                item["top_candidates"] = []
+            out.append(item)
+        return out
+
+    @staticmethod
+    def mark_resolved(item_id: int, notes: str = "") -> None:
+        conn = get_conn()
+        conn.execute("UPDATE unmatched_queries SET resolved = 1, notes = ? WHERE id = ?",
+                     (notes[:200], item_id))
+        conn.commit()
+
+    @staticmethod
+    def count(unresolved_only: bool = False) -> int:
+        conn = get_conn()
+        where = "WHERE resolved = 0" if unresolved_only else ""
+        return conn.execute(f"SELECT COUNT(*) c FROM unmatched_queries {where}").fetchone()["c"]
+
+
+# ------------------------------------------------ procedure synonyms ----
+class ProcedureSynonyms:
+    @staticmethod
+    def add(raw_term: str, canonical_keyword: str) -> dict:
+        import re
+        from Database.pipeline.textutil import fold
+        conn = get_conn()
+        raw = re.sub(r"[^0-9a-z]+", " ", fold(raw_term or "")).strip()
+        canon = canonical_keyword.strip()
+        if not raw or not canon:
+            raise ValueError("raw_term và canonical_keyword không được để trống.")
+        now = _now()
+        conn.execute(
+            "INSERT INTO procedure_synonyms(raw_term, canonical_keyword, created_at) "
+            "VALUES (?, ?, ?) "
+            "ON CONFLICT(raw_term) DO UPDATE SET canonical_keyword = excluded.canonical_keyword",
+            (raw, canon, now)
+        )
+        conn.commit()
+        row = conn.execute("SELECT id, raw_term, canonical_keyword, created_at FROM procedure_synonyms WHERE raw_term = ?", (raw,)).fetchone()
+        return dict(row)
+
+    @staticmethod
+    def list_all() -> list[dict]:
+        conn = get_conn()
+        rows = conn.execute(
+            "SELECT id, raw_term, canonical_keyword, created_at FROM procedure_synonyms ORDER BY id DESC"
+        ).fetchall()
+        return [dict(r) for r in rows]
+
+    @staticmethod
+    def delete(synonym_id: int) -> bool:
+        conn = get_conn()
+        cur = conn.execute("DELETE FROM procedure_synonyms WHERE id = ?", (synonym_id,))
+        conn.commit()
+        return cur.rowcount > 0
+
+    @staticmethod
+    def get_map() -> dict[str, str]:
+        conn = get_conn()
+        rows = conn.execute("SELECT raw_term, canonical_keyword FROM procedure_synonyms").fetchall()
+        return {r["raw_term"]: r["canonical_keyword"] for r in rows}

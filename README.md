@@ -1,4 +1,4 @@
-# Trợ lý Thủ tục hành chính — V10.5
+# Trợ lý Thủ tục hành chính — V10.6
 
 Trợ lý ảo trả lời câu hỏi về **thủ tục hành chính cấp Xã/Phường**. Mô hình ngôn
 ngữ nhỏ (mặc định `qwen2.5:1.5b`) chạy **cục bộ** (local). Thông tin thủ tục
@@ -45,7 +45,7 @@ nút trên giao diện:
 
 | Bạn muốn gì | Làm gì |
 |---|---|
-| Lấy mã nguồn | `git clone -b V10.5 https://github.com/3-hWnG/intern-amazing-group_7.git` |
+| Lấy mã nguồn | `git clone -b V10.6 https://github.com/3-hWnG/intern-amazing-group_7.git` |
 | Chạy lần đầu trên máy mới | Bấm đôi **`Setup First Time.bat`** (một lần duy nhất, 30–60 phút) |
 | Chạy ứng dụng hằng ngày | Bấm đôi **`Launch Web.bat`** → http://127.0.0.1:8000 |
 | Đổi cấu hình (mô hình, cổng, tìm kiếm…) | Sửa **`.env`** ở thư mục gốc — xem `.env.example` |
