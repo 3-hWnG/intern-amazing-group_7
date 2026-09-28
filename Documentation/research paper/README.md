@@ -135,12 +135,12 @@ research paper/
    - **Đánh giá khoa học:** [`literature_review.md`](04_Hybrid_Dual-System_Retrieval/16_Li_2025_Multi-Agent_Hybrid_Retrieval_KDD/literature_review.md)
    - **Ý nghĩa cho V10.5:** Hình mẫu cho kiến trúc điều phối State Machine 2 lượt (Turn 1: Extractor + Card, Turn 2: Customer Care Agent) trong V10.5.
 
-17. **[LegalQuery RAG (LQ-RAG): A Legal Query Retrieval-Augmented Generation Framework with Recursive Feedback](04_Hybrid_Dual-System_Retrieval/17_GIST_2025_LQ-RAG_Legal_Query_Feedback/literature_review.md)**
-   - **Tác giả & Năm:** GIST AI Research Lab (2025)
-   - **Xuất bản:** *ACM Transactions on Asian and Low-Resource Language Information Processing / arXiv:2406.14207*
-   - **Tệp PDF gốc:** [`LegalQuery RAG (LQ-RAG) - A Legal Query Retrieval-Augmented Generation Framework with Recursive Feedback.pdf`](04_Hybrid_Dual-System_Retrieval/17_GIST_2025_LQ-RAG_Legal_Query_Feedback/LegalQuery%20RAG%20%28LQ-RAG%29%20-%20A%20Legal%20Query%20Retrieval-Augmented%20Generation%20Framework%20with%20Recursive%20Feedback.pdf)
-   - **Đánh giá khoa học:** [`literature_review.md`](04_Hybrid_Dual-System_Retrieval/17_GIST_2025_LQ-RAG_Legal_Query_Feedback/literature_review.md)
-   - **Ý nghĩa cho V10.5:** Trực tiếp tương ứng với tính năng `synonyms.json` của V10.5 (map 'độc thân' -> 'tình trạng hôn nhân', bỏ 'cho bố', 'quá hạn', 'ở phường') giúp đạt 89/89 câu trong top-3.
+17. **[LegalMALR: Multi-Agent Query Understanding and LLM-Based Reranking for Chinese Statute Retrieval](04_Hybrid_Dual-System_Retrieval/17_Li_2026_LegalMALR_Query_Understanding/literature_review.md)**
+   - **Tác giả & Năm:** Yunhan Li, Mingjie Xie, Gaoli Kang, Zihan Gong, Gengshen Wu, Min Yang (2026)
+   - **Xuất bản:** *arXiv preprint, arXiv:2601.17692 [cs.CL]*
+   - **Tệp PDF gốc:** [`LegalMALR - Multi-Agent Query Understanding and LLM-Based Reranking for Chinese Statute Retrieval.pdf`](04_Hybrid_Dual-System_Retrieval/17_Li_2026_LegalMALR_Query_Understanding/LegalMALR%20-%20Multi-Agent%20Query%20Understanding%20and%20LLM-Based%20Reranking%20for%20Chinese%20Statute%20Retrieval.pdf)
+   - **Đánh giá khoa học:** [`literature_review.md`](04_Hybrid_Dual-System_Retrieval/17_Li_2026_LegalMALR_Query_Understanding/literature_review.md)
+   - **Ý nghĩa cho V10.5:** Trực tiếp cung cấp cơ sở lý luận cho module chuẩn hóa từ vựng `synonyms.json` và cơ chế xếp hạng `search_f1` (BM25 + Token Overlap F1) trong V10.5 để thu hẹp khoảng cách từ vựng người dân.
 
 ### Nhóm 5: Mô Hình Ngôn Ngữ Nhỏ (SLMs) & Triển Khai Cục Bộ (Local/Edge SLMs)
 
