@@ -1,52 +1,53 @@
 # Literature Review: Corrective Retrieval Augmented Generation (CRAG)
 
-- **Tác giả:** Shi-Qi Yan, Jia-Chen Gu, Yun Zhu, Zhen-Hua Ling
+- **Tác giả:** Shi-Qi Yan, Jia-Chen Gu, Yun Zhu, Zhen-Hua Ling (USTC; UCLA; Google DeepMind)
 - **Năm xuất bản:** 2024
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2401.15884 [cs.CL]*
 - **Phân loại nghiên cứu:** Primary Architecture & Fallback Mechanism
 - **Link định danh / DOI:** [https://arxiv.org/abs/2401.15884](https://arxiv.org/abs/2401.15884)
 - **Tệp toàn văn (PDF gốc):** [`Corrective Retrieval Augmented Generation (CRAG).pdf`](Corrective%20Retrieval%20Augmented%20Generation%20%28CRAG%29.pdf)
 - **Thuộc nhóm chuyên đề:** Nhóm 4: Truy Xuất Lai & Hệ Thống Kép (Hybrid & Dual-System Retrieval)
+- **Đối chiếu nguồn:** metadata và PDF đã kiểm tra với trang gốc ngày 29/09/2026; mục 1–4 viết theo abstract và kết quả trong bài.
 
 ---
 
 ## 1. Research Question & Problem Formulation (Câu hỏi nghiên cứu & Vấn đề giải quyết)
 
-Hệ thống RAG thường sụp đổ khi tài liệu truy xuất nội bộ không chứa câu trả lời nhưng mô hình vẫn cố gắng bịa ra câu trả lời dựa trên tài liệu rác.
+RAG phụ thuộc mạnh vào độ liên quan của tài liệu truy xuất; khi truy xuất sai, mô hình dễ sinh câu trả lời sai.
 
-Bài báo giải quyết trực diện câu hỏi: *Làm thế nào để ứng dụng công nghệ trí tuệ nhân tạo và xử lý ngôn ngữ tự nhiên vào nghiệp vụ pháp lý/hành chính công một cách đáng tin cậy, chính xác và có thể kiểm chứng được?*
+Câu hỏi nghiên cứu: *Làm sao phát hiện truy xuất kém và sửa nó trước khi sinh câu trả lời?*
 
 ---
 
 ## 2. Methodology & Technical Architecture (Phương pháp luận & Kiến trúc kỹ thuật)
 
-Bổ sung module Retrieval Evaluator để chấm điểm tự tin (confidence score); phân loại tài liệu thành: Correct (dùng luôn), Incorrect (kích hoạt Web Search), Ambiguous (kết hợp cả hai).
+CRAG thêm một retrieval evaluator nhẹ (khởi tạo từ T5-large rồi fine-tune) chấm độ tin cậy của tài liệu truy xuất và kích hoạt một trong ba hành động:
 
-### Đặc điểm kỹ thuật then chốt:
-- **Cơ chế xử lý:** Phân tách rõ ràng giữa tri thức tĩnh (quy định pháp luật, biểu mẫu có cấu trúc) và tri thức động (yêu cầu của người dân).
-- **Mô hình triển khai:** Tối ưu hóa chu trình tương tác đàm thoại nhằm giảm thiểu chi phí tính toán và bảo vệ tính toàn vẹn của thông tin pháp quy.
+- **Correct:** dùng tài liệu truy xuất, lọc bớt phần thừa.
+- **Incorrect:** bỏ tài liệu, chuyển sang tìm kiếm web quy mô lớn.
+- **Ambiguous:** kết hợp cả hai.
+- Thuật toán decompose-then-recompose chia tài liệu thành mẩu nhỏ, giữ thông tin chính, lọc phần không liên quan.
+- Plug-and-play: gắn được vào RAG chuẩn và Self-RAG.
 
 ---
 
 ## 3. Empirical Results & Findings (Kết quả thực nghiệm & Phát hiện chính)
 
-Cải thiện vượt bậc chất lượng câu trả lời trên các tập benchmark PopQA và Biography; triệt tiêu hoàn toàn lỗi cố chấp sinh từ context sai.
+Trên 4 bộ dữ liệu PopQA, Biography, PubHealth và Arc-Challenge (sinh ngắn và dài), CRAG cải thiện đáng kể cả RAG chuẩn lẫn Self-RAG.
 
-### Điểm nhấn số liệu:
-- Chứng minh bằng thực nghiệm rằng các phương pháp truyền thống hoặc mô hình LLM đơn lẻ không có kiểm chứng đều thất bại trước các văn bản quy chuẩn hành chính khắt khe.
-- Các cải tiến về pipeline truy xuất và cơ chế hậu xử lý (post-processing guardrails) đóng vai trò quyết định đến độ tin cậy của toàn hệ sinh thái.
+- Mã nguồn: github.com/HuskyInSalt/CRAG.
 
 ---
 
 ## 4. Strengths & Limitations (Ưu điểm & Hạn chế)
 
 ### Ưu điểm (Strengths):
-- Cực kỳ thực tế, giải quyết đúng bài toán giới hạn phạm vi dữ liệu nội bộ.
-- Có giá trị tham khảo học thuật cao, số liệu thực nghiệm rõ ràng, minh bạch.
+- Dễ gắn vào pipeline RAG có sẵn.
+- Dùng web search làm nguồn bổ sung khi kho tĩnh không đủ.
 
 ### Hạn chế (Limitations):
-- Cần bộ đánh giá tài liệu hoạt động ổn định và có ngưỡng cắt (threshold) chính xác.
-- Cần được điều chỉnh và địa phương hóa khi áp dụng vào môi trường dịch vụ công tại các quốc gia đang phát triển như Việt Nam.
+- Cần huấn luyện và chọn ngưỡng cho evaluator.
+- Web search mang theo nhiễu và độ trễ.
 
 ---
 

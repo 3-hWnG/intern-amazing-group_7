@@ -1,52 +1,52 @@
 # Literature Review: Qwen2.5 Technical Report: Advancing Open Foundation Models across Scales
 
-- **Tác giả:** Qwen Team, Alibaba Cloud
+- **Tác giả:** Qwen Team (Alibaba Cloud)
 - **Năm xuất bản:** 2024
 - **Tạp chí / Hội nghị:** *arXiv preprint, arXiv:2412.15115 [cs.CL]*
 - **Phân loại nghiên cứu:** Technical Report & Foundation Model
 - **Link định danh / DOI:** [https://arxiv.org/abs/2412.15115](https://arxiv.org/abs/2412.15115)
 - **Tệp toàn văn (PDF gốc):** [`Qwen2.5 Technical Report - Advancing Open Foundation Models across Scales.pdf`](Qwen2.5%20Technical%20Report%20-%20Advancing%20Open%20Foundation%20Models%20across%20Scales.pdf)
 - **Thuộc nhóm chuyên đề:** Nhóm 5: Mô Hình Ngôn Ngữ Nhỏ (SLMs) & Triển Khai Cục Bộ (Local/Edge SLMs)
+- **Đối chiếu nguồn:** metadata và PDF đã kiểm tra với trang gốc ngày 29/09/2026; mục 1–4 viết theo abstract và kết quả trong bài.
 
 ---
 
 ## 1. Research Question & Problem Formulation (Câu hỏi nghiên cứu & Vấn đề giải quyết)
 
-Xây dựng mô hình nền tảng mã nguồn mở mạnh mẽ ở mọi kích cỡ tham số, đặc biệt là các kích cỡ cực nhỏ (0.5B, 1.5B, 3B) nhưng vẫn giữ được năng lực tuân thủ chỉ dẫn.
+Cần một dòng mô hình mở có đủ kích cỡ cho nhiều nhu cầu, từ thiết bị biên đến máy chủ.
 
-Bài báo giải quyết trực diện câu hỏi: *Làm thế nào để ứng dụng công nghệ trí tuệ nhân tạo và xử lý ngôn ngữ tự nhiên vào nghiệp vụ pháp lý/hành chính công một cách đáng tin cậy, chính xác và có thể kiểm chứng được?*
+Câu hỏi nghiên cứu: *Mở rộng dữ liệu tiền huấn luyện và cải tiến hậu huấn luyện nâng năng lực mô hình ở các kích cỡ đến đâu?*
 
 ---
 
 ## 2. Methodology & Technical Architecture (Phương pháp luận & Kiến trúc kỹ thuật)
 
-Tối ưu hóa kiến trúc Grouped Query Attention (GQA), huấn luyện trên hơn 18 nghìn tỷ token đa ngữ, nâng cấp mạnh mẽ khả năng sinh JSON có cấu trúc và hiểu tiếng Việt.
+Qwen2.5 cải tiến cả tiền huấn luyện và hậu huấn luyện:
 
-### Đặc điểm kỹ thuật then chốt:
-- **Cơ chế xử lý:** Phân tách rõ ràng giữa tri thức tĩnh (quy định pháp luật, biểu mẫu có cấu trúc) và tri thức động (yêu cầu của người dân).
-- **Mô hình triển khai:** Tối ưu hóa chu trình tương tác đàm thoại nhằm giảm thiểu chi phí tính toán và bảo vệ tính toàn vẹn của thông tin pháp quy.
+- Dữ liệu tiền huấn luyện tăng từ 7 lên 18 nghìn tỷ token.
+- Hậu huấn luyện: SFT hơn 1 triệu mẫu và học tăng cường nhiều giai đoạn (DPO offline, GRPO online).
+- Mô hình mở kích cỡ 0.5B, 1.5B, 3B, 7B, 14B, 32B và 72B (base và instruct), có bản lượng tử hoá; bản hosted dạng MoE là Qwen2.5-Turbo và Qwen2.5-Plus.
 
 ---
 
 ## 3. Empirical Results & Findings (Kết quả thực nghiệm & Phát hiện chính)
 
-Qwen2.5-1.5B và 3B lập kỷ lục thế giới về điểm số benchmark trong phân khúc mô hình dưới 4 tỷ tham số, vượt trội hoàn toàn Llama-3.2-1B và Gemma-2-2B.
+Qwen2.5-72B-Instruct cạnh tranh với Llama-3-405B-Instruct dù nhỏ hơn khoảng 5 lần.
 
-### Điểm nhấn số liệu:
-- Chứng minh bằng thực nghiệm rằng các phương pháp truyền thống hoặc mô hình LLM đơn lẻ không có kiểm chứng đều thất bại trước các văn bản quy chuẩn hành chính khắt khe.
-- Các cải tiến về pipeline truy xuất và cơ chế hậu xử lý (post-processing guardrails) đóng vai trò quyết định đến độ tin cậy của toàn hệ sinh thái.
+- Hậu huấn luyện cải thiện sinh văn bản dài, phân tích dữ liệu có cấu trúc và làm theo chỉ dẫn.
+- Qwen2.5-1.5B-Instruct và 0.5B-Instruct cải thiện rõ so với thế hệ trước; nhóm tác giả xem chúng phù hợp cho ứng dụng biên tài nguyên hạn chế.
 
 ---
 
 ## 4. Strengths & Limitations (Ưu điểm & Hạn chế)
 
 ### Ưu điểm (Strengths):
-- Báo cáo kỹ thuật chi tiết, cung cấp thông số chuẩn xác về năng lực mô hình cơ sở.
-- Có giá trị tham khảo học thuật cao, số liệu thực nghiệm rõ ràng, minh bạch.
+- Tài liệu chính thức của mô hình V10.5 đang dùng.
+- Nhiều kích cỡ, có bản lượng tử hoá.
 
 ### Hạn chế (Limitations):
-- Là mô hình đa dụng nên vẫn có xu hướng tự tin thái quá nếu không có các lớp guardrail bọc ngoài.
-- Cần được điều chỉnh và địa phương hóa khi áp dụng vào môi trường dịch vụ công tại các quốc gia đang phát triển như Việt Nam.
+- Không có đánh giá riêng cho tiếng Việt.
+- Ở kích cỡ 1.5B, điểm làm theo chỉ dẫn thấp hơn nhiều so với các kích cỡ lớn trong bảng đánh giá nội bộ của báo cáo.
 
 ---
 
