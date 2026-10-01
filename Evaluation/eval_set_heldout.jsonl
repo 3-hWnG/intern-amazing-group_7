@@ -1,0 +1,30 @@
+{"id": "ho-01", "question": "Ông nội mất rồi, đăng ký khai tử ở đâu và cần giấy tờ gì?", "expected_intent": ["other", "birth_registration"], "expect_clarify": false}
+{"id": "ho-02", "question": "khai tu qua han co sao k", "expected_intent": ["other", "birth_registration"], "expect_clarify": false}
+{"id": "ho-03", "question": "Xin trích lục giấy khai sinh bản gốc bị thất lạc thì làm sao?", "expected_intent": "birth_registration", "expect_clarify": false}
+{"id": "ho-04", "question": "Cha nhận con ngoài giá thú cần thủ tục gì?", "expected_intent": ["birth_registration", "other"], "expect_clarify": false}
+{"id": "ho-05", "question": "Chứng thực chữ ký trong giấy ủy quyền ở phường được không?", "expected_intent": ["other", "land_administration"], "expect_clarify": false}
+{"id": "ho-06", "question": "Ly hôn thuận tình nộp hồ sơ ở đâu?", "expected_intent": ["marriage_registration", "other", "out_of_scope"], "expect_clarify": null}
+{"id": "ho-07", "question": "Muốn thay đổi họ tên cho con thì làm thủ tục thế nào?", "expected_intent": ["birth_registration", "other"], "expect_clarify": false}
+{"id": "ho-08", "question": "Xác nhận độc thân để đăng ký kết hôn với người nước ngoài", "expected_intent": ["marriage_registration", "other"], "expect_clarify": false}
+{"id": "ho-09", "question": "Kết hôn ở tuổi bao nhiêu thì hợp pháp?", "expected_intent": ["marriage_registration", "other", "out_of_scope"], "expect_clarify": null}
+{"id": "ho-10", "question": "Làm lại CCCD gắn chip có mất phí không?", "expected_intent": "identity_documents", "expect_clarify": false}
+{"id": "ho-11", "question": "Đổi thẻ căn cước khi chuyển nơi ở sang tỉnh khác", "expected_intent": "identity_documents", "expect_clarify": false}
+{"id": "ho-12", "question": "Cấp hộ chiếu cho trẻ em dưới 14 tuổi cần những gì?", "expected_intent": "identity_documents", "expect_clarify": false}
+{"id": "ho-13", "question": "Mở hộ kinh doanh bán quần áo cần giấy phép gì?", "expected_intent": "business_registration", "expect_clarify": false}
+{"id": "ho-14", "question": "Hộ kinh doanh ngừng hoạt động thì báo ở đâu?", "expected_intent": "business_registration", "expect_clarify": false}
+{"id": "ho-15", "question": "Xin cấp sổ đỏ lần đầu cho đất đang ở", "expected_intent": "land_administration", "expect_clarify": false}
+{"id": "ho-16", "question": "Tách thửa đất cho con thì làm thủ tục ở đâu?", "expected_intent": "land_administration", "expect_clarify": false}
+{"id": "ho-17", "question": "Đóng bảo hiểm y tế tự nguyện cho hộ gia đình ở đâu?", "expected_intent": ["social_security", "other"], "expect_clarify": false}
+{"id": "ho-18", "question": "Cấp lại thẻ BHYT bị mất", "expected_intent": ["social_security", "other"], "expect_clarify": false}
+{"id": "ho-19", "question": "Đăng ký thuế khi bắt đầu kinh doanh online", "expected_intent": ["tax", "business_registration"], "expect_clarify": false}
+{"id": "ho-20", "question": "Khai thuế cho thuê nhà hằng năm ở đâu?", "expected_intent": "tax", "expect_clarify": false}
+{"id": "ho-21", "question": "Chuyển hộ khẩu cho con khi bố mẹ ly hôn", "expected_intent": ["permanent_residence", "other"], "expect_clarify": null}
+{"id": "ho-22", "question": "Xóa tạm trú khi hết hạn hợp đồng thuê nhà", "expected_intent": ["temporary_residence", "permanent_residence"], "expect_clarify": false}
+{"id": "ho-23", "question": "Khai báo tạm vắng khi đi làm xa bao lâu thì phải làm?", "expected_intent": ["temporary_residence", "permanent_residence", "other"], "expect_clarify": false}
+{"id": "ho-24", "question": "Chào buổi sáng", "expected_intent": "chitchat", "expect_clarify": false}
+{"id": "ho-25", "question": "Bạn giúp được những việc gì?", "expected_intent": ["chitchat", "out_of_scope"], "expect_clarify": null}
+{"id": "ho-26", "question": "Dự báo thời tiết Hà Nội ngày mai thế nào?", "expected_intent": "out_of_scope", "expect_clarify": false}
+{"id": "ho-27", "question": "Giải giúp mình bài toán phương trình bậc hai", "expected_intent": "out_of_scope", "expect_clarify": false}
+{"id": "ho-28", "question": "Xin visa đi Nhật ở đâu?", "expected_intent": ["out_of_scope", "other", "identity_documents"], "expect_clarify": null}
+{"id": "ho-29", "question": "làm cái giấy đó mất mấy ngày", "expected_intent": "unknown", "expect_clarify": true}
+{"id": "ho-30", "question": "còn lệ phí thì sao?", "expected_intent": ["other", "birth_registration"], "expect_clarify": false, "history": [{"role": "user", "content": "Đăng ký khai tử cần giấy tờ gì?", "kind": ""}, {"role": "assistant", "content": "Bạn cần tờ khai đăng ký khai tử và giấy báo tử hoặc giấy tờ thay thế theo quy định.", "kind": "answer"}]}

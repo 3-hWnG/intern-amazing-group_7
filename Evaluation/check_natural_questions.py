@@ -246,6 +246,26 @@ check("căn cước nhắc VNeID -> qua",
 check("bản nháp rỗng -> câu từ chối, không để trống",
       verifier.apply_fail_policy("", verifier.Verification()) == verifier.T.VERIFY_REFUSAL)
 
+# Chấm tay 30/09: câu không dòng nào khớp nguồn (misc-06 bịa hồ sơ rút BHXH) từng PASS.
+ev_bhxh = "Hồ sơ hưởng BHXH một lần gồm sổ bảo hiểm xã hội và đơn đề nghị hưởng bảo hiểm xã hội một lần theo mẫu."
+made_up = ("Bạn cần chuẩn bị các giấy tờ chứng minh thu nhập trong quá trình làm việc như hóa đơn chi tiêu.\n"
+           "Giấy tờ chứng minh đã tuân thủ quy định về bảo vệ môi trường và an toàn lao động.\n"
+           "Báo cáo môi trường và phiếu đánh giá an toàn lao động của doanh nghiệp nơi bạn làm việc.")
+check("không dòng nào khớp nguồn (dài) -> trượt", "khớp sát" in issues(made_up, "rút BHXH một lần", ev_bhxh))
+check("có dòng chép sát nguồn -> không bị 'khớp sát'",
+      "khớp sát" not in issues(made_up + "\n- Hồ sơ hưởng BHXH một lần gồm sổ bảo hiểm xã hội và đơn đề nghị "
+                               "hưởng bảo hiểm xã hội một lần.", "rút BHXH một lần", ev_bhxh))
+# temp-02: chép ghi chú sửa lỗi + khung "Tài liệu S4: … (… · nguồn chính thống)".
+leak = ("- Ghi số tài liệu S# sau mỗi ý có thông tin cụ thể.\n"
+        "Tài liệu S4: TP.HCM tập trung phát triển nhà ở xã hội (hdnd.hochiminhcity.gov.vn · nguồn chính thống)")
+check("chép ghi chú sửa lỗi / khung tài liệu -> bị bắt", "khung prompt" in issues(leak, "thuê trọ đăng ký tạm trú"))
+check("chép khung tài liệu hết lượt -> câu từ chối",
+      verifier.apply_fail_policy(leak, verifier.Verification()) == verifier.T.VERIFY_REFUSAL)
+ev_bhyt = "Người tham gia nộp hồ sơ và đóng tiền BHYT tại cơ quan BHXH nơi cư trú hoặc tạm trú."
+check("tiền tố 'Tài liệu S1:' + nội dung đúng nguồn -> không bị coi là chép khung (ho-17)",
+      "khung prompt" not in issues("Tài liệu S1: Người tham gia nộp hồ sơ và đóng tiền BHYT tại cơ quan "
+                                   "BHXH nơi cư trú hoặc tạm trú [S1].", "đóng BHYT hộ gia đình ở đâu", ev_bhyt))
+
 choices = intent.generate_prompt_choices(
     "vợ chồng mình muốn ly hôn thuận tình thì nộp đơn ở đâu",
     intent.Understanding(intent="marriage_registration"), 2026)
@@ -263,6 +283,18 @@ for q, it, want in [("vợ chồng mình muốn ly hôn thuận tình thì nộp
     # Câu hỏi chi tiết đã rõ thủ tục -> tra luôn, không tốn lượt LLM cho bộ gác.
     check(f"bộ gác {'bỏ qua' if want == 'search' else 'vẫn gọi'}: '{q}'",
           (got.gate == "skipped") == (want == "search"), got.gate)
+# Nhãn chitchat/out_of_scope của mô hình: tin khi câu không có dấu hiệu thủ tục (30/09).
+for q, it, hist, want in [
+        ("Cảm ơn bạn nhiều nha", "chitchat", [], "chitchat"),
+        ("Dự báo thời tiết Hà Nội ngày mai thế nào?", "out_of_scope", [], "out_of_scope"),
+        ("Viết giúp tôi một bài thơ về mùa thu", "chitchat", [], "out_of_scope"),
+        ("Cho hỏi làm giấy khai sinh cho con", "chitchat", [], "tra cứu/hỏi lại"),
+        ("Đất thổ cư của tôi muốn tách ra", "out_of_scope", [], "tra cứu/hỏi lại"),
+        ("vậy mất bao lâu", "chitchat", [{"role": "user", "content": "đăng ký tạm trú"}], "tra cứu/hỏi lại")]:
+    intent.understand = lambda *_a, _i=it: intent.Understanding(intent=_i)
+    got = intent.analyze(q, hist, "", {})
+    ok = got.route in ("search", "clarify") if want == "tra cứu/hỏi lại" else got.route == want
+    check(f"nhãn {it} '{q}' -> {want}", ok, got.route)
 intent.understand, intent.gate = real_u, real_g
 
 # 9. Bộ ~100 câu kiểu người thật (natural_questions.py). Tính điểm, so với MỐC:
@@ -295,6 +327,23 @@ for q, want in QUESTIONS:
 print(f"    100 câu: chip {n_chip}/{n_pos}, đúng top-3 {n_top3}/{n_pos}. Trượt: {misses}")
 check(f"100 câu — chip ≥ {MIN_CHIP}", n_chip >= MIN_CHIP, f"{n_chip}")
 check(f"100 câu — đúng top-3 ≥ {MIN_TOP3}", n_top3 >= MIN_TOP3, f"{n_top3}")
+
+# 10. Ô trống trong bảng (honesty): mọi thủ tục, mọi ô lệ phí / thời gian / địa điểm / online
+#     mà cổng không có thì câu hỏi về ô đó phải ra "Chưa có thông tin…", không được im lặng
+#     hay suy ra ("miễn phí", "không cần giấy tờ"). Quét cả 1.350 thủ tục (~7 giây).
+_CELL_Q = {"fees": "lệ phí bao nhiêu", "processing_time": "mất bao lâu",
+           "address": "nộp ở đâu", "online": "nộp online được không"}
+n_cells = 0
+silent = []
+for (pid,) in conn.execute("SELECT proc_id FROM procedures WHERE status = 'active'").fetchall():
+    tb = procedure_table.build(R.build_record(conn, pid))
+    for key, q in _CELL_Q.items():
+        if (tb.get(key) or {}).get("status") != "present":
+            n_cells += 1
+            if not (procedure_table.field_answer(tb, q) or "").startswith("Chưa có thông tin"):
+                silent.append((pid, key))
+print(f"    ô trống: {n_cells} ô, trả lời không nói 'Chưa có thông tin': {len(silent)}")
+check("ô trống luôn nói 'Chưa có thông tin'", not silent, str(silent[:5]))
 
 conn.close()
 print()

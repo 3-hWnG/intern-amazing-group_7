@@ -538,7 +538,20 @@ def _is_real_greeting(text: str, intent: str = "") -> bool:
 def _is_real_out_of_scope(text: str) -> bool:
     t = fold(text).strip()
     creative_clues = ["lam tho", "viet tho", "viet van", "ke chuyen", "ke chuyen cuoi", "giai toan", "viet code", "lap trinh"]
-    return any(c in t for c in creative_clues)
+    # Theo từ nguyên vẹn: "bai tho" không khớp nhầm "thổ cư".
+    return (any(c in t for c in creative_clues)
+            or bool(re.search(r"\b(bai (tho|van|hat|toan)|sang tac|phuong trinh|thoi tiet)\b", t)))
+
+
+# Dấu hiệu câu hỏi thủ tục: có thì KHÔNG tin nhãn chitchat/out_of_scope của mô hình.
+_PROCEDURE_CUES = ([k for kws in _INTENT_KEYWORDS.values() for k in kws]
+                   + ["thu tuc", "giay", "ho so", "dang ky", "le phi", "nop", "mau don",
+                      "ubnd", "uy ban", "cong an", "mot cua", "dich vu cong"])
+
+
+def _has_procedure_cue(text: str) -> bool:
+    t = fold(text)
+    return any(re.search(rf"\b{re.escape(k)}\b", t) for k in _PROCEDURE_CUES)
 
 
 def _build_smart_clarify(question: str, u: Understanding) -> str:
@@ -615,6 +628,15 @@ def analyze(question: str, history: list[dict], summary: str, profile: dict) -> 
     # 2. Chặn chào hỏi thật (chào, hello, cảm ơn, tạm biệt...)
     if _is_real_greeting(question, u.intent):
         u.route = "chitchat"
+        return u
+
+    # 2b. Mô hình gán chitchat/out_of_scope, câu không có dấu hiệu thủ tục -> tin nhãn.
+    # evaluate.py 30/09: "Cảm ơn bạn nhiều nha", "Dự báo thời tiết…", "Viết giúp tôi một
+    # bài thơ…" từng đi tra web rồi trả lời như thủ tục.
+    # Có lịch sử: câu nối tiếp ngắn ("vậy mất bao lâu") cũng tính là hỏi thủ tục.
+    follow_up = bool(history) and any(k in fold(question) for k in _DETAIL_CUES)
+    if small_talk and not follow_up and not _has_procedure_cue(question):
+        u.route = u.intent
         return u
 
     # 3. Quyết định TRA CỨU vs HỎI LẠI (Cách 3):

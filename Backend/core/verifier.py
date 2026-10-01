@@ -21,7 +21,7 @@ from dataclasses import asdict, dataclass, field
 from datetime import datetime
 
 from config import VERIFY_FAIL_POLICY
-from core import llm
+from core import evidence as evidence_mod, llm
 from domain.text import DAYS_RE, DOC_NO_RE, MONEY_RE, _clean_non_citation_brackets, fold, tidy_answer, tokenize
 from prompts import templates as T
 
@@ -55,7 +55,7 @@ class Verification:
         if self.bad_citations:
             notes.append("- Chỉ ghi số tài liệu có thật: " + ", ".join(self.bad_citations) + " không tồn tại.")
         if self.missing_citations:
-            notes.append("- Ghi số tài liệu [S#] sau mỗi ý có thông tin cụ thể.")
+            notes.append("- Chỉ dùng câu chữ có sẵn trong tài liệu, ghi số tài liệu [S#] cuối mỗi ý.")
         if self.echo:
             notes.append("- Không chép lại tiêu đề, nhãn hay định dạng của phần hướng dẫn và tài liệu.")
         if self.too_short or self.placeholders:
@@ -75,6 +75,11 @@ class Verification:
 
 
 BRACKET_RE = re.compile(r"\[([^\]\n]{0,200})\]")
+
+# Chép dòng tiêu đề nguồn ("<tiêu đề> (… · nguồn chính thống)") hoặc ghi chú sửa lỗi
+# ("Ghi số tài liệu…"). evaluate.py 30/09: temp-02. Tiền tố "Tài liệu S1: <nội dung>"
+# KHÔNG tính: ho-17 từng là câu trả lời đúng chỉ có tiền tố đó.
+_SKELETON_RE = re.compile(r"(?i)ghi số tài liệu|· nguồn chính thống")
 
 
 def _is_citation(inner: str) -> bool:
@@ -111,13 +116,15 @@ def rule_check(answer: str, pack: dict, v: Verification, question: str = "") -> 
     cited = {x.upper() for group in re.findall(r"\[([^\]]*)\]", answer)
              for x in re.findall(r"S\d+", group, re.IGNORECASE)}
     v.bad_citations = sorted(cited - ids)
-    v.missing_citations = not cited and len(answer) > 200
     if v.bad_citations:
         v.rule_issues.append("Trích dẫn nguồn không tồn tại: " + ", ".join(v.bad_citations))
+    # Mô hình nhỏ hay quên ghi [S#] -> code tự gắn cho dòng chép sát nguồn (cite_lines).
+    # Cả mô hình lẫn code đều không gắn được dòng nào = câu trả lời không bám nguồn.
+    # Chấm tay 30/09: 5 câu PASS kiểu này, 0 câu đúng hẳn, 3 câu sai/bịa.
+    v.missing_citations = (not cited and len(answer) > 200
+                           and not re.search(r"\[S\d+", evidence_mod.cite_lines(answer, pack)))
     if v.missing_citations:
-        # Mô hình nhỏ hay quên ghi [S#] dù nội dung đúng nguồn. Không đánh trượt vì
-        # lý do này: con số / số văn bản vẫn bị đối chiếu cứng ngay bên dưới.
-        v.soft_issues.append("Câu trả lời không ghi nguồn [S#] cho các ý.")
+        v.rule_issues.append("Không dòng nào khớp sát tài liệu (không có [S#], kể cả do code tự gắn).")
 
     ans_stripped = answer.strip()
     # Câu ngắn mà nêu con số tiền/thời hạn ("Lệ phí … là 15.000 đồng/lần") là trả lời
@@ -268,7 +275,8 @@ def rule_check(answer: str, pack: dict, v: Verification, question: str = "") -> 
     # "Tài liệu:" là tiêu đề ĐỨNG RIÊNG một dòng của prompt. Giữa câu ("Theo thông tin
     # trong các tài liệu:") là lời thường — từng đánh trượt câu trả lời đúng (chạy thật 24/09).
     v.echo = (any(m.lower() in low for m in T.ECHO_MARKERS if m != "Tài liệu:")
-              or bool(re.search(r"(?m)^\s*tài liệu:\s*$", low)))
+              or bool(re.search(r"(?m)^\s*tài liệu:\s*$", low))
+              or bool(_SKELETON_RE.search(answer)))
     if v.echo:
         v.rule_issues.append("Câu trả lời chép lại khung prompt / nhắc tới việc kiểm chứng.")
 
@@ -362,7 +370,8 @@ def _drop_empty_headings(lines: list[str]) -> list[str]:
 
 def apply_fail_policy(draft: str, v: Verification) -> str:
     """Hết lượt sửa mà vẫn FAIL: lược bỏ dòng có chi tiết không khớp nguồn, rồi nói thật."""
-    if VERIFY_FAIL_POLICY == "refuse":
+    # Vẫn chép khung bằng chứng / ghi chú sửa lỗi sau lượt viết lại: không có gì để gọt.
+    if VERIFY_FAIL_POLICY == "refuse" or _SKELETON_RE.search(draft or ""):
         return T.VERIFY_REFUSAL
 
     # Bóc bỏ ngoặc vuông không phải trích dẫn (giữ lại nội dung bên trong, giữ nguyên [S#])

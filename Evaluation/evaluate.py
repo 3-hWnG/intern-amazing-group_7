@@ -35,7 +35,8 @@ sys.path.insert(0, str(HERE.parent))
 
 from config import LLM_MODEL, SEARCH_PROVIDER  # noqa: E402
 from core import intent as intent_step  # noqa: E402
-from core import llm, mcp_client, orchestrator  # noqa: E402
+from core import llm, mcp_client, orchestrator, verifier  # noqa: E402
+from domain.text import terms  # noqa: E402
 
 # Đếm lượt gọi mô hình + thời gian theo vai (understand gồm cả bộ gác, verify, answer…)
 # để biết chậm ở đâu trước khi cắt bước.
@@ -52,6 +53,31 @@ def _timed_call(role, *a, **k):
 
 
 llm._call = _timed_call
+
+# Mỗi lần kiểm chứng (lần đầu + sau khi viết lại) và lý do, để biết viết lại sửa được lỗi nào.
+_ATTEMPTS: list[str] = []
+_real_verify = verifier.verify
+
+
+def _logged_verify(*a, **k):
+    v = _real_verify(*a, **k)
+    why = list(v.rule_issues)
+    if not v.passed and not why:
+        why = [f"llm: chưa có căn cứ={v.unsupported_claims} trả lời đúng câu hỏi={v.answers_question} "
+               f"sai trường hợp={v.wrong_situation} bằng chứng đủ={v.evidence_sufficient}"]
+    _ATTEMPTS.append(("PASS" if v.passed else "FAIL") + (": " + " ; ".join(why) if why else ""))
+    return v
+
+
+verifier.verify = _logged_verify
+
+
+def _ev_cover(question: str, pack: dict | None) -> float:
+    """Nguồn tốt nhất phủ bao nhiêu phần âm tiết của câu hỏi (chẩn đoán, không dùng để quyết định)."""
+    q = set(terms(question))
+    covers = [len(q & set(terms(f"{s.get('title', '')} {s.get('content', '')}"))) / len(q)
+              for s in (pack or {}).get("sources") or []] if q else []
+    return round(max(covers, default=0.0), 2)
 
 
 def _pct(num: int, den: int) -> str:
@@ -70,10 +96,11 @@ def main() -> None:
     if args.limit:
         items = items[:args.limit]
 
-    rows = []
+    rows, packs = [], []
     for i, item in enumerate(items, 1):
         history = item.get("history") or []
         _CALLS.clear()
+        _ATTEMPTS.clear()
         started = time.time()
         if args.only_intent:
             u = intent_step.analyze(item["question"], history, "", {})
@@ -82,6 +109,7 @@ def main() -> None:
             kind = f"{u.route}({u.gate})"
             text, verdict, sources = u.clarifying_question if clarified else u.standalone_question, "", []
             queries = u.search_queries
+            v, pack = {}, None
         else:
             # Bộ câu này chấm Hệ thống 1; mặc định giờ là Hệ thống 2 (CSDL).
             r = orchestrator.run_turn(orchestrator.TurnInput(question=item["question"],
@@ -90,6 +118,7 @@ def main() -> None:
             clarified = r.kind == "clarify"
             sources = r.sources
             queries = (r.evidence or {}).get("queries", [])
+            v, pack = r.verification or {}, r.evidence
         seconds = time.time() - started
 
         expected = item["expected_intent"]
@@ -105,11 +134,22 @@ def main() -> None:
             "queries": " | ".join(queries or []),
             "sources": " | ".join(s.get("url") or s.get("title", "") for s in sources),
             "llm_calls": " ".join(r for r, _ in _CALLS),
+            "attempts": " || ".join(_ATTEMPTS),
+            "rewrites": max(0, sum(r == "answer" for r, _ in _CALLS) - 1),
+            # Vì sao FAIL: luật cứng / ý model bảo không có trong nguồn / bằng chứng đủ không
+            "rule_issues": " | ".join(v.get("rule_issues") or []),
+            "unsupported": " | ".join(v.get("unsupported_claims") or []),
+            "evidence_sufficient": v.get("evidence_sufficient", ""),
+            "ev_cover": _ev_cover(item["question"], pack) if pack else "",
             **{f"s_{role}": round(sum(s for r, s in _CALLS if r == role), 2)
                for role in ("understand", "answer", "verify")},
             "answer": text,
         }
         rows.append(row)
+        if pack:    # để đo độ khớp từng dòng với nguồn sau khi chấm tay
+            packs.append({"id": item["id"], "answer": text, "sources": [
+                {k: s.get(k, "") for k in ("id", "title", "snippet", "content")}
+                for s in pack.get("sources") or []]})
         print(f"[{i}/{len(items)}] {row['id']:<12} intent={got_intent:<22}"
               f"{'✓' if row['intent_ok'] else '✗'}  kind={kind:<12} {verdict:<4} {seconds:5.1f}s")
 
@@ -154,6 +194,9 @@ def main() -> None:
         writer.writeheader()
         writer.writerows(rows)
     (out_dir / f"{stem}.md").write_text("\n".join(summary) + "\n", encoding="utf-8")
+    if packs:
+        (out_dir / f"{stem}_evidence.jsonl").write_text(
+            "".join(json.dumps(p, ensure_ascii=False) + "\n" for p in packs), encoding="utf-8")
 
     print("\n" + "\n".join(summary))
     print(f"\nĐã lưu: {out_dir / (stem + '.csv')}")
