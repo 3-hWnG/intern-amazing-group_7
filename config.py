@@ -242,10 +242,12 @@ AUTH_MAX_LOGIN_ATTEMPTS = 5
 AUTH_LOCKOUT_SECONDS = 900
 
 # ==========================================================================
-# HÀNG ĐỢI — xử lý tuần tự, LLM làm từng tin nhắn một
+# HÀNG ĐỢI — số lượt LLM xử lý cùng lúc
 # ==========================================================================
 QUEUE_ENABLED = _bool("QUEUE_ENABLED", True)
-QUEUE_CONCURRENCY = _int("QUEUE_CONCURRENCY", 4)
+# Khớp .env.example và OLLAMA_NUM_PARALLEL (Extra/docker-compose.yml). Chọn số
+# cuối cùng sau khi benchmark — xem Documentation/Thing to do next/02.
+QUEUE_CONCURRENCY = _int("QUEUE_CONCURRENCY", 2)
 QUEUE_MAX_DEPTH = _int("QUEUE_MAX_DEPTH", 20)
 QUEUE_JOB_TIMEOUT = _int("QUEUE_JOB_TIMEOUT", 180)
 
@@ -269,6 +271,11 @@ DEV_TOOLS_ENABLED = _bool("DEV_TOOLS_ENABLED", True)
 # Email được coi là admin (phân tách dấu phẩy). Bắt buộc có ít nhất một email,
 # vì đăng ký mới luôn is_admin=0. Bỏ trống + AUTH bật = không ai vào được /api/dev.
 ADMIN_EMAILS = {e.strip().lower() for e in _str("ADMIN_EMAILS", "").split(",") if e.strip()}
+# Khởi động mà CHƯA có admin nào -> tự nâng/tạo tài khoản này thành admin.
+# Mật khẩu (chỉ dùng khi phải TẠO mới): lấy từ .env; để trống thì sinh ngẫu nhiên
+# và in MỘT lần ra cửa sổ máy chủ. Không ghi mật khẩu cố định trong mã nguồn.
+BOOTSTRAP_ADMIN_EMAIL = _str("BOOTSTRAP_ADMIN_EMAIL", "ithrune123@gmail.com").strip().lower()
+BOOTSTRAP_ADMIN_PASSWORD = _str("BOOTSTRAP_ADMIN_PASSWORD", "")
 DEVMODE_DEFAULT_ON = True
 DEVMODE_TRACE_SIZE = 40
 
@@ -276,4 +283,4 @@ HOST = _str("APP_HOST", "127.0.0.1")
 PORT = _int("APP_PORT", 8000)
 
 # Sửa JS/CSS -> tăng số này để trình duyệt tải lại, không dùng bản cache cũ.
-STATIC_VERSION = "8.5"
+STATIC_VERSION = "8.6"

@@ -1,9 +1,11 @@
-﻿# Python 3.11 / 3.12
+# Python 3.11 / 3.12
 # Web server
 fastapi==0.141.1
 starlette==1.6.0
 uvicorn==0.52.4
 pydantic==2.13.5
+# Tải tệp lên (Dev Portal -> nạp CSDL thủ tục). Trước chỉ có nhờ mcp kéo theo.
+python-multipart==0.0.32
 
 # LLM (Ollama) + MCP + Web search
 ollama==0.6.2
@@ -11,7 +13,7 @@ mcp==2.2.0
 ddgs==9.16.0
 httpx==0.28.1
 trafilatura==2.2.0
-lxml_html_clean
+lxml_html_clean==0.4.5
 
 # Auth
 bcrypt==5.0.0

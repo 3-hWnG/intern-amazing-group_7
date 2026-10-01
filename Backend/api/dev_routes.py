@@ -171,6 +171,27 @@ async def dev_list_users(limit: int = 50, offset: int = 0, user: dict = Depends(
     return {"users": users_list}
 
 
+@router.post("/api/dev/users")
+async def dev_create_user(body: dict, user: dict = Depends(current_user)):
+    """Admin tạo tài khoản (vẫn dùng được khi REGISTRATION_ENABLED = False).
+
+    Cùng luật với đăng ký thường: email hợp lệ, mật khẩu đủ dài, không trùng.
+    Không xác minh email (xem Documentation/Thing to do next/13).
+    """
+    from core import auth
+    email = str(body.get("email") or "").strip()
+    password = str(body.get("password") or "")
+    display_name = str(body.get("display_name") or "").strip()[:80]
+    try:
+        created = await connection.run(auth.register, email, password, display_name)
+    except auth.AuthError as err:
+        raise HTTPException(400, str(err))
+    if body.get("is_admin"):
+        await connection.run(Users.set_admin, created["id"], True)
+        created = await connection.run(Users.by_id, created["id"])
+    return {"ok": True, "user": auth.public(created)}
+
+
 @router.post("/api/dev/users/{target_id}/role")
 async def dev_set_role(target_id: int, body: dict, user: dict = Depends(current_user)):
     """Phân quyền admin."""

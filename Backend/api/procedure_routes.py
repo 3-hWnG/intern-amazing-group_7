@@ -147,16 +147,22 @@ async def memory_options(user: dict = Depends(current_user)):
 @router.get("/api/procedures/{proc_id}/versions")
 async def get_procedure_versions(proc_id: str, user: dict = Depends(current_user)):
     """Lấy danh sách các phiên bản (active, archived, expired) của một thủ tục theo proc_id."""
-    conn = system_retrieval._conn()
-    if conn is None:
-        raise HTTPException(503, "Chưa có cơ sở dữ liệu thủ tục.")
+    def _load():
+        conn = system_retrieval._conn()
+        if conn is None:
+            return None
+        return conn.execute(
+            "SELECT row_id, proc_id, version, status, name, decision_number, decision_date,"
+            " publication_date, source_updated_at, scraped_at, archived_at, expired_at,"
+            " expiry_note, content_hash"
+            " FROM procedures WHERE proc_id = ? ORDER BY version DESC, row_id DESC",
+            (proc_id,)
+        ).fetchall()
 
-    rows = conn.execute(
-        "SELECT row_id, proc_id, version, status, name, decision_number, decision_date,"
-        " publication_date, scraped_at, archived_at, expired_at, expiry_note, content_hash"
-        " FROM procedures WHERE proc_id = ? ORDER BY version DESC, row_id DESC",
-        (proc_id,)
-    ).fetchall()
+    # Chạy trong luồng worker như mọi truy vấn CSDL khác, không chặn event loop.
+    rows = await connection.run(_load)
+    if rows is None:
+        raise HTTPException(503, "Chưa có cơ sở dữ liệu thủ tục.")
 
     if not rows:
         raise HTTPException(404, f"Không tìm thấy thủ tục với mã '{proc_id}'.")

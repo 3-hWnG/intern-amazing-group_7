@@ -960,6 +960,9 @@ a.cite:hover{background:var(--accent);color:#fff}
 .mem-add-row { display: flex; gap: 6px; margin: 8px 0 4px; flex-wrap: wrap; }
 .mem-add-row select { flex: 1 1 140px; }
 .mem-add-row input { flex: 2 1 160px; }
+#dev-tab-users .dev-sect-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; flex-wrap: wrap; }
+.dev-user-create-form { display: flex; gap: 6px; margin: 8px 0 4px; flex-wrap: wrap; align-items: center; }
+.dev-user-create-form input.form-input { flex: 1 1 150px; }
 .dev-msg { padding: 6px 8px; border-radius: 6px; margin-bottom: 4px; font-size: 0.85rem; line-height: 1.4; }
 .dev-msg.user { background: var(--panel-2, #f1f5f9); }
 .dev-msg.assistant { border-left: 3px solid var(--accent, #2563eb); padding-left: 10px; }

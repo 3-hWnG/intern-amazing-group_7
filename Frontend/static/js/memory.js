@@ -181,13 +181,31 @@ window.Memory = (function () {
       editBtn.type = "button";
       editBtn.className = "link small";
       editBtn.textContent = "Sửa";
-      editBtn.onclick = () => {
+      editBtn.onclick = async () => {
         const valSpan = info.querySelector(".val-text");
         const curVal = valSpan.textContent;
         const input = document.createElement("input");
         input.type = "text";
         input.className = "mem-inline-edit";
         input.value = curVal;
+        // Máy chủ chỉ nhận giá trị có trong CSDL -> gợi ý đúng danh sách đó khi sửa.
+        try {
+          if (!addOptions) addOptions = (await API.get("/api/mcq-memory/options")).axes || {};
+        } catch (_) { addOptions = addOptions || {}; }
+        const dlId = "mem-edit-values-" + item.axis;
+        let dl = document.getElementById(dlId);
+        if (!dl) {
+          dl = document.createElement("datalist");
+          dl.id = dlId;
+          document.body.appendChild(dl);
+        }
+        dl.innerHTML = "";
+        ((addOptions[item.axis] && addOptions[item.axis].values) || []).forEach((v) => {
+          const o = document.createElement("option");
+          o.value = v;
+          dl.appendChild(o);
+        });
+        input.setAttribute("list", dlId);
         valSpan.replaceWith(input);
         input.focus();
 

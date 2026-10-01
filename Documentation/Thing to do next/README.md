@@ -24,3 +24,7 @@ Items fixed as hot fixes are not listed here.
 | 12 | [Benchmark & reproducible tests](12_benchmark-and-tests.md) | Full benchmark planned later | Owner for benchmark |
 | 13 | [Email verification & account recovery](13_email-verification.md) | Not needed for the demo | Decide for final product |
 | 14 | [Claude's own recommendations](14_claude-recommendations.md) | Extra findings + review of the "not a problem" column | Team review |
+| 15 | [How the saved location is used (System 1 note)](15_location-in-system-1.md) | Toggle aborted for System 2; System 1 behaves differently | Revisit with the System 1 rework |
+
+Hot fixes applied on 2026-10-01 are described in
+[../HOTFIX_V10.6.md](../HOTFIX_V10.6.md).

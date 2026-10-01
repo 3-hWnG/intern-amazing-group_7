@@ -299,7 +299,16 @@
     <div id="dev-tab-users" class="dev-tab-panel" hidden>
       <div class="dev-sect-head">
         <p class="muted small" style="margin:0;">Quản lý tài khoản, phân quyền quản trị viên (Admin) và quyền nuke lịch sử chat của tài khoản.</p>
+        <button id="dev-user-create-toggle" class="primary small" type="button">＋ Tạo tài khoản</button>
       </div>
+      <form id="dev-user-create-form" class="dev-user-create-form" hidden autocomplete="off">
+        <input id="dev-user-create-email" class="form-input" type="email" placeholder="Email" required>
+        <input id="dev-user-create-name" class="form-input" type="text" maxlength="80" placeholder="Tên hiển thị (không bắt buộc)">
+        <input id="dev-user-create-password" class="form-input" type="text" minlength="8" placeholder="Mật khẩu ban đầu (≥ 8 ký tự)" required>
+        <label class="small"><input id="dev-user-create-admin" type="checkbox"> Admin</label>
+        <button class="primary small" type="submit">Tạo</button>
+      </form>
+      <div id="dev-user-create-status" class="small muted" style="min-height:1.2em;"></div>
       <div id="dev-users-list" style="margin-top:10px;"></div>
     </div>
 

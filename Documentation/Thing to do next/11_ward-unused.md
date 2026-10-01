@@ -27,4 +27,5 @@
 
 - Which of the above does the product owner/teacher expect?
 - Is there an official ward directory we may use, and how often does it change?
-- Related hot fix: a user toggle to turn location use on/off.
+- Related: the location on/off toggle was dropped for now; see
+  [15](15_location-in-system-1.md).

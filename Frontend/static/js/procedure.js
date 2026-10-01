@@ -620,21 +620,28 @@ window.Procedure = (function () {
 
       const timeline = document.createElement("div");
       timeline.className = "timeline-wrap";
+      const esc = (s) => String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+      const when = (s) => (s || "").replace("T", " ").slice(0, 19);
       versions.forEach((v) => {
         const item = document.createElement("div");
         item.className = `timeline-item ${v.status === "active" ? "active" : ""}`;
         const badgeCls = v.status === "active" ? "badge badge-pass" : (v.status === "expired" ? "badge badge-fail" : "badge badge-muted");
-        const updatedStr = (v.source_updated_at || v.created_at || "").replace("T", " ").slice(0, 19);
+        // Cổng cập nhật (source_updated_at) là mốc có ý nghĩa nhất; thiếu thì dùng lúc cào/lưu trữ.
+        const dateBits = [];
+        if (v.source_updated_at) dateBits.push(`Cổng cập nhật: ${esc(when(v.source_updated_at))}`);
+        if (v.scraped_at) dateBits.push(`Cào về: ${esc(when(v.scraped_at))}`);
+        if (v.archived_at) dateBits.push(`Lưu trữ: ${esc(when(v.archived_at))}`);
         item.innerHTML = `
           <div class="timeline-head" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:4px;">
-            <strong>Phiên bản v${v.version}</strong>
-            <span class="${badgeCls}">${v.status || "active"}</span>
+            <strong>Phiên bản v${esc(v.version)}</strong>
+            <span class="${badgeCls}">${esc(v.status || "active")}</span>
           </div>
           <div class="small muted" style="margin-bottom:4px;">
-            ${v.decision_number ? `QĐ: ${v.decision_number}` : ""} ${v.decision_date ? `(${v.decision_date})` : ""}
+            ${v.decision_number ? `QĐ: ${esc(v.decision_number)}` : ""} ${v.decision_date ? `(${esc(v.decision_date)})` : ""}
           </div>
           <div class="small muted" style="font-size:11px;">
-            Cập nhật: ${updatedStr || "Không rõ"} · Hash: <code>${(v.content_hash || "").slice(0, 10)}...</code>
+            ${dateBits.join(" · ") || "Cập nhật: Không rõ"} · Hash: <code>${esc((v.content_hash || "").slice(0, 10))}...</code>
           </div>
         `;
         item.style.padding = "10px";
@@ -646,7 +653,8 @@ window.Procedure = (function () {
       });
       list.appendChild(timeline);
     } catch (err) {
-      list.innerHTML = `<p class="small danger">Lỗi khi tải lịch sử: ${err.message}</p>`;
+      list.innerHTML = "";
+      list.appendChild(el("p", "small danger", "Lỗi khi tải lịch sử: " + err.message));
     }
   }
 

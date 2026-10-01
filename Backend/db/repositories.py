@@ -60,6 +60,10 @@ class Users:
         return [dict(r) for r in rows]
 
     @staticmethod
+    def any_admin() -> bool:
+        return get_conn().execute("SELECT 1 FROM users WHERE is_admin = 1 LIMIT 1").fetchone() is not None
+
+    @staticmethod
     def set_admin(user_id: int, is_admin: bool) -> None:
         conn = get_conn()
         conn.execute("UPDATE users SET is_admin = ? WHERE id = ?", (1 if is_admin else 0, user_id))

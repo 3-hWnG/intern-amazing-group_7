@@ -23,7 +23,7 @@ import uvicorn
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from config import (ATTACHMENTS_ENABLED, DB_PATH, DEV_TOOLS_ENABLED, HOST, LLM_MODEL,
+from config import (ATTACHMENTS_ENABLED, AUTH_ENABLED, DB_PATH, DEV_TOOLS_ENABLED, HOST, LLM_MODEL,
                     OLLAMA_HOST, PORT, QUEUE_ENABLED, RETENTION_DAYS, SEARCH_PROVIDER,
                     STATIC_DIR, VERIFIER_ENABLED, VERIFIER_MODEL)
 
@@ -43,6 +43,17 @@ async def lifespan(app: FastAPI):
         if removed:
             print(f"  - đã xoá {removed} hội thoại quá hạn lưu trữ")
         Traces.purge_older_than(RETENTION_DAYS)
+        if AUTH_ENABLED:
+            from core import auth
+            action, email, password = auth.ensure_admin()
+            if action == "promoted":
+                print(f"  - chưa có admin: đã nâng {email} thành admin (giữ mật khẩu cũ)")
+            elif action == "created":
+                print(f"  - chưa có admin: đã tạo tài khoản admin {email}")
+                if password:
+                    print(f"    MẬT KHẨU (chỉ hiện lần này, hãy ghi lại): {password}")
+            elif action == "skipped":
+                print("  ! chưa có admin và BOOTSTRAP_ADMIN_EMAIL không hợp lệ — không ai vào được /api/dev")
 
         # Ollama / MCP hỏng thì VẪN chạy: người dùng thấy thông báo lỗi rõ ràng
         # trong khung chat, thay vì server không lên.

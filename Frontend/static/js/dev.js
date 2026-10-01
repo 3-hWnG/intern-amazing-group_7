@@ -513,6 +513,36 @@ window.Dev = (function () {
     }
   }
 
+  /* Tạo tài khoản mới (dùng được cả khi đã đóng đăng ký tự do). */
+  function wireCreateUser() {
+    const toggle = $("dev-user-create-toggle");
+    const form = $("dev-user-create-form");
+    if (!toggle || !form) return;
+    const status = $("dev-user-create-status");
+    toggle.onclick = () => {
+      form.hidden = !form.hidden;
+      if (!form.hidden) $("dev-user-create-email").focus();
+    };
+    form.onsubmit = async (e) => {
+      e.preventDefault();
+      const body = {
+        email: $("dev-user-create-email").value.trim(),
+        display_name: $("dev-user-create-name").value.trim(),
+        password: $("dev-user-create-password").value,
+        is_admin: $("dev-user-create-admin").checked,
+      };
+      status.textContent = "Đang tạo…";
+      try {
+        const res = await API.post("/api/dev/users", body);
+        status.textContent = `✓ Đã tạo ${res.user.email}${res.user.is_admin ? " (Admin)" : ""}. Hãy gửi mật khẩu cho người dùng.`;
+        form.reset();
+        refreshUsers();
+      } catch (err) {
+        status.textContent = "Lỗi: " + err.message;
+      }
+    };
+  }
+
   /* ---------------- Reset Dữ liệu ---------------- */
   function wireReset() {
     const btn = $("dev-reset");
@@ -865,6 +895,7 @@ window.Dev = (function () {
 
     initTabs();
     wireReset();
+    wireCreateUser();
     await Promise.all([refreshStatus(), refreshMetrics()]);
   }
 

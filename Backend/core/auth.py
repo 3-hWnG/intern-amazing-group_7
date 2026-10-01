@@ -10,9 +10,10 @@ import secrets
 
 import bcrypt
 
-from config import (AUTH_COOKIE_NAME, AUTH_COOKIE_SECURE, AUTH_LOCKOUT_SECONDS,
-                    AUTH_MAX_LOGIN_ATTEMPTS, AUTH_MIN_PASSWORD_LENGTH,
-                    AUTH_SESSION_DAYS)
+from config import (ADMIN_EMAILS, AUTH_COOKIE_NAME, AUTH_COOKIE_SECURE,
+                    AUTH_LOCKOUT_SECONDS, AUTH_MAX_LOGIN_ATTEMPTS,
+                    AUTH_MIN_PASSWORD_LENGTH, AUTH_SESSION_DAYS,
+                    BOOTSTRAP_ADMIN_EMAIL, BOOTSTRAP_ADMIN_PASSWORD)
 from db.repositories import AuthSessions, LoginAttempts, Users
 
 SESSION_TTL = AUTH_SESSION_DAYS * 24 * 3600
@@ -46,6 +47,33 @@ def register(email: str, password: str, display_name: str = "") -> dict:
     if Users.by_email(email):
         raise AuthError("Email này đã được đăng ký.")
     return Users.create(email, hash_password(password), display_name)
+
+
+def ensure_admin() -> tuple[str, str, str | None]:
+    """Gọi lúc khởi động: hệ thống KHÔNG được ở trạng thái không có admin nào.
+
+    Trả về (việc đã làm, email, mật khẩu vừa sinh hoặc None):
+      - "exists":   đã có admin (cờ is_admin hoặc email trong ADMIN_EMAILS) -> không làm gì.
+      - "promoted": tài khoản BOOTSTRAP_ADMIN_EMAIL đã có -> nâng quyền, giữ mật khẩu cũ.
+      - "created":  chưa có -> tạo mới. Mật khẩu lấy từ .env; trống/quá ngắn thì sinh
+                    ngẫu nhiên và trả về để in MỘT lần ra cửa sổ máy chủ.
+      - "skipped":  BOOTSTRAP_ADMIN_EMAIL để trống hoặc không hợp lệ.
+    """
+    if Users.any_admin() or any(Users.by_email(e) for e in ADMIN_EMAILS):
+        return "exists", "", None
+    email = BOOTSTRAP_ADMIN_EMAIL
+    if not EMAIL_RE.match(email or ""):
+        return "skipped", email, None
+    user = Users.by_email(email)
+    if user:
+        Users.set_admin(user["id"], True)
+        return "promoted", email, None
+    password, generated = BOOTSTRAP_ADMIN_PASSWORD, None
+    if len(password) < AUTH_MIN_PASSWORD_LENGTH:
+        password = generated = secrets.token_urlsafe(12)
+    user = Users.create(email, hash_password(password), "Admin")
+    Users.set_admin(user["id"], True)
+    return "created", email, generated
 
 
 def login(email: str, password: str, user_agent: str = "") -> tuple[dict, str]:
