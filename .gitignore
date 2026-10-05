@@ -1,0 +1,19 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.log
+# DB dựng lại được bằng: python -m system3.data.build (58 MB)
+data/runtime/
+*.db
+*.db-wal
+*.db-shm
+# kết quả đo: chỉ giữ vài file mốc
+eval/results/*
+!eval/results/baseline.json
+!eval/results/dot3_p8_baseline.json
+!eval/results/coord_r3.json
+!eval/results/coord_h2_r3.json
+!eval/results/coord_h3.json
+!eval/results/final_llm_h3.json
