@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>System 3 — Trợ lý Thủ tục hành chính</title>
+<link rel="stylesheet" href="/static/css/styles.css">
+<style>
+.block-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px}
+.block-card h4{margin:0 0 6px;font-size:14px;color:var(--accent)}
+.block-card .txt{white-space:pre-wrap;overflow-wrap:anywhere}
+.dev-json{font:12px/1.4 Consolas,monospace;background:var(--panel-2);border:1px solid var(--line);
+  border-radius:8px;padding:8px;white-space:pre-wrap;max-height:260px;overflow:auto}
+</style>
+</head>
+<body class="light">
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <button id="new-chat" class="primary block">+ Cuộc trò chuyện mới</button>
+    <nav id="conv-list" class="conv-list"></nav>
+  </aside>
+  <main class="chat">
+    <header class="chat-head">
+      <button id="toggle-sidebar" class="icon" type="button" aria-label="Ẩn/hiện thanh bên">☰</button>
+      <h1 id="conv-title">System 3</h1>
+      <span id="model-name" class="model-name"></span>
+      <button id="reset-topic" type="button" title="Quên các thông tin đã kể, hỏi việc khác">Bắt đầu chủ đề mới</button>
+    </header>
+    <div id="messages" class="messages"></div>
+    <form id="composer" class="composer">
+      <div class="composer-row">
+        <textarea id="input" rows="2" placeholder="Nhập câu hỏi…" autocomplete="off"></textarea>
+        <button id="send" class="primary" type="submit">Gửi</button>
+      </div>
+    </form>
+  </main>
+</div>
+<script src="/static/js/chat.js"></script>
+</body>
+</html>
