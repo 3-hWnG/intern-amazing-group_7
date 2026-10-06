@@ -1,0 +1,505 @@
+[
+ {
+  "id": "pr2-01",
+  "q": "nha em bi chay mat so do roi lam lai the nao a",
+  "beh": "answer",
+  "exp": [
+   "1.115621"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr2-02",
+  "q": "bà nội 72 tuổi ở quê có được xã hỗ trợ tiền gì không",
+  "beh": "answer",
+  "exp": [
+   "1.014589",
+   "1.014027"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr2-03",
+  "q": "ba em la cuu chien binh vua mat xin tien mai tang o dau",
+  "beh": "answer",
+  "exp": [
+   "2.002307"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.002307"
+  ]
+ },
+ {
+  "id": "pr2-04",
+  "q": "con e bi tat bam sinh muon xin giay xac nhan khuyet tat",
+  "beh": "answer",
+  "exp": [
+   "1.001699"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001699"
+  ]
+ },
+ {
+  "id": "pr2-05",
+  "q": "e muon xin xac nhan thoat ngheo de con dc giam hoc phi",
+  "beh": "answer",
+  "exp": [
+   "1.014103"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.014103"
+  ]
+ },
+ {
+  "id": "pr2-06",
+  "q": "chồng em nghiện, giờ chịu đi cai tự nguyện thì đăng ký ở đâu",
+  "beh": "answer",
+  "exp": [
+   "3.000527"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "3.000527"
+  ]
+ },
+ {
+  "id": "pr2-07",
+  "q": "nha toi cho nguoi nuoc ngoai o tro thi phai khai bao gi",
+  "beh": "answer",
+  "exp": [
+   "1.000253"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.000253"
+  ]
+ },
+ {
+  "id": "pr2-08",
+  "q": "anh em minh muon lap hop tac xa trong thon thi nop o dau",
+  "beh": "answer",
+  "exp": [
+   "1.005280"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": true,
+  "got": "clarify",
+  "tops": [
+   "2.001958"
+  ]
+ },
+ {
+  "id": "pr2-09",
+  "q": "con gái 4 tuổi đi mẫu giáo thì có được hỗ trợ tiền ăn trưa ko",
+  "beh": "answer",
+  "exp": [
+   "1.001622"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001622"
+  ]
+ },
+ {
+  "id": "pr2-10",
+  "q": "minh lam hoa giai vien nhung gio het muon nghi thi lam don the nao",
+  "beh": "answer",
+  "exp": [
+   "2.000930"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.000930"
+  ]
+ },
+ {
+  "id": "pr2-11",
+  "q": "đất nhà em hàng xóm lấn ranh, em muốn nhờ xã hòa giải thì làm sao",
+  "beh": "answer",
+  "exp": [
+   "1.012812",
+   "1.115453",
+   "1.013967",
+   "1.115452"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "clarify",
+  "tops": [
+   "1.002211"
+  ]
+ },
+ {
+  "id": "pr2-12",
+  "q": "bố mình là thương binh làm mất giấy chứng nhận rồi",
+  "beh": "answer",
+  "exp": [
+   "1.010814"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.010814"
+  ]
+ },
+ {
+  "id": "pr2-13",
+  "q": "nha em muon keo nuoc may vao nha phai xin phep xa khong",
+  "beh": "answer",
+  "exp": [
+   "1.009159"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.115564"
+  ]
+ },
+ {
+  "id": "pr2-14",
+  "q": "cho tôi hỏi muốn tổ chức giảng đạo ngoài địa bàn thì làm gì",
+  "beh": "answer",
+  "exp": [
+   "1.013798"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.013798"
+  ]
+ },
+ {
+  "id": "pr2-15",
+  "q": "nhóm em muốn tổ chức lễ ngoài cơ sở tôn giáo thì xin ai",
+  "beh": "answer",
+  "exp": [
+   "1.013797"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.013797"
+  ]
+ },
+ {
+  "id": "pr2-16",
+  "q": "doi bang lai xe nuoc ngoai cua chong em thi nop o dau",
+  "beh": "answer",
+  "exp": [
+   "3.000351"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "3.000351"
+  ]
+ },
+ {
+  "id": "pr2-17",
+  "q": "xin dang ky hoat dong in an o xa duoc khong",
+  "beh": "answer",
+  "exp": [
+   "3.000569"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "3.000569"
+  ]
+ },
+ {
+  "id": "pr2-18",
+  "q": "bị heo rừng húc bị thương nặng có được xã hỗ trợ tiền viện phí không",
+  "beh": "answer",
+  "exp": [
+   "3.000724"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr2-19",
+  "q": "e lam cong nhan luong thap co duoc cong nhan nguoi lao dong thu nhap thap k",
+  "beh": "answer",
+  "exp": [
+   "3.000412"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "3.000412"
+  ]
+ },
+ {
+  "id": "pr2-20",
+  "q": "em là công chức xã muốn xin thôi việc thì làm thủ tục ra sao",
+  "beh": "answer",
+  "exp": [
+   "6.005261"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "6.005261"
+  ]
+ },
+ {
+  "id": "pr2-21",
+  "q": "cap lai giay chung nhan so nha o dau a",
+  "beh": "answer",
+  "exp": [
+   "1.009141"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.009141"
+  ]
+ },
+ {
+  "id": "pr2-22",
+  "q": "em moi mua xe may muon dang ky bien so o dau",
+  "beh": "answer",
+  "exp": [
+   "1.115970"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.115970"
+  ]
+ },
+ {
+  "id": "pr2-23",
+  "q": "xin cấp giấy chứng nhận người cao tuổi hưởng trợ cấp 75 tuổi trở lên",
+  "beh": "answer",
+  "exp": [
+   "1.014027"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr2-24",
+  "q": "xin ho tro chi phi hoa tang cho nguoi nha",
+  "beh": "clarify",
+  "exp": [
+   "1.012749",
+   "1.014036",
+   "1.012169",
+   "1.014582"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "3.000721"
+  ]
+ },
+ {
+  "id": "pr2-25",
+  "q": "lam lai so ho khau bi mat o dau vay",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.115621"
+  ]
+ },
+ {
+  "id": "pr2-26",
+  "q": "mua bảo hiểm xe máy ở đâu rẻ",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr2-27",
+  "q": "hôm nay trời có mưa không bạn",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr2-28",
+  "q": "xin giấy chứng nhận độc thân",
+  "beh": "answer",
+  "exp": [
+   "1.004873"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004873"
+  ]
+ },
+ {
+  "id": "pr2c-01.1",
+  "q": "e muon xin cai giay xac nhan de lam ho ngheo",
+  "beh": "clarify",
+  "exp": [
+   "1.011606",
+   "1.011607",
+   "1.116214",
+   "1.116215",
+   "1.014103"
+  ],
+  "beh_ok": false,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.014103"
+  ]
+ },
+ {
+  "id": "pr2c-01.2",
+  "q": "xac nhan thoat ngheo cho con di hoc",
+  "beh": "answer",
+  "exp": [
+   "1.014103"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.014103"
+  ]
+ },
+ {
+  "id": "pr2c-01.3",
+  "q": "nop cho ai",
+  "beh": "answer",
+  "exp": [
+   "1.014103"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.014103"
+  ]
+ },
+ {
+  "id": "pr2c-02.1",
+  "q": "cho minh hoi thu tuc nhan chau lam con nuoi",
+  "beh": "clarify",
+  "exp": [
+   "2.001263",
+   "1.003005",
+   "2.002349"
+  ],
+  "beh_ok": false,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.003005"
+  ]
+ },
+ {
+  "id": "pr2c-02.2",
+  "q": "chau o trong nuoc luon, la con cua em gai minh",
+  "beh": "answer",
+  "exp": [
+   "2.001263"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr2c-02.3",
+  "q": "le phi bao nhieu",
+  "beh": "answer",
+  "exp": [
+   "2.001263"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.003005"
+  ]
+ }
+]

@@ -1,0 +1,408 @@
+[
+ {
+  "id": "pr2-01",
+  "q": "nha em bi chay mat so do roi lam lai the nao a",
+  "expect_ids": [
+   "1.115621"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "khong dau, ke hoan canh. Cap lai GCN do bi mat."
+ },
+ {
+  "id": "pr2-02",
+  "q": "bà nội 72 tuổi ở quê có được xã hỗ trợ tiền gì không",
+  "expect_ids": [
+   "1.014589",
+   "1.014027"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "ke hoan canh. 70-75 tuoi (1.014589) hoac tro cap huu tri xa hoi tu 75 (1.014027); chap nhan ca hai."
+ },
+ {
+  "id": "pr2-03",
+  "q": "ba em la cuu chien binh vua mat xin tien mai tang o dau",
+  "expect_ids": [
+   "2.002307"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place",
+   "documents"
+  ],
+  "notes": "khong dau."
+ },
+ {
+  "id": "pr2-04",
+  "q": "con e bi tat bam sinh muon xin giay xac nhan khuyet tat",
+  "expect_ids": [
+   "1.001699"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "teen, sai dau."
+ },
+ {
+  "id": "pr2-05",
+  "q": "e muon xin xac nhan thoat ngheo de con dc giam hoc phi",
+  "expect_ids": [
+   "1.014103"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "viet tat/teen."
+ },
+ {
+  "id": "pr2-06",
+  "q": "chồng em nghiện, giờ chịu đi cai tự nguyện thì đăng ký ở đâu",
+  "expect_ids": [
+   "3.000527"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "ke hoan canh."
+ },
+ {
+  "id": "pr2-07",
+  "q": "nha toi cho nguoi nuoc ngoai o tro thi phai khai bao gi",
+  "expect_ids": [
+   "1.000253"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "khong dau. Khai bao tam tru cho nguoi nuoc ngoai."
+ },
+ {
+  "id": "pr2-08",
+  "q": "anh em minh muon lap hop tac xa trong thon thi nop o dau",
+  "expect_ids": [
+   "1.005280"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "doi thuong."
+ },
+ {
+  "id": "pr2-09",
+  "q": "con gái 4 tuổi đi mẫu giáo thì có được hỗ trợ tiền ăn trưa ko",
+  "expect_ids": [
+   "1.001622"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "ke hoan canh."
+ },
+ {
+  "id": "pr2-10",
+  "q": "minh lam hoa giai vien nhung gio het muon nghi thi lam don the nao",
+  "expect_ids": [
+   "2.000930"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "khong dau."
+ },
+ {
+  "id": "pr2-11",
+  "q": "đất nhà em hàng xóm lấn ranh, em muốn nhờ xã hòa giải thì làm sao",
+  "expect_ids": [
+   "1.012812",
+   "1.115453",
+   "1.013967",
+   "1.115452"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "ke hoan canh. Hoa giai tranh chap dat dai cap xa; chap nhan ban giai quyet cua chu tich xa."
+ },
+ {
+  "id": "pr2-12",
+  "q": "bố mình là thương binh làm mất giấy chứng nhận rồi",
+  "expect_ids": [
+   "1.010814"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "ke hoan canh, cau cut."
+ },
+ {
+  "id": "pr2-13",
+  "q": "nha em muon keo nuoc may vao nha phai xin phep xa khong",
+  "expect_ids": [
+   "1.009159"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "khong dau."
+ },
+ {
+  "id": "pr2-14",
+  "q": "cho tôi hỏi muốn tổ chức giảng đạo ngoài địa bàn thì làm gì",
+  "expect_ids": [
+   "1.013798"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": ""
+ },
+ {
+  "id": "pr2-15",
+  "q": "nhóm em muốn tổ chức lễ ngoài cơ sở tôn giáo thì xin ai",
+  "expect_ids": [
+   "1.013797"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "doi thuong."
+ },
+ {
+  "id": "pr2-16",
+  "q": "doi bang lai xe nuoc ngoai cua chong em thi nop o dau",
+  "expect_ids": [
+   "3.000351"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "khong dau. Chong la nguoi nuoc ngoai."
+ },
+ {
+  "id": "pr2-17",
+  "q": "xin dang ky hoat dong in an o xa duoc khong",
+  "expect_ids": [
+   "3.000569"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "khong dau. Xac nhan dang ky hoat dong in (cap xa)."
+ },
+ {
+  "id": "pr2-18",
+  "q": "bị heo rừng húc bị thương nặng có được xã hỗ trợ tiền viện phí không",
+  "expect_ids": [
+   "3.000724"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "ke hoan canh. Dong vat rung gay ra."
+ },
+ {
+  "id": "pr2-19",
+  "q": "e lam cong nhan luong thap co duoc cong nhan nguoi lao dong thu nhap thap k",
+  "expect_ids": [
+   "3.000412"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "viet tat."
+ },
+ {
+  "id": "pr2-20",
+  "q": "em là công chức xã muốn xin thôi việc thì làm thủ tục ra sao",
+  "expect_ids": [
+   "6.005261"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Thoi viec doi voi cong chuc."
+ },
+ {
+  "id": "pr2-21",
+  "q": "cap lai giay chung nhan so nha o dau a",
+  "expect_ids": [
+   "1.009141"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "khong dau."
+ },
+ {
+  "id": "pr2-22",
+  "q": "em moi mua xe may muon dang ky bien so o dau",
+  "expect_ids": [
+   "1.115970"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "khong dau. Dang ky xe (domain khac nhung co trong DB)."
+ },
+ {
+  "id": "pr2-23",
+  "q": "xin cấp giấy chứng nhận người cao tuổi hưởng trợ cấp 75 tuổi trở lên",
+  "expect_ids": [
+   "1.014027"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "Tro cap huu tri xa hoi."
+ },
+ {
+  "id": "pr2-24",
+  "q": "xin ho tro chi phi hoa tang cho nguoi nha",
+  "expect_ids": [
+   "1.012749",
+   "1.014036",
+   "1.012169",
+   "1.014582"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "khong dau. Nhieu thu tuc ho tro hoa tang theo dia phuong khac nhau (Hue, Bac Ninh...). Can hoi tinh/thanh."
+ },
+ {
+  "id": "pr2-25",
+  "q": "lam lai so ho khau bi mat o dau vay",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "Khong co so ho khau (da bo); khong co thu tuc khop trong DB."
+ },
+ {
+  "id": "pr2-26",
+  "q": "mua bảo hiểm xe máy ở đâu rẻ",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "Khong co thu tuc va ngoai tham quyen."
+ },
+ {
+  "id": "pr2-27",
+  "q": "hôm nay trời có mưa không bạn",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "Chit-chat ngoai pham vi."
+ },
+ {
+  "id": "pr2-28",
+  "q": "xin giấy chứng nhận độc thân",
+  "expect_ids": [
+   "1.004873"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Cach goi khac cua giay xac nhan tinh trang hon nhan."
+ },
+ {
+  "id": "pr2c-01",
+  "turns": [
+   {
+    "q": "e muon xin cai giay xac nhan de lam ho ngheo",
+    "expect_ids": [
+     "1.011606",
+     "1.011607",
+     "1.116214",
+     "1.116215",
+     "1.014103"
+    ],
+    "beh": "clarify",
+    "fields": []
+   },
+   {
+    "q": "xac nhan thoat ngheo cho con di hoc",
+    "expect_ids": [
+     "1.014103"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "nop cho ai",
+    "expect_ids": [
+     "1.014103"
+    ],
+    "beh": "answer",
+    "fields": [
+     "place"
+    ]
+   }
+  ],
+  "notes": "~khong dau; mo ho roi cu the."
+ },
+ {
+  "id": "pr2c-02",
+  "turns": [
+   {
+    "q": "cho minh hoi thu tuc nhan chau lam con nuoi",
+    "expect_ids": [
+     "2.001263",
+     "1.003005",
+     "2.002349"
+    ],
+    "beh": "clarify",
+    "fields": []
+   },
+   {
+    "q": "chau o trong nuoc luon, la con cua em gai minh",
+    "expect_ids": [
+     "2.001263"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "le phi bao nhieu",
+    "expect_ids": [
+     "2.001263"
+    ],
+    "beh": "answer",
+    "fields": [
+     "fee"
+    ]
+   }
+  ],
+  "notes": "~khong dau; bien the trong nuoc vs bien gioi."
+ }
+]

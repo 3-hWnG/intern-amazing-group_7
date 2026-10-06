@@ -1,0 +1,158 @@
+[
+ {
+  "id": "TC01",
+  "group": "RAG cơ bản",
+  "beh_ok": true,
+  "proc_ok": true,
+  "facts_missing": [],
+  "extra_tasks": 0,
+  "forbidden": [],
+  "chars": 1105,
+  "tops": [
+   "1.000894"
+  ],
+  "note": "",
+  "pass": true
+ },
+ {
+  "id": "TC02",
+  "group": "Định lượng",
+  "beh_ok": true,
+  "proc_ok": true,
+  "facts_missing": [
+   "8[.]000|8000"
+  ],
+  "extra_tasks": 0,
+  "forbidden": [],
+  "chars": 379,
+  "tops": [
+   "1.001193"
+  ],
+  "note": "8.000đ không có trong snapshot (lệ phí 0, text rỗng); lệch dữ liệu với đáp án nhóm",
+  "pass": false
+ },
+ {
+  "id": "TC03",
+  "group": "RAG nhiều field",
+  "beh_ok": true,
+  "proc_ok": true,
+  "facts_missing": [
+   "7 ngày"
+  ],
+  "extra_tasks": 0,
+  "forbidden": [],
+  "chars": 1211,
+  "tops": [
+   "1.001022"
+  ],
+  "note": "",
+  "pass": false
+ },
+ {
+  "id": "TC04",
+  "group": "Context",
+  "beh_ok": true,
+  "proc_ok": true,
+  "facts_missing": [],
+  "extra_tasks": 0,
+  "forbidden": [],
+  "chars": 554,
+  "tops": [
+   "1.000894"
+  ],
+  "note": "",
+  "pass": true
+ },
+ {
+  "id": "TC05",
+  "group": "Clarification",
+  "beh_ok": true,
+  "proc_ok": true,
+  "facts_missing": [],
+  "extra_tasks": 0,
+  "forbidden": [],
+  "chars": 0,
+  "tops": [
+   "2.002516"
+  ],
+  "note": "",
+  "pass": true
+ },
+ {
+  "id": "TC06",
+  "group": "Điều kiện",
+  "beh_ok": true,
+  "proc_ok": true,
+  "facts_missing": [
+   "nơi cư trú|nơi tổ chức tang lễ|nơi cuối cùng"
+  ],
+  "extra_tasks": 1,
+  "forbidden": [],
+  "chars": 1756,
+  "tops": [
+   "1.000656",
+   "1.003622"
+  ],
+  "note": "",
+  "pass": false
+ },
+ {
+  "id": "TC07",
+  "group": "Evidence",
+  "beh_ok": true,
+  "proc_ok": true,
+  "facts_missing": [],
+  "extra_tasks": 0,
+  "forbidden": [],
+  "chars": 793,
+  "tops": [
+   "1.001731"
+  ],
+  "note": "",
+  "pass": true
+ },
+ {
+  "id": "TC08",
+  "group": "Multi-intent",
+  "beh_ok": true,
+  "proc_ok": true,
+  "facts_missing": [],
+  "extra_tasks": 0,
+  "forbidden": [],
+  "chars": 3003,
+  "tops": [
+   "1.001193",
+   "1.000894"
+  ],
+  "note": "",
+  "pass": true
+ },
+ {
+  "id": "TC09",
+  "group": "Hallucination",
+  "beh_ok": true,
+  "proc_ok": true,
+  "facts_missing": [],
+  "extra_tasks": 0,
+  "forbidden": [],
+  "chars": 124,
+  "tops": [],
+  "note": "",
+  "pass": true
+ },
+ {
+  "id": "TC10",
+  "group": "Context+Điều kiện+Evidence",
+  "beh_ok": true,
+  "proc_ok": true,
+  "facts_missing": [],
+  "extra_tasks": 0,
+  "forbidden": [],
+  "chars": 1358,
+  "tops": [
+   "1.000894"
+  ],
+  "note": "",
+  "pass": true
+ }
+]

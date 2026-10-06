@@ -1,0 +1,630 @@
+[
+ {
+  "id": "pr-01",
+  "q": "con em sinh tuần trước giờ làm giấy khai sinh cho bé thì cần mang theo gì ạ",
+  "beh": "answer",
+  "exp": [
+   "1.001193"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr-02",
+  "q": "dang ky tam tru het bao nhieu tien vay",
+  "beh": "answer",
+  "exp": [
+   "1.004194"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004194"
+  ]
+ },
+ {
+  "id": "pr-03",
+  "q": "mất giấy khai sinh của con rồi, làm lại sao",
+  "beh": "clarify",
+  "exp": [
+   "1.004884",
+   "2.000635"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "clarify",
+  "tops": [
+   "2.000635"
+  ]
+ },
+ {
+  "id": "pr-04",
+  "q": "Bố em mất hôm qua ở quê, cần đi đâu làm giấy báo tử, mất bao lâu?",
+  "beh": "answer",
+  "exp": [
+   "1.000656",
+   "2.002913"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.000656"
+  ]
+ },
+ {
+  "id": "pr-05",
+  "q": "chung thuc di chuc phi bn ạ",
+  "beh": "answer",
+  "exp": [
+   "2.001019"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.001019"
+  ]
+ },
+ {
+  "id": "pr-06",
+  "q": "photo công chứng cmnd ở ubnd xã đc ko, mấy bản",
+  "beh": "answer",
+  "exp": [
+   "2.000815"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.012566"
+  ]
+ },
+ {
+  "id": "pr-07",
+  "q": "xin giấy xác nhận độc thân để đk kết hôn nộp ở đâu",
+  "beh": "answer",
+  "exp": [
+   "1.004873"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004873"
+  ]
+ },
+ {
+  "id": "pr-08",
+  "q": "thủ tục mở hộ kinh doanh bán tạp hóa tại nhà cần giấy tờ gì",
+  "beh": "answer",
+  "exp": [
+   "1.001612"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001612"
+  ]
+ },
+ {
+  "id": "pr-09",
+  "q": "bà ngoại em 80 tuổi muốn nhận trợ cấp hàng tháng thì làm sao",
+  "beh": "answer",
+  "exp": [
+   "1.014027",
+   "1.001776"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr-10",
+  "q": "cho hỏi cấp sổ đỏ lần đầu cho hộ gia đình cần những giấy gì",
+  "beh": "clarify",
+  "exp": [
+   "1.013978",
+   "1.115240",
+   "1.115443",
+   "1.115583",
+   "1.115760",
+   "1.115939",
+   "1.116082",
+   "1.116156",
+   "1.116360",
+   "3.000669",
+   "3.000717"
+  ],
+  "beh_ok": false,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.013978"
+  ]
+ },
+ {
+  "id": "pr-11",
+  "q": "con cháu bị khuyết tật nặng làm giấy xác nhận khuyết tật ở đâu, mấy ngày có",
+  "beh": "answer",
+  "exp": [
+   "1.001699"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001699"
+  ]
+ },
+ {
+  "id": "pr-12",
+  "q": "con mình sắp vào lớp 6, tuyển sinh thcs nộp hồ sơ ở đâu",
+  "beh": "answer",
+  "exp": [
+   "3.000182"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr-13",
+  "q": "nha toi o xa nay nhung ho khau o xa khac, muon chuyen ve day thi lam sao",
+  "beh": "answer",
+  "exp": [
+   "1.004222"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.004194"
+  ]
+ },
+ {
+  "id": "pr-14",
+  "q": "thẻ bhyt của con bị sai ngày sinh sửa ở đâu",
+  "beh": "answer",
+  "exp": [
+   "1.002759"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.014312"
+  ]
+ },
+ {
+  "id": "pr-15",
+  "q": "nhà em thu nhập thấp muốn được công nhận hộ nghèo thì sao",
+  "beh": "clarify",
+  "exp": [
+   "1.011606",
+   "1.011607",
+   "1.116214",
+   "1.116215"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "3.000412"
+  ]
+ },
+ {
+  "id": "pr-16",
+  "q": "xin giay phep xay nha 2 tang tren dat nha o nong thon",
+  "beh": "answer",
+  "exp": [
+   "1.013225",
+   "1.009122"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "clarify",
+  "tops": [
+   "1.115242"
+  ]
+ },
+ {
+  "id": "pr-17",
+  "q": "me em mat, lo mai tang phi dc ho tro ko",
+  "beh": "clarify",
+  "exp": [
+   "1.001731",
+   "1.014028",
+   "3.000731",
+   "2.002307",
+   "1.010456"
+  ],
+  "beh_ok": false,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001731"
+  ]
+ },
+ {
+  "id": "pr-18",
+  "q": "cho con 14 tuổi làm thẻ căn cước thì đi đâu",
+  "beh": "answer",
+  "exp": [
+   "1.116410"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "3.000722"
+  ]
+ },
+ {
+  "id": "pr-19",
+  "q": "cháu trai 17 tuổi đăng ký nghĩa vụ quân sự lần đầu nộp ở đâu",
+  "beh": "answer",
+  "exp": [
+   "1.013133"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.013133"
+  ]
+ },
+ {
+  "id": "pr-20",
+  "q": "làm thủ tục nhận con nuôi trong nước tốn bao nhiêu",
+  "beh": "answer",
+  "exp": [
+   "2.001263"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.001263"
+  ]
+ },
+ {
+  "id": "pr-21",
+  "q": "tranh chấp ranh giới đất với nhà hàng xóm, xã có hòa giải ko",
+  "beh": "answer",
+  "exp": [
+   "1.012812",
+   "1.013967"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.002211"
+  ]
+ },
+ {
+  "id": "pr-22",
+  "q": "nhà văn hóa thôn tổ chức lễ hội thì thông báo trước bao nhiêu ngày",
+  "beh": "answer",
+  "exp": [
+   "1.003622",
+   "1.013791"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.003622"
+  ]
+ },
+ {
+  "id": "pr-23",
+  "q": "cho mình hỏi làm khai tử với xóa thường trú cho ông nội thì mất bao lâu, có tốn phí ko",
+  "beh": "answer",
+  "exp": [
+   "1.000656",
+   "1.003197",
+   "2.002913"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.002913"
+  ]
+ },
+ {
+  "id": "pr-24",
+  "q": "gia hạn tạm trú phí bao nhiêu, với khách ở nhà vài hôm thì báo lưu trú sao",
+  "beh": "answer",
+  "exp": [
+   "1.002755",
+   "2.001159"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.002755",
+   "2.001159"
+  ]
+ },
+ {
+  "id": "pr-25",
+  "q": "xin cấp hộ chiếu mới cho con thì nộp hồ sơ ở xã đc ko",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr-26",
+  "q": "em muốn ly hôn đơn phương, nộp đơn ở đâu, tốn bao nhiêu",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr-27",
+  "q": "thi bằng lái xe máy a1 đăng ký ở đâu vậy cán bộ",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr-28",
+  "q": "cho em xin phiếu lý lịch tư pháp số 2 đi xin visa",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr-29",
+  "q": "hôm nay giá vàng bao nhiêu vậy ad",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "pr-30",
+  "q": "thành lập công ty tnhh vốn 2 tỷ phải làm sao",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "prc-01.1",
+  "q": "mình muốn đăng ký tạm trú cho con ở trọ",
+  "beh": "answer",
+  "exp": [
+   "1.004194"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004194"
+  ]
+ },
+ {
+  "id": "prc-01.2",
+  "q": "thế còn phí?",
+  "beh": "answer",
+  "exp": [
+   "1.004194"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004194"
+  ]
+ },
+ {
+  "id": "prc-01.3",
+  "q": "gia hạn thì sao",
+  "beh": "answer",
+  "exp": [
+   "1.002755"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.002755"
+  ]
+ },
+ {
+  "id": "prc-02.1",
+  "q": "chứng thực chữ ký",
+  "beh": "answer",
+  "exp": [
+   "2.000884"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.000884"
+  ]
+ },
+ {
+  "id": "prc-02.2",
+  "q": "à không, ý tôi là chứng thực bản sao từ bản chính",
+  "beh": "answer",
+  "exp": [
+   "2.000815"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.000815"
+  ]
+ },
+ {
+  "id": "prc-02.3",
+  "q": "mất bao lâu",
+  "beh": "answer",
+  "exp": [
+   "2.000815"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.000815"
+  ]
+ },
+ {
+  "id": "prc-03.1",
+  "q": "ba mình mất rồi, đất đứng tên ba, muốn sang tên",
+  "beh": "clarify",
+  "exp": [
+   "2.001406",
+   "2.001016",
+   "1.115924",
+   "1.115995",
+   "1.116292"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.000656"
+  ]
+ },
+ {
+  "id": "prc-03.2",
+  "q": "cả nhà thống nhất mấy anh chị em không nhận, để lại cho con trai cả",
+  "beh": "answer",
+  "exp": [
+   "2.001016"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "prc-03.3",
+  "q": "phí bao nhiêu",
+  "beh": "answer",
+  "exp": [
+   "2.001016"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.000656"
+  ]
+ },
+ {
+  "id": "prc-04.1",
+  "q": "làm lại giấy khai sinh",
+  "beh": "clarify",
+  "exp": [
+   "1.004884",
+   "2.000635"
+  ],
+  "beh_ok": false,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004884"
+  ]
+ },
+ {
+  "id": "prc-04.2",
+  "q": "cái thứ hai, bản sao thôi",
+  "beh": "answer",
+  "exp": [
+   "2.000635"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "prc-04.3",
+  "q": "phí 8 nghìn đúng không",
+  "beh": "answer",
+  "exp": [
+   "2.000635"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.013133"
+  ]
+ }
+]

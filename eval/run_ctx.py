@@ -13,7 +13,7 @@ ap.add_argument("-v", action="store_true")
 ap.add_argument("--split", default="all")
 a = ap.parse_args()
 cases = [json.loads(l) for l in open(os.path.join(HERE, "cases_ctx.jsonl"), encoding="utf-8")]
-cases = [c for c in cases if a.split in ("all", c["split"])]
+cases = [c for c in cases if a.split == c["split"] or (a.split == "all" and c["split"] != "ctx-p16") or a.split == "every"]   # "all" = bộ gốc (ctx-dev + ctx-hold, 91 ca); ctx-p16 chạy riêng
 res, by = [], defaultdict(list)
 for c in cases:
     out = answer_adapter.adapter(c["turns"])
@@ -30,7 +30,7 @@ for c in cases:
     if ex["tasks"] and ex["tasks"][0]["fields"]:
         fo = set(fields or []) == set(ex["tasks"][0]["fields"])
     r = dict(id=c["id"], cat=c["category"], ok=ok, fields_ok=fo, tops=tops[:2], behavior=out["behavior"], bad=bad,
-             last=c["turns"][-1]["text"], exp=sorted(acc), trace=out.get("extra", {}).get("ctx"))
+             last=c["turns"][-1]["text"], exp=sorted(acc), trace=out.get("extra", {}).get("ctx"), llm=out.get("extra", {}).get("llm"))
     res.append(r)
     by[c["category"]].append(r)
     if a.v and not ok:

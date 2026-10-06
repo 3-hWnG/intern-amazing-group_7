@@ -7,13 +7,16 @@ Chấm: lượt user CUỐI. kind 'h' (độc lập): không được kế thừ
 import json, os, sqlite3, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-DB = os.environ.get("S3_DB", r"D:\Finale_architect\repo\Database\runtime\procedures.db")
+DB = os.environ.get("S3_DB") or os.environ.get("S3_DATA_DB") or os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "runtime", "system3.db")   # DB của System 3 (repo V10.6 cũ không còn)
 
 KS, NCM, TL, LT, KSLK, KSL = "1.001193", "1.001022", "2.000635", "3.000722", "1.000689", "1.004884"
 TT, TAM, GH, XTT, TH, TV = "1.004222", "1.004194", "1.002755", "1.003197", "1.010038", "1.003677"
 KH, KHLD, XNHN, KT, LTKT, MT, MT2 = "1.000894", "1.000593", "1.004873", "1.000656", "2.002913", "1.001731", "3.000725"
 HK_TL, HK_CD, HK_TN, HK_TD = "1.001612", "1.001266", "1.001570", "2.000720"
-CK, BS, DC, CC, KTAT, GHO, NCN, KHNN = "2.000992", "2.000942", "2.001019", "1.116410", "1.001699", "1.004837", "2.001263", "2.000806"
+# Phase 16: CK/BS trước đây ghi theo kết quả hệ thống lúc đó (2.000992 = chứng thực chữ ký NGƯỜI DỊCH, 2.000942 = cấp bản sao có chứng thực từ bản chính GIAO DỊCH).
+# Khoá nghiệp vụ của DEV (build_cases.P: CT_CK, CT_BS) là 2.000884 / 2.000815; ở đây chấp nhận CẢ HAI để số ctx so được trước/sau (đáp án cũ vẫn tính đúng).
+CK, CKD, BS, BSO = "2.000884", "2.000992", "2.000815", "2.000942"
+DC, CC, KTAT, GHO, NCN, KHNN = "2.001019", "1.116410", "1.001699", "1.004837", "2.001263", "2.000806"
 LKH = "1.004746"
 
 # (id, kind, [(user, pid_answered)...] (lượt cuối: pid_answered bỏ), [đáp án], fields|None, forbid)
@@ -97,7 +100,7 @@ TVG, HN, TCXH, LNCN = TV, "1.011607", "1.001776", "2.001255"
 add("a", [("Cho mình hỏi thủ tục khai báo tạm vắng", TV), ("phải nộp cái gì vậy", None)], [TV], ["components"])
 add("a", [("công nhận hộ nghèo cần giấy tờ gì", HN), ("ai giải quyết cái này", None)], [HN], ["agency"])
 add("a", [("làm lại thẻ căn cước", CC), ("ok, thế nộp trên mạng được không", None)], [CC], ["online"])
-add("a", [("chứng thực chữ ký", CK), ("mất tiền không", None)], [CK], ["fees"])
+add("a", [("chứng thực chữ ký", CK), ("mất tiền không", None)], [CK, CKD], ["fees"])
 add("b", [("thay đổi nội dung đăng ký hộ kinh doanh", HK_TD), ("hồ sơ gồm gì", HK_TD), ("lệ phí", HK_TD), ("bao lâu thì xong", None)], [HK_TD], ["processing_time"])
 add("c", [("đăng ký nuôi con nuôi trong nước", NCN), ("còn đăng ký lại việc nuôi con nuôi thì sao", None)], [LNCN])
 add("c", [("đăng ký khai sinh cần gì", KS), ("thế còn khai tử", None)], [KT])
@@ -105,9 +108,9 @@ add("c", [("đăng ký khai tử cần gì", KT), ("còn khai sinh nữa nhỉ",
 add("c", [("khai báo tạm vắng", TV), ("à còn tạm trú thì sao", None)], [TAM])
 add("c", [("thành lập hộ kinh doanh cần gì", HK_TL), ("rồi muốn chấm dứt hoạt động hộ kinh doanh thì sao", None)], [HK_CD])
 add("c", [("công nhận hộ nghèo cần giấy tờ gì", HN), ("thế còn trợ cấp xã hội hàng tháng", None)], [TCXH])
-add("c", [("chứng thực chữ ký cần gì", CK), ("bên cạnh đó chứng thực bản sao từ bản chính thì cần gì", None)], [BS])
+add("c", [("chứng thực chữ ký cần gì", CK), ("bên cạnh đó chứng thực bản sao từ bản chính thì cần gì", None)], [BS, BSO])
 add("d", [("đăng ký thường trú cần gì", TT), ("ý mình là xóa đăng ký thường trú chứ không phải đăng ký thường trú", None)], [XTT], forbid=[TT])
-add("d", [("chứng thực chữ ký cần gì", CK), ("không phải, tôi hỏi chứng thực di chúc", None)], [DC], forbid=[CK])
+add("d", [("chứng thực chữ ký cần gì", CK), ("không phải, tôi hỏi chứng thực di chúc", None)], [DC], forbid=[CK, CKD])
 add("d", [("đăng ký kết hôn cần gì", KH), ("nhầm, tôi muốn đăng ký lại kết hôn", None)], [LKH], forbid=[KH])
 add("e", [("bé nhà mình sinh được hai tuần rồi", None), ("giờ phải làm gì để có giấy khai sinh", None)], [KS, KSLK, LT])
 add("e", [("ba tôi vừa qua đời", None), ("cần làm giấy tờ gì ở phường", None)], [KT, LTKT, XTT])
@@ -116,17 +119,26 @@ add("f", [("tách hộ", TH), ("thủ tục đó mất phí không", None)], [TH
 add("f", [("đăng ký nuôi con nuôi", NCN), ("vậy thì nộp ở đâu thế", None)], [NCN], ["address"])
 add("g", [("đăng ký khai sinh", KS), ("đăng ký khai tử", KT), ("thôi quay lại khai sinh, mất bao lâu", None)], [KS], ["processing_time"])
 add("g", [("đăng ký tạm trú", TAM), ("đăng ký kết hôn", KH), ("chứng thực chữ ký", CK), ("cái đầu tiên ấy, lệ phí bao nhiêu", None)], [TAM], ["fees"])
-add("h", [("chứng thực chữ ký cần gì", CK), ("đăng ký khai sinh cần gì", None)], [KS], forbid=[CK])
+add("h", [("chứng thực chữ ký cần gì", CK), ("đăng ký khai sinh cần gì", None)], [KS], forbid=[CK, CKD])
 add("h", [("khai báo tạm vắng", TV), ("thành lập hộ kinh doanh cần gì", None)], [HK_TL], forbid=[TV])
 add("h", [("đăng ký khai sinh", KS), ("cảm ơn nhé", None)], [], forbid=[KS])
 add("h", [("công nhận hộ nghèo cần giấy tờ gì", HN), ("mua bảo hiểm xe máy ở đâu", None)], [], forbid=[HN])
 add("h", [("đăng ký thường trú", TT), ("đăng ký tạm trú mất bao lâu", None)], [TAM], ["processing_time"], forbid=[TT])
-add("h", [("đăng ký khai tử", KT), ("chứng thực chữ ký ở đâu", None)], [CK], ["address"], forbid=[KT])
+add("h", [("đăng ký khai tử", KT), ("chứng thực chữ ký ở đâu", None)], [CK, CKD], ["address"], forbid=[KT])
 add("i", [("thành lập hộ kinh doanh cần gì", HK_TL), ("nếu tôi chỉ bán online thì sao", None)], [HK_TL])
-add("i", [("chứng thực chữ ký cần gì", CK), ("trường hợp người ký là người khuyết tật thì sao?", None)], [CK])
+add("i", [("chứng thực chữ ký cần gì", CK), ("trường hợp người ký là người khuyết tật thì sao?", None)], [CK, CKD])
 add("i", [("đăng ký nuôi con nuôi", NCN), ("còn nếu nhận con của người thân thì sao", None)], [NCN])
 add("i", [("xác định mức độ khuyết tật", KTAT), ("nếu không đi lại được thì làm sao", None)], [KTAT])
 add("i", [("đăng ký tạm trú", TAM), ("mà tôi chưa có sổ đỏ thì sao", None)], [TAM])
+
+# ---------------------------------------------------------------------------------------------------------------
+# split "ctx-p16": Phase 16 (nhóm D) do agent sửa lỗi tự nghĩ; thẻ hỏi lại ("LIST") + câu nối "cái thứ n", "còn phí?", kể thêm hoàn cảnh
+SPLIT = "ctx-p16"
+import importlib.util as _iu
+_sp = _iu.spec_from_file_location("build_p16", os.path.join(HERE, "build_p16.py"))
+_m = _iu.module_from_spec(_sp); _sp.loader.exec_module(_m)
+for _k, _t, _a, _f, _fb in _m.CTX:
+    add(_k, _t, _a, _f, _fb or ())
 
 
 def build():
@@ -134,14 +146,17 @@ def build():
     names = {r[0]: r[1] for r in db.execute("select proc_id,name from procedures where status='active'")}
     out = []
     for i, (kind, turns, ans, fields, forbid, split) in enumerate(C, 1):
-        for p in ans + forbid + [p for _, p in turns if p]:
+        for p in ans + forbid + [x for _, p in turns if p for x in (p[1:] if isinstance(p, tuple) else [p])]:
             assert p in names, p
         tt = []
         for j, (text, p) in enumerate(turns):
             tt.append({"role": "user", "text": text})
             if j < len(turns) - 1:
-                a = (f"Về «{names[p]}»: bạn cần chuẩn bị hồ sơ theo quy định, nộp tại UBND cấp xã. Bạn muốn hỏi thêm gì không?"
-                     if p else "Mình đã ghi nhận. Bạn muốn hỏi về thủ tục nào?")
+                if isinstance(p, tuple):    # thẻ hỏi lại đã đánh số (đúng định dạng lưu trong lịch sử hội thoại)
+                    a = "Bạn muốn hỏi về thủ tục nào? " + " ".join(f"{k}) {names[x]}" for k, x in enumerate(p[1:], 1))
+                else:
+                    a = (f"Về «{names[p]}»: bạn cần chuẩn bị hồ sơ theo quy định, nộp tại UBND cấp xã. Bạn muốn hỏi thêm gì không?"
+                         if p else "Mình đã ghi nhận. Bạn muốn hỏi về thủ tục nào?")
                 tt.append({"role": "assistant", "text": a})
         out.append({"id": f"{split.replace('ctx-', '')}-{i:02d}", "category": f"ctx_{kind}", "split": split, "source": "ctx-own", "turns": tt,
                     "expected": {"tasks": [{"acceptable_proc_ids": ans, "fields": fields or []}] if ans else [],

@@ -36,7 +36,6 @@ Trả về `tasks[] {proc_id, candidates[], fields[] | None, quantity}`, `behavi
 - `build_cases.py` - dựng lại và kiểm chứng (`python build_cases.py`; đọc `repo` read-only).
 - `run.py`, `baseline_adapter.py`, `selftest.py` (oracle phải 100%, "kẻ nói dối" bị bắt bịa).
 - `results/baseline.json`, `results/baseline_stripped.json`, `BASELINE.md`.
-- `_q.py` - công cụ tra cứu tạm khi soạn câu (có thể xoá).
 
 ## Đợt 3 / Phase 8: tách DEV - HOLDOUT, bộ chấm luật
 - `cases.jsonl` mỗi câu có `split` (`dev`|`holdout`) và `source` (`synthetic-dev` | `holdout-real-style` | `holdout-varied`). 185 câu cũ = DEV, giữ nguyên lời. Dựng bằng `python build_cases.py` (gọi `cases_new.py` cho phần mới; assert mọi proc_id / condition_index với DB).

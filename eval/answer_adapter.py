@@ -1,5 +1,7 @@
 """Adapter đo Phase 5: pre_check -> Planner -> Policy -> Answerer. Có answer_text nên chấm được bịa số / không công bố / trích nguồn.
-Chạy: python run.py --adapter answer_adapter:adapter --name phase5      (S3_USE_LLM=0: chỉ luật)"""
+Chạy: python run.py --adapter answer_adapter:adapter --name phase5      (S3_USE_LLM=0: chỉ luật)
+Phase 19: S3_PLANNER_MODE=hybrid chạy Planner hybrid (luật + Qwen3-4B); S3_PLANNER_LLM_CACHE=file.jsonl phát lại đề xuất LLM (quét ngưỡng không gọi lại);
+PLANNER_LLM_CONFIDENCE=0.9 đổi ngưỡng. extra.llm = nhật ký planner_llm."""
 import os, sys, time
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
@@ -44,4 +46,4 @@ def adapter(turns):
     nps = bool(__import__("re").search(r"không công bố|không có nghĩa là miễn phí|chưa tra được|không ghi", text))
     return {"tasks": tasks, "behavior": beh, "answer_text": text, "says_not_published": nps, "fields_supported": True,
             "latency_ms": (time.perf_counter() - t0) * 1000,
-            "extra": {"ctx": p.ctx, "source": p.source, "verify": a["verify"], "routes": [(x.route, x.reason) for x in r.tasks]}}
+            "extra": {"ctx": p.ctx, "source": p.source, "llm": p.llm_trace, "verify": a["verify"], "routes": [(x.route, x.reason) for x in r.tasks]}}

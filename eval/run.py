@@ -17,7 +17,7 @@ from collections import defaultdict
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from rules_scorer import score_rule  # noqa: E402
-DB = os.environ.get("S3_DB", r"D:\Finale_architect\repo\Database\runtime\procedures.db")
+DB = os.environ.get("S3_DB") or os.environ.get("S3_DATA_DB") or os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "runtime", "system3.db")   # DB của System 3 (repo V10.6 cũ không còn)
 
 # --------------------------------------------------------------- nguồn ------
 _blob = {}

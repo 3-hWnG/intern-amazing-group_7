@@ -21,6 +21,9 @@ ABBR = [("đăng ký", "đk"), ("giấy chứng nhận", "gcn"), ("không", "ko"
         ("hộ khẩu", "hk"), ("giấy phép", "gp"), ("căn cước công dân", "cccd"), ("giấy khai sinh", "gks")]
 
 
+DUMP = []      # (split, kiểu, câu, đúng?, top, đáp án) cho --dump (so sánh trước/sau)
+
+
 def core(name):
     n = re.sub(r"\([^)]*\)", " ", name)
     n = re.sub(r"^\s*th[ủu] t[ụu]c\s+", "", n, flags=re.I)
@@ -145,21 +148,79 @@ def run(split, n, show):
     cases = build(split, n)
     ok = {}
     bad = []
+    strict = 0
     for x, k, q in cases:
         res = resolve(idx, [{"role": "user", "text": q}])
         top = next((s.proc_id for s in res.segments if s.proc_id), None)
         good = top is not None and (fam[top][0] == fam[x["proc_id"]][0] or fam[top][1] == fam[x["proc_id"]][1])
+        strict += top is not None and (top == x["proc_id"] or fam[top][1] == fam[x["proc_id"]][1])   # Phase 16: đúng CHÍNH thủ tục (không tính anh em cùng nhóm)
+        DUMP.append((split, k, q, bool(good), top, x["proc_id"]))
         a = ok.setdefault(k, [0, 0])
         a[0] += good
         a[1] += 1
         if not good:
             bad.append((k, q, x["name"][:70], top and fam[top][1][:50], res.segments[0].reason if res.segments else ""))
     tot = sum(v[0] for v in ok.values()), sum(v[1] for v in ok.values())
-    print(f"[{split}] procs={len(cases)//3} cases={tot[1]} top1={100*tot[0]/tot[1]:.1f}%")
+    print(f"[{split}] procs={len(cases)//3} cases={tot[1]} top1={100*tot[0]/tot[1]:.1f}% | chính xác từng thủ tục (strict) {100*strict/tot[1]:.1f}%")
     print("   " + " | ".join(f"{k} {100*v[0]/v[1]:.0f}%({v[1]})" for k, v in sorted(ok.items())))
     for b in bad[:show]:
         print("   X", b)
     return 100 * tot[0] / tot[1]
+
+
+def run_ambig():
+    """Phase 16 nhóm A, sinh từ DB (không câu cố định): (1) GỌI ĐÚNG TÊN lõi một thủ tục => KHÔNG được hỏi lại (hỏi thừa) và phải chọn đúng nó;
+    (2) chỉ gõ CỤM ĐẦU CHUNG của >= 3 thủ tục khác nhau (không thủ tục nào mang đúng cụm đó) => phải hỏi lại (near >= 3)."""
+    conn = api.connect()
+    idx = Index(conn)
+    rows = conn.execute("select p.proc_id, p.name, p.domain from procedures p where p.status='active' and p.province is null "
+                        "and p.agency_levels like '%Xã/Phường%'").fetchall()
+    rows = [x for x in rows if not set(x["domain"].split(";")) & {"Thuế", "Hải quan"}]
+    cn = {x["proc_id"]: fold(core(x["name"])) for x in rows}
+    name_count = {}
+    for v in cn.values():
+        name_count[v] = name_count.get(v, 0) + 1
+    r = random.Random(4242)
+    # (1) tên đầy đủ (<= 9 chữ để người dùng gõ nổi), tên duy nhất trong kho
+    exact = [x for x in rows if 3 <= len(cn[x["proc_id"]].split()) <= 9 and name_count[cn[x["proc_id"]]] == 1]
+    r.shuffle(exact)
+    exact = exact[:250]
+    over, wrong = [], []
+    for x in exact:
+        seg = resolve(idx, [{"role": "user", "text": core(x["name"])}]).segments[0]
+        if seg.near:
+            over.append((core(x["name"])[:70], len(seg.near)))
+        if seg.proc_id != x["proc_id"]:
+            wrong.append(core(x["name"])[:60])
+    print(f"[ambig] gọi đúng tên: {len(exact)} ca, hỏi thừa {len(over)} ({100*len(over)/len(exact):.1f}%), chọn sai {len(wrong)} ({100*len(wrong)/len(exact):.1f}%)")
+    for o in over[:8]:
+        print("   OVER", o)
+    # (2) cụm đầu chung: 3 chữ đầu của tên lõi, có >= 3 thủ tục với 3 chữ thứ-4-trở-đi khác nhau, không thủ tục nào chỉ đúng cụm đó
+    from collections import defaultdict
+    by = defaultdict(list)
+    for x in rows:
+        t = cn[x["proc_id"]].split()
+        if len(t) >= 6:
+            by[" ".join(t[:3])].append((x, t))
+    cand = []
+    for k, xs in by.items():
+        tails = {" ".join(t[3:5]) for _, t in xs}
+        if len(xs) >= 3 and len(tails) >= 3 and k not in set(cn.values()) and not k.startswith(("dang ky", "thu tuc", "cap lai", "cap giay")):
+            cand.append((k, xs))
+    r.shuffle(cand)
+    asked, miss = 0, []
+    for k, xs in cand[:60]:
+        text = core(xs[0][0]["name"]).split()
+        q = " ".join(text[:3])
+        seg = resolve(idx, [{"role": "user", "text": q}]).segments[0]
+        if len(seg.near) >= 3:
+            asked += 1
+        else:
+            miss.append((q, seg.proc_id and cn.get(seg.proc_id, "")[:40], len(xs)))
+    n = min(60, len(cand))
+    print(f"[ambig] gõ cụm đầu chung của >=3 thủ tục: {n} ca, hỏi lại đúng {asked} ({100*asked/max(1,n):.1f}%)")
+    for m in miss[:8]:
+        print("   MISS", m)
 
 
 def run_fixed():
@@ -181,7 +242,12 @@ if __name__ == "__main__":
     ap.add_argument("--n", type=int, default=450)
     ap.add_argument("--show", type=int, default=0)
     ap.add_argument("--splits", default="train,test")
+    ap.add_argument("--dump", default="")
     a = ap.parse_args()
     for s in a.splits.split(","):
         run(s, a.n, a.show)
+    run_ambig()
+    if a.dump:
+        import json
+        json.dump(DUMP, open(a.dump, "w", encoding="utf-8"), ensure_ascii=False)
     run_fixed()

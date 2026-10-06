@@ -1,0 +1,1617 @@
+[
+ {
+  "id": "h4-001",
+  "q": "giay to xin cap lai giay xac nhan khuyet tat can nhung gi",
+  "beh": "answer",
+  "exp": [
+   "1.001653"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001653"
+  ]
+ },
+ {
+  "id": "h4-002",
+  "q": "khai tu cho ong noi thi bao lau co ket qua vay",
+  "beh": "answer",
+  "exp": [
+   "1.000656"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-003",
+  "q": "Giấy xác nhận tình trạng hôn nhân nộp ở đâu vậy ad",
+  "beh": "answer",
+  "exp": [
+   "1.004873"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004873"
+  ]
+ },
+ {
+  "id": "h4-004",
+  "q": "tách hộ thì phải đủ điều kiện gì mới được",
+  "beh": "answer",
+  "exp": [
+   "1.010038"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.010038"
+  ]
+ },
+ {
+  "id": "h4-005",
+  "q": "tạm trú sắp hết hạn muốn gia hạn mang theo giấy gì",
+  "beh": "answer",
+  "exp": [
+   "1.002755"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.002755"
+  ]
+ },
+ {
+  "id": "h4-006",
+  "q": "thủ tục công nhận hòa giải viên nộp hồ sơ ở đâu",
+  "beh": "answer",
+  "exp": [
+   "1.002211"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.002211"
+  ]
+ },
+ {
+  "id": "h4-007",
+  "q": "nhà em có cây xanh trước cửa cản đường điện muốn xin chặt thì cần giấy tờ gì",
+  "beh": "answer",
+  "exp": [
+   "1.002693",
+   "1.014052"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.002693"
+  ]
+ },
+ {
+  "id": "h4-008",
+  "q": "đăng ký hoạt động tín ngưỡng cần hồ sơ gì",
+  "beh": "answer",
+  "exp": [
+   "1.012592"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.012591"
+  ]
+ },
+ {
+  "id": "h4-009",
+  "q": "muốn mở tiệm tạp hoá nhỏ đăng ký hộ kinh doanh thì nộp ở đâu",
+  "beh": "answer",
+  "exp": [
+   "1.001612"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001612"
+  ]
+ },
+ {
+  "id": "h4-010",
+  "q": "đăng ký nghĩa vụ quân sự lần đầu thì ai phải đi đăng ký",
+  "beh": "answer",
+  "exp": [
+   "1.013133"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.013133"
+  ]
+ },
+ {
+  "id": "h4-011",
+  "q": "xét gia đình văn hóa phải đạt tiêu chí nào",
+  "beh": "answer",
+  "exp": [
+   "6.006758"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "6.006758"
+  ]
+ },
+ {
+  "id": "h4-012",
+  "q": "lễ hội làng mình tổ chức thì phải thông báo trước bao nhiêu ngày",
+  "beh": "answer",
+  "exp": [
+   "1.003622",
+   "1.013791"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.003622"
+  ]
+ },
+ {
+  "id": "h4-013",
+  "q": "hồ sơ xin hỗ trợ mai táng cho người đang nhận trợ cấp xã hội hàng tháng gồm gì",
+  "beh": "answer",
+  "exp": [
+   "1.001731",
+   "3.000731"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "3.000731"
+  ]
+ },
+ {
+  "id": "h4-014",
+  "q": "mat bang to quoc ghi cong gia dinh minh muon xin cap lai thi can giay to gi",
+  "beh": "answer",
+  "exp": [
+   "1.010778"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.010778"
+  ]
+ },
+ {
+  "id": "h4-015",
+  "q": "nhận con nuôi trong nước hồ sơ gồm những gì",
+  "beh": "answer",
+  "exp": [
+   "2.001263"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.001263"
+  ]
+ },
+ {
+  "id": "h4-016",
+  "q": "xin xac nhan thong tin cu tru mat may ngay",
+  "beh": "answer",
+  "exp": [
+   "1.010041"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.002516"
+  ]
+ },
+ {
+  "id": "h4-017",
+  "q": "thông báo lưu trú là gì, nhà có khách ở lại có phải báo không",
+  "beh": "answer",
+  "exp": [
+   "2.001159"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.001159"
+  ]
+ },
+ {
+  "id": "h4-018",
+  "q": "làm giám hộ cho cháu nhỏ mồ côi cha mẹ thì cần giấy tờ gì",
+  "beh": "answer",
+  "exp": [
+   "1.004837"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004837"
+  ]
+ },
+ {
+  "id": "h4-019",
+  "q": "khai báo tạm vắng khi đi làm xa dài ngày có phải làm không",
+  "beh": "answer",
+  "exp": [
+   "1.003677"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.003677"
+  ]
+ },
+ {
+  "id": "h4-020",
+  "q": "cấp giấy xác nhận thân nhân người có công cần đem theo gì",
+  "beh": "answer",
+  "exp": [
+   "1.010833"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.010833"
+  ]
+ },
+ {
+  "id": "h4-021",
+  "q": "đăng ký sinh hoạt tôn giáo tập trung nộp hồ sơ tại đâu",
+  "beh": "answer",
+  "exp": [
+   "1.012590"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.012590"
+  ]
+ },
+ {
+  "id": "h4-022",
+  "q": "xây nhà cấp 4 mới trong xã cần xin phép không, hồ sơ gì",
+  "beh": "answer",
+  "exp": [
+   "1.013225"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-023",
+  "q": "đăng ký khai sinh cho con cần giấy tờ gì, có mất phí không, bao lâu thì lấy được giấy khai sinh",
+  "beh": "answer",
+  "exp": [
+   "1.001193"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001193",
+   "2.000635"
+  ]
+ },
+ {
+  "id": "h4-024",
+  "q": "cho mình hỏi đăng ký kết hôn hồ sơ gồm gì, nộp ở đâu, lệ phí bao nhiêu",
+  "beh": "answer",
+  "exp": [
+   "1.000894"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.000894"
+  ]
+ },
+ {
+  "id": "h4-025",
+  "q": "đổi thẻ căn cước thì cần giấy tờ gì, phí bao nhiêu, bao lâu nhận được",
+  "beh": "answer",
+  "exp": [
+   "1.116410"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.116410"
+  ]
+ },
+ {
+  "id": "h4-026",
+  "q": "dk thuong tru can dieu kien gi, ho so nhung gi, may ngay xong",
+  "beh": "answer",
+  "exp": [
+   "1.004222"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004222"
+  ]
+ },
+ {
+  "id": "h4-027",
+  "q": "xin giay xac nhan tinh trang hon nhan can giay to gi, ton bao nhieu, may ngay lay",
+  "beh": "answer",
+  "exp": [
+   "1.004873"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004873"
+  ]
+ },
+ {
+  "id": "h4-028",
+  "q": "chứng thực chữ ký ở đâu, phí bao nhiêu, mang giấy tờ gì",
+  "beh": "answer",
+  "exp": [
+   "2.000884"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.000884"
+  ]
+ },
+ {
+  "id": "h4-029",
+  "q": "đăng ký lại khai sinh điều kiện là gì, hồ sơ gì, mất mấy ngày",
+  "beh": "answer",
+  "exp": [
+   "1.004884"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004884",
+   "1.004884"
+  ]
+ },
+ {
+  "id": "h4-030",
+  "q": "đăng ký tạm trú giấy tờ gì, mất mấy ngày, có tốn tiền ko",
+  "beh": "answer",
+  "exp": [
+   "1.004194"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004194",
+   "1.004194"
+  ]
+ },
+ {
+  "id": "h4-031",
+  "q": "chứng thực bản sao từ bản chính mỗi trang bao nhiêu tiền",
+  "beh": "answer",
+  "exp": [
+   "2.000815"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.000942"
+  ]
+ },
+ {
+  "id": "h4-032",
+  "q": "chứng thực chữ ký một trường hợp thu bao nhiêu",
+  "beh": "answer",
+  "exp": [
+   "2.000884"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.000884"
+  ]
+ },
+ {
+  "id": "h4-033",
+  "q": "chung thuc di chuc het bao nhieu tien",
+  "beh": "answer",
+  "exp": [
+   "2.001019"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.001019"
+  ]
+ },
+ {
+  "id": "h4-034",
+  "q": "làm lại thẻ căn cước bị mất tốn bao nhiêu",
+  "beh": "answer",
+  "exp": [
+   "1.116410"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.116410"
+  ]
+ },
+ {
+  "id": "h4-035",
+  "q": "bản sao trích lục khai sinh lệ phí bao nhiêu một bản",
+  "beh": "answer",
+  "exp": [
+   "2.000635"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.000635"
+  ]
+ },
+ {
+  "id": "h4-036",
+  "q": "đăng ký nuôi con nuôi trong nước tốn bao nhiêu tiền",
+  "beh": "answer",
+  "exp": [
+   "2.001263"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.001263"
+  ]
+ },
+ {
+  "id": "h4-037",
+  "q": "xác định mức độ khuyết tật mất bao nhiêu ngày làm việc",
+  "beh": "answer",
+  "exp": [
+   "1.001699"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001699"
+  ]
+ },
+ {
+  "id": "h4-038",
+  "q": "đổi bằng lái xe của người nước ngoài thu phí bao nhiêu một lần",
+  "beh": "answer",
+  "exp": [
+   "3.000351"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "3.000351"
+  ]
+ },
+ {
+  "id": "h4-039",
+  "q": "cho mình hỏi thủ tục xin cấp giấy chứng nhận quyền sử dụng đất",
+  "beh": "clarify",
+  "exp": [
+   "1.012753",
+   "1.013978",
+   "1.115240",
+   "1.115375",
+   "1.115454",
+   "1.115582",
+   "1.115621"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "clarify",
+  "tops": [
+   "1.115750"
+  ]
+ },
+ {
+  "id": "h4-040",
+  "q": "nhà mình muốn được công nhận hộ nghèo làm thế nào",
+  "beh": "clarify",
+  "exp": [
+   "1.011606",
+   "1.011607",
+   "1.116214",
+   "1.116215"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "clarify",
+  "tops": [
+   "1.011607"
+  ]
+ },
+ {
+  "id": "h4-041",
+  "q": "cần chứng thực chữ ký người dịch",
+  "beh": "clarify",
+  "exp": [
+   "2.000992",
+   "2.001008"
+  ],
+  "beh_ok": false,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.000992"
+  ]
+ },
+ {
+  "id": "h4-042",
+  "q": "tôi muốn đăng ký lại",
+  "beh": "clarify",
+  "exp": [
+   "1.004746",
+   "1.004884",
+   "1.005461"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "clarify",
+  "tops": [
+   "1.005461"
+  ]
+ },
+ {
+  "id": "h4-043",
+  "q": "hỗ trợ chuyển đổi nghề cho tàu cá",
+  "beh": "clarify",
+  "exp": [
+   "1.014604",
+   "1.014971",
+   "1.115156",
+   "3.000580"
+  ],
+  "beh_ok": false,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.014604"
+  ]
+ },
+ {
+  "id": "h4-044",
+  "q": "xin giay phep xay dung",
+  "beh": "clarify",
+  "exp": [
+   "1.013225",
+   "1.013226",
+   "1.013227",
+   "1.013228",
+   "1.013229",
+   "1.009122"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "clarify",
+  "tops": [
+   "1.013226"
+  ]
+ },
+ {
+  "id": "h4-045",
+  "q": "xin hỗ trợ mai táng phí cho người nhà vừa mất",
+  "beh": "clarify",
+  "exp": [
+   "1.001731",
+   "1.010456",
+   "2.002307",
+   "2.002308",
+   "3.000731",
+   "1.014028"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.000656"
+  ]
+ },
+ {
+  "id": "h4-046",
+  "q": "xin giấy xác nhận",
+  "beh": "clarify",
+  "exp": [
+   "1.004873",
+   "1.010041",
+   "1.010833",
+   "1.014103",
+   "1.010386"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "clarify",
+  "tops": [
+   "1.004873"
+  ]
+ },
+ {
+  "id": "h4-047",
+  "q": "giải thể thì làm sao nhỉ",
+  "beh": "clarify",
+  "exp": [
+   "1.004982",
+   "1.013708",
+   "1.014947",
+   "2.002893",
+   "1.012974"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "clarify",
+  "tops": [
+   "1.001639"
+  ]
+ },
+ {
+  "id": "h4-048",
+  "q": "đính chính giấy chứng nhận đã cấp có sai sót",
+  "beh": "clarify",
+  "exp": [
+   "1.012796",
+   "1.115226",
+   "1.115355",
+   "1.115516",
+   "1.115628"
+  ],
+  "beh_ok": false,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.012796"
+  ]
+ },
+ {
+  "id": "h4-049",
+  "q": "hỗ trợ phát triển sản xuất cộng đồng thủ tục thế nào",
+  "beh": "clarify",
+  "exp": [
+   "1.012124",
+   "1.014023",
+   "1.014399",
+   "1.014772",
+   "1.011467",
+   "1.011468"
+  ],
+  "beh_ok": false,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.012124"
+  ]
+ },
+ {
+  "id": "h4-050",
+  "q": "ba me em de lai dat, em muon lam giay to dat sang ten cho em thi lam sao",
+  "beh": "clarify",
+  "exp": [
+   "1.115535",
+   "1.115562",
+   "1.012753",
+   "1.013978"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.014149"
+  ]
+ },
+ {
+  "id": "h4-051",
+  "q": "bé sinh ra mà bố mẹ chưa đăng ký kết hôn, bố muốn nhận con ngay lúc khai sinh thì sao",
+  "beh": "answer",
+  "exp": [
+   "1.000689",
+   "1.001193"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.000894",
+   "1.001193"
+  ]
+ },
+ {
+  "id": "h4-052",
+  "q": "chồng em là người Hàn, hai vợ chồng muốn đăng ký kết hôn ở xã được không",
+  "beh": "answer",
+  "exp": [
+   "2.000806"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.000894"
+  ]
+ },
+ {
+  "id": "h4-053",
+  "q": "em ở sát biên giới, em lấy chồng bên Lào giờ muốn đăng ký kết hôn",
+  "beh": "answer",
+  "exp": [
+   "1.000094",
+   "2.000806"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.000894"
+  ]
+ },
+ {
+  "id": "h4-054",
+  "q": "ông mất đã 3 năm rồi giờ mới đi khai tử có được không",
+  "beh": "answer",
+  "exp": [
+   "1.000656",
+   "1.005461"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.000656"
+  ]
+ },
+ {
+  "id": "h4-055",
+  "q": "nhà em thuê trọ, chủ nhà không cho đăng ký thường trú thì có cách nào không",
+  "beh": "answer",
+  "exp": [
+   "1.004222",
+   "1.013314"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004222"
+  ]
+ },
+ {
+  "id": "h4-056",
+  "q": "gia đình sống trên ghe ở sông, muốn xin xác nhận nơi đậu để đăng ký cư trú",
+  "beh": "answer",
+  "exp": [
+   "1.013313"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.010041"
+  ]
+ },
+ {
+  "id": "h4-057",
+  "q": "bà ngoại nằm liệt giường không đi được, xã có đến tận nhà đăng ký khai tử cho không",
+  "beh": "answer",
+  "exp": [
+   "1.000419"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.000656"
+  ]
+ },
+ {
+  "id": "h4-058",
+  "q": "hộ nhà em đang ghi nợ tiền sử dụng đất vì tái định cư, giờ có tiền muốn trả nợ",
+  "beh": "answer",
+  "exp": [
+   "1.012996"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "answer",
+  "tops": [
+   "1.012995"
+  ]
+ },
+ {
+  "id": "h4-059",
+  "q": "đăng ký khai sinh căn cứ vào luật nào",
+  "beh": "answer",
+  "exp": [
+   "1.001193"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001193",
+   "1.004884"
+  ]
+ },
+ {
+  "id": "h4-060",
+  "q": "thủ tục tách hộ dựa trên văn bản pháp luật nào vậy",
+  "beh": "answer",
+  "exp": [
+   "1.010038"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.010038"
+  ]
+ },
+ {
+  "id": "h4-061",
+  "q": "chứng thực di chúc quy định ở nghị định nào",
+  "beh": "answer",
+  "exp": [
+   "2.001019"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.001019"
+  ]
+ },
+ {
+  "id": "h4-062",
+  "q": "cho em xin nguồn văn bản quy định thủ tục xin giấy phép xây dựng nhà ở riêng lẻ cấp 4",
+  "beh": "answer",
+  "exp": [
+   "1.013225"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "clarify",
+  "tops": [
+   "1.013228"
+  ]
+ },
+ {
+  "id": "h4-063",
+  "q": "đăng ký hộ kinh doanh theo thông tư nào, nói rõ nguồn giúp em",
+  "beh": "answer",
+  "exp": [
+   "1.001612"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001612"
+  ]
+ },
+ {
+  "id": "h4-064",
+  "q": "khai sinh cho con xong rồi làm luôn đăng ký thường trú cho bé thì làm sao",
+  "beh": "answer",
+  "exp": [
+   "1.001193",
+   "1.004222",
+   "3.000722"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004222"
+  ]
+ },
+ {
+  "id": "h4-065",
+  "q": "mình muốn đăng ký tạm trú mới và khai báo tạm vắng ở chỗ cũ",
+  "beh": "answer",
+  "exp": [
+   "1.004194",
+   "1.003677"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004194",
+   "1.003677"
+  ]
+ },
+ {
+  "id": "h4-066",
+  "q": "bố mất rồi, vừa phải đi khai tử vừa xin hỗ trợ mai táng, hồ sơ mỗi cái gì",
+  "beh": "answer",
+  "exp": [
+   "1.000656",
+   "1.001731",
+   "3.000731",
+   "2.002913"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.000656"
+  ]
+ },
+ {
+  "id": "h4-067",
+  "q": "em cần chứng thực di chúc và chứng thực văn bản từ chối nhận di sản",
+  "beh": "answer",
+  "exp": [
+   "2.001019",
+   "2.001016"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.001019",
+   "2.001016"
+  ]
+ },
+ {
+  "id": "h4-068",
+  "q": "đổi thẻ căn cước đồng thời điều chỉnh thông tin trong cơ sở dữ liệu dân cư",
+  "beh": "answer",
+  "exp": [
+   "1.116410",
+   "1.012564",
+   "1.014066"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.014066"
+  ]
+ },
+ {
+  "id": "h4-069",
+  "q": "nghi ban hang roi nen dong cua ho kinh doanh, tien the cap lai luon giay chung nhan ho kinh doanh bi mat",
+  "beh": "answer",
+  "exp": [
+   "1.001266",
+   "2.000575"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-070",
+  "q": "xóa tạm trú ở quê và đăng ký thường trú ở chỗ mới",
+  "beh": "answer",
+  "exp": [
+   "1.010028",
+   "1.004222"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.010028",
+   "1.004222"
+  ]
+ },
+ {
+  "id": "h4-071",
+  "q": "làm hộ chiếu mới cần giấy tờ gì ở phường",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-072",
+  "q": "xin cấp phiếu lý lịch tư pháp số 1 ở đâu",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-073",
+  "q": "muốn thành lập công ty TNHH thì làm sao",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-074",
+  "q": "bị mất việc rồi xin trợ cấp thất nghiệp ở đâu",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-075",
+  "q": "dang kiem xe oto o dau",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-076",
+  "q": "em muốn thi bằng lái xe B2 thì đăng ký thế nào",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-077",
+  "q": "khám sức khỏe để đi làm nộp hồ sơ ở xã được không",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-078",
+  "q": "xin giấy phép mở quán karaoke",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-079",
+  "q": "xin visa di nhat can giay to gi",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-080",
+  "q": "cap lai bang tot nghiep thpt bi that lac o dau",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-081",
+  "q": "đăng ký bản quyền tác giả cho cuốn sách tôi viết",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4-082",
+  "q": "bị phạt nguội giao thông nộp tiền phạt ở đâu",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4c-01.1",
+  "q": "đăng ký khai sinh cho con cần những gì",
+  "beh": "answer",
+  "exp": [
+   "1.001193"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001193",
+   "1.001193"
+  ]
+ },
+ {
+  "id": "h4c-01.2",
+  "q": "thế có mất phí không",
+  "beh": "answer",
+  "exp": [
+   "1.001193"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001193"
+  ]
+ },
+ {
+  "id": "h4c-01.3",
+  "q": "xong rồi muốn đăng ký thường trú cho bé luôn thì sao",
+  "beh": "answer",
+  "exp": [
+   "1.004222",
+   "3.000722"
+  ],
+  "beh_ok": true,
+  "top1": false,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001193"
+  ]
+ },
+ {
+  "id": "h4c-02.1",
+  "q": "mình muốn xin giấy phép xây nhà",
+  "beh": "clarify",
+  "exp": [
+   "1.013225",
+   "1.013226",
+   "1.013227",
+   "1.013228",
+   "1.013229",
+   "1.009122"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "clarify",
+  "tops": [
+   "1.013226"
+  ]
+ },
+ {
+  "id": "h4c-02.2",
+  "q": "nhà cấp 4 xây mới ở xã",
+  "beh": "answer",
+  "exp": [
+   "1.013225"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "clarify",
+  "tops": [
+   "2.001621"
+  ]
+ },
+ {
+  "id": "h4c-02.3",
+  "q": "mất bao lâu thì có giấy phép",
+  "beh": "answer",
+  "exp": [
+   "1.013225"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "clarify",
+  "tops": [
+   "1.014942"
+  ]
+ },
+ {
+  "id": "h4c-03.1",
+  "q": "nhà mình nghèo muốn được công nhận hộ nghèo",
+  "beh": "clarify",
+  "exp": [
+   "1.011606",
+   "1.011607",
+   "1.116214",
+   "1.116215"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "clarify",
+  "tops": [
+   "1.011607"
+  ]
+ },
+ {
+  "id": "h4c-03.2",
+  "q": "là công nhận định kỳ hằng năm ấy",
+  "beh": "answer",
+  "exp": [
+   "1.011606",
+   "1.116214"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.011606"
+  ]
+ },
+ {
+  "id": "h4c-03.3",
+  "q": "nộp đơn ở đâu",
+  "beh": "answer",
+  "exp": [
+   "1.011606",
+   "1.116214"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "clarify",
+  "tops": [
+   "3.000114"
+  ]
+ },
+ {
+  "id": "h4c-04.1",
+  "q": "ba mình mới mất",
+  "beh": "clarify",
+  "exp": [
+   "1.000656",
+   "1.001731",
+   "2.002913"
+  ],
+  "beh_ok": false,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.000656"
+  ]
+ },
+ {
+  "id": "h4c-04.2",
+  "q": "đi khai tử cần giấy tờ gì",
+  "beh": "answer",
+  "exp": [
+   "1.000656"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.000656"
+  ]
+ },
+ {
+  "id": "h4c-04.3",
+  "q": "có được hỗ trợ tiền mai táng không",
+  "beh": "answer",
+  "exp": [
+   "1.001731",
+   "3.000731",
+   "1.014028",
+   "2.002307"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.001731"
+  ]
+ },
+ {
+  "id": "h4c-05.1",
+  "q": "đăng ký tạm trú làm thế nào",
+  "beh": "answer",
+  "exp": [
+   "1.004194"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.004194"
+  ]
+ },
+ {
+  "id": "h4c-05.2",
+  "q": "hết hạn rồi thì gia hạn sao",
+  "beh": "answer",
+  "exp": [
+   "1.002755"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.002755"
+  ]
+ },
+ {
+  "id": "h4c-05.3",
+  "q": "còn khi chuyển đi nơi khác thì xóa tạm trú ra sao",
+  "beh": "answer",
+  "exp": [
+   "1.010028"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.010028"
+  ]
+ },
+ {
+  "id": "h4c-06.1",
+  "q": "chứng thực di chúc",
+  "beh": "answer",
+  "exp": [
+   "2.001019"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.001019"
+  ]
+ },
+ {
+  "id": "h4c-06.2",
+  "q": "phí bao nhiêu",
+  "beh": "answer",
+  "exp": [
+   "2.001019"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.001019"
+  ]
+ },
+ {
+  "id": "h4c-06.3",
+  "q": "còn chứng thực chữ ký người dịch thì sao",
+  "beh": "clarify",
+  "exp": [
+   "2.000992",
+   "2.001008"
+  ],
+  "beh_ok": false,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "2.000992"
+  ]
+ },
+ {
+  "id": "h4c-07.1",
+  "q": "mình muốn mở hộ kinh doanh bán quần áo",
+  "beh": "answer",
+  "exp": [
+   "1.001612"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4c-07.2",
+  "q": "nếu bán ế muốn nghỉ vài tháng thì làm sao",
+  "beh": "answer",
+  "exp": [
+   "1.001570"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4c-07.3",
+  "q": "nghỉ hẳn luôn thì sao",
+  "beh": "answer",
+  "exp": [
+   "1.001266"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ },
+ {
+  "id": "h4c-08.1",
+  "q": "làm thẻ căn cước ở đâu vậy",
+  "beh": "answer",
+  "exp": [
+   "1.116410"
+  ],
+  "beh_ok": true,
+  "top1": true,
+  "top3": true,
+  "got": "answer",
+  "tops": [
+   "1.116410"
+  ]
+ },
+ {
+  "id": "h4c-08.2",
+  "q": "con mình 5 tuổi có làm được không",
+  "beh": "answer",
+  "exp": [
+   "1.116410"
+  ],
+  "beh_ok": false,
+  "top1": false,
+  "top3": false,
+  "got": "clarify",
+  "tops": [
+   "6.001690"
+  ]
+ },
+ {
+  "id": "h4c-08.3",
+  "q": "làm xong thì xin luôn hộ chiếu cho cháu nhé",
+  "beh": "apologize",
+  "exp": [],
+  "beh_ok": true,
+  "top1": false,
+  "top3": false,
+  "got": "apologize",
+  "tops": []
+ }
+]

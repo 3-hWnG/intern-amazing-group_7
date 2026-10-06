@@ -1,0 +1,12 @@
+[
+ {"id":"TC01","group":"RAG cơ bản","turns":["Tôi muốn đăng ký kết hôn thì cần chuẩn bị những giấy tờ gì?"],"beh":"answer","procs":["1.000894"],"facts":["giấy tờ tùy thân|Hộ chiếu|căn cước"],"max_tasks":1},
+ {"id":"TC02","group":"Định lượng","turns":["Thủ tục đăng ký khai sinh mất bao lâu và có mất lệ phí không?"],"beh":"answer","procs":["1.001193"],"facts":["1 ngày","8[.]000|8000"],"max_tasks":1,"note":"8.000đ không có trong snapshot (lệ phí 0, text rỗng); lệch dữ liệu với đáp án nhóm"},
+ {"id":"TC03","group":"RAG nhiều field","turns":["Đăng ký nhận cha mẹ con cần những giấy tờ gì?"],"beh":"answer","procs":["1.001022"],"facts":["7 ngày"],"max_tasks":1},
+ {"id":"TC04","group":"Context","turns":["Tôi muốn đăng ký kết hôn.","Vậy thời gian giải quyết và lệ phí như thế nào?"],"beh":"answer","procs":["1.000894"],"facts":["1 ngày","Miễn lệ phí|miễn"],"max_tasks":1,"forbid":["Các bước thực hiện"]},
+ {"id":"TC05","group":"Clarification","turns":["Tôi muốn làm thủ tục hộ tịch, cần chuẩn bị giấy tờ gì?"],"beh":"clarify","procs":[],"facts":[],"max_tasks":0},
+ {"id":"TC06","group":"Điều kiện","turns":["Nếu tôi đăng ký khai tử cho người đã chết nhưng người đó có hộ khẩu thường trú ở địa phương và được tổ chức tang lễ ở nơi khác thì tôi cần làm gì?"],"beh":"answer","procs":["1.000656"],"facts":["nơi cư trú|nơi tổ chức tang lễ|nơi cuối cùng"],"max_tasks":1},
+ {"id":"TC07","group":"Evidence","turns":["Thủ tục hỗ trợ chi phí mai táng cho đối tượng bảo trợ xã hội cần những giấy tờ gì và giải quyết trong bao lâu?"],"beh":"answer","procs":["1.001731"],"facts":["Mẫu số 04","3 ngày"],"max_tasks":1},
+ {"id":"TC08","group":"Multi-intent","turns":["Tôi muốn đăng ký khai sinh cho con và đồng thời muốn đăng ký kết hôn. Hãy cho tôi biết hồ sơ, thời gian giải quyết và lệ phí của cả hai thủ tục."],"beh":"answer","procs":["1.001193","1.000894"],"facts":[],"max_tasks":2,"all_procs":true},
+ {"id":"TC09","group":"Hallucination","turns":["Tôi muốn làm thủ tục cấp hộ chiếu phổ thông, cần chuẩn bị những giấy tờ gì và mất bao lâu?"],"beh":"apologize","procs":[],"facts":[],"max_tasks":0},
+ {"id":"TC10","group":"Context+Điều kiện+Evidence","turns":["Tôi đang muốn đăng ký kết hôn. Tôi và người yêu đều đang ở TP.HCM.","Nếu một trong hai người đã từng ly hôn thì cần thêm giấy tờ gì? Và thủ tục này giải quyết trong bao lâu?"],"beh":"answer","procs":["1.000894"],"facts":["ly hôn","1 ngày"],"max_tasks":1}
+]
