@@ -17,3 +17,13 @@ eval/results/*
 !eval/results/coord_h2_r3.json
 !eval/results/coord_h3.json
 !eval/results/final_llm_h3.json
+!eval/results/concise_base.json
+!eval/results/v20.json
+!eval/results/v20_concise.json
+!eval/results/h4_rules.json
+!eval/results/h4_hybrid.json
+!eval/results/pr2_rules.json
+!eval/results/pr2_hybrid.json
+!eval/results/pseudo_real.json
+!eval/results/team.json
+!eval/results/h3_final.json
