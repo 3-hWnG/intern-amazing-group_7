@@ -200,6 +200,7 @@ a.cite:hover{background:var(--accent);color:#fff}
   .system-toggle{padding:0 10px;font-size:0}
 .dev-config{max-height:360px;overflow-y:auto}
 #dev-open[aria-pressed="true"]{background:var(--panel-2);color:var(--ink)}
+}
 
 /* --- Bảng lựa chọn Cách 3 (Interactive Multiple-Choice) --- */
 .choice-table-wrap {
@@ -314,3 +315,71 @@ a.cite:hover{background:var(--accent);color:#fff}
 }
 
 /* ══════════════════════════════════════════════════════════════════════
+
+/* ---------- Phase 20: bảng full, chỉ báo AI, nút cũ hết hiệu lực ---------- */
+.table-btn{margin-top:8px;background:var(--panel-2);border:1px solid var(--line);color:var(--accent);border-radius:8px;padding:5px 12px;font-size:13px}
+.table-btn:disabled{opacity:.6;cursor:default}
+.full-table-scroll{overflow-x:auto;margin-top:8px}
+.full-table{border-collapse:collapse;width:100%;font-size:13.5px}
+.full-table caption{text-align:left;font-weight:600;padding:4px 0}
+.full-table th,.full-table td{border:1px solid var(--line);padding:6px 9px;vertical-align:top;text-align:left}
+.full-table th{width:28%;background:var(--panel-2);font-weight:600}
+.full-table td .txt{white-space:pre-wrap;overflow-wrap:anywhere}
+.full-table tr.absent td{color:var(--ink-3)}
+.full-table summary{cursor:pointer;color:var(--ink-2)}
+.chat-head{position:relative}
+.ai-badge{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13px;font-weight:600;background:var(--panel-2);color:var(--ink-2)}
+.ai-badge::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted)}
+.ai-badge.on{color:var(--ink)}
+.ai-badge.on::before{background:var(--good)}
+.cfg-panel{position:absolute;right:16px;top:calc(100% + 6px);z-index:20;width:330px;max-width:calc(100vw - 24px);padding:14px 16px;background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.14);font-size:13.5px}
+.cfg-panel[hidden]{display:none}
+.cfg-main{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.cfg-main b{display:block;font-size:14px}
+.cfg-main small,.cfg-sub{color:var(--ink-3);font-size:12px;line-height:1.4}
+.cfg-sub{margin:6px 0 0;display:flex;align-items:center;gap:6px}
+.cfg-sub i{width:7px;height:7px;border-radius:50%;background:var(--muted);display:inline-block}
+.cfg-sub i.ok{background:var(--good)}
+.cfg-adv{margin-top:12px;border-top:1px solid var(--line);padding-top:10px}
+.cfg-adv summary{cursor:pointer;color:var(--ink-2);font-size:13px}
+.cfg-row{display:flex;justify-content:space-between;gap:12px;padding:5px 0;align-items:center;color:var(--ink-2)}
+.cfg-row b{color:var(--ink);font-weight:600}
+.cfg-row select{font:inherit;padding:2px 6px;border:1px solid var(--line);border-radius:6px;background:var(--panel-2);color:var(--ink)}
+.cfg-note{color:var(--ink-3);font-size:12px;margin-top:8px}
+.switch{position:relative;width:40px;height:22px;flex:none}
+.switch input{opacity:0;width:0;height:0;position:absolute}
+.switch span{position:absolute;inset:0;border-radius:22px;background:var(--line);transition:.15s;cursor:pointer}
+.switch span::before{content:"";position:absolute;left:3px;top:3px;width:16px;height:16px;border-radius:50%;background:#fff;transition:.15s}
+.switch input:checked+span{background:var(--good)}
+.switch input:checked+span::before{transform:translateX(18px)}
+.switch input:disabled+span{opacity:.5;cursor:default}
+.stale{opacity:.4;pointer-events:none}
+.stale-note{font-size:12px;color:var(--ink-3);font-style:italic;margin-top:4px}
+/* điện thoại: thanh bên thành lớp phủ (mặc định ẩn, JS thêm .hidden), khung chat chiếm cả chiều rộng */
+@media (max-width:760px){
+  .chat-head{flex-wrap:wrap;padding:10px 12px}.messages{padding:14px 10px}
+  .sidebar{position:fixed;z-index:5;top:0;bottom:0;left:0;width:260px;flex:none}
+  .sidebar.hidden{margin-left:-280px}
+  .layout{display:block}.chat{height:100vh}
+}
+#reset-topic{border:1px solid var(--line);border-radius:8px;padding:5px 12px;font-size:13px;background:var(--panel);color:var(--ink-2)}
+#reset-topic:hover{background:var(--panel-2);color:var(--ink)}
+/* màn hình rộng: cột nội dung căn giữa, rộng tối đa ~820px (header và ô nhập cùng cột) */
+@media (min-width:900px){
+  .chat-head,.messages,.composer{padding-left:max(16px,calc((100% - 820px)/2));padding-right:max(16px,calc((100% - 820px)/2))}
+  .cfg-panel{right:max(16px,calc((100% - 820px)/2))}
+}
+.conv-item{position:relative}
+.conv-more{background:none;border:0;color:var(--ink-3);padding:4px 9px;font-size:18px;line-height:1;border-radius:6px;opacity:0}
+.conv-item:hover .conv-more,.conv-item.active .conv-more,.conv-more:focus{opacity:1}
+.conv-more:hover{background:var(--line);color:var(--ink)}
+.conv-menu{position:absolute;right:6px;top:calc(100% - 2px);z-index:10;min-width:130px;padding:4px;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.14);display:flex;flex-direction:column}
+.conv-menu-item{background:none;border:0;text-align:left;padding:7px 10px;border-radius:6px;color:var(--ink);font-size:13.5px}
+.conv-menu-item:hover{background:var(--panel-2)}
+.conv-menu-item.danger{color:var(--danger)}
+.conv-rename{flex:1;min-width:0;margin:3px 4px;padding:6px 8px;font:inherit;border:1px solid var(--accent);border-radius:6px;background:var(--panel);color:var(--ink)}
+.clear-all{background:none;border:0;color:var(--ink-3);font-size:12.5px;padding:8px 4px;text-align:left}
+.clear-all:hover{color:var(--danger)}
+@media (hover:none){.conv-more{opacity:1}}
+.conv-item.pinned{background:var(--panel-2)}
+.conv-item.pinned+.conv-item:not(.pinned){margin-top:6px;border-top:1px solid var(--line);border-radius:0 0 8px 8px}
