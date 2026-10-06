@@ -17,14 +17,18 @@ from contextlib import asynccontextmanager
 
 import uvicorn
 from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 
+import conv_export
 import orchestrator
-from config import DEV_MODE, HOST, LLM_MODEL, PORT, WEB_DIR
+import os
+
+from config import DEV_MODE, HOST, LLM_MODEL, PORT, TABLE_BUTTON, WEB_DIR
 from core import queue
-from core.llm import warm_up
+from core.llm import loaded_models, warm_up
+from planner import hybrid
 from db import store
 
 
@@ -40,6 +44,45 @@ async def lifespan(app):
 
 app = FastAPI(title="System 3", lifespan=lifespan)
 app.mount("/static", StaticFiles(directory=str(WEB_DIR / "static")), name="static")
+
+
+@app.middleware("http")
+async def _no_cache_static(request, call_next):
+    r = await call_next(request)
+    if request.url.path.startswith("/static/") or request.url.path == "/":
+        r.headers["Cache-Control"] = "no-cache"   # ponytail: bản dev/nội bộ; thêm hash tên file nếu cần cache khi lên production
+    return r
+
+
+class ConfigIn(BaseModel):
+    mode: str | None = None            # rules | hybrid
+    confidence: float | None = None    # ngưỡng LLM được sửa kế hoạch
+    timeout: float | None = None       # giây
+    answer_llm: bool | None = None     # Answer Composer LLM bật/tắt (= S3_USE_LLM)
+
+
+@app.get("/config")
+def get_config():
+    """Phase 19: cấu hình Planner (UI Phase 20 dùng). loaded = model Ollama đang nạp."""
+    from answer import llm_answer
+    loaded = loaded_models()
+    return {**hybrid.get_config(), "model": LLM_MODEL, "loaded": loaded, "model_loaded": any(LLM_MODEL == m for m in loaded),
+            "dev": DEV_MODE, "modes": list(hybrid.MODES), "answer_llm": os.environ.get("S3_USE_LLM", "1") == "1",
+            "answer_timeout": llm_answer.TIMEOUT, "table_button": TABLE_BUTTON}
+
+
+@app.post("/config")
+def set_config(body: ConfigIn):
+    """Đổi mode/ngưỡng/timeout TRONG BỘ NHỚ (mất khi khởi động lại; mặc định theo biến môi trường). Chỉ khi S3_DEV=1."""
+    if not DEV_MODE:
+        raise HTTPException(403, "chỉ khi S3_DEV=1")
+    try:
+        hybrid.set_config(body.mode, body.confidence, body.timeout)
+        if body.answer_llm is not None:    # ponytail: đổi qua biến môi trường của tiến trình (orchestrator._answer_llm đọc mỗi lượt); mất khi khởi động lại
+            os.environ["S3_USE_LLM"] = "1" if body.answer_llm else "0"
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    return get_config()
 
 
 class ChatIn(BaseModel):
@@ -58,9 +101,69 @@ def health():
     return {"ok": True, "model": LLM_MODEL, "queue_depth": queue.manager.depth, "dev": DEV_MODE}
 
 
+@app.get("/procedure/{proc_id}/table")
+def procedure_table(proc_id: str):
+    """Phase 20: bảng đầy đủ mọi mục của thủ tục (nguyên văn dữ liệu, không LLM). Cờ S3_TABLE_BUTTON=0 -> 404."""
+    if not TABLE_BUTTON:
+        raise HTTPException(404, "tính năng bảng full đang tắt")
+    from answer.answerer import procedure_table as build
+    from system3.data import api as data_api
+    t = build(data_api.connect(), proc_id)
+    if not t:
+        raise HTTPException(404, "không có thủ tục này")
+    return t
+
+
 @app.get("/conversations")
 def conversations():
     return {"conversations": store.list_conversations()}
+
+
+class ConvPatch(BaseModel):
+    title: str | None = None     # đổi tên
+    pinned: bool | None = None   # ghim / bỏ ghim
+
+
+@app.patch("/conversations/{cid}")
+def patch_conversation(cid: str, body: ConvPatch):
+    if not store.conversation_exists(cid):
+        raise HTTPException(404, "conversation not found")
+    if body.title is not None:
+        store.rename_conversation(cid, body.title)
+    if body.pinned is not None:
+        store.set_pinned(cid, body.pinned)
+    row = next(c for c in store.list_conversations() if c["id"] == cid)
+    return {"ok": True, "title": row["title"], "pinned": bool(row["pinned"])}
+
+
+@app.get("/conversations/{cid}/export")
+def export_conversation(cid: str, format: str = "md"):
+    conv = next((c for c in store.list_conversations() if c["id"] == cid), None)
+    if not conv:
+        raise HTTPException(404, "conversation not found")
+    if format not in ("md", "json", "pdf"):
+        raise HTTPException(400, "format phải là md, json hoặc pdf")
+    msgs = store.get_messages(cid)
+    if format == "pdf":   # trang in được, trình duyệt tự mở hộp thoại in -> Lưu thành PDF
+        return Response(conv_export.to_print_html(conv, msgs), media_type="text/html; charset=utf-8")
+    body = conv_export.to_markdown(conv, msgs) if format == "md" else conv_export.to_json(conv, msgs)
+    fn = conv_export.filename(conv["title"], format)
+    mime = "text/markdown" if format == "md" else "application/json"
+    return Response(body, media_type=f"{mime}; charset=utf-8", headers={"Content-Disposition": f'attachment; filename="{fn}"'})
+
+
+@app.delete("/conversations/{cid}")
+def delete_conversation(cid: str):
+    if not store.conversation_exists(cid):
+        raise HTTPException(404, "conversation not found")
+    store.delete_conversation(cid)
+    return {"ok": True}
+
+
+@app.delete("/conversations")
+def delete_all_conversations():
+    store.delete_conversation(None)   # ponytail: ẩn danh, mọi người cùng DB; thêm lọc theo user khi có đăng nhập
+    return {"ok": True}
 
 
 @app.get("/conversations/{cid}/messages")
@@ -83,6 +186,8 @@ def reset_facts(cid: str):
     if not store.conversation_exists(cid):
         raise HTTPException(404, "conversation not found")
     store.reset_session(cid)
+    # Lỗi Phase 20: tin trợ lý cuối vẫn mang danh sách đánh số cũ -> "cái thứ nhất" trỏ lại thủ tục cũ. Chèn tin thông báo làm tin cuối.
+    store.add_message(cid, "assistant", "Đã bắt đầu chủ đề mới. Bạn muốn hỏi về thủ tục nào?", "chitchat")
     return {"ok": True}
 
 
@@ -142,8 +247,7 @@ async def chat(body: ChatIn):
 
     r = box["res"]
     blocks, clar, kind = r.get("blocks", []), r.get("clarify"), r.get("kind", "answer")
-    flat = "\n\n".join(f"{b.get('title', '')}\n{b['text']}".strip() for b in blocks) \
-        or (clar or {}).get("question", "")
+    flat = orchestrator.flat_text({"blocks": blocks, "clarify": clar})   # thẻ hỏi lại kèm danh sách đánh số để "cái thứ hai" trỏ đúng
     mid = store.add_message(cid, "assistant", flat, kind, r.get("plan"),
                             {"blocks": blocks, "clarify": clar})
     if r.get("trace") is not None:

@@ -21,6 +21,8 @@ def init_db() -> None:
     c.executescript(SCHEMA_PATH.read_text(encoding="utf-8"))
     if "proc_id" not in [r[1] for r in c.execute("PRAGMA table_info(session_facts)")]:   # DB cũ thiếu cột
         c.execute("ALTER TABLE session_facts ADD COLUMN proc_id TEXT NOT NULL DEFAULT ''")
+    if "pinned" not in [r[1] for r in c.execute("PRAGMA table_info(conversations)")]:   # DB cũ thiếu cột ghim
+        c.execute("ALTER TABLE conversations ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0")
     c.commit()
     c.close()
 
@@ -54,7 +56,23 @@ def ensure_conversation(cid: str | None) -> str:
 
 def list_conversations() -> list[dict]:
     return [dict(r) for r in _run(
-        "SELECT id,title,created_at FROM conversations ORDER BY rowid DESC", many=True)]
+        "SELECT id,title,created_at,pinned FROM conversations ORDER BY pinned DESC, rowid DESC", many=True)]
+
+
+def rename_conversation(cid: str, title: str) -> None:
+    _run("UPDATE conversations SET title=? WHERE id=?", (title.strip()[:60] or "Cuộc trò chuyện mới", cid))
+
+
+def set_pinned(cid: str, pinned: bool) -> None:
+    _run("UPDATE conversations SET pinned=? WHERE id=?", (1 if pinned else 0, cid))
+
+
+def delete_conversation(cid: str | None = None) -> None:
+    """cid=None: xoá tất cả. Bảng con xoá theo ON DELETE CASCADE (foreign_keys=ON ở conn())."""
+    if cid is None:
+        _run("DELETE FROM conversations")
+    else:
+        _run("DELETE FROM conversations WHERE id=?", (cid,))
 
 
 def set_title_if_new(cid: str, text: str) -> None:
@@ -116,7 +134,9 @@ def reset_session(cid: str) -> None:
     ponytail: xoá cả shown_procedures; nếu Phase 10 cần "cái thứ nhất" xuyên chủ đề thì tách hai hàm."""
     _run("DELETE FROM session_facts WHERE conversation_id=?", (cid,))
     _run("DELETE FROM shown_procedures WHERE conversation_id=?", (cid,))
-    _run("DELETE FROM conv_state WHERE conversation_id=?", (cid,))
+    # KHÔNG xoá conv_state: không có trạng thái thì resolve dựng lại từ lịch sử và hồi sinh chủ đề cũ. Ghi trạng thái rỗng.
+    from system3.retrieval.context import ConvState
+    set_state(cid, ConvState().to_dict())
 
 
 def shown_procedures(cid: str) -> list[dict]:

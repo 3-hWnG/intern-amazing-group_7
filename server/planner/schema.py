@@ -41,3 +41,19 @@ PLAN_SCHEMA = {
     },
     "required": ["tasks", "clarify"],
 }
+
+# Phase 19 (hybrid): bản GỌN của hợp đồng + `confidence` (0..1, cả kế hoạch). Merge chỉ dùng action/cand/fields nên bỏ quantity/conditions/facts/evidence/relation/clarify
+# (tiết kiệm token: 220 token ~ 4-5 s trên GTX 1660 Super; bản đầy đủ bị cắt cụt JSON ở câu 2-3 ý). Không đụng PLAN_SCHEMA của nhánh LLM cũ.
+# ponytail: LLM không đề xuất conditions/relation (luật đã làm; Policy kiểm căn cứ) ; thêm lại khi cần LLM tách điều kiện tốt hơn luật.
+HYBRID_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "tasks": {"type": "array", "maxItems": MAX_TASKS, "items": {
+            "type": "object",
+            "properties": {"action": {"type": "string", "enum": ACTIONS}, "cand": {"type": "integer"},
+                           "fields": {"type": "array", "items": {"type": "string", "enum": FIELDS}}},
+            "required": ["action", "cand", "fields"]}},
+        "confidence": {"type": "number"},
+    },
+    "required": ["tasks", "confidence"],
+}

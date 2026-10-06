@@ -70,3 +70,11 @@ def warm_up() -> None:
                           options={"num_ctx": LLM_NUM_CTX})   # cùng num_ctx với chat() để không nạp lại
     except Exception:
         pass
+
+
+def loaded_models() -> list[str]:
+    """Tên model Ollama đang nạp trong bộ nhớ (GET /config); lỗi/Ollama tắt -> []."""
+    try:
+        return [m.get("model") or m.get("name") for m in client(3).ps().get("models", [])]
+    except Exception:
+        return []

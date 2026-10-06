@@ -62,6 +62,17 @@ assert pid in (KS, "3.000722", "1.000689") and r.state.loose is False or r.state
 # từ vựng "ở đâu"/"cưới" không bị nhầm thứ tự
 assert markers("nó mất bao lâu")[1].get("anaph") and "nó" not in markers("nó mất bao lâu")[0]
 
+# ---- bảng sự kiện đời sống: mọi cụm gợi ý phải ra một thủ tục CÓ trong kho (bảng không được mục dần), và câu kể điển hình khớp đúng sự kiện
+from system3.retrieval.context import EVENTS, event_hints
+for _rx, _hint in EVENTS:
+    _s = resolve(idx, [{"role": "user", "text": _hint}]).segments[0]
+    assert _s.proc_id, ("cụm gợi ý không ra thủ tục nào", _hint)
+for _txt, _want in [("chồng em vừa mất", "khai tử"), ("nhà em có người vừa mất", "khai tử"), ("con tôi sắp vào lớp 6", "trung học cơ sở"),
+                    ("bé nhà mình mới sinh", "khai sinh"), ("bà tôi hơn 80 tuổi không có lương hưu", "hưu trí"), ("bị tai nạn khi đi làm", "tai nạn lao động")]:
+    assert _want in event_hints(_txt)[0], (_txt, event_hints(_txt))
+for _txt in ("mất giấy khai sinh", "tôi mất việc", "mẹ mất hộ chiếu", "đăng ký khai sinh"):
+    assert not event_hints(_txt)[0] or "khai tử" not in event_hints(_txt)[0], (_txt, event_hints(_txt))
+
 # ---- trạng thái lưu DB, vượt cửa sổ 5 lượt của recent_history
 cid = store.ensure_conversation(None)
 
@@ -88,6 +99,54 @@ assert r["trace"]["ctx"]["decision"] == "return" and store.get_state(cid)["topic
 assert r["trace"]["routed"]["tasks"][0]["procedure_id"] == KS
 r = ask("hôm nay trời đẹp nhỉ")
 assert r["kind"] != "answer" or not [t for t in r["trace"]["routed"]["tasks"] if t["route"] == "direct"], "câu lạc đề kế thừa nhầm"
+# ---- thẻ hỏi lại -> "cái thứ n" chọn đúng lựa chọn của THẺ (không phải danh sách đã trả lời trước đó); không hỏi lần hai
+cid2 = store.ensure_conversation(None)
+
+
+def ask2(text, reply_to_clarify=None):
+    t = orchestrator.Turn(cid2, text, None, store.recent_history(cid2), store.session_facts(cid2), store.shown_procedures(cid2), reply_to_clarify)
+    store.add_message(cid2, "user", text)
+    r = orchestrator.handle_turn(t)
+    store.add_message(cid2, "assistant", orchestrator.flat_text(r), r["kind"])
+    return r
+
+
+ask2("đăng ký khai sinh")                                 # có danh sách đã trả lời trước (không được lẫn với thẻ)
+r = ask2("giấy phép lao động cho người nước ngoài")        # >= 3 bản gần nhau (cấp / cấp lại / gia hạn), không nói loại
+assert r["kind"] == "clarify" and len(r["clarify"]["options"]) >= 3, r["kind"]
+opts = r["clarify"]["options"]
+assert store.recent_history(cid2)[-1]["content"].count(") ") >= 3, "thẻ hỏi lại phải lưu danh sách đánh số vào lịch sử"
+r = ask2("cái thứ hai")
+assert r["kind"] == "answer" and r["trace"]["routed"]["tasks"][0]["procedure_label"][:25] == opts[1][:25], (r["kind"], opts)
+r = ask2("còn phí?")
+assert r["trace"]["routed"]["tasks"][0]["procedure_label"][:25] == opts[1][:25] and r["trace"]["ctx"]["decision"] == "follow_up"
+# ---- trả lời thẻ bằng ô gõ tự do: chọn bản gần nhất theo câu gõ; trả lời mơ hồ cũng KHÔNG hỏi lần hai (lấy ứng viên đầu, nói rõ giả định)
+r = ask2("giấy phép lao động cho người nước ngoài")
+assert r["kind"] == "clarify"
+card = r["clarify"]
+r2 = ask2("gia hạn", card)
+assert r2["kind"] == "answer" and "Gia hạn" in r2["trace"]["routed"]["tasks"][0]["procedure_label"][:12], r2["trace"]["routed"]["tasks"]
+r3 = ask2("cái nào cũng được", card)
+assert r3["kind"] != "clarify" and r3["trace"]["routed"]["tasks"][0]["route"] == "direct"
 store.reset_session(cid)
-assert store.get_state(cid) is None
+st = store.get_state(cid)
+assert st is not None and st["topic"] is None and not st["history"], st   # trạng thái RỖNG (None thì resolve dựng lại từ lịch sử)
+
+# ---- Phase 18: mục được hỏi, task thừa, nhóm chung quá rộng, hoàn cảnh -> đúng phần giấy tờ của trường hợp
+def tasks(r):
+    return [t for t in r["trace"]["routed"]["tasks"] if t["route"] == "direct"]
+
+
+cid3 = store.ensure_conversation(None)
+for q, fields in (("Tách hộ mất bao lâu thì xong ạ?", ["processing_time"]),                          # A: chỉ báo thời hạn
+                  ("Nếu tôi từng ly hôn thì đăng ký kết hôn cần giấy tờ gì thêm?", ["components"]),   # A: câu điều kiện -> hồ sơ, không 4 mục mặc định
+                  ("Mình đang ở trọ, muốn đăng ký tạm trú thì giải quyết trong bao lâu?", ["processing_time"]),   # B: cụm 'giải quyết trong bao lâu' không thành task thứ hai
+                  ("Con tôi vừa tròn 1 tháng tuổi, tôi cần làm giấy khai sinh, giấy tờ gồm những gì?", ["components"])):
+    t = tasks(orchestrator.handle_turn(orchestrator.Turn(store.ensure_conversation(None), q)))
+    assert len(t) == 1 and t[0]["fields"] == fields, (q, [(x["procedure_label"], x["fields"]) for x in t])
+r = orchestrator.handle_turn(orchestrator.Turn(store.ensure_conversation(None), "thủ tục hộ tịch"))      # C: chỉ nêu lĩnh vực -> hỏi lại bằng thẻ
+assert r["kind"] == "clarify" and len(r["clarify"]["options"]) >= 3, r["kind"]
+r = orchestrator.handle_turn(orchestrator.Turn(store.ensure_conversation(None), "Em là bộ đội ở trong doanh trại, đăng ký tạm trú cần giấy tờ gì?"))   # D
+txt = " ".join(b["text"] for b in r["blocks"])
+assert "đơn vị đóng quân" in txt and "Theo trường hợp bạn nêu" in txt and len(txt) < 2500, txt[:300]
 print("OK")

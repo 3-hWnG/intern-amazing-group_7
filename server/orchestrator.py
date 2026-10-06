@@ -34,6 +34,16 @@ class Turn:
     state: dict | None = None              # ConvState dạng dict; None = đọc từ DB (rồi None nữa = dựng lại từ history)
 
 
+def flat_text(r: dict) -> str:
+    """Nội dung tin nhắn trợ lý lưu vào lịch sử. Thẻ hỏi lại kèm danh sách ĐÁNH SỐ ("1) A 2) B"): lượt sau người dùng gõ "cái thứ hai"
+    thì retrieval.refs.options_from_text đọc lại đúng các lựa chọn của thẻ (trước đây chỉ lưu câu hỏi nên "cái thứ hai" trỏ nhầm vào danh sách đã trả lời)."""
+    flat = "\n\n".join(f"{b.get('title', '')}\n{b['text']}".strip() for b in r.get("blocks", []))
+    clar = r.get("clarify")
+    if not flat and clar:
+        flat = (clar.get("question", "") + " " + " ".join(f"{i}) {o}" for i, o in enumerate(clar.get("options", []), 1))).strip()
+    return flat
+
+
 def _turns(turn: Turn, text: str) -> list[dict]:
     hist = [{"role": m["role"], "text": m["content"]} for m in turn.history]
     return hist + [{"role": "user", "text": text}]
@@ -106,6 +116,8 @@ def handle_turn(turn: Turn) -> dict:
     plan = make_plan(_turns(turn, pc["text"]), last_proc=last_proc, facts=facts, shown=turn.shown_procedures, state=state)
     trace["plan_ms"] = int((time.perf_counter() - t1) * 1000)
     trace["plan_source"] = plan.source
+    if plan.llm_trace:                     # Phase 19: nhật ký Planner hybrid (gọi hay không, ms, đề xuất, confidence, chấp nhận/từ chối + lý do, kế hoạch cuối)
+        trace["planner_llm"] = plan.llm_trace
     trace["ctx"] = {k: v for k, v in plan.ctx.items() if k != "state_before"}      # quyết định ngữ cảnh + lý do
 
     if forced_pid:                         # người dùng bấm chọn thủ tục: ghi đè mọi ứng viên

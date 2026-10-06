@@ -52,6 +52,8 @@ assert not r["trace"].get("reset") and store.session_facts(cid) == []
 ask("Lệ phí bao nhiêu?")
 store.add_fact(cid, "fact", "x", KH); store.reset_session(cid)
 assert store.session_facts(cid) == []
+r = ask("Cái thứ nhất")          # sau reset (nút "Bắt đầu chủ đề mới") không được hồi sinh thủ tục cũ từ lịch sử
+assert not [t for t in r["trace"]["routed"]["tasks"] if t["route"] == "direct"], "reset bị hồi sinh từ lịch sử"
 
 # migration DB cũ thiếu cột proc_id
 import sqlite3

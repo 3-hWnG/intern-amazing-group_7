@@ -14,7 +14,7 @@ conditions: điều kiện người dùng nêu ("hộ nghèo", "trễ hạn"). f
 clarify=true CHỈ khi thật sự không thể chọn thủ tục (nhiều ứng viên khác hẳn nhau, câu quá mơ hồ). Dạng biến thể khác nhau của cùng thủ tục thì chọn bản gần nhất, KHÔNG hỏi lại."""
 
 
-def user_message(question: str, cands: list[dict], last_label: str, facts: list[str], history: list[str]) -> str:
+def user_message(question: str, cands: list[dict], last_label: str, facts: list[str], history: list[str], draft: str = "") -> str:
     """cands: [{label, group}] đã đánh số theo thứ tự; group = đoạn câu hỏi mà ứng viên sinh ra (hoặc '')."""
     lines = []
     if history:
@@ -30,5 +30,21 @@ def user_message(question: str, cands: list[dict], last_label: str, facts: list[
             out.append(f'Ứng viên cho ý "{cur}":')
         out.append(f"{i}. {c['label']}")
     lines.append("\n".join(out) if out else "Ứng viên: (không có)")
+    if draft:
+        lines.append(draft)
     lines.append(f"Câu hỏi: {question}")
     return "\n".join(lines)
+
+# Phase 19: thêm confidence + nhắc đếm ý (4B hay tách task thừa từ lời kể hoàn cảnh).
+HYBRID_SYSTEM = SYSTEM + """
+Số task = số ý được HỎI khác nhau; lời kể hoàn cảnh/điều kiện ("tôi đã ly hôn", "nếu con sinh ở nhà") không phải task riêng.
+confidence (0..1) là độ chắc chắn của TOÀN BỘ kế hoạch: 0.99 = rõ ràng, chỉ một cách hiểu; 0.9 = khá chắc; 0.7 = còn phân vân giữa các ứng viên hoặc số ý; 0.5 hoặc thấp hơn = đoán."""
+
+# Phase 19, biến thể "xét duyệt bản nháp" (PLANNER_LLM_DRAFT=1): LLM thấy kế hoạch luật và chỉ sửa khi chắc nó sai.
+HYBRID_SYSTEM_DRAFT = HYBRID_SYSTEM + """
+Bạn được cho BẢN NHÁP do bộ luật dựng (thường đúng). Nếu bản nháp đúng thì chép lại nguyên văn; chỉ đổi khi chắc chắn nó sai (thủ tục khác hẳn, thừa/thiếu ý, sai mục hỏi)."""
+
+
+def draft_text(rule_tasks: list[dict]) -> str:
+    """rule_tasks: [{cand: chỉ số|-1, fields: [...]}] -> dòng "Bản nháp của bộ luật"."""
+    return "Bản nháp của bộ luật: " + "; ".join(f"ý {i + 1}: cand={t['cand']}, fields={','.join(t['fields']) or '(rỗng)'}" for i, t in enumerate(rule_tasks))

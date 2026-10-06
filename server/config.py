@@ -48,6 +48,12 @@ LLM_KEEP_ALIVE = _str("LLM_KEEP_ALIVE", "30m")
 LLM_TIMEOUT = _int("LLM_TIMEOUT", 120)
 PLANNER_TIMEOUT = float(_str("PLANNER_TIMEOUT", "2.5"))    # giây; quá hạn -> Planner dựng plan bằng luật
 PLANNER_NUM_PREDICT = _int("PLANNER_NUM_PREDICT", 160)
+# Phase 19: Planner hybrid (luật + Qwen3-4B). Mặc định rules cho tới khi đo xong (eval/P19_REPORT.md).
+PLANNER_MODE = _str("S3_PLANNER_MODE", "rules")                     # rules | hybrid
+PLANNER_LLM_TIMEOUT = float(_str("PLANNER_LLM_TIMEOUT", "7.0"))     # giây; quá hạn -> giữ kế hoạch luật
+PLANNER_LLM_CONFIDENCE = float(_str("PLANNER_LLM_CONFIDENCE", "0.99"))   # LLM chỉ được sửa kế hoạch khi confidence >= ngưỡng; 0.99 = ít hại nhất khi quét 0.80-0.99 trên DEV (P19_REPORT)
+PLANNER_LLM_DRAFT = _bool("PLANNER_LLM_DRAFT", False)               # 1 = LLM thấy bản nháp luật và chỉ sửa khi chắc nó sai (biến thể đo, xem P19_REPORT)
+PLANNER_LLM_NUM_PREDICT = _int("PLANNER_LLM_NUM_PREDICT", 220)
 LLM_THINK = _bool("LLM_THINK", False)      # qwen3: False = tắt thinking
 
 # Hàng đợi: 1 worker (GPU 6 GB).
@@ -56,3 +62,6 @@ QUEUE_MAX_DEPTH = _int("QUEUE_MAX_DEPTH", 20)
 QUEUE_JOB_TIMEOUT = _int("QUEUE_JOB_TIMEOUT", 180)
 
 DEV_MODE = _bool("S3_DEV", False)           # true: mọi phản hồi kèm plan/trace
+
+# Phase 20: nút "Tạo bảng full" trong câu trả lời (thay dòng "xem đầy đủ trên Cổng Dịch vụ công"); 0 = về như cũ
+TABLE_BUTTON = _bool("S3_TABLE_BUTTON", True)

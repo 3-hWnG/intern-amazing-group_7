@@ -2,7 +2,8 @@
 CREATE TABLE IF NOT EXISTS conversations (
   id          TEXT PRIMARY KEY,
   created_at  TEXT NOT NULL DEFAULT (datetime('now')),
-  title       TEXT NOT NULL DEFAULT 'Cuộc trò chuyện mới'
+  title       TEXT NOT NULL DEFAULT 'Cuộc trò chuyện mới',
+  pinned      INTEGER NOT NULL DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS messages (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,

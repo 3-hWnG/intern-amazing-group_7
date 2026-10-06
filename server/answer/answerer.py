@@ -44,6 +44,13 @@ APOLOGY = {
 }
 CHITCHAT = "Xin chào! Mình là trợ lý tra cứu thủ tục hành chính cấp xã/phường. Bạn cần hỏi thủ tục nào?"
 MAX_CHARS = 1100
+SUMMARY_CHARS = 450
+
+
+def _MORE() -> str:
+    """Phase 20: có nút "Tạo bảng full" thì chỉ báo ngắn, nút ở UI; tắt cờ thì giữ câu cũ."""
+    from config import TABLE_BUTTON
+    return "\n… (còn nữa, bấm «Tạo bảng full» để xem đủ)" if TABLE_BUTTON else "\n… (còn nữa, xem đầy đủ trên Cổng Dịch vụ công)"
 
 
 def _clip(text: str, n: int = MAX_CHARS) -> str:
@@ -52,13 +59,23 @@ def _clip(text: str, n: int = MAX_CHARS) -> str:
         return text
     cut = text[:n]
     cut = cut[:cut.rfind("\n")] if "\n" in cut[n // 2:] else cut[:cut.rfind(" ")]
-    return cut.rstrip() + "\n… (còn nữa, xem đầy đủ trên Cổng Dịch vụ công)"
+    return cut.rstrip() + _MORE()
 
 
 def _overlap(a: str, b: str) -> float:
     ta = [t for t in re.findall(r"[0-9a-z]+", fold(a)) if len(t) > 1]
     tb = set(re.findall(r"[0-9a-z]+", fold(b)))
     return sum(1 for t in ta if t in tb) / len(ta) if ta else 0.0
+
+
+_NOISE = {"toi", "minh", "em", "la", "co", "bi", "cua", "va", "thi", "neu", "truong", "hop"}
+
+
+def _jacc(a: str, b: str) -> float:
+    """|A ∩ B| / max(|A|, |B|) trên chữ (bỏ dấu, bỏ chữ đệm) — hai cụm phải gần như CÙNG nghĩa, không chỉ chứa nhau."""
+    ta = {t for t in re.findall(r"[0-9a-z]+", fold(a)) if len(t) > 1 and t not in _NOISE}
+    tb = {t for t in re.findall(r"[0-9a-z]+", fold(b)) if len(t) > 1 and t not in _NOISE}
+    return len(ta & tb) / max(len(ta), len(tb), 1)
 
 
 def _fees_text(conn, pid: str) -> tuple[str, str]:
@@ -87,7 +104,25 @@ def _time_text(raw: str) -> str:
     return "; ".join(parts) or raw.strip()
 
 
-def _field_text(conn, pid: str, f: str, status: str) -> tuple[str, str]:
+def _case_pick(chunks: list[dict], conds: list[str], label: str) -> list[dict]:
+    """Giấy tờ theo TRƯỜNG HỢP người dùng nêu: mỗi khối `components` mở đầu bằng tên trường hợp (cùng chữ với condition_index, source=case).
+    Chọn khối có tên trùng >= 60% chữ ĐẶC TRƯNG của hoàn cảnh (bỏ chữ trong tên thủ tục); không khối nào đủ khớp -> [] (giữ toàn bộ hồ sơ chung).
+    ponytail: khớp chữ, không hiểu nghĩa ('ở chùa' != 'cơ sở tín ngưỡng'); LLM/bảng đồng nghĩa nâng cấp sau."""
+    name = set(re.findall(r"[0-9a-z]+", fold(label)))
+    best, scored = 0.0, []
+    for c in chunks:
+        title = set(re.findall(r"[0-9a-z]+", fold(c["text"].strip().split("\n", 1)[0])))
+        sc = 0.0
+        for cd in conds:
+            toks = [t for t in re.findall(r"[0-9a-z]+", fold(cd)) if len(t) > 1 and t not in name]
+            if len(toks) >= 2:
+                sc = max(sc, sum(1 for t in toks if t in title) / len(toks))
+        scored.append(sc)
+        best = max(best, sc)
+    return [c for c, sc in zip(chunks, scored) if best >= 0.6 and sc >= best - 0.01]
+
+
+def _field_text(conn, pid: str, f: str, status: str, conds: list[str] | None = None, label: str = "") -> tuple[str, str]:
     """-> (nội dung, trạng thái thực). Trạng thái 'unknown' không đồng nghĩa với 'không có'."""
     if f == "fees":
         txt, st = _fees_text(conn, pid)
@@ -98,6 +133,9 @@ def _field_text(conn, pid: str, f: str, status: str) -> tuple[str, str]:
     if f == "processing_time":
         return _time_text(chunks[0]["text"]), "present"
     if f == "components":
+        pick = _case_pick(chunks, conds or [], label)
+        if pick:
+            return _clip("Theo trường hợp bạn nêu:\n" + "\n".join(c["text"].strip() for c in pick)), "present"
         return _clip("\n".join(c["text"].strip() for c in chunks)), "present"
     if f == "legal_basis":
         lines = chunks[0]["text"].strip().split("\n")
@@ -125,14 +163,15 @@ def _condition_note(conn, pid: str, conditions: list[str], evidence: str) -> str
     cond_rows = [r["text"] for r in data_api.conditions(conn, pid)]
     notes = []
     for c in conditions:
-        hit = next((t for t in cond_rows if _overlap(c, t) >= 0.6), None)
+        hit = max(cond_rows, key=lambda t: _jacc(c, t), default=None)
+        hit = hit if hit is not None and _jacc(c, hit) >= 0.5 else None      # khớp đối xứng: "người nước ngoài" không được coi là "Người Việt Nam định cư ở nước ngoài"
         in_ev = _overlap(c, evidence) >= 0.8 and len(c.split()) <= 5
         if hit:
             notes.append(f"- «{c}»: dữ liệu có nêu trường hợp/đối tượng \"{hit[:120]}\".")
         elif in_ev:
             notes.append(f"- «{c}»: có xuất hiện trong nội dung trên.")
         else:
-            notes.append(f"- «{c}»: dữ liệu của thủ tục này không nhắc riêng trường hợp này, nên mình không khẳng định điều kiện này có thay đổi gì không.")
+            notes.append(f"- «{c}»: Cổng Dịch vụ công không công bố riêng phần điều kiện/giấy tờ cho trường hợp này, nên mình không khẳng định trường hợp này có thay đổi gì không.")
     return "Về điều kiện bạn nêu:\n" + "\n".join(notes)
 
 
@@ -148,6 +187,8 @@ def _merge(tasks):
             m = merged[k]
             m.fields += [f for f in t.fields if f not in m.fields]
             m.conditions += [c for c in t.conditions if c not in m.conditions]
+            m.soft_conditions += [c for c in t.soft_conditions if c not in m.soft_conditions]
+            m.cases += [c for c in t.cases if c not in m.cases]
             if t.evidence_demand != "none":
                 m.evidence_demand = t.evidence_demand
         else:
@@ -180,13 +221,15 @@ def answer(routed, *, conn=None, question: str = "", llm=None) -> dict:
                 fields = fields + ["legal_basis"]
             parts, evidence = [], []
             for f in fields:
-                txt, st = _field_text(conn, t.procedure_id, f, t.field_status.get(f, "unknown"))
+                txt, st = _field_text(conn, t.procedure_id, f, t.field_status.get(f, "unknown"), t.cases, t.procedure_label)
+                if not t.fields and st == "present" and len(txt) > SUMMARY_CHARS:      # hỏi chung ("làm thủ tục X"): bản tóm tắt ngắn, hỏi cụ thể từng mục mới xem đầy đủ
+                    txt = _clip(txt, SUMMARY_CHARS)
                 evidence.append(txt)
                 head = FIELD_TITLE.get(f, f)
                 body = txt if st == "present" else (ABSENT[f] if st == "absent_confirmed" else UNKNOWN)
                 parts.append(f"{head}:\n{body}")
             ev_text = "\n".join(evidence)
-            note = _condition_note(conn, t.procedure_id, t.conditions, ev_text)
+            note = _condition_note(conn, t.procedure_id, t.conditions + [c for c in t.soft_conditions if c not in t.conditions], ev_text)
             present = [{"label": f"{FIELD_TITLE.get(f, f)} - {t.procedure_label}", "text": e} for f, e in zip(fields, evidence) if e.strip()]
             if llm and t.conditions:
                 cond_ps = [{"label": f"Điều kiện - {t.procedure_label}", "text": c["text"]} for c in data_api.conditions(conn, t.procedure_id)[:8]]
@@ -200,6 +243,8 @@ def answer(routed, *, conn=None, question: str = "", llm=None) -> dict:
             issues += verify(text, ev_text + " " + " ".join(ABSENT.values()), question)
             blk = {"title": t.procedure_label, "text": text,
                    "sources": _sources(conn, t.procedure_id, "legal_basis" in fields or t.evidence_demand != "none")}
+            if t.procedure_id:
+                blk["proc_id"] = t.procedure_id        # UI dùng cho nút "Tạo bảng full" (GET /procedure/{id}/table)
             if t.variants.get("others"):
                 blk["variants"] = t.variants
             blocks.append(blk)
@@ -214,3 +259,31 @@ def answer(routed, *, conn=None, question: str = "", llm=None) -> dict:
         b.pop("_r", None)
     kind = {"answer": "answer", "chitchat": "chitchat", "apologize": "apologize"}.get(routed.behavior, "answer")
     return {"kind": kind, "blocks": blocks, "clarify": None, "verify": issues}
+
+
+TABLE_FIELDS = ["components", "fees", "processing_time", "address", "methods", "online", "steps", "files",
+                "agency", "meta", "legal_basis", "explanation"]
+
+
+def procedure_table(conn, pid: str) -> dict | None:
+    """Phase 20: bảng ĐẦY ĐỦ mọi mục của một thủ tục, nguyên văn từ data.api (không LLM, không cắt). None = không có/hết hiệu lực."""
+    if data_api.is_expired(conn, pid):
+        return None
+    rec = data_api.get_record(conn, pid)
+    if not rec:
+        return None
+    rows = []
+    for f in TABLE_FIELDS:
+        if f == "fees":
+            txt, st = _fees_text(conn, pid)
+        else:
+            ch = [c for c in data_api.fields(conn, pid, [f]) if c["text"].strip()]
+            txt, st = "\n".join(c["text"].strip() for c in ch), "present"
+            if not ch:
+                st = "absent_confirmed"
+            elif f == "processing_time":
+                txt = _time_text(ch[0]["text"])
+        # ponytail: thiếu dữ liệu -> câu ABSENT chung; không phân biệt "unknown" (bảng chỉ để xem, không suy diễn)
+        rows.append({"field": f, "title": FIELD_TITLE[f], "status": st, "text": txt if st == "present" else ABSENT[f]})
+    return {"proc_id": pid, "name": rec["name"], "domain": rec.get("domain", ""), "rows": rows,
+            "sources": _sources(conn, pid, True)}
