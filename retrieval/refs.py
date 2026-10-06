@@ -22,7 +22,8 @@ _FILLER = {"ua", "uh", "um", "do", "day", "nay", "kia", "a", "nhe", "nha", "di",
 def ordinal(text: str) -> tuple[str, str] | None:
     """-> (kiểu, rest): kiểu 'n:2' | 'first' | 'last' | 'middle'; rest = phần câu còn lại SAU KHI bỏ cụm thứ tự (đã bỏ dấu).
     None nếu không phải tham chiếu thứ tự thuần (còn chữ nghiệp vụ lạ thì coi là câu hỏi mới)."""
-    f = _fold(text)
+    # "thứ tư" (= 4) và "thứ tự" (= trật tự) cùng gấp thành "thu tu": phân biệt khi còn dấu rồi mới bỏ dấu
+    f = _fold(re.sub(r"(?<!\w)(thứ|số|mục|cái|ý|câu) tư(?!\w)", r" bốn", (text or "").lower()))
     kind, span = None, None
     m = _ORD_POS.search(f)
     # "đâu" (ở đâu) và "cưới" gấp dấu thành "dau"/"cuoi" trùng "đầu"/"cuối": chữ trần chỉ là thứ tự khi có từ chỉ định (cái/mục...) hoặc còn dấu "đầu"/"cuối"
@@ -83,11 +84,29 @@ def options_from_text(text: str) -> list[str]:
 _NEG_TRIG = [("khong", "phai"), ("ko", "phai"), ("k", "phai"), ("hok", "phai"), ("chang", "phai"), ("dau", "phai"),
              ("dung", "nham", "voi"), ("dung", "nham"), ("dung", "dua"), ("dung", "lay"), ("dung", "chon"),
              ("khong", "lay"), ("khong", "can"), ("khong", "phai", "la")]
+NAME_NEG: set = set()      # (dấu hiệu phủ định + 2 chữ kế) nằm TRONG tên thủ tục thật ("không phải xin phép", "không phải là bất động sản"); Index nạp
 _NEG_VARIANT = ("khong", "co")      # chỉ khi X mở đầu bằng dấu hiệu biến thể (xem _VARIANT_HEAD)
 _VARIANT_HEAD = {"yeu", "loai", "ban", "dang", "truong"}
 _X_STOP = set("nhe nha nhá dau thoi ma hay a oi di nhi can thi lam phi nop mat bao giay la nhung minh toi ban cho hoi online "
               "duoc khong voi va hoac cung roi nua day do ak ah".split())
 _X_LEAD = {"la", "loai", "ban", "dang", "truong", "hop", "cai"}
+
+
+def neg_in_name(fw: list[str], i: int, n: int) -> bool:
+    """Cụm phủ định bắt đầu ở fw[i] (dài n chữ) cùng 2 chữ kế trùng một đoạn tên thủ tục thật => là tên, không phải phủ định."""
+    nola = tuple(fw[i:i + n]) + tuple([w for w in fw[i + n:i + n + 3] if w != "la"][:2])     # "không phải cộng tác viên" ~ "không phải là cộng tác viên" (hệ từ "là" có/không đều là tên)
+    return tuple(fw[i:i + n + 2]) in NAME_NEG or nola in NAME_NEG
+
+
+def load_name_neg(names_toks: list[list[str]]) -> None:
+    """Nạp từ tên thủ tục đã bỏ dấu (Index gọi một lần)."""
+    NAME_NEG.clear()
+    for toks in names_toks:
+        for k in range(len(toks)):
+            for trig in _NEG_TRIG:
+                if tuple(toks[k:k + len(trig)]) == trig:
+                    NAME_NEG.add(tuple(toks[k:k + len(trig) + 2]))
+                    NAME_NEG.add(trig + tuple([w for w in toks[k + len(trig):k + len(trig) + 3] if w != "la"][:2]))
 
 
 def extract_negation(text: str, vocab: set[str]) -> tuple[str, list[list[str]]]:
@@ -103,7 +122,7 @@ def extract_negation(text: str, vocab: set[str]) -> tuple[str, list[list[str]]]:
             if tuple(fw[i:i + len(trig)]) == trig:
                 hit = trig
                 break
-        if not hit:
+        if not hit or neg_in_name(fw, i, len(hit)):
             i += 1
             continue
         j = i + len(hit)
@@ -118,8 +137,17 @@ def extract_negation(text: str, vocab: set[str]) -> tuple[str, list[list[str]]]:
             continue
         if xs and any(w in vocab for w in xs):
             start = i - 1 if i > 0 and fw[i - 1] == "chu" else i
-            cut.append((toks[start][1], toks[k - 1][2]))
             neg.append(xs)
+            while k + 1 < len(toks) and fw[k] in ("hay", "hoac"):       # "không phải A hay B": B cũng bị loại (vế phủ định liệt kê)
+                k2 = k + 1
+                while k2 < len(toks) and k2 - k < 9 and re.match(r"\w", toks[k2][0]) and fw[k2] not in _X_STOP:
+                    k2 += 1
+                xs2 = [w for w in fw[k + 1:k2] if w]
+                if not any(w in vocab for w in xs2):
+                    break
+                neg.append(xs2)
+                k = k2
+            cut.append((toks[start][1], toks[k - 1][2]))
             i = k
         else:
             i += 1

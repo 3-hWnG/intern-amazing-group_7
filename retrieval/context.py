@@ -14,6 +14,8 @@ from dataclasses import dataclass, field
 
 from system3.data.search import _fold
 
+from .refs import neg_in_name
+
 HISTORY_MAX = 8
 STORY_MAX = 2
 
@@ -30,12 +32,13 @@ for _ph, _flag, _val in [
     ("vua nay", "back", "any"), ("luc dau", "back", "first"), ("ban dau", "back", "first"),
     ("cai dau tien", "back", "first"), ("cai truoc do", "back", "prev"), ("cai truoc", "back", "prev"),
     ("viec truoc", "back", "prev"), ("cai ban nay", "back", "prev"),
-    ("chac khong", "meta", 1), ("co dung khong", "meta", 1), ("dung khong", "meta", 1), ("ngan gon hon", "meta", 1),
+    ("chac khong", "meta", "verify"), ("co dung khong", "meta", "verify"), ("dung khong", "meta", "verify"), ("ngan gon hon", "meta", 1),
     ("ngan hon", "meta", 1), ("chi tiet hon", "meta", 1), ("viet lai", "meta", 1), ("noi lai", "meta", 1),
 ]:
     _PH[tuple(_ph.split())] = (_flag, _val)
 _PH_SORTED = sorted(_PH, key=len, reverse=True)
 _CONN = re.compile(r"^(?:(?:a|ok|oke|uh|um|da|vang|ua|ah)\s+)*(?:con|the con|vay con|vay|roi|the|tiep theo|ngoai ra|them nua|vay la)(?:\s|$)")
+_AMOUNT = re.compile(r"^(?:(?:a|ok|oke|uh|um|da|vang|ua|ah)\s+)*(?:the |vay |con |roi )*(?:het )?bao nhieu(?: tien| the| vay| a| nhi| nhe)*\s*$")     # "thế bao nhiêu", "bao nhiêu vậy": câu cụt hỏi tiền
 _TAIL = re.compile(r"(?:thi|vay) (?:sao|the nao|lam sao|nhu the nao|ra sao|duoc khong|co sao khong|co duoc khong)\s*$|^(?:sao|the nao)\s*$")
 _NEED = re.compile(r"\bcan (?:phai )?(?:lam|dang ky|khai bao|nop|xin|chuan bi|di)\b.*\bgi\b|\b(?:phai|nen) lam (?:gi|sao)\b")
 _COND = re.compile(r"(?:^|\s)(?:neu|truong hop|trong truong hop|doi voi)(?:\s|$)")
@@ -49,12 +52,14 @@ def markers(text: str) -> tuple[str, dict]:
     cut, i = [], 0
     while i < len(toks):
         hit = next((p for p in _PH_SORTED if tuple(fw[i:i + len(p)]) == p), None)
+        if hit and neg_in_name(fw, i, len(hit)):          # "không phải xin phép..." là chữ trong tên thủ tục, không phải sửa ý
+            hit = None
         if hit:
             f, v = _PH[hit]
             flags[f] = v
             cut.append((toks[i][1], toks[i + len(hit) - 1][2]))
             i += len(hit)
-        elif toks[i][0].lower() == "cơ":                     # "hỏi thường trú cơ (mà)": tiểu từ nhấn/đối lập, không phải chữ "co"
+        elif toks[i][0].lower() == "cơ" and (i + 1 == len(toks) or fw[i + 1] == "ma" or (text[toks[i][2]:toks[i + 1][1]].strip() != "")):                     # "hỏi thường trú cơ (mà)": tiểu từ nhấn/đối lập (cuối câu/trước "mà"/trước dấu câu), không phải "cơ quan"
             flags["corr"] = 1
             cut.append((toks[i][1], toks[i][2]))
             i += 1
@@ -72,6 +77,9 @@ def markers(text: str) -> tuple[str, dict]:
         flags["conn"] = 1
     if _TAIL.search(f):
         flags["tail"] = 1
+    if _AMOUNT.search(f):
+        flags["tail"] = flags["amount"] = 1
+        t = ""            # cả câu là "bao nhiêu": bỏ hết để "thế bao" không bị đọc thành "thẻ bảo (hiểm)" sau khi bỏ dấu
     if _COND.search(f):
         flags["cond"] = 1
     if _NEED.search(f):
@@ -97,8 +105,7 @@ class ConvState:
         if pid not in self.order:
             self.order = (self.order + [pid])[-HISTORY_MAX:]
         self.topic, self.story, self.loose = pid, [], False
-        if fields:
-            self.fields = list(fields)
+        self.fields = list(fields or [])      # mục của LƯỢT GẦN NHẤT (rỗng = hỏi chung): câu nối/sửa ý kế thừa đúng mục vừa hỏi, không lấy mục cũ của thủ tục khác
 
     def add_story(self, text: str) -> None:
         self.story = (self.story + [text])[-STORY_MAX:]
@@ -113,23 +120,48 @@ class ConvState:
                    list(d.get("fields") or []), list(d.get("story") or []), bool(d.get("loose")))
 
 
-# lời kể sự kiện đời sống -> tên thủ tục thường gặp (từ vựng của người dân KHÔNG nằm trong tên thủ tục).
-# ponytail: bảng tay 5 sự kiện phổ biến nhất; mở rộng bằng log thật, hoặc dựng từ condition_index.
-_EVENTS = [
-    (re.compile(r"\b(?:be|con) (?:moi |vua )?(?:sinh|chao doi)\b|\bsinh (?:con|be|em be)\b|\b(?:vua|moi) sinh\b"), "đăng ký khai sinh"),
-    (re.compile(r"\bcuoi\b|\bdam cuoi\b|\blay (?:vo|chong)\b|\bket hon\b"), "đăng ký kết hôn"),
-    (re.compile(r"\bqua doi\b|\btu tran\b|\b(?:chong|vo|bo|me|ong|ba|con|nguoi than)(?: toi| minh)?(?: vua| moi)? (?:mat|qua doi)\b"), "đăng ký khai tử"),
-    (re.compile(r"\bo tro\b|\bthue tro\b|\bchuyen (?:len|den|ve|cho o|nha)\b"), "đăng ký tạm trú"),
-    (re.compile(r"\bmo (?:quan|tiem|cua hang)\b|\bban hang\b|\bbuon ban\b|\bkinh doanh nho\b"), "đăng ký hộ kinh doanh"),
+# SỰ KIỆN ĐỜI SỐNG -> họ thủ tục. Người dân kể hoàn cảnh bằng từ KHÔNG nằm trong tên thủ tục ("vừa mất" ~ khai tử, "vào lớp 6" ~ tuyển sinh THCS).
+# Vì sao KHÔNG dựng tự động từ condition_index: chỉ 894 dòng không-phải-"who" cho 1.350 thủ tục, phần lớn là tiêu đề hồ sơ ("Hồ sơ của người nhận con nuôi"),
+# không có từ khoá sự kiện (đo: "người chết"/"bỏ rơi"/"qua đời" 0 dòng); cột keywords gần như trống (89/1.350). Vì vậy bảng là cụm từ khoá -> cụm gợi ý (tên thủ tục),
+# còn "họ thủ tục" thật do bộ xếp hạng quyết định (hint đi qua rank như một câu hỏi). test: server/tests/context_test.py kiểm mọi hint đều ra đúng thủ tục có trong kho.
+# Quy ước regex: chạy trên chữ đã bỏ dấu; viết theo từng NHÓM (người thân, thời điểm, động từ) để không phụ thuộc đại từ ("em/tôi/mình/nhà tôi").
+_KIN = r"(?:chong|vo|bo|ba|me|ma|cha|ong|ba|anh|chi|em|con|chu|bac|di|cau|cu|nguoi(?: than| nha| trong nha)?|nha)"
+_PRON = r"(?:\s(?:em|toi|minh|tui|cua em|cua toi|cua minh|nha em|nha toi|nha minh|co|bi))?"
+EVENTS: list[tuple[str, str]] = [
+    # sinh con
+    (r"\b(?:be|con|chau|em be|cai be)\b" + _PRON + r"(?: moi| vua| sap| da)? (?:sinh|chao doi|ra doi)\b|\bsinh (?:con|be|chau|em be)\b|\b(?:vua|moi) sinh\b|\bsap sinh\b", "đăng ký khai sinh"),
+    # kết hôn
+    (r"(?<!cai )(?<!muc )(?<!so )\bcuoi\b(?! cung)|\bdam cuoi\b|\blay (?:vo|chong)\b|\bket hon\b", "đăng ký kết hôn"),
+    # người thân qua đời (không nhầm "mất giấy/mất thẻ/mất việc": động từ "mất" đứng cuối cụm hoặc theo thời điểm)
+    (r"\bqua doi\b|\btu tran\b|\bnguoi (?:than )?(?:vua |moi |da )?(?:chet|mat)\b|\b" + _KIN + _PRON + r"(?: vua| moi| da)? (?:mat|chet|qua doi|tu tran)(?!\s+(?:giay|the|so|ho|bang|can|tien|viec|dien|nuoc|xe|dat|nha|tich|chung)\b)\b", "đăng ký khai tử"),
+    # chỗ ở
+    (r"\bo tro\b|\bthue tro\b|\bchuyen (?:len|den|ve|cho o|nha)\b", "đăng ký tạm trú"),
+    # kinh doanh nhỏ
+    (r"\bmo (?:quan|tiem|cua hang)\b|\bban hang\b|\bbuon ban\b|\bkinh doanh nho\b", "đăng ký hộ kinh doanh"),
+    # con vào cấp 2
+    (r"\b(?:vao|len|hoc) lop (?:6|sau)\b|\bvao cap (?:2|hai)\b|\bchuyen cap\b|\bhet cap (?:1|mot)\b", "tuyển sinh trung học cơ sở"),
+    # người già không lương hưu
+    (r"\b(?:khong|chua) (?:co|duoc|huong) (?:luong )?huu\b|\b(?:hon|tren|du|tu du) (?:7[0-9]|[89][0-9]) tuoi\b|\b(?:nguoi gia|cu gia|ong ba gia)\b.{0,25}\b(?:tro cap|tien hang thang|duoc nhan)\b", "trợ cấp hưu trí xã hội"),
+    # trẻ bị bỏ rơi / nhận nuôi
+    (r"\bbi bo roi\b|\bmo coi\b|\bxin (?:mot )?(?:be|chau|dua tre)\b|\bnhan (?:mot |ve )?(?:be|chau|dua tre|dua be)\b.{0,15}\bnuoi\b|\bnhan nuoi\b", "đăng ký việc nuôi con nuôi trong nước"),
+    # hộ nghèo
+    (r"\b(?:nha|gia dinh|nha em|nha toi) (?:em |toi |minh )?(?:rat |qua )?(?:ngheo|can ngheo)\b|\bthoat ngheo\b|\bhoan canh kho khan\b", "công nhận hộ nghèo"),
+    # tai nạn lao động
+    (r"\b(?:bi |gap )?tai nan (?:khi |luc )?(?:di )?(?:lam|lao dong|o cong ty|trong cong ty)\b|\bbi thuong (?:khi|luc) (?:di )?lam\b|\bbenh nghe nghiep\b", "chế độ tai nạn lao động bệnh nghề nghiệp"),
+    # có công với cách mạng
+    (r"\bco cong (?:voi )?cach mang\b|\bnguoi co cong\b|\bthuong binh\b|\bliet si\b", "người có công"),
 ]
+_EVENTS = [(re.compile(rx), h) for rx, h in EVENTS]
 
 
 def event_hints(text: str) -> tuple[str, str]:
     """-> (gợi ý tên thủ tục, câu đã bỏ phần diễn đạt sự kiện [đã bỏ dấu]) để nơi gọi kiểm tra còn chữ nghiệp vụ lạ hay không."""
-    f = _fold(text)
+    # "cuối" (thứ tự) và "cưới" (kết hôn) cùng gấp thành "cuoi": đánh dấu "cuối" CÓ DẤU trước khi bỏ dấu để không khớp nhầm sự kiện;
+    # chữ gõ không dấu thì loại các cách dùng thứ tự ("cái cuoi", "cuoi cung") bằng chính regex.
+    f = _fold((text or "").lower().replace("cuối", "cuoiq"))
     hints, rest = [], f
     for rx, h in _EVENTS:
         if rx.search(f):
             hints.append(h)
             rest = rx.sub(" ", rest)
-    return " ".join(hints), rest
+    return " ".join(hints), rest.replace("cuoiq", "cuoi")
