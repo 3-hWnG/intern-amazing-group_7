@@ -1,55 +1,83 @@
-# System 3 — trạng thái sau đợt 3 (2026-10-05)
+# System 3 — Trợ lý thủ tục hành chính cấp xã/phường (trạng thái sau đợt 4, 2026-10-06)
 
-Project RIÊNG, dùng lại dữ liệu của repo V10.6 (`repo/Database`, snapshot trong `data/snapshot`). Không import Backend/Frontend của V10.6.
-Tài liệu: [docs/SETUP.md](docs/SETUP.md) (cài đặt), [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md), [docs/EVAL.md](docs/EVAL.md) (đo và quy tắc bộ mù), [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md), kế hoạch: [docs/PLAN_SYSTEM3.md](docs/PLAN_SYSTEM3.md), [docs/PLAN_SYSTEM3_DOT3.md](docs/PLAN_SYSTEM3_DOT3.md).
-Chạy: `PYTHONPATH=<gốc repo> python server/main.py` (cần Ollama + `qwen3:4b` nếu bật bước sinh chữ). Cổng 8300.
+Project RIÊNG, dùng lại dữ liệu của repo V10.6 (snapshot trong `data/snapshot`, 1.350 thủ tục). Không import Backend/Frontend của V10.6.
+Tài liệu: [docs/SETUP.md](docs/SETUP.md) (cài đặt) · [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/EVAL.md](docs/EVAL.md) (cách đo, quy tắc bộ mù) · [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) · [docs/BAO_CAO_DOT4.md](docs/BAO_CAO_DOT4.md) (báo cáo ngắn cho nhóm) · kế hoạch: [PLAN_SYSTEM3](docs/PLAN_SYSTEM3.md), [DOT3](docs/PLAN_SYSTEM3_DOT3.md), [DOT4](docs/PLAN_SYSTEM3_DOT4.md).
+Chạy: `PYTHONPATH=<gốc repo> python server/main.py` (cổng 8300; cần Ollama + `qwen3:4b` chỉ khi bật bước sinh chữ).
 
 ## Kiến trúc đang chạy
-User -> Orchestrator -> **Planner (luật, không LLM)** -> Policy/Router (luật) -> Answerer (code) -> [LLM chỉ sinh chữ giải thích điều kiện/so sánh, mọi ý qua verifier, lỗi/timeout thì giữ bản bằng code] -> câu trả lời.
+User → Orchestrator → **Planner (luật; Qwen3-4B hybrid là tuỳ chọn, TẮT mặc định)** → Policy/Router (luật) → Answerer (code, nguyên văn + nguồn) → [LLM chỉ sinh chữ giải thích điều kiện/so sánh, mọi ý qua verifier, lỗi/timeout 5 s thì giữ bản bằng code] → câu trả lời. Map với kiến trúc G7 của nhóm: xem [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Box 1–4, 5A, 6A, 10 đã có; 3 (LLM Planner) làm hybrid nhưng không bật; 5B/6B (RAG, import) mới chỉ có thiết kế giao diện trong `knowledge/`.
 
 | Thư mục | Nội dung |
 |---|---|
-| `eval/` | bộ test: DEV 209, HOLDOUT 67 (đã dùng để sửa), HOLDOUT-2 62 (ô nhiễm một phần), **HOLDOUT-3 88 (mù, số chính thức)**; `run.py`, `rules_scorer.py`, `synth_retrieval.py` (câu tự sinh từ DB), `cases_ctx.*` + `run_ctx.py` (hội thoại nhiều lượt) |
-| `data/` | build DB, `fees_clean`, `field_chunks`, `condition_index`, `families`, `synonyms`, `api.py` |
-| `retrieval/` | tách câu, xếp hạng IDF có dấu, cổng phạm vi/chủ đề ngoài hệ thống, phủ định, thứ tự (`refs.py`), **trạng thái hội thoại (`context.py`)** |
-| `server/planner/` | luật mặc định; nhánh LLM còn trong code nhưng tắt (`S3_PLANNER_LLM=1` mới bật) |
-| `server/policy/` | chống chèn lệnh, che PII, kiểm căn cứ, phạm vi, field_status, biến thể mặc định, hỏi lại khi >= 3 bản gần nhau |
-| `server/answer/` | soạn bằng code + nguồn; `llm_answer.py` + `verifier.py` cho bước sinh chữ có kiểm |
-| `server/orchestrator.py`, `db/` | bộ nhớ: thủ tục đã nói, mục đang hỏi, `session_facts` gắn thủ tục, `conv_state`; reset chủ đề |
-| `web/` | UI chat: nút "Bắt đầu chủ đề mới", nút "dạng khác", trang dev duyệt `default_variant` (`/dev/variants.html`, chỉ khi `S3_DEV=1`) |
+| `data/` | build DB từ snapshot, `fees_clean`, `field_chunks`, `condition_index`, `families`, `synonyms`, `api.py` (cửa vào duy nhất) |
+| `retrieval/` | tách câu, xếp hạng IDF có dấu, cổng phạm vi, phủ định/thứ tự (`refs.py`), trạng thái hội thoại (`context.py`) |
+| `server/planner/` | luật mặc định; `hybrid.py` = luật + Qwen3-4B nền (tuỳ chọn) |
+| `server/policy/` | chống chèn lệnh, che PII, kiểm căn cứ, phạm vi, hỏi lại khi ≥ 3 bản gần nhau |
+| `server/answer/` | trả lời bằng code + nguồn; `llm_answer.py` + `verifier.py` (sinh chữ có kiểm) |
+| `server/orchestrator.py`, `db/` | bộ nhớ hội thoại, reset chủ đề, trace |
+| `web/` | UI chat: quản lý hộp thoại (menu ⋯: ghim/bỏ ghim, xuất Markdown/JSON/PDF, đổi tên, xoá; nhấp đúp để đổi tên; "Xoá tất cả"; API `PATCH {title?, pinned?}`, `GET /conversations/{id}/export?format=md|json|pdf` (pdf = trang in, trình duyệt tự mở hộp thoại in để Lưu thành PDF), `DELETE /conversations`), nút "Tạo bảng full", chỉ báo + panel cấu hình AI (`/config`), "Bắt đầu chủ đề mới", "dạng khác" |
+| `knowledge/` | chỉ thiết kế giao diện RAG/import (chưa build) |
+| `eval/` | bộ test + bộ chấm (xem docs/EVAL.md) và các báo cáo `P18/P19/P20_REPORT.md` |
 
-## Số đo (rules-only, `S3_USE_LLM=0`)
-| | top-1 | top-3 | đúng hành vi | bịa số |
-|---|---|---|---|---|
-| Baseline V10.6 (185 câu cũ) | 11% | 18% | 32% | - |
-| Cuối đợt 2 (185 câu cũ, đã tune) | 84% | 92% | 90% | 6% |
-| DEV 209 (đã tune) | 90,2% | 97,0% | 96,7% | 2,9% |
-| HOLDOUT 67 (đã dùng để sửa) | 94,5% | 98,2% | 94,0% | 4,5% |
-| HOLDOUT-2 62 (ô nhiễm một phần) | 70,2% | 74,5% | 79,0% | 7,0% |
-| **HOLDOUT-3 88 (mù)** | **73,1%** | **82,1%** | **83,0%** | **7,1%** |
-| synth TEST-seed 777 câu tự sinh từ DB | 92,8% | - | - | - |
+## Số đo (chế độ luật, `S3_USE_LLM=0`)
+**Số để nói với người ngoài là các bộ MÙ** (câu viết kiểu người dân, hệ thống chưa từng được tune trên chúng):
 
-Số chính thức để nói với người ngoài: **top-1 ~73%, đúng hành vi ~83%, bịa số ~7% trên câu viết kiểu người dân, chưa từng thấy**. Các số DEV/HOLDOUT cũ chỉ để theo dõi hồi quy.
+| Bộ mù | top-1 | top-3 | đúng hành vi | hỏi lại đúng | xin lỗi đúng |
+|---|---|---|---|---|---|
+| **HOLDOUT-4** (90 mục / 106 lượt, mới nhất) | **75%** (58/77) | 81% | **82%** (87/106) | 8/16 | 13/13 |
+| pseudo_real 2 (30 mục / 34 lượt) | 68% (19/28) | 71% | 68% | 0/3 | 2/3 |
+| HOLDOUT-3 (88 câu, chạy lại sau đợt 4) | 75% (50/67) | 78% | 86% | - | - |
+| pseudo_real 1 (30 mục / 42 lượt; đã bị xem lỗi) | 57% (17/30) | 60% | 74% | 1/6 | 6/6 |
+| Bộ team (10 câu của các team, chấm luật) | - | - | 7/10 PASS | - | - |
 
-Độ trễ (GTX 1660 Super 6 GB, qwen3:4b 100% GPU): luật p50 ~20 ms, p95 ~50 ms. Bật bước sinh chữ LLM: p95 ~5,0 s (đúng bằng timeout 5 s, nghĩa là một phần các lần gọi LLM chạm timeout rồi quay về bản bằng code); trong cổng tổng p95 <= 8 s. Điểm của bộ chấm không đổi khi bật/tắt LLM.
+Bịa số trên HOLDOUT-3: 3,4% (trước đợt 4: 7,1%). Chưa đo bịa số trên HOLDOUT-4/pseudo_real.
+**Kết luận trung thực: chọn đúng thủ tục khi người dân gõ tự do còn quanh 75% top-1; hỏi lại khi mơ hồ chỉ đúng một nửa (8/16, 0/3).** Mục tiêu đặt ra cho đợt 4 (top-1 ≥ 80%, hành vi ≥ 88%) **chưa đạt**.
+
+Số trên bộ đã tune (chỉ để theo dõi hồi quy, không dùng để khoe):
+| | kết quả |
+|---|---|
+| DEV cũ 209: top-1 / hành vi / bịa số | 96,3% / 97,6% / 0,0% |
+| ngoài phạm vi (DEV) | 30/30 |
+| ctx (hội thoại) top-1 lượt cuối | 89/91 |
+| synth (câu tự sinh từ DB) TRAIN / TEST | 96,3% / 96,3% |
+| Baseline V10.6 (185 câu cũ, lúc đầu) | top-1 11%, hành vi 32% |
+
+### Concise = trả lời đúng ý hỏi (`eval/run_concise.py`)
+Định nghĩa của nhóm: hỏi giá thì chỉ báo giá. Chấm bằng luật:
+| | gốc (đầu đợt 4) | hiện tại |
+|---|---|---|
+| DEV focus (không dư mục, không thiếu mục) | 70% | 99% (284/288) |
+| HOLDOUT cũ focus | 59% | 96% |
+| task thừa (kéo thêm thủ tục không hỏi) | 11/230 | 0/377 |
+| bộ team: PASS (chấm luật) | 3/10 | 7/10 |
+Lưu ý: số focus 99% nằm trên DEV đã tune (gồm ca agent tự soạn); trên câu thật còn lỗi (bộ team còn 3 câu FAIL: một do dữ liệu lệch với đáp án nhóm (8.000đ không có trong snapshot), một do đáp án mong cả thời hạn khi chỉ hỏi giấy tờ, một do điều kiện tang lễ).
+
+### LLM
+- **Planner hybrid (Qwen3-4B): không có lợi, tắt mặc định.** Đo công bằng (timeout 7 s, 0% timeout): không có lần sửa nào làm đúng hơn đáp án; confidence tự báo 0,99 cho 65% câu kể cả khi sai. Trên bộ mù HOLDOUT-4 hybrid kém luật 2 câu (56/77 vs 58/77), team 5/10 vs 7/10. Chi tiết: `eval/P19_REPORT.md`.
+- **Bước sinh chữ (Answer Composer)**: điểm bộ chấm không đổi khi bật/tắt; hay chạm timeout 5 s. Giá trị chưa được chứng minh.
+- Độ trễ (GTX 1660 Super 6 GB): luật p50 ~20 ms, p95 ~80 ms; bật sinh chữ p95 ~5 s.
 
 ## Giới hạn đã biết (đừng hứa hơn)
-- Tổng quát hoá thật chỉ ~73% top-1. Khoảng cách với DEV (90%) cho thấy tune quá khớp bộ test.
-- Hỏi lại khi mơ hồ yếu: HOLDOUT-3 chỉ đúng 2/8 câu clarify.
-- "Cái thứ n" (chọn theo thứ tự) còn yếu trên bộ mù: top-1 40% (HOLDOUT-3), 50% (HOLDOUT-2).
-- Câu không có trong kho / chủ đề gần kho: HOLDOUT-3 đúng hành vi 2/4 câu hallucination.
-- Bước sinh chữ LLM chưa chứng minh được giá trị: bộ chấm không phân biệt bật/tắt; qwen3:4b hay timeout 5 s. Verifier chỉ kiểm số, tên văn bản, "miễn phí", không kiểm nghĩa (một ý đúng số nhưng đảo nghĩa vẫn có thể lọt).
-- Lỗi chéo đã biết: chữ "cuối"/"cưới" (sau bỏ dấu) bị hiểu là chủ đề kết hôn; tên thủ tục có chữ "không phải" bị nhận là phủ định; `context_memory-11` hỏi lại thay vì trả lời; vài câu `context_memory` DEV cũ (-02, -12, -15) còn sai.
+- Chọn thủ tục tổng quát hoá ~75% top-1 trên câu mù; DEV 96% là tune quá khớp.
+- **Hỏi lại khi mơ hồ yếu** (8/16, 0/3 trên hai bộ mù mới); câu mơ hồ kiểu đời sống ("làm giấy tờ cho con") vẫn bị xin lỗi thay vì hỏi lại.
+- Top-3 trên HOLDOUT-3 giảm sau đợt 4 (82% → 78%) dù top-1 tăng: danh sách ứng viên ngắn hơn.
+- Lời kể chứa tên thủ tục có thể chọn nhầm bản anh em (cùng họ, khác loại).
+- "Ở đâu" chung chung trả **cơ quan giải quyết** khi cổng không ghi địa điểm (bộ test cũ không thống nhất giữa `address` và `agency`).
+- Khớp hoàn cảnh với `condition_index` là khớp chữ + bảng ~8 nhóm từ đời thường; kết hôn/khai sinh chỉ có dòng "đối tượng" nên trả "cổng không công bố riêng".
+- Phí dùng được chỉ 467/1.350 thủ tục (35%); phần còn lại trả "cổng không công bố". Lệ phí 8.000đ nhóm mong ở TC02 không có trong snapshot.
+- Verifier của bước sinh chữ chỉ kiểm số, tên văn bản, "miễn phí", không kiểm nghĩa.
 - Bảng sự kiện đời sống (`_EVENTS`) chỉ 5 sự kiện viết tay.
-- Phí dùng được chỉ 467/1.350 thủ tục (35%): phần còn lại trả lời "cổng không công bố".
-- Đáp án mong đợi nhóm clarify/chitchat/multi-intent và HOLDOUT-3 là giả định của người soạn (xem `eval/EXPECTATIONS_REVIEW.md`, `eval/H3_ASSUMPTIONS.md`); người dùng đã duyệt nhóm đầu.
-- Chưa có câu hỏi thật từ log người dân; tất cả bộ test do agent/Claude soạn.
-- `server/smoke_test.py` hỏng (assert từ bản stub), chưa sửa.
-- `requirements.txt` đã ghim bản; chưa thử cài trên venv sạch.
-- Các nút UI mới (reset chủ đề) chưa bấm thử trên trình duyệt.
+- Planner luật không sinh `context_facts`: `session_facts` luôn rỗng ở cấu hình mặc định.
+- Còn sai 4 ca ctx (hold-74/76/91, context_memory-15) chưa có nguyên nhân chung.
+- Bảng full hiện theo từng biến thể, chưa gộp họ; công tắc AI là trạng thái tiến trình (nhiều worker sẽ không đồng bộ); tải lại trang thì nút cũ không còn bị làm mờ.
+- Không có RAG hay import tài liệu (Box 5B/6B).
+- **Tất cả bộ test do agent/Claude soạn; chưa có câu hỏi thật từ log người dân.** Đáp án giả định ghi trong `eval/*ASSUMPTIONS.md`.
+- `requirements.txt` ghim đúng bản đang chạy nhưng chưa cài thử được trên venv sạch (máy thử không có mạng tin cậy tới PyPI).
+- Quy tắc nghiệm thu: không tune trên HOLDOUT-3/4 (xem docs/EVAL.md). Trước khi tune tiếp phải soạn bộ mù mới.
 
 ## Việc nên làm tiếp
-1. Lấy 20–30 câu từ log/người dùng thật làm bộ kiểm cuối.
-2. Sửa nhóm lỗi hỏi lại, thứ tự, "không có trong kho", rồi nhờ bộ mù mới (HOLDOUT-4) kiểm.
-3. Đo giá trị bước sinh chữ bằng bộ chấm riêng (người chấm hoặc luật theo `condition_index`), nếu không có lợi thì tắt hẳn.
-4. Dựng bảng sự kiện đời sống từ `condition_index`.
+1. **Câu hỏi thật** (20–30 câu từ log/người dân) làm bộ kiểm cuối; đây là cách duy nhất biết số đo ngoài đời.
+2. Sửa nhóm lỗi **hỏi lại khi mơ hồ** và chọn nhầm anh em/chọn thứ tự; sau đó soạn HOLDOUT-5 để kiểm.
+3. Quyết định số phận bước sinh chữ: dựng bộ chấm riêng (người chấm 20 câu), không có lợi thì tắt hẳn (`S3_USE_LLM=0`).
+4. Nếu nhóm vẫn muốn LLM Planner: cần model lớn hơn hoặc hiệu chỉnh confidence (cơ chế hợp nhất, trace, công tắc đã có sẵn).
+5. RAG/import (Box 5B/6B) theo thiết kế trong `knowledge/README.md`.
