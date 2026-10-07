@@ -10,6 +10,7 @@ nên chữ loại (1) bị đem đi xếp hạng như tên thủ tục, còn "c�
 from __future__ import annotations
 
 import re
+import unicodedata
 from dataclasses import dataclass, field
 
 from system3.data.search import _fold
@@ -42,6 +43,55 @@ _AMOUNT = re.compile(r"^(?:(?:a|ok|oke|uh|um|da|vang|ua|ah)\s+)*(?:the |vay |con
 _TAIL = re.compile(r"(?:thi|vay) (?:sao|the nao|lam sao|nhu the nao|ra sao|duoc khong|co sao khong|co duoc khong)\s*$|^(?:sao|the nao)\s*$")
 _NEED = re.compile(r"\bcan (?:phai )?(?:lam|dang ky|khai bao|nop|xin|chuan bi|di)\b.*\bgi\b|\b(?:phai|nen) lam (?:gi|sao)\b")
 _COND = re.compile(r"(?:^|\s)(?:neu|truong hop|trong truong hop|doi voi)(?:\s|$)")
+
+
+# Nhãn lượt hội thoại ở ĐẦU câu ("Turn 2:", "User:", "Câu 2:", "Q:", "Bạn:", "Hỏi:", "Lượt 2 -", "[User]", "2)", "- ", "> "): không phải lời người dùng.
+# Nguyên nhân gốc lỗi: chữ lạ ("turn") bị đem đi xếp hạng như tên thủ tục nên câu nối "vậy thời gian giải quyết..." bị coi là có chữ nghiệp vụ lạ -> độc lập -> ngoài phạm vi.
+# Nhãn chữ cần dấu hai chấm; nhãn có số chấp nhận thêm . ) - để "Câu 2 là gì" không bị cắt.
+_LBL_WORD = (r"turn|user|human|customer|client|question|ques|query|prompt|me|you|q|u|a|c|lượt|luot|lần|lan|câu hỏi|cau hoi|câu|cau|người dùng|nguoi dung|người hỏi|nguoi hoi|"
+             r"khách|khach|bạn|ban|tôi|toi|mình|minh|hỏi|hoi|hỏi đáp|hoi dap|dân|dan|công dân|cong dan|người dân|nguoi dan")
+_LBL_BOT = r"assistant|bot|ai|system|trợ lý|tro ly|trả lời|tra loi|đáp|dap|đáp án|bot trả lời"
+_LBL = re.compile(r"^\s*(?:"
+                  r"[-–—•*·>#~]+\s*|"                                                       # gạch đầu dòng, trích dẫn
+                  r"[\[(\{<]\s*(?:(?:%s)\s*(?:no\.?|số|so)?\s*\d{0,2}|\d{1,2})\s*[\])\}>]\s*[:：.-]?\s*|"        # [User] (Turn 2) <Q2>
+                  r"(?:(?:%s)\s*(?:no\.?|số|so)?\s*\d{1,2}(?:\s*/\s*\d{1,2})?\s*[:：.)\]\-–—]\s*)|"          # Turn 2: | Câu 2. | Q2) | Lượt 2 -
+                  r"(?:(?:%s)\s*[:：]\s*)|"                                                 # User: | Q: | Bạn:
+                  r"\d{1,2}\s*[.)\]:]\s+|"                                                  # 2. | 2) | 2:  (phải có khoảng trắng sau: không cắt "2.000")
+                  r"\d{1,2}\s*[-–—]\s+"                                                    # 2 - 
+                  r")" % (_LBL_WORD, _LBL_WORD, _LBL_WORD), re.I)
+
+
+_LBL_B = re.compile(r"^\s*(?:%s)\s*[:：]\s*" % _LBL_BOT, re.I)
+_EMOJI = re.compile("[🀀-🫿☀-➿⬀-⯿️‍]+")
+_WRAP = "\"'“”‘’«»`*_~"
+# Lời đệm lịch sự/xưng hô ở ĐẦU và CUỐI câu ("Dạ cho em hỏi ...", "Ad ơi ...", "... ạ", "... giúp mình với ạ"): không phải nghiệp vụ; còn nằm lại thì nó chặn
+# (KHÔNG cắt lời chào: chào/alo/hello là tín hiệu xã giao của _is_chitchat) các luật neo đầu/cuối câu (câu cụt "thì sao", "bao nhiêu", điều kiện "nếu ... thì") và thêm chữ lạ. Chỉ cắt khi phần còn lại >= 2 chữ.
+_POL_LEAD = re.compile(r"^\s*(?:(?:ad|admin|bot|bạn|anh|chị) ơi|(?:dạ|vâng)|"
+                       r"(?:cho|xin)\s+(?:em |mình |tôi |tui |con |anh |chị )?hỏi(?: về| chút| xíu)?|(?:em|mình|tôi|tui) (?:muốn|cần|xin|định) hỏi(?: về| chút| xíu)?)(?=[\s,.:;!?]|$)[\s,.:;!]*", re.I)
+_POL_TAIL = re.compile(r"(?:[\s,]+(?:ạ|nhé|nha|nhỉ|nhen|với ạ|giúp (?:mình|em|tôi|tui)(?: với)?(?: nhé| nha| ạ)?|dạ|ạ))+(?=[\s?.!]*$)", re.I)
+
+
+def strip_labels(text: str, role: str = "user") -> str:
+    """Làm sạch ĐẦU VÀO trước mọi bước hiểu câu: emoji, khoảng trắng thừa (\n, \t), ngoặc kép bao quanh, nhãn lượt ("Turn 2:", "User:", "Câu 2:", "Q:", "Bạn:", "Hỏi:",
+    "2)", "- ", "> "), lời đệm lịch sự đầu/cuối câu. Không bỏ nếu chỉ còn rỗng. Lời trợ lý: chỉ bỏ nhãn chữ ("Assistant:") để không phá danh sách đánh số "1) A 2) B"."""
+    t = unicodedata.normalize("NFC", text or "")
+    if role != "user":
+        m = _LBL_B.match(t)
+        return t[m.end():] if m else t
+    t = re.sub(r"\s+", " ", _EMOJI.sub(" ", t)).strip()
+    for _ in range(4):
+        t0 = t
+        t = t.strip(_WRAP + " ") if t[:1] in _WRAP and t[-1:] in _WRAP + "?.!" else t.lstrip(_WRAP + " ")
+        for rx in (_LBL, _POL_LEAD):
+            m = rx.match(t)
+            if m and len(t[m.end():].split()) >= (1 if rx is _LBL else 2):
+                t = t[m.end():]
+        if t == t0:
+            break
+    m = _POL_TAIL.search(t)
+    if m and len(t[:m.start()].split()) >= 2:
+        t = t[:m.start()] + t[m.end():].strip()
+    return t.strip() or (text or "").strip()
 
 
 def markers(text: str) -> tuple[str, dict]:

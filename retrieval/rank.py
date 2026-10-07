@@ -10,14 +10,15 @@ from __future__ import annotations
 import difflib
 import math
 import re
+import unicodedata
 from dataclasses import dataclass, field
 
 from system3.data.search import _fold
 
 from . import query as _query
-from .query import Query, understand, split_segments, strip_condition, FIELD_CUES, STOP, NAME_ABBR
+from .query import Query, understand, split_segments, strip_condition, FIELD_CUES, STOP, NAME_ABBR, COND_W
 from .refs import ordinal, pure_reference, pick, options_from_text, extract_negation, split_compare, load_name_neg
-from .context import ConvState, markers, event_hints
+from .context import ConvState, markers, event_hints, strip_labels, _PH
 
 ACCENT_MISMATCH = 0.35     # chữ có dấu của người dùng không khớp dấu trong tên
 PREC_BASE = 0.7          # phần điểm không phụ thuộc độ ngắn gọn của tên (biến thể dài bị phạt)
@@ -50,6 +51,7 @@ VERTICAL = ("Thuế", "Hải quan")
 CHITCHAT = set("chao xin hello hi alo cam on ban ten ai khoe ok oke vang da tam biet bye thanks thank you tro ly "
                "ad admin bot nhieu hom nay hoi vay thoi nha nhe nhen oi a ban tot qua tuyet gioi hay hen gap lai".split())
 _ALL_CUES = [c for cs in FIELD_CUES.values() for c in cs]
+_query.EXTRA_KNOWN.update((CHITCHAT - {"you", "thank", "thanks", "hello", "hi", "bye", "ok", "oke", "alo", "ad", "bot", "ten"}) | {w for ph in _PH for w in ph} | {"cuoi", "cung", "giua", "dau", "tien", "thu", "nhat", "mot", "hai", "ba", "bon"})     # chữ diễn ngôn/xã giao/thứ tự: từ vựng để tách chữ dính ("chắckhông", "cuốicùng")
 # Chủ đề NGOÀI hệ thống (thủ tục hành chính cấp xã): chặn dù có chữ trùng tình cờ với tên thủ tục. Chữ đã bỏ dấu.
 # ponytail: danh sách tay, bổ sung khi log thật gặp thêm chủ đề; không thay cho cổng chữ-đặc-trưng bên dưới.
 OOS_TOPICS = re.compile(
@@ -187,7 +189,7 @@ class Index:
 
         for r in rows:
             name = r["name"]
-            core = _PREFIX_RE.sub("", name, count=1) if r["province"] else name
+            core = unicodedata.normalize("NFC", _PREFIX_RE.sub("", name, count=1) if r["province"] else name)     # NFC: đầu vào được chuẩn hoá NFC (context.strip_labels), tên trong DB có thể là NFD ("HỢP NHẤT" gõ rời dấu) -> khớp dấu không bị lệch
             core = re.sub(r"^th[ủu] t[ụu]c\s+", "", core, flags=re.I)   # 'Thủ tục' mở đầu không phải chữ phân biệt: không phạt tên có/không có nó
             core = _ab.sub(lambda m: NAME_ABBR[m.group(1).lower()] if m.group(1).lower() in self.abbr else m.group(1), core)   # khai triển viết tắt trong tên (cả dấu lẫn không dấu)
             toks = _fold(core).split()
@@ -227,6 +229,7 @@ class Index:
         for ps in self.domains.values():
             ps.sort(key=lambda p: (not p["dv"], len(p["name"])))
         load_name_neg([p["toks"] for p in self.procs])
+        _query.VOCAB = set(self.vocab)
         _query.NAME_BIGRAMS = {bg for p in self.procs for bg in p["bigrams"]}
         _query.NAME_NGRAMS = _query.NAME_BIGRAMS | {t for p in self.procs for t in zip(p["toks"], p["toks"][1:], p["toks"][2:])}   # cho query.understand giữ chữ nghiệp vụ trùng STOP
 
@@ -418,6 +421,7 @@ def resolve(idx: Index, turns: list[dict], accept: float | None = None, shown: l
     Trạng thái hội thoại (ConvState) lấy từ `state` (orchestrator lưu DB) hoặc dựng lại bằng cách chạy lại các lượt user trước.
     Mỗi segment mang `decision`/`why`: follow_up | new_related | return | correction | story | independent | new."""
     accept = ACCEPT_SCORE if accept is None else accept
+    turns = [{**t, "text": _query.unglue_text(strip_labels(t["text"], t["role"])) if t["role"] == "user" else strip_labels(t["text"], t["role"])} for t in turns]     # nhãn lượt ("Turn 2:", "Q:", "2)") của cả lịch sử lẫn câu cuối không phải lời người dùng; chữ dính liền được tách TRƯỚC khi tách ý/xếp hạng (tách ý dùng cặp chữ liền kề)
     user_turns = [t["text"] for t in turns if t["role"] == "user"]
     if state is not None:
         st = state if isinstance(state, ConvState) else ConvState.from_dict(state)
@@ -494,7 +498,10 @@ def _contextualize(idx: Index, st: ConvState, segs: list, mk: dict, negs: list) 
         h = _hit_of(sg)
         mass = (h.hi_match + h.hi_miss) if h else 0.0
         weak = bool(h and mass > 0 and h.hi_miss / mass > WEAK_NAME)
-        distinct = any(idx._weight(t) >= HI_IDF for t in sg.query.terms)
+        # chữ lạ HOÀN TOÀN (không có trong kho, gõ sai cũng không sửa được: "turn", "lol") chỉ hạ độ tin cậy, không phải bằng chứng của thủ tục mới:
+        # trước đây _weight(chữ lạ) = max_idf nên một chữ lạ đủ để chặn kế thừa -> "độc lập" -> ngoài phạm vi dù câu có từ nối + mục hỏi.
+        stray = [t for t in sg.query.terms if idx._fix(t) not in idx.vocab]
+        distinct = any(idx._weight(t) >= HI_IDF for t in sg.query.terms if t not in stray)
         # tên mỏng: đang có chủ đề + câu mang tín hiệu nối + thủ tục xếp đầu không phủ chắc (khớp <2 chữ) => không coi là thủ tục mới
         # (chữ lạ còn dư chỉ chặn việc kế thừa khi thủ tục đang nói do người dùng GỌI TÊN; thủ tục suy ra từ lời kể thì nới)
         thin = bool(st.topic and (strong or medium or sg.query.fields) and not _is_named(sg) and (not distinct or st.loose))
@@ -522,10 +529,10 @@ def _contextualize(idx: Index, st: ConvState, segs: list, mk: dict, negs: list) 
         can = st.topic and not sg.oos_topic and not sg.reason.startswith("flagged") and sg.reason != "chitchat"
         if can and (strong or ((medium or sg.query.fields) and (not distinct or st.loose))):
             sg.proc_id, sg.inherited, sg.reason = st.topic, True, "in_scope"
-            sg.uncertain, sg.ambiguous, sg.near = False, False, []
+            sg.uncertain, sg.ambiguous, sg.near = bool(stray), False, []      # chữ lạ: chỉ hạ độ tin cậy
             sg.decision = "follow_up"
             sg.why = ("câu điều kiện/câu cụt \"thì sao\" không nêu thủ tục mới" if strong else
-                      "từ nối/đại từ/hỏi mục, không còn chữ nghiệp vụ lạ") + (", tên thủ tục mới phủ yếu" if weak else "")
+                      "từ nối/đại từ/hỏi mục, không còn chữ nghiệp vụ lạ") + (", tên thủ tục mới phủ yếu" if weak else "") + (f"; chữ lạ {stray} chỉ hạ độ tin cậy" if stray else "")
         else:
             sg.decision = "independent"
             sg.why = ("chủ đề ngoài phạm vi" if sg.oos_topic else "chữ nghiệp vụ lạ còn dư, không nối" if distinct and st.topic
@@ -653,7 +660,7 @@ def _dangling(segs: list) -> bool:
 _SITUATION = re.compile(r"\b(?:tung|chua|khong co|khong con|la|ly hon|nuoc ngoai|khac)\b")
 
 
-_COND_START = re.compile(r"^(?:nếu|trường hợp|đối với)\b")
+_COND_START = re.compile(r"^" + COND_W + r"\b")
 
 
 def _attach_orphans(segs: list, cmp) -> list:
@@ -700,7 +707,7 @@ _STEPS_WORD = re.compile(r"\b(?:cac buoc|buoc|trinh tu|quy trinh|cach thuc|cach 
 
 def _cond_steps(main: str, fields: list) -> list:
     """"nếu X thì tôi cần làm gì" (câu chính chỉ có 'làm gì', không nêu mục): giấy tờ/hồ sơ + điều kiện X, không phải các bước."""
-    if fields == ["steps"] and re.search(r"\blàm gì\b", main.lower()) and not _STEPS_WORD.search(_fold(main)):
+    if fields == ["steps"] and re.search(r"\blam gi\b", _fold(main)) and not _STEPS_WORD.search(_fold(main)):
         return ["components"]
     return fields
 
@@ -711,21 +718,52 @@ def _cond_fields(idx: Index, frag: str, fq: Query, allow: bool) -> None:
     if not allow:
         return
     main, cond = strip_condition(frag)
-    if not cond or not (re.search(r"\b(?:nếu|trường hợp|đối với)\b", frag.lower()) or not understand(idx.conn, cond, idx.syn).fields):
+    if not cond or not (re.search(r"\b" + COND_W + r"\b", frag.lower()) or not understand(idx.conn, cond, idx.syn).fields):
         return      # "A thì B" không có 'nếu': chỉ coi A là hoàn cảnh khi A không chứa cụm hỏi mục ("đăng ký thường trú bao lâu thì có kết quả" không phải câu điều kiện)
     mq = understand(idx.conn, main, idx.syn)
-    if not re.search(r"\b(?:nếu|trường hợp|đối với)\b", frag.lower()) and len(mq.terms) < 2:
+    if not re.search(r"\b" + COND_W + r"\b", frag.lower()) and len(mq.terms) < 2:
         return      # "nhà em có người vừa mất thì phải làm thủ tục gì": vế trước là SỰ KIỆN dẫn tới thủ tục, vế sau không nêu thủ tục -> không phải câu điều kiện
     mf = mq.fields
-    if re.search(r"\b(?:nếu|trường hợp|đối với)\b", frag.lower()):
+    if re.search(r"\b" + COND_W + r"\b", frag.lower()):
         mf = _cond_steps(main, mf)
-    if re.search(r"\b(?:nếu|trường hợp|đối với)\b", frag.lower()):
+    if re.search(r"\b" + COND_W + r"\b", frag.lower()):
         fq.flags["condition"] = cond          # chỉ điều kiện nêu rõ ('nếu/trường hợp') mới thành điều kiện để đối chiếu; "mẹ em mất thì ..." là sự kiện, không ghi chú
     if len(mq.terms) >= 2:      # câu chính tự gọi tên thủ tục: xếp hạng theo câu chính, chữ của hoàn cảnh ("ở nhờ nhà người quen") không lẫn vào tên thủ tục
         h = idx.rank(mq, limit=1)
         if h and h[0].prec >= 0.5 and h[0].hi_match > 0:
             fq.terms, fq.accented = list(mq.terms), list(mq.accented)
     fq.fields = (["components"] if set(mf) <= {"meta"} else []) + list(mf)      # chỉ hỏi nguồn/căn cứ thì vẫn cần phần nội dung theo trường hợp (hồ sơ)
+
+
+_CLAUSE = re.compile(r"\s+(?:nhưng|nhung|mà|ma|và|va|rồi|roi|tuy|nên|nen|còn|con)\s+|\s*[,;]\s*")
+
+
+def _cond_head(idx: Index, main: str):
+    """Câu "nếu <việc chính, rồi hoàn cảnh phụ> thì <hỏi mục không nêu thủ tục>" ("nếu tôi đăng ký khai tử cho người đã chết nhưng người đó có hộ khẩu ... và được tổ chức tang lễ
+    ở nơi khác thì tôi cần làm gì"): thủ tục là việc nêu ĐẦU TIÊN trong vế điều kiện; phần sau ranh giới mệnh đề (nhưng/mà/và/dấu phẩy) là hoàn cảnh của nó. Trước đây cả câu bị tách ở
+    'và' thành hai ý và mảnh hoàn cảnh ('tổ chức tang lễ') mượn vài chữ chung của thủ tục khác ('thông báo tổ chức lễ hội') thành task thứ hai.
+    -> (đầu = phần nêu thủ tục, hoàn cảnh (đoạn sau ranh giới, hoặc cả vế điều kiện), mục) hoặc None khi câu không thuộc dạng này (thủ tục nêu ở vế sau, hay đầu vế không gọi tên được).
+    ponytail: ranh giới mệnh đề bằng từ nối cố định; chưa phân tích cú pháp."""
+    if not re.search(r"\b" + COND_W + r"\b", main.lower()):
+        return None
+    m = re.match(r"^(.*?)\b" + COND_W + r"\s+(.+)\s+(?:thì|thi)\s+(.+)$", main.lower(), re.S)      # 'thì' CUỐI CÙNG: dấu phẩy trong vế điều kiện ("..., ông mất tại bệnh viện, ...") không kết thúc điều kiện
+    if not m or understand(idx.conn, m.group(3), idx.syn).terms:
+        return None
+    if len(understand(idx.conn, m.group(1), idx.syn).terms) >= 2:
+        return None       # thủ tục đã nêu TRƯỚC 'nếu' ("đăng ký giám hộ nếu ...", "tôi muốn tách hộ. Nếu ..."): vế điều kiện chỉ là hoàn cảnh, đường cũ lo
+    cond, m2 = m.group(2).strip(), m.group(3).strip()
+    parts = _CLAUSE.split(cond, maxsplit=1)
+    head = parts[0].strip()
+    hq = understand(idx.conn, head, idx.syn)
+    if len(hq.terms) < 2:
+        return None
+    h = idx.rank(hq, limit=1)
+    if not h or (h[0].prec < 0.5 and h[0].cov < 0.9) or h[0].hi_match <= 0:      # đầu gọi tên chắc: phủ tên >= 50% HOẶC mọi chữ của đầu nằm trong tên (tên dài có chú thích)
+        return None
+    rest = cond[len(parts[0]):].strip(" ,;") if len(parts) > 1 else ""
+    rest = re.sub(r"^(?:nhưng|nhung|mà|ma|và|va|rồi|roi|tuy|nên|nen|còn|con)\s+", "", rest)
+    mq = understand(idx.conn, m2, idx.syn)
+    return head, rest or cond, (_cond_steps(m2, mq.fields) if mq.fields else ["components"])
 
 
 DOMAIN_MIN = 5       # lĩnh vực có >= số thủ tục cấp xã này mới coi là "nhóm chung quá rộng"
@@ -805,9 +843,12 @@ def _resolve_text(idx: Index, text: str, st: ConvState, accept: float, options: 
                         evidence="legal_basis" if mk["meta"] == "verify" else "none")]
     parts, qs = [], []
     cmp = split_compare(main)
-    for frag in (cmp or ([main] if one else split_segments(main))):
+    ch = None if (cmp or one) else _cond_head(idx, main)
+    for frag in (cmp or ([main] if one else ([ch[0]] if ch else split_segments(main)))):
         fq = understand(idx.conn, frag, idx.syn)
         _cond_fields(idx, frag, fq, cmp is None)
+        if ch:                                   # "nếu <việc chính + hoàn cảnh> thì cần làm gì": MỘT ý; hoàn cảnh là điều kiện, mục mặc định = hồ sơ/giấy tờ
+            fq.flags["condition"], fq.fields = ch[1], list(ch[2])
         if parts and not cmp and len(fq.terms) < 2 and not fq.fields:   # mảnh quá ngắn/ngữ cảnh: gộp vào mảnh trước
             parts[-1] += " " + frag
             qs[-1] = understand(idx.conn, parts[-1], idx.syn)
@@ -883,10 +924,16 @@ def _resolve_text(idx: Index, text: str, st: ConvState, accept: float, options: 
             segs[1].query.fields = segs[0].query.fields + [f for f in segs[1].query.fields if f not in segs[0].query.fields]
             _lose_to_cond(segs[1], [segs[0]])
             segs = segs[1:]
+        def _borrowed(sg):
+            # mảnh sau chỉ MƯỢN vài chữ chung của một thủ tục khác: khớp <= 3 chữ, tên thủ tục được phủ < 50% và phần lớn chữ HIẾM của mảnh không nằm trong tên đó
+            # ("tổ chức tang lễ ở nơi khác" ~ "thông báo tổ chức lễ hội": trùng 'tổ chức', 'lễ'; 'tang' không có). Mảnh như vậy là hoàn cảnh/phần đệm của ý trước, không phải task thứ hai.
+            top = sg.hits[0] if sg.hits else None
+            mass = (top.hi_match + top.hi_miss) if top else 0.0
+            return bool(top and mass > 0 and top.nmatch <= 3 and top.prec < 0.5 and top.hi_miss / mass > WEAK_NAME)
         keep = [segs[0]]
         for sg in segs[1:]:
-            if _weak(sg):
-                keep[-1].query.fields += [f for f in sg.query.fields if f not in keep[-1].query.fields]
+            if _weak(sg) or _borrowed(sg):
+                keep[-1].query.fields += [f for f in sg.query.fields if f not in keep[-1].query.fields and not (f == "explanation" and _borrowed(sg))]      # 'là gì' của mảnh mượn chữ không phải mục hỏi
             else:
                 keep.append(sg)
         segs = keep

@@ -16,7 +16,7 @@ FIELD_CUES: dict[str, list[str]] = {
                    "chuan bi gi", "chuan bi nhung gi", "mang theo", "can mang"],
     "fees": ["thu bao nhieu", "dong bao nhieu", "phai dong bao nhieu", "ton tien", "ton phi", "le phi bao nhieu tien", "le phi bao nhieu", "co thu phi khong", "thu phi", "het bao nhieu", "mat bao nhieu", "le phi", "mien phi", "co mat phi", "mat phi", "bao nhieu tien", "ton bao nhieu", "mat bao nhieu tien",
              "co mat tien", "mat tien", "phi la", "phi bao nhieu", "phi"],
-    "processing_time": ["thoi gian xu ly ho so", "thoi han xu ly ho so", "thoi gian giai quyet ho so", "thoi han giai quyet ho so", "xu ly ho so", "giai quyet ho so", "thoi gian xu ly", "thoi han xu ly", "han xu ly", "bao gio co ket qua", "khi nao co ket qua", "bao gio xong", "khi nao xong", "khi nao nhan duoc", "bao gio nhan duoc", "co ket qua sau", "mat may bua", "may bua", "may hom", "may tuan", "mat may ngay", "het may ngay", "bao nhieu lau", "lau khong", "mat bao lau", "bao lau", "may ngay", "thoi gian giai quyet", "thoi han giai quyet", "thoi gian", "thoi han",
+    "processing_time": ["thoi gian xu ly ho so", "thoi han xu ly ho so", "thoi gian giai quyet ho so", "thoi han giai quyet ho so", "xu ly ho so", "giai quyet ho so", "thoi gian xu ly", "thoi han xu ly", "han xu ly", "bao gio co ket qua", "khi nao co ket qua", "bao gio xong", "khi nao xong", "khi nao nhan duoc", "bao gio nhan duoc", "co ket qua sau", "co ket qua", "mat may bua", "may bua", "may hom", "may tuan", "mat may ngay", "het may ngay", "bao nhieu lau", "lau khong", "mat bao lau", "bao lau", "may ngay", "thoi gian giai quyet", "thoi han giai quyet", "thoi gian", "thoi han",
                         "mat bao nhieu ngay", "bao nhieu ngay", "nhan ket qua sau"],
     "address": ["nop ho so o dia chi", "nop ho so tai dia chi", "nop ho so tai", "nop cho ai", "den dau nop", "di dau nop", "dia chi nao", "dia chi", "nop o dau", "nop tai dau", "dia diem", "noi nop", "nop ho so o dau", "o dau"],
     "online": ["nop ho so truc tuyen", "nop ho so online", "ho so truc tuyen", "ho so online", "nop ho so tren mang", "tren mang", "nop tren mang", "truc tuyen", "online", "cong dich vu cong", "cong dvc", "dich vu cong", "qua mang", "nop mang"],
@@ -42,7 +42,10 @@ ok oke okie okay uh um ua ah ak ad admin z zay zi nop
 chao hello hi alo da hem hok hen nghen ne nghe noi hom bua chua ranh xiu chut tui tao may chi
 mk mik e vi viec bn ha hay haha thanks cam on xin lam on gium giup muon biet hieu roi hoi vu cai""".split())
 # Gõ tắt/văn nói đổi THÀNH cụm chuẩn TRƯỚC khi tìm cụm chỉ-field (nếu để sau, "mất bn tiền" không khớp "mất bao nhiêu").
-PRE_SYN = {"hso": "ho so", "onl": "online", "ow": "o", "bn": "bao nhieu", "j": "gi", "gj": "gi", "dc": "duoc", "dg": "dang", "r": "roi", "ntn": "nhu the nao", "sao z": "sao"}
+PRE_SYN = {"hso": "ho so", "onl": "online", "ow": "o", "bn": "bao nhieu", "j": "gi", "gj": "gi", "dc": "duoc", "dg": "dang", "r": "roi", "ntn": "nhu the nao", "sao z": "sao",
+           # teencode theo NHÓM (đo từ lỗi gõ ở DEV/synth): phủ định (ko/kg/khg/kh/k/hok -> không; "hk" = hộ khẩu, giữ ở EXTRA_SYN), viết tắt từ hỏi/mục (tg, lp, vb, xn), f/ph
+           "ko": "khong", "kg": "khong", "khg": "khong", "kh": "khong", "k": "khong", "hok": "khong", "tg": "thoi gian", "lp": "le phi", "vb": "van ban", "xn": "xac nhan",
+           "fi": "phi", "vs": "voi", "đc": "duoc"}
 # Một số chữ trên là nghiệp vụ nếu đứng trong cụm đặc thù; giữ nguyên cụm trước khi bỏ stop.
 KEEP_PHRASES = ["con nho", "cho thue", "cap lai", "lam lai"]
 
@@ -50,10 +53,13 @@ _DROP_PHRASES = ("linh vuc", "thong tin ve thu tuc", "cho minh hoi", "cho toi ho
                  "binh thuong", "thuong thoi", "phai lam sao", "phai lam gi", "phai lam nhung gi", "lam giay to", "lam giay")
 _SEG_SPLIT = re.compile(r"\s*(?:[?;,.]|(?<!\w)(?:còn|với lại|và|sau đó|ngoài ra)(?!\w))\s*")
 # "nếu/trường hợp <điều kiện> thì <câu chính>": điều kiện KHÔNG phải tên thủ tục.
-_COND_RE = re.compile(r"^(?:.*?\s)?(?:nếu|trường hợp|đối với)\s+(.+?)\s*(?:thì|,)\s+(.+)$", re.S)
-_COND_TAIL_RE = re.compile(r"^(.+?)\s*,?\s*(?:nếu|trong trường hợp)\s+(.+)$", re.S)
+# gõ không dấu ("neu ... thi", "truong hop") cũng là câu điều kiện: COND_W dùng chung cho mọi regex điều kiện (rank.py)
+COND_W = r"(?:nếu|neu|trường hợp|truong hop|đối với|doi voi)"
+_THI = r"(?:thì|thi)"
+_COND_RE = re.compile(r"^(?:.*?\s)?" + COND_W + r"\s+(.+?)\s*(?:" + _THI + r"|,)\s+(.+)$", re.S)
+_COND_TAIL_RE = re.compile(r"^(.+?)\s*,?\s*(?:nếu|neu|trong trường hợp|trong truong hop)\s+(.+)$", re.S)
 _TAIL_Y = re.compile(r"^(?:sao|the nao|ra sao|nhu the nao|lam sao|duoc khong|co duoc khong)\W*$")
-_COND_THI_RE = re.compile(r"^(\S+(?:\s+\S+){2,}?)\s+thì\s+(.+)$", re.S)     # "nhà em thuê trọ thì đăng ký thường trú được không": hoàn cảnh (>= 3 chữ) rồi 'thì' + câu chính
+_COND_THI_RE = re.compile(r"^(\S+(?:\s+\S+){2,}?)\s+" + _THI + r"\s+(.+)$", re.S)     # "nhà em thuê trọ thì đăng ký thường trú được không": hoàn cảnh (>= 3 chữ) rồi 'thì' + câu chính
 
 
 @dataclass
@@ -106,11 +112,16 @@ COLLOQUIAL = [(r"độc thân", "tình trạng hôn nhân"), (r"báo tử", "kha
               (r"xóa (?:tên )?(?:trong |khỏi )?(?:sổ )?hộ khẩu", "xóa đăng ký thường trú"),
               (r"(?:đổi|sửa|thay) (?:họ|ngày sinh|năm sinh|quê quán|dân tộc)|(?:đổi|sửa|thay) tên (?:cho )?(?:con|bé|cháu)|(?:sửa|đổi) tên trong (?:giấy )?khai sinh|sai (?:họ|tên|ngày sinh|năm sinh) (?:trong )?(?:giấy )?khai sinh|(?:sửa|chỉnh sửa|đính chính) (?:giấy )?khai sinh", "thay đổi cải chính bổ sung thông tin hộ tịch")]
 _COLLOQUIAL_RE = [(re.compile(r"(?<!\w)(?:" + p + r")(?!\w)"), r) for p, r in COLLOQUIAL]
+# người gõ KHÔNG DẤU ("doc than", "sao y") cũng được lợi: bản bỏ dấu của cùng luật, chỉ chạy khi cả câu không có dấu; bỏ luật ngắn (bỏ dấu "đẻ" thành "de" trùng "để")
+_COLLOQUIAL_FOLD = [(re.compile(r"(?<!\w)(?:" + _fold(p) + r")(?!\w)"), r) for p, r in COLLOQUIAL if len(_fold(p)) >= 7]
 
 
 def _colloquial(text: str) -> str:
     for rx, rep in _COLLOQUIAL_RE:
         text = rx.sub(rep, text)
+    if text == _fold(text):
+        for rx, rep in _COLLOQUIAL_FOLD:
+            text = rx.sub(rep, text)
     return text
 
 
@@ -118,6 +129,107 @@ def _colloquial(text: str) -> str:
 # ponytail: biến toàn cục (1 DB/tiến trình); đổi thành tham số nếu cần nhiều kho.
 NAME_BIGRAMS: set = set()
 NAME_NGRAMS: set = set()      # bigram + trigram trong tên (dùng cho split_segments)
+EXTRA_KNOWN: set = set()      # chữ diễn ngôn/thứ tự/xã giao (rank.py nạp): cũng là từ vựng để tách chữ dính ("chắckhông", "cuốicùng", "thìsao")
+VOCAB: set = set()            # chữ (đã bỏ dấu) trong tên/lĩnh vực của kho (Index nạp): từ vựng để tách chữ gõ dính liền
+
+
+# ---- tách chữ DÍNH LIỀN ("kethon", "dangkykhaisinh", "muondangky") --------------------------------------------------------------------------------------
+# Nguyên nhân gốc của lỗi: chữ dính là MỘT token lạ nên không khớp chữ nào của kho -> "không tìm thấy thủ tục" (hoặc cổng chữ lạ chặn). Chữ dính chỉ là các âm tiết
+# thiếu dấu cách, nên tách bằng quy hoạch động trên TỪ VỰNG CỦA KHO: mỗi mảnh phải là âm tiết hợp lệ (quy tắc âm đầu + vần + âm cuối) VÀ có trong từ vựng
+# (tên thủ tục, lĩnh vực, chữ chỉ mục, chữ dừng, viết tắt); ưu tiên cách tách có nhiều cặp/bộ ba chữ LIỀN KỀ trong tên thủ tục (cụm dài nhất có trong từ vựng), rồi ít mảnh nhất.
+# Từ nước ngoài ("karaoke", "bitcoin") không tách được thành âm tiết hợp lệ nên không bị biến thành chữ nghiệp vụ.
+_ONSET = r"(?:ngh|ng|nh|ch|gh|gi|kh|ph|qu|th|tr|[bcdghklmnpqrstvx])?"
+_SYL = re.compile(r"^" + _ONSET + r"[aeiouy]{1,3}(?:ng|nh|ch|[cmnpt])?$")
+_ABBR_PIECE = {"dk", "dky", "hk", "tt", "hso", "gp", "gks", "gcn", "hkd", "cccd", "cmnd", "ubnd", "ko", "dc", "bn", "xn", "tg", "lp", "vb"}
+_known_cache: tuple = (None, set())
+CUE_BIGRAMS = {(a, b) for cs in FIELD_CUES.values() for c in cs for a, b in zip(c.split(), c.split()[1:])}      # cặp chữ liền kề trong cụm chỉ-mục ("ở đâu", "bao lâu", "nộp ở"): cũng là bằng chứng tách chữ dính
+
+
+def _known() -> set:
+    global _known_cache
+    key = (len(VOCAB), len(STOP), len(EXTRA_KNOWN))
+    if _known_cache[0] != key:
+        _known_cache = (key, VOCAB | STOP | _CUE_WORDS | EXTRA_KNOWN | set(PRE_SYN) | set(EXTRA_SYN))
+    return _known_cache[1]
+
+
+_ONE = {"y", "o", "a", "e", "u", "i"}       # chữ MỘT ký tự có trong tên thủ tục ("y tế", "nhà ở"): chỉ nhận khi kề một cặp chữ có trong tên
+
+
+def _piece_ok(w: str, known: set) -> bool:
+    if w not in known:
+        return False
+    if len(w) == 1:
+        return w in _ONE
+    return bool(_SYL.match(w)) or w in _ABBR_PIECE or w in PRE_SYN or w in STOP or (3 <= len(w) <= 6 and w in VOCAB) or (len(w) >= 3 and (w in _CUE_WORDS or w in EXTRA_KNOWN))      # viết tắt trong tên ("bhxh", "abtc") không phải âm tiết nhưng là chữ của kho
+
+
+def _typo_of_vocab(tok: str) -> bool:
+    """tok cách một chữ của kho đúng một phép sửa Damerau (xoá/thêm/đổi/hoán vị 1 ký tự)."""
+    L = "abcdefghijklmnopqrstuvwxyz"
+    sp = [(tok[:i], tok[i:]) for i in range(len(tok) + 1)]
+    cand = {a + b[1:] for a, b in sp if b} | {a + b[1] + b[0] + b[2:] for a, b in sp if len(b) > 1} | {a + c + b[1:] for a, b in sp if b for c in L} | {a + c + b for a, b in sp for c in L}
+    cand.discard(tok)
+    return any(c in VOCAB for c in cand)
+
+
+def unglue(folded_tok: str) -> list[str] | None:
+    """Chữ (đã bỏ dấu, chỉ a-z) dính liền -> các âm tiết/chữ trong từ vựng, hoặc None khi không tách được an toàn.
+    ponytail: DP vét cạn theo (vị trí, hai mảnh trước) trên chữ <= 70 ký tự; chấm điểm theo cặp/bộ ba liền kề trong tên thủ tục, chưa dùng tần suất.
+    Nâng cấp: trọng số IDF/tần suất khi kho có nhiều cụm trùng điểm."""
+    n = len(folded_tok)
+    known = _known()
+    if n < 4 or n > 70 or not folded_tok.isalpha() or folded_tok in known:
+        return None
+    from functools import lru_cache
+
+    @lru_cache(maxsize=None)
+    def best(i: int, prev: str, prev2: str):
+        if i == n:
+            return (0.0, ())
+        res = None
+        for j in range(i + 1, n + 1):
+            w = folded_tok[i:j]
+            if not _piece_ok(w, known):
+                continue
+            sc = 4.0 * ((prev, w) in NAME_BIGRAMS or (prev, w) in CUE_BIGRAMS) + 2.0 * ((prev2, prev, w) in NAME_NGRAMS) - (3.0 if len(w) == 1 else 0.3)
+            r = best(j, w, prev)
+            if r is None:
+                continue
+            cand = (sc + r[0], (w,) + r[1])
+            if res is None or cand[0] > res[0]:
+                res = cand
+        return res
+    r = best(0, "", "")
+    if r is None or len(r[1]) < 2:
+        return None
+    pcs = list(r[1])
+    link = [(a, b) in NAME_BIGRAMS or (a, b) in CUE_BIGRAMS for a, b in zip(pcs, pcs[1:])]
+    if any(len(w) == 1 and not ((k and link[k - 1]) or (k < len(link) and link[k])) for k, w in enumerate(pcs)):
+        return None       # chữ một ký tự không kề cặp nào trong tên ("ka|ra|o|ke" trong "karaoke"): không tách
+    if not any(link) and not all(len(w) >= 2 and (w in VOCAB or w in STOP or w in _CUE_WORDS or w in EXTRA_KNOWN or w in _ABBR_PIECE or w in PRE_SYN) for w in pcs):
+        return None       # không cặp liền kề nào trong tên và còn mảnh chỉ là viết tắt: có thể chỉ là chữ lạ tình cờ ghép được, không tách
+    if n < 6 and not any(link) and not all(w in STOP or w in EXTRA_KNOWN or w in _CUE_WORDS or w in PRE_SYN or w in _ABBR_PIECE for w in pcs):
+        return None       # chữ ngắn (4-5 ký tự) cần có cặp trong tên mới tách (tránh biến lỗi gõ ngắn thành hai chữ)
+    if not any(link) and _typo_of_vocab(folded_tok):
+        return None       # chỉ cách một lỗi gõ (thêm/bớt/đổi/hoán vị 1 ký tự) so với MỘT chữ của kho và không có cặp liền kề: là lỗi chính tả (Index._fix sửa), không phải chữ dính
+    return pcs
+
+
+def unglue_text(text: str) -> str:
+    """Tách mọi chữ dính trong câu (chữ thường, có dấu hoặc không). Giữ dấu cho từng mảnh khi bỏ dấu không đổi độ dài (NFC)."""
+    def fix(m):
+        tok = m.group(0)
+        f = _fold(tok).replace(" ", "").lower()
+        pcs = unglue(f) if len(f) == len(tok) else None
+        if not pcs:
+            return tok
+        out, k = [], 0
+        for w in pcs:
+            out.append(tok[k:k + len(w)])
+            k += len(w)
+        return " ".join(out)
+    return re.sub(r"[^\W\d_]{4,70}", fix, text)
 # Mở đầu văn nói/kể lể: cái cần hỏi đứng SAU "(cho) em hỏi / muốn hỏi / hỏi về". Chỉ cắt khi phần sau còn >= 2 chữ.
 _LEAD_RE = re.compile(r"^.*?(?<!\w)(?:(?:muon|can|dinh|xin) hoi|cho (?:em |minh |toi |tui |con |anh |chi |mk )?hoi|hoi (?:ve|vu|xiu|chut)|"
                       r"(?:bac|ad|admin|bot|anh|chi|co|chu) oi)(?: (?:ve|vu|xiu|chut|cai|thu tuc|ne|nha|a))*\s")
@@ -167,8 +279,8 @@ def _tidy_fields(q: Query, f0: str) -> None:
                 f.remove(x)
     if "explanation" in f and len(f) > 1 and not re.search(r"dieu kien|doi tuong|ai duoc|co duoc khong", f0):
         f.remove("explanation")
-    if "steps" in f and "processing_time" in f and not _STEPS_EXPLICIT.search(f0):
-        f.remove("steps")             # "thời gian giải quyết thế nào/như thế nào": chỉ thời hạn, không phải các bước
+    if "steps" in f and len(f) > 1 and not _STEPS_EXPLICIT.search(f0):
+        f.remove("steps")             # "thời gian giải quyết/lệ phí/hồ sơ thế nào/như thế nào": 'thế nào' chỉ là từ hỏi của mục kia, không phải các bước
     if "files" in f and "address" in f and re.search(r"\btai\b", f0):
         f.remove("address")           # "biểu mẫu tải ở đâu": hỏi nơi tải mẫu, không phải nơi nộp
     if "online" in f and len(f) > 1 and not _ONLINE_Q.search(f0):
@@ -185,9 +297,14 @@ def _phi_in_name(folded: str) -> bool:
     return any((m.group(1), "phi") in NAME_BIGRAMS for m in re.finditer(r" (\w+) phi(?= )", folded))
 
 
+def _squash(text: str) -> str:
+    return re.sub(r"[^\W\d_]+", lambda m: m.group(0) if _fold(m.group(0)) in EXTRA_SYN or _fold(m.group(0)) in PRE_SYN else re.sub(r"(\w)\1{2,}", r"\1", m.group(0)), text)
+
+
 def understand(conn, text: str, syn: dict | None = None) -> Query:
     q = Query(raw=text)
-    folded = f" {_fold(_SPOKEN.sub('không', _colloquial((text or '').lower())))} "     # 'hổng/hông' (không) khác 'hỏng' (hư): xử lý TRƯỚC khi bỏ dấu
+    text = _squash(text or "")                  # kéo dài chữ ("khôngggg", "đăngggg ký"): bỏ lặp từ 3 lần trở lên (trừ viết tắt thật như "cccd")
+    folded = f" {_fold(_SPOKEN.sub('không', _colloquial(unglue_text((text or '').lower()))))} "     # 'hổng/hông' (không) khác 'hỏng' (hư): xử lý TRƯỚC khi bỏ dấu
     for pat, name in _PROVINCE_PATTERNS:
         if f" {pat} " in folded:
             folded = folded.replace(f" {pat} ", " ")
@@ -292,7 +409,7 @@ def split_segments(text: str) -> list[str]:
     (kèm từ nối nếu là chữ) có trong NAME_BIGRAMS thì nối lại.
     ponytail: tách thô theo từ nối; Planner LLM thay thế sau. Đoạn quá ngắn gộp vào đoạn trước."""
     t = (text or "").lower().strip()
-    pieces = re.split(r"(\s*(?:[?;,.]|(?<!\w)(?:còn|với lại|và|sau đó|ngoài ra)(?!\w))\s*)", t)   # [đoạn, nối, đoạn, ...]
+    pieces = re.split(r"(\s*(?:[?;,.]|(?<!\w)(?:còn|với lại|voi lai|và|va|sau đó|sau do|ngoài ra|ngoai ra)(?!\w))\s*)", t)   # [đoạn, nối, đoạn, ...]
     segs = [pieces[0]]
     for i in range(1, len(pieces) - 1, 2):
         d, nxt = _fold(pieces[i]), pieces[i + 1]
