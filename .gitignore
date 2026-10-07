@@ -27,3 +27,10 @@ eval/results/*
 !eval/results/pseudo_real.json
 !eval/results/team.json
 !eval/results/h3_final.json
+# Tệp khoá tạm của Word/LibreOffice khi đang mở .docx
+.~lock.*#
+~$*
+# System 4: dữ liệu chạy (DB, dataset người dùng), model tải về, bản sao lưu config
+system4/runtime/
+system4/models/
+system4/server/config.py.bak
