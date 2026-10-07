@@ -15,6 +15,7 @@ from pathlib import Path
 
 from . import llm, settings
 
+READER_VERSION = 2   # tăng khi đổi cách đọc tệp: dữ liệu đọc bằng bản cũ được xử lý lại khi khởi động server
 csv.field_size_limit(2**31 - 1)   # ô rất dài (mô tả, văn bản dán vào) không làm hỏng việc đọc CSV
 SUPPORTED = {".csv", ".tsv", ".xlsx", ".xlsm", ".json", ".txt", ".md", ".docx", ".pdf"}
 _TITLE_HINTS = ("tên", "ten", "name", "title", "tiêu đề", "tieu de", "sản phẩm", "san pham", "thủ tục", "thu tuc", "mặt hàng",
@@ -141,13 +142,38 @@ def _numeric(v: str) -> bool:
 
 
 def _header_index(rows: list[list[str]]) -> int | None:
-    """Dòng tiêu đề cột: dòng đầu có >= 2 ô chữ (không phải số) và >= một nửa số ô không trống."""
-    for i, r in enumerate(rows[:20]):
+    """Dòng tiêu đề cột = dòng ĐẦU TIÊN (trong 15 dòng đầu) mà các ô là nhãn chữ ngắn và phủ >= một nửa số cột.
+    Dòng tên bảng / ghi chú phía trên (vd. "DANH SÁCH HỌC SINH LỚP ..." chỉ chiếm vài ô) bị bỏ qua.
+    Gặp dòng toàn số trước khi thấy tiêu đề -> bảng không có tiêu đề cột."""
+    width = max((sum(1 for c in r if c) for r in rows[:30]), default=0)
+    fallback = None
+    for i, r in enumerate(rows[:15]):
         filled = [c for c in r if c]
-        if len(filled) >= 2 and sum(not _numeric(c) for c in filled) >= max(2, len(filled) * 0.6):
+        if len(filled) < 2:
+            continue
+        labels = [c for c in filled if not _numeric(c) and len(c) <= 60]
+        if len(labels) < max(2, len(filled) * 0.6):
+            return fallback   # dòng dữ liệu (nhiều số) -> dừng
+        if len(filled) >= width * 0.5:
             return i
-        if len(filled) >= 2:
-            return None   # dòng đầu đã là dữ liệu số -> không có tiêu đề cột
+        fallback = i if fallback is None else fallback
+    return fallback
+
+
+def _norm(h: str) -> str:
+    return " ".join(_strip(h).lower().split())
+
+
+def _strip(t: str) -> str:
+    import unicodedata
+    return "".join(c for c in unicodedata.normalize("NFD", t or "") if unicodedata.category(c) != "Mn").replace("đ", "d").replace("Đ", "D")
+
+
+def _name_pair(headers: list[str]) -> tuple[int, int] | None:
+    """Danh sách người kiểu Việt Nam hay tách "Họ và tên" thành 2 cột: họ + tên đệm | tên. Trả (cột họ, cột tên)."""
+    for i in range(len(headers) - 1):
+        if _norm(headers[i + 1]) == "ten" and _norm(headers[i]).startswith(("ho", "cot")):
+            return i, i + 1
     return None
 
 
@@ -162,7 +188,8 @@ def _clean_table(rows: list[list[str]]) -> tuple[list[str], list[list[str]]]:
         headers, data = [f"Cột {i + 1}" for i in range(width)], rows
     else:
         headers, data = rows[hi], rows[hi + 1:]
-        headers = [h or f"Cột {i + 1}" for i, h in enumerate(headers)]
+        headers = [h or ("Họ và tên đệm" if i + 1 < width and _norm(headers[i + 1]) == "ten" else f"Cột {i + 1}")
+                   for i, h in enumerate(headers)]   # cột không nhãn ngay trước cột "Tên" = phần họ và tên đệm
         seen = {}
         for i, h in enumerate(headers):   # tên cột trùng -> thêm số
             if h in seen:
@@ -217,15 +244,22 @@ def table_records(name: str, rows: list[list[str]], filename: str, use_ai: bool 
     if title and scores.get(title, -1) < 0:   # AI chọn cột không dùng được (trống / toàn số): giữ lựa chọn của code
         title = guess
     recs = []
+    pair = _name_pair(headers)
+    if title and pair and headers.index(title) in pair:   # tiêu đề = họ tên đầy đủ (ghép 2 cột)
+        title_label = f"{headers[pair[0]]} + {headers[pair[1]]}"
+    else:
+        pair, title_label = None, title
     if title:
         ti = headers.index(title)
         for n, r in enumerate(data, 1):
             fields = {h: v for h, v in zip(headers, r) if v and h != title}
-            t = r[ti] or f"Dòng {n}"
+            t = (" ".join(x for x in (r[pair[0]], r[pair[1]]) if x) if pair else r[ti]) or f"Dòng {n}"
+            if pair:
+                fields = {h: v for h, v in zip(headers, r) if v}
             recs.append({"title": t[:300], "fields": fields,
                          "text": t + "\n" + "\n".join(f"{k}: {v}" for k, v in fields.items()),
                          "source": f"{filename} · {name} · dòng {n}"})
-        return recs, {"kind": "table", "title_column": title, "fields": [h for h in headers if h != title], "sheet": name}
+        return recs, {"kind": "table", "title_column": title_label, "fields": [h for h in headers if h != title], "sheet": name}
     for n, r in enumerate(data, 1):   # phương án C: không có cột tiêu đề dùng được
         fields = {h: v for h, v in zip(headers, r) if v}
         recs.append({"title": f"{name} · dòng {n}", "fields": fields,
@@ -273,7 +307,7 @@ def to_records(path: Path, filename: str, use_ai: bool = True) -> tuple[list[dic
         raise IngestError("Không tìm thấy nội dung nào trong tệp.")
     kinds = {m["kind"] for m in maps}
     kind = "table" if kinds == {"table"} else ("text" if kinds == {"text"} else ("rows" if kinds == {"rows"} else "mixed"))
-    return recs, {"kind": kind, "parts": maps}
+    return recs, {"kind": kind, "parts": maps, "reader": READER_VERSION}
 
 
 def describe(mapping: dict, n: int) -> str:

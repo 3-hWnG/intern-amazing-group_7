@@ -152,14 +152,24 @@ def process(ds_id: int) -> None:
         search.add_vectors(ids[i:i + EMBED_BATCH], vecs, ds_id, ds["user_id"])
         db.update_dataset(ds_id, progress=30 + int(68 * min(len(recs), i + EMBED_BATCH) / len(recs)),
                           message=f"Đang tạo chỉ mục tìm theo nghĩa {min(len(recs), i + EMBED_BATCH)}/{len(recs)}…")
-    active = 1
-    if can_activate(ds["user_id"], {**ds, "n_records": len(recs)}):
+    active = 1 if ds["active"] else 0   # xử lý lại: giữ trạng thái bật/tắt người dùng đã chọn
+    if active and can_activate(ds["user_id"], {**ds, "n_records": len(recs)}):
         active = 0   # vượt giới hạn cứng: vẫn sẵn sàng nhưng để tắt
     db.update_dataset(ds_id, status="ready", progress=100, n_records=len(recs), kind=mapping["kind"], active=active,
                       message=ingest.describe(mapping, len(recs)) + ("" if active else " · Đang TẮT vì vượt giới hạn bật"))
 
 
 def resume_unfinished() -> None:
-    """Khởi động server: tệp đang chờ / đang nạp dở (do tắt server) được nạp lại từ đầu."""
-    for d in db.run("SELECT id FROM datasets WHERE status IN ('queued','processing')", many=True):
-        enqueue(d["id"])
+    """Khởi động server: tệp đang chờ / đang nạp dở (do tắt server) được nạp lại từ đầu; tệp đã đọc bằng cách đọc cũ
+    (READER_VERSION nhỏ hơn) được xử lý lại để hưởng bản sửa (vd. nhận đúng dòng tiêu đề cột)."""
+    for d in db.run("SELECT id, status, mapping FROM datasets", many=True):
+        if d["status"] in ("queued", "processing"):
+            enqueue(d["id"])
+        elif d["status"] == "ready":
+            try:
+                reader = json.loads(d["mapping"] or "{}").get("reader", 1)
+            except ValueError:
+                reader = 1
+            if reader < ingest.READER_VERSION:
+                db.update_dataset(d["id"], status="queued", message="Đang xử lý lại theo cách đọc tệp mới…")
+                enqueue(d["id"])

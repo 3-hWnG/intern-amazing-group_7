@@ -102,3 +102,10 @@ Làm cho tôi 1 web AI đảm bảo các tiêu chí sau:
 | Câu | Trả lời |
 |---|---|
 | 1. Câu hỏi dài vượt 5 s | 1A, it's okay also can you check create new account? |
+
+
+**Sửa sau báo lỗi của người dùng (2026-10-07): "Ngày sinh của bạn Hiếu" trả lời "không có trong dữ liệu"** (tệp `DS LỚP 1.5.xlsx`)
+- Nguyên nhân: dòng 1 của tệp là tên bảng ("DANH SÁCH HỌC SINH LỚP MỘT/ 5 NĂM HỌC: 2025 - 2026") nhưng bị nhận nhầm là dòng tiêu đề cột → tiêu đề thật (STT, Tên, Ngày sinh…) thành một bản ghi, các cột mang tên vô nghĩa ("Cột 5: 17/9/2020"); họ tên lại tách 2 cột ("Danh Minh" | "Hiếu"). Reranker chấm bản ghi của Hiếu −3,14, dưới ngưỡng −3 → bị loại → không có đoạn nào → AI nói đúng là "không có".
+- Đã sửa: dòng tiêu đề = dòng đầu có nhãn chữ ngắn phủ ≥ một nửa số cột (bỏ qua dòng tên bảng); cột không nhãn ngay trước cột "Tên" = "Họ và tên đệm", tiêu đề bản ghi = họ tên đầy đủ ghép 2 cột. Điểm reranker sau sửa: +0,30. Dữ liệu đã nạp bằng cách đọc cũ được **tự xử lý lại khi khởi động server** (giữ trạng thái bật/tắt); thêm nút "Xử lý lại" cho bộ dữ liệu đã sẵn sàng.
+- Kiểm trên model thật với đúng tệp: "Ngày sinh của bạn Hiếu" → "17/9/2020", nguồn "Danh Minh Hiếu" (cả Nhanh và Suy nghĩ kỹ).
+- Còn yếu (chưa sửa): (1) câu hỏi đếm / tổng hợp cả bảng ("lớp có bao nhiêu bạn nữ?" — đúng là 16/33) không làm được vì AI chỉ nhận 4 đoạn tìm được; (2) tên trùng ("bé An": có 2 bạn tên An) — AI trả lời một bạn và bỏ sót bạn kia thay vì hỏi lại.

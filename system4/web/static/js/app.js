@@ -964,7 +964,7 @@
       main.appendChild(el("div", "ds-meta", [KIND[d.kind] || "", d.n_records ? d.n_records + " bản ghi" : "", fmtSize(d.size_bytes), d.filename].filter(Boolean).join(" · ")));
       const act = el("div", "ds-actions");
       if (d.status === "ready") act.appendChild(actionBtn("Xem", "Xem các bản ghi", () => openRecords(d)));
-      if (d.status === "error") act.appendChild(actionBtn("Xử lý lại", "Xử lý lại tệp", async () => { try { await api("/s4/datasets/" + d.id + "/retry", {}); pending.set(d.id, d.filename); } catch (e) { alert(e.message); } loadDatasets(); }));
+      if (d.status === "error" || d.status === "ready") act.appendChild(actionBtn("Xử lý lại", "Đọc lại tệp và tạo lại chỉ mục", async () => { try { await api("/s4/datasets/" + d.id + "/retry", {}); pending.set(d.id, d.filename); } catch (e) { alert(e.message); } loadDatasets(); }));
       act.appendChild(actionBtn("Xoá", "Xoá bộ dữ liệu", async () => {
         if (!confirm('Xoá bộ dữ liệu "' + d.name + '"? Không khôi phục được.')) return;
         try { await api("/s4/datasets/" + d.id, null, "DELETE"); } catch (e) { alert(e.message); }
