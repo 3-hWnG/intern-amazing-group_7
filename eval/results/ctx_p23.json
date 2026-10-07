@@ -1,0 +1,940 @@
+[
+ {
+  "id": "p23-p23_L1-01",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.000894"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Turn 2: Vậy thời gian giải quyết và lệ phí như thế nào?",
+  "exp": [
+   "1.000894"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-02",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.000894"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Turn 2: Vậy thời gian giải quyết và lệ phí như thế nào?",
+  "exp": [
+   "1.000894"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-03",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "User: vậy lệ phí bao nhiêu?",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-04",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.000656"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Câu 2: còn thời gian giải quyết thì sao?",
+  "exp": [
+   "1.000656"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.000656",
+   "history": [
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.000656"
+    ],
+    "order": [
+     "1.000656"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-05",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.010038"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Q: vậy nộp ở đâu?",
+  "exp": [
+   "1.010038"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.010038",
+   "history": [
+    "1.010038"
+   ],
+   "state_before": {
+    "topic": "1.010038",
+    "history": [
+     "1.010038"
+    ],
+    "order": [
+     "1.010038"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-06",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004194"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Q2) vậy còn mất bao lâu?",
+  "exp": [
+   "1.004194"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.004194",
+   "history": [
+    "1.004194"
+   ],
+   "state_before": {
+    "topic": "1.004194",
+    "history": [
+     "1.004194"
+    ],
+    "order": [
+     "1.004194"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-07",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004222"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Lượt 2 - vậy lệ phí thế nào ạ?",
+  "exp": [
+   "1.004222"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.004222",
+   "history": [
+    "1.004222"
+   ],
+   "state_before": {
+    "topic": "1.004222",
+    "history": [
+     "1.004222"
+    ],
+    "order": [
+     "1.004222"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-08",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.003677"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Hỏi: thế còn giấy tờ cần mang theo?",
+  "exp": [
+   "1.003677"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.003677",
+   "history": [
+    "1.003677"
+   ],
+   "state_before": {
+    "topic": "1.003677",
+    "history": [
+     "1.003677"
+    ],
+    "order": [
+     "1.003677"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-09",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "2.000884"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Bạn: vậy phí bao nhiêu?",
+  "exp": [
+   "2.000884"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "2.000884",
+   "history": [
+    "2.000884"
+   ],
+   "state_before": {
+    "topic": "2.000884",
+    "history": [
+     "2.000884"
+    ],
+    "order": [
+     "2.000884"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-10",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004837"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "[User] vậy thời gian giải quyết bao lâu?",
+  "exp": [
+   "1.004837"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.004837",
+   "history": [
+    "1.004837"
+   ],
+   "state_before": {
+    "topic": "1.004837",
+    "history": [
+     "1.004837"
+    ],
+    "order": [
+     "1.004837"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-11",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.001022"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "(Turn 2) vậy lệ phí là bao nhiêu",
+  "exp": [
+   "1.001022"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.001022",
+   "history": [
+    "1.001022"
+   ],
+   "state_before": {
+    "topic": "1.001022",
+    "history": [
+     "1.001022"
+    ],
+    "order": [
+     "1.001022"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-12",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.002755"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Câu hỏi 2: vậy hồ sơ gồm những gì?",
+  "exp": [
+   "1.002755"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.002755",
+   "history": [
+    "1.002755"
+   ],
+   "state_before": {
+    "topic": "1.002755",
+    "history": [
+     "1.002755"
+    ],
+    "order": [
+     "1.002755"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-13",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "2) vậy lệ phí?",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-14",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "- vậy bao lâu có kết quả?",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-15",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.000894"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "2. còn lệ phí thế nào?",
+  "exp": [
+   "1.000894"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-16",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.003197"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "> vậy cần giấy tờ gì?",
+  "exp": [
+   "1.003197"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.003197",
+   "history": [
+    "1.003197"
+   ],
+   "state_before": {
+    "topic": "1.003197",
+    "history": [
+     "1.003197"
+    ],
+    "order": [
+     "1.003197"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-17",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.000656"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Turn 2: User: vậy mất bao lâu?",
+  "exp": [
+   "1.000656"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.000656",
+   "history": [
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.000656"
+    ],
+    "order": [
+     "1.000656"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-18",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.010038"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "“Vậy còn lệ phí thì sao?”",
+  "exp": [
+   "1.010038"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.010038",
+   "history": [
+    "1.010038"
+   ],
+   "state_before": {
+    "topic": "1.010038",
+    "history": [
+     "1.010038"
+    ],
+    "order": [
+     "1.010038"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-19",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.000894"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Turn 2: Vậy thời gian giải quyết thế nào hehe",
+  "exp": [
+   "1.000894"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "từ nối/đại từ/hỏi mục, không còn chữ nghiệp vụ lạ, tên thủ tục mới phủ yếu; chữ lạ ['hehe'] chỉ hạ độ tin cậy",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-20",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004194"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Câu 2: 🙏 vậy lệ phí bao nhiêu nhé ạ",
+  "exp": [
+   "1.004194"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.004194",
+   "history": [
+    "1.004194"
+   ],
+   "state_before": {
+    "topic": "1.004194",
+    "history": [
+     "1.004194"
+    ],
+    "order": [
+     "1.004194"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-21",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.000656"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Q: dạ cho em hỏi vậy mất bao nhiêu tiền",
+  "exp": [
+   "1.000656"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.000656",
+   "history": [
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.000656"
+    ],
+    "order": [
+     "1.000656"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-22",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "User: vậy giấy tờ gì zzz",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-23",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004222"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Turn 3: còn thời gian giải quyết?",
+  "exp": [
+   "1.004222"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.004222",
+   "history": [
+    "1.004222"
+   ],
+   "state_before": {
+    "topic": "1.004222",
+    "history": [
+     "1.004222"
+    ],
+    "order": [
+     "1.004222"
+    ],
+    "fields": [
+     "fees"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-24",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "2.000815"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "Q: thế phí bao nhiêu",
+  "exp": [
+   "2.000815"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "2.000815",
+   "history": [
+    "2.000815"
+   ],
+   "state_before": {
+    "topic": "2.000815",
+    "history": [
+     "2.000815"
+    ],
+    "order": [
+     "2.000815"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L1-25",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004837"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "User: còn lệ phí và thời gian giải quyết?",
+  "exp": [
+   "1.004837"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.004837",
+   "history": [
+    "1.004837"
+   ],
+   "state_before": {
+    "topic": "1.004837",
+    "history": [
+     "1.004837"
+    ],
+    "order": [
+     "1.004837"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "p23-p23_L3-26",
+  "cat": "ctx_p23",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.000894"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "thoigian giaiquyet va lephi the nao",
+  "exp": [
+   "1.000894"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ }
+]

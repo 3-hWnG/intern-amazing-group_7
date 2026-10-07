@@ -19,17 +19,15 @@
   "group": "Định lượng",
   "beh_ok": true,
   "proc_ok": true,
-  "facts_missing": [
-   "8[.]000|8000"
-  ],
+  "facts_missing": [],
   "extra_tasks": 0,
   "forbidden": [],
-  "chars": 379,
+  "chars": 300,
   "tops": [
    "1.001193"
   ],
-  "note": "8.000đ không có trong snapshot (lệ phí 0, text rỗng); lệch dữ liệu với đáp án nhóm",
-  "pass": false
+  "note": "8.000đ lấy từ corpus nhóm (team_fee_overlay)",
+  "pass": true
  },
  {
   "id": "TC03",
@@ -86,12 +84,11 @@
   "facts_missing": [
    "nơi cư trú|nơi tổ chức tang lễ|nơi cuối cùng"
   ],
-  "extra_tasks": 1,
+  "extra_tasks": 0,
   "forbidden": [],
-  "chars": 1756,
+  "chars": 1446,
   "tops": [
-   "1.000656",
-   "1.003622"
+   "1.000656"
   ],
   "note": "",
   "pass": false
@@ -119,7 +116,7 @@
   "facts_missing": [],
   "extra_tasks": 0,
   "forbidden": [],
-  "chars": 3003,
+  "chars": 2924,
   "tops": [
    "1.001193",
    "1.000894"

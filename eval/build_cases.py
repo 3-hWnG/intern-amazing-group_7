@@ -1,14 +1,16 @@
 """Dựng cases.jsonl và KIỂM CHỨNG mọi proc_id / dữ kiện bằng truy vấn thật vào procedures.db.
 
 Chạy:  python build_cases.py        (ghi cases.jsonl; assert hỏng = dữ liệu lệch với kỳ vọng)
-Chỉ ĐỌC repo/Database; code tra cứu cũ dùng ở đây chỉ để dựng bản ghi (build_record) cho việc kiểm chứng.
+Mã V10.6 lấy từ eval/vendor_v106 (xem SOURCE.md); code tra cứu cũ dùng ở đây chỉ để dựng bản ghi (build_record) cho việc kiểm chứng.
 """
 import json, os, re, sqlite3, sys
-sys.path.insert(0, os.environ.get("S3_REPO", r"D:\Finale_architect\repo"))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _v106
+from rebuild_v106_db import build as _build_db
 from Database.pipeline import retrieval as R
 from Database.pipeline.textutil import fold
 
-DB = os.environ.get("S3_DB", r"D:\Finale_architect\repo\Database\runtime\procedures.db")
+DB = _build_db(_v106.DB)   # DB V10.6 dựng từ data/snapshot (rebuild_v106_db.py)
 HERE = os.path.dirname(os.path.abspath(__file__))
 conn = R.connect(DB)
 _rec = {}

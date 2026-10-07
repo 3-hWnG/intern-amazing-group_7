@@ -3,7 +3,7 @@ Chạy: cd eval && PYTHONPATH=.. S3_USE_LLM=0 python synth_retrieval.py [--n 450
 Thủ tục chia 2 nửa theo băm tên (TRAIN / TEST rời nhau) + hạt giống biến thể khác nhau: chỉ tune trên TRAIN, báo TEST.
 Đúng = thủ tục chọn ở đoạn đầu có thủ tục thuộc cùng family/cùng tên với thủ tục gốc.
 """
-import argparse, hashlib, os, random, re, sys
+import argparse, hashlib, os, random, re, sys, unicodedata
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
 from system3.data import api
 from system3.data.textutil import fold
@@ -25,6 +25,7 @@ DUMP = []      # (split, kiểu, câu, đúng?, top, đáp án) cho --dump (so s
 
 
 def core(name):
+    name = unicodedata.normalize("NFC", name)      # Phase 23: người dùng gõ NFC; một số tên trong DB là NFD (dấu rời) làm biến thể typo/hoán vị ký tự thành rác
     n = re.sub(r"\([^)]*\)", " ", name)
     n = re.sub(r"^\s*th[ủu] t[ụu]c\s+", "", n, flags=re.I)
     n = re.sub(r"\s+", " ", n).strip(" .,;")
@@ -93,6 +94,38 @@ def variant(name, r, prefixes=None):
     return kind, q
 
 
+GLUE_LEAD = ["t muon", "tui muon lam", "cho minh hoi", "e can lam", "minh muon", "mk muon dk", "muon"]
+GLUE_ASK = ["", "", " mat bao nhieu", " can giay to gi", " nop o dau", " mat bao lau"]
+
+
+REF = {}      # câu dính -> câu CÓ dấu cách tương ứng (chẩn đoán: phần lỗi do dính chữ = lỗi dính - lỗi bản có cách)
+
+
+def glued(name, r, prefixes):
+    """Phase 23b: người gõ nhanh/không dấu cách. A: dính HẾT, không dấu ("dangkykhaisinh"); B: dính từng cụm 1-3 chữ, có dấu ("đăngký khaisinh");
+    C: lời dẫn teen + cụm dính không dấu + câu hỏi mục. Sinh bằng Random RIÊNG (seed + 7) để không đổi mẫu của các biến thể khác."""
+    ws = shorten(core(name), r, prefixes).split()
+    low = [w.lower() for w in ws]
+    style = r.choice("ABC")
+    if style == "A":
+        q = "".join(fold(w) for w in low)
+        REF[q] = " ".join(fold(w) for w in low)
+        return "glued", q
+    chunks, i = [], 0
+    while i < len(low):
+        k = r.choice([1, 2, 2, 3])
+        chunks.append((low[i:i + k]))
+        i += k
+    if style == "B":
+        q = " ".join("".join(c) for c in chunks)
+        REF[q] = " ".join(low)
+        return "glued", q
+    lead, ask = r.choice(GLUE_LEAD), r.choice(GLUE_ASK)
+    q = f"{lead} {fold(' '.join(''.join(c) for c in chunks))}{ask}"
+    REF[q] = f"{lead} {fold(' '.join(low))}{ask}"
+    return "glued", q
+
+
 OOS = ["hỗ trợ chi phí hỏa táng", "xin giấy xác nhận đã nộp thuế", "làm hộ chiếu mới", "cách nấu phở bò", "giá vàng hôm nay",
        "tư vấn ly hôn ra tòa", "đăng ký nhãn hiệu sản phẩm", "đội tuyển Việt Nam đá mấy giờ", "viết giúp tôi bài thơ về mùa thu",
        "thi bằng lái xe ở đâu", "đăng ký visa đi Nhật", "tôi bị đau đầu uống thuốc gì", "giá xăng hôm nay bao nhiêu",
@@ -136,6 +169,11 @@ def build(split, n):
         for _ in range(3):
             k, q = variant(x["name"], r, prefixes)
             cases.append((x, k, q))
+    r2 = random.Random(SEEDS[split] + 7)
+    for x in pick[:n]:
+        for _ in range(3):
+            k, q = glued(x["name"], r2, prefixes)
+            cases.append((x, k, q))
     return cases
 
 
@@ -148,21 +186,29 @@ def run(split, n, show):
     cases = build(split, n)
     ok = {}
     bad = []
-    strict = 0
+    strict_n = 0
+    ref_ok = [0, 0]
     for x, k, q in cases:
         res = resolve(idx, [{"role": "user", "text": q}])
         top = next((s.proc_id for s in res.segments if s.proc_id), None)
         good = top is not None and (fam[top][0] == fam[x["proc_id"]][0] or fam[top][1] == fam[x["proc_id"]][1])
-        strict += top is not None and (top == x["proc_id"] or fam[top][1] == fam[x["proc_id"]][1])   # Phase 16: đúng CHÍNH thủ tục (không tính anh em cùng nhóm)
+        if k == "glued":      # chẩn đoán: cùng câu nhưng có dấu cách
+            rt = next((s.proc_id for s in resolve(idx, [{"role": "user", "text": REF[q]}]).segments if s.proc_id), None)
+            ref_ok[0] += rt is not None and (fam[rt][0] == fam[x["proc_id"]][0] or fam[rt][1] == fam[x["proc_id"]][1])
+            ref_ok[1] += 1
+        if k != "glued":
+            strict_n += top is not None and (top == x["proc_id"] or fam[top][1] == fam[x["proc_id"]][1])   # Phase 16: đúng CHÍNH thủ tục (không tính anh em cùng nhóm)
         DUMP.append((split, k, q, bool(good), top, x["proc_id"]))
         a = ok.setdefault(k, [0, 0])
         a[0] += good
         a[1] += 1
         if not good:
             bad.append((k, q, x["name"][:70], top and fam[top][1][:50], res.segments[0].reason if res.segments else ""))
+    g = ok.pop("glued", [0, 0])      # Phase 23b: biến thể dính liền báo RIÊNG (không lẫn vào số tổng để so được với các đợt trước)
     tot = sum(v[0] for v in ok.values()), sum(v[1] for v in ok.values())
-    print(f"[{split}] procs={len(cases)//3} cases={tot[1]} top1={100*tot[0]/tot[1]:.1f}% | chính xác từng thủ tục (strict) {100*strict/tot[1]:.1f}%")
+    print(f"[{split}] procs={len(cases)//6} cases={tot[1]} top1={100*tot[0]/tot[1]:.1f}% | chính xác từng thủ tục (strict) {100*strict_n/tot[1]:.1f}%")
     print("   " + " | ".join(f"{k} {100*v[0]/v[1]:.0f}%({v[1]})" for k, v in sorted(ok.items())))
+    print(f"   [glued] {split}: {100*g[0]/max(1,g[1]):.1f}% ({g[0]}/{g[1]}) | cùng câu có dấu cách: {100*ref_ok[0]/max(1,ref_ok[1]):.1f}%")
     for b in bad[:show]:
         print("   X", b)
     return 100 * tot[0] / tot[1]

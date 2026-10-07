@@ -13,7 +13,7 @@ ap.add_argument("-v", action="store_true")
 ap.add_argument("--split", default="all")
 a = ap.parse_args()
 cases = [json.loads(l) for l in open(os.path.join(HERE, "cases_ctx.jsonl"), encoding="utf-8")]
-cases = [c for c in cases if a.split == c["split"] or (a.split == "all" and c["split"] != "ctx-p16") or a.split == "every"]   # "all" = bộ gốc (ctx-dev + ctx-hold, 91 ca); ctx-p16 chạy riêng
+cases = [c for c in cases if a.split == c["split"] or (a.split == "all" and c["split"] not in ("ctx-p16", "ctx-p23")) or a.split == "every"]   # "all" = bộ gốc (ctx-dev + ctx-hold, 91 ca); ctx-p16/ctx-p23 chạy riêng (--split ctx-p23)
 res, by = [], defaultdict(list)
 for c in cases:
     out = answer_adapter.adapter(c["turns"])

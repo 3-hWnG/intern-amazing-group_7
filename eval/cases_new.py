@@ -6,7 +6,8 @@ văn nói, kể dài, Zalo) | holdout-varied (văn phong khác DEV nhưng đúng
 """
 import sqlite3
 
-S3DB = r"D:\Finale_architect\system3\data\runtime\system3.db"
+from system3.data import DB_PATH as _DBP
+S3DB = str(_DBP)   # theo package, không còn đường dẫn máy tác giả (S3_DATA_DB đổi được)
 RS, VR, DV = "holdout-real-style", "holdout-varied", "synthetic-dev"
 
 

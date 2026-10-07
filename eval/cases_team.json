@@ -1,6 +1,6 @@
 [
  {"id":"TC01","group":"RAG cơ bản","turns":["Tôi muốn đăng ký kết hôn thì cần chuẩn bị những giấy tờ gì?"],"beh":"answer","procs":["1.000894"],"facts":["giấy tờ tùy thân|Hộ chiếu|căn cước"],"max_tasks":1},
- {"id":"TC02","group":"Định lượng","turns":["Thủ tục đăng ký khai sinh mất bao lâu và có mất lệ phí không?"],"beh":"answer","procs":["1.001193"],"facts":["1 ngày","8[.]000|8000"],"max_tasks":1,"note":"8.000đ không có trong snapshot (lệ phí 0, text rỗng); lệch dữ liệu với đáp án nhóm"},
+ {"id":"TC02","group":"Định lượng","turns":["Thủ tục đăng ký khai sinh mất bao lâu và có mất lệ phí không?"],"beh":"answer","procs":["1.001193"],"facts":["1 ngày","8[.]000|8000"],"max_tasks":1,"note":"8.000đ lấy từ corpus nhóm (team_fee_overlay)"},
  {"id":"TC03","group":"RAG nhiều field","turns":["Đăng ký nhận cha mẹ con cần những giấy tờ gì?"],"beh":"answer","procs":["1.001022"],"facts":["7 ngày"],"max_tasks":1},
  {"id":"TC04","group":"Context","turns":["Tôi muốn đăng ký kết hôn.","Vậy thời gian giải quyết và lệ phí như thế nào?"],"beh":"answer","procs":["1.000894"],"facts":["1 ngày","Miễn lệ phí|miễn"],"max_tasks":1,"forbid":["Các bước thực hiện"]},
  {"id":"TC05","group":"Clarification","turns":["Tôi muốn làm thủ tục hộ tịch, cần chuẩn bị giấy tờ gì?"],"beh":"clarify","procs":[],"facts":[],"max_tasks":0},

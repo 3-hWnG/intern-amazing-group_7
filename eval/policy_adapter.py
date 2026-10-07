@@ -3,7 +3,7 @@ S3_USE_LLM=0 để chỉ chạy luật."""
 import os, sys, time
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
-sys.path[:0] = [ROOT, os.path.join(ROOT, "system3", "server")]
+sys.path[:0] = [ROOT, os.path.join(HERE, "..", "server")]   # Phase 28: không giả định thư mục tên system3
 from planner import plan as make_plan  # noqa: E402
 from policy import check, pre_check  # noqa: E402
 

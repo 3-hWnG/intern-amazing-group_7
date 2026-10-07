@@ -35,6 +35,10 @@ def source_blob(pid):
         for tb in ("procedure_fees", "checklist_items", "procedure_files", "procedure_steps", "procedure_methods",
                    "legal_basis", "procedure_cases", "online_services"):
             parts += [" ".join(str(v) for v in dict(r).values()) for r in c.execute(f"select * from {tb} where row_id=?", (p["row_id"],))]
+    try:    # Phase 23d: lệ phí bù từ corpus nhóm cũng là nguồn hợp lệ
+        parts += [r[0] for r in c.execute("select amount_text from team_fee_overlay where proc_id=?", (pid,))]
+    except sqlite3.Error:
+        pass
     c.close()
     _blob[pid] = " ".join(parts)
     return _blob[pid]
@@ -70,6 +74,16 @@ def allowed_numbers(case, pids):
     return nums
 
 
+def has_overlay(pids):
+    c = sqlite3.connect(f"file:{DB}?mode=ro", uri=True)
+    try:
+        return any(c.execute("select 1 from team_fee_overlay where proc_id=?", (p,)).fetchone() for p in pids)
+    except sqlite3.Error:
+        return False
+    finally:
+        c.close()
+
+
 def fabricated(case, answer, pids):
     """Trả về danh sách lý do 'bịa' trong câu trả lời."""
     exp, why = case["expected"], []
@@ -92,7 +106,7 @@ def fabricated(case, answer, pids):
     if exp.get("forbid_hours") and HOURS_RE.search(answer):
         why.append("giờ làm việc bịa")
     # 'miễn phí' khi nguồn không nói miễn: bịa kiểu nguy hiểm nhất
-    if exp.get("missing_numeric_fields") and "fees" in exp["missing_numeric_fields"] and not exp.get("free_text_in_source"):
+    if exp.get("missing_numeric_fields") and "fees" in exp["missing_numeric_fields"] and not exp.get("free_text_in_source") and not has_overlay(pids):
         if FREE_RE.search(answer):
             why.append("suy ra miễn phí")
     return why
@@ -143,7 +157,7 @@ def score_case(case, out):
         pids = {p for t in exp["tasks"] for p in t["acceptable_proc_ids"]}
         r["fab_why"] = fabricated(case, ans, pids)
         r["fab"] = bool(r["fab_why"])
-        if exp["must_say_not_published"]:
+        if exp["must_say_not_published"] and not has_overlay(pids):     # có overlay nhóm: trả lệ phí kèm nguồn thay vì "không công bố"
             r["nps_ok"] = bool(out.get("says_not_published", None) if "says_not_published" in out else NPS_RE.search(ans))
         if exp["citation_tokens"]:
             r["cite_ok"] = any(tk.lower() in ans.lower() for tk in exp["citation_tokens"])
@@ -218,7 +232,7 @@ def main():
     ap.add_argument("--name", default=None, help="tên file kết quả (mặc định: timestamp)")
     ap.add_argument("--category")
     ap.add_argument("--limit", type=int)
-    ap.add_argument("--split", choices=["dev", "holdout", "holdout2", "holdout3", "all"], default="all",
+    ap.add_argument("--split", choices=["dev", "holdout", "holdout2", "holdout3", "p16aside", "all"], default="all",
                     help="HOLDOUT chỉ nên chạy khi nghiệm thu, không dùng để tune")
     a = ap.parse_args()
     mod, fn = a.adapter.split(":")
@@ -226,6 +240,8 @@ def main():
     cases = [json.loads(l) for l in open(os.path.join(HERE, "cases.jsonl"), encoding="utf-8")]
     if a.split in ("holdout2", "holdout3"):   # bộ MÙ, tách file; không nằm trong "all" để khỏi bị tune
         cases = [json.loads(l) for l in open(os.path.join(HERE, "cases_h%s.jsonl" % a.split[-1]), encoding="utf-8")]
+    elif a.split == "p16aside":   # bộ "để riêng" của Phase 16, tách file, không nằm trong "all"
+        cases = [json.loads(l) for l in open(os.path.join(HERE, "cases_p16_aside.jsonl"), encoding="utf-8")]
     elif a.split != "all":
         cases = [c for c in cases if c.get("split", "dev") == a.split]
     if a.category:

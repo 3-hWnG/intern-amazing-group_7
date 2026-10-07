@@ -8,7 +8,8 @@ Quy tắc OOS: kho CÓ thủ tục thì trả lời theo kho (không đưa thu�
 """
 import sqlite3
 
-S3DB = r"D:\Finale_architect\system3\data\runtime\system3.db"
+from system3.data import DB_PATH as _DBP
+S3DB = str(_DBP)   # theo package, không còn đường dẫn máy tác giả (S3_DATA_DB đổi được)
 SRC = "holdout3-blind"
 
 

@@ -3,7 +3,7 @@ python p19_compare.py --rules p19_rules --hyb p19_h080,p19_h090,...      Chá»‰ Ä
 import argparse, json, os, statistics
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-OLD_EXCL = ("p16", "p18", "p19")
+OLD_EXCL = ("p16", "p18", "p19", "p23")
 
 
 def load(name):

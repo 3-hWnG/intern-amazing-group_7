@@ -4,7 +4,7 @@ Do CHÍNH agent sửa lỗi tự nghĩ (không lấy từ bộ mù cases_h3 / ps
 Chạy: python build_p16.py
   - GHI THÊM (idempotent: xoá các dòng id 'p16-*' cũ) vào cases.jsonl, split "dev"   -> run.py --split all
   - ghi cases_p16_aside.jsonl: bộ "để riêng" (viết TRƯỚC khi sửa, không tune; chỉ chạy lúc đầu và lúc nghiệm thu): python run.py --adapter answer_adapter:adapter --split p16aside (xem run.py)
-(build_cases.py cần repo V10.6 cũ không còn trên máy này nên không dựng lại được cases.jsonl; vì vậy file này nối thêm.)
+(Phase 28: build_cases.py chạy lại được nhờ eval/vendor_v106; file này nối thêm vào cases.jsonl sau build_cases.py.)
 """
 import json, os, sqlite3
 

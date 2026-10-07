@@ -5,10 +5,12 @@ Quy ước hành vi: chitchat -> answer (không task); is_strong -> answer; còn
 (= nhánh 'không tìm thấy' mà kiến trúc cũ đáng lẽ phải đi vào).
 """
 import logging, os, re, sys, time
-sys.path.insert(0, os.environ.get("S3_REPO", r"D:\Finale_architect\repo"))
-from Database.pipeline import retrieval as R
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import _v106
+from rebuild_v106_db import build as _build_db
+from Database.pipeline import retrieval as R   # mã V10.6 vendor (eval/vendor_v106)
 
-DB = os.environ.get("S3_DB", r"D:\Finale_architect\repo\Database\runtime\procedures.db")
+DB = _v106.DB
 _conn = None
 logging.getLogger("pipeline.retrieval").setLevel(logging.ERROR)  # "No module named db" (synonyms admin cần Backend.db) - xem BASELINE.md
 
@@ -29,6 +31,7 @@ def _strip(q):
 def adapter(turns, strip=False):
     global _conn
     if _conn is None:
+        _build_db(DB)   # chưa có thì dựng (eval/runtime/v106.db)
         _conn = R.connect(DB)
     q = turns[-1]["text"]
     t0 = time.perf_counter()
