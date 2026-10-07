@@ -16,7 +16,7 @@ import threading
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from . import auth, config, datasets, db, routes, search
+from . import admin, auth, config, datasets, db, routes, search, strict
 
 PUBLIC = {"/s4/login", "/s4/auth/login", "/s4/auth/signup", "/s4/auth/logout", "/s4/public", "/health", "/favicon.ico"}
 _CONV = re.compile(r"^/conversations/([^/]+)")
@@ -33,7 +33,17 @@ def install(app, s3_store) -> None:
         ids = db.strict_ids(user["id"])
         return [c for c in s3_store.list_conversations() if c["id"] in ids]
 
-    app.include_router(routes.make_router(s3_store, strict_list))
+    def drop_strict(cid: str) -> None:
+        """Xoá một hội thoại Strict cùng các nhánh ẩn của nó (tính năng phiên bản)."""
+        for b in db.strict_branches(cid):
+            s3_store.delete_conversation(b)
+            db.forget_strict(b)
+        s3_store.delete_conversation(cid)
+        db.forget_strict(cid)
+
+    app.include_router(routes.make_router(s3_store, strict_list, drop_strict))
+    app.include_router(strict.make_router(app, s3_store))
+    app.include_router(admin.make_router(s3_store))
     app.mount("/s4/static", StaticFiles(directory=str(config.WEB_DIR / "static")), name="s4_static")
 
     def deny(code: int, detail: str) -> JSONResponse:
@@ -64,8 +74,7 @@ def install(app, s3_store) -> None:
                 return JSONResponse({"conversations": strict_list(user)})
             if method == "DELETE":
                 for c in strict_list(user):
-                    s3_store.delete_conversation(c["id"])
-                    db.forget_strict(c["id"])
+                    drop_strict(c["id"])
                 return JSONResponse({"ok": True})
 
         m = _CONV.match(path)
@@ -73,6 +82,10 @@ def install(app, s3_store) -> None:
             cid = m.group(1)
             if db.strict_owner(cid) != user["id"]:
                 return deny(404, "conversation not found")
+            if method == "DELETE" and path == f"/conversations/{cid}":
+                for b in db.strict_branches(cid):   # nhánh ẩn của tính năng phiên bản
+                    s3_store.delete_conversation(b)
+                    db.forget_strict(b)
             resp = await call_next(request)
             if method == "DELETE" and path == f"/conversations/{cid}" and resp.status_code == 200:
                 db.forget_strict(cid)

@@ -35,7 +35,8 @@
     if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : (data.error || res.statusText));
     return data;
   }
-  const base = (m, id) => (m === "strict" ? `/conversations/${id}` : `/s4/conversations/${id}`);
+  const base = (m, id) => (m === "strict" ? `/conversations/${id}` : `/s4/conversations/${id}`);   // đổi tên / ghim
+  const sbase = (m, id) => (m === "strict" ? `/s4/strict/${id}` : `/s4/conversations/${id}`);   // tin nhắn, xoá, xuất (Strict có phiên bản)
 
   /* ------------------------------------------------------------ chế độ ---- */
   function setMode(m) {
@@ -196,8 +197,69 @@
     if (m.clarify) w.appendChild(clarifyCard(m.clarify, m.message_id || m.id, locked));
     if (!(m.blocks || []).length && !m.clarify) w.appendChild(el("div", "bubble", m.content || ""));
     if (DEV && (m.dev || m.plan)) w.appendChild(devPanel(m.dev || { plan: m.plan }));
+    if (m.node_id) {   // tính năng kiểu ChatGPT cho Strict (NV4): phiên bản, sao chép, tạo lại, 👍/👎
+      const bar = el("div", "msg-actions");
+      const nav = versionNav(m, strictSwitch); if (nav) bar.appendChild(nav);
+      bar.appendChild(actionBtn("⧉", "Sao chép", (btn) => copyText(m.content || "", btn)));
+      if (m.kind !== "chitchat" || !String(m.content || "").startsWith("Đã bắt đầu chủ đề mới"))
+        bar.appendChild(actionBtn("↻", "Tạo lại câu trả lời (phát lại các câu trước để System 3 dựng lại ngữ cảnh)", () => strictRedo(w, "regenerate", { node_id: m.node_id })));
+      [[1, "👍", "Câu trả lời tốt"], [-1, "👎", "Câu trả lời chưa tốt"]].forEach(([v, label, title]) => {
+        bar.appendChild(actionBtn(label, title, async (x) => {
+          const val = m.feedback === v ? 0 : v;
+          try { await api("/s4/strict/" + convId + "/feedback", { node_id: m.node_id, value: val }); } catch (e) { alert("Lỗi: " + e.message); return; }
+          m.feedback = val; bar.querySelectorAll(".fb").forEach((y) => y.classList.remove("on")); if (val) x.classList.add("on");
+        }, "fb" + (m.feedback === v ? " on" : "")));
+      });
+      w.appendChild(bar);
+    }
     box.appendChild(w);
     return w;
+  }
+
+  function strictUser(m) {
+    const w = el("div", "msg user");
+    w.appendChild(el("div", "bubble", m.content));
+    const bar = el("div", "msg-actions");
+    const nav = versionNav(m, strictSwitch); if (nav) bar.appendChild(nav);
+    bar.appendChild(actionBtn("✎", "Sửa tin nhắn", () => {
+      if (sending) return;
+      w.innerHTML = "";
+      const ta = el("textarea", "edit-box"); ta.value = m.content; ta.rows = Math.min(8, m.content.split("\n").length + 1);
+      const row = el("div", "edit-row");
+      const cancel = el("button", "btn-ghost", "Huỷ"); cancel.type = "button"; cancel.onclick = () => loadConv(convId, "strict");
+      const ok = el("button", "primary", "Gửi"); ok.type = "button";
+      ok.onclick = () => { const v = ta.value.trim(); if (!v) return; strictRedo(w, "edit", { node_id: m.node_id, text: v }, v); };
+      ta.onkeydown = (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ok.click(); } if (e.key === "Escape") cancel.click(); };
+      row.append(cancel, ok); w.append(ta, row); ta.focus();
+    }));
+    w.appendChild(bar);
+    box.appendChild(w);
+  }
+
+  function renderStrict(msgs) {
+    box.innerHTML = "";
+    if (!msgs.length) { empty(); return; }
+    msgs.forEach((x, i) => { if (x.role === "user") strictUser(x); else strictMsg(x, i !== msgs.length - 1); });   // thẻ cũ bị khoá
+    scroll();
+  }
+
+  async function strictSwitch(nid) {
+    if (sending || !convId) return;
+    try { renderStrict((await api("/s4/strict/" + convId + "/switch", { node_id: nid })).messages); } catch (e) { alert("Lỗi: " + e.message); }
+  }
+
+  /* sửa / tạo lại ở Strict: System 4 phát lại các câu trước vào nhánh mới rồi hỏi lại System 3 */
+  async function strictRedo(w, action, body, newText) {
+    if (sending) return;
+    while (w.nextSibling) w.nextSibling.remove();
+    w.remove();
+    if (newText) userMsg(newText);
+    setBusy(true);
+    const status = statusLine(action === "edit" ? "Đang gửi câu đã sửa (phát lại các câu trước để System 3 dựng lại ngữ cảnh)…" : "Đang tạo lại câu trả lời (phát lại các câu trước)…");
+    box.appendChild(status); scroll();
+    try { renderStrict((await api("/s4/strict/" + convId + "/" + action, body)).messages); }
+    catch (e) { status.remove(); const x = el("div", "msg assistant"); x.appendChild(el("div", "bubble err", "Lỗi: " + e.message)); box.appendChild(x); }
+    finally { setBusy(false); refreshList(); }
   }
 
   /* ------------------------------------------------------ Friendly ------- */
@@ -219,13 +281,14 @@
     return b;
   }
 
-  function versionNav(m) {
+  function versionNav(m, sw) {
+    const go = sw || switchTo;
     const vs = m.versions || [m.id];
     if (vs.length < 2) return null;
     const i = vs.indexOf(m.id);
     const nav = el("span", "ver-nav");
-    const prev = actionBtn("‹", "Phiên bản trước", () => switchTo(vs[i - 1]));
-    const next = actionBtn("›", "Phiên bản sau", () => switchTo(vs[i + 1]));
+    const prev = actionBtn("‹", "Phiên bản trước", () => go(vs[i - 1]));
+    const next = actionBtn("›", "Phiên bản sau", () => go(vs[i + 1]));
     prev.disabled = i <= 0; next.disabled = i >= vs.length - 1;
     nav.append(prev, el("span", "ver-count", (i + 1) + "/" + vs.length), next);
     return nav;
@@ -368,15 +431,8 @@
     setTitle();
     if (!id) { empty(); return; }
     try {
-      const data = await api(`${base(mode, id)}/messages`);
-      const msgs = data.messages;
-      if (mode === "friendly") { renderFriendly(msgs); return; }
-      if (!msgs.length) empty();
-      msgs.forEach((x, i) => {
-        if (x.role === "user") userMsg(x.content);
-        else strictMsg(x, i !== msgs.length - 1);   // thẻ cũ bị khoá, chỉ thẻ cuối bấm được
-      });
-      scroll();
+      const data = await api(`${sbase(mode, id)}/messages`);
+      if (mode === "friendly") renderFriendly(data.messages); else renderStrict(data.messages);
     } catch (_) { convId = null; ls.set("s4_conv", null); setTitle(); empty(); }
   }
 
@@ -387,7 +443,7 @@
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeMenu(); });
 
   function download(c, format) {
-    const a = el("a"); a.href = `${base(c.mode, c.id)}/export?format=${format}`; a.download = "";
+    const a = el("a"); a.href = `${sbase(c.mode, c.id)}/export?format=${format}`; a.download = "";
     document.body.appendChild(a); a.click(); a.remove();
   }
 
@@ -409,7 +465,7 @@
   async function removeConv(c) {
     if (!confirm(`Xoá hộp thoại "${c.title}"? Không khôi phục được.`)) return;
     try {
-      await api(base(c.mode, c.id), null, "DELETE");
+      await api(sbase(c.mode, c.id), null, "DELETE");
       if (c.id === convId) await loadConv(null);
     } catch (e) { alert("Lỗi: " + e.message); }
     refreshList();
@@ -438,7 +494,7 @@
         });
         item("Xuất Markdown", () => download(c, "md"));
         item("Xuất JSON", () => download(c, "json"));
-        item("Xuất PDF", () => window.open(`${base(c.mode, c.id)}/export?format=pdf`, "_blank"));
+        item("Xuất PDF", () => window.open(`${sbase(c.mode, c.id)}/export?format=pdf`, "_blank"));
         item("Đổi tên", () => renameInline(row, c, b));
         item("Xoá", () => removeConv(c), "danger");
         row.appendChild(menu); openMenu = menu;
@@ -472,25 +528,32 @@
 
   function setBusy(on) {
     sending = on;
-    $("send").textContent = on && mode === "friendly" ? "Dừng" : "Gửi";
-    $("send").disabled = on && mode !== "friendly";   // Friendly: nút thành "Dừng"
+    $("send").textContent = on ? "Dừng" : "Gửi";   // đang trả lời: nút thành "Dừng" (cả hai chế độ)
+    $("send").disabled = false;
   }
 
   async function sendStrict(text, replyTo) {
     const status = statusLine("Đang xử lý…");
     box.appendChild(status); scroll();
+    const ctl = new AbortController(); abortCtl = ctl;
     try {
-      const body = { text, conversation_id: convId };
+      const body = { text, root: convId };
       if (replyTo) body.reply_to = replyTo;
-      const r = await api("/chat", body);
+      const res = await fetch("/s4/strict/chat", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body), signal: ctl.signal });
+      if (res.status === 401) { toLogin(); return; }
+      const r = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(typeof r.detail === "string" ? r.detail : res.statusText);
       convId = r.conversation_id; ls.set("s4_conv", JSON.stringify({ id: convId, mode: "strict" }));
       status.remove();
-      strictMsg(r, false);
+      await loadConv(convId, "strict");   // vẽ lại để có nút phiên bản / sao chép / tạo lại
     } catch (e) {
       status.remove();
       const w = el("div", "msg assistant");
-      w.appendChild(el("div", "bubble err", "Lỗi: " + e.message));
+      if (e.name === "AbortError") w.appendChild(el("div", "stopped-note", "(đã dừng chờ — System 3 vẫn trả lời ở nền, mở lại hội thoại để xem)"));
+      else w.appendChild(el("div", "bubble err", "Lỗi: " + e.message));
       box.appendChild(w);
+    } finally {
+      if (abortCtl === ctl) abortCtl = null;
     }
   }
 
@@ -620,16 +683,7 @@
   $("reset-topic").onclick = async () => {
     if (!convId || sending || mode !== "strict") return;
     try {
-      await api(`/conversations/${convId}/reset_facts`, {});
-      box.querySelectorAll(".choice-list,.choice-table-wrap").forEach((x) => {
-        if (x.classList.contains("stale") || x.parentElement.closest(".stale")) return;
-        x.classList.add("stale");
-        x.querySelectorAll("button,input").forEach((y) => (y.disabled = true));
-        x.appendChild(el("div", "stale-note", "Đã hết hiệu lực (chủ đề mới)"));
-      });
-      const w = el("div", "msg assistant");
-      w.appendChild(el("div", "bubble", "Đã bắt đầu chủ đề mới. Bạn muốn hỏi về thủ tục nào?"));
-      box.appendChild(w); scroll();
+      renderStrict((await api(`/s4/strict/${convId}/reset`, {})).messages);
     } catch (e) { alert("Lỗi: " + e.message); }
   };
   if (innerWidth <= 760) $("sidebar").classList.add("hidden");
@@ -1023,6 +1077,7 @@
     nameEl.textContent = me.username;
     nameEl.appendChild(el("span", "role-tag", me.role === "dev" ? "· dev" : "· user"));
     $("open-settings").hidden = me.role !== "dev";
+    $("open-admin").hidden = me.role !== "dev";
     const savedThink = ls.get("s4_think");
     thinkOn = savedThink === null ? pub.default_answer_mode === "think" : savedThink === "1";
     renderThink();

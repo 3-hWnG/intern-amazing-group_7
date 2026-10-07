@@ -130,14 +130,18 @@ def strict_owner(cid: str) -> int | None:
     return None   # hội thoại mồ côi (vd. lượt /chat lỗi giữa chừng): không ai thấy
 
 
+def strict_branches(root: str) -> list[str]:
+    return [r["cid"] for r in run("SELECT cid FROM strict_branch WHERE root=?", (root,), many=True)]
+
+
 def strict_ids(user_id: int) -> set[str]:
-    """Mọi hội thoại Strict của một người (2 câu SQL, không hỏi từng hội thoại)."""
+    """Mọi hội thoại Strict của một người, KHÔNG gồm các hội thoại phụ (nhánh) — vài câu SQL, không hỏi từng hội thoại."""
     own = {r["conversation_id"] for r in run("SELECT conversation_id FROM strict_owner WHERE user_id=?", (user_id,), many=True)}
     if user_id == first_dev_id():
         own |= {r["conversation_id"] for r in run(
             "SELECT conversation_id FROM strict_legacy WHERE conversation_id NOT IN (SELECT conversation_id FROM strict_owner)",
             many=True)}
-    return own
+    return own - {r["cid"] for r in run("SELECT cid FROM strict_branch", many=True)}
 
 
 def set_strict_owner(cid: str, user_id: int) -> None:
@@ -147,6 +151,9 @@ def set_strict_owner(cid: str, user_id: int) -> None:
 def forget_strict(cid: str) -> None:
     run("DELETE FROM strict_owner WHERE conversation_id=?", (cid,))
     run("DELETE FROM strict_legacy WHERE conversation_id=?", (cid,))
+    run("DELETE FROM strict_branch WHERE cid=? OR root=?", (cid, cid))
+    run("DELETE FROM strict_nodes WHERE root=?", (cid,))
+    run("DELETE FROM strict_threads WHERE root=?", (cid,))
 
 
 # ------------------------------------------------------ hội thoại Friendly

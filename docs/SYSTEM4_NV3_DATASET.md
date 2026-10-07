@@ -65,3 +65,34 @@ Làm cho tôi 1 web AI đảm bảo các tiêu chí sau:
 **Câu hỏi mở cho bước kế hoạch**
 - Một người dùng bật được nhiều dataset cùng lúc, hay chỉ một?
 - Dataset của user là riêng tư hoàn toàn, hay có thể chia sẻ cho user khác?
+  → đã trả lời: 1A (nhiều bộ, có cảnh báo + giới hạn cứng), 2B (riêng tư, dev mở được nội dung).
+
+---
+
+## Phần C — Báo cáo thực hiện NV3 (2026-10-07)
+
+**Đã làm**
+
+| # | Việc | Người dùng thấy |
+|---|---|---|
+| 1 | Nút **"+"** cạnh ô nhập (Friendly), kéo thả tệp vào khung chat: CSV, Excel (.xlsx), JSON, TXT/MD, Word (.docx), PDF có chữ | Thanh tiến độ "Đang tải lên… → Đang xử lý… → Đã sẵn sàng" |
+| 2 | Tự đổi sang **cấu trúc định sẵn** (bản ghi = tiêu đề + trường + chữ + nguồn): code chọn cột tiêu đề, AI kiểm lại (chế độ JSON, ~1 s), code duyệt; không khớp → dạng dòng chữ (phương án C); văn bản chia đoạn | "Bảng: cột tiêu đề "X" (N trường)" / "Văn bản: N đoạn" |
+| 3 | Nạp chạy nền: chỉ mục từ khoá (SQLite FTS5, không phân biệt dấu) + vector bge-m3 trong **Qdrant local mode**; tắt server giữa chừng → khởi động lại tự nạp tiếp | Chat không bị chặn khi nạp |
+| 4 | Cửa sổ **"Dữ liệu của tôi"** (nút "Dữ liệu" hoặc nhãn Chuyên gia): bật/tắt, xem bản ghi, xử lý lại, xoá; thanh dung lượng; **cảnh báo** > 5 bộ / > 10.000 bản ghi đang bật, **giới hạn cứng** 20 bộ / 50.000 bản ghi (đổi trong ⚙) | |
+| 5 | **Tự chuyển Chuyên gia** khi có bộ dữ liệu đang bật; nhãn "AI chung" / "Chuyên gia · n bộ dữ liệu" | |
+| 6 | Trả lời từ dữ liệu: từ khoá + nghĩa (RRF) → **reranker GPU** (bật mặc định, tắt được) → 4 đoạn tốt nhất → AI "chỉ dùng dữ liệu"; số nguồn [n] bấm được + chip nguồn; không có → nói không có + hỏi lại | Nguồn dưới câu trả lời, bấm xem bản ghi gốc |
+| 7 | Quyền: user chỉ thấy dữ liệu của mình (1 GB, tệp ≤ 200 MB); dev không giới hạn, mở được dữ liệu mọi người (2B, tab Quản trị) | |
+
+**Đo trên model thật** (`system4/eval/nv3_specialist.py`, kết quả `system4/eval/results/nv3_specialist.json`; dữ liệu: `MAU_100_THU_TUC.xlsx` của V10.3 + một tệp Word tự tạo; câu hỏi sinh tự động từ ô dữ liệu)
+- Nạp `MAU_100_THU_TUC.xlsx` (9 trang tính, 2.334 bản ghi): 85–102 s, khớp đúng cột tiêu đề ở mọi trang tính ("name", "tên thủ tục", "tên văn bản"; trang README thành văn bản).
+- **Đúng đáp án 17/17, nguồn đúng 17/17** (12 câu cơ quan / thời hạn từ Excel, 3 câu từ Word, 2 câu ngoài dữ liệu → "không có trong dữ liệu").
+- Tốc độ (sau khi chỉnh, xem mục 4 dưới): câu ngắn chữ đầu ~2,3 s, cả câu ~4,5 s; câu hỏi chứa tên thủ tục rất dài: chữ đầu trung vị 3,6 s, cả câu trung vị 5,7 s (vượt nhẹ ngân sách 5 s).
+- Trình duyệt Edge: "+", tiến độ tải, cửa sổ Dữ liệu, chip nguồn → cửa sổ bản ghi gốc: không lỗi.
+
+**Việc ngoài ý muốn và cách đã xử lý**
+1. **Bộ nhớ GPU đổi model qua lại:** nạp bge-m3 làm Ollama gỡ Qwen, nạp lại mất 6,9 s; đổi độ dài ngữ cảnh làm nạp lại 13 s. Khi đã nạp đủ, cả 3 model (Qwen 3,8 GB + bge-m3 0,7 GB + reranker 1,1 GB) ở yên trên GPU. Đã xử lý: **nạp sẵn lúc khởi động** (bge-m3 + reranker) và ghi chú trong ⚙ phải giữ độ dài ngữ cảnh 8192 như System 3.
+2. **Bảng thật lộn xộn:** dòng ghi chú trên dòng tiêu đề, trang README một cột, cột mã băm (content_hash) bị chọn làm tiêu đề. Đã thêm luật: bỏ dòng ghi chú, bảng một cột câu dài → văn bản, cột mã/băm/đường dẫn không được làm tiêu đề.
+3. CSV có ô rất dài (> 128 KB) làm hỏng việc đọc → đã nâng giới hạn.
+4. **Lần đo đầu chậm hơn ngân sách** (cả câu 6,4 s): tìm kiếm tốn 1–1,4 s (reranker chấm 30 đoạn dài) và gửi 5 đoạn × 1.200 ký tự. Đã đổi mặc định: 4 đoạn × 700 ký tự, 15 ứng viên → chữ đầu 2,3 s, cả câu 4,5 s, độ chính xác giữ 17/17 (đổi lại trong ⚙ được).
+5. **Vi phạm "không dùng kiến thức chung":** ở một lần đo, tìm không thấy gì mà AI vẫn tự trả lời "Ai là tác giả truyện Kiều?" — và **sai** ("Nguyễn Đình Chiểu"). Đã thêm chốt bằng code: Chuyên gia + không tìm thấy đoạn liên quan + AI viết câu trả lời có nội dung mà không nói "không có trong dữ liệu" → thay bằng câu cố định (sửa được trong ⚙, "Câu trả lời khi dữ liệu không có thông tin"). Câu xã giao ngắn ("dạ, không có gì ạ") không bị thay. Lần đo lại: đúng.
+6. Giới hạn chưa làm: PDF ảnh quét (không có chữ) báo lỗi rõ ràng, chưa OCR; Excel cũ .xls chưa hỗ trợ (báo lưu thành .xlsx); hình ảnh trong tệp bị bỏ qua (theo 9C).

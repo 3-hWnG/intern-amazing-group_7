@@ -131,6 +131,11 @@ body[data-mode="strict"] #attach,body[data-mode="strict"] #spec-badge{display:no
 .src-table th{width:32%;background:var(--panel-2);font-weight:600}
 .src-text{white-space:pre-wrap;font-size:14px;margin-top:8px;overflow-wrap:anywhere}
 
+/* NV4: liên kết Quản trị */
+.admin-link{flex:none;font-size:13px;color:var(--ink-2);text-decoration:none;padding:4px 9px;border:1px solid var(--line);border-radius:999px}
+.admin-link:hover{color:var(--ink);border-color:var(--ink-3)}
+.admin-link[hidden]{display:none}
+
 /* bộ nhớ */
 .mem-help{margin:12px 0 8px;font-size:13.5px;color:var(--ink-2)}
 .mem-mode{display:flex;flex-direction:column;gap:6px;padding:10px 12px;margin-bottom:10px;background:var(--panel-2);

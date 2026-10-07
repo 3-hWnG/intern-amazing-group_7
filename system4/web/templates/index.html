@@ -7,7 +7,7 @@
 <link rel="icon" href="data:,">
 <!-- Giao diện = bản sao trang System 3 (web/templates/index.html) + công tắc Strict/Friendly, đăng nhập, cài đặt -->
 <link rel="stylesheet" href="/static/css/styles.css?v=20261006g">
-<link rel="stylesheet" href="/s4/static/css/s4.css?v=nv3">
+<link rel="stylesheet" href="/s4/static/css/s4.css?v=nv4">
 <style>
 .block-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px}
 .block-card h4{margin:0 0 6px;font-size:14px;color:var(--accent)}
@@ -45,6 +45,7 @@
       <span id="model-name" class="model-name"></span>
       <button id="ai-badge" class="ai-badge" type="button" title="Cấu hình AI (Strict)">AI: …</button>
       <button id="reset-topic" type="button" title="Quên các thông tin đã kể, hỏi việc khác">Bắt đầu chủ đề mới</button>
+      <a id="open-admin" class="admin-link" href="/s4/admin" title="Quản trị: dữ liệu Strict, dữ liệu người dùng, người dùng (dev)" hidden>Quản trị</a>
       <button id="open-settings" class="icon" type="button" title="Cài đặt (dev)" aria-label="Cài đặt" hidden>⚙</button>
       <div id="cfg-panel" class="cfg-panel" hidden></div>
     </header>
@@ -139,6 +140,6 @@
 </div>
 <script src="/s4/static/vendor/marked.umd.js?v=18.1.0"></script>
 <script src="/s4/static/vendor/purify.min.js?v=3.4.16"></script>
-<script src="/s4/static/js/app.js?v=nv3"></script>
+<script src="/s4/static/js/app.js?v=nv4"></script>
 </body>
 </html>

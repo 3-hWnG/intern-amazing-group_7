@@ -91,3 +91,20 @@ CREATE TABLE IF NOT EXISTS records (
 CREATE INDEX IF NOT EXISTS idx_rec_ds ON records(dataset_id);
 -- Tìm theo từ khoá (không phân biệt dấu); rowid = records.id
 CREATE VIRTUAL TABLE IF NOT EXISTS records_fts USING fts5(title, text, tokenize='unicode61 remove_diacritics 2');
+-- Phiên bản cho hội thoại Strict (NV4, 1A): cây tin nhắn do System 4 giữ; nội dung vẫn nằm trong DB System 3.
+-- Một "luồng" = hội thoại System 3 gốc (root, hiện trong danh sách) + các hội thoại phụ (nhánh) tạo ra khi sửa / tạo lại.
+CREATE TABLE IF NOT EXISTS strict_nodes (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  root        TEXT NOT NULL,
+  parent_id   INTEGER,
+  role        TEXT NOT NULL,                     -- user | assistant
+  kind        TEXT NOT NULL DEFAULT '',          -- reset = tin "Đã bắt đầu chủ đề mới"
+  s3_cid      TEXT NOT NULL,                     -- hội thoại System 3 chứa tin này
+  s3_mid      INTEGER NOT NULL,                  -- id tin trong System 3
+  replied     INTEGER NOT NULL DEFAULT 0,        -- tin người dùng trả lời thẻ hỏi lại ngay trước nó
+  feedback    INTEGER NOT NULL DEFAULT 0,
+  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_sn_root ON strict_nodes(root);
+CREATE TABLE IF NOT EXISTS strict_threads (root TEXT PRIMARY KEY, leaf INTEGER);
+CREATE TABLE IF NOT EXISTS strict_branch (cid TEXT PRIMARY KEY, root TEXT NOT NULL);

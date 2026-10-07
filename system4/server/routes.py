@@ -68,8 +68,8 @@ def _dev(request: Request) -> dict:
     return u
 
 
-def make_router(s3_store, strict_list) -> APIRouter:
-    """s3_store = module db.store của System 3 (chỉ gọi hàm có sẵn, không sửa); strict_list(user) từ hook.py."""
+def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
+    """s3_store = module db.store của System 3 (chỉ gọi hàm có sẵn, không sửa); strict_list(user), drop_strict(cid) từ hook.py."""
     r = APIRouter(prefix="/s4")
 
     def own_friendly(request: Request, cid: str) -> dict:
@@ -153,8 +153,7 @@ def make_router(s3_store, strict_list) -> APIRouter:
     def delete_all(request: Request):
         u = _user(request)
         for c in strict_list(u):
-            s3_store.delete_conversation(c["id"])
-            db.forget_strict(c["id"])
+            drop_strict(c["id"])
         for c in db.list_conversations(u["id"]):
             db.delete_conversation(c["id"])
         return {"ok": True}

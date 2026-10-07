@@ -53,6 +53,8 @@ set "PYTHONIOENCODING=utf-8"
 cd /d "%PYROOT%"
 "%REPO%\.venv\Scripts\python.exe" -m system3.data.build || goto :fail
 "%REPO%\.venv\Scripts\python.exe" -m system3.data.tests.test_data || goto :fail
+rem System 4: if the admin page applied another version of the procedures data, rebuild from that version again.
+"%REPO%\.venv\Scripts\python.exe" -m system3.system4.server.procs reapply || goto :fail
 
 echo [8/8] System 4: checking that the GPU is usable for the reranker...
 "%REPO%\.venv\Scripts\python.exe" "%REPO%\system4\setup_models.py" check-gpu

@@ -67,3 +67,32 @@ Thông tin thêm:
 
 **Câu hỏi mở cho bước kế hoạch**
 - Dev có được xem nội dung dataset của user không, hay chỉ thấy tên và dung lượng?
+  → đã trả lời: 2B (dev mở được nội dung).
+
+---
+
+## Phần C — Báo cáo thực hiện NV4 (2026-10-07)
+
+**Đã làm** — trang **Quản trị** (`/s4/admin`, nút "Quản trị" trên thanh trên, chỉ dev), 3 tab:
+
+| Tab | Có gì |
+|---|---|
+| **Dữ liệu Strict (thủ tục)** | Phiên bản (Gốc = bản chép của `data/snapshot/procedures.jsonl`, luôn giữ), xem / tìm thủ tục theo phiên bản, sửa / xoá vào **bản nháp** (kiểm **chuẩn dữ liệu**: đúng các trường và kiểu như dữ liệu gốc, không đổi mã), **so sánh** (mới / không còn / thay đổi, xem từng trường cũ → mới), **Lưu thành phiên bản**, **Áp dụng** (Strict mode chuyển sang ngay), quay lại bản cũ = áp dụng bản cũ, **Cào dữ liệu mới** (chạy nền, có tiến độ, nhật ký; xong thành phiên bản mới, KHÔNG tự áp dụng) |
+| **Dữ liệu người dùng** | Mọi bộ dữ liệu: chủ, loại, bản ghi, dung lượng, trạng thái; mở xem nội dung (2B); xoá |
+| **Người dùng** | Tạo, đổi vai trò, khoá / mở khoá (khoá = đăng xuất ngay), đặt lại mật khẩu, xoá (kèm hội thoại, dữ liệu, bộ nhớ); không tự hạ quyền / tự xoá; luôn còn ít nhất một dev |
+
+**Tính năng kiểu ChatGPT cho Strict (1A):** sao chép, tạo lại, sửa tin đã gửi, ‹ 1/2 ›, 👍/👎, Dừng, xuất theo nhánh đang xem. Câu trả lời vẫn do System 3 tạo (gọi đúng API `/chat` của System 3). Sửa / tạo lại = hội thoại System 3 mới (nhánh, ẩn khỏi danh sách) + **phát lại** các câu trước (kể cả lựa chọn đã bấm ở thẻ hỏi lại và lệnh "chủ đề mới"). Hội thoại Strict cũ được dựng cây khi mở lần đầu.
+
+**Cài đặt:** `Set up first time.bat` sau bước dựng DB chạy thêm `python -m system3.system4.server.procs reapply` → nếu đang dùng phiên bản khác Gốc thì dựng lại theo phiên bản đó (không âm thầm quay về Gốc).
+
+**Kiểm tra**
+- `system4/tests/test_nv4.py` qua: quyền dev, quản lý người dùng, nháp + chuẩn dữ liệu (thiếu trường / sai kiểu / đổi mã bị chặn), so sánh, **Áp dụng thật** (dựng bằng `system3.data.build` trên **bản sao** DB: 1.350 → 1.349 thủ tục, tên đã sửa có trong DB, Planner System 3 dùng dữ liệu mới) rồi quay lại Gốc, cào (giả lập tiến trình, không mạng), phiên bản Strict (tạo lại, sửa, chuyển, chủ đề mới, thẻ hỏi lại + phát lại, xoá kèm nhánh), xoá người dùng kéo theo dữ liệu.
+- Toàn bộ test System 3 (7 bộ + selftest eval + test_data) vẫn qua. DB thủ tục thật không bị đụng (test dùng bản sao).
+- Trình cào chạy thật với **3 thủ tục** (83 KB) qua API dichvucong.gov.vn: lấy danh mục, chi tiết, chuẩn hoá đều được.
+- Trình duyệt Edge: Strict có nút sao chép / tạo lại / 👍👎, tạo lại → ‹ 2/2 ›; trang Quản trị 3 tab, cửa sổ sửa thủ tục 47 trường: không lỗi.
+
+**Việc ngoài ý muốn và cách đã xử lý**
+1. **Planner của System 3 giữ một kết nối DB mở suốt đời tiến trình và một chỉ mục tên thủ tục trong bộ nhớ** (`server/planner/planner.py`: `_conn`, `_idx`). Hệ quả: không thay được tệp DB khi server đang chạy (Windows khoá; Linux thì Planner vẫn đọc tệp cũ), và kể cả DB mới thì Planner vẫn chọn thủ tục theo danh sách cũ. Đã xử lý **không sửa code System 3**: (a) chép DB mới **vào chính tệp đang dùng** bằng SQLite backup; (b) sau khi áp dụng, đặt lại biến đệm `_idx` của Planner từ bên ngoài để lượt sau dựng lại chỉ mục. Lưu ý: nếu sau này System 3 đổi tên biến này, bước (b) sẽ không còn tác dụng (Planner dùng danh sách cũ tới khi khởi động lại server) — test NV4 sẽ báo.
+2. **Chưa chạy cào toàn bộ** (~1.350 thủ tục, ước ~35 MB tải về) vì người dùng đang hết dung lượng mạng; chỉ thử 3 thủ tục. Chưa bấm "Áp dụng" trên DB thật của người dùng — chỉ trên bản sao.
+3. Strict không trả lời theo luồng như Friendly: nút **Dừng** chỉ dừng chờ; System 3 vẫn trả lời ở nền và câu trả lời hiện khi mở lại hội thoại.
+4. Phát lại khi sửa / tạo lại: mỗi câu phát lại mất vài ms (bước AI của System 3 tắt) tới ~5 s (bật) — đúng như đã báo ở câu 1A.

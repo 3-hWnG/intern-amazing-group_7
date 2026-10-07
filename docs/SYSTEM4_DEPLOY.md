@@ -1,6 +1,6 @@
 # System 3 + 4 — Hướng dẫn deploy (theo sơ đồ "Kiến trúc triển khai")
 
-Trạng thái 2026-10-07 (sau NV1). Theo lựa chọn 7C: **chỉ có tài liệu, chưa có Dockerfile**. Hôm nay web chạy tại máy (`Launch web.bat`). Tài liệu này ghi rõ từng ô trong sơ đồ: đã có gì, thay bằng gì khi lên máy chủ thật.
+Trạng thái 2026-10-07 (sau NV4). Theo lựa chọn 7C: **chỉ có tài liệu, chưa có Dockerfile**. Hôm nay web chạy tại máy (`Launch web.bat`). Tài liệu này ghi rõ từng ô trong sơ đồ: đã có gì, thay bằng gì khi lên máy chủ thật.
 
 ## 1. Đối chiếu sơ đồ
 
@@ -13,11 +13,11 @@ Trạng thái 2026-10-07 (sau NV1). Theo lựa chọn 7C: **chỉ có tài liệ
 | 5 Backend API | FastAPI + SQLite (`server/runtime/system3.db`, `system4/runtime/system4.db`) | SQLite đủ cho 1 máy. Nhiều máy → PostgreSQL: chỉ sửa `system4/server/db.py` (mọi câu SQL nằm ở đó) |
 | 6 Cache (Redis) | Chưa có | Chỗ cắm: đầu `/s4/chat` (routes.py), trước khi gọi model |
 | 7 Hàng đợi | Trong bộ nhớ: System 3 `core/queue.py`, System 4 `llm.Turn` (1 lượt/lần, báo vị trí, giới hạn `FRIENDLY_QUEUE_MAX`) | Redis/RQ khi chạy nhiều tiến trình |
-| 8 AI Service | Ollama tại máy, `qwen3:4b` | vLLM chỉ chạy trên Linux. Chỉ cần sửa `system4/server/llm.py` (một hàm `stream_chat`) |
+| 8 AI Service | Ollama tại máy: `qwen3:4b` (trả lời), `bge-m3` (tìm theo nghĩa); reranker bge-reranker-v2-m3 chạy bằng torch trong server (GPU) | vLLM chỉ chạy trên Linux. Chỉ cần sửa `system4/server/llm.py` (một hàm `stream_chat`) |
 | 9 Trả kết quả (streaming) | SSE (`/s4/chat`), có nút Dừng | Nginx: tắt buffer (`proxy_buffering off`); server đã gửi `X-Accel-Buffering: no` |
-| Lưu trữ: Vector DB (Qdrant) | Chưa dùng (NV3, chạy local mode) | Qdrant server: đổi đường dẫn thành URL |
-| Lưu trữ: Object storage | Chưa có (NV3: thư mục dataset) | MinIO/S3 |
-| Ingestion pipeline | Chưa có (NV3) | Worker riêng để nạp dữ liệu không ảnh hưởng người đang hỏi |
+| Lưu trữ: Vector DB (Qdrant) | Qdrant **local mode** (`system4/runtime/qdrant`, collection `records`, 1024 chiều) | Qdrant server: đổi `_qdrant()` trong `system4/server/search.py` sang `QdrantClient(url=...)`, nạp lại dữ liệu |
+| Lưu trữ: Object storage | Thư mục `system4/runtime/datasets/<user>/<id>/` (tệp gốc người dùng) | MinIO/S3 |
+| Ingestion pipeline | Một luồng nền trong server (`system4/server/datasets.py`): đọc → cấu trúc định sẵn → FTS5 + vector; tự nạp tiếp sau khởi động lại | Worker riêng (hàng đợi Redis) để nạp không tranh GPU với người đang hỏi |
 | Độ tin cậy | Timeout (`FRIENDLY_TIMEOUT`), giới hạn hàng đợi, `/health` | Model dự phòng, tự khởi động lại (systemd/Docker restart) |
 | Giám sát & log | Log của uvicorn ra màn hình | Ghi log ra file, Prometheus/Grafana |
 | Bảo mật | Mật khẩu bcrypt; DB chỉ lưu sha256 của cookie; System 3 che CCCD/SĐT ở Strict | HTTPS qua nginx; sao lưu `system4/runtime/` định kỳ |
