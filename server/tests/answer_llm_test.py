@@ -1,5 +1,6 @@
-"""Phase 11: LLM giả (không gọi Ollama). Chạy: PYTHONPATH=D:/Finale_architect python tests/answer_llm_test.py"""
+"""Phase 11: LLM giả (không gọi Ollama). Chạy: PYTHONPATH=<ROOT> python tests/answer_llm_test.py"""
 import os, sys
+os.environ["OLLAMA_HOST"] = "http://127.0.0.1:9"      # cổng đóng (trước mọi import config): bài thử "Ollama tắt" không đụng GPU
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, HERE); sys.path.insert(0, os.path.dirname(os.path.dirname(HERE)))
 from answer import answer
@@ -50,4 +51,22 @@ ev = base["blocks"][0]["text"]
 d1 = {"text": "Có nêu thời hạn giải quyết ở trên.", "cites": ["d1"]}
 res = run(mk(d1))
 assert res["blocks"][0]["text"].count("(theo:") == 1 and res["blocks"][-1]["title"] == "So sánh"
+
+# Phase 27: tham số gửi cho LLM (giới hạn token, timeout) và chế độ lỗi thật: Ollama không chạy -> trả [] nhanh, không treo
+import time
+seen = {}
+compose(lambda s, u, **k: seen.update(k) or {"points": []}, P, "x")
+assert seen["num_predict"] == 200 and seen["timeout"] == 7.0, seen
+from core.llm import chat_json
+t0 = time.time(); iss = []
+assert compose(chat_json, P, "x", issues=iss) == [] and iss and "llm" in iss[0] and time.time() - t0 < 5, iss      # Ollama tắt: "llm chưa nạp", trả ngay
+# Phase 27: trần thời gian LLM chung cho một lượt (nhiều lần gọi không cộng dồn quá ngân sách)
+from answer.llm_answer import budgeted
+def slow(s, u, **k): time.sleep(0.6); return {"points": []}
+b = budgeted(slow, 2.0); t0 = time.time(); r = []
+for _ in range(4):
+    try: b("s", "u", timeout=7.0); r.append("ok")
+    except TimeoutError: r.append("hết")
+assert r == ["ok", "ok", "hết", "hết"], r
+assert budgeted(None) is None
 print("OK answer_llm_test")

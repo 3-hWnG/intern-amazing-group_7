@@ -5,7 +5,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 PORT = 8392
 tmp = tempfile.mkdtemp()
 env = dict(os.environ, APP_PORT=str(PORT), S3_DB_PATH=os.path.join(tmp, "s3.db"), S3_DEV="1", PYTHONIOENCODING="utf-8")
-srv = subprocess.Popen([sys.executable, "main.py"], cwd=HERE, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+srv = subprocess.Popen([sys.executable, "run_server.py"], cwd=os.path.dirname(HERE), env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
 
 
 def post(body):

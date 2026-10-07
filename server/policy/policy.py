@@ -14,6 +14,7 @@ from dataclasses import dataclass, field, asdict
 
 from system3.data import api as data_api
 from system3.data.textutil import fold
+from system3.retrieval.context import strip_labels
 
 MAX_TASKS = 3
 MAX_CHARS = 2000
@@ -57,11 +58,13 @@ class Routed:
     clarify: dict | None = None        # {question, options[{label, proc_id}], allow_free_text}
     flags: list = field(default_factory=list)   # injection | overflow | truncated | plan_fallback
     behavior: str = "answer"           # answer | apologize | clarify | chitchat
+    memory_note: dict | None = None    # Phase 26: hồ sơ đã ảnh hưởng quyết định này {kind: pick|shrink|variant, subject, proc_id, procedure}
 
     def to_dict(self):
         return asdict(self)
 
 
+# FINAL-PRODUCT: [B3] hàm che PII đã có nhưng chỉ dùng cho trace; bản cuối gọi nó trước khi ghi messages.content/plan_json/session_facts/title (mục 2)
 def mask_pii(text: str) -> str:
     """Guardrail 9: che CCCD/CMND/SĐT trước khi ghi log."""
     return _ID.sub("[ID]", _PHONE.sub("[SDT]", text or ""))
@@ -70,7 +73,7 @@ def mask_pii(text: str) -> str:
 def pre_check(text: str) -> dict:
     """Chạy TRƯỚC Planner: -> {text (đã cắt), flags}. Nội dung người dùng chỉ là DỮ LIỆU, không bao giờ là lệnh."""
     flags = []
-    t = text or ""
+    t = strip_labels(text or "")           # nhãn lượt/số thứ tự đầu câu ("Turn 2:", "Q:", "2)") không phải lời người dùng
     if len(t) > MAX_CHARS:
         t, flags = t[:MAX_CHARS], flags + ["truncated"]
     if _INJECTION.search(fold(t)):
@@ -144,9 +147,68 @@ def _strong_case(conn, pid: str, label: str, row: str, user_text: str) -> bool:
     return hit >= 2 and hit >= 0.35 * len(tk)
 
 
+_STOP = set("thu tuc cho hoi toi minh muon can lam gi nhu the nao va cua o la de duoc co khong a nhe".split())
+
+
+def _names_candidate(conn, pids: list[str], user_text: str, partial: bool = True) -> bool:
+    """Phase 26: câu hỏi đã nêu rõ MỘT ứng viên -> hồ sơ KHÔNG được can thiệp (chỉ ưu tiên khi người dùng chưa nói rõ). Rõ khi:
+    (a) nguyên tên một ứng viên (>= 15 ký tự) nằm trong câu; hoặc (b) (partial) cụm chữ nội dung của câu (>= 3 chữ, bỏ lời đệm đầu/cuối)
+    là một đoạn LIỀN trong tên của đúng MỘT ứng viên ('đăng ký thành lập tổ hợp tác' chỉ nằm trong một tên; câu cụt như 'phê duyệt dự án' nằm trong nhiều tên thì chưa rõ)."""
+    f = " ".join(_TOK.findall(fold(user_text)))
+    w = f.split()
+    while w and w[0] in _STOP:
+        w.pop(0)
+    while w and w[-1] in _STOP:
+        w.pop()
+    phrase, inside = " ".join(w), 0
+    for pid in pids:
+        r = conn.execute("SELECT name FROM procedures WHERE proc_id=? AND status='active'", (pid,)).fetchone()
+        if not r:
+            continue
+        full = " ".join(_TOK.findall(fold(r[0])))
+        n = full[len("thu tuc "):] if full.startswith("thu tuc ") else full
+        if len(n) >= 15 and n in f:
+            return True
+        inside += len(w) >= 3 and f" {phrase} " in f" {full} "
+    return partial and inside == 1
+
+
+def filter_by_subject(conn, pids: list[str], memory: dict | None, user_text: str = "") -> tuple[list[str], dict | None]:
+    """Phase 26: lọc ứng viên theo đối tượng đã nhớ. -> (ứng viên mới, ghi chú | None).
+    - đúng 1 ứng viên hợp (và mọi ứng viên khác chắc chắn không hợp): kind='pick'
+    - 2..n-1 hợp: kind='shrink' (chỉ giữ các ứng viên hợp)
+    - ứng viên không khai đối tượng nào = chưa biết -> giữ (không loại vì thiếu dữ liệu); không hợp ai/hợp hết -> không đổi.
+    Không đụng khi câu hỏi nêu nguyên tên một ứng viên."""
+    if not memory or not memory.get("subjects") or len(pids) < 2 or _names_candidate(conn, pids, user_text):
+        return pids, None
+    subs = data_api.subjects_of(conn, pids)
+    hit = [p for p in pids if not subs[p] or subs[p] & memory["subjects"]]
+    if len(hit) == len(pids) or not hit:
+        return pids, None
+    kind = "pick" if len(hit) == 1 and subs[hit[0]] else "shrink" if len(hit) >= 2 else None
+    return (hit, {"kind": kind, "subject": memory["label"]}) if kind else (pids, None)
+
+
+def _memory_variant(conn, head: str, dv: str, memory: dict, user_text: str) -> str | None:
+    """Phase 26: bản mặc định của nhóm không hợp đối tượng đã nhớ mà có biến thể hợp (không gắn tỉnh, cấp xã, không ngành dọc) -> biến thể đó."""
+    vs = data_api.variants(conn, head)
+    subs = data_api.subjects_of(conn, [v["proc_id"] for v in vs])
+    if not subs.get(dv) or subs[dv] & memory["subjects"] or _names_candidate(conn, [dv], user_text, partial=False):
+        return None
+    for v in vs:
+        if v["proc_id"] == dv or v["province"] or not subs[v["proc_id"]] & memory["subjects"]:
+            continue
+        r = conn.execute("SELECT domain, agency_levels FROM procedures WHERE proc_id=? AND status='active'", (v["proc_id"],)).fetchone()
+        if r and not _vertical(r["domain"]) and "Xã/Phường" in (r["agency_levels"] or ""):
+            return v["proc_id"]
+    return None
+
+
 def check(plan, *, user_text: str, conn=None, facts: list[str] | None = None,
-          known_procs: list[str] | None = None, flags: list[str] | None = None, no_clarify: bool = False) -> Routed:
-    """plan: planner.Plan (hoặc đối tượng có .tasks/.needs_clarification/.source)."""
+          known_procs: list[str] | None = None, flags: list[str] | None = None, no_clarify: bool = False,
+          memory: dict | None = None) -> Routed:
+    """plan: planner.Plan (hoặc đối tượng có .tasks/.needs_clarification/.source).
+    memory (Phase 26): {subjects:set[str], label} từ hồ sơ người dùng; None = hành vi y hệt trước Phase 26."""
     conn = conn or data_api.connect()
     facts = facts or []
     out = Routed(flags=list(flags or []))
@@ -159,6 +221,7 @@ def check(plan, *, user_text: str, conn=None, facts: list[str] | None = None,
 
     raw = list(plan.tasks)
     cond_hits: list[bool] = []
+    var_note = None
     if len(raw) > MAX_TASKS:
         out.flags.append("overflow")
     for t in raw[:MAX_TASKS]:
@@ -198,6 +261,13 @@ def check(plan, *, user_text: str, conn=None, facts: list[str] | None = None,
                     mods = set(_TOK.findall(fold(rt.procedure_label))) - set(_TOK.findall(fold(dname[0] if dname else "")))
                     if dname and mods and not (mods & set(_TOK.findall(fold(user_text)))):
                         rt.procedure_id, rt.procedure_label = dv, dname[0]
+            if memory and memory.get("subjects") and fam and fam["n_members"] > 1:   # Phase 26: đang ở bản mặc định -> ưu tiên bản hợp đối tượng đã nhớ
+                dv = data_api.default_variant(conn, fam["head"])
+                mv = _memory_variant(conn, fam["head"], dv, memory, user_text) if dv and rt.procedure_id == dv else None
+                if mv:
+                    mname = conn.execute("SELECT name FROM procedures WHERE proc_id=?", (mv,)).fetchone()[0]
+                    rt.procedure_id, rt.procedure_label = mv, mname
+                    var_note = var_note or {"kind": "variant", "subject": memory["label"], "proc_id": mv, "procedure": mname}
         # --- căn cứ cho điều kiện / ngữ cảnh (guardrail 3)
         for c in t.conditions:
             (((rt.soft_conditions if getattr(plan, "source", "") == "rules" else rt.conditions) if grounded(c, user_text, facts) else rt.dropped_conditions)).append(c)
@@ -240,14 +310,31 @@ def check(plan, *, user_text: str, conn=None, facts: list[str] | None = None,
     if not no_clarify and not known_procs and len(out.tasks) == 1 and out.tasks[0].route == "direct":
         near = list(getattr(raw[0], "near", []) or [])
         if len(near) >= 3 and getattr(raw[0], "refers_to", "new") != "last" and not cond_hits[0]:
+            near, note = filter_by_subject(conn, near, memory, user_text)      # Phase 26: hồ sơ thu hẹp ứng viên (không có hồ sơ: không đổi)
+            if note and note["kind"] == "pick":
+                import copy
+                t2 = copy.copy(raw[0])
+                t2.procedure_id, t2.refers_to = near[0], "last"
+                t2.action = "ask_field" if t2.fields else "find_procedure"
+                p2 = copy.copy(plan)
+                p2.tasks, p2.needs_clarification = [t2], False
+                res = check(p2, user_text=user_text, conn=conn, facts=facts, flags=flags, no_clarify=True)
+                if res.tasks and res.tasks[0].route == "direct":
+                    res.memory_note = {**note, "proc_id": near[0], "procedure": res.tasks[0].procedure_label}
+                    return res
+                near, note = list(getattr(raw[0], "near", []) or []), None      # chọn xong mà không trả lời được: bỏ, giữ hành vi cũ
             opts = []
             for pid in near[:4]:
                 r = conn.execute("SELECT name FROM procedures WHERE proc_id=? AND status='active'", (pid,)).fetchone()
                 if r:
                     opts.append({"label": r[0][:110], "proc_id": pid})
-            if len(opts) >= 3:
-                out.clarify = {"question": "Bạn muốn hỏi về thủ tục nào?", "options": opts, "allow_free_text": True}
+            if len(opts) >= (2 if note else 3):
+                q = "Bạn muốn hỏi về thủ tục nào?"
+                if note:
+                    q += f" (Theo hồ sơ của bạn - đối tượng: {note['subject']} - mình chỉ hiện các thủ tục phù hợp; không thấy thì bạn gõ tên thủ tục nhé.)"
+                out.clarify = {"question": q, "options": opts, "allow_free_text": True}
                 out.behavior = "clarify"
+                out.memory_note = note
                 return out
 
     # --- clarify: tối đa 1 thẻ/lượt; chỉ khi LLM xin VÀ chưa có thủ tục nào chắc (guardrail 4, 6)
@@ -266,6 +353,7 @@ def check(plan, *, user_text: str, conn=None, facts: list[str] | None = None,
             out.behavior = "clarify"
             return out
 
+    out.memory_note = var_note
     kinds = {t.route for t in out.tasks}
     if "direct" in kinds:
         out.behavior = "answer"

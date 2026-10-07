@@ -1,4 +1,4 @@
-"""Smoke test: chạy `python smoke_test.py` (khởi động server riêng, DB tạm, cổng 8391, S3_USE_LLM=0). Cần PYTHONPATH=<gốc chứa system3>."""
+"""Smoke test: chạy `python smoke_test.py` (khởi động server riêng, DB tạm, cổng 8391, S3_USE_LLM=0). Không cần PYTHONPATH (dùng run_server.py)."""
 import json, os, sqlite3, subprocess, sys, tempfile, time, urllib.error, urllib.request
 from pathlib import Path
 
@@ -6,7 +6,7 @@ here = Path(__file__).resolve().parent
 tmp = Path(tempfile.mkdtemp()) / "t.db"
 PORT = 8391
 env = {**os.environ, "S3_DB_PATH": str(tmp), "APP_PORT": str(PORT), "S3_DEV": "1", "S3_USE_LLM": "0", "PYTHONIOENCODING": "utf-8"}
-srv = subprocess.Popen([sys.executable, "main.py"], cwd=here, env=env,
+srv = subprocess.Popen([sys.executable, "run_server.py"], cwd=here.parent, env=env,   # launcher: chạy được cả khi thư mục gốc không tên system3
                        stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 U = f"http://127.0.0.1:{PORT}"
 

@@ -54,6 +54,11 @@ PLANNER_LLM_TIMEOUT = float(_str("PLANNER_LLM_TIMEOUT", "7.0"))     # giây; qu�
 PLANNER_LLM_CONFIDENCE = float(_str("PLANNER_LLM_CONFIDENCE", "0.99"))   # LLM chỉ được sửa kế hoạch khi confidence >= ngưỡng; 0.99 = ít hại nhất khi quét 0.80-0.99 trên DEV (P19_REPORT)
 PLANNER_LLM_DRAFT = _bool("PLANNER_LLM_DRAFT", False)               # 1 = LLM thấy bản nháp luật và chỉ sửa khi chắc nó sai (biến thể đo, xem P19_REPORT)
 PLANNER_LLM_NUM_PREDICT = _int("PLANNER_LLM_NUM_PREDICT", 220)
+# FINAL-PRODUCT: [AI] công tắc/timeout AI là cấu hình toàn tiến trình; xem mục 4 của checklist (có cho người dùng thường tắt AI không)
+ANSWER_LLM_TIMEOUT = float(_str("ANSWER_LLM_TIMEOUT", "7.0"))      # giây; bước sinh chữ (Answer Composer); quá hạn -> giữ câu trả lời bằng code. Cùng 7 s với Planner hybrid (docs/ARCHITECTURE.md, bảng timeout)
+ANSWER_LLM_TURN_BUDGET = float(_str("ANSWER_LLM_TURN_BUDGET", "9.0"))   # Phase 27: tổng giây LLM tối đa của MỘT lượt trả lời (nhiều lần gọi: mỗi điều kiện + so sánh); hết thì các lần sau dùng bản code ngay
+ANSWER_LLM_NUM_PREDICT = _int("ANSWER_LLM_NUM_PREDICT", 200)      # Phase 27: giới hạn token sinh của bước sinh chữ (0 = không giới hạn); 200 chọn theo eval/P27_REPORT.md
+ANSWER_LLM_PASSAGE_CHARS = _int("ANSWER_LLM_PASSAGE_CHARS", 450)  # Phase 27: cắt mỗi đoạn dữ liệu đưa cho LLM (trước: 700)
 LLM_THINK = _bool("LLM_THINK", False)      # qwen3: False = tắt thinking
 
 # Hàng đợi: 1 worker (GPU 6 GB).
@@ -61,6 +66,7 @@ QUEUE_CONCURRENCY = 1
 QUEUE_MAX_DEPTH = _int("QUEUE_MAX_DEPTH", 20)
 QUEUE_JOB_TIMEOUT = _int("QUEUE_JOB_TIMEOUT", 180)
 
+# FINAL-PRODUCT: [B2] DEV_MODE là công tắc DUY NHẤT tách dev/người dùng, chỉ gắn vào /chat (khối dev), POST /config, /dev/*. Bản cuối: chế độ người dùng = dev ít quyền; chặn plan/trace/config/?dev=1 khi không dev (docs/FINAL_PRODUCT_CHECKLIST.md mục 1)
 DEV_MODE = _bool("S3_DEV", False)           # true: mọi phản hồi kèm plan/trace
 
 # Phase 20: nút "Tạo bảng full" trong câu trả lời (thay dòng "xem đầy đủ trên Cổng Dịch vụ công"); 0 = về như cũ

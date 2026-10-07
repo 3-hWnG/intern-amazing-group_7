@@ -1,6 +1,6 @@
 # COPY_NOTES — System 3 vs V10.6
 
-Nguồn: `D:\Finale_architect\repo\` (V10.6). Không import ngược; mọi thứ dưới đây là bản sao đã sửa.
+Nguồn: `<ROOT>/repo/` (V10.6; `<ROOT>` = thư mục cha của `system3/`). Không import ngược; mọi thứ dưới đây là bản sao đã sửa.
 
 ## Đã copy
 | System 3 | Nguồn V10.6 | Thay đổi |

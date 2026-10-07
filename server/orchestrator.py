@@ -32,6 +32,7 @@ class Turn:
     shown_procedures: list[dict] = field(default_factory=list) # [{proc_id, label, ordinal}]
     reply_to_clarify: dict | None = None   # thẻ clarify của reply_to (nếu có)
     state: dict | None = None              # ConvState dạng dict; None = đọc từ DB (rồi None nữa = dựng lại từ history)
+    memory: dict | None = None             # Phase 26: {subjects:set, label} từ user_memory.for_policy; None = không có hồ sơ (hành vi cũ)
 
 
 def flat_text(r: dict) -> str:
@@ -110,6 +111,7 @@ def handle_turn(turn: Turn) -> dict:
     last_proc = (state or {}).get("topic") or (turn.shown_procedures[-1]["proc_id"] if turn.shown_procedures else None)
     conn = data_api.connect()
     facts = _facts_for(conn, turn.session_facts, [last_proc])
+    # FINAL-PRODUCT: [B3] trace đã che PII; messages/plan_json thì chưa (mục 2)
     trace = {"question": mask_pii(turn.text), "flags": pc["flags"]}
 
     t1 = time.perf_counter()
@@ -134,7 +136,8 @@ def handle_turn(turn: Turn) -> dict:
     if pids:                               # đổi thủ tục khác family: fact cũ không được rò sang
         facts = _facts_for(conn, turn.session_facts, pids)
     routed = check(plan, user_text=pc["text"], conn=conn, facts=facts, flags=pc["flags"],
-                   known_procs=[last_proc] if (last_proc and answered_clarify) else None, no_clarify=answered_clarify)
+                   known_procs=[last_proc] if (last_proc and answered_clarify) else None, no_clarify=answered_clarify,
+                   memory=None if answered_clarify else turn.memory)
 
     # Không hỏi lần 2: đã trả lời thẻ hỏi lại mà Planner vẫn xin hỏi -> lấy ứng viên đầu, nói rõ giả định.
     assumed = ""
@@ -159,6 +162,14 @@ def handle_turn(turn: Turn) -> dict:
     if assumed and ans["blocks"]:
         ans["blocks"].insert(0, {"title": "", "sources": [],
                                  "text": f"Mình hiểu bạn đang hỏi về «{assumed}». Nếu chưa đúng, bạn gõ lại tên thủ tục nhé."})
+
+    mn = routed.memory_note                # Phase 26: nói rõ hồ sơ đã ảnh hưởng (người dùng sửa được: "bạn nói lại nhé")
+    if mn and mn["kind"] in ("pick", "variant") and ans["blocks"]:
+        what = "chọn" if mn["kind"] == "pick" else "chọn bản"
+        ans["blocks"].insert(0, {"title": "", "sources": [],
+                                 "text": f"Theo hồ sơ của bạn (đối tượng: {mn['subject']}) mình {what} «{mn['procedure']}». Nếu chưa đúng, bạn nói lại nhé."})
+    if mn:
+        trace["memory"] = mn
 
     clarify = ans.get("clarify")
     if clarify:                            # UI nhận options là chuỗi; mã thủ tục để trong meta
@@ -187,10 +198,17 @@ def handle_turn(turn: Turn) -> dict:
 
     trace.update(routed=routed.to_dict(), verify=ans["verify"], total_ms=int((time.perf_counter() - t0) * 1000),
                  llm_ms=plan.llm_ms)
-    return {"kind": ans["kind"] if not clarify else "clarify", "blocks": ans["blocks"], "clarify": clarify,
-            "plan": plan.to_dict(), "trace": trace}
+    res = {"kind": ans["kind"] if not clarify else "clarify", "blocks": ans["blocks"], "clarify": clarify,
+           "plan": plan.to_dict(), "trace": trace}
+    if answered_clarify and forced_pid:    # Phase 26: gợi ý "Nhớ đối tượng ...?" (UI hỏi, người dùng bấm mới lưu)
+        from user_memory import suggest_after_pick
+        sg = suggest_after_pick(forced_pid, list(((turn.reply_to_clarify or {}).get("meta") or {}).get("option_ids", {}).values()), turn.memory)
+        if sg:
+            res["memory_suggest"] = sg
+    return res
 
 
+# FINAL-PRODUCT: [AI] công tắc AI là biến môi trường S3_USE_LLM của tiến trình (POST /config đổi cho mọi người). Bản cuối: quyết định nhóm có cho người dùng thường tắt AI không (mục 4)
 def _answer_llm():
     """LLM chỉ có MỘT việc: sinh chữ (giải thích điều kiện, so sánh) ở Answerer; ý không qua verify bị bỏ, lỗi -> bản bằng code.
     ponytail: S3_USE_LLM=0 tắt hẳn (đo/độ trễ); câu trả lời chỉ gửi SAU khi verify xong (answer() chạy đồng bộ)."""

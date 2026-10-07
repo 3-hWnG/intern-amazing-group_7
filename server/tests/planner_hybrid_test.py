@@ -1,5 +1,5 @@
 """Phase 19: cơ chế hợp nhất Planner hybrid với LLM GIẢ (không gọi Ollama).
-Chạy: S3_USE_LLM=0 PYTHONPATH=D:/Finale_architect python tests/planner_hybrid_test.py"""
+Chạy: S3_USE_LLM=0 PYTHONPATH=<ROOT> python tests/planner_hybrid_test.py"""
 import os, sys, time
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, HERE); sys.path.insert(0, os.path.dirname(os.path.dirname(HERE)))

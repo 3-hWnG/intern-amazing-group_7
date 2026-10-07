@@ -11,7 +11,7 @@ import re
 from system3.data import api as data_api
 from system3.data.textutil import fold
 
-from .llm_answer import compose, render
+from .llm_answer import budgeted, compose, render
 from .verifier import verify
 
 DEFAULT_FIELDS = ["components", "processing_time", "fees", "address"]
@@ -92,6 +92,13 @@ def _fees_text(conn, pid: str) -> tuple[str, str]:
         if txt and txt not in seen:
             seen.add(txt)
             lines.append(f"- {txt}" + (f" ({r['submission_method']})" if r["submission_method"] else ""))
+    if not lines:     # cổng không có lệ phí -> bù từ corpus nhóm (ghi nguồn); không có nữa thì KHÔNG suy ra miễn phí
+        try:
+            ov = [r[0] for r in conn.execute("SELECT amount_text FROM team_fee_overlay WHERE proc_id=?", (pid,))]
+        except Exception:
+            ov = []
+        if ov:
+            return "\n".join(f"- {t}" for t in dict.fromkeys(ov)) + "\n(Nguồn: Bộ dữ liệu nhóm, chuẩn hóa từ cổng)", "present"
     return ("\n".join(lines), "present") if lines else ("", "absent_confirmed")
 
 
@@ -202,6 +209,7 @@ def answer(routed, *, conn=None, question: str = "", llm=None) -> dict:
     llm: hàm kiểu core.llm.chat_json(system, user, schema=, timeout=) -> dict. None = chỉ bằng code (như cũ).
     Có llm: dùng cho giải thích điều kiện (task có conditions) và so sánh (>=2 task relation=compare); lỗi -> bản bằng code."""
     conn = conn or data_api.connect()
+    llm = budgeted(llm)                       # Phase 27: trần thời gian LLM chung cho cả lượt
     blocks, issues, cmp_src = [], [], []
     if routed.clarify:
         return {"kind": "clarify", "blocks": [], "clarify": routed.clarify, "verify": []}

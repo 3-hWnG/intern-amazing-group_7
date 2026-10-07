@@ -45,6 +45,7 @@ def conversation_exists(cid: str) -> bool:
     return bool(_run("SELECT 1 FROM conversations WHERE id=?", (cid,), one=True))
 
 
+# FINAL-PRODUCT: [B4] phiên ẩn danh: không có cột chủ sở hữu (conversations không có user_id). Khi có đăng nhập: thêm user_id, lọc mọi truy vấn theo user (mục 3)
 def ensure_conversation(cid: str | None) -> str:
     """Session ẩn danh: client không có id (hoặc id lạ) -> cấp id mới."""
     if cid and conversation_exists(cid):
@@ -54,6 +55,7 @@ def ensure_conversation(cid: str | None) -> str:
     return cid
 
 
+# FINAL-PRODUCT: [B4] không lọc theo người dùng (mục 3)
 def list_conversations() -> list[dict]:
     return [dict(r) for r in _run(
         "SELECT id,title,created_at,pinned FROM conversations ORDER BY pinned DESC, rowid DESC", many=True)]
@@ -67,6 +69,7 @@ def set_pinned(cid: str, pinned: bool) -> None:
     _run("UPDATE conversations SET pinned=? WHERE id=?", (1 if pinned else 0, cid))
 
 
+# FINAL-PRODUCT: [B4] cid=None xoá TẤT CẢ hộp thoại của mọi người; bản cuối nhận user_id và chỉ xoá của người đó (mục 3)
 def delete_conversation(cid: str | None = None) -> None:
     """cid=None: xoá tất cả. Bảng con xoá theo ON DELETE CASCADE (foreign_keys=ON ở conn())."""
     if cid is None:
@@ -80,6 +83,7 @@ def set_title_if_new(cid: str, text: str) -> None:
          (text.strip()[:60] or "Cuộc trò chuyện mới", cid))
 
 
+# FINAL-PRODUCT: [B3] content (nguyên văn người dùng) và plan_json chưa che CCCD/SĐT; che bằng policy.mask_pii trước khi ghi, hoặc ghi bản che + bản mã hoá có hạn dùng (mục 2)
 def add_message(cid: str, role: str, content: str, kind: str = "",
                 plan: dict | None = None, payload: dict | None = None) -> int:
     return _run(
@@ -89,6 +93,7 @@ def add_message(cid: str, role: str, content: str, kind: str = "",
          json.dumps(payload, ensure_ascii=False) if payload else ""))
 
 
+# FINAL-PRODUCT: [B2] trả cả plan; bản cuối chỉ đưa plan cho dev (mục 1)
 def get_messages(cid: str) -> list[dict]:
     out = []
     for r in _run("SELECT * FROM messages WHERE conversation_id=? ORDER BY id", (cid,), many=True):
@@ -108,6 +113,7 @@ def recent_history(cid: str, turns: int = 5) -> list[dict]:
     return [dict(r) for r in reversed(rows)]
 
 
+# FINAL-PRODUCT: [B2][B3] trace_json chứa câu hỏi (đã mask_pii ở orchestrator) và plan_json nội bộ; chỉ dev được đọc, và đặt hạn xoá (mục 1, 2)
 def add_trace(cid: str, message_id: int, trace: dict, total_ms: int) -> None:
     _run("INSERT OR REPLACE INTO turn_traces VALUES (?,?,?,?)",
          (cid, message_id, json.dumps(trace, ensure_ascii=False), total_ms))
@@ -124,6 +130,7 @@ def session_facts(cid: str) -> list[dict]:
         "SELECT kind,text,proc_id FROM session_facts WHERE conversation_id=?", (cid,), many=True)]
 
 
+# FINAL-PRODUCT: [B3] session_facts.text là lời người dùng kể (có thể chứa tên, địa chỉ, số giấy tờ), chưa che (mục 2)
 def add_fact(cid: str, kind: str, text: str, proc_id: str = "") -> None:
     _run("INSERT OR IGNORE INTO session_facts(conversation_id,kind,text,proc_id) VALUES (?,?,?,?)",
          (cid, kind, text, proc_id))
@@ -161,3 +168,21 @@ def set_state(cid: str, state: dict) -> None:
     _run("INSERT INTO conv_state(conversation_id,state_json) VALUES (?,?) "
          "ON CONFLICT(conversation_id) DO UPDATE SET state_json=excluded.state_json, updated_at=datetime('now')",
          (cid, json.dumps(state, ensure_ascii=False)))
+
+
+# ---- Phase 26: bộ nhớ người dùng theo client_id (xem user_memory.py)
+def mem_all(client_id: str) -> dict[str, str]:
+    return {r["key"]: r["value"] for r in _run("SELECT key,value FROM user_memory WHERE client_id=?", (client_id,), many=True)}
+
+
+def mem_set(client_id: str, key: str, value: str) -> None:
+    _run("INSERT INTO user_memory(client_id,key,value) VALUES (?,?,?) "
+         "ON CONFLICT(client_id,key) DO UPDATE SET value=excluded.value, updated_at=datetime('now')", (client_id, key, value))
+
+
+def mem_del(client_id: str, key: str | None = None) -> None:
+    """key=None: quên tất cả của client_id này (không đụng client khác)."""
+    if key is None:
+        _run("DELETE FROM user_memory WHERE client_id=?", (client_id,))
+    else:
+        _run("DELETE FROM user_memory WHERE client_id=? AND key=?", (client_id, key))

@@ -5,6 +5,7 @@ Khác bản gốc: bỏ ROLE_OPTIONS/verify/status của System 1-2; thêm
   - `think`  : False tắt thinking (qwen3); mặc định theo config.LLM_THINK
 """
 from __future__ import annotations
+import os
 import json
 import re
 
@@ -65,6 +66,8 @@ def _salvage_json(text: str) -> dict:
 
 
 def warm_up() -> None:
+    if os.environ.get("S3_NO_WARMUP") == "1":   # test/CI hoặc máy đang bận GPU: không nạp model
+        return
     try:
         client().generate(model=LLM_MODEL, prompt="", keep_alive=LLM_KEEP_ALIVE,
                           options={"num_ctx": LLM_NUM_CTX})   # cùng num_ctx với chat() để không nạp lại
