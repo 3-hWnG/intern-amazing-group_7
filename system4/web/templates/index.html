@@ -7,7 +7,7 @@
 <link rel="icon" href="data:,">
 <!-- Giao diện = bản sao trang System 3 (web/templates/index.html) + công tắc Strict/Friendly, đăng nhập, cài đặt -->
 <link rel="stylesheet" href="/static/css/styles.css?v=20261006g">
-<link rel="stylesheet" href="/s4/static/css/s4.css?v=nv2">
+<link rel="stylesheet" href="/s4/static/css/s4.css?v=nv2b">
 <style>
 .block-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px}
 .block-card h4{margin:0 0 6px;font-size:14px;color:var(--accent)}
@@ -50,6 +50,8 @@
     <form id="composer" class="composer">
       <div class="composer-row">
         <textarea id="input" rows="2" placeholder="Nhập câu hỏi…" autocomplete="off"></textarea>
+        <button id="think-toggle" class="think-chip" type="button" aria-pressed="false"
+                title="Suy nghĩ kỹ: AI suy nghĩ trước khi trả lời (khoảng 30 giây, kỹ hơn). Tắt = trả lời nhanh.">Suy nghĩ kỹ</button>
         <button id="send" class="primary" type="submit">Gửi</button>
       </div>
     </form>
@@ -92,6 +94,6 @@
 </div>
 <script src="/s4/static/vendor/marked.umd.js?v=18.1.0"></script>
 <script src="/s4/static/vendor/purify.min.js?v=3.4.16"></script>
-<script src="/s4/static/js/app.js?v=nv2"></script>
+<script src="/s4/static/js/app.js?v=nv2b"></script>
 </body>
 </html>

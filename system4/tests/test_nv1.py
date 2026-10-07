@@ -54,7 +54,7 @@ with TestClient(main.app) as c:
     assert r.status_code == 303 and r.headers["location"] == "/s4/login", r.status_code
     assert c.get("/conversations").status_code == 401
     assert c.post("/chat", json={"text": "xin chào"}).status_code == 401
-    assert c.post("/s4/chat", json={"text": "xin chào"}).status_code == 401
+    assert c.post("/s4/chat", json={"mode": "think", "text": "xin chào"}).status_code == 401
     assert c.get("/s4/login").status_code == 200
     assert c.get("/health").status_code == 200
     assert c.get("/static/css/styles.css").status_code == 200 and c.get("/s4/static/js/app.js").status_code == 200
@@ -115,22 +115,22 @@ with TestClient(main.app) as c:
 
     # ---- Friendly: luồng SSE, lưu tin, giữ ngữ cảnh
     llm.stream_chat = fake_stream
-    r = c.post("/s4/chat", json={"text": "Chào AI"})
+    r = c.post("/s4/chat", json={"mode": "think", "text": "Chào AI"})
     ev = events(r)
     assert [e["type"] for e in ev] == ["meta", "start", "thinking", "delta", "delta", "delta", "done"], ev
     fcid = ev[0]["conversation_id"]
     msgs = c.get(f"/s4/conversations/{fcid}/messages").json()["messages"]
     assert [(m["role"], m["content"]) for m in msgs] == [("user", "Chào AI"), ("assistant", "Xin chào bạn!")], msgs
-    r = c.post("/s4/chat", json={"text": "Bạn nhớ tôi vừa nói gì không?", "conversation_id": fcid})
+    r = c.post("/s4/chat", json={"mode": "think", "text": "Bạn nhớ tôi vừa nói gì không?", "conversation_id": fcid})
     assert events(r)[-1]["type"] == "done"
     sent = seen_prompts[-1]
     assert sent[0]["role"] == "system" and [m["content"] for m in sent[1:]] == ["Chào AI", "Xin chào bạn!", "Bạn nhớ tôi vừa nói gì không?"], sent
     llm.stream_chat = broken_stream
-    ev = events(c.post("/s4/chat", json={"text": "lỗi?", "conversation_id": fcid}))
+    ev = events(c.post("/s4/chat", json={"mode": "think", "text": "lỗi?", "conversation_id": fcid}))
     assert ev[-1]["type"] == "error" and "Ollama" in ev[-1]["message"], ev
     assert c.get(f"/s4/conversations/{fcid}/messages").json()["messages"][-1]["status"] == "error"
     llm.stream_chat = fake_stream
-    c.post("/s4/chat", json={"text": "tiếp", "conversation_id": fcid})
+    c.post("/s4/chat", json={"mode": "think", "text": "tiếp", "conversation_id": fcid})
     assert all(m["content"] != "Ollama tắt" for m in seen_prompts[-1]), "tin lỗi không được gửi lại cho AI"
 
     # danh sách chung: Strict + Friendly, có nhãn chế độ
@@ -144,7 +144,7 @@ with TestClient(main.app) as c:
     assert c.get(f"/s4/conversations/{fcid}/export?format=json").json()["conversation"]["mode"] == "friendly"
     as_user(alice)
     assert c.get(f"/s4/conversations/{fcid}/messages").status_code == 404, "không xem được Friendly của người khác"
-    assert c.post("/s4/chat", json={"text": "x", "conversation_id": fcid}).status_code == 404
+    assert c.post("/s4/chat", json={"mode": "think", "text": "x", "conversation_id": fcid}).status_code == 404
 
     # ---- cài đặt: chỉ dev; Lưu / Về mặc định / Đặt làm mặc định
     as_user(bob)

@@ -8,6 +8,7 @@ Tình huống và đáp án do agent soạn (chưa có câu hỏi thật của n
 import json
 import re
 import sys
+import threading
 import time
 from pathlib import Path
 
@@ -27,9 +28,13 @@ EMPATHY = ("xin lỗi", "rất tiếc", "hiểu", "thông cảm", "chia sẻ", "
 results, timings, filtered = [], [], {"letters": 0, "other": 0, "retries": 0}
 
 
-def chat(text, cid=None):
-    t0, first, evs = time.time(), None, []
-    with c.stream("POST", "/s4/chat", json={"text": text, "conversation_id": cid}) as r:
+def chat(text, cid=None, mode=None, interrupt_after=None):
+    """mode=None -> mặc định của server (fast). interrupt_after=giây: bấm "Trả lời nhanh" sau từng ấy giây."""
+    t0, first, evs, pressed = time.time(), None, [], {}
+    body = {"text": text, "conversation_id": cid}
+    if mode:
+        body["mode"] = mode
+    with c.stream("POST", "/s4/chat", json=body) as r:
         buf = ""
         for chunk in r.iter_text():
             buf += chunk
@@ -38,16 +43,26 @@ def chat(text, cid=None):
                 if line.startswith("data: "):
                     ev = json.loads(line[6:])
                     evs.append(ev)
+                    if ev["type"] == "meta" and interrupt_after:
+                        def press(tid=ev["turn_id"]):
+                            pressed["t"] = time.time()
+                            httpx.post(f"{BASE}/s4/turns/{tid}/fast", cookies=dict(c.cookies), timeout=30)
+                        threading.Timer(interrupt_after, press).start()
+                    if ev["type"] == "switch":
+                        first = None   # chữ trước khi chuyển không tính
                     if ev["type"] == "delta" and first is None:
                         first = time.time() - t0
+                        if "t" in pressed:
+                            pressed["first_after"] = time.time() - pressed["t"]
                     if ev["type"] == "done":
-                        timings.append((first or 0, time.time() - t0))
+                        timings.append((evs[0].get("mode"), first or 0, time.time() - t0))
     cid = evs[0]["conversation_id"]
     msg = c.get(f"/s4/conversations/{cid}/messages").json()["messages"][-1]
     f = msg["meta"].get("filtered") or {}
     filtered["letters"] += f.get("letters", 0); filtered["other"] += f.get("other", 0)
     filtered["retries"] += 1 if msg["meta"].get("leak_retry") else 0
     mem = next((e for e in evs if e["type"] == "memory"), None)
+    msg["_pressed"] = pressed
     return cid, msg, mem
 
 
@@ -109,6 +124,8 @@ check("trình bày danh sách (Markdown)", re.search(r"^\s*(\d+[.)]|[-*])\s", m[
 # 12-17: bộ nhớ
 _, m, mem = chat("Chào bạn, mình tên là Lan, 32 tuổi, đang làm kế toán ở Đà Nẵng.")
 check("tự nhớ thông tin người dùng", mem and any("Lan" in a for a in mem["added"]), m, str(mem and mem["added"]))
+_, m, mem = chat("Mình thích ăn phở nhưng không thích đồ ngọt")
+check("nhớ sở thích", mem and any("phở" in a.lower() for a in mem["added"]), m, str(mem and mem["added"]))
 _, m, _ = chat("Bạn có nhớ mình tên gì và làm nghề gì không?")   # hội thoại MỚI
 check("nhớ sang hội thoại mới (tên + nghề)", "Lan" in m["content"] and "kế toán" in m["content"].lower(), m)
 _, m, _ = chat("Gợi ý cho mình vài địa điểm cuối tuần ở thành phố mình đang sống")
@@ -123,7 +140,16 @@ check("chế độ 'chỉ khi tôi bảo': 'hãy nhớ' -> nhớ", mem and any("
 _, m, mem = chat("Hãy quên chuyện mình có hai con đi")
 check("'hãy quên' -> xoá khỏi bộ nhớ", mem and any("con" in r for r in mem["removed"]), m, str(mem and mem["removed"]))
 
-# 18: chữ lạ trên toàn bộ câu trả lời
+# chế độ Suy nghĩ kỹ và nút "Trả lời nhanh"
+_, m, _ = chat("So sánh ưu và nhược điểm của việc tự học lập trình qua video và qua sách", mode="think")
+check("Suy nghĩ kỹ: trả lời đầy đủ", m["meta"].get("mode") == "think" and len(m["content"]) > 150 and "[[" not in m["content"], m,
+      f"chữ đầu sau {timings[-1][1]:.1f}s")
+_, m, _ = chat("Phân tích giúp mình nên học Python hay JavaScript trước", mode="think", interrupt_after=3)
+fa = m["_pressed"].get("first_after")
+check("'Trả lời nhanh' ngắt suy nghĩ và trả lời ngay", m["meta"].get("interrupted") and m["content"] and fa is not None and fa < 10, m,
+      f"chữ đầu {fa:.1f}s sau khi bấm" if fa is not None else "không có chữ sau khi bấm")
+
+# chữ lạ trên toàn bộ câu trả lời
 all_msgs = []
 for conv in c.get("/s4/conversations").json()["conversations"]:
     if conv["mode"] == "friendly":
@@ -133,10 +159,21 @@ check("không lọt chữ ngoài Latin (mọi câu trả lời)", not leaks, Non
       f"bộ lọc đã bỏ {filtered['letters']} chữ lạ, {filtered['other']} ký hiệu; viết lại {filtered['retries']} lần")
 
 n_pass = sum(r["pass"] for r in results)
-ft = sorted(t[0] for t in timings); tt = sorted(t[1] for t in timings)
-summary = {"passed": n_pass, "total": len(results), "first_token_s": {"median": ft[len(ft) // 2], "max": ft[-1]},
-           "total_s": {"median": tt[len(tt) // 2], "max": tt[-1]}, "filtered": filtered}
-print(f"\n{n_pass}/{len(results)} PASS · chữ đầu tiên: trung vị {summary['first_token_s']['median']:.1f}s, "
-      f"tối đa {summary['first_token_s']['max']:.1f}s · cả câu: trung vị {summary['total_s']['median']:.1f}s")
+
+
+def stats(mode):
+    ft = sorted(t[1] for t in timings if t[0] == mode); tt = sorted(t[2] for t in timings if t[0] == mode)
+    if not ft:
+        return None
+    return {"n": len(ft), "first_median": ft[len(ft) // 2], "first_max": ft[-1], "total_median": tt[len(tt) // 2], "total_max": tt[-1]}
+
+
+summary = {"passed": n_pass, "total": len(results), "fast": stats("fast"), "think": stats("think"), "filtered": filtered}
+print(f"\n{n_pass}/{len(results)} PASS")
+for k in ("fast", "think"):
+    v = summary[k]
+    if v:
+        print(f"  {k}: {v['n']} câu · chữ đầu trung vị {v['first_median']:.1f}s (tối đa {v['first_max']:.1f}s) · "
+              f"cả câu trung vị {v['total_median']:.1f}s (tối đa {v['total_max']:.1f}s)")
 OUT.parent.mkdir(parents=True, exist_ok=True)
 OUT.write_text(json.dumps({"summary": summary, "results": results}, ensure_ascii=False, indent=2), encoding="utf-8")

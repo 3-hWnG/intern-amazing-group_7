@@ -43,7 +43,7 @@ MIN_PASSWORD_LENGTH = 6
 BUSINESS_NAME = 'Team 7'
 BUSINESS_DESCRIPTION = ''
 FRIENDLY_MODEL = 'qwen3:4b'
-FRIENDLY_THINK = True
+DEFAULT_ANSWER_MODE = 'fast'
 FRIENDLY_TEMPERATURE = 0.6
 FRIENDLY_NUM_CTX = 8192
 FRIENDLY_HISTORY_MESSAGES = 20
@@ -87,9 +87,10 @@ SETTINGS = [
     dict(key="SUMMARY_TRIGGER", type="float", group="Hội thoại", label="Ngưỡng tóm tắt hội thoại dài", min=0.2, max=0.9,
          help="Khi hội thoại chiếm quá tỉ lệ này của độ dài ngữ cảnh, phần cũ được tóm tắt."),
     dict(key="FRIENDLY_MODEL", type="str", group="AI (Friendly)", label="Model", help="Tên model trong Ollama."),
-    dict(key="FRIENDLY_THINK", type="bool", group="AI (Friendly)", label="AI suy nghĩ trước khi trả lời",
-         help="Phần suy nghĩ được ẩn, chỉ hiện câu trả lời. qwen3:4b hiện tại LUÔN suy nghĩ: tắt mục này chỉ dùng với model "
-              "không suy nghĩ (vd. qwen3:4b-instruct-2507-q4_K_M), nếu không chữ suy nghĩ sẽ lẫn vào câu trả lời."),
+    dict(key="DEFAULT_ANSWER_MODE", type="choice", choices=["fast", "think"], group="AI (Friendly)",
+         label="Chế độ trả lời mặc định",
+         help="fast = trả lời nhanh (~1-3 giây, không suy nghĩ). think = suy nghĩ kỹ (~30 giây). Người dùng vẫn bật/tắt "
+              "\"Suy nghĩ kỹ\" cạnh ô nhập và bấm \"Trả lời nhanh\" để ngắt khi đang suy nghĩ."),
     dict(key="FRIENDLY_TEMPERATURE", type="float", group="AI (Friendly)", label="Độ sáng tạo (temperature)",
          min=0.0, max=1.5, help="Thấp = ổn định, cao = đa dạng hơn."),
     dict(key="FRIENDLY_NUM_CTX", type="int", group="AI (Friendly)", label="Độ dài ngữ cảnh (token)", min=2048, max=32768),

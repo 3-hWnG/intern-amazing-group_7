@@ -49,6 +49,6 @@ python ..\system4\tests\test_nv2.py
 ```
 
 ## Lưu ý
-- `qwen3:4b` đang cài là bản **luôn suy nghĩ** (Qwen3-2507 thinking). Cài đặt "AI suy nghĩ trước khi trả lời" phải BẬT với model này (phần suy nghĩ được ẩn). Câu trả lời đầu tiên mất ~11–17 s. Model không suy nghĩ (`qwen3:4b-instruct-2507-q4_K_M`) nhanh hơn nhiều nhưng cần tải thêm ~2,5 GB.
+- `qwen3:4b` (bản luôn suy nghĩ) là model duy nhất được dùng. **Chế độ Nhanh** (mặc định) ép đầu ra JSON nên model không suy nghĩ: chữ đầu ~1 s, cả câu ~2,5 s, nhưng có thể bịa chi tiết. **Suy nghĩ kỹ** (công tắc cạnh ô nhập, hoặc nút "Kỹ hơn"): ~25–40 s, bấm "Trả lời nhanh" để ngắt. Số đo: docs/SYSTEM4_NV2_AI_TRO_CHUYEN.md phần D.
 - Panel AI (nút "AI bật/tắt") ở chế độ Strict là của System 3: đổi được khi server chạy `S3_DEV=1` **và** tài khoản là dev.
 - Chỉ chạy **1 tiến trình server** (hàng đợi và cấu hình nằm trong bộ nhớ). Xem docs/SYSTEM4_DEPLOY.md.

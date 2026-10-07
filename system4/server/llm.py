@@ -64,44 +64,55 @@ def chat_json(messages: list[dict], schema: dict, timeout: float = 60) -> dict:
         return {}
 
 
-async def stream_chat(messages: list[dict]):
-    """Sinh từng mẩu chữ (và THINKING một lần khi model bắt đầu suy nghĩ).
-    Lỗi Ollama -> LLMError. Ngắt giữa chừng (người dùng rời trang) -> dừng gọi model."""
-    loop = asyncio.get_running_loop()
-    q: asyncio.Queue = asyncio.Queue()
-    stop = threading.Event()
-    model, think = settings.get("FRIENDLY_MODEL"), settings.get("FRIENDLY_THINK")
-    opts = {"temperature": settings.get("FRIENDLY_TEMPERATURE"), "num_ctx": settings.get("FRIENDLY_NUM_CTX")}
-    client = ollama.Client(host=config.OLLAMA_HOST, timeout=settings.get("FRIENDLY_TIMEOUT"))
+def _stream(call: dict, model: str):
+    """Chạy client.chat(stream=True) ở luồng riêng, trả async generator các mẩu: chữ (str) hoặc THINKING.
+    Lỗi Ollama -> LLMError. Ngắt giữa chừng (người dùng rời trang / bấm Trả lời nhanh) -> dừng gọi model."""
+    async def gen():
+        loop = asyncio.get_running_loop()
+        q: asyncio.Queue = asyncio.Queue()
+        stop = threading.Event()
+        client = ollama.Client(host=config.OLLAMA_HOST, timeout=settings.get("FRIENDLY_TIMEOUT"))
 
-    def work():
+        def work():
+            try:
+                for part in client.chat(model=model, stream=True, keep_alive="30m", **call):
+                    if stop.is_set():
+                        break
+                    if part["message"].get("thinking"):
+                        loop.call_soon_threadsafe(q.put_nowait, ("thinking", None))
+                    text = part["message"]["content"]
+                    if text:
+                        loop.call_soon_threadsafe(q.put_nowait, ("delta", text))
+                loop.call_soon_threadsafe(q.put_nowait, ("end", None))
+            except Exception as exc:   # Ollama tắt, model chưa tải, quá thời gian...
+                loop.call_soon_threadsafe(q.put_nowait, ("error", f"Không gọi được model {model}: {exc}"))
+
+        threading.Thread(target=work, daemon=True).start()
         try:
-            signalled = False
-            for part in client.chat(model=model, messages=messages, stream=True, think=think,
-                                    options=opts, keep_alive="30m"):
-                if stop.is_set():
-                    break
-                if part["message"].get("thinking") and not signalled:
-                    signalled = True
-                    loop.call_soon_threadsafe(q.put_nowait, ("thinking", None))
-                text = part["message"]["content"]
-                if text:
-                    loop.call_soon_threadsafe(q.put_nowait, ("delta", text))
-            loop.call_soon_threadsafe(q.put_nowait, ("end", None))
-        except Exception as exc:   # Ollama tắt, model chưa tải, quá thời gian...
-            loop.call_soon_threadsafe(q.put_nowait, ("error", f"Không gọi được model {model}: {exc}"))
+            while True:
+                kind, val = await q.get()
+                if kind == "delta":
+                    yield val
+                elif kind == "thinking":
+                    yield THINKING   # mỗi mẩu suy nghĩ một lần: để bên gọi kiểm "Trả lời nhanh" kịp thời
+                elif kind == "end":
+                    return
+                else:
+                    raise LLMError(val)
+        finally:
+            stop.set()
+    return gen()
 
-    threading.Thread(target=work, daemon=True).start()
-    try:
-        while True:
-            kind, val = await q.get()
-            if kind == "delta":
-                yield val
-            elif kind == "thinking":
-                yield THINKING
-            elif kind == "end":
-                return
-            else:
-                raise LLMError(val)
-    finally:
-        stop.set()
+
+def _opts() -> dict:
+    return {"temperature": settings.get("FRIENDLY_TEMPERATURE"), "num_ctx": settings.get("FRIENDLY_NUM_CTX")}
+
+
+def stream_chat(messages: list[dict]):
+    """Chế độ Suy nghĩ kỹ: model suy nghĩ (ẩn) rồi trả lời. Sinh chữ và THINKING."""
+    return _stream({"messages": messages, "think": True, "options": _opts()}, settings.get("FRIENDLY_MODEL"))
+
+
+def stream_json(messages: list[dict], schema: dict):
+    """Chế độ Nhanh: ép đầu ra theo JSON schema -> model không suy nghĩ, trả lời trong ~1-3 giây. Sinh các mẩu JSON thô."""
+    return _stream({"messages": messages, "format": schema, "think": False, "options": _opts()}, settings.get("FRIENDLY_MODEL"))
