@@ -122,3 +122,5 @@ Làm cho tôi 1 web AI đảm bảo các tiêu chí sau:
 | Câu | Trả lời |
 |---|---|
 | 1. Model cho Friendly (model luôn suy nghĩ, chậm ~11–17 s) | 1C |
+
+**Sửa sau báo lỗi của người dùng (2026-10-07):** đăng ký bằng email (`lthrune123@gmail.com`) bị từ chối vì luật tên đăng nhập chỉ cho chữ, số và `. _ -`. Đã sửa: cho phép **email** (`@`, `+`, kiểm dạng `ten@miền.đuôi`), dài 3–64 ký tự; nhãn "Tên đăng nhập hoặc email"; đăng nhập email không phân biệt hoa thường. Kiểm: test NV1/NV4 + trình duyệt (tài khoản đầu bằng email = dev, email sai dạng, mật khẩu không khớp, email trùng, tài khoản thứ hai = user, đăng nhập lại bằng email).

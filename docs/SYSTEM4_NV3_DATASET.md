@@ -96,3 +96,9 @@ Làm cho tôi 1 web AI đảm bảo các tiêu chí sau:
 4. **Lần đo đầu chậm hơn ngân sách** (cả câu 6,4 s): tìm kiếm tốn 1–1,4 s (reranker chấm 30 đoạn dài) và gửi 5 đoạn × 1.200 ký tự. Đã đổi mặc định: 4 đoạn × 700 ký tự, 15 ứng viên → chữ đầu 2,3 s, cả câu 4,5 s, độ chính xác giữ 17/17 (đổi lại trong ⚙ được).
 5. **Vi phạm "không dùng kiến thức chung":** ở một lần đo, tìm không thấy gì mà AI vẫn tự trả lời "Ai là tác giả truyện Kiều?" — và **sai** ("Nguyễn Đình Chiểu"). Đã thêm chốt bằng code: Chuyên gia + không tìm thấy đoạn liên quan + AI viết câu trả lời có nội dung mà không nói "không có trong dữ liệu" → thay bằng câu cố định (sửa được trong ⚙, "Câu trả lời khi dữ liệu không có thông tin"). Câu xã giao ngắn ("dạ, không có gì ạ") không bị thay. Lần đo lại: đúng.
 6. Giới hạn chưa làm: PDF ảnh quét (không có chữ) báo lỗi rõ ràng, chưa OCR; Excel cũ .xls chưa hỗ trợ (báo lưu thành .xlsx); hình ảnh trong tệp bị bỏ qua (theo 9C).
+
+**Trade-off sau NV3** (nguyên văn, 2026-10-07):
+
+| Câu | Trả lời |
+|---|---|
+| 1. Câu hỏi dài vượt 5 s | 1A, it's okay also can you check create new account? |

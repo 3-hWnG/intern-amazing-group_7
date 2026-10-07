@@ -26,7 +26,7 @@
   $("auth-form").addEventListener("submit", async (e) => {
     e.preventDefault();
     const body = { username: $("username").value.trim(), password: $("password").value };
-    if (!body.username || !body.password) { showError("Nhập tên đăng nhập và mật khẩu"); return; }
+    if (!body.username || !body.password) { showError("Nhập tên đăng nhập (hoặc email) và mật khẩu"); return; }
     if (tab === "signup") body.password2 = $("password2").value;
     $("auth-submit").disabled = true;
     try {

@@ -71,6 +71,14 @@ with TestClient(main.app) as c:
     assert r.status_code == 200 and r.json()["user"]["role"] == "dev", r.text
     alice = r.cookies.get(COOKIE)
     assert alice
+    # đăng ký bằng email (người dùng hay dùng): được; email sai dạng: báo rõ
+    as_user(None)
+    r = c.post("/s4/auth/signup", json={"username": "lthrune123@gmail.com", "password": "matkhau123", "password2": "matkhau123"})
+    assert r.status_code == 200 and r.json()["user"]["role"] == "user", r.text
+    assert c.post("/s4/auth/login", json={"username": "LTHRUNE123@gmail.com", "password": "matkhau123"}).status_code == 200, "đăng nhập email không phân biệt hoa thường"
+    r = c.post("/s4/auth/signup", json={"username": "abc@gmail", "password": "matkhau123"})
+    assert r.status_code == 422 and "Email" in r.json()["detail"], r.text
+    as_user(alice)
     r = c.post("/s4/auth/signup", json={"username": "ALICE", "password": "123456"})
     assert r.status_code == 422, "trùng tên (không phân biệt hoa thường)"
     as_user(None)

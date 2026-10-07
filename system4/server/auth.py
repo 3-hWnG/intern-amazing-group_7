@@ -9,7 +9,8 @@ import bcrypt
 from . import config, db, settings
 
 COOKIE = "s4_session"
-_USERNAME = re.compile(r"^[A-Za-z0-9._-]{3,32}$")
+_USERNAME = re.compile(r"^[A-Za-z0-9._@+-]{3,64}$")   # tên đăng nhập hoặc email
+_EMAIL = re.compile(r"^[^@]+@[^@]+\.[^@]+$")
 
 
 def _hash_token(token: str) -> str:
@@ -23,7 +24,9 @@ def signup_open() -> bool:
 def check_new_account(username: str, password: str) -> str | None:
     """Trả câu báo lỗi (tiếng Việt) hoặc None nếu hợp lệ."""
     if not _USERNAME.match(username or ""):
-        return "Tên đăng nhập 3–32 ký tự, chỉ gồm chữ không dấu, số và . _ -"
+        return "Tên đăng nhập hoặc email: 3–64 ký tự, chỉ gồm chữ không dấu, số và . _ - @ +"
+    if "@" in username and not _EMAIL.match(username):
+        return "Email chưa đúng dạng (ví dụ: ten@gmail.com)"
     n = settings.get("MIN_PASSWORD_LENGTH")
     if len(password or "") < n:
         return f"Mật khẩu cần ít nhất {n} ký tự"
