@@ -258,5 +258,12 @@ async def chat(body: ChatIn):
     return out
 
 
+# System 4 (Friendly mode + đăng nhập, hệ thống song song; xem system4/README.md). Launch web.bat bật S4_ENABLED=1;
+# không đặt hoặc S4_ENABLED=0 -> web System 3 y như trước (các test của System 3 chạy ở chế độ này).
+if os.environ.get("S4_ENABLED", "0") == "1":
+    from system3.system4.server.hook import install as _s4_install
+    _s4_install(app, store)
+
+
 if __name__ == "__main__":
     uvicorn.run(app, host=HOST, port=PORT)

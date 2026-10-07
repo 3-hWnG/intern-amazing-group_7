@@ -4,6 +4,10 @@ Project RIÊNG, dùng lại dữ liệu của repo V10.6 (snapshot trong `data/s
 Tài liệu: [docs/SETUP.md](docs/SETUP.md) (cài đặt) · [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) · [docs/EVAL.md](docs/EVAL.md) (cách đo, quy tắc bộ mù) · [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) · [docs/BAO_CAO_DOT4.md](docs/BAO_CAO_DOT4.md) (báo cáo ngắn cho nhóm) · kế hoạch: [PLAN_SYSTEM3](docs/PLAN_SYSTEM3.md), [DOT3](docs/PLAN_SYSTEM3_DOT3.md), [DOT4](docs/PLAN_SYSTEM3_DOT4.md).
 Chạy: `PYTHONPATH=<gốc repo> python server/main.py` (cổng 8300; cần Ollama + `qwen3:4b` chỉ khi bật bước sinh chữ).
 
+## System 4 (Friendly mode, song song trên cùng web) — nhánh `System_3&4`
+`Launch web.bat` giờ bật thêm **đăng nhập/đăng ký** và công tắc **Strict | Friendly** (Strict = System 3 bên dưới, không đổi). `S4_ENABLED=0` → web System 3 như cũ.
+Xem [system4/README.md](system4/README.md), nhiệm vụ [docs/SYSTEM4_NV1_NEN_TANG.md](docs/SYSTEM4_NV1_NEN_TANG.md) … NV4, deploy [docs/SYSTEM4_DEPLOY.md](docs/SYSTEM4_DEPLOY.md).
+
 ## Kiến trúc đang chạy
 User → Orchestrator → **Planner (luật; Qwen3-4B hybrid là tuỳ chọn, TẮT mặc định)** → Policy/Router (luật) → Answerer (code, nguyên văn + nguồn) → [LLM chỉ sinh chữ giải thích điều kiện/so sánh, mọi ý qua verifier, lỗi/timeout 5 s thì giữ bản bằng code] → câu trả lời. Map với kiến trúc G7 của nhóm: xem [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Box 1–4, 5A, 6A, 10 đã có; 3 (LLM Planner) làm hybrid nhưng không bật; 5B/6B (RAG, import) mới chỉ có thiết kế giao diện trong `knowledge/`.
 

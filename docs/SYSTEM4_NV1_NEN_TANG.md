@@ -83,6 +83,35 @@ Làm cho tôi 1 web AI đảm bảo các tiêu chí sau:
 
 **Tải về dự kiến (Nhắc nhở 1)**: Qwen3-4B đã có trong Ollama trên máy. Còn cần: model tìm kiếm BGE-M3 (~1,2–2,3 GB), model xếp hạng lại bge-reranker-v2-m3 (~1,1–2,3 GB), và vài thư viện Python (đọc Excel/PDF/DOCX, kho vector, mã hoá mật khẩu). Danh sách chính xác + phiên bản sẽ được ghi vào `requirements.txt` và `Set up first time.bat` ở bước kế hoạch, **trước khi xây**.
 
-**Câu hỏi mở cho bước kế hoạch**
+**Câu hỏi mở cho bước kế hoạch** (đã trả lời: 1B, 2A)
 - Đăng nhập có áp dụng cho cả Strict mode (System 3, hiện chưa có đăng nhập) hay chỉ Friendly mode?
 - System 4 chạy chung một tiến trình server với System 3 hay tách riêng? (Hành vi người dùng thấy là như nhau.)
+
+---
+
+## Phần C — Báo cáo thực hiện NV1 (2026-10-07)
+
+**Đã làm** (chi tiết: [system4/README.md](../system4/README.md))
+
+| # | Việc | Kết quả |
+|---|---|---|
+| 1 | Git | Repo nối với GitHub; nhánh `System_3&4` tạo từ `system3` (chưa đẩy commit nào). Commit mốc + commit NV1 **chỉ ở máy**. |
+| 2 | Thư mục `system4/` | server / web / tests + `config.py` riêng |
+| 3 | Đăng nhập + đăng ký (1B) | Cả web phải đăng nhập; tài khoản đầu tiên = dev |
+| 4 | Trang chung | Bản sao giao diện System 3 + công tắc Strict/Friendly + danh sách chung có nhãn (3B) |
+| 5 | Cắm vào System 3 | 5 dòng cuối `server/main.py`; `S4_ENABLED=0` → web như cũ |
+| 6 | Hội thoại Strict theo người | Mỗi người chỉ thấy của mình; hội thoại cũ thuộc dev đầu tiên |
+| 7 | Friendly tạm | Qwen trả lời tiếng Việt, chữ hiện dần, nút Dừng, nhớ ngữ cảnh trong hội thoại |
+| 8 | Cài đặt (4A&B) | Lưu / Đặt làm mặc định (ghi `config.py` + `.bak`) / Về mặc định; tải lại trang để áp dụng; chỉ dev |
+| 9 | Script cài đặt | `Set up first time.bat` 8 bước (thêm bge-m3, reranker, kiểm GPU); `requirements.txt` ghi rõ phiên bản; `Launch web.bat` bật System 4 |
+| 10 | Deploy (7C) | [docs/SYSTEM4_DEPLOY.md](SYSTEM4_DEPLOY.md) |
+| 11 | Kiểm tra | Test System 3 (7 bộ + selftest eval) cho kết quả y như trước khi sửa; `system4/tests/test_nv1.py` qua; chạy thật với Qwen + trình duyệt Edge (đăng nhập, Strict, Friendly, cài đặt, điện thoại): không lỗi |
+
+**Việc ngoài ý muốn và cách đã xử lý**
+1. **`qwen3:4b` trên máy là bản luôn "suy nghĩ"** (Qwen3-2507 thinking): yêu cầu tắt suy nghĩ không có tác dụng, chữ suy nghĩ (tiếng Anh) lẫn vào câu trả lời. Đã xử lý: bật suy nghĩ và **ẩn** phần đó (web hiện "AI đang suy nghĩ…"); thêm cài đặt "AI suy nghĩ trước khi trả lời". Hệ quả: câu trả lời Friendly đầu tiên mất **~11–17 giây** (kế hoạch ước 1–2 s). → Hỏi lại bằng trắc nghiệm trong báo cáo.
+2. **Xung đột phiên bản**: `sentence-transformers 6.1.0` đòi `huggingface-hub < 2.0`. Đã bỏ gói này; reranker sẽ chạy bằng `transformers` trực tiếp (ít gói hơn).
+3. **Test của System 3 gọi API không đăng nhập** nên sẽ hỏng nếu System 4 bật mặc định. Đã để mặc định **tắt** trong code và `Launch web.bat` bật lên, nên không phải sửa test nào của System 3.
+4. `setup_models.py` in chữ có dấu trước khi bat đặt UTF-8 → lỗi. Đã đổi thông báo sang tiếng Anh + ép UTF-8.
+5. Chỉ cài sẵn 2 gói nhỏ (`python-multipart`, `bcrypt`) để chạy test. **torch (~2,5 GB), bge-m3, reranker chưa tải**: chạy `Set up first time.bat` để tải (cần cho NV3, không cần cho NV1).
+6. 3 tệp nháp `eval/_q.py`, `_try_planner.py`, `_verify_exp.py` không có trên nhánh `system3` → để ngoài Git.
+7. Panel "AI bật/tắt" của Strict (System 3) vẫn chỉ đổi được khi server chạy `S3_DEV=1`, nay thêm điều kiện tài khoản dev.

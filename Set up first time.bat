@@ -1,12 +1,14 @@
 @echo off
 setlocal
-rem One-time setup for System 3: Python env, packages, "system3" package link, LLM model, database.
+rem One-time setup for System 3 + System 4: Python env, packages, "system3" package link, AI models, database.
+rem Needs internet ONLY here. After setup everything runs offline.
+rem Total download the first time: about 9 GB (packages ~3 GB incl. GPU torch, models ~6 GB).
 set "REPO=%~dp0"
 set "REPO=%REPO:~0,-1%"
 for %%I in ("%REPO%\..") do set "PYROOT=%%~fI\pyroot"
 cd /d "%REPO%"
 
-echo [1/5] Creating Python environment (.venv)...
+echo [1/8] Creating Python environment (.venv)...
 if not exist ".venv\Scripts\python.exe" (
     py -3.12 -m venv .venv 2>nul || python -m venv .venv
 )
@@ -15,11 +17,11 @@ if not exist ".venv\Scripts\python.exe" (
     goto :fail
 )
 
-echo [2/5] Installing packages...
+echo [2/8] Installing packages from requirements.txt (System 4 adds GPU torch, about 2.5 GB, first time only)...
 ".venv\Scripts\python.exe" -m pip install -q --upgrade pip
-".venv\Scripts\python.exe" -m pip install -q -r requirements.txt || goto :fail
+".venv\Scripts\python.exe" -m pip install -r requirements.txt || goto :fail
 
-echo [3/5] Linking package "system3" -^> this folder...
+echo [3/8] Linking package "system3" -^> this folder...
 rem The code imports itself as "system3.*", so PYTHONPATH needs a folder named system3.
 if not exist "%PYROOT%\system3\server\main.py" (
     if exist "%PYROOT%\system3" rmdir "%PYROOT%\system3"
@@ -28,7 +30,7 @@ if not exist "%PYROOT%\system3\server\main.py" (
 )
 
 if not defined LLM_MODEL set "LLM_MODEL=qwen3:4b"
-echo [4/5] Downloading LLM model %LLM_MODEL% (about 2.5 GB, first time only)...
+echo [4/8] Downloading LLM model %LLM_MODEL% (about 2.5 GB, first time only)...
 where ollama >nul 2>nul || (
     echo ERROR: Ollama is not installed. Install it from https://ollama.com and try again.
     goto :fail
@@ -39,12 +41,21 @@ ollama list >nul 2>nul || (
 )
 ollama pull %LLM_MODEL% || goto :fail
 
-echo [5/5] Building database (about 1 minute)...
+echo [5/8] System 4: downloading search model bge-m3 (about 1.2 GB, first time only)...
+ollama pull bge-m3 || goto :fail
+
+echo [6/8] System 4: downloading reranker BAAI/bge-reranker-v2-m3 (about 2.3 GB, first time only)...
+"%REPO%\.venv\Scripts\python.exe" "%REPO%\system4\setup_models.py" reranker || goto :fail
+
+echo [7/8] Building database (about 1 minute)...
 set "PYTHONPATH=%PYROOT%"
 set "PYTHONIOENCODING=utf-8"
 cd /d "%PYROOT%"
 "%REPO%\.venv\Scripts\python.exe" -m system3.data.build || goto :fail
 "%REPO%\.venv\Scripts\python.exe" -m system3.data.tests.test_data || goto :fail
+
+echo [8/8] System 4: checking that the GPU is usable for the reranker...
+"%REPO%\.venv\Scripts\python.exe" "%REPO%\system4\setup_models.py" check-gpu
 
 echo.
 echo Setup complete. Run "Launch web.bat" to start the website.

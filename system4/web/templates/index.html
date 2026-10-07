@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instant Specialist</title>
+<link rel="icon" href="data:,">
+<!-- Giao diện = bản sao trang System 3 (web/templates/index.html) + công tắc Strict/Friendly, đăng nhập, cài đặt -->
+<link rel="stylesheet" href="/static/css/styles.css?v=20261006g">
+<link rel="stylesheet" href="/s4/static/css/s4.css?v=nv1">
+<style>
+.block-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px}
+.block-card h4{margin:0 0 6px;font-size:14px;color:var(--accent)}
+.block-card .txt{white-space:pre-wrap;overflow-wrap:anywhere}
+.dev-json{font:12px/1.4 Consolas,monospace;background:var(--panel-2);border:1px solid var(--line);
+  border-radius:8px;padding:8px;white-space:pre-wrap;max-height:260px;overflow:auto}
+</style>
+</head>
+<body class="light" data-mode="strict">
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <button id="new-chat" class="primary block">+ Cuộc trò chuyện mới</button>
+    <nav id="conv-list" class="conv-list"></nav>
+    <button id="clear-all" class="clear-all" type="button" hidden>Xoá tất cả hộp thoại</button>
+    <div class="sidebar-foot">
+      <div class="user-row">
+        <span id="user-name"></span>
+        <button id="logout" class="link" type="button">Đăng xuất</button>
+      </div>
+    </div>
+  </aside>
+  <main class="chat">
+    <header class="chat-head">
+      <button id="toggle-sidebar" class="icon" type="button" aria-label="Ẩn/hiện thanh bên">☰</button>
+      <h1 id="conv-title">Instant Specialist</h1>
+      <div class="mode-switch" role="group" aria-label="Chế độ">
+        <button type="button" data-mode="strict" aria-pressed="true" title="Strict: trả lời thủ tục hành chính, nghiêm ngặt, có nguồn (System 3)">Strict</button>
+        <button type="button" data-mode="friendly" aria-pressed="false" title="Friendly: trò chuyện với AI (System 4)">Friendly</button>
+      </div>
+      <span id="model-name" class="model-name"></span>
+      <button id="ai-badge" class="ai-badge" type="button" title="Cấu hình AI (Strict)">AI: …</button>
+      <button id="reset-topic" type="button" title="Quên các thông tin đã kể, hỏi việc khác">Bắt đầu chủ đề mới</button>
+      <button id="open-settings" class="icon" type="button" title="Cài đặt (dev)" aria-label="Cài đặt" hidden>⚙</button>
+      <div id="cfg-panel" class="cfg-panel" hidden></div>
+    </header>
+    <div id="messages" class="messages"></div>
+    <form id="composer" class="composer">
+      <div class="composer-row">
+        <textarea id="input" rows="2" placeholder="Nhập câu hỏi…" autocomplete="off"></textarea>
+        <button id="send" class="primary" type="submit">Gửi</button>
+      </div>
+    </form>
+  </main>
+</div>
+
+<div id="settings" class="s4-modal" hidden>
+  <div class="s4-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <header>
+      <h2 id="settings-title">Cài đặt</h2>
+      <button id="settings-close" class="icon" type="button" aria-label="Đóng">✕</button>
+    </header>
+    <div class="body" id="settings-body"></div>
+    <div class="set-note" id="settings-note" hidden></div>
+    <footer>
+      <button id="settings-reset" class="btn-ghost" type="button" title="Bỏ mọi giá trị đã Lưu, quay về mặc định trong config.py">Về mặc định</button>
+      <button id="settings-default" class="btn-ghost" type="button" title="Ghi các giá trị đang hiện vào config.py làm mặc định mới">Đặt làm mặc định</button>
+      <button id="settings-save" class="primary" type="button">Lưu</button>
+    </footer>
+  </div>
+</div>
+<script src="/s4/static/js/app.js?v=nv1"></script>
+</body>
+</html>
