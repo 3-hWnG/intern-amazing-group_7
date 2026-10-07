@@ -304,3 +304,82 @@ def get_memory_mode(user_id: int) -> str:
 def set_memory_mode(user_id: int, mode: str) -> None:
     run("INSERT INTO user_prefs(user_id,memory_mode) VALUES (?,?) "
         "ON CONFLICT(user_id) DO UPDATE SET memory_mode=excluded.memory_mode", (user_id, mode))
+
+
+# ------------------------------------------------------- dữ liệu người dùng (NV3)
+def create_dataset(user_id: int, name: str, filename: str, size: int) -> int:
+    return run("INSERT INTO datasets(user_id,name,filename,size_bytes) VALUES (?,?,?,?)", (user_id, name, filename, size))
+
+
+def get_dataset(ds_id: int) -> dict | None:
+    return run("SELECT * FROM datasets WHERE id=?", (ds_id,), one=True)
+
+
+def list_datasets(user_id: int | None = None) -> list[dict]:
+    sql = ("SELECT d.*, u.username FROM datasets d JOIN users u ON u.id = d.user_id"
+           + (" WHERE d.user_id=?" if user_id is not None else "") + " ORDER BY d.id DESC")
+    return run(sql, (user_id,) if user_id is not None else (), many=True)
+
+
+def update_dataset(ds_id: int, **cols) -> None:
+    keys = list(cols)
+    run(f"UPDATE datasets SET {', '.join(k + '=?' for k in keys)} WHERE id=?", (*[cols[k] for k in keys], ds_id))
+
+
+def active_datasets(user_id: int) -> list[dict]:
+    return run("SELECT id, name, n_records FROM datasets WHERE user_id=? AND active=1 AND status='ready'", (user_id,), many=True)
+
+
+def used_bytes(user_id: int) -> int:
+    return run("SELECT COALESCE(SUM(size_bytes),0) n FROM datasets WHERE user_id=?", (user_id,), one=True)["n"]
+
+
+def insert_records(ds_id: int, recs: list[dict]) -> list[int]:
+    """Ghi bản ghi + chỉ mục từ khoá trong một giao dịch. Trả id theo đúng thứ tự."""
+    c = conn()
+    try:
+        ids = []
+        for r in recs:
+            cur = c.execute("INSERT INTO records(dataset_id,title,fields,text,source) VALUES (?,?,?,?,?)",
+                            (ds_id, r["title"], json.dumps(r["fields"], ensure_ascii=False), r["text"], r["source"]))
+            ids.append(cur.lastrowid)
+            c.execute("INSERT INTO records_fts(rowid,title,text) VALUES (?,?,?)", (cur.lastrowid, r["title"], r["text"]))
+        c.commit()
+        return ids
+    finally:
+        c.close()
+
+
+def delete_records(ds_id: int) -> None:
+    c = conn()
+    try:
+        c.execute("DELETE FROM records_fts WHERE rowid IN (SELECT id FROM records WHERE dataset_id=?)", (ds_id,))
+        c.execute("DELETE FROM records WHERE dataset_id=?", (ds_id,))
+        c.commit()
+    finally:
+        c.close()
+
+
+def _rec(r: dict) -> dict:
+    r = dict(r)
+    try:
+        r["fields"] = json.loads(r.get("fields") or "{}")
+    except ValueError:
+        r["fields"] = {}
+    return r
+
+
+def get_records(ids: list[int]) -> list[dict]:
+    if not ids:
+        return []
+    marks = ",".join("?" * len(ids))
+    return [_rec(r) for r in run(f"SELECT * FROM records WHERE id IN ({marks})", tuple(ids), many=True)]
+
+
+def browse_records(ds_id: int, q: str = "", offset: int = 0, limit: int = 50) -> tuple[list[dict], int]:
+    like = f"%{q}%"
+    where = "dataset_id=?" + (" AND (title LIKE ? OR text LIKE ?)" if q else "")
+    args = (ds_id, like, like) if q else (ds_id,)
+    total = run(f"SELECT COUNT(*) n FROM records WHERE {where}", args, one=True)["n"]
+    rows = run(f"SELECT * FROM records WHERE {where} ORDER BY id LIMIT ? OFFSET ?", (*args, limit, offset), many=True)
+    return [_rec(r) for r in rows], total

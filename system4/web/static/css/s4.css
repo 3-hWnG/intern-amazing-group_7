@@ -76,7 +76,8 @@ body[data-mode="friendly"] #ai-badge,body[data-mode="friendly"] #reset-topic{dis
 .edit-row{display:flex;justify-content:flex-end;gap:8px}
 .mem-note{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--good)}
 .dev-note{font-size:11.5px;color:var(--ink-3)}
-.user-links{display:flex;gap:10px}
+.user-links{display:flex;flex:none;gap:8px;white-space:nowrap}
+.user-row #user-name{min-width:0}
 
 /* chế độ trả lời: Suy nghĩ kỹ / Trả lời nhanh / Kỹ hơn */
 .think-chip{flex:none;align-self:flex-end;padding:8px 12px;border-radius:999px;font-size:13px;color:var(--ink-2);
@@ -88,6 +89,47 @@ body[data-mode="strict"] #think-toggle{display:none}
   background:var(--panel);border:1px solid var(--accent)}
 .fast-btn:disabled{opacity:.5}
 .icon-btn.deeper{font-size:12px;padding:5px 8px}
+
+/* NV3: dữ liệu người dùng, chế độ Chuyên gia */
+body[data-mode="strict"] #attach,body[data-mode="strict"] #spec-badge{display:none}
+#attach{height:42px;min-width:42px;align-self:flex-end}
+.spec-badge{flex:none;padding:4px 10px;border-radius:999px;font-size:12.5px;color:var(--ink-2);background:var(--panel-2);border:1px solid var(--line)}
+.spec-badge.on{color:#fff;background:var(--accent);border-color:transparent}
+.file-pill.ok{border-color:var(--good)}
+.file-pill .meta{color:var(--ink-3);font-size:12px}
+.quota{margin:6px 0 10px}
+.quota .bar{height:8px;border-radius:6px;background:var(--panel-2);border:1px solid var(--line);overflow:hidden}
+.quota .bar i{display:block;height:100%;background:var(--accent)}
+.quota .bar i.full{background:var(--danger)}
+.quota small{display:block;margin-top:4px;font-size:12px;color:var(--ink-3)}
+.data-warn{margin-bottom:10px;padding:8px 10px;font-size:13px;border-radius:8px;background:color-mix(in srgb,var(--warn) 16%,transparent)}
+.data-warn[hidden]{display:none}
+.data-list{list-style:none;margin:0;padding:0}
+.data-list>li{display:flex;gap:10px;align-items:flex-start;padding:10px 2px;border-bottom:1px solid var(--line)}
+.data-list .ds-main{flex:1;min-width:0}
+.data-list .ds-name{font-weight:600;font-size:14px;overflow-wrap:anywhere}
+.data-list .ds-msg{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.data-list .ds-msg.err{color:var(--danger)}
+.data-list .ds-meta{font-size:12px;color:var(--ink-3);margin-top:2px}
+.data-list .ds-actions{display:flex;gap:2px;flex-wrap:wrap;margin-top:4px}
+.ds-progress{height:5px;border-radius:4px;background:var(--panel-2);overflow:hidden;margin-top:5px}
+.ds-progress i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.mem-empty{color:var(--ink-3);text-align:center;padding:16px 0}
+.s4-dialog.wide{width:min(900px,100%)}
+.records-q{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink);margin:10px 0 4px}
+.records-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.rec-card{padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.rec-card b{display:block;font-size:14px}
+.rec-card .rec-fields{font-size:12.5px;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:anywhere;margin-top:3px;max-height:7.5em;overflow:hidden}
+.rec-card small{color:var(--ink-3);font-size:11.5px}
+.src-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;color:var(--ink-3)}
+.src-chip{max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:3px 9px;border-radius:999px;
+  font-size:12.5px;color:var(--accent);background:var(--panel);border:1px solid var(--line)}
+.src-chip:hover{border-color:var(--accent)}
+.src-table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+.src-table th,.src-table td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.src-table th{width:32%;background:var(--panel-2);font-weight:600}
+.src-text{white-space:pre-wrap;font-size:14px;margin-top:8px;overflow-wrap:anywhere}
 
 /* bộ nhớ */
 .mem-help{margin:12px 0 8px;font-size:13.5px;color:var(--ink-2)}

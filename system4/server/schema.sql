@@ -62,3 +62,32 @@ CREATE TABLE IF NOT EXISTS user_prefs (
   user_id     INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
   memory_mode TEXT NOT NULL DEFAULT ''             -- auto | explicit | '' = theo cài đặt chung
 );
+-- Bộ dữ liệu người dùng tải lên (NV3)
+CREATE TABLE IF NOT EXISTS datasets (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  name        TEXT NOT NULL,
+  filename    TEXT NOT NULL,
+  size_bytes  INTEGER NOT NULL DEFAULT 0,
+  kind        TEXT NOT NULL DEFAULT '',            -- table (khớp cấu trúc) | rows (không khớp, lưu dạng dòng chữ) | text (văn bản chia đoạn)
+  status      TEXT NOT NULL DEFAULT 'queued',      -- queued | processing | ready | error
+  progress    INTEGER NOT NULL DEFAULT 0,
+  message     TEXT NOT NULL DEFAULT '',
+  mapping     TEXT NOT NULL DEFAULT '{}',          -- JSON: cột tiêu đề, cột bỏ qua, số trường...
+  n_records   INTEGER NOT NULL DEFAULT 0,
+  active      INTEGER NOT NULL DEFAULT 1,
+  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_ds_user ON datasets(user_id);
+-- Cấu trúc định sẵn: một bản ghi = tiêu đề + các trường + chữ để tìm + nguồn
+CREATE TABLE IF NOT EXISTS records (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  dataset_id  INTEGER NOT NULL REFERENCES datasets(id) ON DELETE CASCADE,
+  title       TEXT NOT NULL DEFAULT '',
+  fields      TEXT NOT NULL DEFAULT '{}',          -- JSON {tên trường: giá trị}
+  text        TEXT NOT NULL DEFAULT '',
+  source      TEXT NOT NULL DEFAULT ''             -- tệp · trang tính · dòng / trang
+);
+CREATE INDEX IF NOT EXISTS idx_rec_ds ON records(dataset_id);
+-- Tìm theo từ khoá (không phân biệt dấu); rowid = records.id
+CREATE VIRTUAL TABLE IF NOT EXISTS records_fts USING fts5(title, text, tokenize='unicode61 remove_diacritics 2');

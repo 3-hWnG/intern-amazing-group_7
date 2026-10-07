@@ -21,6 +21,19 @@ Thông tin thêm:
 | 7. Người dùng | 7A |
 | 10. Database thủ tục | 10A It's for the database for procedures only (strict mode) not other files (your wording worry me) and not only a scrape button but a full on database UI with scrape, version, preview, delete/edit available for dev while the user can only see their uploaded one. Dev has unlimited upload, limit user to 1GB or delete existing please. |
 
+**Trade-off riêng của NV4** (nguyên văn câu trả lời, 2026-10-07):
+
+| Câu | Trả lời |
+|---|---|
+| 6. "Áp dụng phiên bản" | 6 what do you mean it's shared between system 3 and 4, a tab for the controlled strict mode with strict data standard (system 3) and 1 tab is to admin the user datasets. Maybe A for this question |
+| 7. Sửa / xoá thủ tục | 7A |
+| 8. Cào dữ liệu | 8A |
+| 9. Quản lý người dùng | 9A |
+| Duyệt kế hoạch | Approve, but some small change first: Don't use 📎use +, and to clarify futher Admin page and chat GPT features also apply to system 3 as universal. What i meant when said don't touch system 3 is don't mess with the architecture, these are add-ons features so it's fine. |
+| 1. Tính năng ChatGPT cho Strict | 1A now do it |
+
+**Kết quả kiểm tra (2026-10-07):** dữ liệu `D:\Claude\LLM for Procedures V10.3\Database\staging\procedures.jsonl` **giống hệt** `data/snapshot/procedures.jsonl` (1.350 bản ghi, mọi trường bằng nhau, schema giống nhau) → không chép dữ liệu, chỉ đưa code cào (`pipeline/`) sang thư mục System 4.
+
 ---
 
 ## Phần B — Ý bổ sung của Claude (không phải yêu cầu gốc)

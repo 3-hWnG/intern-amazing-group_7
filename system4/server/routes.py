@@ -1,11 +1,13 @@
 """API của System 4, tất cả nằm dưới /s4. Middleware ở hook.py đã kiểm đăng nhập và gắn request.state.user."""
 from __future__ import annotations
+import asyncio
+import json
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response, StreamingResponse
 from pydantic import BaseModel
 
-from . import auth, chat as chat_turn, config, db, export, memory, settings
+from . import auth, chat as chat_turn, config, datasets, db, export, memory, search, settings
 
 
 class Credentials(BaseModel):
@@ -28,6 +30,11 @@ class SwitchIn(BaseModel):
 
 class FeedbackIn(BaseModel):
     value: int   # 1 | -1 | 0
+
+
+class DatasetPatch(BaseModel):
+    active: bool | None = None
+    name: str | None = None
 
 
 class MemoryModeIn(BaseModel):
@@ -253,6 +260,85 @@ def make_router(s3_store, strict_list) -> APIRouter:
         if not chat_turn.interrupt(turn_id, _user(request)["id"]):
             raise HTTPException(404, "lượt trả lời không còn chạy")
         return {"ok": True}
+
+    # ------------------------------------------------ dữ liệu người dùng (NV3)
+    def own_dataset(request: Request, ds_id: int) -> dict:
+        """Chủ dataset, hoặc dev (2B: dev được mở nội dung)."""
+        u = _user(request)
+        ds = db.get_dataset(ds_id)
+        if not ds or (ds["user_id"] != u["id"] and u["role"] != "dev"):
+            raise HTTPException(404, "không có bộ dữ liệu này")
+        return ds
+
+    def ds_view(d: dict) -> dict:
+        try:
+            mapping = json.loads(d.get("mapping") or "{}")
+        except ValueError:
+            mapping = {}
+        return {k: d[k] for k in ("id", "user_id", "name", "filename", "size_bytes", "kind", "status", "progress", "message",
+                                  "n_records", "created_at")} | {"active": bool(d["active"]), "mapping": mapping,
+                                                                  "username": d.get("username")}
+
+    @r.get("/datasets")
+    def list_datasets(request: Request):
+        u = _user(request)
+        return {"datasets": [ds_view(d) for d in db.list_datasets(u["id"])], "quota": datasets.quota(u),
+                "active": datasets.active_summary(u["id"]), "formats": sorted(datasets.ingest.SUPPORTED)}
+
+    @r.post("/datasets")
+    async def upload_dataset(request: Request):
+        u = _user(request)
+        form = await request.form()
+        f = form.get("file")
+        if f is None or not getattr(f, "filename", None):
+            raise HTTPException(422, "Chưa chọn tệp")
+        try:
+            d = await asyncio.to_thread(datasets.save_upload, u, f.filename, f.file)
+        except ValueError as e:
+            raise HTTPException(422, str(e)) from None
+        finally:
+            await f.close()
+        return {"dataset": ds_view({**d, "username": u["username"]}), "active": datasets.active_summary(u["id"])}
+
+    @r.patch("/datasets/{ds_id}")
+    def patch_dataset(ds_id: int, body: DatasetPatch, request: Request):
+        ds = own_dataset(request, ds_id)
+        if body.name is not None and body.name.strip():
+            db.update_dataset(ds_id, name=body.name.strip()[:120])
+        if body.active is not None:
+            if body.active and not ds["active"]:
+                err = datasets.can_activate(ds["user_id"], ds)
+                if err:
+                    raise HTTPException(422, err)
+            db.update_dataset(ds_id, active=1 if body.active else 0)
+        return {"dataset": ds_view(db.get_dataset(ds_id) | {"username": None}), "active": datasets.active_summary(ds["user_id"])}
+
+    @r.delete("/datasets/{ds_id}")
+    def delete_dataset(ds_id: int, request: Request):
+        ds = own_dataset(request, ds_id)
+        datasets.delete(ds)
+        return {"ok": True, "active": datasets.active_summary(ds["user_id"])}
+
+    @r.post("/datasets/{ds_id}/retry")
+    def retry_dataset(ds_id: int, request: Request):
+        ds = own_dataset(request, ds_id)
+        db.update_dataset(ds_id, status="queued", progress=0, message="Đang chờ xử lý lại…")
+        datasets.enqueue(ds["id"])
+        return {"ok": True}
+
+    @r.get("/datasets/{ds_id}/records")
+    def dataset_records(ds_id: int, request: Request, q: str = "", offset: int = 0, limit: int = 50):
+        own_dataset(request, ds_id)
+        rows, total = db.browse_records(ds_id, q.strip(), max(0, offset), min(max(1, limit), 200))
+        return {"records": rows, "total": total}
+
+    @r.get("/records/{rec_id}")
+    def get_record(rec_id: int, request: Request):
+        recs = db.get_records([rec_id])
+        if not recs:
+            raise HTTPException(404, "không có bản ghi này")
+        ds = own_dataset(request, recs[0]["dataset_id"])
+        return {"record": recs[0], "dataset": {"id": ds["id"], "name": ds["name"], "filename": ds["filename"]}}
 
     # -------------------------------------------------- bộ nhớ của mỗi người
     @r.get("/memory")

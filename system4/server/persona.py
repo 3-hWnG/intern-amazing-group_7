@@ -14,6 +14,10 @@ FAST_SCHEMA = {"type": "object", "properties": {
     "ask_back": {"type": "boolean"},
     "choices": {"type": "array", "items": {"type": "string"}, "maxItems": 4}},
     "required": ["plan", "answer", "ask_back", "choices"]}
+# Chế độ Chuyên gia: thêm "sources" = số thứ tự các đoạn dữ liệu đã dùng
+FAST_SCHEMA_KB = {"type": "object", "properties": {**FAST_SCHEMA["properties"],
+                                                   "sources": {"type": "array", "items": {"type": "integer"}, "maxItems": 8}},
+                  "required": FAST_SCHEMA["required"] + ["sources"]}
 _CHOICES = re.compile(r"\[\[\s*CHOICES\s*\]\]", re.IGNORECASE)
 
 # So khớp CÓ dấu: bỏ dấu sẽ nhầm ("khổ"/"khó", "sợ"/"số"). Gõ không dấu thì nhờ quy tắc chung trong lời dặn.
@@ -29,8 +33,9 @@ def negative(text: str) -> bool:
 
 
 def build(memories: list[str], summary: str, instructions: list[str], *, clarify_exhausted: int = 0,
-          upset: bool = False, foreign: bool = False, fast: bool = False) -> str:
-    """fast=True: chế độ Nhanh (trả lời theo FAST_SCHEMA); False: chế độ Suy nghĩ kỹ (lựa chọn theo mẫu [[CHOICES]])."""
+          upset: bool = False, foreign: bool = False, fast: bool = False, evidence: list[dict] | None = None) -> str:
+    """fast=True: chế độ Nhanh (trả lời theo FAST_SCHEMA); False: chế độ Suy nghĩ kỹ (lựa chọn theo mẫu [[CHOICES]]).
+    evidence=None: AI chung; danh sách (có thể rỗng): Chuyên gia, chỉ được trả lời từ các đoạn dữ liệu này."""
     b = settings.get("BUSINESS_NAME")
     desc = settings.get("BUSINESS_DESCRIPTION")
     parts = [
@@ -59,6 +64,18 @@ def build(memories: list[str], summary: str, instructions: list[str], *, clarify
         parts.append("- Nếu câu hỏi chưa đủ rõ để trả lời, hỏi lại MỘT câu ngắn rồi đưa 2 đến 4 lựa chọn, đặt ở CUỐI câu trả lời đúng theo mẫu:\n"
                      f"{CHOICES_MARK}\n- lựa chọn thứ nhất\n- lựa chọn thứ hai\n"
                      "Nếu đã đủ rõ thì trả lời luôn, không thêm mẫu này. Thông tin đã biết về người dùng thì không hỏi lại.")
+    if evidence is not None:
+        parts += ["", "CHẾ ĐỘ CHUYÊN GIA (người dùng đã bật bộ dữ liệu của họ):",
+                  "- CHỈ trả lời bằng thông tin trong \"Dữ liệu tham khảo\" bên dưới. KHÔNG dùng kiến thức chung, không suy đoán thêm.",
+                  "- Ghi số đoạn [1], [2]… ngay sau ý lấy từ đoạn đó" + ('; liệt kê các số đã dùng trong "sources".' if fast else "."),
+                  "- Nếu dữ liệu không có thông tin cần để trả lời: nói rõ là không có trong dữ liệu, rồi hỏi lại để người dùng nói cụ thể hơn"
+                  + (' ("ask_back" = true, kèm "choices").' if fast else f" (kèm {CHOICES_MARK}).")]
+        if evidence:
+            parts += ["", "Dữ liệu tham khảo:"]
+            for i, e in enumerate(evidence, 1):
+                parts.append(f"[{i}] {e['title']} (nguồn: {e['dataset']})\n{e['text'][:settings.get('EVIDENCE_CHARS')]}")
+        else:
+            parts += ["", "Dữ liệu tham khảo: KHÔNG tìm thấy đoạn nào liên quan đến câu hỏi trong các bộ dữ liệu đang bật."]
     if memories:
         parts += ["", "Những điều đã biết về người dùng (dùng khi liên quan, không hỏi lại):"]
         parts += [f"- {m}" for m in memories]

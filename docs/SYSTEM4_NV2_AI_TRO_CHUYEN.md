@@ -173,3 +173,20 @@ Trình duyệt Edge: công tắc chỉ hiện ở Friendly, chữ đầu 1,6 s, 
 1. Lần đo đầu 21/22: chế độ Nhanh hay mở đầu "Chào bạn!" và tự giới thiệu lại, nên câu đồng cảm bị đẩy xuống câu thứ hai. Đã thêm một dòng lời dặn "vào thẳng nội dung…" (ghi ở trên, có thể bỏ) → 22/22.
 2. **Chế độ Nhanh vẫn bịa chi tiết** dù đã dặn: số điện thoại hỗ trợ "1900 88…" của Team 7, khẩu hiệu Team 7, "Quán phở Bún Chả 123", "phố cổ" ở Đà Nẵng. Bộ chấm theo luật không bắt được lỗi này. Chưa sửa, đưa thành câu hỏi trade-off trong báo cáo.
 3. 22 tình huống và cách chấm do agent tự soạn, mỗi tình huống chạy 1 lần; đạt hết không có nghĩa là không bao giờ sai.
+
+**Trade-off sau phần D** (nguyên văn, 2026-10-07):
+
+| Câu | Trả lời |
+|---|---|
+| 1. Chế độ Nhanh bịa chi tiết | 1C ,Did you run checks about hallucination? I asked another team they said that they changed the model to qwen 3.5-4B 4bit (bring it back on the table) they also recommend tinkering with token and temperature. My fast answer budget is around 5s so it's okay if it take a bit more time. |
+| Kế hoạch đo bịa + so model | Save it for the future, I ran out data to download large files. Let's do task 3 and 4 |
+
+## Phần E — Việc để sau (người dùng hoãn, 2026-10-07)
+
+**Đo hiện tượng bịa (hallucination) và so model/tham số.** Chưa làm vì người dùng hết dung lượng mạng để tải model.
+- Trả lời trung thực cho câu hỏi: **chưa có bài đo bịa có hệ thống**; 22 tình huống chỉ đo hành vi. Các chỗ bịa (số điện thoại "1900 88…" của Team 7, khẩu hiệu, "Quán phở Bún Chả 123", "phố cổ" Đà Nẵng) là do đọc tay câu trả lời.
+- Kế hoạch đã đề xuất (chưa duyệt):
+  1. Bộ ~30 câu hỏi tiếng Việt chấm theo luật: thông tin Team 7 không thể biết, nơi chốn/sản phẩm bịa, kiến thức chung kiểm được, số liệu chính xác, điều người dùng chưa từng kể.
+  2. So ở chế độ Nhanh, mục tiêu ≤ 5 s (ngân sách người dùng cho phép): `qwen3:4b` vs `qwen3.5:4b` (có trên Ollama, 3,3 GB, 4-bit, có suy nghĩ/công cụ/hình ảnh); temperature 0,6 / 0,3 / 0,1; "plan" tối đa 300 vs 800 ký tự; với Qwen3.5 thử cả chế độ không suy nghĩ có sẵn (không cần ép JSON).
+  3. Chạy lại 22 tình huống hành vi với 1–2 cấu hình tốt nhất; người dùng chọn mặc định trong ⚙.
+- Cần khi làm: người dùng chạy `ollama pull qwen3.5:4b` (3,3 GB). Lưu ý: 6 GB GPU không chứa đồng thời `qwen3:4b` (Strict) + `qwen3.5:4b` + model tìm kiếm → Ollama đổi model qua lại khi người dùng chuyển Strict/Friendly, câu đầu sau khi đổi chậm thêm vài giây (cần đo).

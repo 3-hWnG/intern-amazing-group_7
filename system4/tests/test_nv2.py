@@ -12,7 +12,7 @@ from pathlib import Path
 SERVER = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))), "server")
 sys.path.insert(0, SERVER)
 TMP = tempfile.mkdtemp()
-os.environ.update(S3_DB_PATH=os.path.join(TMP, "s3.db"), S3_USE_LLM="0", S4_ENABLED="1",
+os.environ.update(S3_DB_PATH=os.path.join(TMP, "s3.db"), S3_USE_LLM="0", S4_ENABLED="1", S4_WARMUP="0",
                   S4_RUNTIME_DIR=os.path.join(TMP, "s4"))
 
 from fastapi.testclient import TestClient

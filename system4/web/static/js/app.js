@@ -277,8 +277,26 @@
     w.dataset.mid = m.id;
     const err = m.status === "error";
     const b = el("div", "bubble md" + (err ? " err" : ""));
-    if (err) b.textContent = "Lỗi: " + m.content; else b.innerHTML = md(m.content);
+    const srcs = (m.meta && m.meta.sources) || [];
+    if (err) b.textContent = "Lỗi: " + m.content;
+    else {
+      const byN = {}; srcs.forEach((s) => { byN[s.n] = s.record_id; });
+      /* [n] -> số nguồn bấm được (chỉ với số có trong danh sách nguồn của câu trả lời) */
+      b.innerHTML = md(m.content).replace(/\[(\d{1,2})\]/g, (all, n) => byN[n] ? '<a class="cite" href="#" data-rec="' + byN[n] + '">' + n + "</a>" : all);
+      b.querySelectorAll("a.cite").forEach((a) => { a.onclick = (e) => { e.preventDefault(); openRecord(+a.dataset.rec); }; });
+    }
     w.appendChild(b);
+    const consulted = (m.meta && m.meta.consulted) || [];
+    if (srcs.length || consulted.length) {
+      const row = el("div", "src-row");
+      row.appendChild(el("span", "", srcs.length ? "Nguồn:" : "Đã tra cứu:"));
+      (srcs.length ? srcs : consulted).forEach((s) => {
+        const c = el("button", "src-chip", (s.n ? "[" + s.n + "] " : "") + s.title);
+        c.type = "button"; c.title = s.title + " · " + s.dataset; c.onclick = () => openRecord(s.record_id);
+        row.appendChild(c);
+      });
+      w.appendChild(row);
+    }
     if (m.status === "stopped") w.appendChild(el("div", "stopped-note", "(đã dừng)"));
     const choices = (m.meta && m.meta.choices) || [];
     if (choices.length) w.appendChild(clarifyCard({ question: "Chọn nhanh:", options: choices, allow_free_text: true }, null, !isLast));
@@ -307,6 +325,7 @@
       if (m.meta.guard) notes.push("guardrail: " + m.meta.guard);
       if (m.meta.filtered) notes.push("đã lọc " + m.meta.filtered.letters + " chữ lạ, " + m.meta.filtered.other + " ký hiệu");
       if (m.meta.leak_retry) notes.push("đã viết lại do lọt chữ lạ");
+      if (m.meta.retrieval) notes.push("tìm: " + m.meta.retrieval.candidates + " ứng viên" + (m.meta.retrieval.reranked ? ", đã xếp hạng lại" : ", không xếp hạng lại"));
       if (m.meta.mode) notes.push("chế độ: " + (m.meta.mode === "think" ? "suy nghĩ kỹ" : "nhanh") + (m.meta.interrupted ? " (đã bấm Trả lời nhanh)" : ""));
       if (notes.length) w.appendChild(el("div", "dev-note", notes.join(" · ")));
     }
@@ -798,6 +817,171 @@
     settingsCall("/s4/settings/reset", { keys }, "Đã về mặc định. Tải lại trang để áp dụng.");
   };
 
+  /* ---- NV3: Dữ liệu của tôi — tải lên (+), bật/tắt, xem, xoá; chế độ Chuyên gia tự bật khi có bộ dữ liệu đang bật ---- */
+  let ds = { datasets: [], active: { datasets: 0, warnings: [] }, quota: {} }, dsTimer = null;
+  const pending = new Map();   // id bộ dữ liệu vừa tải lên -> tên tệp (để báo khi xử lý xong)
+  const fmtSize = (b) => (b < 1024 * 1024 ? Math.max(1, Math.round(b / 1024)) + " KB" : (b / 1048576).toFixed(b < 10485760 ? 1 : 0) + " MB");
+  const KIND = { table: "Bảng (đã khớp cấu trúc)", rows: "Bảng (không khớp, lưu dạng dòng chữ)", text: "Văn bản", mixed: "Bảng + văn bản" };
+
+  async function loadDatasets() {
+    try { ds = await api("/s4/datasets"); } catch (_) { return; }
+    renderSpecBadge();
+    if (!$("data-modal").hidden) renderDatasets();
+    ds.datasets.forEach((d) => {
+      if (!pending.has(d.id)) return;
+      if (d.status === "ready") { uploadPill(pending.get(d.id), "Đã sẵn sàng · " + d.n_records + " bản ghi" + (d.active ? " · Chuyên gia đã bật" : " · đang tắt (vượt giới hạn)"), "ok", 6000); pending.delete(d.id); }
+      else if (d.status === "error") { uploadPill(pending.get(d.id), d.message, "failed", 12000); pending.delete(d.id); }
+      else uploadPill(pending.get(d.id), d.message || "Đang xử lý…", "pending");
+    });
+    clearTimeout(dsTimer);
+    if (ds.datasets.some((d) => d.status === "queued" || d.status === "processing")) dsTimer = setTimeout(loadDatasets, 2000);
+  }
+
+  function renderSpecBadge() {
+    const n = ds.active.datasets, b = $("spec-badge");
+    b.textContent = n ? "Chuyên gia · " + n + " bộ dữ liệu" : "AI chung";
+    b.classList.toggle("on", !!n);
+    b.title = n ? "AI chỉ trả lời từ " + n + " bộ dữ liệu đang bật. Bấm để quản lý." : "Chưa bật bộ dữ liệu nào: AI trò chuyện chung. Bấm để tải / bật dữ liệu.";
+  }
+
+  function uploadPill(name, text, cls, hideAfter) {
+    const box2 = $("upload-status");
+    let p = [...box2.children].find((x) => x.dataset.name === name);
+    if (!p) { p = el("div", "file-pill"); p.dataset.name = name; box2.appendChild(p); }
+    p.className = "file-pill " + (cls || "");
+    p.innerHTML = "";
+    p.append(el("span", "name", name), el("span", "meta", text));
+    const x = el("button", "rm", "✕"); x.type = "button"; x.title = "Ẩn"; x.onclick = () => { p.remove(); box2.hidden = !box2.children.length; };
+    p.appendChild(x);
+    box2.hidden = false;
+    if (hideAfter) setTimeout(() => { p.remove(); box2.hidden = !box2.children.length; }, hideAfter);
+  }
+
+  function uploadOne(file) {
+    return new Promise((resolve, reject) => {
+      const x = new XMLHttpRequest();
+      x.open("POST", "/s4/datasets");
+      x.upload.onprogress = (e) => { if (e.lengthComputable) uploadPill(file.name, "Đang tải lên " + Math.round((e.loaded / e.total) * 100) + "%", "pending"); };
+      x.onload = () => {
+        let d = {}; try { d = JSON.parse(x.responseText); } catch (_) {}
+        if (x.status === 401) { toLogin(); return; }
+        if (x.status >= 200 && x.status < 300) resolve(d); else reject(new Error(typeof d.detail === "string" ? d.detail : x.statusText));
+      };
+      x.onerror = () => reject(new Error("Lỗi mạng"));
+      const fd = new FormData(); fd.append("file", file); x.send(fd);
+    });
+  }
+
+  async function uploadFiles(files) {
+    for (const f of files) {
+      uploadPill(f.name, "Đang tải lên…", "pending");
+      try { const r = await uploadOne(f); pending.set(r.dataset.id, f.name); uploadPill(f.name, "Đang chờ xử lý…", "pending"); }
+      catch (e) { uploadPill(f.name, e.message, "failed", 12000); }
+    }
+    loadDatasets();
+  }
+
+  function renderDatasets() {
+    const q = ds.quota, used = q.used || 0;
+    const qbox = $("data-quota"); qbox.innerHTML = "";
+    if (q.limit) {
+      const pct = Math.min(100, (used / q.limit) * 100);
+      const bar = el("div", "bar"); const fill = el("i", pct > 90 ? "full" : ""); fill.style.width = pct + "%"; bar.appendChild(fill);
+      qbox.append(bar, el("small", "", "Đã dùng " + fmtSize(used) + " / " + fmtSize(q.limit) + (pct > 90 ? " · sắp hết, hãy xoá bớt bộ dữ liệu cũ" : "")));
+    } else qbox.appendChild(el("small", "", "Đã dùng " + fmtSize(used) + " · tài khoản dev không giới hạn dung lượng"));
+    const warn = $("data-warn"); warn.textContent = (ds.active.warnings || []).join(" "); warn.hidden = !(ds.active.warnings || []).length;
+    const ul = $("data-list"); ul.innerHTML = "";
+    if (!ds.datasets.length) ul.appendChild(el("li", "mem-empty", "Chưa có bộ dữ liệu nào. Bấm \"+ Tải tệp lên\"."));
+    ds.datasets.forEach((d) => {
+      const li = el("li");
+      const sw = el("label", "switch"), cb = el("input"), knob = el("span");
+      cb.type = "checkbox"; cb.checked = d.active; cb.disabled = d.status !== "ready";
+      cb.title = d.status === "ready" ? (d.active ? "Đang bật: AI dùng bộ này" : "Đang tắt") : "Chờ xử lý xong";
+      cb.onchange = async () => {
+        try { const r = await api("/s4/datasets/" + d.id, { active: cb.checked }, "PATCH"); ds.active = r.active; }
+        catch (e) { alert(e.message); cb.checked = !cb.checked; }
+        loadDatasets();
+      };
+      sw.append(cb, knob);
+      const main = el("div", "ds-main");
+      main.appendChild(el("div", "ds-name", d.name));
+      main.appendChild(el("div", "ds-msg" + (d.status === "error" ? " err" : ""), d.message || d.status));
+      if (d.status === "queued" || d.status === "processing") { const pg = el("div", "ds-progress"); const i = el("i"); i.style.width = d.progress + "%"; pg.appendChild(i); main.appendChild(pg); }
+      main.appendChild(el("div", "ds-meta", [KIND[d.kind] || "", d.n_records ? d.n_records + " bản ghi" : "", fmtSize(d.size_bytes), d.filename].filter(Boolean).join(" · ")));
+      const act = el("div", "ds-actions");
+      if (d.status === "ready") act.appendChild(actionBtn("Xem", "Xem các bản ghi", () => openRecords(d)));
+      if (d.status === "error") act.appendChild(actionBtn("Xử lý lại", "Xử lý lại tệp", async () => { try { await api("/s4/datasets/" + d.id + "/retry", {}); pending.set(d.id, d.filename); } catch (e) { alert(e.message); } loadDatasets(); }));
+      act.appendChild(actionBtn("Xoá", "Xoá bộ dữ liệu", async () => {
+        if (!confirm('Xoá bộ dữ liệu "' + d.name + '"? Không khôi phục được.')) return;
+        try { await api("/s4/datasets/" + d.id, null, "DELETE"); } catch (e) { alert(e.message); }
+        loadDatasets();
+      }));
+      main.appendChild(act);
+      li.append(sw, main);
+      ul.appendChild(li);
+    });
+  }
+
+  /* xem bản ghi của một bộ dữ liệu (tìm + xem thêm) */
+  let recState = null;
+  function recCard(r) {
+    const c = el("div", "rec-card");
+    c.appendChild(el("b", "", r.title));
+    const f = Object.entries(r.fields || {});
+    c.appendChild(el("div", "rec-fields", f.length ? f.map(([k, v]) => k + ": " + v).join("\n") : r.text));
+    c.appendChild(el("small", "", r.source));
+    return c;
+  }
+  async function loadRecords(reset) {
+    if (reset) { recState.offset = 0; $("records-list").innerHTML = ""; }
+    try {
+      const r = await api("/s4/datasets/" + recState.ds.id + "/records?offset=" + recState.offset + "&limit=50&q=" + encodeURIComponent(recState.q));
+      r.records.forEach((x) => $("records-list").appendChild(recCard(x)));
+      recState.offset += r.records.length;
+      $("records-count").textContent = r.total + " bản ghi" + (recState.q ? " khớp \"" + recState.q + "\"" : "");
+      $("records-more").hidden = recState.offset >= r.total;
+    } catch (e) { alert(e.message); }
+  }
+  function openRecords(d) {
+    recState = { ds: d, offset: 0, q: "" };
+    $("records-title").textContent = d.name; $("records-q").value = "";
+    $("records-modal").hidden = false; loadRecords(true);
+  }
+  let recQTimer = null;
+  $("records-q").oninput = () => { clearTimeout(recQTimer); recQTimer = setTimeout(() => { recState.q = $("records-q").value.trim(); loadRecords(true); }, 300); };
+  $("records-more").onclick = () => loadRecords(false);
+
+  /* xem nguồn của câu trả lời */
+  async function openRecord(id) {
+    try {
+      const r = await api("/s4/records/" + id);
+      const body = $("source-body"); body.innerHTML = "";
+      $("source-title").textContent = r.record.title;
+      body.appendChild(el("div", "mem-help", "Bộ dữ liệu: " + r.dataset.name + " · " + r.record.source));
+      const f = Object.entries(r.record.fields || {});
+      if (f.length) {
+        const t = el("table", "src-table");
+        f.forEach(([k, v]) => { const tr = el("tr"); tr.append(el("th", "", k), el("td", "", v)); t.appendChild(tr); });
+        body.appendChild(t);
+      } else body.appendChild(el("div", "src-text", r.record.text));
+      $("source-modal").hidden = false;
+    } catch (e) { alert("Không mở được nguồn: " + e.message); }
+  }
+
+  $("attach").onclick = () => $("file-input").click();
+  $("data-upload").onclick = () => $("file-input").click();
+  $("file-input").onchange = () => { const f = [...$("file-input").files]; $("file-input").value = ""; if (f.length) uploadFiles(f); };
+  const openData = () => { $("data-modal").hidden = false; renderDatasets(); loadDatasets(); };
+  $("open-data").onclick = openData; $("spec-badge").onclick = openData;
+  [["data-close", "data-modal"], ["records-close", "records-modal"], ["source-close", "source-modal"]].forEach(([b, m]) => {
+    $(b).onclick = () => { $(m).hidden = true; };
+    $(m).addEventListener("click", (e) => { if (e.target === $(m)) $(m).hidden = true; });
+  });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") ["data-modal", "records-modal", "source-modal"].forEach((m) => { $(m).hidden = true; }); });
+  /* kéo thả tệp vào khung chat (Friendly) */
+  box.addEventListener("dragover", (e) => { if (mode === "friendly") e.preventDefault(); });
+  box.addEventListener("drop", (e) => { if (mode !== "friendly") return; e.preventDefault(); const f = [...e.dataTransfer.files]; if (f.length) uploadFiles(f); });
+
   /* ---- Bộ nhớ của mỗi người (Friendly): chế độ Tự động / Chỉ khi tôi bảo, xem và xoá từng điều ---- */
   const memModal = $("memory");
   function renderMemory(d) {
@@ -842,6 +1026,7 @@
     const savedThink = ls.get("s4_think");
     thinkOn = savedThink === null ? pub.default_answer_mode === "think" : savedThink === "1";
     renderThink();
+    loadDatasets();
     let saved = null;
     try { saved = JSON.parse(ls.get("s4_conv") || "null"); } catch (_) {}
     setMode(saved ? saved.mode : (ls.get("s4_mode") || pub.default_mode));

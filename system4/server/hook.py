@@ -9,12 +9,14 @@ install(app, s3_store) thêm:
 """
 from __future__ import annotations
 import json
+import os
 import re
+import threading
 
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from . import auth, config, db, routes
+from . import auth, config, datasets, db, routes, search
 
 PUBLIC = {"/s4/login", "/s4/auth/login", "/s4/auth/signup", "/s4/auth/logout", "/s4/public", "/health", "/favicon.ico"}
 _CONV = re.compile(r"^/conversations/([^/]+)")
@@ -22,6 +24,9 @@ _CONV = re.compile(r"^/conversations/([^/]+)")
 
 def install(app, s3_store) -> None:
     db.init_db()
+    datasets.resume_unfinished()   # tệp đang nạp dở khi tắt server -> nạp lại
+    if os.environ.get("S4_WARMUP", "1") == "1":   # test đặt S4_WARMUP=0
+        threading.Thread(target=search.warm_up, name="s4-warmup", daemon=True).start()   # nạp sẵn bge-m3 + reranker
     state = {"legacy": False}
 
     def strict_list(user: dict) -> list[dict]:

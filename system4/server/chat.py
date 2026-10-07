@@ -18,9 +18,10 @@ from __future__ import annotations
 import asyncio
 import json
 import re
+import time
 import uuid
 
-from . import context, db, guard, lang, llm, memory, persona, settings
+from . import context, db, guard, lang, llm, memory, persona, search, settings
 
 _background: set = set()   # giữ tham chiếu tới việc nền để không bị dọn mất giữa chừng
 _turns: dict[str, dict] = {}   # lượt đang chạy: turn_id -> {"user": id, "fast": cờ "Trả lời nhanh"}
@@ -113,8 +114,16 @@ def clarify_streak(path: list[dict]) -> int:
     return n
 
 
+def search_query(text: str, history_path: list[dict]) -> str:
+    """Câu để tìm dữ liệu: câu ngắn kiểu "còn phí thì sao?" ghép thêm câu hỏi trước của người dùng để đủ ngữ cảnh."""
+    if len(text.split()) >= 6:
+        return text
+    prev = next((m["content"] for m in reversed(history_path) if m["role"] == "user"), "")
+    return f"{prev} {text}".strip()
+
+
 def build_messages(user_id: int, cid: str, history_path: list[dict], text: str, *, fast: bool,
-                   leak_retry: bool = False) -> tuple[list[dict], dict]:
+                   leak_retry: bool = False, evidence: list[dict] | None = None) -> tuple[list[dict], dict]:
     """Lời dặn hệ thống + lịch sử + tin mới. Trả (messages, thông tin để quyết định / lưu meta)."""
     block, instructions = guard.check_input(text)
     foreign = not lang.is_vietnamese(text)
@@ -124,12 +133,22 @@ def build_messages(user_id: int, cid: str, history_path: list[dict], text: str, 
     if leak_retry:
         instructions = instructions + ["Lần trước bạn đã dùng chữ không phải tiếng Việt. Lần này CHỈ viết tiếng Việt bằng chữ cái Latin."]
     mems = [m["text"] for m in db.list_memories(user_id)]
-    kw = dict(clarify_exhausted=exhausted, upset=persona.negative(text), foreign=foreign, fast=fast)
+    kw = dict(clarify_exhausted=exhausted, upset=persona.negative(text), foreign=foreign, fast=fast, evidence=evidence)
     draft = persona.build(mems, "", instructions, **kw)
     summary, hist = context.history(cid, history_path, len(draft))
     system = persona.build(mems, summary, instructions, **kw) if summary else draft
     msgs = [{"role": "system", "content": system}] + hist + [{"role": "user", "content": text}]
     return msgs, {"block": block, "foreign": foreign, "exhausted": bool(exhausted)}
+
+
+_REFUSAL = ("khong co thong tin", "khong tim thay", "khong co trong du lieu", "chua co thong tin", "khong de cap", "khong chua",
+            "khong co du lieu", "khong thay thong tin", "khong the tra loi")
+
+
+def kb_violation(content: str) -> bool:
+    """Chuyên gia, tìm không thấy gì: AI vẫn viết một câu trả lời có nội dung mà không nói "không có trong dữ liệu"."""
+    n = lang.normalize(content)
+    return len(n) > 60 and not any(p in n for p in _REFUSAL)   # câu xã giao ngắn ("dạ, không có gì ạ") không tính
 
 
 def _check(body: list[str], clean: str, state: dict):
@@ -171,10 +190,10 @@ async def _think(msgs: list[dict], prefix: str, state: dict, flag: dict):
 async def _fast(msgs: list[dict], prefix: str, state: dict):
     """Chế độ Nhanh: JSON có cấu trúc, hiện dần phần "answer"."""
     filt, body, ans = lang.LatinFilter(), [], AnswerStream()
-    state.update(parts=body, filter=filt, replaced=None, mode="fast", choices=None)
+    state.update(parts=body, filter=filt, replaced=None, mode="fast", choices=None, sources=[])
     if prefix:
         yield sse({"type": "delta", "text": prefix + "\n\n"})
-    async for t in llm.stream_json(msgs, persona.FAST_SCHEMA):
+    async for t in llm.stream_json(msgs, persona.FAST_SCHEMA_KB if state.get("kb") else persona.FAST_SCHEMA):
         if t is llm.THINKING:
             continue
         clean = filt.feed(ans.feed(t))
@@ -188,6 +207,7 @@ async def _fast(msgs: list[dict], prefix: str, state: dict):
     d = ans.final()
     if not body and isinstance(d.get("answer"), str):   # phòng khi tách dần trượt: lấy từ JSON hoàn chỉnh
         body.append(filt.feed(d["answer"]))
+    state["sources"] = [x for x in d.get("sources") or [] if isinstance(x, int)]
     if d.get("ask_back"):
         cf = lang.LatinFilter()
         state["choices"] = [x for x in (cf.feed(str(c)).strip() for c in d.get("choices") or []) if x][:4]
@@ -210,8 +230,14 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
     turn_id = uuid.uuid4().hex
     flag = _turns[turn_id] = {"user": user["id"], "fast": False}
     try:
-        msgs, info = build_messages(user["id"], cid, history_path, text, fast=mode == "fast")
-        yield sse({"type": "meta", "conversation_id": cid, "user_message_id": user_mid, "turn_id": turn_id, "mode": mode})
+        evidence, sinfo, t0 = None, None, time.perf_counter()
+        if db.active_datasets(user["id"]):   # có bộ dữ liệu đang bật -> Chuyên gia: tìm trước khi hỏi AI
+            evidence, sinfo = await asyncio.to_thread(search.search, user["id"], search_query(text, history_path))
+            sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
+        bm = lambda **k: build_messages(user["id"], cid, history_path, text, evidence=evidence, **k)
+        msgs, info = bm(fast=mode == "fast")
+        yield sse({"type": "meta", "conversation_id": cid, "user_message_id": user_mid, "turn_id": turn_id, "mode": mode,
+                   "specialist": evidence is not None})
         if info["block"]:   # guardrail chặn: không gọi AI, không ghi nhớ
             b = info["block"]
             db.add_message(cid, "assistant", b["message"], "done", user_mid, {"guard": b["name"]})
@@ -222,9 +248,10 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
         if pos:
             yield sse({"type": "queue", "position": pos})
         prefix = settings.get("LANG_FALLBACK_APOLOGY") if info["foreign"] else ""
-        state, meta, status, err = {}, {}, "done", None
+        state, meta, status, err = {"kb": evidence is not None}, {}, "done", None
         try:
             async with llm.Turn():
+                t_llm = time.perf_counter()
                 yield sse({"type": "start"})
                 if mode == "think" and not flag["fast"]:
                     async for ev in _think(msgs, prefix, state, flag):
@@ -234,14 +261,18 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                     if mode == "think":
                         meta["interrupted"] = True
                         yield sse({"type": "switch", "mode": "fast"})
-                        msgs, _ = build_messages(user["id"], cid, history_path, text, fast=True)
+                        msgs, _ = bm(fast=True)
                     async for ev in _fast(msgs, prefix, state):
                         yield ev
+                if evidence == [] and not state.get("replaced") and kb_violation("".join(state.get("parts") or [])):
+                    # yêu cầu .docx: không dùng kiến thức chung. Tìm không thấy mà AI vẫn tự trả lời -> thay bằng câu cố định
+                    state["replaced"] = {"name": "Chỉ trả lời từ dữ liệu", "message": settings.get("KB_NOT_FOUND_MESSAGE")}
+                    yield sse({"type": "replace", "text": state["replaced"]["message"]})
                 if not state.get("replaced") and state["filter"].heavy_leak():   # lọt nhiều chữ lạ: viết lại một lần
                     meta["leak_retry"] = True
                     yield sse({"type": "restart"})
                     fast = state["mode"] == "fast"
-                    msgs, _ = build_messages(user["id"], cid, history_path, text, fast=fast, leak_retry=True)
+                    msgs, _ = bm(fast=fast, leak_retry=True)
                     async for ev in (_fast(msgs, prefix, state) if fast else _think(msgs, prefix, state, flag)):
                         yield ev
         except (llm.QueueFull, llm.LLMError) as e:
@@ -251,6 +282,8 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             raise
         finally:
             meta["mode"] = state.get("mode", mode)
+            if "t_llm" in locals():
+                meta["timing"] = {"llm_ms": int((time.perf_counter() - t_llm) * 1000), "total_ms": int((time.perf_counter() - t0) * 1000)}
             f = state.get("filter")
             if f and (f.removed_letters or f.removed_other):
                 meta["filtered"] = {"letters": f.removed_letters, "other": f.removed_other}
@@ -263,6 +296,14 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                 content, choices = persona.split_choices("".join(state.get("parts") or []))
             if prefix and not state.get("replaced") and (content or status != "error"):
                 content = f"{prefix}\n\n{content}".strip()
+            if evidence is not None:   # Chuyên gia: nguồn = các đoạn AI ghi [n] (hoặc liệt kê trong "sources")
+                cited = sorted({int(n) for n in re.findall(r"\[(\d{1,2})\]", content)} | set(state.get("sources") or []))
+                meta["specialist"] = True
+                meta["sources"] = [{"n": n, "record_id": evidence[n - 1]["id"], "title": evidence[n - 1]["title"],
+                                    "dataset": evidence[n - 1]["dataset"]} for n in cited if 1 <= n <= len(evidence)]
+                if not meta["sources"]:
+                    meta["consulted"] = [{"record_id": e["id"], "title": e["title"], "dataset": e["dataset"]} for e in evidence[:3]]
+                meta["retrieval"] = sinfo
             if choices and not info["exhausted"]:
                 meta["choices"] = choices
             elif choices:   # đã hết lượt hỏi lại mà AI vẫn đưa lựa chọn: hiện như văn bản

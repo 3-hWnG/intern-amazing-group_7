@@ -31,6 +31,17 @@ Làm cho tôi 1 web AI đảm bảo các tiêu chí sau:
 | 8. Model trên GPU 6 GB | 8B for friendly mode but it's also toggle-able to see what trade off worth more so build both |
 | 10 (phần dung lượng) | Dev has unlimited upload, limit user to 1GB or delete existing please. |
 
+**Trade-off riêng của NV3** (nguyên văn câu trả lời, 2026-10-07):
+
+| Câu | Trả lời |
+|---|---|
+| 1. Bật nhiều dataset cùng lúc | 1A but make a warning limit so the user don't overflow the system |
+| 2. Ai xem được dataset | 2B |
+| 3. Không có trong dữ liệu | 3A |
+| 4. Nguồn dưới câu trả lời | 4A |
+| 5. Reranker mặc định | 5A |
+| Duyệt kế hoạch | Approve, but some small change first: Don't use 📎use +, and to clarify futher Admin page and chat GPT features also apply to system 3 as universal. What i meant when said don't touch system 3 is don't mess with the architecture, these are add-ons features so it's fine. |
+
 ---
 
 ## Phần B — Ý bổ sung của Claude (không phải yêu cầu gốc)
