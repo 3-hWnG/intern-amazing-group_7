@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse, RedirectResponse
 from pydantic import BaseModel
 
-from . import auth, config, datasets, db, procs
+from . import auth, chat, config, datasets, db, guard, llm, persona, procs, search
 
 
 class NewUser(BaseModel):
@@ -34,6 +34,13 @@ class ApplyIn(BaseModel):
 
 class ScrapeIn(BaseModel):
     limit: int = 0
+
+
+class LabIn(BaseModel):
+    query: str
+    user_id: int | None = None          # bộ dữ liệu đang bật của người này
+    dataset_ids: list[int] | None = None   # hoặc chỉ định bộ dữ liệu
+    overrides: dict = {}                # RETRIEVAL_CANDIDATES / RETRIEVAL_TOP_K / RERANKER_ENABLED / RERANK_MIN_SCORE
 
 
 def make_router(s3_store) -> APIRouter:
@@ -144,6 +151,58 @@ def make_router(s3_store) -> APIRouter:
             datasets.delete(d)
         db.run("DELETE FROM users WHERE id=?", (uid,))   # phiên, hội thoại Friendly, bộ nhớ... xoá theo khoá ngoại
         return {"users": user_rows()}
+
+    @r.get("/users/{uid}/conversations")
+    def user_conversations(uid: int, request: Request):
+        """Hội thoại của một người dùng (chỉ xem) — để soi câu trả lời khi người dùng báo lỗi (1C)."""
+        dev(request)
+        ids = db.strict_ids(uid)
+        strict = [{**c, "mode": "strict"} for c in s3_store.list_conversations() if c["id"] in ids]
+        friendly = [{**c, "mode": "friendly"} for c in db.list_conversations(uid)]
+        rows = sorted(strict + friendly, key=lambda c: c["created_at"], reverse=True)
+        return {"conversations": rows}
+
+    # ----------------------------------------------------- phòng thử tìm kiếm
+    def lab_search(body: LabIn):
+        allowed = {"RETRIEVAL_CANDIDATES", "RETRIEVAL_TOP_K", "RERANKER_ENABLED", "RERANK_MIN_SCORE"}
+        ov = {k: v for k, v in body.overrides.items() if k in allowed}
+        if body.dataset_ids:
+            ids = body.dataset_ids
+        elif body.user_id:
+            ids = [d["id"] for d in db.active_datasets(body.user_id)]
+        else:
+            raise HTTPException(422, "Chọn người dùng hoặc bộ dữ liệu")
+        if not body.query.strip():
+            raise HTTPException(422, "Nhập câu hỏi")
+        return search.search(0, body.query.strip(), dataset_ids=ids, overrides=ov)
+
+    @r.post("/searchlab")
+    def searchlab(body: LabIn, request: Request):
+        """Xem xếp hạng tìm kiếm cho một câu hỏi (không hỏi AI), có thể đổi tạm thông số."""
+        dev(request)
+        import time
+        t0 = time.perf_counter()
+        out, info = lab_search(body)
+        info["search_ms"] = int((time.perf_counter() - t0) * 1000)
+        return {"info": info, "sent": [c["id"] for c in out]}
+
+    @r.post("/searchlab/ask")
+    async def searchlab_ask(body: LabIn, request: Request):
+        """Hỏi AI (chế độ Nhanh) với đúng kết quả tìm kiếm này, không lưu vào hội thoại nào: xem lời dặn + JSON thô + câu trả lời."""
+        dev(request)
+        import asyncio
+        out, info = await asyncio.to_thread(lab_search, body)
+        _, instructions = guard.check_input(body.query)
+        system = persona.build([], "", instructions, fast=True, evidence=out, upset=persona.negative(body.query))
+        msgs = [{"role": "system", "content": system}, {"role": "user", "content": body.query}]
+        ans, raw = chat.AnswerStream(), []
+        async with llm.Turn():
+            async for t in llm.stream_json(msgs, persona.FAST_SCHEMA_KB):
+                if isinstance(t, llm.Thought):
+                    continue
+                raw.append(t)
+                ans.feed(t)
+        return {"info": info, "prompt": system, "raw": "".join(raw), "parsed": ans.final()}
 
     # ----------------------------------------------------- dữ liệu người dùng
     @r.get("/datasets")

@@ -390,3 +390,23 @@ def browse_records(ds_id: int, q: str = "", offset: int = 0, limit: int = 50) ->
     total = run(f"SELECT COUNT(*) n FROM records WHERE {where}", args, one=True)["n"]
     rows = run(f"SELECT * FROM records WHERE {where} ORDER BY id LIMIT ? OFFSET ?", (*args, limit, offset), many=True)
     return [_rec(r) for r in rows], total
+
+
+# ------------------------------------------------------- bộ công cụ dev (chi tiết câu trả lời)
+def save_trace(mid: int, cid: str, user_id: int, data: dict, keep: int) -> None:
+    run("INSERT OR REPLACE INTO traces(message_id,conversation_id,user_id,data) VALUES (?,?,?,?)",
+        (mid, cid, user_id, json.dumps(data, ensure_ascii=False, default=str)))
+    run("DELETE FROM traces WHERE message_id NOT IN (SELECT message_id FROM traces ORDER BY message_id DESC LIMIT ?)", (keep,))
+
+
+def patch_trace(mid: int, key: str, value) -> None:
+    r = run("SELECT data FROM traces WHERE message_id=?", (mid,), one=True)
+    if r:
+        d = json.loads(r["data"])
+        d[key] = value
+        run("UPDATE traces SET data=? WHERE message_id=?", (json.dumps(d, ensure_ascii=False, default=str), mid))
+
+
+def get_trace(mid: int) -> dict | None:
+    r = run("SELECT data FROM traces WHERE message_id=?", (mid,), one=True)
+    return json.loads(r["data"]) if r else None

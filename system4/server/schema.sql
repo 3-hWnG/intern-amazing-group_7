@@ -108,3 +108,11 @@ CREATE TABLE IF NOT EXISTS strict_nodes (
 CREATE INDEX IF NOT EXISTS idx_sn_root ON strict_nodes(root);
 CREATE TABLE IF NOT EXISTS strict_threads (root TEXT PRIMARY KEY, leaf INTEGER);
 CREATE TABLE IF NOT EXISTS strict_branch (cid TEXT PRIMARY KEY, root TEXT NOT NULL);
+-- Bộ công cụ dev: chi tiết từng câu trả lời Friendly (tìm kiếm, lời dặn, suy nghĩ ẩn, kiểm soát, thời gian). Giữ TRACE_KEEP câu gần nhất.
+CREATE TABLE IF NOT EXISTS traces (
+  message_id      INTEGER PRIMARY KEY,
+  conversation_id TEXT NOT NULL,
+  user_id         INTEGER NOT NULL,
+  data            TEXT NOT NULL,
+  created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+);

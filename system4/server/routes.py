@@ -72,10 +72,11 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
     """s3_store = module db.store của System 3 (chỉ gọi hàm có sẵn, không sửa); strict_list(user), drop_strict(cid) từ hook.py."""
     r = APIRouter(prefix="/s4")
 
-    def own_friendly(request: Request, cid: str) -> dict:
+    def own_friendly(request: Request, cid: str, read: bool = False) -> dict:
+        """Chủ hội thoại. read=True: dev cũng được XEM (bộ công cụ dev, 1C) — không được sửa."""
         u = _user(request)
         conv = db.get_conversation(cid)
-        if not conv or db.friendly_owner(cid) != u["id"]:
+        if not conv or (db.friendly_owner(cid) != u["id"] and not (read and u["role"] == "dev")):
             raise HTTPException(404, "conversation not found")
         return conv
 
@@ -161,7 +162,7 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
     # ------------------------------------------------ hội thoại Friendly
     @r.get("/conversations/{cid}/messages")
     def messages(cid: str, request: Request):
-        own_friendly(request, cid)
+        own_friendly(request, cid, read=True)
         return {"conversation_id": cid, "messages": db.get_path(cid)}
 
     def own_message(request: Request, cid: str, mid: int) -> dict:
@@ -330,6 +331,34 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         own_dataset(request, ds_id)
         rows, total = db.browse_records(ds_id, q.strip(), max(0, offset), min(max(1, limit), 200))
         return {"records": rows, "total": total}
+
+    @r.get("/datasets/{ds_id}/reading")
+    def dataset_reading(ds_id: int, request: Request):
+        """"Xem cách đọc tệp": dòng tiêu đề đã chọn, cột tiêu đề, các trường, vài bản ghi đầu đúng như AI thấy."""
+        ds = own_dataset(request, ds_id)
+        rows, total = db.browse_records(ds_id, "", 0, 5)
+        return {"dataset": ds_view(ds | {"username": None}), "first": rows, "total": total}
+
+    # ------------------------------------------------ bộ công cụ dev: "🔍 Soi" / "Vì sao?"
+    @r.get("/trace/{mid}")
+    def trace(mid: int, request: Request):
+        """Dev: toàn bộ chi tiết câu trả lời Friendly (mọi người dùng, 1C). Người dùng thường: bản rút gọn "Vì sao?" của mình."""
+        u = _user(request)
+        m = db.get_message(mid)
+        if not m or m["role"] != "assistant":
+            raise HTTPException(404, "không có câu trả lời này")
+        owner = db.friendly_owner(m["conversation_id"])
+        if u["role"] != "dev" and owner != u["id"]:
+            raise HTTPException(404, "không có câu trả lời này")
+        meta = m["meta"]
+        why = {"mode": meta.get("mode"), "specialist": bool(meta.get("specialist")),
+               "datasets_searched": (meta.get("retrieval") or {}).get("datasets", 0),
+               "sources": meta.get("sources") or [], "consulted": meta.get("consulted") or [],
+               "guard": meta.get("guard"), "interrupted": bool(meta.get("interrupted"))}
+        if u["role"] != "dev":
+            return {"why": why}
+        return {"why": why, "trace": db.get_trace(mid), "meta": meta, "content": m["content"],
+                "owner": owner, "kept": settings.get("TRACE_KEEP")}
 
     @r.get("/records/{rec_id}")
     def get_record(rec_id: int, request: Request):

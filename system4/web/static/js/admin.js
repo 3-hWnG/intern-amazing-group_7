@@ -31,7 +31,7 @@
     t.onclick = () => {
       document.querySelectorAll(".admin-tabs .tab").forEach((x) => x.classList.toggle("active", x === t));
       document.querySelectorAll(".admin-tab").forEach((s) => { s.hidden = s.id !== "tab-" + t.dataset.tab; });
-      ({ strict: loadProcs, datasets: loadDatasets, users: loadUsers })[t.dataset.tab]();
+      ({ strict: loadProcs, datasets: loadDatasets, users: loadUsers, lab: loadLab })[t.dataset.tab]();
     };
   });
   document.querySelectorAll(".s4-modal").forEach((m) => {
@@ -244,6 +244,7 @@
       if (d.status === "error") st.className = "tag bad";
       const act = el("div");
       if (d.status === "ready") act.appendChild(btn("Mở", () => openDataset(d)));
+      if (d.status === "ready") act.appendChild(btn("Cách đọc", () => S4Inspect.reading(d.id), "btn-ghost", "Dòng tiêu đề đã chọn, cột tiêu đề, bản ghi đầu"));
       act.appendChild(btn("Xoá", async () => {
         if (!confirm(`Xoá bộ dữ liệu "${d.name}" của ${d.username}?`)) return;
         try { await api("/s4/datasets/" + d.id, null, "DELETE"); } catch (e) { alert(e.message); }
@@ -288,6 +289,7 @@
       role.onchange = () => patch(u, { role: role.value }, () => { role.value = u.role; });
       const st = span(u.disabled ? "đã khoá" : "hoạt động", u.disabled ? "tag bad" : "tag on");
       const act = el("div");
+      act.appendChild(btn("Hội thoại", () => openUserConvs(u), "btn-ghost", "Xem hội thoại của người này (chỉ xem) và soi từng câu trả lời"));
       act.appendChild(btn(u.disabled ? "Mở khoá" : "Khoá", () => patch(u, { disabled: !u.disabled })));
       act.appendChild(btn("Đặt lại mật khẩu", () => { const p = prompt(`Mật khẩu mới cho ${u.username}:`); if (p) patch(u, { password: p }, null, "Đã đặt mật khẩu mới (người dùng bị đăng xuất)."); }));
       act.appendChild(btn("Xoá", () => {
@@ -310,6 +312,92 @@
     try { const r = await api("/s4/admin/users", { username: f.username.value.trim(), password: f.password.value, role: f.role.value }); f.reset(); renderUsers(r.users); }
     catch (err) { alert(err.message); }
   });
+
+  /* ================= Hội thoại của người dùng (chỉ xem) + 🔍 ================= */
+  async function openUserConvs(u) {
+    let r; try { r = await api("/s4/admin/users/" + u.id + "/conversations"); } catch (e) { alert(e.message); return; }
+    $("conv-title").textContent = "Hội thoại của " + u.username;
+    const body = $("conv-body"); body.innerHTML = "";
+    if (!r.conversations.length) body.appendChild(el("p", "muted", "Chưa có hội thoại nào."));
+    const ul = el("ul", "conv-pick");
+    r.conversations.forEach((c) => {
+      const li = el("li"); li.append(span(c.mode === "strict" ? "Strict" : "Friendly", "tag"), el("span", "", " " + c.title), el("span", "muted small", " · " + c.created_at));
+      li.onclick = () => openConv(u, c);
+      ul.appendChild(li);
+    });
+    body.appendChild(ul);
+    $("conv-modal").hidden = false;
+  }
+  async function openConv(u, c) {
+    const url = c.mode === "strict" ? "/s4/strict/" + c.id + "/messages" : "/s4/conversations/" + c.id + "/messages";
+    let r; try { r = await api(url); } catch (e) { alert(e.message); return; }
+    $("conv-title").textContent = u.username + " · " + c.title;
+    const body = $("conv-body"); body.innerHTML = "";
+    body.appendChild(btn("← Danh sách hội thoại", () => openUserConvs(u)));
+    const view = el("div", "chat-view");
+    r.messages.forEach((m) => {
+      if (m.role === "user") { view.appendChild(el("div", "u", m.content)); return; }
+      const a = el("div", "a", c.mode === "strict" && m.blocks && m.blocks.length ? m.blocks.map((b) => (b.title ? b.title + "\n" : "") + (b.text || "")).join("\n\n") : m.content);
+      a.appendChild(el("br"));
+      a.appendChild(btn("🔍 Soi", () => (c.mode === "strict" ? S4Inspect.strict(m.node_id) : S4Inspect.friendly(m.id, true))));
+      view.appendChild(a);
+    });
+    body.appendChild(view);
+  }
+
+  /* ================= Thử tìm kiếm ================= */
+  let labReady = false;
+  async function loadLab() {
+    if (labReady) return;
+    labReady = true;
+    try {
+      const [us, st] = await Promise.all([api("/s4/admin/users"), api("/s4/settings")]);
+      const sel = $("lab-user"); sel.innerHTML = "";
+      us.users.forEach((u) => { const o = el("option", "", u.username + ` (${u.datasets.n} bộ dữ liệu)`); o.value = u.id; sel.appendChild(o); });
+      const get = (k) => (st.settings.find((s) => s.key === k) || {}).value;
+      $("lab-cand").value = get("RETRIEVAL_CANDIDATES"); $("lab-topk").value = get("RETRIEVAL_TOP_K");
+      $("lab-min").value = get("RERANK_MIN_SCORE"); $("lab-rr").checked = !!get("RERANKER_ENABLED");
+      sel.onchange = labDatasets; labDatasets();
+    } catch (e) { alert(e.message); }
+  }
+  async function labDatasets() {
+    const uid = +$("lab-user").value, box = $("lab-ds"); box.innerHTML = "";
+    const r = await api("/s4/admin/datasets");
+    const mine = r.datasets.filter((d) => d.user_id === uid && d.status === "ready");
+    if (!mine.length) { box.appendChild(el("span", "muted", "Người này chưa có bộ dữ liệu sẵn sàng.")); return; }
+    mine.forEach((d) => { const l = el("label"); const cb = el("input"); cb.type = "checkbox"; cb.value = d.id; cb.checked = !!d.active; l.append(cb, el("span", "", " " + d.name + ` (${d.n_records})`)); box.appendChild(l); });
+  }
+  function labBody() {
+    return {
+      query: $("lab-q").value.trim(), user_id: +$("lab-user").value,
+      dataset_ids: [...$("lab-ds").querySelectorAll("input:checked")].map((x) => +x.value),
+      overrides: { RETRIEVAL_CANDIDATES: +$("lab-cand").value, RETRIEVAL_TOP_K: +$("lab-topk").value,
+                   RERANK_MIN_SCORE: +$("lab-min").value, RERANKER_ENABLED: $("lab-rr").checked },
+    };
+  }
+  $("lab-run").onclick = async () => {
+    const b = labBody(); if (!b.query) { alert("Nhập câu hỏi"); return; }
+    if (!b.dataset_ids.length) { alert("Chọn ít nhất một bộ dữ liệu"); return; }
+    const out = $("lab-out"); out.hidden = false; out.innerHTML = ""; out.appendChild(el("p", "muted", "Đang tìm…"));
+    try { const r = await api("/s4/admin/searchlab", b); out.innerHTML = ""; out.appendChild(el("h2", "", "Xếp hạng")); out.appendChild(S4Inspect.candidates(r.info)); }
+    catch (e) { out.innerHTML = ""; out.appendChild(el("p", "error", e.message)); }
+  };
+  $("lab-q").addEventListener("keydown", (e) => { if (e.key === "Enter") $("lab-run").click(); });
+  $("lab-ask").onclick = async () => {
+    const b = labBody(); if (!b.query || !b.dataset_ids.length) { alert("Nhập câu hỏi và chọn bộ dữ liệu"); return; }
+    const box = $("lab-answer"); box.hidden = false; box.innerHTML = ""; box.appendChild(el("p", "muted", "Đang hỏi AI (chế độ Nhanh)…"));
+    try {
+      const r = await api("/s4/admin/searchlab/ask", b);
+      box.innerHTML = "";
+      box.appendChild(el("h2", "", "Câu trả lời của AI"));
+      box.appendChild(el("pre", "insp-pre", (r.parsed && r.parsed.answer) || "(không đọc được JSON)"));
+      box.appendChild(el("h3", "", "Kế hoạch ẩn"));
+      box.appendChild(el("pre", "insp-pre", (r.parsed && r.parsed.plan) || ""));
+      const d1 = el("details"); d1.appendChild(el("summary", "", "Lời dặn hệ thống đã gửi")); d1.appendChild(el("pre", "insp-pre", r.prompt)); box.appendChild(d1);
+      const d2 = el("details"); d2.appendChild(el("summary", "", "JSON thô")); d2.appendChild(el("pre", "insp-pre", r.raw)); box.appendChild(d2);
+      $("lab-out").hidden = false; $("lab-out").innerHTML = ""; $("lab-out").appendChild(el("h2", "", "Xếp hạng")); $("lab-out").appendChild(S4Inspect.candidates(r.info));
+    } catch (e) { box.innerHTML = ""; box.appendChild(el("p", "error", e.message)); }
+  };
 
   /* ---------- khởi động ---------- */
   fetch("/s4/public").then((r) => r.json()).then((p) => {

@@ -6,8 +6,8 @@
 <title>Quản trị</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="/static/css/styles.css?v=20261006g">
-<link rel="stylesheet" href="/s4/static/css/s4.css?v=nv4">
-<link rel="stylesheet" href="/s4/static/css/admin.css?v=nv4">
+<link rel="stylesheet" href="/s4/static/css/s4.css?v=dev1">
+<link rel="stylesheet" href="/s4/static/css/admin.css?v=dev1">
 </head>
 <body class="light admin-page">
 <header class="admin-head">
@@ -19,6 +19,7 @@
   <button type="button" class="tab active" data-tab="strict" role="tab">Dữ liệu Strict (thủ tục)</button>
   <button type="button" class="tab" data-tab="datasets" role="tab">Dữ liệu người dùng</button>
   <button type="button" class="tab" data-tab="users" role="tab">Người dùng</button>
+  <button type="button" class="tab" data-tab="lab" role="tab">Thử tìm kiếm</button>
 </nav>
 
 <main class="admin-main">
@@ -92,7 +93,37 @@
       <table class="grid" id="users"></table>
     </div>
   </section>
+  <!-- Tab 4: phòng thử tìm kiếm (bộ công cụ dev) -->
+  <section id="tab-lab" class="admin-tab" hidden>
+    <div class="card">
+      <h2>Thử tìm kiếm</h2>
+      <p class="muted small">Xem hệ thống xếp hạng dữ liệu thế nào cho một câu hỏi — KHÔNG hỏi AI, không lưu gì. Đổi tạm thông số để so sánh (không đổi cài đặt thật).</p>
+      <div class="row">
+        <select id="lab-user" title="Dữ liệu của người dùng"></select>
+        <input id="lab-q" class="search" placeholder="Câu hỏi, ví dụ: Ngày sinh của bạn Hiếu" style="flex:1;min-width:260px">
+      </div>
+      <div id="lab-ds" class="lab-ds"></div>
+      <div class="row lab-params">
+        <label class="small">Ứng viên <input id="lab-cand" type="number" min="5" max="100" class="num"></label>
+        <label class="small">Gửi AI <input id="lab-topk" type="number" min="1" max="15" class="num"></label>
+        <label class="small">Ngưỡng reranker <input id="lab-min" type="number" step="0.5" class="num"></label>
+        <label class="small"><input id="lab-rr" type="checkbox"> Dùng reranker</label>
+        <button id="lab-run" class="primary" type="button">Tìm</button>
+        <button id="lab-ask" class="btn-ghost" type="button" title="Hỏi AI (chế độ Nhanh) với đúng kết quả này; xem lời dặn và JSON thô">Hỏi AI với kết quả này</button>
+      </div>
+    </div>
+    <div class="card" id="lab-out" hidden></div>
+    <div class="card" id="lab-answer" hidden></div>
+  </section>
 </main>
+
+<!-- cửa sổ: hội thoại của một người dùng (chỉ xem) -->
+<div id="conv-modal" class="s4-modal" hidden>
+  <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="conv-title">
+    <header><h2 id="conv-title">Hội thoại</h2><button class="icon close" type="button" aria-label="Đóng">✕</button></header>
+    <div class="body" id="conv-body"></div>
+  </div>
+</div>
 
 <!-- cửa sổ: sửa / xem thủ tục -->
 <div id="rec-modal" class="s4-modal" hidden>
@@ -122,6 +153,7 @@
     </div>
   </div>
 </div>
-<script src="/s4/static/js/admin.js?v=nv4"></script>
+<script src="/s4/static/js/inspector.js?v=dev1"></script>
+<script src="/s4/static/js/admin.js?v=dev1"></script>
 </body>
 </html>

@@ -177,13 +177,17 @@ def _name_pair(headers: list[str]) -> tuple[int, int] | None:
     return None
 
 
-def _clean_table(rows: list[list[str]]) -> tuple[list[str], list[list[str]]]:
-    rows = [r for r in rows if any(c for c in r)]
+def _clean_table(rows: list[list[str]]) -> tuple[list[str], list[list[str]], dict]:
+    """Trả (tên cột, dòng dữ liệu, cách đọc: dòng tiêu đề trong tệp, các dòng bỏ qua phía trên)."""
+    numbered = [(n, r) for n, r in enumerate(rows, 1) if any(c for c in r)]   # số dòng thật trong tệp
+    rows = [r for _, r in numbered]
     if not rows:
-        return [], []
+        return [], [], {}
     width = max(len(r) for r in rows)
     rows = [r + [""] * (width - len(r)) for r in rows]
     hi = _header_index(rows)
+    how = {"header_row": numbered[hi][0] if hi is not None else None,
+           "skipped_above": [" | ".join(c for c in r if c)[:160] for r in rows[:hi or 0]]}
     if hi is None:
         headers, data = [f"Cột {i + 1}" for i in range(width)], rows
     else:
@@ -197,7 +201,7 @@ def _clean_table(rows: list[list[str]]) -> tuple[list[str], list[list[str]]]:
             else:
                 seen[h] = 1
     keep = [i for i in range(width) if sum(1 for r in data if r[i]) > max(0, len(data) * 0.02)]
-    return [headers[i] for i in keep], [[r[i] for i in keep] for r in data]
+    return [headers[i] for i in keep], [[r[i] for i in keep] for r in data], how
 
 
 def _title_score(header: str, values: list[str]) -> float:
@@ -230,7 +234,7 @@ def _ai_title(headers: list[str], data: list[list[str]], guess: str | None) -> s
 
 
 def table_records(name: str, rows: list[list[str]], filename: str, use_ai: bool = True) -> tuple[list[dict], dict]:
-    headers, data = _clean_table(rows)
+    headers, data, how = _clean_table(rows)
     if not data:
         return [], {"kind": "empty"}
     if len(headers) == 1:   # một cột: là ghi chú/văn bản (câu dài) thì coi như văn bản
@@ -259,12 +263,12 @@ def table_records(name: str, rows: list[list[str]], filename: str, use_ai: bool 
             recs.append({"title": t[:300], "fields": fields,
                          "text": t + "\n" + "\n".join(f"{k}: {v}" for k, v in fields.items()),
                          "source": f"{filename} · {name} · dòng {n}"})
-        return recs, {"kind": "table", "title_column": title_label, "fields": [h for h in headers if h != title], "sheet": name}
+        return recs, {"kind": "table", "title_column": title_label, "fields": [h for h in headers if h != title], "sheet": name, **how}
     for n, r in enumerate(data, 1):   # phương án C: không có cột tiêu đề dùng được
         fields = {h: v for h, v in zip(headers, r) if v}
         recs.append({"title": f"{name} · dòng {n}", "fields": fields,
                      "text": "; ".join(f"{k}: {v}" for k, v in fields.items()), "source": f"{filename} · {name} · dòng {n}"})
-    return recs, {"kind": "rows", "sheet": name, "fields": headers}
+    return recs, {"kind": "rows", "sheet": name, "fields": headers, **how}
 
 
 def text_records(title: str, text: str, source: str) -> list[dict]:

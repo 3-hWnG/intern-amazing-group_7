@@ -70,6 +70,7 @@ CHUNK_CHARS = 900
 EVIDENCE_CHARS = 700
 KB_NOT_FOUND_MESSAGE = 'Thông tin này không có trong các bộ dữ liệu đang bật nên chúng tôi không thể trả lời. Bạn có thể hỏi cụ thể hơn về nội dung trong dữ liệu, hoặc tắt bộ dữ liệu để trò chuyện chung.'
 EMBED_MODEL = 'bge-m3'
+TRACE_KEEP = 1000
 # ==== HẾT MẶC ĐỊNH ====
 
 # Danh sách cài đặt hiện trên panel. type: str | text (nhiều dòng) | int | float | bool | choice | rules
@@ -122,6 +123,8 @@ SETTINGS = [
          help="Chế độ Chuyên gia: tìm không thấy đoạn nào liên quan mà AI vẫn tự trả lời bằng kiến thức chung -> thay bằng câu này."),
     dict(key="EMBED_MODEL", type="str", group="Dữ liệu (Chuyên gia)", label="Model tìm theo nghĩa (Ollama)",
          help="Đổi model phải xử lý lại toàn bộ dữ liệu."),
+    dict(key="TRACE_KEEP", type="int", group="Bộ công cụ dev", label="Giữ chi tiết bao nhiêu câu trả lời gần nhất", min=50, max=100000,
+         help="Chi tiết (tìm kiếm, lời dặn, suy nghĩ ẩn…) cho nút 🔍 Soi; mỗi câu khoảng 10-20 KB. Câu cũ hơn tự xoá."),
     dict(key="FRIENDLY_MODEL", type="str", group="AI (Friendly)", label="Model", help="Tên model trong Ollama."),
     dict(key="DEFAULT_ANSWER_MODE", type="choice", choices=["fast", "think"], group="AI (Friendly)",
          label="Chế độ trả lời mặc định",

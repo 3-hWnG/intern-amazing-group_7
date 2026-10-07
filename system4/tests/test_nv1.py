@@ -151,7 +151,7 @@ with TestClient(main.app) as c:
     assert md.status_code == 200 and "Xin chào bạn!" in md.text
     assert c.get(f"/s4/conversations/{fcid}/export?format=json").json()["conversation"]["mode"] == "friendly"
     as_user(alice)
-    assert c.get(f"/s4/conversations/{fcid}/messages").status_code == 404, "không xem được Friendly của người khác"
+    assert c.get(f"/s4/conversations/{fcid}/messages").status_code == 200, "dev (alice) XEM được Friendly của người khác (bộ công cụ dev, 1C)"
     assert c.post("/s4/chat", json={"mode": "think", "text": "x", "conversation_id": fcid}).status_code == 404
 
     # ---- cài đặt: chỉ dev; Lưu / Về mặc định / Đặt làm mặc định

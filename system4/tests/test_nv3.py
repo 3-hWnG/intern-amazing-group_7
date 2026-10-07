@@ -128,6 +128,35 @@ with TestClient(main.app) as c:
     rec_id = m["meta"]["sources"][0]["record_id"]
     rec = c.get(f"/s4/records/{rec_id}").json()
     assert rec["record"]["fields"]["Giá"] == "55.000đ" and rec["dataset"]["name"] == "menu quán"
+    # ---- bộ công cụ dev: "Vì sao?" (người dùng) / 🔍 Soi (dev) / cách đọc tệp
+    mid = m["id"]
+    w = c.get(f"/s4/trace/{mid}").json()
+    assert "trace" not in w and w["why"]["specialist"] and w["why"]["sources"][0]["title"] == "Phở bò tái", w
+    assert w["why"]["sources"][0]["score"] is not None, "người dùng thấy độ liên quan của nguồn"
+    as_user("dev1")
+    t = c.get(f"/s4/trace/{mid}").json()["trace"]
+    cand = t["retrieval"]["candidates"]
+    assert cand[0]["title"] == "Phở bò tái" and cand[0]["sent"] and cand[0]["rerank"] is not None, cand[:2]
+    assert all({"keyword_rank", "vector_rank", "rrf", "rerank", "passed", "sent"} <= set(x) for x in cand), cand[0]
+    assert "CHẾ ĐỘ CHUYÊN GIA" in t["prompts"][0]["messages"][0]["content"] and t["output"]["raw_json"].startswith("{")
+    assert t["checks"]["foreign"] is False and t["timing"]["search_ms"] is not None
+    assert c.get(f"/s4/conversations/{cid}/messages").status_code == 200, "dev xem được hội thoại của người khác (chỉ xem)"
+    assert c.post("/s4/chat", json={"text": "x", "conversation_id": cid}).status_code == 404, "nhưng không gửi được vào đó"
+    rd = c.get(f"/s4/datasets/{menu_id}/reading").json()
+    assert rd["dataset"]["mapping"]["parts"][0]["header_row"] == 1 and rd["first"][0]["title"] == "Bánh mì thịt", rd
+    lab = c.post("/s4/admin/searchlab", json={"query": "giá phở bò", "dataset_ids": [menu_id],
+                                               "overrides": {"RETRIEVAL_TOP_K": 1, "RERANKER_ENABLED": False}}).json()
+    assert lab["info"]["settings"]["RETRIEVAL_TOP_K"] == 1 and len(lab["sent"]) == 1 and not lab["info"]["reranked"], lab["info"]["settings"]
+    ask = c.post("/s4/admin/searchlab/ask", json={"query": "giá phở bò", "dataset_ids": [menu_id]}).json()
+    assert "Dữ liệu tham khảo" in ask["prompt"] and ask["parsed"]["answer"], ask
+    users = c.get("/s4/admin/users").json()["users"]
+    lan_id = next(u["id"] for u in users if u["username"] == "lan")
+    assert any(x["id"] == cid for x in c.get(f"/s4/admin/users/{lan_id}/conversations").json()["conversations"])
+    as_user("minh")
+    assert c.get(f"/s4/trace/{mid}").status_code == 404 and c.post("/s4/admin/searchlab", json={"query": "x", "dataset_ids": [menu_id]}).status_code == 403
+    assert c.get(f"/s4/conversations/{cid}/messages").status_code == 404, "người dùng thường không xem được hội thoại người khác"
+    as_user("lan")
+
     # câu ngắn nối tiếp: tìm kèm câu hỏi trước
     chat("còn mô tả?", conversation_id=cid)
     assert "[1] Phở bò tái" in prompts[-1][0]["content"], "câu ngắn ghép ngữ cảnh câu trước để tìm"

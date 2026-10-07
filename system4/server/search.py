@@ -60,13 +60,13 @@ def delete_vectors(dataset_id: int) -> None:
         FieldCondition(key="dataset_id", match=MatchValue(value=dataset_id))])))
 
 
-def _vector_search(query_vec: list[float], dataset_ids: list[int], limit: int) -> list[int]:
+def _vector_search(query_vec: list[float], dataset_ids: list[int], limit: int) -> list[tuple[int, float]]:
     from qdrant_client.models import FieldCondition, Filter, MatchAny
     q = _qdrant()
     with _qlock:
         res = q.query_points(COLLECTION, query=query_vec, limit=limit,
                                  query_filter=Filter(must=[FieldCondition(key="dataset_id", match=MatchAny(any=dataset_ids))]))
-    return [int(p.id) for p in res.points]
+    return [(int(p.id), round(float(p.score), 3)) for p in res.points]   # (id, độ giống cosine)
 
 
 # ----------------------------------------------------------------- từ khoá
@@ -135,39 +135,61 @@ def reranker_status() -> dict:
 
 
 # ------------------------------------------------------------------- tìm
-def search(user_id: int, query: str) -> tuple[list[dict], dict]:
-    """Tìm trong các bộ dữ liệu đang bật của người dùng. Trả (đoạn dữ liệu tốt nhất, thông tin đo)."""
-    ds = db.active_datasets(user_id)
+def search(user_id: int, query: str, dataset_ids: list[int] | None = None, overrides: dict | None = None) -> tuple[list[dict], dict]:
+    """Tìm trong các bộ dữ liệu đang bật của người dùng (hoặc dataset_ids chỉ định — phòng thử tìm kiếm của dev).
+    overrides: đổi tạm RETRIEVAL_CANDIDATES / RETRIEVAL_TOP_K / RERANKER_ENABLED / RERANK_MIN_SCORE (chỉ cho lần gọi này).
+    Trả (đoạn gửi cho AI, thông tin) — info["candidates"] = bảng xếp hạng đầy đủ cho bộ công cụ dev."""
+    cfg = lambda k: (overrides or {}).get(k, settings.get(k))
+    if dataset_ids is None:
+        ds = db.active_datasets(user_id)
+    else:
+        ds = [d for d in (db.get_dataset(i) for i in dataset_ids) if d and d["status"] == "ready"]
     ids = [d["id"] for d in ds]
-    info = {"datasets": len(ids), "reranked": False}
+    names = {d["id"]: d["name"] for d in ds}
+    info = {"datasets": len(ids), "reranked": False, "query": query, "fts_query": _fts_query(query),
+            "settings": {k: cfg(k) for k in ("RETRIEVAL_CANDIDATES", "RETRIEVAL_TOP_K", "RERANKER_ENABLED", "RERANK_MIN_SCORE")}}
     if not ids:
+        info["candidates"] = []
         return [], info
-    n = settings.get("RETRIEVAL_CANDIDATES")
+    n = cfg("RETRIEVAL_CANDIDATES")
     kw = _keyword_search(query, ids, n)
     try:
         vec = _vector_search(embed([query])[0], ids, n)
     except Exception as e:
         log.warning("tìm theo nghĩa lỗi: %s", e)
         vec = []
+    kw_rank = {rid: r + 1 for r, rid in enumerate(kw)}
+    vec_rank = {rid: (r + 1, sc) for r, (rid, sc) in enumerate(vec)}
     fused: dict[int, float] = {}
-    for lst in (kw, vec):   # RRF: cộng 1/(60 + hạng) của mỗi cách tìm
-        for rank, rid in enumerate(lst):
-            fused[rid] = fused.get(rid, 0) + 1 / (60 + rank)
+    for rid, r in kw_rank.items():   # RRF: cộng 1/(60 + hạng) của mỗi cách tìm
+        fused[rid] = fused.get(rid, 0) + 1 / (59 + r)
+    for rid, (r, _) in vec_rank.items():
+        fused[rid] = fused.get(rid, 0) + 1 / (59 + r)
     order = sorted(fused, key=fused.get, reverse=True)[:n]
     recs = {r["id"]: r for r in db.get_records(order)}
     cands = [recs[i] for i in order if i in recs]
-    info.update(keyword=len(kw), vector=len(vec), candidates=len(cands))
-    if settings.get("RERANKER_ENABLED") and cands:
+    info.update(keyword=len(kw), vector=len(vec), candidates_n=len(cands))
+    scores = None
+    if cfg("RERANKER_ENABLED") and cands:
         scores = rerank(query, [c["text"] for c in cands])
-        if scores is not None:
-            info["reranked"] = True
-            for c, s in zip(cands, scores):
-                c["score"] = round(s, 2)
-            cands = [c for c in sorted(cands, key=lambda c: c["score"], reverse=True) if c["score"] >= settings.get("RERANK_MIN_SCORE")]
-    names = {d["id"]: d["name"] for d in ds}
-    out = cands[:settings.get("RETRIEVAL_TOP_K")]
+    if scores is not None:
+        info["reranked"] = True
+        for c, sc in zip(cands, scores):
+            c["score"] = round(sc, 2)
+        ranked = sorted(cands, key=lambda c: c["score"], reverse=True)
+        passed = [c for c in ranked if c["score"] >= cfg("RERANK_MIN_SCORE")]
+    else:
+        ranked = passed = cands
+    out = passed[:cfg("RETRIEVAL_TOP_K")]
+    sent = {c["id"] for c in out}
     for c in out:
         c["dataset"] = names.get(c["dataset_id"], "")
+    info["candidates"] = [{
+        "id": c["id"], "title": c["title"], "dataset": names.get(c["dataset_id"], ""), "source": c["source"],
+        "keyword_rank": kw_rank.get(c["id"]), "vector_rank": (vec_rank.get(c["id"]) or (None, None))[0],
+        "vector_score": (vec_rank.get(c["id"]) or (None, None))[1], "rrf": round(fused[c["id"]], 4),
+        "rerank": c.get("score"), "passed": c in passed, "sent": c["id"] in sent, "text": c["text"][:400],
+    } for c in ranked]
     return out, info
 
 

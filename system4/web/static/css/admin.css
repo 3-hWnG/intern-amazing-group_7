@@ -43,4 +43,13 @@
 .diff-field pre{margin:0;padding:6px 9px;font:12px/1.4 Consolas,monospace;white-space:pre-wrap;max-height:200px;overflow:auto}
 .diff-field pre.old{background:color-mix(in srgb,var(--danger) 8%,transparent)}
 .diff-field pre.new{background:color-mix(in srgb,var(--good) 10%,transparent)}
+.lab-ds{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;font-size:13px}
+.lab-params{margin-top:6px}
+.chat-view{display:flex;flex-direction:column;gap:10px}
+.chat-view .u{align-self:flex-end;max-width:80%;padding:8px 12px;border-radius:10px;background:var(--accent);color:#fff;white-space:pre-wrap}
+.chat-view .a{align-self:flex-start;max-width:90%;padding:8px 12px;border-radius:10px;background:var(--panel-2);border:1px solid var(--line);white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-view .a .btn-ghost{margin-top:6px;padding:3px 9px;font-size:12px}
+.conv-pick{list-style:none;padding:0;margin:0}
+.conv-pick li{padding:7px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.conv-pick li:hover{background:var(--panel-2)}
 @media (max-width:760px){.admin-head,.admin-tabs,.admin-main{padding-left:12px;padding-right:12px}.grid{font-size:12.5px}}

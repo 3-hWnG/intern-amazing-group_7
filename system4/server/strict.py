@@ -68,11 +68,12 @@ def _path(root: str, leaf: dict | None) -> list[dict]:
 def make_router(app, s3_store) -> APIRouter:
     r = APIRouter(prefix="/s4/strict")
 
-    def owner_check(request: Request, root: str) -> dict:
+    def owner_check(request: Request, root: str, read: bool = False) -> dict:
+        """Chủ hội thoại. read=True: dev cũng được XEM (bộ công cụ dev, 1C)."""
         u = getattr(request.state, "user", None)
         if not u:
             raise HTTPException(401, "Cần đăng nhập")
-        if db.strict_owner(root) != u["id"] or not s3_store.conversation_exists(root):
+        if not s3_store.conversation_exists(root) or (db.strict_owner(root) != u["id"] and not (read and u["role"] == "dev")):
             raise HTTPException(404, "conversation not found")
         return u
 
@@ -144,7 +145,7 @@ def make_router(app, s3_store) -> APIRouter:
     # ------------------------------------------------------------------ API
     @r.get("/{root}/messages")
     def messages(root: str, request: Request):
-        owner_check(request, root)
+        owner_check(request, root, read=True)
         ensure_tree(root)
         return {"conversation_id": root, "messages": view(root)}
 
@@ -234,6 +235,22 @@ def make_router(app, s3_store) -> APIRouter:
         mid = max(m["id"] for m in s3_store.get_messages(cid))
         _set_leaf(root, _add(root, leaf["id"] if leaf else None, "assistant", cid, mid, "reset"))
         return {"conversation_id": root, "messages": view(root)}
+
+    @r.get("/trace/{node_id}")
+    def trace(node_id: int, request: Request):
+        """Strict: kế hoạch + dấu vết System 3 tự lưu cho câu trả lời này (dev), hoặc nguồn rút gọn (chủ hội thoại)."""
+        n = _node(node_id)
+        if not n or n["role"] != "assistant":
+            raise HTTPException(404, "không có câu trả lời này")
+        u = owner_check(request, n["root"], read=True)
+        m = s3_message(n["s3_cid"], n["s3_mid"]) or {}
+        sources = [{"title": b.get("title", ""), "sources": b.get("sources", [])} for b in m.get("blocks") or []]
+        why = {"mode": "strict", "kind": m.get("kind"), "blocks": sources, "clarify": bool(m.get("clarify"))}
+        if u["role"] != "dev":
+            return {"why": why}
+        return {"why": why, "plan": m.get("plan"), "s3_trace": s3_store.get_trace(n["s3_cid"], n["s3_mid"]),
+                "node": {k: n[k] for k in ("id", "root", "s3_cid", "s3_mid", "replied", "kind")},
+                "branch": n["s3_cid"] != n["root"]}
 
     @r.post("/{root}/feedback")
     def feedback(root: str, body: NodeIn, request: Request):

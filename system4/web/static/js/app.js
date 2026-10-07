@@ -201,6 +201,7 @@
       const bar = el("div", "msg-actions");
       const nav = versionNav(m, strictSwitch); if (nav) bar.appendChild(nav);
       bar.appendChild(actionBtn("⧉", "Sao chép", (btn) => copyText(m.content || "", btn)));
+      if (me && me.role === "dev") bar.appendChild(actionBtn("🔍", "Soi: kế hoạch và dấu vết System 3 cho câu trả lời này", () => S4Inspect.strict(m.node_id), "inspect"));
       if (m.kind !== "chitchat" || !String(m.content || "").startsWith("Đã bắt đầu chủ đề mới"))
         bar.appendChild(actionBtn("↻", "Tạo lại câu trả lời (phát lại các câu trước để System 3 dựng lại ngữ cảnh)", () => strictRedo(w, "regenerate", { node_id: m.node_id })));
       [[1, "👍", "Câu trả lời tốt"], [-1, "👎", "Câu trả lời chưa tốt"]].forEach(([v, label, title]) => {
@@ -367,6 +368,8 @@
     const nav = versionNav(m); if (nav) bar.appendChild(nav);
     if (!err) bar.appendChild(actionBtn("⧉", "Sao chép", (btn) => copyText(m.content, btn)));
     bar.appendChild(actionBtn("↻", "Tạo lại câu trả lời", () => regenerate(w, m)));
+    if (me && me.role === "dev") bar.appendChild(actionBtn("🔍", "Soi: AI đã tìm gì, nhận lời dặn gì, nghĩ gì, kiểm soát nào đã chạy", () => S4Inspect.friendly(m.id, true), "inspect"));
+    else if (m.meta && m.meta.specialist) bar.appendChild(actionBtn("Vì sao?", "Vì sao có câu trả lời này: nguồn và độ liên quan", () => S4Inspect.friendly(m.id, false), "deeper"));
     if (!err && (m.meta || {}).mode !== "think")
       bar.appendChild(actionBtn("Kỹ hơn", "Trả lời kỹ hơn: AI suy nghĩ rồi trả lời lại (khoảng 30 giây)", () => regenerate(w, m, "think"), "deeper"));
     if (!err) {
@@ -388,7 +391,7 @@
       if (m.meta.guard) notes.push("guardrail: " + m.meta.guard);
       if (m.meta.filtered) notes.push("đã lọc " + m.meta.filtered.letters + " chữ lạ, " + m.meta.filtered.other + " ký hiệu");
       if (m.meta.leak_retry) notes.push("đã viết lại do lọt chữ lạ");
-      if (m.meta.retrieval) notes.push("tìm: " + m.meta.retrieval.candidates + " ứng viên" + (m.meta.retrieval.reranked ? ", đã xếp hạng lại" : ", không xếp hạng lại"));
+      if (m.meta.retrieval) notes.push("tìm: " + m.meta.retrieval.candidates_n + " ứng viên" + (m.meta.retrieval.reranked ? ", đã xếp hạng lại" : ", không xếp hạng lại"));
       if (m.meta.mode) notes.push("chế độ: " + (m.meta.mode === "think" ? "suy nghĩ kỹ" : "nhanh") + (m.meta.interrupted ? " (đã bấm Trả lời nhanh)" : ""));
       if (notes.length) w.appendChild(el("div", "dev-note", notes.join(" · ")));
     }
@@ -964,6 +967,7 @@
       main.appendChild(el("div", "ds-meta", [KIND[d.kind] || "", d.n_records ? d.n_records + " bản ghi" : "", fmtSize(d.size_bytes), d.filename].filter(Boolean).join(" · ")));
       const act = el("div", "ds-actions");
       if (d.status === "ready") act.appendChild(actionBtn("Xem", "Xem các bản ghi", () => openRecords(d)));
+      if (d.status === "ready") act.appendChild(actionBtn("Cách đọc", "Xem hệ thống đã đọc tệp thế nào: dòng tiêu đề, cột tiêu đề, bản ghi đầu", () => S4Inspect.reading(d.id)));
       if (d.status === "error" || d.status === "ready") act.appendChild(actionBtn("Xử lý lại", "Đọc lại tệp và tạo lại chỉ mục", async () => { try { await api("/s4/datasets/" + d.id + "/retry", {}); pending.set(d.id, d.filename); } catch (e) { alert(e.message); } loadDatasets(); }));
       act.appendChild(actionBtn("Xoá", "Xoá bộ dữ liệu", async () => {
         if (!confirm('Xoá bộ dữ liệu "' + d.name + '"? Không khôi phục được.')) return;

@@ -136,6 +136,27 @@ body[data-mode="strict"] #attach,body[data-mode="strict"] #spec-badge{display:no
 .admin-link:hover{color:var(--ink);border-color:var(--ink-3)}
 .admin-link[hidden]{display:none}
 
+/* bộ công cụ dev: 🔍 Soi, Vì sao?, Cách đọc tệp */
+.insp .s4-dialog{width:min(1100px,100%)}
+.insp-tabs{display:flex;flex-wrap:wrap;gap:6px;padding:10px 18px 0}
+.insp-tabs .tab{flex:none;padding:6px 12px;font-size:13px}
+.insp-pre{margin:6px 0 10px;padding:8px 10px;max-height:340px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;
+  font:12px/1.45 Consolas,monospace;background:var(--panel-2);border:1px solid var(--line);border-radius:8px}
+.insp-kv{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+.insp-kv th,.insp-kv td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.insp-kv th{width:38%;color:var(--ink-2);font-weight:600}
+.insp-grid{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+.insp-grid th,.insp-grid td{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:top}
+.insp-grid th{background:var(--panel-2);color:var(--ink-3)}
+.insp-grid tr{cursor:pointer}
+.insp-grid tr.sent td{background:color-mix(in srgb,var(--good) 12%,transparent)}
+.insp-grid tr.failed td{color:var(--ink-3);text-decoration:line-through}
+.insp-grid tr.insp-text td{cursor:default;text-decoration:none;color:var(--ink);background:var(--panel)}
+.insp-role{font-size:12px;font-weight:600;color:var(--ink-2);margin-top:6px}
+.insp h3{font-size:13.5px;margin:12px 0 4px}
+.insp-why{padding-left:18px;font-size:14px}
+.icon-btn.inspect{font-size:13px}
+
 /* bộ nhớ */
 .mem-help{margin:12px 0 8px;font-size:13.5px;color:var(--ink-2)}
 .mem-mode{display:flex;flex-direction:column;gap:6px;padding:10px 12px;margin-bottom:10px;background:var(--panel-2);

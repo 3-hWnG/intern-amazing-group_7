@@ -13,7 +13,11 @@ import ollama
 from . import config, settings
 
 
-THINKING = object()   # tín hiệu "AI đang suy nghĩ" (phần suy nghĩ không gửi cho người dùng)
+class Thought(str):
+    """Một mẩu "suy nghĩ" ẩn của model (không gửi cho người dùng; bộ công cụ dev lưu lại để xem)."""
+
+
+THINKING = Thought("")   # tín hiệu "AI đang suy nghĩ" không kèm chữ (test dùng)
 
 
 class LLMError(RuntimeError):
@@ -79,7 +83,7 @@ def _stream(call: dict, model: str):
                     if stop.is_set():
                         break
                     if part["message"].get("thinking"):
-                        loop.call_soon_threadsafe(q.put_nowait, ("thinking", None))
+                        loop.call_soon_threadsafe(q.put_nowait, ("thinking", part["message"]["thinking"]))
                     text = part["message"]["content"]
                     if text:
                         loop.call_soon_threadsafe(q.put_nowait, ("delta", text))
@@ -94,7 +98,7 @@ def _stream(call: dict, model: str):
                 if kind == "delta":
                     yield val
                 elif kind == "thinking":
-                    yield THINKING   # mỗi mẩu suy nghĩ một lần: để bên gọi kiểm "Trả lời nhanh" kịp thời
+                    yield Thought(val)   # mỗi mẩu suy nghĩ một lần: để bên gọi kiểm "Trả lời nhanh" kịp thời + lưu cho dev
                 elif kind == "end":
                     return
                 else:

@@ -59,7 +59,8 @@ def update(user_id: int, user_text: str, mem_mode: str | None = None) -> dict:
     mem_mode = mem_mode or mode(user_id)
     want_remember, want_forget = triggers(user_text)
     if not (want_remember or want_forget) and (mem_mode == "explicit" or not worth_checking(user_text)):
-        return {"added": [], "removed": []}   # không gọi AI: đỡ tốn GPU, câu sau không phải chờ
+        return {"added": [], "removed": [], "checked": False,   # không gọi AI: đỡ tốn GPU, câu sau không phải chờ
+                "why": "chế độ chỉ nhớ khi được bảo" if mem_mode == "explicit" else "tin nhắn không có dấu hiệu tự kể về bản thân"}
     items = db.list_memories(user_id)
     known = "\n".join(f"{i}. {m['text']}" for i, m in enumerate(items, 1)) or "(chưa có)"
     hint = ""
@@ -84,4 +85,4 @@ def update(user_id: int, user_text: str, mem_mode: str | None = None) -> dict:
         db.add_memory(user_id, f, settings.get("MEMORY_MAX_ITEMS"))
         have.add(n)
         added.append(f)
-    return {"added": added, "removed": removed}
+    return {"added": added, "removed": removed, "checked": True, "proposed": out}

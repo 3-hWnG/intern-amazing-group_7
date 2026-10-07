@@ -121,6 +121,15 @@ with TestClient(main.app) as c:
     assert p[2]["replied"] is True and not p[-1]["clarify"], p[-1]
     r = c.post(f"/s4/strict/{root2}/regenerate", json={"node_id": p[-1]["node_id"]})
     assert r.status_code == 200 and not r.json()["messages"][-1]["clarify"], "phát lại giữ lựa chọn đã bấm"
+    # 🔍 Strict: kế hoạch + dấu vết System 3 (dev); chủ hội thoại thường chỉ thấy nguồn
+    st = c.get(f"/s4/strict/trace/{p[-1]['node_id']}").json()
+    assert "why" in st and "s3_trace" not in st
+    as_user("boss")
+    st = c.get(f"/s4/strict/trace/{p[-1]['node_id']}").json()
+    assert st["plan"] and st["s3_trace"] and st["branch"] is False, st.keys()
+    assert c.get(f"/s4/strict/{root2}/messages").status_code == 200, "dev xem được Strict của người khác (chỉ xem)"
+    assert c.post(f"/s4/strict/{root2}/regenerate", json={"node_id": p[-1]["node_id"]}).status_code == 404, "nhưng không sửa được"
+    as_user("anna")
     # người khác không đụng được
     as_user("binh")
     assert c.get(f"/s4/strict/{root}/messages").status_code == 404
