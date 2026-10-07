@@ -1,5 +1,6 @@
 """SQLite của System 4 (stdlib). Mỗi lệnh một kết nối ngắn, giống System 3."""
 from __future__ import annotations
+import json
 import sqlite3
 import uuid
 
@@ -20,8 +21,31 @@ def init_db() -> None:
     c = conn()
     c.execute("PRAGMA journal_mode=WAL")
     c.executescript(config.SCHEMA_PATH.read_text(encoding="utf-8"))
+    _migrate(c)
     c.commit()
     c.close()
+
+
+def _migrate(c: sqlite3.Connection) -> None:
+    """DB tạo ở NV1 thiếu cột của NV2: thêm cột, nối các tin cũ thành một chuỗi (mỗi tin trỏ về tin trước)."""
+    cols = lambda t: {r[1] for r in c.execute(f"PRAGMA table_info({t})")}
+    for col, ddl in (("current_leaf", "INTEGER"), ("summary", "TEXT NOT NULL DEFAULT ''"),
+                     ("summary_upto", "INTEGER NOT NULL DEFAULT 0")):
+        if col not in cols("conversations"):
+            c.execute(f"ALTER TABLE conversations ADD COLUMN {col} {ddl}")
+    added = False
+    for col, ddl in (("parent_id", "INTEGER"), ("meta", "TEXT NOT NULL DEFAULT '{}'"),
+                     ("feedback", "INTEGER NOT NULL DEFAULT 0")):
+        if col not in cols("messages"):
+            c.execute(f"ALTER TABLE messages ADD COLUMN {col} {ddl}")
+            added = True
+    if added:
+        for (cid,) in c.execute("SELECT id FROM conversations").fetchall():
+            ids = [r[0] for r in c.execute("SELECT id FROM messages WHERE conversation_id=? ORDER BY id", (cid,))]
+            for prev, cur in zip(ids, ids[1:]):
+                c.execute("UPDATE messages SET parent_id=? WHERE id=?", (prev, cur))
+            if ids:
+                c.execute("UPDATE conversations SET current_leaf=? WHERE id=?", (ids[-1], cid))
 
 
 def run(sql: str, args=(), one=False, many=False):
@@ -162,10 +186,121 @@ def delete_conversation(cid: str) -> None:
     run("DELETE FROM conversations WHERE id=?", (cid,))
 
 
-def add_message(cid: str, role: str, content: str, status: str = "done") -> int:
-    return run("INSERT INTO messages(conversation_id,role,content,status) VALUES (?,?,?,?)", (cid, role, content, status))
+def _msg(r: dict) -> dict:
+    r = dict(r)
+    try:
+        r["meta"] = json.loads(r.get("meta") or "{}")
+    except ValueError:
+        r["meta"] = {}
+    return r
 
 
-def get_messages(cid: str) -> list[dict]:
-    return run("SELECT id,role,content,status,created_at FROM messages WHERE conversation_id=? ORDER BY id",
-               (cid,), many=True)
+def add_message(cid: str, role: str, content: str, status: str = "done", parent_id: int | None = None,
+                meta: dict | None = None) -> int:
+    """Thêm tin vào sau parent_id và đặt nó làm cuối nhánh đang xem."""
+    mid = run("INSERT INTO messages(conversation_id,role,content,status,parent_id,meta) VALUES (?,?,?,?,?,?)",
+              (cid, role, content, status, parent_id, json.dumps(meta or {}, ensure_ascii=False)))
+    run("UPDATE conversations SET current_leaf=? WHERE id=?", (mid, cid))
+    return mid
+
+
+def update_message(mid: int, content: str, status: str, meta: dict) -> None:
+    run("UPDATE messages SET content=?, status=?, meta=? WHERE id=?",
+        (content, status, json.dumps(meta, ensure_ascii=False), mid))
+
+
+def get_message(mid: int) -> dict | None:
+    r = run("SELECT * FROM messages WHERE id=?", (mid,), one=True)
+    return _msg(r) if r else None
+
+
+def all_messages(cid: str) -> list[dict]:
+    return [_msg(r) for r in run(
+        "SELECT id,role,content,status,created_at,parent_id,meta,feedback FROM messages WHERE conversation_id=? ORDER BY id",
+        (cid,), many=True)]
+
+
+def current_leaf(cid: str) -> int | None:
+    r = run("SELECT current_leaf FROM conversations WHERE id=?", (cid,), one=True)
+    return r["current_leaf"] if r else None
+
+
+def get_path(cid: str) -> list[dict]:
+    """Các tin trên nhánh đang xem (từ đầu tới cuối), mỗi tin kèm danh sách phiên bản cùng cha (versions)."""
+    msgs = all_messages(cid)
+    by_id = {m["id"]: m for m in msgs}
+    kids: dict = {}
+    for m in msgs:
+        kids.setdefault(m["parent_id"], []).append(m["id"])
+    leaf = current_leaf(cid)
+    if leaf not in by_id:
+        leaf = msgs[-1]["id"] if msgs else None
+    path = []
+    while leaf is not None and leaf in by_id:
+        path.append(by_id[leaf])
+        leaf = by_id[leaf]["parent_id"]
+    path.reverse()
+    for m in path:
+        m["versions"] = kids.get(m["parent_id"], [m["id"]])
+    return path
+
+
+def deepest_leaf(cid: str, mid: int) -> int:
+    """Từ một tin, tới tin mới nhất trong nhánh con của nó (dùng khi chuyển phiên bản ‹ ›): quay về đúng chỗ
+    người dùng dừng ở phiên bản đó. Tin con luôn có id lớn hơn tin cha, nên tin id lớn nhất là tin cuối nhánh."""
+    msgs = all_messages(cid)
+    kids: dict = {}
+    for m in msgs:
+        kids.setdefault(m["parent_id"], []).append(m["id"])
+    best, todo = mid, [mid]
+    while todo:
+        n = todo.pop()
+        best = max(best, n)
+        todo.extend(kids.get(n, []))
+    return best
+
+
+def set_leaf(cid: str, mid: int) -> None:
+    run("UPDATE conversations SET current_leaf=? WHERE id=?", (mid, cid))
+
+
+def set_feedback(mid: int, value: int) -> None:
+    run("UPDATE messages SET feedback=? WHERE id=?", (value, mid))
+
+
+def get_summary(cid: str) -> tuple[str, int]:
+    r = run("SELECT summary, summary_upto FROM conversations WHERE id=?", (cid,), one=True)
+    return (r["summary"], r["summary_upto"]) if r else ("", 0)
+
+
+def set_summary(cid: str, text: str, upto: int) -> None:
+    run("UPDATE conversations SET summary=?, summary_upto=? WHERE id=?", (text, upto, cid))
+
+
+# ------------------------------------------------------------- bộ nhớ (NV2)
+def list_memories(user_id: int) -> list[dict]:
+    return run("SELECT id,text,created_at FROM memories WHERE user_id=? ORDER BY id", (user_id,), many=True)
+
+
+def add_memory(user_id: int, text: str, max_items: int) -> int:
+    mid = run("INSERT INTO memories(user_id,text) VALUES (?,?)", (user_id, text))
+    run("DELETE FROM memories WHERE user_id=? AND id NOT IN (SELECT id FROM memories WHERE user_id=? ORDER BY id DESC LIMIT ?)",
+        (user_id, user_id, max_items))   # quá giới hạn: bỏ điều cũ nhất
+    return mid
+
+
+def delete_memory(user_id: int, mem_id: int | None = None) -> None:
+    if mem_id is None:
+        run("DELETE FROM memories WHERE user_id=?", (user_id,))
+    else:
+        run("DELETE FROM memories WHERE user_id=? AND id=?", (user_id, mem_id))
+
+
+def get_memory_mode(user_id: int) -> str:
+    r = run("SELECT memory_mode FROM user_prefs WHERE user_id=?", (user_id,), one=True)
+    return r["memory_mode"] if r else ""
+
+
+def set_memory_mode(user_id: int, mode: str) -> None:
+    run("INSERT INTO user_prefs(user_id,memory_mode) VALUES (?,?) "
+        "ON CONFLICT(user_id) DO UPDATE SET memory_mode=excluded.memory_mode", (user_id, mode))

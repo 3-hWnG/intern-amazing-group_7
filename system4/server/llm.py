@@ -5,6 +5,7 @@ Ollama tự xếp hàng giữa System 3 và System 4 vì cả hai dùng chung m�
 """
 from __future__ import annotations
 import asyncio
+import json
 import threading
 
 import ollama
@@ -48,6 +49,19 @@ class Turn:
 
     async def __aexit__(self, *exc):
         _gate.release()
+
+
+def chat_json(messages: list[dict], schema: dict, timeout: float = 60) -> dict:
+    """Gọi một lần, ép đầu ra theo JSON schema (bộ nhớ, tóm tắt). Ép JSON làm model bỏ qua phần suy nghĩ nên nhanh.
+    Lỗi -> {} (việc phụ, không làm hỏng câu trả lời chính)."""
+    try:
+        res = ollama.Client(host=config.OLLAMA_HOST, timeout=timeout).chat(
+            model=settings.get("FRIENDLY_MODEL"), messages=messages, format=schema, think=False, keep_alive="30m",
+            options={"temperature": 0, "num_ctx": settings.get("FRIENDLY_NUM_CTX")})
+        v = json.loads(res["message"]["content"] or "{}")
+        return v if isinstance(v, dict) else {}
+    except Exception:
+        return {}
 
 
 async def stream_chat(messages: list[dict]):

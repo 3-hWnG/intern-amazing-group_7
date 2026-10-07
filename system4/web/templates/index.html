@@ -7,7 +7,7 @@
 <link rel="icon" href="data:,">
 <!-- Giao diện = bản sao trang System 3 (web/templates/index.html) + công tắc Strict/Friendly, đăng nhập, cài đặt -->
 <link rel="stylesheet" href="/static/css/styles.css?v=20261006g">
-<link rel="stylesheet" href="/s4/static/css/s4.css?v=nv1">
+<link rel="stylesheet" href="/s4/static/css/s4.css?v=nv2">
 <style>
 .block-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px}
 .block-card h4{margin:0 0 6px;font-size:14px;color:var(--accent)}
@@ -25,7 +25,10 @@
     <div class="sidebar-foot">
       <div class="user-row">
         <span id="user-name"></span>
-        <button id="logout" class="link" type="button">Đăng xuất</button>
+        <span class="user-links">
+          <button id="open-memory" class="link" type="button" title="Những điều AI nhớ về bạn (Friendly)">Bộ nhớ</button>
+          <button id="logout" class="link" type="button">Đăng xuất</button>
+        </span>
       </div>
     </div>
   </aside>
@@ -68,6 +71,27 @@
     </footer>
   </div>
 </div>
-<script src="/s4/static/js/app.js?v=nv1"></script>
+<div id="memory" class="s4-modal" hidden>
+  <div class="s4-dialog" role="dialog" aria-modal="true" aria-labelledby="memory-title">
+    <header>
+      <h2 id="memory-title">Bộ nhớ của bạn</h2>
+      <button id="memory-close" class="icon" type="button" aria-label="Đóng">✕</button>
+    </header>
+    <div class="body">
+      <p class="mem-help">Những điều AI nhớ về bạn, dùng ở mọi hội thoại Friendly để không phải hỏi lại.</p>
+      <div class="mem-mode" role="radiogroup" aria-label="Chế độ ghi nhớ">
+        <label><input type="radio" name="mem-mode" value="auto"> Tự động ghi nhớ</label>
+        <label><input type="radio" name="mem-mode" value="explicit"> Chỉ nhớ khi tôi bảo "hãy nhớ…"</label>
+      </div>
+      <ul id="memory-list" class="mem-list"></ul>
+    </div>
+    <footer>
+      <button id="memory-clear" class="btn-ghost" type="button">Xoá tất cả</button>
+    </footer>
+  </div>
+</div>
+<script src="/s4/static/vendor/marked.umd.js?v=18.1.0"></script>
+<script src="/s4/static/vendor/purify.min.js?v=3.4.16"></script>
+<script src="/s4/static/js/app.js?v=nv2"></script>
 </body>
 </html>

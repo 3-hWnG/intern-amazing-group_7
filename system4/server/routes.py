@@ -1,13 +1,11 @@
 """API của System 4, tất cả nằm dưới /s4. Middleware ở hook.py đã kiểm đăng nhập và gắn request.state.user."""
 from __future__ import annotations
-import asyncio
-import json
 
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response, StreamingResponse
 from pydantic import BaseModel
 
-from . import auth, config, db, export, llm, settings
+from . import auth, chat as chat_turn, config, db, export, memory, settings
 
 
 class Credentials(BaseModel):
@@ -17,8 +15,22 @@ class Credentials(BaseModel):
 
 
 class ChatIn(BaseModel):
-    text: str
+    text: str = ""
     conversation_id: str | None = None
+    edit_of: int | None = None          # sửa tin người dùng này -> phiên bản mới
+    regenerate_of: int | None = None    # tạo lại câu trả lời này -> phiên bản mới
+
+
+class SwitchIn(BaseModel):
+    message_id: int
+
+
+class FeedbackIn(BaseModel):
+    value: int   # 1 | -1 | 0
+
+
+class MemoryModeIn(BaseModel):
+    mode: str   # auto | explicit
 
 
 class ConvPatch(BaseModel):
@@ -46,10 +58,6 @@ def _dev(request: Request) -> dict:
     if u["role"] != "dev":
         raise HTTPException(403, "Chỉ tài khoản dev được dùng chức năng này")
     return u
-
-
-def _sse(obj: dict) -> str:
-    return f"data: {json.dumps(obj, ensure_ascii=False)}\n\n"
 
 
 def make_router(s3_store, strict_list) -> APIRouter:
@@ -146,7 +154,29 @@ def make_router(s3_store, strict_list) -> APIRouter:
     @r.get("/conversations/{cid}/messages")
     def messages(cid: str, request: Request):
         own_friendly(request, cid)
-        return {"conversation_id": cid, "messages": db.get_messages(cid)}
+        return {"conversation_id": cid, "messages": db.get_path(cid)}
+
+    def own_message(request: Request, cid: str, mid: int) -> dict:
+        own_friendly(request, cid)
+        m = db.get_message(mid)
+        if not m or m["conversation_id"] != cid:
+            raise HTTPException(404, "message not found")
+        return m
+
+    @r.post("/conversations/{cid}/switch")
+    def switch(cid: str, body: SwitchIn, request: Request):
+        """Chuyển sang phiên bản khác (‹ 1/2 ›): đi theo nhánh mới nhất dưới tin được chọn."""
+        own_message(request, cid, body.message_id)
+        db.set_leaf(cid, db.deepest_leaf(cid, body.message_id))
+        return {"conversation_id": cid, "messages": db.get_path(cid)}
+
+    @r.post("/conversations/{cid}/messages/{mid}/feedback")
+    def feedback(cid: str, mid: int, body: FeedbackIn, request: Request):
+        m = own_message(request, cid, mid)
+        if m["role"] != "assistant" or body.value not in (-1, 0, 1):
+            raise HTTPException(422, "chỉ đánh giá câu trả lời của AI, giá trị 1/-1/0")
+        db.set_feedback(mid, body.value)
+        return {"ok": True}
 
     @r.patch("/conversations/{cid}")
     def patch(cid: str, body: ConvPatch, request: Request):
@@ -169,7 +199,7 @@ def make_router(s3_store, strict_list) -> APIRouter:
         conv = own_friendly(request, cid)
         if format not in ("md", "json", "pdf"):
             raise HTTPException(400, "format phải là md, json hoặc pdf")
-        msgs = db.get_messages(cid)
+        msgs = db.get_path(cid)
         if format == "pdf":
             return Response(export.to_print_html(conv, msgs), media_type="text/html; charset=utf-8")
         body = export.to_markdown(conv, msgs) if format == "md" else export.to_json(conv, msgs)
@@ -179,54 +209,66 @@ def make_router(s3_store, strict_list) -> APIRouter:
 
     @r.post("/chat")
     async def chat(body: ChatIn, request: Request):
-        """Trả lời theo luồng SSE: meta -> [queue] -> start -> [thinking] -> delta... -> done | error."""
+        """Một lượt Friendly, trả về luồng SSE (xem chat.py). Ba kiểu: tin mới / sửa tin (edit_of) / tạo lại (regenerate_of)."""
         u = _user(request)
-        text = body.text.strip()
-        if not text:
-            raise HTTPException(422, "text rỗng")
         cid = body.conversation_id
-        if cid:
+        if body.regenerate_of or body.edit_of:
+            if not cid:
+                raise HTTPException(422, "thiếu conversation_id")
             own_friendly(request, cid)
+        elif cid:
+            own_friendly(request, cid)
+        if body.regenerate_of:
+            m = own_message(request, cid, body.regenerate_of)
+            if m["role"] != "assistant" or not m["parent_id"]:
+                raise HTTPException(422, "chỉ tạo lại được câu trả lời của AI")
+            user_msg = db.get_message(m["parent_id"])
+            text, user_mid = user_msg["content"], user_msg["id"]
+            db.set_leaf(cid, user_mid)
         else:
-            cid = db.create_conversation(u["id"])
-        n = settings.get("FRIENDLY_HISTORY_MESSAGES")
-        history = [m for m in db.get_messages(cid) if m["status"] != "error" and m["content"]][-n:] if n else []
-        user_mid = db.add_message(cid, "user", text)
-        db.set_title_if_new(cid, text)
-        msgs = [{"role": "system", "content": settings.get("FRIENDLY_SYSTEM_PROMPT")}]
-        msgs += [{"role": m["role"], "content": m["content"]} for m in history]
-        msgs.append({"role": "user", "content": text})
-
-        async def gen():
-            yield _sse({"type": "meta", "conversation_id": cid, "user_message_id": user_mid})
-            pos = llm.queue_position()
-            if pos:
-                yield _sse({"type": "queue", "position": pos})
-            parts, status, err, mid = [], "done", None, None
-            try:
-                async with llm.Turn():
-                    yield _sse({"type": "start"})
-                    async for t in llm.stream_chat(msgs):
-                        if t is llm.THINKING:
-                            yield _sse({"type": "thinking"})
-                            continue
-                        parts.append(t)
-                        yield _sse({"type": "delta", "text": t})
-            except (llm.QueueFull, llm.LLMError) as e:
-                status, err = "error", str(e)
-            except (asyncio.CancelledError, GeneratorExit):
-                status = "stopped"   # người dùng rời trang/bấm dừng: giữ phần đã sinh
-                raise
-            finally:
-                content = "".join(parts)
-                if "</think>" in content:   # model suy nghĩ nhưng FRIENDLY_THINK tắt: không lưu phần suy nghĩ
-                    content = content.split("</think>", 1)[1].strip()
-                if content or err:
-                    mid = db.add_message(cid, "assistant", content or err, status)
-            yield _sse({"type": "error", "message": err, "message_id": mid} if err else {"type": "done", "message_id": mid})
-
-        return StreamingResponse(gen(), media_type="text/event-stream",
+            text = body.text.strip()
+            if not text:
+                raise HTTPException(422, "text rỗng")
+            if body.edit_of:
+                m = own_message(request, cid, body.edit_of)
+                if m["role"] != "user":
+                    raise HTTPException(422, "chỉ sửa được tin của người dùng")
+                parent = m["parent_id"]
+            else:
+                if not cid:
+                    cid = db.create_conversation(u["id"])
+                parent = db.current_leaf(cid)
+            user_mid = db.add_message(cid, "user", text, "done", parent)
+            db.set_title_if_new(cid, text)
+        history = db.get_path(cid)[:-1]   # nhánh tới trước tin người dùng
+        return StreamingResponse(chat_turn.run(u, cid, user_mid, text, history), media_type="text/event-stream",
                                  headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+    # -------------------------------------------------- bộ nhớ của mỗi người
+    @r.get("/memory")
+    def get_memory(request: Request):
+        u = _user(request)
+        return {"mode": memory.mode(u["id"]), "items": db.list_memories(u["id"])}
+
+    @r.post("/memory/mode")
+    def set_memory_mode(body: MemoryModeIn, request: Request):
+        u = _user(request)
+        if body.mode not in ("auto", "explicit"):
+            raise HTTPException(422, "mode phải là auto hoặc explicit")
+        db.set_memory_mode(u["id"], body.mode)
+        return {"mode": body.mode, "items": db.list_memories(u["id"])}
+
+    @r.delete("/memory/{mem_id}")
+    def delete_memory(mem_id: int, request: Request):
+        u = _user(request)
+        db.delete_memory(u["id"], mem_id)
+        return {"ok": True}
+
+    @r.delete("/memory")
+    def delete_all_memory(request: Request):
+        u = _user(request)
+        db.delete_memory(u["id"])
+        return {"ok": True}
 
     # ------------------------------------------------------- cài đặt (dev)
     @r.get("/settings")

@@ -41,6 +41,8 @@ async def broken_stream(messages):
     yield ""   # noqa: để là async generator
 
 
+llm.chat_json = lambda *a, **k: {}   # bộ nhớ/tóm tắt chạy nền (NV2): không gọi Ollama thật trong test
+
 with TestClient(main.app) as c:
     def as_user(tok):
         c.cookies.clear()
@@ -150,7 +152,7 @@ with TestClient(main.app) as c:
     assert c.post("/s4/settings", json={"values": {"APP_TITLE": "Hack"}}).status_code == 403
     as_user(alice)
     keys = [s["key"] for s in c.get("/s4/settings").json()["settings"]]
-    assert "APP_TITLE" in keys and "FRIENDLY_SYSTEM_PROMPT" in keys
+    assert "APP_TITLE" in keys and "GUARDRAILS" in keys
     assert c.post("/s4/settings", json={"values": {"SESSION_DAYS": 0}}).status_code == 422
     assert c.post("/s4/settings", json={"values": {"DEFAULT_MODE": "abc"}}).status_code == 422
     assert c.post("/s4/settings", json={"values": {"ALLOW_SIGNUP": "yes"}}).status_code == 422

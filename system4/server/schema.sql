@@ -32,7 +32,10 @@ CREATE TABLE IF NOT EXISTS conversations (
   user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
   title       TEXT NOT NULL DEFAULT 'Cuộc trò chuyện mới',
   pinned      INTEGER NOT NULL DEFAULT 0,
-  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at  TEXT NOT NULL DEFAULT (datetime('now')),
+  current_leaf INTEGER,                            -- tin cuối của nhánh đang xem (NV2: phiên bản ‹ 1/2 ›)
+  summary     TEXT NOT NULL DEFAULT '',            -- tóm tắt phần đầu hội thoại dài (NV2)
+  summary_upto INTEGER NOT NULL DEFAULT 0          -- tóm tắt bao phủ tới tin này (theo nhánh)
 );
 CREATE INDEX IF NOT EXISTS idx_conv_user ON conversations(user_id);
 CREATE TABLE IF NOT EXISTS messages (
@@ -41,6 +44,21 @@ CREATE TABLE IF NOT EXISTS messages (
   role            TEXT NOT NULL,                   -- user | assistant
   content         TEXT NOT NULL DEFAULT '',
   status          TEXT NOT NULL DEFAULT 'done',    -- done | error | stopped
-  created_at      TEXT NOT NULL DEFAULT (datetime('now'))
+  created_at      TEXT NOT NULL DEFAULT (datetime('now')),
+  parent_id       INTEGER,                         -- tin đứng trước (NULL = tin đầu); cùng cha = các phiên bản
+  meta            TEXT NOT NULL DEFAULT '{}',      -- JSON: choices (hỏi lại), guard, leak, memory...
+  feedback        INTEGER NOT NULL DEFAULT 0       -- 1 = 👍, -1 = 👎
 );
 CREATE INDEX IF NOT EXISTS idx_msg_conv ON messages(conversation_id, id);
+-- Bộ nhớ dài hạn của từng người (NV2)
+CREATE TABLE IF NOT EXISTS memories (
+  id          INTEGER PRIMARY KEY AUTOINCREMENT,
+  user_id     INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+  text        TEXT NOT NULL,
+  created_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);
+CREATE INDEX IF NOT EXISTS idx_mem_user ON memories(user_id);
+CREATE TABLE IF NOT EXISTS user_prefs (
+  user_id     INTEGER PRIMARY KEY REFERENCES users(id) ON DELETE CASCADE,
+  memory_mode TEXT NOT NULL DEFAULT ''             -- auto | explicit | '' = theo cài đặt chung
+);

@@ -200,13 +200,140 @@
   }
 
   /* ------------------------------------------------------ Friendly ------- */
-  function friendlyMsg(m) {
+  /* Markdown -> HTML an toàn (marked + DOMPurify, lưu sẵn trong /s4/static/vendor, không cần mạng) */
+  if (window.DOMPurify) DOMPurify.addHook("afterSanitizeAttributes", (n) => {
+    if (n.tagName === "A") { n.setAttribute("target", "_blank"); n.setAttribute("rel", "noopener noreferrer"); }
+  });
+  function md(text) {
+    try { return DOMPurify.sanitize(marked.parse(text || "", { breaks: true, gfm: true })); }
+    catch (_) { const d = el("div"); d.textContent = text || ""; return d.innerHTML; }
+  }
+  /* ẩn khối [[CHOICES]] khi đang hiện chữ dần (kể cả lúc mới gõ dở "[[CHO") */
+  const visible = (t) => t.split(/\[\[\s*CHOICES/i)[0].replace(/\[(\[[A-Za-z]*)?$/, "");
+
+  function actionBtn(label, title, fn, cls) {
+    const b = el("button", "icon-btn" + (cls ? " " + cls : ""), label);
+    b.type = "button"; b.title = title; b.setAttribute("aria-label", title);
+    b.onclick = (e) => { e.stopPropagation(); fn(b); };
+    return b;
+  }
+
+  function versionNav(m) {
+    const vs = m.versions || [m.id];
+    if (vs.length < 2) return null;
+    const i = vs.indexOf(m.id);
+    const nav = el("span", "ver-nav");
+    const prev = actionBtn("‹", "Phiên bản trước", () => switchTo(vs[i - 1]));
+    const next = actionBtn("›", "Phiên bản sau", () => switchTo(vs[i + 1]));
+    prev.disabled = i <= 0; next.disabled = i >= vs.length - 1;
+    nav.append(prev, el("span", "ver-count", (i + 1) + "/" + vs.length), next);
+    return nav;
+  }
+
+  async function switchTo(mid) {
+    if (sending || !convId) return;
+    try { renderFriendly((await api("/s4/conversations/" + convId + "/switch", { message_id: mid })).messages); }
+    catch (e) { alert("Lỗi: " + e.message); }
+  }
+
+  async function copyText(text, btn) {
+    try { await navigator.clipboard.writeText(text); }
+    catch (_) { const t = el("textarea"); t.value = text; document.body.appendChild(t); t.select(); document.execCommand("copy"); t.remove(); }
+    const old = btn.textContent; btn.textContent = "✓"; setTimeout(() => { btn.textContent = old; }, 1200);
+  }
+
+  function friendlyUser(m) {
+    const w = el("div", "msg user");
+    w.dataset.mid = m.id;
+    w.appendChild(el("div", "bubble", m.content));
+    const bar = el("div", "msg-actions");
+    const nav = versionNav(m); if (nav) bar.appendChild(nav);
+    bar.appendChild(actionBtn("✎", "Sửa tin nhắn", () => startEdit(w, m)));
+    w.appendChild(bar);
+    box.appendChild(w);
+  }
+
+  function startEdit(w, m) {
+    if (sending) return;
+    w.innerHTML = "";
+    const ta = el("textarea", "edit-box"); ta.value = m.content; ta.rows = Math.min(8, m.content.split("\n").length + 1);
+    const row = el("div", "edit-row");
+    const cancel = el("button", "btn-ghost", "Huỷ"); cancel.type = "button";
+    const ok = el("button", "primary", "Gửi"); ok.type = "button";
+    cancel.onclick = () => loadConv(convId, "friendly");
+    ok.onclick = () => {
+      const v = ta.value.trim(); if (!v) return;
+      while (w.nextSibling) w.nextSibling.remove();   // các tin sau tin được sửa thuộc phiên bản cũ
+      w.remove();
+      send(v, null, { edit_of: m.id });
+    };
+    ta.onkeydown = (e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); ok.click(); } if (e.key === "Escape") cancel.click(); };
+    row.append(cancel, ok); w.append(ta, row); ta.focus();
+  }
+
+  function friendlyAssistant(m, isLast) {
     const w = el("div", "msg assistant");
+    w.dataset.mid = m.id;
     const err = m.status === "error";
-    w.appendChild(el("div", "bubble" + (err ? " err" : ""), (err ? "Lỗi: " : "") + (m.content || "")));
+    const b = el("div", "bubble md" + (err ? " err" : ""));
+    if (err) b.textContent = "Lỗi: " + m.content; else b.innerHTML = md(m.content);
+    w.appendChild(b);
     if (m.status === "stopped") w.appendChild(el("div", "stopped-note", "(đã dừng)"));
+    const choices = (m.meta && m.meta.choices) || [];
+    if (choices.length) w.appendChild(clarifyCard({ question: "Chọn nhanh:", options: choices, allow_free_text: true }, null, !isLast));
+    const bar = el("div", "msg-actions");
+    const nav = versionNav(m); if (nav) bar.appendChild(nav);
+    if (!err) bar.appendChild(actionBtn("⧉", "Sao chép", (btn) => copyText(m.content, btn)));
+    bar.appendChild(actionBtn("↻", "Tạo lại câu trả lời", () => regenerate(w, m)));
+    if (!err) {
+      const fb = (v, label, title) => {
+        const btn = actionBtn(label, title, async (x) => {
+          const val = m.feedback === v ? 0 : v;
+          try { await api("/s4/conversations/" + convId + "/messages/" + m.id + "/feedback", { value: val }); } catch (e) { alert("Lỗi: " + e.message); return; }
+          m.feedback = val;
+          bar.querySelectorAll(".fb").forEach((y) => y.classList.remove("on"));
+          if (val) x.classList.add("on");
+        }, "fb" + (m.feedback === v ? " on" : ""));
+        bar.appendChild(btn);
+      };
+      fb(1, "👍", "Câu trả lời tốt"); fb(-1, "👎", "Câu trả lời chưa tốt");
+    }
+    w.appendChild(bar);
+    if (me && me.role === "dev" && m.meta) {   // dev: thấy guardrail / bộ lọc chữ đã can thiệp
+      const notes = [];
+      if (m.meta.guard) notes.push("guardrail: " + m.meta.guard);
+      if (m.meta.filtered) notes.push("đã lọc " + m.meta.filtered.letters + " chữ lạ, " + m.meta.filtered.other + " ký hiệu");
+      if (m.meta.leak_retry) notes.push("đã viết lại do lọt chữ lạ");
+      if (notes.length) w.appendChild(el("div", "dev-note", notes.join(" · ")));
+    }
     box.appendChild(w);
     return w;
+  }
+
+  function regenerate(w, m) {
+    if (sending) return;
+    while (w.nextSibling) w.nextSibling.remove();
+    w.remove();
+    send("", null, { regenerate_of: m.id });
+  }
+
+  function renderFriendly(msgs) {
+    box.innerHTML = "";
+    if (!msgs.length) { empty(); return; }
+    const lastA = msgs.map((x) => x.role).lastIndexOf("assistant");
+    msgs.forEach((x, i) => { if (x.role === "user") friendlyUser(x); else friendlyAssistant(x, i === lastA && i === msgs.length - 1); });
+    scroll();
+  }
+
+  function memoryNote(ev) {
+    const last = [...box.querySelectorAll(".msg.assistant")].pop();
+    if (!last) return;
+    const n = el("div", "mem-note");
+    n.append(el("span", "", ev.added && ev.added.length ? "Đã cập nhật bộ nhớ" : "Đã xoá khỏi bộ nhớ"));
+    n.title = [...(ev.added || []).map((x) => "+ " + x), ...(ev.removed || []).map((x) => "− " + x)].join("\n");
+    const btn = el("button", "link", "Xem"); btn.type = "button"; btn.onclick = openMemory;
+    n.appendChild(btn);
+    last.appendChild(n);
   }
 
   /* ------------------------------------------------------- tải hội thoại -- */
@@ -220,11 +347,11 @@
     try {
       const data = await api(`${base(mode, id)}/messages`);
       const msgs = data.messages;
+      if (mode === "friendly") { renderFriendly(msgs); return; }
       if (!msgs.length) empty();
       msgs.forEach((x, i) => {
         if (x.role === "user") userMsg(x.content);
-        else if (mode === "strict") strictMsg(x, i !== msgs.length - 1);   // thẻ cũ bị khoá, chỉ thẻ cuối bấm được
-        else friendlyMsg(x);
+        else strictMsg(x, i !== msgs.length - 1);   // thẻ cũ bị khoá, chỉ thẻ cuối bấm được
       });
       scroll();
     } catch (_) { convId = null; ls.set("s4_conv", null); setTitle(); empty(); }
@@ -333,76 +460,99 @@
     }
   }
 
-  async function sendFriendly(text) {
-    const status = statusLine("Đang gửi…");
-    box.appendChild(status); scroll();
-    let bubble = null, failed = false;
-    const ensureBubble = () => {
-      if (!bubble) {
-        status.remove();
-        const w = el("div", "msg assistant");
-        bubble = el("div", "bubble");
-        w.appendChild(bubble); box.appendChild(w);
-      }
-      return bubble;
-    };
-    const fail = (msg) => {
-      failed = true; status.remove();
-      const w = el("div", "msg assistant");
-      w.appendChild(el("div", "bubble err", "Lỗi: " + msg));
-      box.appendChild(w);
-    };
-    abortCtl = new AbortController();
-    try {
-      const res = await fetch("/s4/chat", {
-        method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text, conversation_id: convId }), signal: abortCtl.signal,
-      });
-      if (res.status === 401) { toLogin(); return; }
-      if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(typeof d.detail === "string" ? d.detail : res.statusText); }
-      const reader = res.body.getReader();
-      const dec = new TextDecoder();
-      let buf = "";
-      for (;;) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buf += dec.decode(value, { stream: true });
-        let i;
-        while ((i = buf.indexOf("\n\n")) >= 0) {
-          const line = buf.slice(0, i); buf = buf.slice(i + 2);
-          if (!line.startsWith("data: ")) continue;
-          const ev = JSON.parse(line.slice(6));
-          if (ev.type === "meta") {
-            const isNew = convId !== ev.conversation_id;
-            convId = ev.conversation_id; ls.set("s4_conv", JSON.stringify({ id: convId, mode: "friendly" }));
-            if (isNew) refreshList();
-          } else if (ev.type === "queue") status.setText(`Đang chờ tới lượt (còn ${ev.position} lượt trước bạn)…`);
-          else if (ev.type === "start") status.setText("AI đang trả lời…");
-          else if (ev.type === "thinking") status.setText("AI đang suy nghĩ…");
-          else if (ev.type === "delta") { ensureBubble().textContent += ev.text; scroll(); }
-          else if (ev.type === "error") fail(ev.message);
+  /* Một lượt Friendly qua SSE. Trả về khi câu trả lời xong (done/error/dừng); luồng vẫn đọc tiếp để nhận
+     sự kiện "memory" (bộ nhớ cập nhật ở nền) mà không giữ nút Gửi. */
+  function sendFriendly(payload) {
+    return new Promise((resolve) => {
+      let settled = false;
+      const finish = () => { if (!settled) { settled = true; resolve(); } };
+      const status = statusLine("Đang gửi…");
+      box.appendChild(status); scroll();
+      let wrap = null, bubble = null, raw = "", failed = false, raf = 0;
+      const paint = () => { raf = 0; if (bubble) { bubble.innerHTML = md(visible(raw)); scroll(); } };
+      const ensureBubble = () => {
+        if (!bubble) {
+          status.remove();
+          wrap = el("div", "msg assistant");
+          bubble = el("div", "bubble md");
+          wrap.appendChild(bubble); box.appendChild(wrap);
         }
-      }
-      if (!bubble && !failed) fail("AI không trả lời");
-    } catch (e) {
-      if (e.name === "AbortError") {
-        status.remove();
-        const note = el("div", "stopped-note", "(đã dừng)");
-        (bubble ? bubble.parentElement : box).appendChild(note);
-      } else fail(e.message);
-    } finally {
-      abortCtl = null;
-    }
+      };
+      const fail = (msg) => {
+        failed = true; status.remove();
+        if (wrap) wrap.remove();
+        const w = el("div", "msg assistant");
+        w.appendChild(el("div", "bubble err", "Lỗi: " + msg));
+        box.appendChild(w); finish();
+      };
+      const ctl = new AbortController();
+      abortCtl = ctl;
+      (async () => {
+        try {
+          const res = await fetch("/s4/chat", {
+            method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(payload), signal: ctl.signal,
+          });
+          if (res.status === 401) { toLogin(); return; }
+          if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(typeof d.detail === "string" ? d.detail : res.statusText); }
+          const reader = res.body.getReader();
+          const dec = new TextDecoder();
+          let buf = "", myConv = null;
+          for (;;) {
+            const { value, done } = await reader.read();
+            if (done) break;
+            buf += dec.decode(value, { stream: true });
+            let k;
+            while ((k = buf.indexOf("\n\n")) >= 0) {
+              const line = buf.slice(0, k); buf = buf.slice(k + 2);
+              if (!line.startsWith("data: ")) continue;
+              const ev = JSON.parse(line.slice(6));
+              if (ev.type === "meta") {
+                myConv = ev.conversation_id;
+                const isNew = convId !== myConv;
+                convId = myConv; ls.set("s4_conv", JSON.stringify({ id: convId, mode: "friendly" }));
+                if (isNew) refreshList();
+              } else if (ev.type === "queue") status.setText("Đang chờ tới lượt (còn " + ev.position + " lượt trước bạn)…");
+              else if (ev.type === "start") status.setText("AI đang trả lời…");
+              else if (ev.type === "thinking") status.setText("AI đang suy nghĩ…");
+              else if (ev.type === "delta") { ensureBubble(); raw += ev.text; if (!raf) raf = requestAnimationFrame(paint); }
+              else if (ev.type === "restart") {
+                raw = ""; if (wrap) wrap.remove(); wrap = bubble = null;
+                box.appendChild(status); status.setText("Đang viết lại câu trả lời…");
+              } else if (ev.type === "replace") { ensureBubble(); raw = ev.text; paint(); }
+              else if (ev.type === "error") fail(ev.message);
+              else if (ev.type === "done") {
+                if (convId === myConv) await loadConv(convId, "friendly");   // vẽ lại: nút, phiên bản, lựa chọn
+                finish();
+              } else if (ev.type === "memory" && convId === myConv && mode === "friendly") memoryNote(ev);
+            }
+          }
+          if (!settled && !failed) {
+            if (bubble) { status.remove(); await loadConv(convId, "friendly"); finish(); }
+            else fail("AI không trả lời");
+          }
+        } catch (e) {
+          if (e.name === "AbortError") {
+            status.remove();
+            if (wrap) wrap.appendChild(el("div", "stopped-note", "(đã dừng)"));
+            finish();
+          } else if (!settled) fail(e.message);
+        } finally {
+          if (abortCtl === ctl) abortCtl = null;
+          finish();
+        }
+      })();
+    });
   }
 
-  async function send(text, replyTo) {
-    if (sending || !text.trim()) return;
+  async function send(text, replyTo, extra) {
+    const regen = !!(extra && extra.regenerate_of);
+    if (sending || (!regen && !text.trim())) return;
     setBusy(true);
     if (box.querySelector(".empty")) box.innerHTML = "";
     box.querySelectorAll(".choice-item,.choice-custom-btn,.choice-custom-input").forEach((x) => (x.disabled = true));
-    userMsg(text);
+    if (!regen) userMsg(text);
     try {
-      if (mode === "friendly") await sendFriendly(text);
+      if (mode === "friendly") await sendFriendly({ text, conversation_id: convId, ...(extra || {}) });
       else await sendStrict(text, replyTo);
     } finally {
       setBusy(false); scroll(); refreshList();
@@ -489,7 +639,39 @@
   const setModal = $("settings"), setBody = $("settings-body"), setNote = $("settings-note");
   let specs = [];
 
+  const KINDS = [["block", "Chặn"], ["instruct", "Lời dặn"], ["replace", "Thay câu trả lời"]];
+  function rulesEditor(s) {
+    const wrap = el("div", "rules-editor"); wrap.dataset.rules = s.key;
+    const list = el("div", "rules-list");
+    const addRow = (r) => {
+      const row = el("div", "rule-row");
+      const on = el("input", "r-on"); on.type = "checkbox"; on.checked = r.enabled !== false; on.title = "Bật / tắt luật";
+      const name = el("input", "r-name"); name.type = "text"; name.placeholder = "Tên luật"; name.value = r.name || "";
+      const kind = el("select", "r-kind");
+      KINDS.forEach(([v, l]) => { const o = el("option", "", l); o.value = v; o.selected = v === r.kind; kind.appendChild(o); });
+      const del = el("button", "icon-btn", "✕"); del.type = "button"; del.title = "Xoá luật"; del.onclick = () => row.remove();
+      const match = el("input", "r-match"); match.type = "text"; match.value = r.match || "";
+      match.placeholder = "Cụm từ để khớp, cách nhau bởi | (để trống = luôn áp dụng, chỉ cho Lời dặn)";
+      const msg = el("textarea", "r-msg"); msg.rows = 2; msg.value = r.message || "";
+      msg.placeholder = "Chặn: câu trả lời cố định · Lời dặn: quy tắc cho AI · Thay: câu thay thế. {business} = tên doanh nghiệp";
+      const head = el("div", "rule-head"); head.append(on, name, kind, del);
+      row.append(head, match, msg); list.appendChild(row);
+    };
+    (s.value || []).forEach(addRow);
+    const add = el("button", "btn-ghost", "+ Thêm luật"); add.type = "button";
+    add.onclick = () => addRow({ enabled: true, kind: "instruct" });
+    wrap.append(list, add);
+    return wrap;
+  }
+  const readRules = (wrap) => [...wrap.querySelectorAll(".rule-row")].map((row) => ({
+    name: row.querySelector(".r-name").value.trim(), enabled: row.querySelector(".r-on").checked,
+    kind: row.querySelector(".r-kind").value, match: row.querySelector(".r-match").value.trim(),
+    message: row.querySelector(".r-msg").value.trim(),
+  }));
+  const same = (a, b) => JSON.stringify(a) === JSON.stringify(b);
+
   function fieldInput(s) {
+    if (s.type === "rules") return rulesEditor(s);
     let inp;
     if (s.type === "bool") {
       const sw = el("label", "switch"); inp = el("input"); inp.type = "checkbox"; inp.checked = !!s.value;
@@ -521,12 +703,13 @@
       const sec = el("section", "set-group");
       sec.appendChild(el("h3", "", g));
       items.forEach((s) => {
-        const row = el("div", "set-row" + (s.type === "text" ? " wide" : ""));
+        const row = el("div", "set-row" + (s.type === "text" || s.type === "rules" ? " wide" : ""));
         const lab = el("div");
         const name = el("b", "", s.label);
         lab.appendChild(name);
         if (s.overridden) lab.appendChild(el("span", "over", "đã đổi"));
-        const def = s.type === "bool" ? (s.default ? "bật" : "tắt") : String(s.default);
+        const def = s.type === "bool" ? (s.default ? "bật" : "tắt") : s.type === "rules" ? s.default.length + " luật"
+          : (String(s.default) || "(trống)");
         lab.appendChild(el("small", "", (s.help ? s.help + " " : "") + "Mặc định: " + (def.length > 60 ? def.slice(0, 60) + "…" : def)));
         row.append(lab, fieldInput(s));
         sec.appendChild(row);
@@ -543,6 +726,7 @@
       if (s.type === "int" || s.type === "float") v = i.value === "" ? NaN : Number(i.value);
       out[s.key] = v;
     });
+    setBody.querySelectorAll("[data-rules]").forEach((w) => { out[w.dataset.rules] = readRules(w); });
     return out;
   }
 
@@ -564,16 +748,16 @@
   };
   $("settings-close").onclick = () => { setModal.hidden = true; };
   setModal.addEventListener("click", (e) => { if (e.target === setModal) setModal.hidden = true; });
-  document.addEventListener("keydown", (e) => { if (e.key === "Escape") setModal.hidden = true; });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") { setModal.hidden = true; memModal.hidden = true; } });
   $("settings-save").onclick = () => {
     const vals = formValues(), changed = {};
-    specs.forEach((s) => { if (vals[s.key] !== s.value) changed[s.key] = vals[s.key]; });
+    specs.forEach((s) => { if (!same(vals[s.key], s.value)) changed[s.key] = vals[s.key]; });
     if (!Object.keys(changed).length) { note("Không có thay đổi nào.", true); return; }
     settingsCall("/s4/settings", { values: changed }, "Đã lưu. Tải lại trang để áp dụng.");
   };
   $("settings-default").onclick = () => {
     const vals = formValues(), nd = {};
-    specs.forEach((s) => { if (vals[s.key] !== s.default) nd[s.key] = vals[s.key]; });
+    specs.forEach((s) => { if (!same(vals[s.key], s.default)) nd[s.key] = vals[s.key]; });
     if (!Object.keys(nd).length) { note("Các giá trị đang hiện đã là mặc định.", true); return; }
     if (!confirm(`Ghi ${Object.keys(nd).length} giá trị đang hiện vào config.py làm mặc định mới? (config.py cũ được giữ ở config.py.bak)`)) return;
     settingsCall("/s4/settings/default", { values: nd }, "Đã ghi vào config.py. Tải lại trang để áp dụng.");
@@ -584,6 +768,37 @@
     if (!confirm(`Bỏ ${keys.length} giá trị đã lưu, quay về mặc định trong config.py?`)) return;
     settingsCall("/s4/settings/reset", { keys }, "Đã về mặc định. Tải lại trang để áp dụng.");
   };
+
+  /* ---- Bộ nhớ của mỗi người (Friendly): chế độ Tự động / Chỉ khi tôi bảo, xem và xoá từng điều ---- */
+  const memModal = $("memory");
+  function renderMemory(d) {
+    document.querySelectorAll('input[name="mem-mode"]').forEach((r) => { r.checked = r.value === d.mode; });
+    const ul = $("memory-list");
+    ul.innerHTML = "";
+    if (!d.items.length) ul.appendChild(el("li", "mem-empty", "Chưa nhớ điều gì."));
+    d.items.forEach((m) => {
+      const li = el("li");
+      li.appendChild(el("span", "", m.text));
+      li.appendChild(actionBtn("✕", "Quên điều này", async () => {
+        try { await api("/s4/memory/" + m.id, null, "DELETE"); renderMemory(await api("/s4/memory")); } catch (e) { alert("Lỗi: " + e.message); }
+      }));
+      ul.appendChild(li);
+    });
+    $("memory-clear").disabled = !d.items.length;
+  }
+  async function openMemory() {
+    try { renderMemory(await api("/s4/memory")); memModal.hidden = false; } catch (e) { alert("Lỗi: " + e.message); }
+  }
+  document.querySelectorAll('input[name="mem-mode"]').forEach((r) => {
+    r.onchange = async () => { try { renderMemory(await api("/s4/memory/mode", { mode: r.value })); } catch (e) { alert("Lỗi: " + e.message); } };
+  });
+  $("memory-clear").onclick = async () => {
+    if (!confirm("Xoá toàn bộ bộ nhớ? AI sẽ không còn nhớ gì về bạn.")) return;
+    try { await api("/s4/memory", null, "DELETE"); renderMemory(await api("/s4/memory")); } catch (e) { alert("Lỗi: " + e.message); }
+  };
+  $("open-memory").onclick = openMemory;
+  $("memory-close").onclick = () => { memModal.hidden = true; };
+  memModal.addEventListener("click", (e) => { if (e.target === memModal) memModal.hidden = true; });
 
   /* ---------------------------------------------------------- khởi động -- */
   (async function init() {
