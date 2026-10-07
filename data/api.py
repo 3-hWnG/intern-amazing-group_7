@@ -67,3 +67,23 @@ def conditions(conn, proc_id: str) -> list[dict]:
 def is_expired(conn, proc_id: str) -> dict | None:
     """Bản tombstone nếu thủ tục hết hiệu lực, None nếu còn. (Snapshot hiện không có bản hết hạn.)"""
     return _R.is_expired(conn, proc_id)
+
+
+def subject_names(conn) -> list[dict]:
+    """Phase 26: danh mục đối tượng thực hiện [{name, n}] (TRIM, chỉ thủ tục còn hiệu lực, nhiều thủ tục nhất trước)."""
+    return [{"name": r["subj"], "n": r["n"]} for r in conn.execute(
+        "SELECT TRIM(s.subject_name) AS subj, COUNT(DISTINCT p.proc_id) AS n FROM procedure_subjects s"
+        " JOIN procedures p ON p.row_id=s.row_id AND p.status='active'"
+        " WHERE TRIM(s.subject_name)<>'' GROUP BY subj ORDER BY n DESC, subj")]
+
+
+def subjects_of(conn, proc_ids: list[str]) -> dict[str, set[str]]:
+    """Phase 26: {proc_id: {tên đối tượng}} của các thủ tục (thủ tục không khai đối tượng -> tập rỗng)."""
+    out: dict[str, set[str]] = {p: set() for p in proc_ids}
+    if proc_ids:
+        q = ",".join("?" * len(proc_ids))
+        for r in conn.execute(
+                f"SELECT p.proc_id, TRIM(s.subject_name) FROM procedures p JOIN procedure_subjects s ON s.row_id=p.row_id"
+                f" WHERE p.proc_id IN ({q}) AND p.status='active' AND TRIM(s.subject_name)<>''", proc_ids):
+            out[r[0]].add(r[1])
+    return out

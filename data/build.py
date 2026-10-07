@@ -7,6 +7,7 @@ import sys
 from . import DB_PATH, records as R
 from .load import connect_new, import_records, load_snapshot
 from .textutil import fold
+from . import team_overlay
 
 EXTRA_SCHEMA = """
 CREATE TABLE fees_clean (
@@ -186,6 +187,7 @@ def main() -> int:
     conn.executemany("INSERT INTO synonyms VALUES (?,?)", SEED_SYNONYMS.items())
     build_fees_and_chunks(conn)
     build_conditions_families(conn)
+    print(f"team_fee_overlay {team_overlay.build(conn)}")
     conn.commit()
     for t in ("procedures", "fees_clean", "field_chunks", "condition_index", "families",
               "synonyms"):

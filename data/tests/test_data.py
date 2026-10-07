@@ -39,6 +39,13 @@ def test_none_never_free():
     assert not Q("SELECT 1 FROM field_chunks WHERE status='present' AND text=''")
 
 
+def test_team_overlay():
+    # overlay chỉ bù thủ tục cổng KHÔNG có lệ phí, không đè dữ liệu cổng; khai sinh có 8.000đ
+    assert not Q("SELECT 1 FROM team_fee_overlay o JOIN fees_clean f ON f.proc_id=o.proc_id WHERE f.kind<>'none'")
+    assert any("8.000" in r[0] for r in Q("SELECT amount_text FROM team_fee_overlay WHERE proc_id='1.001193'"))
+    STATS.update(team_overlay=Q("SELECT COUNT(DISTINCT proc_id) FROM team_fee_overlay")[0][0])
+
+
 def test_families():
     n = Q("SELECT COUNT(DISTINCT head) FROM families")[0][0]
     multi = Q("SELECT COUNT(DISTINCT head) FROM families WHERE n_members>1")[0][0]
