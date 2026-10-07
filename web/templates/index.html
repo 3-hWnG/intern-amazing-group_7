@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>System 3 — Trợ lý Thủ tục hành chính</title>
 <link rel="icon" href="data:,">
-<link rel="stylesheet" href="/static/css/styles.css?v=20261006g">
+<link rel="stylesheet" href="/static/css/styles.css?v=20261007a">
 <style>
 .block-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px}
 .block-card h4{margin:0 0 6px;font-size:14px;color:var(--accent)}
@@ -27,8 +27,10 @@
       <h1 id="conv-title">System 3</h1>
       <span id="model-name" class="model-name"></span>
       <button id="ai-badge" class="ai-badge" type="button" title="Cấu hình AI">AI: …</button>
+      <button id="mem-btn" type="button" title="Hồ sơ của bạn: tuỳ chọn, giúp bớt hỏi lại">Hồ sơ của bạn</button>
       <button id="reset-topic" type="button" title="Quên các thông tin đã kể, hỏi việc khác">Bắt đầu chủ đề mới</button>
       <div id="cfg-panel" class="cfg-panel" hidden></div>
+      <div id="mem-panel" class="cfg-panel mem-panel" hidden></div>
     </header>
     <div id="messages" class="messages"></div>
     <form id="composer" class="composer">
@@ -39,6 +41,6 @@
     </form>
   </main>
 </div>
-<script src="/static/js/chat.js?v=20261006g"></script>
+<script src="/static/js/chat.js?v=20261007a"></script>
 </body>
 </html>

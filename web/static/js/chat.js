@@ -1,6 +1,7 @@
 /* System 3 — khung chat: danh sách tin nhắn, blocks[] nhiều đoạn, thẻ clarify, dev panel.
    Không auth: conversation_id lưu ở localStorage (server cấp). Dev: ?dev=1 */
 (function () {
+  // FINAL-PRODUCT: [B2] ?dev=1 là cờ phía trình duyệt, ai gõ cũng được; chỉ ẩn/hiện khung dev (plan/trace). Bản cuối: dev theo vai trò do server cấp, không theo URL (mục 1)
   const DEV = new URLSearchParams(location.search).get("dev") === "1";
   const $ = (id) => document.getElementById(id);
   const box = $("messages");
@@ -20,10 +21,24 @@
     set: (v) => { try { v ? localStorage.setItem("s3_conv", v) : localStorage.removeItem("s3_conv"); } catch (_) {} },
   };
 
+  /* Phase 26: id thiết bị cho bộ nhớ người dùng (UUID, localStorage; chặn storage -> id tạm cho phiên này). Gửi mọi request qua X-Client-Id.
+     FINAL-PRODUCT: [B4][MEM] id tự sinh, chưa có đăng nhập; bản cuối thay bằng tài khoản (mục 6) */
+  const CLIENT = (() => {
+    let v = null;
+    try { v = localStorage.getItem("s3_client"); } catch (_) {}
+    if (!v) {
+      v = (self.crypto && crypto.randomUUID) ? crypto.randomUUID() : Date.now().toString(36) + Math.random().toString(36).slice(2, 12);
+      try { localStorage.setItem("s3_client", v); } catch (_) {}
+    }
+    return v;
+  })();
+
   async function api(url, body, method) {
-    const res = await fetch(url, body || method ? {
-      method: method || "POST", headers: { "Content-Type": "application/json" }, body: body ? JSON.stringify(body) : undefined,
-    } : undefined);
+    const res = await fetch(url, {
+      method: method || (body ? "POST" : "GET"),
+      headers: { "Content-Type": "application/json", "X-Client-Id": CLIENT },
+      body: body ? JSON.stringify(body) : undefined,
+    });
     const data = await res.json().catch(() => ({}));
     if (!res.ok) throw new Error(data.detail || data.error || res.statusText);
     return data;
@@ -268,6 +283,7 @@
       convId = r.conversation_id; store.set(convId);
       status.remove();
       assistantMsg(r, false);
+      if (r.memory_suggest) memSuggest(r.memory_suggest);
       refreshList();
     } catch (e) {
       status.remove();
@@ -291,6 +307,7 @@
   $("new-chat").onclick = async () => { await loadConv(null); refreshList(); };
   $("clear-all").onclick = async () => {
     if (!confirm("Xoá TẤT CẢ hộp thoại? Không khôi phục được.")) return;
+    // FINAL-PRODUCT: [B4] 'Xoá tất cả' gọi DELETE /conversations xoá của mọi người; sau khi có phiên/chủ sở hữu thì chỉ xoá của người dùng này (mục 3)
     try { await api("/conversations", null, "DELETE"); await loadConv(null); } catch (e) { alert("Lỗi: " + e.message); }
     refreshList();
   };
@@ -313,6 +330,7 @@
   if (innerWidth <= 760) $("sidebar").classList.add("hidden");   // điện thoại: thanh bên mặc định ẩn
   $("toggle-sidebar").onclick = () => $("sidebar").classList.toggle("hidden");
 
+  // FINAL-PRODUCT: [AI][B2] panel cấu hình/công tắc AI: hiện cho mọi người (chỉ xem nếu không dev). Bản cuối: ẩn với người dùng thường hoặc chỉ giữ chỉ báo (mục 1, 4)
   /* ---- Phase 20: chỉ báo AI + panel cấu hình (GET/POST /config). Công tắc chỉ đổi được khi server chạy S3_DEV=1. ---- */
   const aiBadge = $("ai-badge"), cfgPanel = $("cfg-panel");
   function renderCfg() {
@@ -352,6 +370,71 @@
   document.addEventListener("click", (e) => { if (!cfgPanel.hidden && !cfgPanel.contains(e.target)) cfgPanel.hidden = true; });
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") cfgPanel.hidden = true; });
   loadCfg();
+
+  /* ---- Phase 26: "Hồ sơ của bạn" (GET/PUT /memory...). Tuỳ chọn; xem, sửa, quên từng mục, quên tất cả. ---- */
+  const memBtn = $("mem-btn"), memPanel = $("mem-panel");
+  let mem = null;
+  const AXIS_LABEL = { subject: "Đối tượng thực hiện" };
+  async function memLoad() { try { mem = await api("/memory"); } catch (e) { mem = null; } renderMem(); }
+  function renderMem(msg, err) {
+    memPanel.innerHTML = "";
+    if (!mem) { memPanel.appendChild(el("div", "cfg-note", "Không tải được hồ sơ.")); return; }
+    const cat = mem.catalog, p = mem.profile;
+    memPanel.appendChild(el("div", "mem-title", "Hồ sơ của bạn (tuỳ chọn)"));
+    memPanel.appendChild(el("small", "", "Chỉ lưu trên máy chủ này theo thiết bị của bạn, để mình bớt hỏi lại. Không nhập CCCD hay số điện thoại. Bạn xoá được bất cứ lúc nào."));
+    const field = (label, node) => { const l = el("label", "", label); l.appendChild(node); memPanel.appendChild(l); return node; };
+    const opt = (text, value) => Object.assign(el("option", "", text), { value });
+    const prov = el("select"); prov.appendChild(opt("(không chọn)", ""));
+    cat.provinces.forEach((n) => prov.appendChild(opt(n, n)));
+    if (p.province && !cat.provinces.includes(p.province)) prov.appendChild(opt(p.province, p.province));
+    prov.value = p.province || ""; field("Tỉnh/thành phố", prov);
+    const com = el("input"); com.type = "text"; com.maxLength = 80; com.value = p.commune || ""; com.placeholder = "Ví dụ: Phường Bến Nghé"; field("Xã/phường", com);
+    const typ = el("select"); typ.appendChild(opt("(không chọn)", ""));
+    Object.entries(cat.user_types).forEach(([k, v]) => typ.appendChild(opt(v, k)));
+    typ.value = p.user_type || ""; field("Bạn là", typ);
+    const note = el("textarea"); note.maxLength = 200; note.value = p.note || ""; field("Ghi chú (tối đa 200 ký tự)", note);
+    const acts = el("div", "mem-actions");
+    const save = el("button", "primary", "Lưu"); save.type = "button";
+    save.onclick = async () => {
+      try { mem = await api("/memory/profile", { province: prov.value, commune: com.value, user_type: typ.value, note: note.value }, "PUT"); renderMem("Đã lưu."); }
+      catch (e) { renderMem("Lỗi: " + e.message, true); }
+    };
+    const skip = el("button", "", "Bỏ qua"); skip.type = "button"; skip.onclick = () => { memPanel.hidden = true; };
+    acts.append(save, skip); memPanel.appendChild(acts);
+    memPanel.appendChild(el("div", "mem-msg" + (err ? " err" : ""), msg || ""));
+    const list = el("div", "mem-list"); list.appendChild(el("b", "", "Đã nhớ"));
+    const row = (label, val, onForget) => {
+      const r = el("div", "mem-item"); r.appendChild(el("span", "", label + ": " + val));
+      const b = el("button", "", "Quên"); b.type = "button"; b.onclick = onForget; r.appendChild(b); list.appendChild(r);
+    };
+    const T = { province: "Tỉnh/thành", commune: "Xã/phường", note: "Ghi chú" };
+    Object.keys(T).forEach((k) => { if (p[k]) row(T[k], p[k], async () => { mem = await api("/memory/profile", { [k]: "" }, "PUT"); renderMem("Đã quên."); }); });
+    if (p.user_type) row("Bạn là", cat.user_types[p.user_type], async () => { mem = await api("/memory/profile", { user_type: "" }, "PUT"); renderMem("Đã quên."); });
+    Object.entries(mem.mcq).forEach(([a, v]) => row(AXIS_LABEL[a] || a, v, async () => { mem = await api("/memory/mcq?axis=" + encodeURIComponent(a), null, "DELETE"); renderMem("Đã quên."); }));
+    if (!list.querySelector(".mem-item")) list.appendChild(el("small", "", "Chưa nhớ gì."));
+    else if (mem.effective.subjects.length) list.appendChild(el("small", "", "Đang ưu tiên thủ tục dành cho: " + mem.effective.subjects.join(", ") + ". Chỉ để ưu tiên, không loại thủ tục bạn hỏi rõ tên."));
+    memPanel.appendChild(list);
+    const all = el("div", "mem-actions"); const forget = el("button", "danger", "Quên tất cả"); forget.type = "button";
+    forget.onclick = async () => { if (!confirm("Quên toàn bộ hồ sơ và các lựa chọn đã nhớ?")) return; mem = await api("/memory", null, "DELETE"); renderMem("Đã quên tất cả."); };
+    all.appendChild(forget); memPanel.appendChild(all);
+  }
+  /* sau khi bấm một nút thẻ hỏi lại: gợi ý nhớ đối tượng, người dùng bấm mới lưu */
+  function memSuggest(sg) {
+    const bar = el("div", "mem-suggest");
+    bar.appendChild(el("span", "", "Nhớ đối tượng: " + sg.value + " cho các câu sau?"));
+    const yes = el("button", "", "Nhớ"); yes.type = "button";
+    yes.onclick = async () => {
+      try { mem = await api("/memory/mcq", { axis: sg.axis, value: sg.value }); bar.textContent = "Đã ghi nhận: " + (AXIS_LABEL[sg.axis] || sg.axis) + " = " + sg.value + '. Xem hoặc quên trong "Hồ sơ của bạn".'; }
+      catch (e) { bar.textContent = "Lỗi: " + e.message; }
+    };
+    const no = el("button", "", "Không"); no.type = "button"; no.onclick = () => bar.remove();
+    bar.append(yes, no); box.appendChild(bar); scroll();
+  }
+  memBtn.onclick = (e) => { e.stopPropagation(); memPanel.hidden = !memPanel.hidden; if (!memPanel.hidden) { cfgPanel.hidden = true; memLoad(); } };
+  aiBadge.addEventListener("click", () => { memPanel.hidden = true; });
+  memPanel.addEventListener("click", (e) => e.stopPropagation());
+  document.addEventListener("click", () => { memPanel.hidden = true; });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape") memPanel.hidden = true; });
 
   api("/health").then((h) => { $("model-name").textContent = h.model + (DEV ? " · dev" : ""); }).catch(() => {});
   loadConv(store.get()).then(refreshList);

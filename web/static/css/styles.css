@@ -383,3 +383,24 @@ a.cite:hover{background:var(--accent);color:#fff}
 @media (hover:none){.conv-more{opacity:1}}
 .conv-item.pinned{background:var(--panel-2)}
 .conv-item.pinned+.conv-item:not(.pinned){margin-top:6px;border-top:1px solid var(--line);border-radius:0 0 8px 8px}
+
+/* Phase 26: hồ sơ người dùng + gợi ý nhớ */
+#mem-btn{border:1px solid var(--line);border-radius:8px;padding:5px 12px;font-size:13px;background:var(--panel);color:var(--ink-2)}
+#mem-btn:hover{background:var(--panel-2);color:var(--ink)}
+.mem-panel{width:380px;max-height:calc(100vh - 90px);overflow:auto}
+.mem-panel .mem-title{font-size:14px;font-weight:700;margin:0 0 4px}
+.mem-panel small{color:var(--ink-3);font-size:12px;line-height:1.4;display:block}
+.mem-panel label{display:block;margin-top:9px;font-size:12.5px;color:var(--ink-2)}
+.mem-panel select,.mem-panel input,.mem-panel textarea{display:block;width:100%;margin-top:3px;padding:5px 8px;border:1px solid var(--line);border-radius:6px;background:var(--panel-2);color:var(--ink);font-size:13.5px}
+.mem-panel textarea{resize:vertical;min-height:48px}
+.mem-actions{display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;align-items:center}
+.mem-actions button,.mem-item button,.mem-suggest button{border:1px solid var(--line);border-radius:8px;padding:4px 11px;font-size:13px;background:var(--panel);color:var(--ink-2)}
+.mem-actions .primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.mem-actions .danger{background:none;color:var(--danger);border-color:var(--danger)}
+.mem-list{margin-top:12px;border-top:1px solid var(--line);padding-top:8px}
+.mem-item{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:4px 0;font-size:13px}
+.mem-item span{overflow-wrap:anywhere}
+.mem-msg{font-size:12.5px;color:var(--ink-3);min-height:1em;margin-top:6px}
+.mem-msg.err{color:var(--danger)}
+.mem-suggest{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:13px;color:var(--ink-2);padding:6px 10px;border:1px dashed var(--line);border-radius:10px;align-self:flex-start}
+@media (min-width:900px){.mem-panel{right:max(16px,calc((100% - 820px)/2))}}
