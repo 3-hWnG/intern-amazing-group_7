@@ -115,3 +115,10 @@ Làm cho tôi 1 web AI đảm bảo các tiêu chí sau:
 5. Chỉ cài sẵn 2 gói nhỏ (`python-multipart`, `bcrypt`) để chạy test. **torch (~2,5 GB), bge-m3, reranker chưa tải**: chạy `Set up first time.bat` để tải (cần cho NV3, không cần cho NV1).
 6. 3 tệp nháp `eval/_q.py`, `_try_planner.py`, `_verify_exp.py` không có trên nhánh `system3` → để ngoài Git.
 7. Panel "AI bật/tắt" của Strict (System 3) vẫn chỉ đổi được khi server chạy `S3_DEV=1`, nay thêm điều kiện tài khoản dev.
+8. **`Set up first time.bat` hỏng ở bước 2 khi người dùng chạy** (báo 2026-10-07): `tokenizers 0.23` (gói mà `transformers` cần) đòi `huggingface-hub < 2.0`, xung đột với bản `2.1.1` đã ghim. Lúc lập kế hoạch chỉ kiểm phụ thuộc trực tiếp, chưa kiểm tầng thứ hai. Đã sửa: ghim `huggingface-hub==1.33.0`; `pip install --dry-run -r requirements.txt` giải được toàn bộ (gồm `torch 2.14.1+cu126`); đã kiểm `bge-m3` có trên Ollama và các tệp reranker có trên Hugging Face.
+
+**Trade-off sau NV1** (nguyên văn câu trả lời, 2026-10-07):
+
+| Câu | Trả lời |
+|---|---|
+| 1. Model cho Friendly (model luôn suy nghĩ, chậm ~11–17 s) | 1C |
