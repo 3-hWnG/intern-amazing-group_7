@@ -27,3 +27,13 @@ eval/results/*
 !eval/results/pseudo_real.json
 !eval/results/team.json
 !eval/results/h3_final.json
+# nguồn số cho eval/check_docs.py (nhỏ)
+!eval/results/p23d.json
+!eval/results/p23_concise.json
+!eval/results/ctx.json
+!eval/results/ctx_p23.json
+!eval/results/perturb_p23.json
+!eval/results/synth.txt
+!eval/results/p26.json
+eval/runtime/
+# mã V10.6 vendor (eval/vendor_v106, ~80 KB) và các file ca nhỏ: COMMIT (không ignore)
