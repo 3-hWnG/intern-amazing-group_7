@@ -47,7 +47,7 @@ class AnswerStream:
     """Tách dần giá trị chuỗi "answer" trong JSON đang được sinh ({"plan": "...", "answer": "...", ...}),
     giải mã các ký tự thoát (\\n, \\", \\uXXXX) để hiện chữ ngay mà không chờ JSON xong."""
 
-    _KEY = re.compile(r'"answer"\s*:\s*"')
+    _KEY = re.compile(r'"(?:c_)?answer"\s*:\s*"')
     _ESC = {"n": "\n", "t": "\t", "r": "", "b": "", "f": "", '"': '"', "\\": "\\", "/": "/"}
 
     def __init__(self):
@@ -99,7 +99,7 @@ class AnswerStream:
     def final(self) -> dict:
         try:
             v = json.loads(self.raw)
-            return v if isinstance(v, dict) else {}
+            return persona.plain_keys(v) if isinstance(v, dict) else {}
         except ValueError:
             return {}
 

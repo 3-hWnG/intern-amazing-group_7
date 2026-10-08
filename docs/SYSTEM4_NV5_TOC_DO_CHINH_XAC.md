@@ -92,4 +92,30 @@ Phần A = lời người dùng (nguyên văn, chỉ thêm tiêu đề). Phần 
 - **Chọn B1** (JSON, kế hoạch 300). Dạng chữ (B2) đúng hơn 1 câu (trong mức nhiễu) nhưng sai hành vi nhiều hơn (bỏ lỡ "Trả lời nhanh", hỏi lại điều đã nhớ) và chữ đầu chậm hơn 0,7 s (kế hoạch viết hết rồi mới hiện chữ). Kế hoạch 600 chậm hơn, không đúng hơn.
 - **Thời gian thật sự đi đâu** (số đo Ollama trong mỗi câu): đọc lời dặn chỉ **0,03–0,7 s**; **viết** chiếm phần lớn (~55 token/giây; câu trả lời dài 300+ token về thủ tục mất 5–6 s); tìm ~0,45 s (tạo vector câu hỏi 0,2–0,35 s, reranker 0,15 s, từ khoá 4 ms). → Các câu 7–12 s người dùng thấy trước NV5 chủ yếu do **nạp lại model** (câu đầu sau khi bật, đổi qua lại với System 3), không phải do đọc. Sắp lời dặn (S1) gần như không đổi tốc độ; giữ model nạp sẵn (S5) là phần có ích.
 - **Bỏ S2 / S4** (ít tin cũ / đoạn ngắn / reranker 8 ứng viên): đọc chỉ ~0,25 s và reranker ~0,15 s, nên tiết kiệm tối đa ~0,1 s — không "đáng kể" theo quy tắc A4, không đáng rủi ro độ chính xác.
+### D3. Vòng C — tính năng chính xác + câu chào 3 cách (nền B1; split dev, 1 lần)
+"Gói chính xác" = `SEARCH_FOLLOWUP`, `RERANK_RESCUE`, `STRICT_BUSINESS_FACTS`, `AMBIGUITY_CHECK`, `TABLE_TOOL`, `GROUNDING_CHECK=rewrite`.
+
+| Cấu hình | Đúng % | Không bịa % | Chào % | Sai hành vi (*) | Chữ đầu | Cả câu |
+|---|---|---|---|---|---|---|
+| B1 (chưa có gói) | 72,7 | 56 | 50 | 7 | 1,0 s | 2,7 s |
+| C1 = B1 + gói chính xác | 93,9 | 89 | 50 | 8 | 1,0 s | 2,8 s |
+| C2 = sau khi sửa các lỗi dưới đây, chào tắt — **⚠ chạy nhầm model cũ qwen3:4b, 0,6** | 84,8 | 67 | 42 | 8 | 1,8 s | 3,6 s |
+| C2 + code_first ⚠ qwen3:4b | **93,9** | **89** | **100** | **0** | 1,7 s | 2,9 s |
+| C2 + ai_first ⚠ qwen3:4b | 87,9 | 67 | 100 | 0 | 1,6 s | 2,9 s |
+| C2 + ai_only ⚠ qwen3:4b | **93,9** | **89** | **100** | **0** | 1,7 s | 2,9 s |
+
+**⚠ Lỗi của Claude khi đo:** bộ đo chọn cài đặt theo tên cấu hình; tên "C2…" / "D…" không bắt đầu bằng "inst02" nên 6 lần chạy này dùng model MẶC ĐỊNH (qwen3:4b, 0,6), không phải Instruct. Kết quả đổi tên thành `qwen3_*.json`; bộ đo nay dừng hẳn nếu tên lạ. Những lần chạy này vẫn có ích: **model cũ + gói chính xác + chào code_first** cũng đạt 93,9 % đúng, 100 % chào, 22/22 hành vi. Kết luận chọn cấu hình được đo lại trên Instruct ở D4.
+
+(*) 3 dòng cuối chỉ tính câu chào (22 tình huống hành vi không phụ thuộc cách chào). Chênh "đúng %" giữa 3 cách chào đến từ câu kiến thức chung (Úc → "Sydney", Truyện Kiều → "Nguyễn Đình Chiểu") — model 4B lúc đúng lúc sai, không do cách chào.
+
+**Gói chính xác sửa được (đúng ở mọi lần chạy sau khi bật):** hỏi lại "bé An nào?" có nút họ tên; "16 bạn nữ", "5 bạn sinh năm 2019", liệt kê đủ 10 bạn Ấp Phú Thạnh; không còn bịa số điện thoại / email / năm thành lập Team 7; "Còn số điện thoại thì sao?" đúng số.
+
+**Lỗi tìm thấy trong vòng C và đã sửa** (vì vậy có C2):
+1. Kiểm chi tiết bịa: 6/6 lần viết lại ở C1 là **báo nhầm** (ghép tên qua xuống dòng: "Võ Thị Kim Loan" + "Nguồn"; qua dấu chấm: "Thứ Bảy. Chủ nhật" → "Bảy Chủ"; "8:00" ≠ "8 giờ"; chữ IN HOA). Mỗi lần viết lại tốn thêm 2–3 s. Đã sửa; còn 1–2 lần/45 câu. Chỗ bịa thật về Team 7 là do lời dặn `STRICT_BUSINESS_FACTS` chặn, không phải bộ kiểm.
+2. `SEARCH_FOLLOWUP` không chạy: lỗi của Claude khi chèn code (dấu `\b` trong biểu thức bị đổi thành ký tự điều khiển). Đã sửa + thêm test.
+3. `STRICT_BUSINESS_FACTS` làm AI từ chối cả số điện thoại CÓ trong dữ liệu ("liên hệ nhân viên Team 7") → nay chỉ áp dụng khi không bật dữ liệu.
+4. "Hạng Vàng?" lúc đúng lúc sai dù bản ghi đã được gửi: bản ghi chỉ ghi "Vàng / Ưu đãi: …", thiếu tên cột → bộ đọc v4 ghi "Hạng thành viên: Vàng" ở dòng đầu mỗi bản ghi bảng.
+5. **Bộ nhớ ghi rác:** "Bạn còn nhớ mình tên gì không?" làm AI ghi điều nhớ "Người dùng hỏi tên mình", các câu sau trả lời "bạn tên là người dùng hỏi tên mình". Đã lọc bằng code (bỏ điều nhớ dạng "Người dùng hỏi / muốn biết / chào / cảm ơn …"); bộ đo xoá bộ nhớ tài khoản đo trước mỗi câu.
+6. **Kế hoạch ẩn không có tác dụng phần lớn thời gian đo:** Ollama 0.40 không giữ thứ tự trường của khuôn JSON — từ vòng A đến C1 model viết `{"answer": …, "plan": …}` (kế hoạch viết SAU câu trả lời); ở C2 lại viết kế hoạch trước — vì C2 chạy nhầm qwen3:4b (model cũ hay viết plan trước; Instruct gần như luôn viết answer trước, kiểm trực tiếp 6/6). Thử thêm lời dặn "viết plan trước": vẫn 6/6 lần answer trước. Cách chắc chắn: đặt tên trường `a_plan`, `b_small_talk`, `c_answer`… (thứ tự chữ cái = thứ tự mong muốn) → 6/6 lần kế hoạch đứng đầu. Công tắc `JSON_PLAN_FIRST`. Hệ quả: "chữ đầu 1,0 s" của Instruct ở vòng A–C1 là nhờ KHÔNG lập kế hoạch (kế hoạch viết sau câu trả lời). Chi phí thật của việc lập kế hoạch trước: đo ở D4.
+
 - Ghi chú để sau: tạo vector câu hỏi trong server mất 0,2–0,35 s, chạy riêng chỉ 0,03 s — có thể do card 6 GB đầy (model trả lời + bge-m3 + reranker), một phần bị đẩy sang CPU. Hướng sửa: giảm ngữ cảnh model Friendly (giờ khác model với System 3 nên không còn cần 8192). Lợi ~0,25 s mỗi câu Chuyên gia.

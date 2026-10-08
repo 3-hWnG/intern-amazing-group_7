@@ -37,6 +37,32 @@ PLAN_PREFIX = "KẾ HOẠCH:"
 TEXT_SEP = "==="
 
 
+# JSON_PLAN_FIRST: Ollama 0.40 không giữ thứ tự trường của khuôn JSON (model hay viết "answer" trước, "plan" sau -> kế hoạch vô
+# tác dụng). Đặt tên trường sao cho thứ tự chữ cái = thứ tự mong muốn thì "plan" luôn đứng đầu (đo NV5: 6/6 lần).
+KEY_PREFIX = {"plan": "a_", "small_talk": "b_", "answer": "c_", "ask_back": "d_", "choices": "e_", "sources": "f_"}
+
+
+def key(name: str) -> str:
+    return KEY_PREFIX[name] + name if settings.get("JSON_PLAN_FIRST") else name
+
+
+def plain_keys(d: dict) -> dict:
+    """Bỏ tiền tố a_ / b_ … khỏi các trường JSON model trả về."""
+    out = {}
+    for k, v in d.items():
+        base = k[2:] if len(k) > 2 and k[1] == "_" and k[2:] in KEY_PREFIX and KEY_PREFIX[k[2:]] == k[:2] else k
+        out[base] = v
+    return out
+
+
+def _rename(text: str) -> str:
+    if not settings.get("JSON_PLAN_FIRST"):
+        return text
+    for name in KEY_PREFIX:
+        text = text.replace(f'"{name}"', f'"{key(name)}"')
+    return text
+
+
 def fast_schema(kb: bool, small_talk: bool = False) -> dict:
     """Khuôn JSON cho chế độ Nhanh. small_talk=True (chế độ chào hỏi do AI nhận biết): thêm cờ "small_talk" ngay sau "plan"."""
     base = FAST_SCHEMA_KB if kb else FAST_SCHEMA
@@ -46,7 +72,7 @@ def fast_schema(kb: bool, small_talk: bool = False) -> dict:
     if small_talk:
         props = {"plan": props["plan"], "small_talk": {"type": "boolean"}, **{k: v for k, v in props.items() if k != "plan"}}
         req = ["plan", "small_talk"] + [k for k in req if k != "plan"]
-    return {"type": "object", "properties": props, "required": req}
+    return {"type": "object", "properties": {key(k): v for k, v in props.items()}, "required": [key(k) for k in req]}
 
 
 def build(memories: list[str], summary: str, instructions: list[str], *, clarify_exhausted: int = 0,
@@ -140,13 +166,15 @@ def build(memories: list[str], summary: str, instructions: list[str], *, clarify
         parts = head + ([exhausted] if exhausted else [ask_rule]) + kb_rules + kb_data + mem + summ
         if extra:
             parts += ["", "Lời dặn thêm:"] + [f"- {x}" for x in extra]
-        return "\n".join(parts + fmt)
+        out = "\n".join(parts + fmt)
+        return _rename(out) if json_fast else out
     system = "\n".join(head + [ask_rule] + kb_rules + mem + summ + fmt)
     tail = [x for x in kb_data if x]
     notes = ([exhausted[2:]] if exhausted else []) + extra
     if notes:
         tail += ["Lời dặn cho câu này:"] + [f"- {x}" for x in notes]
-    return system, "\n".join(tail)
+    tail = "\n".join(tail)
+    return (_rename(system), _rename(tail)) if json_fast else (system, tail)
 
 
 def parse_text(raw: str) -> tuple[str, str, bool]:

@@ -226,7 +226,10 @@ def policy_docx() -> Path:
 # ------------------------------------------------------------------ chạy
 def run(args):
     from bench_cases import all_cases
-    settings = dict(PRESETS.get(args.name.split("+")[0], {}))
+    base = re.split(r"[+@]", args.name)[0]
+    if base not in PRESETS:   # tên lạ -> dùng nhầm cài đặt mặc định (model cũ) mà không biết: dừng luôn (lỗi đã gặp khi đo NV5)
+        raise SystemExit(f"tên cấu hình phải bắt đầu bằng một trong {list(PRESETS)} (vd. inst02+D), không phải {args.name!r}")
+    settings = dict(PRESETS[base])
     for kv in args.set or []:
         k, v = kv.split("=", 1)
         try:

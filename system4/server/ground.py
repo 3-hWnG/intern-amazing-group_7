@@ -31,7 +31,7 @@ def _digits(t: str) -> str:
 def _clean(answer: str) -> str:
     t = _CITE.sub(" ", answer or "")
     t = _LISTNUM.sub(" ", t)
-    return re.sub(r"[*_`#>|]", " ", t)
+    return re.sub(r"[*_`#>]", " ", t.replace("|", "\n"))   # ô bảng Markdown: mỗi ô như một dòng riêng (tên không ghép qua ô)
 
 
 def _names(text: str) -> list[str]:
@@ -42,7 +42,7 @@ def _names(text: str) -> list[str]:
         for m in re.finditer(r"\S+", line):
             raw = m.group()
             w = raw.strip(".,;:!?\"'()[]")
-            ok = (bool(w) and _WORD.fullmatch(w) is not None and w[0].isupper()
+            ok = (len(w) >= 2 and _WORD.fullmatch(w) is not None and w[0].isupper()
                   and not (len(w) > 1 and w.isupper()))   # CHỮ IN HOA TOÀN BỘ (tiêu đề, viết tắt) không phải tên
             if ok:
                 run.append(w)
@@ -99,7 +99,7 @@ def ungrounded(answer: str, allowed_text: str, kb: bool, business: str = "") -> 
         has = lambda p: re.search(r"(?<!\w)" + re.escape(fold(p)) + r"(?!\w)", allowed_f) is not None
         for name in _names(text):
             words = name.split()
-            if has(name) or (len(words) >= 3 and has(" ".join(words[1:]))):   # chữ đầu câu viết hoa: thử bỏ chữ đầu
+            if has(name) or has(" ".join(words[1:])):   # chữ đầu câu viết hoa ("Tại Sapa", "Bạn Hiếu"): thử bỏ chữ đầu
                 continue
             bad.append(name)
     seen, out = set(), []

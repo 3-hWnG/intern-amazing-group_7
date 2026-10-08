@@ -100,6 +100,8 @@ assert ground.ungrounded("Có 2 bạn tên An và 3 bước cần làm.", src, k
 assert ground.ungrounded("Mẹ của bé là Trần Thị Mỹ Hạnh.\nNguồn: [1]", src, kb=True) == []
 assert ground.ungrounded("Làm việc từ 8:00 đến 17 giờ 30. Chủ nhật nghỉ.", src + " Thứ Bảy", kb=True) == []
 assert ground.ungrounded("THỦ TỤC Hành chính", src, kb=True) == []
+assert ground.ungrounded("| Tên | Địa chỉ |\n|---|---|\n| Trần Thị Mỹ Hạnh | Hà Nội |", src + " Hà Nội Tên Địa chỉ", kb=True) == [], "ô bảng"
+assert ground.ungrounded("Danh sách: Mạc T. và các bạn khác", src + " Mạc Tuyết Mai", kb=True) == [], "viết tắt một chữ cái"
 # câu hỏi tiếp (SEARCH_FOLLOWUP): "Còn ... thì sao?" 6 chữ vẫn ghép câu hỏi trước
 from system3.system4.server import chat as chat_mod
 assert chat_mod._followup("Còn số điện thoại thì sao?") and not chat_mod._followup("Hạng Kim cương được những ưu đãi nào?")
@@ -110,6 +112,13 @@ assert "1900 8888" in g and "hotro@team7.vn" in g and not any("python" in x for 
 assert persona.parse_text("KẾ HOẠCH: [XÃ GIAO] chào lại\n===\nChào bạn!") == ("chào lại", "Chào bạn!", True)
 assert persona.parse_text("KẾ HOẠCH: trả lời\nCâu trả lời") == ("trả lời", "Câu trả lời", False)
 assert persona.parse_text("Chỉ có câu trả lời") == ("", "Chỉ có câu trả lời", False)
+
+# ------------------------------------------------------------------ JSON_PLAN_FIRST: tên trường a_plan, c_answer…
+assert persona.plain_keys({"a_plan": "x", "c_answer": "y", "d_ask_back": False, "ask_back": True}) == {"plan": "x", "answer": "y", "ask_back": True}
+from system3.system4.server import chat as _chat
+_a = _chat.AnswerStream()
+assert _a.feed('{"a_plan": "kế hoạch", "c_answer": "Chào') + _a.feed(' bạn", "d_ask_back": false}') == "Chào bạn"
+assert _a.final() == {"plan": "kế hoạch", "answer": "Chào bạn", "ask_back": False}
 
 # ------------------------------------------------------------------ bộ đọc tệp (A5)
 two = [["STT", "Họ tên", "Điểm", "", ""], ["", "", "Toán", "Văn", "Anh"], ["1", "Nguyễn Văn A", "8", "7", "9"], ["2", "Lê Thị B", "6", "9", "7"]]

@@ -80,6 +80,8 @@ def update(user_id: int, user_text: str, mem_mode: str | None = None) -> dict:
         # chỉ nhận câu đúng dạng "Người dùng …" (lọc câu AI chép nguyên tin nhắn), không trùng điều đã nhớ
         if not n.startswith("nguoi dung") or not (10 <= len(f) <= 200) or "khong co thong tin" in n:
             continue
+        if re.match(r"nguoi dung (dang |vua |da )?(hoi|muon biet|muon hoi|thac mac|chao|cam on)\b", n):
+            continue   # câu hỏi / lời chào chép thành "điều nhớ" (vd. "Người dùng hỏi tên mình" — thấy khi đo NV5)
         if any(n == h or n in h for h in have):
             continue
         db.add_memory(user_id, f, settings.get("MEMORY_MAX_ITEMS"))

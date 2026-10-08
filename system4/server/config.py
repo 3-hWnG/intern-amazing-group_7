@@ -86,6 +86,7 @@ TABLE_TOOL = False
 SEARCH_FOLLOWUP = False
 RERANK_RESCUE = False
 STRICT_BUSINESS_FACTS = False
+JSON_PLAN_FIRST = False
 # ==== HẾT MẶC ĐỊNH ====
 
 # Danh sách cài đặt hiện trên panel. type: str | text (nhiều dòng) | int | float | bool | choice | rules
@@ -194,4 +195,7 @@ SETTINGS = [
               "(vd. câu rất ngắn \"Hạng Vàng?\")."),
     dict(key="STRICT_BUSINESS_FACTS", type="bool", group="Tốc độ & độ chính xác", label="Không bịa thông tin doanh nghiệp",
          help="Bật: thêm lời dặn \"không có thông tin nào về doanh nghiệp ngoài phần giới thiệu\" (số điện thoại, địa chỉ, năm thành lập, giá…)."),
+    dict(key="JSON_PLAN_FIRST", type="bool", group="Tốc độ & độ chính xác", label="Buộc AI lập kế hoạch trước khi trả lời",
+         help="Bật: đặt tên trường JSON a_plan, c_answer… để kế hoạch ẩn luôn được viết TRƯỚC câu trả lời (Ollama 0.40 không giữ thứ tự "
+              "trường; khi tắt, model hay viết câu trả lời trước nên kế hoạch không có tác dụng). Chữ đầu hiện chậm hơn khoảng 0,5-0,8 giây."),
 ]
