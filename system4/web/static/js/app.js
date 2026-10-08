@@ -784,17 +784,19 @@
       sw.append(inp, el("span")); sw.dataset.key = s.key; inp.dataset.key = s.key;
       return sw;
     }
-    if (s.type === "choice") {
+    if (s.options && s.options.length) {   // ô chọn model: xổ ra TẤT CẢ model trong Ollama (datalist chỉ hiện mục khớp chữ đang gõ)
+      inp = el("select");
+      const names = s.options.slice();
+      if (s.value && !names.includes(s.value)) names.unshift(s.value);
+      if (s.optional) { const o = el("option", "", "(dùng model trả lời nhanh)"); o.value = ""; o.selected = !s.value; inp.appendChild(o); }
+      names.forEach((m) => { const o = el("option", "", s.options.includes(m) ? m : m + " (chưa có trong Ollama)"); o.value = m; o.selected = m === s.value; inp.appendChild(o); });
+    } else if (s.type === "choice") {
       inp = el("select");
       s.choices.forEach((c) => { const o = el("option", "", c); o.value = c; o.selected = c === s.value; inp.appendChild(o); });
     } else if (s.type === "text") {
       inp = el("textarea"); inp.value = s.value;
     } else {
       inp = el("input"); inp.type = s.type === "int" || s.type === "float" ? "number" : "text"; inp.value = s.value;
-      if (s.options && s.options.length) {   // ô chọn model: gợi ý từ Ollama, vẫn gõ tay được
-        const dl = el("datalist"); dl.id = "dl-" + s.key; s.options.forEach((m) => { const o = el("option"); o.value = m; dl.appendChild(o); });
-        inp.setAttribute("list", dl.id); document.getElementById(dl.id)?.remove(); document.body.appendChild(dl);
-      }
       if (s.type === "int") inp.step = "1";
       if (s.type === "float") inp.step = "0.05";
       if (s.min !== undefined) inp.min = s.min;
