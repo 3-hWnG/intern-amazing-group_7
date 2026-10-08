@@ -1,4 +1,4 @@
-# System 3 — Trợ lý thủ tục hành chính cấp xã/phường (trạng thái sau Phase 23–26, 2026-10-07)
+# System 3 + 4 — Trợ lý thủ tục hành chính cấp xã/phường (trạng thái sau Phase 23–26, 2026-10-07)
 
 Project RIÊNG, dùng lại dữ liệu của repo V10.6 (snapshot trong `data/snapshot`, 1.350 thủ tục). Không import Backend/Frontend của V10.6.
 Tài liệu: [docs/SETUP.md](docs/SETUP.md) (cài đặt) · [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (kiến trúc, bảng timeout) · [docs/EVAL.md](docs/EVAL.md) (cách đo, quy tắc bộ mù) · [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) (cổng hồi quy) · [docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md) (lỗi đã biết, ai quyết) · [docs/FINAL_PRODUCT_CHECKLIST.md](docs/FINAL_PRODUCT_CHECKLIST.md) (đừng quên cho bản cuối: dev/người dùng, che PII, quyền hộp thoại, công tắc AI) · [docs/BAO_CAO_DOT4.md](docs/BAO_CAO_DOT4.md) (báo cáo ngắn đợt 4) · kế hoạch: [PLAN_SYSTEM3](docs/PLAN_SYSTEM3.md), [DOT3](docs/PLAN_SYSTEM3_DOT3.md), [DOT4](docs/PLAN_SYSTEM3_DOT4.md), [DOT5](docs/PLAN_SYSTEM3_DOT5.md).
