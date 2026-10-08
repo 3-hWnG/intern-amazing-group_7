@@ -48,9 +48,7 @@ system4/server/config.py.bak
 system4/eval/bench_runtime/
 system4/eval/results/bench/
 
-docs/research_paper*
 Documentation/
-docs/research paper/
-docs/*.png
 document/
+
 
