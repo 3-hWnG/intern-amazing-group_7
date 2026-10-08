@@ -37,3 +37,13 @@ eval/results/*
 !eval/results/p26.json
 eval/runtime/
 # mã V10.6 vendor (eval/vendor_v106, ~80 KB) và các file ca nhỏ: COMMIT (không ignore)
+# Tệp khoá tạm của Word/LibreOffice khi đang mở .docx
+.~lock.*#
+~$*
+# System 4: dữ liệu chạy (DB, dataset người dùng), model tải về, bản sao lưu config
+system4/runtime/
+system4/models/
+system4/server/config.py.bak
+# NV5 bộ đo: server riêng + kết quả thô (kết quả chọn lọc ghi trong docs/SYSTEM4_NV5_TOC_DO_CHINH_XAC.md)
+system4/eval/bench_runtime/
+system4/eval/results/bench/

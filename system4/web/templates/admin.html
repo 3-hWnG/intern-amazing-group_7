@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Quản trị</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/static/css/styles.css?v=20261006g">
+<link rel="stylesheet" href="/s4/static/css/s4.css?v=dev1">
+<link rel="stylesheet" href="/s4/static/css/admin.css?v=dev1">
+</head>
+<body class="light admin-page">
+<header class="admin-head">
+  <a href="/" class="link">← Về trang chat</a>
+  <h1>Quản trị</h1>
+  <span id="me" class="muted small"></span>
+</header>
+<nav class="admin-tabs" role="tablist">
+  <button type="button" class="tab active" data-tab="strict" role="tab">Dữ liệu Strict (thủ tục)</button>
+  <button type="button" class="tab" data-tab="datasets" role="tab">Dữ liệu người dùng</button>
+  <button type="button" class="tab" data-tab="users" role="tab">Người dùng</button>
+  <button type="button" class="tab" data-tab="lab" role="tab">Thử tìm kiếm</button>
+</nav>
+
+<main class="admin-main">
+  <!-- Tab 1: dữ liệu thủ tục của Strict mode (System 3) -->
+  <section id="tab-strict" class="admin-tab">
+    <div class="card">
+      <div class="row-between">
+        <div>
+          <b>Strict mode đang dùng:</b> <span id="active-label">…</span>
+          <div class="muted small">Dữ liệu chuẩn của System 3. Sửa / xoá vào bản nháp → lưu thành phiên bản → áp dụng. Bản Gốc luôn được giữ.</div>
+        </div>
+        <div class="row">
+          <label class="small">Giới hạn <input id="scrape-limit" type="number" min="0" value="0" class="num"> (0 = tất cả)</label>
+          <button id="scrape-btn" class="primary" type="button" title="Cào lại từ dichvucong.gov.vn (cần internet, có thể mất hàng chục phút)">Cào dữ liệu mới</button>
+        </div>
+      </div>
+      <div id="job" class="job" hidden></div>
+    </div>
+
+    <div class="card">
+      <h2>Phiên bản</h2>
+      <table class="grid" id="versions"></table>
+    </div>
+
+    <div class="card" id="draft-card">
+      <div class="row-between">
+        <div><b>Bản nháp</b> <span id="draft-info" class="muted"></span></div>
+        <div class="row">
+          <button id="draft-diff" class="btn-ghost" type="button">Xem thay đổi</button>
+          <button id="draft-save" class="primary" type="button">Lưu thành phiên bản</button>
+          <button id="draft-discard" class="btn-ghost" type="button">Bỏ nháp</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="row-between">
+        <h2>Thủ tục</h2>
+        <div class="row">
+          <select id="proc-version" title="Xem phiên bản"></select>
+          <input id="proc-q" type="search" placeholder="Tìm theo tên, mã, lĩnh vực…" class="search">
+        </div>
+      </div>
+      <div id="proc-count" class="muted small"></div>
+      <table class="grid" id="procs"></table>
+      <button id="proc-more" class="btn-ghost" type="button" hidden>Xem thêm</button>
+    </div>
+  </section>
+
+  <!-- Tab 2: dữ liệu người dùng tải lên (Friendly) -->
+  <section id="tab-datasets" class="admin-tab" hidden>
+    <div class="card">
+      <h2>Bộ dữ liệu của mọi người dùng</h2>
+      <table class="grid" id="all-datasets"></table>
+    </div>
+  </section>
+
+  <!-- Tab 3: người dùng -->
+  <section id="tab-users" class="admin-tab" hidden>
+    <div class="card">
+      <h2>Tạo tài khoản</h2>
+      <form id="new-user" class="row">
+        <input name="username" placeholder="Tên đăng nhập hoặc email" required maxlength="64">
+        <input name="password" type="password" placeholder="Mật khẩu" required>
+        <select name="role"><option value="user">user</option><option value="dev">dev</option></select>
+        <button class="primary" type="submit">Tạo</button>
+      </form>
+    </div>
+    <div class="card">
+      <h2>Người dùng</h2>
+      <table class="grid" id="users"></table>
+    </div>
+  </section>
+  <!-- Tab 4: phòng thử tìm kiếm (bộ công cụ dev) -->
+  <section id="tab-lab" class="admin-tab" hidden>
+    <div class="card">
+      <h2>Thử tìm kiếm</h2>
+      <p class="muted small">Xem hệ thống xếp hạng dữ liệu thế nào cho một câu hỏi — KHÔNG hỏi AI, không lưu gì. Đổi tạm thông số để so sánh (không đổi cài đặt thật).</p>
+      <div class="row">
+        <select id="lab-user" title="Dữ liệu của người dùng"></select>
+        <input id="lab-q" class="search" placeholder="Câu hỏi, ví dụ: Ngày sinh của bạn Hiếu" style="flex:1;min-width:260px">
+      </div>
+      <div id="lab-ds" class="lab-ds"></div>
+      <div class="row lab-params">
+        <label class="small">Ứng viên <input id="lab-cand" type="number" min="5" max="100" class="num"></label>
+        <label class="small">Gửi AI <input id="lab-topk" type="number" min="1" max="15" class="num"></label>
+        <label class="small">Ngưỡng reranker <input id="lab-min" type="number" step="0.5" class="num"></label>
+        <label class="small"><input id="lab-rr" type="checkbox"> Dùng reranker</label>
+        <button id="lab-run" class="primary" type="button">Tìm</button>
+        <button id="lab-ask" class="btn-ghost" type="button" title="Hỏi AI (chế độ Nhanh) với đúng kết quả này; xem lời dặn và JSON thô">Hỏi AI với kết quả này</button>
+      </div>
+    </div>
+    <div class="card" id="lab-out" hidden></div>
+    <div class="card" id="lab-answer" hidden></div>
+  </section>
+</main>
+
+<!-- cửa sổ: hội thoại của một người dùng (chỉ xem) -->
+<div id="conv-modal" class="s4-modal" hidden>
+  <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="conv-title">
+    <header><h2 id="conv-title">Hội thoại</h2><button class="icon close" type="button" aria-label="Đóng">✕</button></header>
+    <div class="body" id="conv-body"></div>
+  </div>
+</div>
+
+<!-- cửa sổ: sửa / xem thủ tục -->
+<div id="rec-modal" class="s4-modal" hidden>
+  <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="rec-title">
+    <header><h2 id="rec-title">Thủ tục</h2><button class="icon close" type="button" aria-label="Đóng">✕</button></header>
+    <div class="body" id="rec-body"></div>
+    <div class="set-note bad" id="rec-err" hidden></div>
+    <footer id="rec-foot"></footer>
+  </div>
+</div>
+<!-- cửa sổ: so sánh -->
+<div id="diff-modal" class="s4-modal" hidden>
+  <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="diff-title">
+    <header><h2 id="diff-title">So sánh</h2><button class="icon close" type="button" aria-label="Đóng">✕</button></header>
+    <div class="body" id="diff-body"></div>
+  </div>
+</div>
+<!-- cửa sổ: bản ghi của bộ dữ liệu người dùng -->
+<div id="ds-modal" class="s4-modal" hidden>
+  <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="ds-title">
+    <header><h2 id="ds-title">Bản ghi</h2><button class="icon close" type="button" aria-label="Đóng">✕</button></header>
+    <div class="body">
+      <input id="ds-q" class="records-q" type="search" placeholder="Tìm trong bộ dữ liệu…">
+      <div id="ds-count" class="muted small"></div>
+      <div id="ds-list" class="records-list"></div>
+      <button id="ds-more" class="btn-ghost" type="button" hidden>Xem thêm</button>
+    </div>
+  </div>
+</div>
+<script src="/s4/static/js/inspector.js?v=dev1"></script>
+<script src="/s4/static/js/admin.js?v=dev1"></script>
+</body>
+</html>

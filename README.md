@@ -6,6 +6,10 @@ Chạy: `python run_server.py` ở thư mục gốc (cổng 8300). Không cần 
 Kiểm tài liệu so với số đo thật: `python eval/check_docs.py` (phải sạch).
 Dựng lại từ Git (Phase 28): `python run_server.py eval/run_all.py` (thêm `--quick` để bỏ phần chậm) dựng DB, dựng DB V10.6 từ mã vendor `eval/vendor_v106/`, chạy mọi gate không GPU và in bảng số kèm ngưỡng; xem [eval/REPRODUCE.md](eval/REPRODUCE.md). Không cần `repo/` cạnh `system3`.
 
+## System 4 (Friendly mode, song song trên cùng web) — nhánh `System_3&4`
+`Launch web.bat` giờ bật thêm **đăng nhập/đăng ký** và công tắc **Strict | Friendly** (Strict = System 3 bên dưới, không đổi). `S4_ENABLED=0` → web System 3 như cũ.
+Xem [system4/README.md](system4/README.md), nhiệm vụ [docs/SYSTEM4_NV1_NEN_TANG.md](docs/SYSTEM4_NV1_NEN_TANG.md) … NV4, deploy [docs/SYSTEM4_DEPLOY.md](docs/SYSTEM4_DEPLOY.md).
+
 ## Kiến trúc đang chạy
 User → Orchestrator → **Planner (luật; Qwen3-4B hybrid là tuỳ chọn, TẮT mặc định)** → Policy/Router (luật) → Answerer (code, nguyên văn + nguồn) → [LLM chỉ sinh chữ giải thích điều kiện/so sánh, mọi ý qua verifier, lỗi/timeout 7 s thì giữ bản bằng code] → câu trả lời. Timeout cả hai bước LLM (Planner hybrid, Answer Composer) là 7 giây, cấu hình được: bảng ở [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Map với kiến trúc G7 của nhóm: cùng file. Box 1–4, 5A, 6A, 10 đã có; 3 (LLM Planner) làm hybrid nhưng không bật; 5B/6B (RAG, import) mới chỉ có thiết kế giao diện trong `knowledge/`.
 

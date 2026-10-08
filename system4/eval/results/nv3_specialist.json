@@ -1,0 +1,280 @@
+{
+  "summary": {
+    "answer_ok": 17,
+    "source_ok": 17,
+    "total": 17,
+    "first_median": 3.558324098587036,
+    "first_max": 6.274129390716553,
+    "total_median": 5.695547580718994,
+    "total_max": 8.935774087905884,
+    "ingest": [
+      {
+        "filename": "MAU_100_THU_TUC.xlsx",
+        "n_records": 2334,
+        "seconds": 85.3,
+        "message": "Bảng: cột tiêu đề \"name\", \"tên thủ tục\", \"tên thủ tục\" (66 trường); Văn bản: 2 đoạn · 2334 bản ghi"
+      },
+      {
+        "filename": "chinh_sach_team7.docx",
+        "n_records": 5,
+        "seconds": 3.2,
+        "message": "Bảng: cột tiêu đề \"Hạng thành viên\" (1 trường); Văn bản: 2 đoạn · 5 bản ghi"
+      }
+    ]
+  },
+  "results": [
+    {
+      "kind": "cơ quan",
+      "q": "Thủ tục \"Cấp Giấy phép lưu hành xe quá tải trọng, xe quá khổ giới hạn, xe bánh xích, xe vận chuyển hàng siêu trường, siêu trọng trên đường bộ\" do cơ quan nào thực hiện?",
+      "expect": [
+        "Sở Xây dựng"
+      ],
+      "answer": "Thủ tục \"Cấp Giấy phép lưu hành xe quá tải trọng, xe quá khổ giới hạn, xe bánh xích, xe vận chuyển hàng siêu trường, siêu trọng trên đường bộ\" được **Sở Xây dựng** thực hiện (theo quy định tại dữ liệu tham khảo [1] và [2]).",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Cấp Giấy phép lưu hành xe quá tải trọng, xe quá khổ giới hạn, xe bánh xích, xe vận chuyển hàng siêu trường, siêu trọng trên đường bộ",
+        "Thông tư số 19/2026/TT-BXD ngày 08 tháng 5 năm 2026 của Bộ trưởng Bộ Xây dựng sửa đổi, bổ sung một số điều của Thông tư số 12/2025/TT-BXD ngày 30 tháng 6 năm 2025 của Bộ trưởng Bộ Xây dựng quy định về tải trọng, khổ giới hạn của đường bộ; lưu hành xe quá khổ giới hạn, xe quá tải trọng, xe bánh xích "
+      ],
+      "first_s": 6.3,
+      "total_s": 8.2
+    },
+    {
+      "kind": "thời hạn",
+      "q": "Thời hạn giải quyết thủ tục \"Cấp Giấy phép lưu hành xe quá tải trọng, xe quá khổ giới hạn, xe bánh xích, xe vận chuyển hàng siêu trường, siêu trọng trên đường bộ\" là bao lâu?",
+      "expect": [
+        "1 ngày"
+      ],
+      "answer": "Dựa trên dữ liệu tham khảo, thời hạn giải quyết thủ tục \"Cấp Giấy phép lưu hành xe quá tải trọng, xe quá khổ giới hạn, xe bánh\" là:\n\n- **Trực tuyến**: 1 ngày làm việc (theo đoạn [4])\n- **Trực tiếp**: 2 ngày làm việc (theo đoạn [1])\n- **Bưu chính**: 2 ngày làm việc (theo đoạn [2])\n\nLưu ý: Bạn đã hỏi về thủ tục \"xe xích, xe vận chuyển hàng siêu trường, siêu trọng\" nhưng trong dữ liệu tham khảo chỉ có thông tin về \"xe quá tải trọng, xe quá khổ giới hạn, xe bánh\". Do đó, thời hạn cho thủ tục cụ thể ",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Cấp Giấy phép lưu hành xe quá tải trọng, xe quá khổ giới hạn, xe bánh",
+        "Cấp Giấy phép lưu hành xe quá tải trọng, xe quá khổ giới hạn, xe bánh",
+        "Cấp Giấy phép lưu hành xe quá tải trọng, xe quá khổ giới hạn, xe bánh"
+      ],
+      "first_s": 4.0,
+      "total_s": 8.9
+    },
+    {
+      "kind": "cơ quan",
+      "q": "Thủ tục \"Cấp Giấy chứng nhận đủ điều kiện hoạt động kiểm định kỹ thuật an toàn lao động\" do cơ quan nào thực hiện?",
+      "expect": [
+        "Sở Xây dựng"
+      ],
+      "answer": "Theo dữ liệu tham khảo, thủ tục này được thực hiện bởi:\n\n**Sở Xây dựng - TP.HCM**\n\nĐoạn [1] nêu rõ: \"executing_agency: Sở Xây dựng - TP.HCM\".",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Cấp Giấy chứng nhận đủ điều kiện hoạt động kiểm định kỹ thuật an toàn lao động"
+      ],
+      "first_s": 4.1,
+      "total_s": 5.7
+    },
+    {
+      "kind": "thời hạn",
+      "q": "Thời hạn giải quyết thủ tục \"Cấp Giấy chứng nhận đủ điều kiện hoạt động kiểm định kỹ thuật an toàn lao động\" là bao lâu?",
+      "expect": [
+        "15 ngày"
+      ],
+      "answer": "Thời hạn giải quyết thủ tục **Cấp Giấy chứng nhận đủ điều kiện hoạt động kiểm định kỹ thuật an toàn lao động** là **15 ngày làm việc** (theo quy định tại đoạn [1]).\n\n**Cụ thể từ dữ liệu tham khảo**: \n- Đoạn [1]: `processing_time_text: 15 ngày làm việc; 30 ngày làm việc` \n- Đoạn [2] và [3] và [4]: Thời hạn 15 ngày làm việc (kể từ khi nhận được hồ sơ đầy đủ theo quy định)",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Cấp Giấy chứng nhận đủ điều kiện hoạt động kiểm định kỹ thuật an toàn lao động",
+        "Cấp Giấy chứng nhận đủ điều kiện hoạt động kiểm định kỹ thuật an toàn",
+        "Cấp Giấy chứng nhận đủ điều kiện hoạt động kiểm định kỹ thuật an toàn",
+        "Cấp Giấy chứng nhận đủ điều kiện hoạt động kiểm định kỹ thuật an toàn"
+      ],
+      "first_s": 3.3,
+      "total_s": 6.1
+    },
+    {
+      "kind": "cơ quan",
+      "q": "Thủ tục \"Cấp điều chỉnh Giấy chứng nhận đủ điều kiện thương nhân xuất khẩu, nhập khẩu LPG\" do cơ quan nào thực hiện?",
+      "expect": [
+        "Ủy ban nhân dân cấp tỉnh"
+      ],
+      "answer": "Thủ tục **Cấp điều chỉnh Giấy chứng nhận đủ điều kiện thương nhân xuất khẩu, nhập khẩu LPG** được thực hiện bởi:\n\n- **Ủy ban nhân dân cấp tỉnh**\n\nĐây là thông tin được xác nhận từ dữ liệu tham khảo [2].",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Cấp điều chỉnh Giấy chứng nhận đủ điều kiện thương nhân xuất khẩu, nhập khẩu LPG"
+      ],
+      "first_s": 4.1,
+      "total_s": 5.8
+    },
+    {
+      "kind": "thời hạn",
+      "q": "Thời hạn giải quyết thủ tục \"Cấp điều chỉnh Giấy chứng nhận đủ điều kiện thương nhân xuất khẩu, nhập khẩu LPG\" là bao lâu?",
+      "expect": [
+        "7 ngày"
+      ],
+      "answer": "Thời hạn giải quyết thủ tục 'Cấp điều chỉnh Giấy chứng nhận đủ điều kiện thương nhân xuất khẩu, nhập khẩu LPG' là **7 ngày** theo quy định tại thông tin số [2].",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Cấp điều chỉnh Giấy chứng nhận đủ điều kiện thương nhân xuất khẩu, nhập khẩu LPG"
+      ],
+      "first_s": 2.0,
+      "total_s": 3.5
+    },
+    {
+      "kind": "cơ quan",
+      "q": "Thủ tục \"Cấp Giấy phép kinh doanh vận tải bằng xe ô tô, bằng xe bốn bánh có gắn động cơ\" do cơ quan nào thực hiện?",
+      "expect": [
+        "Sở Xây dựng"
+      ],
+      "answer": "Thủ tục \"Cấp Giấy phép kinh doanh vận tải bằng xe ô tô, bằng xe bốn bánh có gắn động cơ\" được thực hiện bởi **Sở Xây dựng** (cơ quan cấp giấy phép theo quy định).\n\n**Dữ liệu tham khảo**:\n- Đoạn [1]: \"executing_agency\": \"Sở Xây dựng\"\n- Đoạn [2]: \"tên thủ tục\": \"Cấp Giấy phép kinh doanh vận tải bằng xe ô tô, bằng xe bốn bánh có gắn\"\n- Đoạn [3]: \"tên thủ tục\": \"Cấp Giấy phép kinh doanh vận tải bằng xe ô tô, bằng xe bốn bánh có gắn\"\n- Đoạn [4]: \"trục hỏi\": \"Đối tượng\", \"lựa chọn\": \"Hợp tác xã\"",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Cấp Giấy phép kinh doanh vận tải bằng xe ô tô, bằng xe bốn bánh có gắn động cơ",
+        "Quy định về hoạt động vận tải đường bộ",
+        "nghị quyết của Chính phủ về cắt giảm, phân cấp, đơn giản hóa thủ tục hành chính, điều kiện kinh doanh lĩnh vực quốc phòng, nội vụ, tài chính, xây dựng, ngoại giao, tư pháp, ngân hàng",
+        "Cấp Giấy phép kinh doanh vận tải bằng xe ô tô, bằng xe bốn bánh có gắn"
+      ],
+      "first_s": 3.6,
+      "total_s": 7.3
+    },
+    {
+      "kind": "thời hạn",
+      "q": "Thời hạn giải quyết thủ tục \"Cấp Giấy phép kinh doanh vận tải bằng xe ô tô, bằng xe bốn bánh có gắn động cơ\" là bao lâu?",
+      "expect": [
+        "4 ngày"
+      ],
+      "answer": "Thời hạn giải quyết thủ tục **Cấp Giấy phép kinh doanh vận tải bằng xe ô tô, bằng xe bốn bánh có gắn động cơ** là:\n\n- **4 ngày làm việc** (theo thông tin từ dữ liệu tham khảo)\n\n*Ghi chú: Thời hạn này áp dụng cho cả các hình thức nộp hồ sơ trực tiếp, trực tuyến và bưu chính. Bạn có thể tham khảo trang web chính thức tại: [https://dichvucong.gov.vn/dich-vu-cong-truc-tuyen/1.000703](https://dichvucong.gov.vn/dich-vu-cong-truc-tuyen/1.000703)*",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Cấp Giấy phép kinh doanh vận tải bằng xe ô tô, bằng xe bốn bánh có gắn động cơ"
+      ],
+      "first_s": 3.6,
+      "total_s": 6.9
+    },
+    {
+      "kind": "cơ quan",
+      "q": "Thủ tục \"Thủ tục cấp lại Giấy chứng nhận đủ điều kiện kinh doanh hoạt động thể thao trong trường hợp bị mất hoặc hư hỏng\" do cơ quan nào thực hiện?",
+      "expect": [
+        "Cơ quan chuyên môn về thể dục"
+      ],
+      "answer": "Thủ tục \"Thủ tục cấp lại Giấy chứng nhận đủ điều kiện kinh doanh hoạt động thể thao trong trường hợp bị mất hoặc hư hỏng\" được thực hiện bởi:\n\n**Cơ quan chuyên môn về thể dục, thể thao thuộc Ủy ban nhân dân cấp tỉnh**\n\nĐoạn [1] cho biết thông tin này rõ ràng.",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Thủ tục cấp lại Giấy chứng nhận đủ điều kiện kinh doanh hoạt động thể thao trong trường hợp bị mất hoặc hư hỏng"
+      ],
+      "first_s": 4.2,
+      "total_s": 6.3
+    },
+    {
+      "kind": "thời hạn",
+      "q": "Thời hạn giải quyết thủ tục \"Thủ tục cấp lại Giấy chứng nhận đủ điều kiện kinh doanh hoạt động thể thao trong trường hợp bị mất hoặc hư hỏng\" là bao lâu?",
+      "expect": [
+        "5 ngày"
+      ],
+      "answer": "Thời hạn giải quyết thủ tục \"Thủ tục cấp lại Giấy chứng nhận đủ điều kiện kinh doanh hoạt động thể thao trong trường hợp bị mất hoặc hư hỏng\" là **5 ngày làm việc**.\n\n**Nguồn tham khảo**:\n- Đoạn [1] (MAU_100_THU_TUC): Thời gian xử lý là 5 ngày làm việc.",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Thủ tục cấp lại Giấy chứng nhận đủ điều kiện kinh doanh hoạt động thể thao trong trường hợp bị mất hoặc hư hỏng"
+      ],
+      "first_s": 3.6,
+      "total_s": 5.5
+    },
+    {
+      "kind": "cơ quan",
+      "q": "Thủ tục \"Thủ tục cấp Giấy chứng nhận đủ điều kiện kinh doanh hoạt động thể thao đối với môn Taekwondo\" do cơ quan nào thực hiện?",
+      "expect": [
+        "Cơ quan chuyên môn về thể dục"
+      ],
+      "answer": "Thủ tục cấp Giấy chứng nhận đủ điều kiện kinh doanh hoạt động thể thao đối với môn Taekwondo được thực hiện bởi:\n\n**Cơ quan chuyên môn về thể dục, thể thao thuộc Ủy ban nhân dân cấp tỉnh**\n\nĐoạn [1] cho thấy thông tin này rõ ràng.",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Thủ tục cấp Giấy chứng nhận đủ điều kiện kinh doanh hoạt động thể thao đối với môn Taekwondo"
+      ],
+      "first_s": 4.7,
+      "total_s": 6.6
+    },
+    {
+      "kind": "thời hạn",
+      "q": "Thời hạn giải quyết thủ tục \"Thủ tục cấp Giấy chứng nhận đủ điều kiện kinh doanh hoạt động thể thao đối với môn Taekwondo\" là bao lâu?",
+      "expect": [
+        "7 ngày"
+      ],
+      "answer": "Thời hạn giải quyết thủ tục cấp Giấy chứng nhận đủ điều kiện kinh doanh hoạt động thể thao đối với môn Taekwondo là **7 ngày làm việc** (đoạn [1]).",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Thủ tục cấp Giấy chứng nhận đủ điều kiện kinh doanh hoạt động thể thao đối với môn Taekwondo"
+      ],
+      "first_s": 2.3,
+      "total_s": 3.8
+    },
+    {
+      "kind": "Word",
+      "q": "Được đổi trả sản phẩm trong bao nhiêu ngày?",
+      "expect": [
+        "7 ngày"
+      ],
+      "answer": "Theo chính sách đổi trả của Team 7:\n- Khách hàng được đổi trả sản phẩm trong **7 ngày** kể từ ngày nhận hàng nếu sản phẩm còn nguyên tem và hoá đơn.\n\n**Nguồn**: [1]",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Chính sách đổi trả"
+      ],
+      "first_s": 1.8,
+      "total_s": 3.1
+    },
+    {
+      "kind": "Word",
+      "q": "Thành viên hạng Vàng được ưu đãi gì?",
+      "expect": [
+        "10%"
+      ],
+      "answer": "Thành viên hạng Vàng có ưu đãi: **Giảm 10% mọi đơn hàng**",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Vàng"
+      ],
+      "first_s": 2.1,
+      "total_s": 3.2
+    },
+    {
+      "kind": "Word",
+      "q": "Bộ phận hỗ trợ làm việc mấy giờ?",
+      "expect": [
+        "8 giờ",
+        "17 giờ 30"
+      ],
+      "answer": "Giờ làm việc của bộ phận hỗ trợ là từ 8 giờ đến 17 giờ 30, thứ Hai đến thứ Bảy. Chủ nhật nghỉ.\n\n**Nguồn**: [1] Giờ làm việc (nguồn: chinh_sach_team7)",
+      "pass": true,
+      "source_ok": true,
+      "sources": [
+        "Giờ làm việc"
+      ],
+      "first_s": 2.2,
+      "total_s": 3.8
+    },
+    {
+      "kind": "ngoài dữ liệu",
+      "q": "Giá vàng SJC hôm nay bao nhiêu?",
+      "answer": "Dữ liệu tham khảo không có thông tin về giá vàng SJC hôm nay. Tôi không thể cung cấp thông tin này. Bạn có thể cho biết thêm về nhu cầu cụ thể của bạn để tôi hỗ trợ tốt hơn?",
+      "pass": true,
+      "source_ok": true,
+      "first_s": 3.0,
+      "total_s": 4.9
+    },
+    {
+      "kind": "ngoài dữ liệu",
+      "q": "Ai là tác giả truyện Kiều?",
+      "answer": "Dữ liệu tham khảo không có thông tin liên quan đến câu hỏi này. Tôi không thể xác định tác giả truyện Kiều từ dữ liệu hiện có. Bạn có thể cung cấp thêm thông tin về tác phẩm hoặc yêu cầu khác không?",
+      "pass": true,
+      "source_ok": true,
+      "first_s": 2.2,
+      "total_s": 4.1
+    }
+  ]
+}

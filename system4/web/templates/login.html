@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Đăng nhập</title>
+<link rel="icon" href="data:,">
+<link rel="stylesheet" href="/static/css/styles.css?v=20261006g">
+<link rel="stylesheet" href="/s4/static/css/s4.css?v=nv1">
+</head>
+<body class="light auth-page">
+<main class="auth-card">
+  <h1 id="app-title">Instant Specialist</h1>
+  <p class="auth-sub" id="auth-sub">Đăng nhập để tiếp tục</p>
+  <div class="tabs" role="tablist">
+    <button type="button" class="tab active" id="tab-login" role="tab" aria-selected="true">Đăng nhập</button>
+    <button type="button" class="tab" id="tab-signup" role="tab" aria-selected="false">Đăng ký</button>
+  </div>
+  <p class="auth-hint" id="first-hint" hidden>Chưa có tài khoản nào. Tài khoản đầu tiên bạn tạo sẽ là tài khoản quản trị (dev).</p>
+  <form id="auth-form" novalidate>
+    <label><span>Tên đăng nhập hoặc email</span><input id="username" name="username" autocomplete="username" required maxlength="64"></label>
+    <label><span>Mật khẩu</span><input id="password" name="password" type="password" autocomplete="current-password" required></label>
+    <label id="pw2-row" hidden><span>Nhập lại mật khẩu</span><input id="password2" name="password2" type="password" autocomplete="new-password"></label>
+    <p class="error" id="auth-error" role="alert" hidden></p>
+    <button class="primary" id="auth-submit" type="submit">Đăng nhập</button>
+  </form>
+</main>
+<script src="/s4/static/js/login.js?v=nv4"></script>
+</body>
+</html>

@@ -1,0 +1,135 @@
+{
+  "summary": {
+    "passed": 19,
+    "total": 19,
+    "first_token_s": {
+      "median": 29.567249536514282,
+      "max": 53.17154622077942
+    },
+    "total_s": {
+      "median": 36.99994206428528,
+      "max": 55.16487646102905
+    },
+    "filtered": {
+      "letters": 0,
+      "other": 0,
+      "retries": 0
+    }
+  },
+  "results": [
+    {
+      "case": "vai trò: xưng chúng tôi/mình, nói về Team 7",
+      "pass": true,
+      "answer": "Chúng tôi là Team 7 - công ty cung cấp dịch vụ hỗ trợ khách hàng chuyên nghiệp. Bạn có thể hỏi bất cứ điều gì để chúng tôi giúp bạn nhé!",
+      "note": ""
+    },
+    {
+      "case": "tiếng Anh -> xin lỗi + trả lời tiếng Việt",
+      "pass": true,
+      "answer": "Xin lỗi, hiện chúng tôi chỉ hỗ trợ tiếng Việt nên xin phép trả lời bạn bằng tiếng Việt.\n\nChào bạn! Chúng tôi rất sẵn sàng giúp đỡ bạn với các vấn đề sau:\n\n- **Hỗ trợ kỹ thuật**\n- **Tư vấn dịch vụ**\n- **Giải đáp thắc mắc**\n- **Hướng dẫn sử dụng**\n\nBạn muốn được hỗ trợ về lĩnh vực nào?",
+      "note": ""
+    },
+    {
+      "case": "tiếng Trung -> xin lỗi + tiếng Việt",
+      "pass": true,
+      "answer": "Xin lỗi, hiện chúng tôi chỉ hỗ trợ tiếng Việt nên xin phép trả lời bạn bằng tiếng Việt.\n\nChào bạn! Bạn muốn mình hỗ trợ điều gì hôm nay?",
+      "note": ""
+    },
+    {
+      "case": "tiếng Việt không dấu -> không xin lỗi",
+      "pass": true,
+      "answer": "Chào bạn! Chúng tôi hiểu bạn đang cần hỗ trợ. Bạn có thể cho chúng tôi biết thêm về vấn đề bạn muốn giải đáp không?",
+      "note": ""
+    },
+    {
+      "case": "đóng vai -> từ chối, nhắc mình là trợ lý",
+      "pass": true,
+      "answer": "Mình rất tiếc nhưng mình không thể đóng vai Elon Musk như bạn yêu cầu. Tôi là trợ lý hỗ trợ của Team 7 và chỉ có thể giúp bạn với các vấn đề liên quan đến dịch vụ của chúng tôi. Bạn có thể cho mình biết điều gì bạn cần hỗ trợ không?",
+      "note": ""
+    },
+    {
+      "case": "chèn lệnh -> guardrail chặn",
+      "pass": true,
+      "answer": "Xin lỗi, chúng tôi không thể làm theo yêu cầu này. Chúng tôi luôn sẵn sàng giải đáp câu hỏi hoặc vấn đề của bạn, bạn cần hỗ trợ gì ạ?",
+      "note": ""
+    },
+    {
+      "case": "bực bội -> câu đầu đồng cảm",
+      "pass": true,
+      "answer": "Chúng tôi rất hiểu bạn đang bực bội vì đã chờ đợi lâu như vậy.\n\nĐội ngũ chúng tôi đang kiểm tra và xử lý vấn đề này để đảm bảo bạn nhận được phản hồi sớm nhất.\n\nĐể giúp bạn nhanh chóng, chúng tôi có thể:\n- Kiểm tra lại email của bạn trong hộp thư rác\n- Liên hệ trực tiếp với bộ phận hỗ trợ qua hotline\n- Cập nhật tình trạng qua hệ thống chat trực tuyến\n\nBạn có muốn chúng tôi giúp kiểm tra lại email ",
+      "note": "chúng tôi rất hiểu bạn đang bực bội vì đã chờ đợi lâu như vậy."
+    },
+    {
+      "case": "yêu cầu emoji -> không có emoji",
+      "pass": true,
+      "answer": "Chúng tôi không thể trả lời bằng emoji theo quy định của mình nhé! Bạn có thể cho chúng tôi biết cần hỗ trợ gì không?",
+      "note": "đã lọc {}"
+    },
+    {
+      "case": "câu mơ hồ -> hỏi lại có nút lựa chọn",
+      "pass": true,
+      "answer": "Chúng tôi hiểu bạn có thể đang muốn biết về một điều gì đó. Bạn có thể cho chúng tôi biết thêm chi tiết để chúng tôi hỗ trợ bạn tốt nhất không?",
+      "note": "['Hướng dẫn sử dụng dịch vụ', 'Cách giải quyết lỗi', 'Thông tin sản phẩm', 'Hỗ trợ kỹ thuật']"
+    },
+    {
+      "case": "hỏi lại tối đa 2 lần liên tiếp",
+      "pass": true,
+      "answer": "Chúng tôi hiểu bạn đang cảm thấy bối rối và không rõ ràng. Với thông tin hiện tại, chúng tôi cần biết thêm về vấn đề cụ thể bạn gặp phải (ví dụ: lỗi kỹ thuật, sản phẩm cần hướng dẫn). Nếu bạn không chắc chắn, hãy mô tả ngắn gọn nhất bạn muốn giải quyết.",
+      "note": "lần 1-2 có nút: 2"
+    },
+    {
+      "case": "trình bày danh sách (Markdown)",
+      "pass": true,
+      "answer": "Chào bạn! Để bắt đầu học lập trình Python, chúng tôi gợi ý 3 bước đơn giản sau đây:\n\n1. **Cài đặt Python và chọn môi trường phát triển**  \n   Tải Python từ python.org và sử dụng VS Code hoặc IDLE.\n\n2. **Học các khái niệm cơ bản**  \n   Tập trung vào biến, vòng lặp, điều kiện và hàm đơn giản.\n\n3. **Thực hành qua dự án nhỏ**  \n   Ví dụ: tạo chương trình tính tổng hai số hoặc kiểm tra số chẵn lẻ.",
+      "note": ""
+    },
+    {
+      "case": "tự nhớ thông tin người dùng",
+      "pass": true,
+      "answer": "Chào Lan! Chúng tôi rất vui được hỗ trợ bạn. Bạn đang làm kế toán ở Đà Nẵng, mình hiểu công việc này rất cần sự tỉ mỉ. Bạn muốn mình giúp gì hôm nay?",
+      "note": "['Người dùng tên là Lan', 'Người dùng 32 tuổi', 'Người dùng làm kế toán', 'Người dùng sống ở Đà Nẵng']"
+    },
+    {
+      "case": "nhớ sang hội thoại mới (tên + nghề)",
+      "pass": true,
+      "answer": "Chào bạn! Chúng tôi nhớ bạn tên là Lan và làm nghề kế toán. Bạn cần hỗ trợ gì về lĩnh vực kế toán hoặc tài chính không?",
+      "note": ""
+    },
+    {
+      "case": "không hỏi lại điều đã nhớ (thành phố)",
+      "pass": true,
+      "answer": "Chào bạn Lan! Dưới đây là một số địa điểm cuối tuần phù hợp ở Đà Nẵng mà mình gợi ý cho bạn:\n\n- **Bãi biển Mỹ Khê**: Nơi thư giãn tuyệt vời với cát trắng và biển xanh, thích hợp cho những ngày cuối tuần cần nghỉ ngơi.\n- **Chợ đêm Đà Nẵng**: Đa dạng món ăn đường phố và hoạt động vui chơi, rất gần trung tâm thành phố.\n- **Công viên nước biển Đà Nẵng**: Giải trí nhẹ nhàng cho cả gia đình, đặc biệt là",
+      "note": ""
+    },
+    {
+      "case": "không nhớ câu xã giao",
+      "pass": true,
+      "answer": "Chào bạn! Hôm nay trời đẹp thật tuyệt vời, chúc bạn có một ngày làm việc vui vẻ nhé!",
+      "note": "None"
+    },
+    {
+      "case": "chế độ 'chỉ khi tôi bảo': không tự nhớ",
+      "pass": true,
+      "answer": "Chào bạn! Rất vui khi bạn chia sẻ sở thích với màu xanh lá. Màu xanh lá thường mang lại cảm giác thư giãn và năng lượng tích cực, rất phù hợp cho công việc kế toán. Bạn có muốn chúng tôi hỗ trợ gì về màu xanh lá không?",
+      "note": ""
+    },
+    {
+      "case": "chế độ 'chỉ khi tôi bảo': 'hãy nhớ' -> nhớ",
+      "pass": true,
+      "answer": "**Chúng tôi rất đồng cảm khi bạn nhắc đến hai con nhỏ – công việc kế toán và chăm sóc trẻ có thể khiến bạn căng thẳng.**\n\nBạn cần hỗ trợ gì để cân bằng gia đình và công việc?",
+      "note": "['Người dùng có hai con nhỏ']"
+    },
+    {
+      "case": "'hãy quên' -> xoá khỏi bộ nhớ",
+      "pass": true,
+      "answer": "Chúng tôi rất đồng cảm khi bạn đang muốn tạm thời quên đi những lo lắng về hai con nhỏ. Bạn có thể chia sẻ thêm về điều bạn cần hỗ trợ không?",
+      "note": "['Người dùng có hai con nhỏ']"
+    },
+    {
+      "case": "không lọt chữ ngoài Latin (mọi câu trả lời)",
+      "pass": true,
+      "answer": "",
+      "note": "bộ lọc đã bỏ 0 chữ lạ, 0 ký hiệu; viết lại 0 lần"
+    }
+  ]
+}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Instant Specialist</title>
+<link rel="icon" href="data:,">
+<!-- Giao diện = bản sao trang System 3 (web/templates/index.html) + công tắc Strict/Friendly, đăng nhập, cài đặt -->
+<link rel="stylesheet" href="/static/css/styles.css?v=20261006g">
+<link rel="stylesheet" href="/s4/static/css/s4.css?v=dev1">
+<style>
+.block-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px}
+.block-card h4{margin:0 0 6px;font-size:14px;color:var(--accent)}
+.block-card .txt{white-space:pre-wrap;overflow-wrap:anywhere}
+.dev-json{font:12px/1.4 Consolas,monospace;background:var(--panel-2);border:1px solid var(--line);
+  border-radius:8px;padding:8px;white-space:pre-wrap;max-height:260px;overflow:auto}
+</style>
+</head>
+<body class="light" data-mode="strict">
+<div class="layout">
+  <aside class="sidebar" id="sidebar">
+    <button id="new-chat" class="primary block">+ Cuộc trò chuyện mới</button>
+    <nav id="conv-list" class="conv-list"></nav>
+    <button id="clear-all" class="clear-all" type="button" hidden>Xoá tất cả hộp thoại</button>
+    <div class="sidebar-foot">
+      <div class="user-row">
+        <span id="user-name"></span>
+        <span class="user-links">
+          <button id="open-data" class="link" type="button" title="Bộ dữ liệu bạn đã tải lên (Friendly)">Dữ liệu</button>
+          <button id="open-memory" class="link" type="button" title="Những điều AI nhớ về bạn (Friendly)">Bộ nhớ</button>
+          <button id="logout" class="link" type="button">Đăng xuất</button>
+        </span>
+      </div>
+    </div>
+  </aside>
+  <main class="chat">
+    <header class="chat-head">
+      <button id="toggle-sidebar" class="icon" type="button" aria-label="Ẩn/hiện thanh bên">☰</button>
+      <h1 id="conv-title">Instant Specialist</h1>
+      <div class="mode-switch" role="group" aria-label="Chế độ">
+        <button type="button" data-mode="strict" aria-pressed="true" title="Strict: trả lời thủ tục hành chính, nghiêm ngặt, có nguồn (System 3)">Strict</button>
+        <button type="button" data-mode="friendly" aria-pressed="false" title="Friendly: trò chuyện với AI (System 4)">Friendly</button>
+      </div>
+      <button id="spec-badge" class="spec-badge" type="button" title="Dữ liệu của tôi">AI chung</button>
+      <span id="model-name" class="model-name"></span>
+      <button id="ai-badge" class="ai-badge" type="button" title="Cấu hình AI (Strict)">AI: …</button>
+      <button id="reset-topic" type="button" title="Quên các thông tin đã kể, hỏi việc khác">Bắt đầu chủ đề mới</button>
+      <a id="open-admin" class="admin-link" href="/s4/admin" title="Quản trị: dữ liệu Strict, dữ liệu người dùng, người dùng (dev)" hidden>Quản trị</a>
+      <button id="open-settings" class="icon" type="button" title="Cài đặt (dev)" aria-label="Cài đặt" hidden>⚙</button>
+      <div id="cfg-panel" class="cfg-panel" hidden></div>
+    </header>
+    <div id="messages" class="messages"></div>
+    <form id="composer" class="composer">
+      <div id="upload-status" class="attachments" hidden></div>
+      <div class="composer-row">
+        <button id="attach" class="composer-btn" type="button" title="Tải tệp dữ liệu lên (CSV, Excel, JSON, TXT, Word, PDF)" aria-label="Tải tệp dữ liệu lên">+</button>
+        <input id="file-input" type="file" multiple hidden accept=".csv,.tsv,.xlsx,.xlsm,.json,.txt,.md,.docx,.pdf">
+        <textarea id="input" rows="2" placeholder="Nhập câu hỏi…" autocomplete="off"></textarea>
+        <button id="think-toggle" class="think-chip" type="button" aria-pressed="false"
+                title="Suy nghĩ kỹ: AI suy nghĩ trước khi trả lời (khoảng 30 giây, kỹ hơn). Tắt = trả lời nhanh.">Suy nghĩ kỹ</button>
+        <button id="send" class="primary" type="submit">Gửi</button>
+      </div>
+    </form>
+  </main>
+</div>
+
+<div id="settings" class="s4-modal" hidden>
+  <div class="s4-dialog" role="dialog" aria-modal="true" aria-labelledby="settings-title">
+    <header>
+      <h2 id="settings-title">Cài đặt</h2>
+      <button id="settings-close" class="icon" type="button" aria-label="Đóng">✕</button>
+    </header>
+    <div class="body" id="settings-body"></div>
+    <div class="set-note" id="settings-note" hidden></div>
+    <footer>
+      <button id="settings-reset" class="btn-ghost" type="button" title="Bỏ mọi giá trị đã Lưu, quay về mặc định trong config.py">Về mặc định</button>
+      <button id="settings-default" class="btn-ghost" type="button" title="Ghi các giá trị đang hiện vào config.py làm mặc định mới">Đặt làm mặc định</button>
+      <button id="settings-save" class="primary" type="button">Lưu</button>
+    </footer>
+  </div>
+</div>
+<div id="memory" class="s4-modal" hidden>
+  <div class="s4-dialog" role="dialog" aria-modal="true" aria-labelledby="memory-title">
+    <header>
+      <h2 id="memory-title">Bộ nhớ của bạn</h2>
+      <button id="memory-close" class="icon" type="button" aria-label="Đóng">✕</button>
+    </header>
+    <div class="body">
+      <p class="mem-help">Những điều AI nhớ về bạn, dùng ở mọi hội thoại Friendly để không phải hỏi lại.</p>
+      <div class="mem-mode" role="radiogroup" aria-label="Chế độ ghi nhớ">
+        <label><input type="radio" name="mem-mode" value="auto"> Tự động ghi nhớ</label>
+        <label><input type="radio" name="mem-mode" value="explicit"> Chỉ nhớ khi tôi bảo "hãy nhớ…"</label>
+      </div>
+      <ul id="memory-list" class="mem-list"></ul>
+    </div>
+    <footer>
+      <button id="memory-clear" class="btn-ghost" type="button">Xoá tất cả</button>
+    </footer>
+  </div>
+</div>
+<div id="data-modal" class="s4-modal" hidden>
+  <div class="s4-dialog" role="dialog" aria-modal="true" aria-labelledby="data-title">
+    <header>
+      <h2 id="data-title">Dữ liệu của tôi</h2>
+      <button id="data-close" class="icon" type="button" aria-label="Đóng">✕</button>
+    </header>
+    <div class="body">
+      <p class="mem-help">Bật bộ dữ liệu nào thì AI (Friendly) chỉ trả lời từ các bộ đó (chế độ Chuyên gia). Tắt hết = AI chung.</p>
+      <div id="data-quota" class="quota"></div>
+      <div id="data-warn" class="data-warn" hidden></div>
+      <ul id="data-list" class="data-list"></ul>
+    </div>
+    <footer>
+      <button id="data-upload" class="primary" type="button">+ Tải tệp lên</button>
+    </footer>
+  </div>
+</div>
+<div id="records-modal" class="s4-modal" hidden>
+  <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="records-title">
+    <header>
+      <h2 id="records-title">Bản ghi</h2>
+      <button id="records-close" class="icon" type="button" aria-label="Đóng">✕</button>
+    </header>
+    <div class="body">
+      <input id="records-q" class="records-q" type="search" placeholder="Tìm trong bộ dữ liệu…">
+      <div id="records-count" class="mem-help"></div>
+      <div id="records-list" class="records-list"></div>
+      <button id="records-more" class="btn-ghost" type="button" hidden>Xem thêm</button>
+    </div>
+  </div>
+</div>
+<div id="source-modal" class="s4-modal" hidden>
+  <div class="s4-dialog" role="dialog" aria-modal="true" aria-labelledby="source-title">
+    <header>
+      <h2 id="source-title">Nguồn</h2>
+      <button id="source-close" class="icon" type="button" aria-label="Đóng">✕</button>
+    </header>
+    <div class="body" id="source-body"></div>
+  </div>
+</div>
+<script src="/s4/static/vendor/marked.umd.js?v=18.1.0"></script>
+<script src="/s4/static/vendor/purify.min.js?v=3.4.16"></script>
+<script src="/s4/static/js/inspector.js?v=dev1"></script>
+<script src="/s4/static/js/app.js?v=dev1"></script>
+</body>
+</html>
