@@ -29,7 +29,7 @@ try:
     print("health", h)
 
     # 1) câu thủ tục rõ: trả lời có nguồn
-    s, a = call("/chat", {"text": "Đăng ký khai sinh cần giấy tờ gì?"})
+    s, a = call("/chat", {"text": "Đăng ký tạm trú cần giấy tờ gì?"})
     cid = a["conversation_id"]
     assert s == 200 and a["kind"] == "answer" and a["blocks"] and cid, a
     assert any(b.get("sources") for b in a["blocks"]), "trả lời thiếu nguồn"

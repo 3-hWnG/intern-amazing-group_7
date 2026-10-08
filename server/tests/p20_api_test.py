@@ -23,7 +23,7 @@ with TestClient(main.app) as c:
     assert c.get("/procedure/khong-co/table").status_code == 404
 
     # block trả lời mang proc_id; hỏi chung -> có dòng "bấm Tạo bảng full"
-    a = c.post("/chat", json={"text": "Đăng ký khai sinh cần giấy tờ gì?"}).json()
+    a = c.post("/chat", json={"text": "Đăng ký tạm trú cần giấy tờ gì?"}).json()
     assert any(b.get("proc_id") for b in a["blocks"]), a["blocks"]
     assert all("xem đầy đủ trên Cổng" not in b["text"] for b in a["blocks"])
     # câu có lời chào/không thủ tục: không có proc_id
@@ -61,12 +61,12 @@ with TestClient(main.app) as c:
     assert c.delete(f"/conversations/{ids[0]}").status_code == 404
     assert any(x["id"] == ids[1] for x in c.get("/conversations").json()["conversations"])      # xoá một không đụng cái khác
     # xuất file: Markdown + JSON, chỉ nội dung người dùng thấy
-    ex = c.post("/chat", json={"text": "Đăng ký khai sinh cần giấy tờ gì?"}).json()["conversation_id"]
+    ex = c.post("/chat", json={"text": "Đăng ký tạm trú cần giấy tờ gì?"}).json()["conversation_id"]
     c.post("/chat", json={"text": "còn lệ phí?", "conversation_id": ex})
     c.patch(f"/conversations/{ex}", json={"title": "Khai sinh của bé Đạt"})
     md = c.get(f"/conversations/{ex}/export?format=md"); assert md.status_code == 200, md.text
     assert md.headers["content-disposition"] == 'attachment; filename="Khai-sinh-cua-be-Dat.md"', md.headers["content-disposition"]
-    assert md.text.startswith("# Khai sinh của bé Đạt") and "**Bạn:** Đăng ký khai sinh cần giấy tờ gì?" in md.text and "**Trợ lý:**" in md.text and "Nguồn:" in md.text, md.text[:400]
+    assert md.text.startswith("# Khai sinh của bé Đạt") and "**Bạn:** Đăng ký tạm trú cần giấy tờ gì?" in md.text and "**Trợ lý:**" in md.text and "Nguồn:" in md.text, md.text[:400]
     js_ = c.get(f"/conversations/{ex}/export?format=json").json()
     assert js_["title"] == "Khai sinh của bé Đạt" and [m["role"] for m in js_["messages"]] == ["user", "assistant", "user", "assistant"], js_
     assert not any("plan" in m or "trace" in m for m in js_["messages"]) and js_["messages"][1]["blocks"][0]["sources"], js_["messages"][1]

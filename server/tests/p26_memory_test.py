@@ -99,12 +99,12 @@ with TestClient(main.app) as c:
     c.put("/memory/profile", headers=h, json={"user_type": "citizen"})
     sh = c.post("/chat", json={"text": Q}, headers=h).json()                                          # người dân: còn hai ứng viên, thẻ chỉ còn các ứng viên hợp
     assert sh["kind"] == "clarify" and len(sh["clarify"]["options"]) == 2 and "Theo hồ sơ của bạn" in sh["clarify"]["question"], sh["clarify"]
-    # câu nêu rõ thủ tục khác với hồ sơ: đúng thủ tục theo câu hỏi, hồ sơ không can thiệp
-    ks = c.post("/chat", json={"text": "Đăng ký khai sinh cần giấy tờ gì?"}, headers=h).json()
-    assert any(b.get("proc_id") == "1.001193" for b in ks["blocks"]) and not any("Theo hồ sơ" in b["text"] for b in ks["blocks"]), ks["blocks"]
+    # câu nêu rõ thủ tục khác với hồ sơ: đúng thủ tục theo câu hỏi, hồ sơ không can thiệp (Phase 31: dùng dạng gọi đúng tên 'lưu động'; tên chung 'Đăng ký khai sinh' nay bị hỏi lại, xem p31_variants_test)
+    ks = c.post("/chat", json={"text": "Đăng ký khai sinh lưu động cần giấy tờ gì?"}, headers=h).json()
+    assert any(b.get("proc_id") == "1.003583" for b in ks["blocks"]) and not any("Theo hồ sơ" in b["text"] for b in ks["blocks"]), ks["blocks"]
     c.put("/memory/profile", headers=h, json={"user_type": "business"})
-    ks2 = c.post("/chat", json={"text": "Đăng ký khai sinh cần giấy tờ gì?"}, headers=h).json()
-    assert any(b.get("proc_id") == "1.001193" for b in ks2["blocks"]) and not any("Theo hồ sơ" in b["text"] for b in ks2["blocks"]), ks2["blocks"]
+    ks2 = c.post("/chat", json={"text": "Đăng ký khai sinh lưu động cần giấy tờ gì?"}, headers=h).json()
+    assert any(b.get("proc_id") == "1.003583" for b in ks2["blocks"]) and not any("Theo hồ sơ" in b["text"] for b in ks2["blocks"]), ks2["blocks"]
     c.delete("/memory", headers=h)
     again = c.post("/chat", json={"text": Q}, headers=h).json()
     assert again["kind"] == "clarify" and len(again["clarify"]["options"]) == len(base["clarify"]["options"]), again["kind"]   # quên xong: như cũ

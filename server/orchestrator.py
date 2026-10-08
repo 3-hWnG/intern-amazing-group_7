@@ -33,6 +33,7 @@ class Turn:
     reply_to_clarify: dict | None = None   # thẻ clarify của reply_to (nếu có)
     state: dict | None = None              # ConvState dạng dict; None = đọc từ DB (rồi None nữa = dựng lại từ history)
     memory: dict | None = None             # Phase 26: {subjects:set, label} từ user_memory.for_policy; None = không có hồ sơ (hành vi cũ)
+    pick_proc: str | None = None           # Phase 31: nút "dạng khác" gửi kèm proc_id đã chọn (không phải câu hỏi mới nên không được hỏi lại)
 
 
 def flat_text(r: dict) -> str:
@@ -97,6 +98,8 @@ def handle_turn(turn: Turn) -> dict:
     answered_clarify = bool(turn.reply_to_clarify)
     if answered_clarify:
         text, forced_pid = _resolve_clarify(turn)
+    elif turn.pick_proc:                   # Phase 31: bấm nút "dạng khác" = chọn thẳng thủ tục đó (tên dạng mặc định trùng tên chung của họ, gửi như câu hỏi mới sẽ bị hỏi lại)
+        answered_clarify, forced_pid = True, turn.pick_proc
     elif _reset_request(text) is not None:
         rest = _reset_request(text)
         store.reset_session(turn.conversation_id)

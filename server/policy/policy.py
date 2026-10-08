@@ -9,12 +9,17 @@ Guardrail (đánh số theo PLAN_SYSTEM3.md Phase 4):
 """
 from __future__ import annotations
 
+import os
 import re
+import unicodedata
+from collections import Counter
 from dataclasses import dataclass, field, asdict
 
 from system3.data import api as data_api
+from system3.data.search import _PROVINCE_PATTERNS
 from system3.data.textutil import fold
 from system3.retrieval.context import strip_labels
+from system3.retrieval.query import EXTRA_SYN, FIELD_CUES, PRE_SYN, STOP, _DROP_PHRASES
 
 MAX_TASKS = 3
 MAX_CHARS = 2000
@@ -119,6 +124,32 @@ def _aug(user_text: str) -> str:
     return user_text + " " + " ".join(syn for rx, syn in _SITUATION if rx.search(f))
 
 
+_CUE_RX = re.compile(r"(?<![0-9a-z])(?:" + "|".join(sorted({c for cs in FIELD_CUES.values() for c in cs}, key=len, reverse=True)) + r")(?![0-9a-z])")
+
+
+def _user_words(user_text: str) -> set:
+    """Chữ NỘI DUNG của lời người dùng để đối chiếu mục điều kiện: bỏ cụm hỏi mục ("cần giấy tờ gì", "lệ phí bao nhiêu"), chữ hư/xưng hô/lời đệm (STOP: "là", "muốn", "em", "cho", "hỏi"...);
+    chữ do bảng hoàn cảnh `_SITUATION` thêm vào (đã chọn tay) thì giữ.
+    Nguyên nhân gốc (Phase 30): trước đây MỌI chữ của câu đều được đem so, nên một chữ hư đứng riêng trong đúng một mục anh em ("là" trong "... có công trình phụ trợ là nhà ở", "ở/nhà" trong "nhà ở công vụ")
+    đủ làm mục đó "khớp" -> câu "Lệ phí đăng ký thường trú là bao nhiêu?" bị gán điều kiện "thường trú tại cơ sở tín ngưỡng" (gọi bước LLM sinh chữ thừa ở ~60% ca có điều kiện)
+    và, tệ hơn, `cond_hit` coi như người dùng đã nêu từ phân biệt nên KHÔNG hỏi lại ("em muốn bảo hiểm y tế" trả lời luôn một thủ tục)."""
+    return set(_user_seq(user_text))
+
+
+def _user_seq(user_text: str) -> list:
+    """Như `_user_words` nhưng giữ thứ tự (để nhận cụm 2 chữ nội dung liền nhau như "ủy quyền")."""
+    f = _CUE_RX.sub(" ", fold(user_text))
+    extra = " ".join(syn for rx, syn in _SITUATION if rx.search(fold(user_text)))
+    return [t for t in _TOK.findall(f) if t not in STOP] + _TOK.findall(extra)
+
+
+def adds_info(cond: str, label: str) -> bool:
+    """Mảnh điều kiện phải cho THÊM thông tin ngoài tên thủ tục: còn ít nhất một chữ nội dung không nằm trong tên thủ tục, không phải chữ hư/chữ chung/cụm hỏi mục.
+    ("đăng ký tạm trú" cho thủ tục "Đăng ký tạm trú" = chỉ lặp tên -> không phải điều kiện; "chủ nhà ở nước ngoài" thì có.)"""
+    name = set(_TOK.findall(fold(label)))
+    return any(len(t) > 1 and t not in name and t not in _CGEN for t in _user_words(cond))
+
+
 def _match_conditions(conn, pid: str, label: str, user_text: str) -> list[str]:
     """Chọn mục condition_index mà người dùng nêu hoàn cảnh: chữ ĐẶC TRƯNG của mục (không có trong tên thủ tục, ít trùng với
     các mục anh em) có trong lời người dùng. Chọn mục điểm cao nhất, cần >= 1 chữ độc nhất hoặc >= 3 chữ chung.
@@ -127,11 +158,17 @@ def _match_conditions(conn, pid: str, label: str, user_text: str) -> list[str]:
     if len(rows) < 2:
         return []
     name = set(_TOK.findall(fold(label)))
-    user = set(_TOK.findall(fold(_aug(user_text))))
+    user = _user_words(user_text)
     toks = [{t for t in _TOK.findall(fold(x)) if len(t) > 1 and t not in name and t not in _CGEN} for x in rows]
     best, best_s = None, 0.0
+    useq = _user_seq(user_text)
+    ubi = {(a, b) for a, b in zip(useq, useq[1:])}
     for x, tk in zip(rows, toks):
         sc = sum(1.0 / sum(1 for o in toks if t in o) for t in tk if t in user)
+        # cụm 2 chữ nội dung liền nhau có ở cả câu hỏi và mục ("ủy quyền") là bằng chứng đủ dù cả nhóm anh em cùng có cụm đó
+        rq = [t for t in _TOK.findall(fold(x)) if len(t) > 1 and t not in name and t not in _CGEN and t not in STOP]
+        if any(b in ubi for b in zip(rq, rq[1:])):
+            sc = max(sc, 0.99)
         if sc > best_s:
             best, best_s = x, sc
     return [best] if best and best_s >= 0.99 else []
@@ -141,7 +178,7 @@ def _strong_case(conn, pid: str, label: str, row: str, user_text: str) -> bool:
     """Hoàn cảnh khớp mục `row` đủ chắc để CHỈ trả giấy tờ của trường hợp đó: >= 2 chữ đặc trưng của mục có trong lời người dùng và chiếm >= 35% chữ đặc trưng
     (khớp một chữ lẻ như 'công nhân' ~ 'Công an nhân dân' thì chỉ ghi chú, không cắt hồ sơ)."""
     name = set(_TOK.findall(fold(label)))
-    user = set(_TOK.findall(fold(_aug(user_text))))
+    user = _user_words(user_text)
     tk = {t for t in _TOK.findall(fold(row)) if len(t) > 1 and t not in name and t not in _CGEN}
     hit = sum(1 for t in tk if t in user)
     return hit >= 2 and hit >= 0.35 * len(tk)
@@ -173,13 +210,13 @@ def _names_candidate(conn, pids: list[str], user_text: str, partial: bool = True
     return partial and inside == 1
 
 
-def filter_by_subject(conn, pids: list[str], memory: dict | None, user_text: str = "") -> tuple[list[str], dict | None]:
+def filter_by_subject(conn, pids: list[str], memory: dict | None, user_text: str = "", check_named: bool = True) -> tuple[list[str], dict | None]:
     """Phase 26: lọc ứng viên theo đối tượng đã nhớ. -> (ứng viên mới, ghi chú | None).
     - đúng 1 ứng viên hợp (và mọi ứng viên khác chắc chắn không hợp): kind='pick'
     - 2..n-1 hợp: kind='shrink' (chỉ giữ các ứng viên hợp)
     - ứng viên không khai đối tượng nào = chưa biết -> giữ (không loại vì thiếu dữ liệu); không hợp ai/hợp hết -> không đổi.
     Không đụng khi câu hỏi nêu nguyên tên một ứng viên."""
-    if not memory or not memory.get("subjects") or len(pids) < 2 or _names_candidate(conn, pids, user_text):
+    if not memory or not memory.get("subjects") or len(pids) < 2 or (check_named and _names_candidate(conn, pids, user_text)):
         return pids, None
     subs = data_api.subjects_of(conn, pids)
     hit = [p for p in pids if not subs[p] or subs[p] & memory["subjects"]]
@@ -202,6 +239,71 @@ def _memory_variant(conn, head: str, dv: str, memory: dict, user_text: str) -> s
         if r and not _vertical(r["domain"]) and "Xã/Phường" in (r["agency_levels"] or ""):
             return v["proc_id"]
     return None
+
+
+_NEUTRAL = STOP - {"con", "anh", "chi", "bac"}      # chữ hư/xưng hô; "con", "anh", "chị", "bác" là ĐỐI TƯỢNG (khai sinh cho con) nên không bỏ
+_NAME_OK = {"giay"}                                 # "giấy khai sinh" = "khai sinh"
+_MAX_FAMILY_OPTS = 6
+_MIN_REAL_VARIANTS = 3                              # ít hơn: giữ bản mặc định + nút "dạng khác" (bản chính chiếm ưu thế: "giám hộ" so với "giám hộ có yếu tố nước ngoài")
+
+
+def real_variants(conn, head: str) -> list[str]:
+    """Phase 31: các dạng THẬT của một họ thủ tục (proc_id, bản mặc định trước) = bản không gắn tỉnh, cấp xã, không ngành dọc, tên lõi khác nhau
+    (bỏ "Thủ tục", dấu câu, hoa/thường) và nội dung hồ sơ (`components`) khác nhau. Bản tỉnh trùng nội dung và tên gần như trùng ("... hoạt động cách mạng" ~ "... cách mạng.") không tính.
+    Chỉ cần xét họ có >= 3 dạng không gắn tỉnh (ít hơn: giữ bản mặc định + nút "dạng khác")."""
+    vs = [v for v in data_api.variants(conn, head) if not v["province"]]
+    if len(vs) < _MIN_REAL_VARIANTS:
+        return []
+    out, names, bodies = [], set(), set()
+    for v in vs:
+        r = conn.execute("SELECT domain, agency_levels FROM procedures WHERE proc_id=? AND status='active'", (v["proc_id"],)).fetchone()
+        if not r or _vertical(r["domain"]) or "Xã/Phường" not in (r["agency_levels"] or ""):
+            continue
+        nm = " ".join(sorted(set(_TOK.findall(re.sub(r"^thu tuc ", "", fold(v["name"]))))))
+        body = " ".join(c["text"] for c in data_api.fields(conn, v["proc_id"], ["components"]))
+        bk = " ".join(_TOK.findall(fold(body)))
+        if nm in names or (bk and bk in bodies):
+            continue
+        names.add(nm)
+        bodies.add(bk)
+        out.append(v["proc_id"])
+    return out
+
+
+_KIN = {"con", "cháu", "ông", "bà", "bố", "ba", "cha", "mẹ", "anh", "chị", "vợ", "chồng", "chú", "bác", "dì", "cậu", "bé", "mợ", "thím"}   # đối tượng (người thụ hưởng) có dấu: không lẫn "đi", "đâu", "nói"
+_KIN_PLAIN = {"con", "chau", "ong", "cha", "me", "chong", "anh", "be", "vo"}      # câu gõ KHÔNG dấu: chỉ nhận chữ ít nhập nhằng ("ba", "bo", "chi", "di" bỏ)
+
+
+def _kin(txt: str) -> Counter:
+    t = unicodedata.normalize("NFC", txt).lower()
+    plain = fold(t) == t                       # không có chữ có dấu nào
+    return Counter(w for w in re.findall(r"\w+", t) if w in (_KIN_PLAIN if plain else _KIN))
+
+
+def _names_family_only(head: str, label: str, user_text: str, pquery: str, facts_text: str = "") -> bool:
+    """Lời người dùng CHỈ nêu tên chung của họ thủ tục (không thêm gì): (1) bộ hiểu câu (`procedure_query`, đã sửa gõ tắt/chữ dính) còn đủ chữ đặc trưng của tên chung;
+    (2) câu gốc sau khi bỏ cụm hỏi mục, lời đệm của truy hồi (`query._DROP_PHRASES`: "tìm hiểu", "tư vấn", "cho mình hỏi"...) và chữ hư/xưng hô (STOP) KHÔNG còn chữ nào ngoài tên chung.
+    Chữ còn lại = người dùng đã nói thêm: từ phân biệt ("lưu động", "nước ngoài", "quá hạn"), hoàn cảnh ("nếu người mất không có giấy báo tử"), phủ định ("không phải khai sinh"), đối tượng.
+    Chữ đối tượng ("cho con", "cho bố tôi") kiểm riêng, đếm số lần so với tên thủ tục ("nhận cha, mẹ, con cho CON tôi" có chữ "con" thứ hai). Fact đã kể: chữ nội dung nào ngoài tên chung cũng coi là đã nói thêm."""
+    h = [t for t in head.split() if t not in _CGEN and t not in _NEUTRAL]
+    u = {t for t in _TOK.findall(fold(pquery)) if t not in _CGEN and t not in _NEUTRAL}
+    f = {t for t in _user_words_keep(user_text + " " + facts_text) if t not in _CGEN} - set(h)
+    return bool(h) and set(h) <= u and not f and not (_kin(user_text) - _kin(label))
+
+
+_SHORT = {**EXTRA_SYN, **PRE_SYN}
+_CUES_LONG = sorted({c for cs in FIELD_CUES.values() for c in cs}, key=len, reverse=True)
+
+
+def _user_words_keep(user_text: str) -> list:
+    f = " " + " ".join(_SHORT.get(t, t) for t in _TOK.findall(fold(user_text))) + " "      # "dk" -> "dang ky", "tg" -> "thoi gian"... (bảng viết tắt của bộ hiểu câu)
+    for cue in _CUES_LONG:                     # cụm hỏi mục, dài trước (như query.py: "bao nhieu tien" trước "het bao nhieu")
+        f = f.replace(f" {cue} ", " ")
+    for pat, _ in _PROVINCE_PATTERNS:          # tên tỉnh/thành không chọn dạng nào (bản theo tỉnh không phải dạng thật)
+        f = f.replace(f" {pat} ", " ")
+    for ph in _DROP_PHRASES:                   # lời đệm của truy hồi ("tìm hiểu", "tư vấn", "cho mình hỏi", "thông thường"...)
+        f = f.replace(f" {ph} ", " ")
+    return [t for t in _TOK.findall(f) if t not in _NEUTRAL and t not in _NAME_OK]
 
 
 def check(plan, *, user_text: str, conn=None, facts: list[str] | None = None,
@@ -270,6 +372,8 @@ def check(plan, *, user_text: str, conn=None, facts: list[str] | None = None,
                     var_note = var_note or {"kind": "variant", "subject": memory["label"], "proc_id": mv, "procedure": mname}
         # --- căn cứ cho điều kiện / ngữ cảnh (guardrail 3)
         for c in t.conditions:
+            if not adds_info(c, rt.procedure_label or t.procedure_label):      # mảnh chỉ lặp tên thủ tục/chữ hư: không phải điều kiện (Phase 30)
+                continue
             (((rt.soft_conditions if getattr(plan, "source", "") == "rules" else rt.conditions) if grounded(c, user_text, facts) else rt.dropped_conditions)).append(c)
         rt.context_facts = [c for c in t.context_facts if grounded(c, user_text, facts)]
         if rt.route == "direct":     # nhánh trường hợp (luật): hoàn cảnh người dùng nêu khớp mục condition_index của thủ tục
@@ -309,8 +413,15 @@ def check(plan, *, user_text: str, conn=None, facts: list[str] | None = None,
     # Sau khi đã trả lời thẻ (no_clarify) thì chọn ứng viên gần ý nhất, không hỏi lần 2. 2 biến thể gần nhau: giữ bản mặc định + nút.
     if not no_clarify and not known_procs and len(out.tasks) == 1 and out.tasks[0].route == "direct":
         near = list(getattr(raw[0], "near", []) or [])
-        if len(near) >= 3 and getattr(raw[0], "refers_to", "new") != "last" and not cond_hits[0]:
-            near, note = filter_by_subject(conn, near, memory, user_text)      # Phase 26: hồ sơ thu hẹp ứng viên (không có hồ sơ: không đổi)
+        fam_q, rv = "", []
+        if len(near) < 2 and getattr(raw[0], "refers_to", "new") != "last" and not cond_hits[0] and os.environ.get("S3_FAMILY_CLARIFY", "0") == "1":     # S3_FAMILY_CLARIFY=1 bật hỏi lại họ nhiều dạng (Phase 31; mặc định TẮT từ 2026-10-08) (bản mặc định + nút)
+            # Phase 31: câu chỉ nêu tên chung của họ thủ tục có >= 3 dạng THẬT (khai sinh, kết hôn, khai tử...) -> hỏi lại thay vì trả bản mặc định
+            fam = data_api.family_of(conn, out.tasks[0].procedure_id)
+            rv = real_variants(conn, fam["head"]) if fam and fam["n_members"] >= _MIN_REAL_VARIANTS else []
+            if len(rv) >= _MIN_REAL_VARIANTS and out.tasks[0].procedure_id in rv and _names_family_only(fam["head"], out.tasks[0].procedure_label, user_text, getattr(raw[0], "procedure_query", "") or "", " ".join(facts)):
+                near, fam_q = rv, fam["head"]
+        if len(near) >= 2 and getattr(raw[0], "refers_to", "new") != "last" and not cond_hits[0]:
+            near, note = filter_by_subject(conn, near, memory, user_text, check_named=not fam_q)      # Phase 26: hồ sơ thu hẹp ứng viên (không có hồ sơ: không đổi)
             if note and note["kind"] == "pick":
                 import copy
                 t2 = copy.copy(raw[0])
@@ -322,14 +433,14 @@ def check(plan, *, user_text: str, conn=None, facts: list[str] | None = None,
                 if res.tasks and res.tasks[0].route == "direct":
                     res.memory_note = {**note, "proc_id": near[0], "procedure": res.tasks[0].procedure_label}
                     return res
-                near, note = list(getattr(raw[0], "near", []) or []), None      # chọn xong mà không trả lời được: bỏ, giữ hành vi cũ
+                near, note = (rv if fam_q else list(getattr(raw[0], "near", []) or [])), None      # chọn xong mà không trả lời được: bỏ, giữ hành vi cũ
             opts = []
-            for pid in near[:4]:
+            for pid in near[:_MAX_FAMILY_OPTS if fam_q else 4]:
                 r = conn.execute("SELECT name FROM procedures WHERE proc_id=? AND status='active'", (pid,)).fetchone()
                 if r:
                     opts.append({"label": r[0][:110], "proc_id": pid})
-            if len(opts) >= (2 if note else 3):
-                q = "Bạn muốn hỏi về thủ tục nào?"
+            if len(opts) >= 2:
+                q = "Thủ tục này có nhiều dạng khác nhau tuỳ trường hợp. Bạn muốn hỏi dạng nào?" if fam_q else "Bạn muốn hỏi về thủ tục nào?"
                 if note:
                     q += f" (Theo hồ sơ của bạn - đối tượng: {note['subject']} - mình chỉ hiện các thủ tục phù hợp; không thấy thì bạn gõ tên thủ tục nhé.)"
                 out.clarify = {"question": q, "options": opts, "allow_free_text": True}

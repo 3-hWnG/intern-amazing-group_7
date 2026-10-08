@@ -3,6 +3,7 @@ Chạy: S3_USE_LLM=0 PYTHONPATH=<ROOT> python tests/planner_hybrid_test.py"""
 import os, sys, time
 HERE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, HERE); sys.path.insert(0, os.path.dirname(os.path.dirname(HERE)))
+os.environ["S3_FAMILY_CLARIFY"] = "0"            # Phase 31: bài này đo việc hợp nhất đề xuất LLM vào kế hoạch; câu "khai tử ..." nay bị hỏi lại (họ 4 dạng) và task hỏi lại bị khoá nên không merge
 os.environ.pop("S3_PLANNER_LLM_CACHE", None)        # không phát lại cache đo
 from planner import plan
 from planner import hybrid

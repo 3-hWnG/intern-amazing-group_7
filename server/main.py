@@ -160,6 +160,7 @@ class ChatIn(BaseModel):
     text: str
     conversation_id: str | None = None
     reply_to: int | None = None
+    proc_id: str | None = None          # Phase 31: nút "dạng khác"
 
 
 @app.get("/")
@@ -304,7 +305,7 @@ async def chat(body: ChatIn, cid_mem: str = Depends(_cid)):
         clarify = prev["clarify"] if prev else None
     turn = orchestrator.Turn(cid, text, body.reply_to, store.recent_history(cid),
                              store.session_facts(cid), store.shown_procedures(cid), clarify,
-                             memory=user_memory.for_policy(cid_mem))
+                             pick_proc=body.proc_id, memory=user_memory.for_policy(cid_mem))
     # FINAL-PRODUCT: [B3] lưu nguyên văn người dùng gõ (chưa che CCCD/SĐT) vào messages.content; title hộp thoại cũng lấy 60 ký tự đầu. Bản cuối: che PII trước khi ghi (mục 2)
     store.add_message(cid, "user", text)
     store.set_title_if_new(cid, text)
