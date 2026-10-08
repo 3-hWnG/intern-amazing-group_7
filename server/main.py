@@ -29,7 +29,7 @@ import threading
 
 from config import DEV_MODE, HOST, LLM_MODEL, PORT, TABLE_BUTTON, WEB_DIR
 from core import queue
-from core.llm import loaded_models, warm_up
+from core.llm import loaded_models, model_name, warm_up
 from planner import hybrid
 from db import store
 
@@ -75,7 +75,7 @@ def get_config():
     """Phase 19: cấu hình Planner (UI Phase 20 dùng). loaded = model Ollama đang nạp."""
     from answer import llm_answer
     loaded = loaded_models()
-    return {**hybrid.get_config(), "model": LLM_MODEL, "loaded": loaded, "model_loaded": any(LLM_MODEL == m for m in loaded),
+    return {**hybrid.get_config(), "model": model_name(), "loaded": loaded, "model_loaded": any(model_name() == m for m in loaded),
             "dev": DEV_MODE, "modes": list(hybrid.MODES), "answer_llm": os.environ.get("S3_USE_LLM", "1") == "1",
             "answer_timeout": llm_answer.TIMEOUT, "table_button": TABLE_BUTTON}
 
@@ -170,7 +170,7 @@ def index():
 
 @app.get("/health")
 def health():
-    return {"ok": True, "model": LLM_MODEL, "queue_depth": queue.manager.depth, "dev": DEV_MODE}
+    return {"ok": True, "model": model_name(), "queue_depth": queue.manager.depth, "dev": DEV_MODE}
 
 
 @app.get("/procedure/{proc_id}/table")

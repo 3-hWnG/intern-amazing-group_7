@@ -81,7 +81,8 @@ def _cache_put(key: str, rec: dict) -> None:
 def ask(system: str, msg: str, chat_json, timeout: float, num_predict: int, schema: dict) -> tuple[dict | None, dict]:
     """-> (raw|None, info{ms, timeout, error, cached}). Hết hạn tính theo đồng hồ thật (future.result), không chỉ timeout của httpx."""
     import config
-    key = hashlib.sha1(f"{config.LLM_MODEL}|{system}|{msg}|{num_predict}".encode("utf-8")).hexdigest()
+    from core.llm import model_name
+    key = hashlib.sha1(f"{model_name()}|{system}|{msg}|{num_predict}".encode("utf-8")).hexdigest()
     hit = _cache_get(key)
     if hit is not None:        # phát lại: ms đã ghi; quá hạn hiện tại -> coi như timeout (quét timeout không cần gọi lại)
         if hit.get("error") or hit["ms"] > timeout * 1000:

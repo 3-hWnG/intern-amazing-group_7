@@ -791,6 +791,10 @@
       inp = el("textarea"); inp.value = s.value;
     } else {
       inp = el("input"); inp.type = s.type === "int" || s.type === "float" ? "number" : "text"; inp.value = s.value;
+      if (s.options && s.options.length) {   // ô chọn model: gợi ý từ Ollama, vẫn gõ tay được
+        const dl = el("datalist"); dl.id = "dl-" + s.key; s.options.forEach((m) => { const o = el("option"); o.value = m; dl.appendChild(o); });
+        inp.setAttribute("list", dl.id); document.getElementById(dl.id)?.remove(); document.body.appendChild(dl);
+      }
       if (s.type === "int") inp.step = "1";
       if (s.type === "float") inp.step = "0.05";
       if (s.min !== undefined) inp.min = s.min;

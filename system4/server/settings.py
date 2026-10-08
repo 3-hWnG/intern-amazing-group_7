@@ -172,4 +172,14 @@ def set_default(values: dict) -> None:
 def describe() -> list[dict]:
     """Cho panel: mỗi cài đặt kèm giá trị đang dùng, mặc định, có đang ghi đè không."""
     o = _load_overrides()
-    return [{**s, "value": get(k), "default": _defaults[k], "overridden": k in o} for k, s in SPECS.items()]
+    return [{**s, "value": get(k), "default": _defaults[k], "overridden": k in o,
+             **({"options": ollama_models()} if k in ("FRIENDLY_MODEL", "THINK_MODEL") else {})} for k, s in SPECS.items()]
+
+
+def ollama_models() -> list[str]:
+    """Tên model có trong Ollama (cho ô chọn model ở panel Cài đặt); Ollama tắt/lỗi -> []."""
+    try:
+        import ollama
+        return sorted(m.model for m in ollama.Client(host=config.OLLAMA_HOST, timeout=3).list().models)
+    except Exception:
+        return []

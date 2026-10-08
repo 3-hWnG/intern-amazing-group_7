@@ -143,7 +143,7 @@ def _hybrid(rule_plan: Plan, turns, question, segs, res, conn, last_proc, facts,
     from answer.answerer import FIELD_TITLE
     cfg = hybrid.get_config()
     tr = rule_plan.llm_trace = {"mode": "hybrid", "called": False, "threshold": cfg["confidence"], "timeout_s": cfg["timeout"], "draft": cfg["draft"],
-                                "model": config.LLM_MODEL, "rule_plan": hybrid._summ(rule_plan.tasks)}
+                                "model": __import__("core.llm", fromlist=["model_name"]).model_name(), "rule_plan": hybrid._summ(rule_plan.tasks)}
     if any(s.reason == "chitchat" for s in segs) or any(s.reason == "order_unknown" for s in segs):
         tr.update(skip="chitchat/thứ tự không rõ: luật quyết", decision="none", final_plan=tr["rule_plan"])
         return rule_plan

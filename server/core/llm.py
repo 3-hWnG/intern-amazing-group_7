@@ -15,6 +15,14 @@ from config import (LLM_KEEP_ALIVE, LLM_MODEL, LLM_NUM_CTX, LLM_THINK,
                     LLM_TIMEOUT, OLLAMA_HOST)
 
 
+# System 4 (hook.install) gắn hàm trả tên model đang chọn trong ⚙ Cài đặt, để Strict và Friendly dùng chung một model.
+MODEL_PROVIDER = None
+
+
+def model_name() -> str:
+    return (MODEL_PROVIDER() if MODEL_PROVIDER else "") or LLM_MODEL
+
+
 class LLMError(RuntimeError):
     pass
 
@@ -37,7 +45,7 @@ def chat(system: str, user: str, history: list[dict] | None = None, *,
     msgs += [{"role": m["role"], "content": m["content"]} for m in history or []]
     msgs.append({"role": "user", "content": user})
     opts = {"num_ctx": LLM_NUM_CTX, "temperature": 0.0 if schema else 0.3, **options}
-    name = model or LLM_MODEL
+    name = model or model_name()
     try:
         res = client(timeout).chat(model=name, messages=msgs, format=schema,
                             keep_alive=LLM_KEEP_ALIVE, options=opts,
@@ -69,7 +77,7 @@ def warm_up() -> None:
     if os.environ.get("S3_NO_WARMUP") == "1":   # test/CI hoặc máy đang bận GPU: không nạp model
         return
     try:
-        client().generate(model=LLM_MODEL, prompt="", keep_alive=LLM_KEEP_ALIVE,
+        client().generate(model=model_name(), prompt="", keep_alive=LLM_KEEP_ALIVE,
                           options={"num_ctx": LLM_NUM_CTX})   # cùng num_ctx với chat() để không nạp lại
     except Exception:
         pass

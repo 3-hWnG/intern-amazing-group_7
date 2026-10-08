@@ -26,11 +26,11 @@ def _ready(llm) -> bool:
     if getattr(llm, "__module__", "") != "core.llm":
         return True
     import threading, time
-    from core.llm import LLM_MODEL, loaded_models, warm_up
+    from core.llm import loaded_models, model_name, warm_up
     now = time.monotonic()
     if now - _ready_at[0] < 5.0:
         return True
-    if LLM_MODEL in loaded_models():
+    if model_name() in loaded_models():
         _ready_at[0] = now
         return True
     if now - _ready_at[1] > 30.0:
