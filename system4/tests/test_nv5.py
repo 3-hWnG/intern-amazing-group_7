@@ -162,7 +162,7 @@ with TestClient(main.app) as c:
 
     sys.path.insert(0, str(EVAL))
     import fake_class
-    path = fake_class.build()
+    path = fake_class.build(Path(TMP) / fake_class.OUT.name)   # không ghi đè tệp trong repo
     with open(path, "rb") as f:
         ds = c.post("/s4/datasets", files={"file": (path.name, f)}).json()["dataset"]
     t0 = time.time()

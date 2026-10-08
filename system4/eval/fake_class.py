@@ -61,7 +61,7 @@ def kid(name: str):
     return next(k for k in KIDS if full(k) == name)
 
 
-def build() -> Path:
+def build(out: Path = OUT) -> Path:
     import openpyxl
     wb = openpyxl.Workbook()
     ws = wb.active
@@ -74,9 +74,9 @@ def build() -> Path:
         ident = f"0802{'2' if k[4].endswith('2020') else '1'}{stt * 104729 % 10000000:07d}"
         bh = f"80- 80{stt * 31337 % 100000000:08d}" if stt % 3 else None
         ws.append([stt, k[1], k[2], k[3], k[4], k[5], k[6], k[7], ident, bh, phone(stt)])
-    OUT.parent.mkdir(parents=True, exist_ok=True)
-    wb.save(OUT)
-    return OUT
+    out.parent.mkdir(parents=True, exist_ok=True)
+    wb.save(out)
+    return out
 
 
 if __name__ == "__main__":
