@@ -137,6 +137,9 @@ Nguồn: nhánh `V10.6` (`Frontend/static/js/memory.js`, `Backend/api/chat_route
 - Chạy: bộ team, bộ biến đổi câu, `check_docs.py`, hồi quy đầy đủ.
 - **Mục tiêu (chưa hứa):** top-1 bộ mù ≥ 80%, đúng hành vi ≥ 88%; bộ biến đổi ≥ 98%; bộ team 10/10 hoặc quyết định đã ghi. Nếu không đạt thì nói thẳng, không vá theo câu.
 - Báo cáo ngày vào `docs/report daily/` theo quy ước tên `d_m_yyyy.md`.
+- **Đã chạy 2026-10-08 (chế độ luật; lượt LLM bật cho cùng số vì bộ chạy chỉ chấm thủ tục và hành vi, không chấm chữ trả lời):** HOLDOUT-5 top-1 56/81 (69%), hành vi 85/111 (77%), hỏi lại 10/20; pseudo_real 3 top-1 9/28 (32%), hành vi 19/36 (53%), hỏi lại 1/6; HOLDOUT-4 chạy lại 60/77 (78%), hành vi 89/106 (84%), hỏi lại 8/16. `run_all` đầy đủ 37/37, `check_docs` sạch, bộ team 8/10. **Mục tiêu bộ mù không đạt.** Hai bộ mới đã bị xem nên không còn mù với phần sửa lỗi.
+
+- **Việc tiếp theo (Phase 30, 31) chuyển sang `PLAN_SYSTEM3_DOT6.md`.**
 
 ## 6. Rủi ro
 - 23b (tách chữ dính liền) dễ tạo khớp sai; phải đối chiếu synth TRAIN/TEST và kiểm "hỏi thừa" không tăng.

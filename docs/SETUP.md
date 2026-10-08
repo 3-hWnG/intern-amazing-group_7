@@ -81,6 +81,8 @@ python tests/planner_hybrid_test.py  # hợp nhất Planner hybrid, LLM giả (�
 python tests/p20_api_test.py     # bảng full, /config answer_llm, reset chủ đề (TestClient, không LLM)
 python tests/p23_input_test.py   # nhãn lượt, chữ dính liền, chữ lạ, câu điều kiện
 python tests/p26_memory_test.py  # bộ nhớ người dùng: API /memory*, kiểm giá trị, cô lập client_id, không lưu PII, lọc ứng viên theo đối tượng
+python tests/p31_variants_test.py  # Phase 31: tên chung của họ thủ tục có >= 3 dạng thật (khai sinh, kết hôn, khai tử...) -> hỏi lại; câu nêu từ phân biệt/đối tượng/hồ sơ/ngữ cảnh thì không; nút "dạng khác"
+python tests/p30_clarify_test.py  # Phase 30: hỏi lại khi câu là cụm gốc chung, không hỏi thừa khi đã gọi tên; điều kiện phải thêm thông tin ngoài tên thủ tục
 python smoke_test.py             # server tạm (DB tạm, cổng 8391, S3_USE_LLM=0): health, trả lời có nguồn, hỏi lại + bấm nút, messages/trace
 set S3_USE_LLM=0 && python e2e_test.py   # chạy server tạm 5 lượt hội thoại (cổng 8392)
 cd ..

@@ -41,22 +41,22 @@ Bộ team 8/10: TC03 là **đáp án nhóm cần sửa** (đáp án đòi "7 ng�
 Số trên bộ đã tune (chỉ để theo dõi hồi quy, không dùng để khoe):
 | | kết quả |
 |---|---|
-| DEV gộp 523 ca: top-1 / hành vi / bịa số | 98,0% / 98,1% / 0,4% |
-| DEV cũ 209 (cổng hồi quy): top-1 / hành vi / bịa số | 97,0% / 97,6% / 0,0% |
+| DEV gộp 523 ca: top-1 / hành vi / bịa số | 98,0% / 98,1% / 0,2% |
+| DEV cũ 209 (cổng hồi quy): top-1 / hành vi / bịa số | 97,0% / 98,1% / 0,0% |
 | ngoài phạm vi (DEV) | 30/30 |
 | ctx (hội thoại) top-1 lượt cuối | 89/91; ctx-p23: 26/26 |
 | synth (câu tự sinh từ DB) TRAIN / TEST | 96,3% / 96,4% |
 | synth `glued` (chữ dính liền, Phase 23b) TRAIN / TEST | 97,6% / 96,1% (cùng câu có dấu cách: 98,4% / 97,2%) |
-| `eval/perturb.py` (nhiễu không đổi nghĩa trên ca đã đúng của DEV + ctx) | 99,44% bất biến (7.056/7.096; nhãn lượt/đánh số/ngoặc/emoji/hoa 100%, dính chữ 96,6%, bỏ dấu 98,2%) |
+| `eval/perturb.py` (nhiễu không đổi nghĩa trên ca đã đúng của DEV + ctx) | 99,53% bất biến (7.063/7.096; nhãn lượt/đánh số/ngoặc/emoji/hoa 100%, dính chữ 97,0%, bỏ dấu 97,9%) |
 | Baseline V10.6 (185 câu cũ, lúc đầu) | top-1 11%, hành vi 32% (chạy lại từ mã vendor Phase 28: 10,7% / 31,4%, `eval/P28_REPORT.md`) |
 
 ### Concise = trả lời đúng ý hỏi (`eval/run_concise.py`)
 Định nghĩa của nhóm: hỏi giá thì chỉ báo giá. Chấm bằng luật:
 | | gốc (đầu đợt 4) | hiện tại |
 |---|---|---|
-| DEV focus (không dư mục, không thiếu mục) | 70% | 99% (349/353), gồm các ca p16–p23 |
+| DEV focus (không dư mục, không thiếu mục) | 70% | 99% (348/352), gồm các ca p16–p23 |
 | HOLDOUT cũ focus | 59% | 96% (47/49) |
-| task thừa (kéo thêm thủ tục không hỏi) | 11/230 | 0/451 (DEV), 0/54 (HOLDOUT cũ) |
+| task thừa (kéo thêm thủ tục không hỏi) | 11/230 | 0/449 (DEV), 0/54 (HOLDOUT cũ) |
 | bộ team: PASS (chấm luật) | 3/10 | 8/10 |
 Lưu ý: số focus 99% nằm trên DEV đã tune (gồm ca agent tự soạn); trên câu thật còn lỗi: bộ team còn 2 câu FAIL (TC03 do đáp án nhóm cần sửa, TC06 do điều kiện tang lễ; TC02 đã pass nhờ corpus nhóm ở Phase 23d).
 

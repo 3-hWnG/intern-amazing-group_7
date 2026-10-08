@@ -11,8 +11,10 @@
 | **HOLDOUT-4** | `cases_h4.json`, `run_pseudo.py cases_h4.json h4_rules` | 90 mục / 106 lượt | **bộ mù chính thức** (agent không thấy mã); số hiện tại top-1 78% (60/77), hành vi 84% (89/106), hỏi lại 8/16. Giả định: `H4_ASSUMPTIONS.md`. Đừng tune |
 | pseudo_real 2 | `cases_pseudo_real2.json` | 30 mục / 34 lượt | mù, kiểu người dân gõ đời thường; top-1 19/28, hành vi 23/34, hỏi lại 0/3. Giả định: `PSEUDO_REAL_ASSUMPTIONS.md` |
 | ctx | `cases_ctx.jsonl` | 144 hội thoại = `ctx-dev` 58 + `ctx-hold` 33 (91 ca gốc, chạy mặc định) + `ctx-p16` 27 + `ctx-p23` 26 (chạy riêng: `run_ctx.py --split ctx-p16` / `--split ctx-p23`) | context memory (agent tự soạn và đã tune) |
-| perturb | `perturb.py` | 649 ca đã đúng của DEV + ctx × 11 loại nhiễu (7.096 phép thử) | bất biến khi thêm nhiễu không đổi nghĩa (xem dưới); không dùng bộ mù |
+| perturb | `perturb.py` | 606 ca đã đúng của DEV + ctx × 11 loại nhiễu (6.667 phép thử) | bất biến khi thêm nhiễu không đổi nghĩa (xem dưới); không dùng bộ mù |
 | p26 (bộ nhớ người dùng) | `cases_p26.jsonl` (dựng bằng `build_p26.py`), `run_p26.py` | 92 ca = a 28 (hồ sơ khớp) + b 28 (cùng câu không hồ sơ) + c 24 (hồ sơ sai/lạc, câu nêu rõ) + d 12 (hồ sơ rỗng); 37 câu khác nhau | câu tự soạn; đáp án nhóm a theo quy tắc `procedure_subjects`; **không** nằm trong `cases.jsonl` nên gate DEV cũ không lẫn; gate: `run_p26.py` 92/92 (d = y hệt cũ, c không đổi đáp án) |
+| p30 (hỏi lại khi mơ hồ) | `cases_p30.jsonl` (dựng bằng `build_p30.py`), `run_p30.py` | 228 ca = clarify 115 + answer 113; chia `tune` 89 / `held` 88 / `fresh` 51 | tự soạn từ DB (cụm gốc có >= 3 nhóm thủ tục, chủ đề nhiều nhóm đối tượng, tên đầy đủ, cụm định danh duy nhất), không từ bộ mù; dễ hơn câu thật; số trước/sau trong `P30_REPORT.md` |
+| p31 (tên chung họ nhiều dạng thật -> hỏi lại) | `cases_p31.jsonl` (dựng bằng `build_p31.py`), `cases_p31_fresh.jsonl` (`build_p31.py --fresh`), `run_p31.py` | 230 ca = clarify 97 + answer 133, chia `tune` 117 / `held` 113; lô `fresh` 238 ca (chạy một lần sau khi chỉnh) | tự soạn từ DB (họ có >= 3 dạng thật: khai sinh, kết hôn, khai tử, nhận cha mẹ con, Bằng Tổ quốc ghi công; tên đầy đủ/lõi, từng dạng gọi đúng tên, tên chung + đối tượng, thủ tục một dạng, họ 2 dạng, hội thoại, hồ sơ Phase 26), không từ bộ mù; chỉ 5 họ nên dễ; số trước/sau trong [../eval/P31_REPORT.md](../eval/P31_REPORT.md) |
 | synth | `synth_retrieval.py` | ~1.600 câu sinh từ DB | khả năng tổng quát của truy hồi; TRAIN-seed và TEST-seed tách rời |
 | pseudo_real | `cases_pseudo_real.json`, `run_pseudo.py` | 30 câu + 4 hội thoại | câu kiểu người dân do agent soạn không thấy mã; đã bị xem lỗi, không tune |
 | team | `cases_team.json`, `run_team.py` | 10 câu | bộ test chung của các team (`Test_Case_Legal_AI_Assistant_Bang_Test.docx`); chấm luật tự động (không phải điểm chính thức 4+2+2+2); hiện 8/10, TC03 và TC06 xem [KNOWN_ISSUES.md](KNOWN_ISSUES.md) |
@@ -88,14 +90,14 @@ Một bảng duy nhất, dùng chung với [CONTRIBUTING.md](CONTRIBUTING.md) (g
 | Cổng | Ngưỡng | Số hiện tại |
 |---|---|---|
 | DEV cũ 209: top-1 | ≥ 95% | 97,0% (159/164) |
-| DEV cũ 209: đúng hành vi | ≥ 96% | 97,6% (204/209) |
+| DEV cũ 209: đúng hành vi | ≥ 96% | 98,1% (205/209) |
 | DEV cũ 209: bịa số | ≤ 3% | 0,0% |
 | ngoài phạm vi (DEV) | 30/30 | 30/30 |
 | ctx 91 ca, top-1 lượt cuối | ≥ 89/91 | 89/91 (ctx-p23 26/26) |
 | synth TEST-seed top-1 | ≥ 94% (`glued` ≥ 90%) | 96,4% (`glued` 96,1%) |
-| DEV focus (`run_concise.py`) | **≥ 95%** | 99% (349/353) |
-| task thừa (`run_concise.py`) | ≤ 2% | 0/451 |
-| `perturb.py` bất biến | ≥ 98% | 99,44% |
+| DEV focus (`run_concise.py`) | **≥ 95%** | 99% (312/316) |
+| task thừa (`run_concise.py`) | ≤ 2% | 0/449 |
+| `perturb.py` bất biến | ≥ 98% | 99,53% |
 | `check_docs.py` | sạch (0 lỗi) | sạch |
 
 ## Số đo hiện tại
