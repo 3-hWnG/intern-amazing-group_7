@@ -1,4 +1,6 @@
-# System 4 — Bàn giao để phiên sau bắt nhịp nhanh (2026-10-07)
+# System 4 — Bàn giao để phiên sau bắt nhịp nhanh (2026-10-07, cập nhật 2026-10-08)
+
+> **Đọc `docs/SYSTEM4_SU_THAT.md` trước**: các chỗ tài liệu (kế hoạch) mâu thuẫn với code (thực tế) và đâu là sự thật.
 
 ## 0. Cập nhật 2026-10-08 — NV5 xong (tốc độ / model / độ chính xác / chào hỏi)
 - Chi tiết + mọi số đo: `docs/SYSTEM4_NV5_TOC_DO_CHINH_XAC.md`. Bộ đo: `system4/eval/bench.py` (server riêng cổng 8399).
