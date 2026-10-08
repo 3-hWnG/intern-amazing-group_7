@@ -52,7 +52,7 @@ Biến môi trường (xem `server/config.py`):
 | `PLANNER_LLM_NUM_PREDICT` | 220 | trần token đầu ra của LLM Planner |
 | `S3_PLANNER_LLM_CACHE` | (trống) | CHỈ để đo: tệp jsonl phát lại đề xuất LLM (quét ngưỡng không gọi lại model) |
 | `S3_TABLE_BUTTON` | 1 | 0 = tắt nút "Tạo bảng full" và endpoint `GET /procedure/{proc_id}/table` (câu trả lời về như cũ) |
-| `LLM_MODEL` | qwen3:4b | model Ollama |
+| `LLM_MODEL` | qwen3:4b (`Launch web.bat` đặt `qwen3:4b-instruct-2507-q4_K_M` từ 2026-10-08, xem SYSTEM4_NV5 D6) | model Ollama |
 | `OLLAMA_HOST` | http://127.0.0.1:11434 | địa chỉ Ollama |
 | `LLM_KEEP_ALIVE` | 30m | giữ model trong VRAM |
 

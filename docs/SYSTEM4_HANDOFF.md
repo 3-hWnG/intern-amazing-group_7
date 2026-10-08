@@ -5,7 +5,7 @@
 - Bài thi cuối: đúng 73 % → **92 %**, câu chào khi bật dữ liệu 50 % → **100 %**, lỗi hành vi 9 → 1; câu có dữ liệu chậm thêm ~0,5 s (vẫn dưới 5 s), chat thường và câu chào nhanh hơn.
 - Friendly mặc định dùng `qwen3:4b-instruct-2507-q4_K_M` (0,2); "Suy nghĩ kỹ" + Strict vẫn `qwen3:4b`. `Set up first time.bat` tải đủ model.
 - Nhánh git làm việc: **`System_4`** (đã đẩy lần đầu 2026-10-08; commit NV5 chỉ ở máy cho tới khi người dùng bảo đẩy).
-- Chờ người dùng: có đổi Strict sang Instruct không (đo: đúng y hệt, bỏ 4,4–5,5 s mỗi lần chuyển chế độ) — xem NV5 phần D6/D9.
+- Strict (System 3) cũng dùng Instruct qua `LLM_MODEL` trong `Launch web.bat` (người dùng chọn 1A; đo 2 lần: đúng y hệt, không chậm hơn) — xem NV5 D6.
 
 ## 1. Trạng thái (2026-10-07, trước NV5)
 - Xong: NV1 (nền tảng, đăng nhập, công tắc Strict/Friendly, ⚙), NV2 (AI kiểu ChatGPT, chế độ Nhanh/Suy nghĩ kỹ), NV3 (tải dữ liệu → Chuyên gia), NV4 (Quản trị, phiên bản dữ liệu Strict, cào, tính năng ChatGPT cho Strict), bộ công cụ dev (🔍 Soi, Vì sao?, Cách đọc tệp, Thử tìm kiếm).

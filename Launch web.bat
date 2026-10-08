@@ -11,8 +11,11 @@ if not exist "%REPO%\data\runtime\system3.db" goto :nosetup
 
 set "PYTHONPATH=%PYROOT%"
 set "PYTHONIOENCODING=utf-8"
-rem LLM step of System 3 (qwen3:4b via Ollama) is on. Set S3_USE_LLM=0 beforehand to run rules-only.
+rem LLM step of System 3 (via Ollama) is on. Set S3_USE_LLM=0 beforehand to run rules-only.
 if not defined S3_USE_LLM set "S3_USE_LLM=1"
+rem Strict (System 3) uses the same no-thinking model as Friendly fast answers, so switching modes needs no ~5 s model reload.
+rem Measured 2026-10-08: same accuracy on System 3's 449-case test (docs/SYSTEM4_NV5_TOC_DO_CHINH_XAC.md, D6). Set LLM_MODEL beforehand to override.
+if not defined LLM_MODEL set "LLM_MODEL=qwen3:4b-instruct-2507-q4_K_M"
 rem System 4 (login + Friendly mode) is on. Set S4_ENABLED=0 beforehand to get the old System 3 web back.
 if not defined S4_ENABLED set "S4_ENABLED=1"
 rem Friendly mode always needs Ollama, so start it if it is not running.

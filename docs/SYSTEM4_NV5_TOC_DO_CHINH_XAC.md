@@ -159,7 +159,9 @@ Phần A = lời người dùng (nguyên văn, chỉ thêm tiêu đề). Phần 
 | Thời gian trung vị / p90 | 29 ms / 2,5 s | 31 ms / 3,8 s |
 
 - Đúng y hệt (Strict chủ yếu trả lời bằng luật, AI chỉ viết lại một phần). p90 chậm hơn 1,3 s với Instruct (một lần đo, chưa rõ là nhiễu hay thật).
-- Lợi nếu đổi Strict sang Instruct: hết **4,4–5,5 s nạp lại model** mỗi lần chuyển Strict ↔ Friendly. Chưa đổi — chờ người dùng quyết (không đổi kiến trúc System 3; chỉ là biến `LLM_MODEL` trong `Launch web.bat`).
+- Lợi nếu đổi Strict sang Instruct: hết **4,4–5,5 s nạp lại model** mỗi lần chuyển Strict ↔ Friendly.
+- **Đo lại (câu 1A, 2026-10-08):** cả hai model chạy lần 2 — đúng y hệt; p90 qwen3:4b 2,4 s, Instruct **2,2 s** → 3,8 s lần đầu là nhiễu.
+- **Quyết định (nguyên văn): "1A then push it to https://github.com/3-hWnG/intern-amazing-group_7/tree/System_4 and commit on machine"** → `Launch web.bat` đặt `LLM_MODEL=qwen3:4b-instruct-2507-q4_K_M` cho Strict (không đổi code System 3). Chỉ còn nạp lại model khi bấm "Suy nghĩ kỹ" (vẫn qwen3:4b, vốn ~26 s).
 
 ### D7. Mặc định mới (config.py, nút ⚙ vẫn đổi được)
 `FRIENDLY_MODEL = qwen3:4b-instruct-2507-q4_K_M`, `FRIENDLY_TEMPERATURE = 0.2`, `THINK_MODEL = qwen3:4b`, `KEEP_MODELS_LOADED`, `PROMPT_CACHE_ORDER`, `JSON_PLAN_FIRST`, `GREETING_MODE = code_first`, `GROUNDING_CHECK = rewrite`, `AMBIGUITY_CHECK`, `TABLE_TOOL`, `SEARCH_FOLLOWUP`, `RERANK_RESCUE`, `STRICT_BUSINESS_FACTS` = bật. `FAST_FORMAT = json`, `PLAN_MAX_CHARS = 300` giữ nguyên. Test NV1–NV3 chạy với các cài đặt NV5 tắt (`system4/tests/nv5_off.py`); `test_nv5.py` kiểm từng tính năng và cả cấu hình mặc định mới.
@@ -171,7 +173,7 @@ Phần A = lời người dùng (nguyên văn, chỉ thêm tiêu đề). Phần 
 ### D9. Còn lại / hướng sau
 | Việc | Lợi ước tính | Ghi chú |
 |---|---|---|
-| Đổi Strict sang Instruct | bỏ 4,4–5,5 s mỗi lần chuyển chế độ | chờ quyết định (D6) |
+| Đổi Strict sang Instruct | bỏ 4,4–5,5 s mỗi lần chuyển chế độ | **Đã làm** (D6) |
 | Giảm ngữ cảnh model Friendly (8192 → 4096/6144) để card 6 GB không đầy | ~0,25 s mỗi câu có dữ liệu (tạo vector câu hỏi 0,2–0,35 s → ~0,03 s) | chưa đo; hội thoại rất dài dựa vào tóm tắt sớm hơn |
 | Kiến thức chung sai của model 4B (Úc → Sydney, diện tích lớn nhất → Việt Nam, nhà thơ bịa) | — | code không kiểm được; cần model lớn hơn hoặc nguồn tra cứu |
 | Câu trả lời dài về thủ tục (300+ token, 5–6 s) | tốc độ | có thể thêm lời dặn "trả lời gọn" — chưa đo ảnh hưởng độ chính xác |
