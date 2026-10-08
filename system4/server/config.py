@@ -42,9 +42,9 @@ SESSION_DAYS = 7
 MIN_PASSWORD_LENGTH = 6
 BUSINESS_NAME = 'Team 7'
 BUSINESS_DESCRIPTION = ''
-FRIENDLY_MODEL = 'qwen3:4b'
+FRIENDLY_MODEL = 'qwen3:4b-instruct-2507-q4_K_M'
 DEFAULT_ANSWER_MODE = 'fast'
-FRIENDLY_TEMPERATURE = 0.6
+FRIENDLY_TEMPERATURE = 0.2
 FRIENDLY_NUM_CTX = 8192
 FRIENDLY_HISTORY_MESSAGES = 20
 FRIENDLY_TIMEOUT = 120
@@ -71,22 +71,22 @@ EVIDENCE_CHARS = 700
 KB_NOT_FOUND_MESSAGE = 'Thông tin này không có trong các bộ dữ liệu đang bật nên chúng tôi không thể trả lời. Bạn có thể hỏi cụ thể hơn về nội dung trong dữ liệu, hoặc tắt bộ dữ liệu để trò chuyện chung.'
 EMBED_MODEL = 'bge-m3'
 TRACE_KEEP = 1000
-THINK_MODEL = ''
-KEEP_MODELS_LOADED = False
-PROMPT_CACHE_ORDER = False
+THINK_MODEL = 'qwen3:4b'
+KEEP_MODELS_LOADED = True
+PROMPT_CACHE_ORDER = True
 FAST_FORMAT = 'json'
 PLAN_MAX_CHARS = 300
-GREETING_MODE = 'off'
+GREETING_MODE = 'code_first'
 GREETING_MAX_WORDS = 4
 GREETING_WORDS = 'xin chào|chào|hello|hi|hey|alo|cảm ơn|cám ơn|thank|thanks|tks|tạm biệt|bye|goodbye|hẹn gặp lại|chúc ngủ ngon|good night|good morning|ok|oke|okay|vâng|dạ|tuyệt'
-GROUNDING_CHECK = 'off'
-AMBIGUITY_CHECK = False
+GROUNDING_CHECK = 'rewrite'
+AMBIGUITY_CHECK = True
 AMBIGUITY_MAX = 5
-TABLE_TOOL = False
-SEARCH_FOLLOWUP = False
-RERANK_RESCUE = False
-STRICT_BUSINESS_FACTS = False
-JSON_PLAN_FIRST = False
+TABLE_TOOL = True
+SEARCH_FOLLOWUP = True
+RERANK_RESCUE = True
+STRICT_BUSINESS_FACTS = True
+JSON_PLAN_FIRST = True
 # ==== HẾT MẶC ĐỊNH ====
 
 # Danh sách cài đặt hiện trên panel. type: str | text (nhiều dòng) | int | float | bool | choice | rules
@@ -157,7 +157,7 @@ SETTINGS = [
          min=0, max=200, help="Bao nhiêu tin gần nhất của hội thoại được gửi cho AI để giữ ngữ cảnh."),
     dict(key="FRIENDLY_TIMEOUT", type="int", group="AI (Friendly)", label="Thời gian chờ tối đa (giây)", min=10, max=600),
     dict(key="FRIENDLY_QUEUE_MAX", type="int", group="AI (Friendly)", label="Số câu hỏi tối đa đang chờ", min=1, max=500),
-    # ---- NV5: tốc độ & độ chính xác (mặc định = như trước NV5; bộ đo system4/eval/bench.py chọn giá trị tốt nhất)
+    # ---- NV5: tốc độ & độ chính xác (mặc định = cấu hình thắng bộ đo NV5, xem docs/SYSTEM4_NV5_TOC_DO_CHINH_XAC.md)
     dict(key="KEEP_MODELS_LOADED", type="bool", group="Tốc độ & độ chính xác", label="Giữ model luôn nạp sẵn",
          help="Bật: nạp model trả lời ngay khi bật server và không tự gỡ khỏi card đồ hoạ (tránh câu chậm 10+ giây). "
               "Tốn 3-4 GB bộ nhớ card đồ hoạ cả khi không dùng."),

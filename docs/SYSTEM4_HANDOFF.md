@@ -1,6 +1,13 @@
 # System 4 — Bàn giao để phiên sau bắt nhịp nhanh (2026-10-07)
 
-## 1. Trạng thái
+## 0. Cập nhật 2026-10-08 — NV5 xong (tốc độ / model / độ chính xác / chào hỏi)
+- Chi tiết + mọi số đo: `docs/SYSTEM4_NV5_TOC_DO_CHINH_XAC.md`. Bộ đo: `system4/eval/bench.py` (server riêng cổng 8399).
+- Bài thi cuối: đúng 73 % → **92 %**, câu chào khi bật dữ liệu 50 % → **100 %**, lỗi hành vi 9 → 1; câu có dữ liệu chậm thêm ~0,5 s (vẫn dưới 5 s), chat thường và câu chào nhanh hơn.
+- Friendly mặc định dùng `qwen3:4b-instruct-2507-q4_K_M` (0,2); "Suy nghĩ kỹ" + Strict vẫn `qwen3:4b`. `Set up first time.bat` tải đủ model.
+- Nhánh git làm việc: **`System_4`** (đã đẩy lần đầu 2026-10-08; commit NV5 chỉ ở máy cho tới khi người dùng bảo đẩy).
+- Chờ người dùng: có đổi Strict sang Instruct không (đo: đúng y hệt, bỏ 4,4–5,5 s mỗi lần chuyển chế độ) — xem NV5 phần D6/D9.
+
+## 1. Trạng thái (2026-10-07, trước NV5)
 - Xong: NV1 (nền tảng, đăng nhập, công tắc Strict/Friendly, ⚙), NV2 (AI kiểu ChatGPT, chế độ Nhanh/Suy nghĩ kỹ), NV3 (tải dữ liệu → Chuyên gia), NV4 (Quản trị, phiên bản dữ liệu Strict, cào, tính năng ChatGPT cho Strict), bộ công cụ dev (🔍 Soi, Vì sao?, Cách đọc tệp, Thử tìm kiếm).
 - Git: nhánh `System_3&4` (github.com/3-hWnG/intern-amazing-group_7), **10 commit chỉ ở máy, CHƯA đẩy** — chỉ đẩy khi người dùng bảo.
 - Báo cáo chi tiết từng nhiệm vụ: `docs/SYSTEM4_NV1_NEN_TANG.md` … `SYSTEM4_NV4_QUAN_TRI.md` (phần C/D/E). Giới hạn Chuyên gia: NV3 phần D. Việc hoãn (đo bịa, so model): NV2 phần E.

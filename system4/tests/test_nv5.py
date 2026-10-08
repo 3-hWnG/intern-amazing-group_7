@@ -20,6 +20,8 @@ os.environ.update(S3_DB_PATH=os.path.join(TMP, "s3.db"), S3_USE_LLM="0", S4_ENAB
 from fastapi.testclient import TestClient
 import main
 from system3.system4.server import ambig, auth, greet, ground, ingest, llm, persona, search, settings, tabletool
+import nv5_off
+nv5_off.apply()   # test này kiểm hành vi trước NV5 (NV5 bật từng tính năng ở test_nv5.py)
 
 EVAL = Path(SERVER).parent / "system4" / "eval"
 
@@ -46,6 +48,7 @@ prompts, answers, text_answers, json_calls = [], [], [], []
 async def fake_fast(messages, schema):
     prompts.append(messages)
     d = answers.pop(0) if answers else {"plan": "", "answer": "Theo dữ liệu [1].", "ask_back": False, "choices": [], "sources": [1]}
+    d = {persona.key(k) if k in persona.KEY_PREFIX else k: v for k, v in d.items()}   # JSON_PLAN_FIRST: a_plan, c_answer…
     d = {k: v for k, v in d.items() if k in schema["properties"]}
     raw = json.dumps(d, ensure_ascii=False)
     for i in range(0, len(raw), 7):
@@ -209,6 +212,9 @@ with TestClient(main.app) as c:
     assert len(prompts) == n, "không gọi AI"
     assert m["meta"]["choices"] and {"Trần Thị Bảo An", "Lê Bình An"} <= set(m["meta"]["choices"]), m["meta"]
     assert "Phạm An Khang" in m["meta"]["choices"] and "Bạn muốn hỏi về mục nào" in m["content"]
+    b = ambig.check("Bé Bảo sinh ngày nào?", [ds_id], set(range(1, 100)))   # "Bảo" không dấu = "bao" (của "bao nhiêu")
+    assert b and "Hồ Gia Bảo" in b["options"], b
+    assert ambig.check("Lớp có bao nhiêu bạn nữ?", [ds_id], set(range(1, 100))) is None, "'bao nhiêu' không phải tên"
     info = ambig.check("Mẹ của Trần Thị Bảo An tên gì?", [ds_id], set(range(1, 100)))
     assert info is None, "gọi đủ họ tên -> không mơ hồ"
     setv(AMBIGUITY_CHECK=False)
@@ -268,5 +274,17 @@ with TestClient(main.app) as c:
         time.sleep(0.2)
     d = c.get("/s4/datasets").json()["datasets"][0]
     assert d["mapping"]["overrides"] == {"Sheet1": 3} and d["mapping"]["parts"][0].get("header_chosen") and d["n_records"] == 33, d["mapping"]
+
+    # mặc định từ NV5 (cấu hình thắng bộ đo): mọi tính năng bật cùng lúc
+    settings.reset(list(nv5_off.OFF))
+    assert settings.get("JSON_PLAN_FIRST") and settings.get("GREETING_MODE") == "code_first"
+    answers.append({"plan": "tra ngày sinh", "answer": "Bạn Tô Đức Hiếu sinh ngày 3/1/2020 [1].", "ask_back": False, "choices": [], "sources": [1]})
+    m = last(chat("Ngày sinh của bạn Tô Đức Hiếu?"))
+    assert "3/1/2020" in m["content"] and m["meta"]["sources"] and not m["meta"].get("grounding"), m
+    assert '"a_plan"' in prompts[-1][0]["content"] and "Dữ liệu tham khảo:" in prompts[-1][-1]["content"]
+    m = last(chat("Chào bạn"))
+    assert m["meta"].get("small_talk") == "code"
+    m = last(chat("Mẹ của bé An tên gì?"))
+    assert "Lê Bình An" in m["meta"]["choices"], m["meta"]
 
 print("OK test_nv5")

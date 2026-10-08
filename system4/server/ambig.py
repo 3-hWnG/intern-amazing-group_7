@@ -14,13 +14,14 @@ import re
 from . import db, settings
 from .ground import fold
 
-_STOP = set(fold("""là và của có cho các những được một này đó thì mà với không gì nào như thế ạ à ơi nhé vậy hả bạn mình tôi em
-cần làm sao bao nhiêu ở đâu khi muốn hỏi giúp về theo trong tên bé con cháu anh chị cô chú ông bà mẹ cha bố ba má thủ tục
+_STOP = {"baonhieu"} | set(fold("""là và của có cho các những được một này đó thì mà với không gì nào như thế ạ à ơi nhé vậy hả bạn mình tôi em
+cần làm sao ở đâu khi muốn hỏi giúp về theo trong tên bé con cháu anh chị cô chú ông bà mẹ cha bố ba má thủ tục
 ngày sinh nhà số điện thoại địa chỉ ai""").split())
 
 
 def _w(t: str) -> list[str]:
-    return re.findall(r"\w+", fold(t))
+    """Chữ không dấu; cụm "bao nhiêu" gộp thành một từ chung (để "Bảo" — không dấu là "bao" — vẫn được coi là tên)."""
+    return re.findall(r"\w+", re.sub(r"\bbao nhieu\b", "baonhieu", fold(t)))
 
 
 def _longest(q: list[str], t: list[str]) -> tuple[int, int]:

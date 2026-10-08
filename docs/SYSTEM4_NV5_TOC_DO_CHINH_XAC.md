@@ -46,12 +46,12 @@ Phần A = lời người dùng (nguyên văn, chỉ thêm tiêu đề). Phần 
 | 0 | `Download Qwen Instruct.bat`; `Set up first time.bat` tải đủ mọi model (bước 6/9) | Xong |
 | 1 | Bộ đo `system4/eval/bench.py`: server riêng (cổng 8399, dữ liệu riêng), 77 câu (45 dev / 32 exam) + 22 tình huống hành vi; chấm luật; bảng Pareto; đo đổi model; chạy bộ đo System 3 với model khác | Xong |
 | 2 | Công tắc: `THINK_MODEL`, `KEEP_MODELS_LOADED`, `PROMPT_CACHE_ORDER`, `FAST_FORMAT` (json/text), `PLAN_MAX_CHARS`, `GREETING_MODE` (off/code_first/ai_first/ai_only), `GREETING_MAX_WORDS`, `GREETING_WORDS`, `GROUNDING_CHECK`, `AMBIGUITY_CHECK`, `AMBIGUITY_MAX`, `TABLE_TOOL`; tìm kiếm song song + số đo từng bước; bộ đọc tệp v3 (tiêu đề hai tầng, bảng ngang, nhiều bảng một trang, chọn dòng tiêu đề trong "Cách đọc") | Xong, test `test_nv5.py` |
-| 3A | So: hôm nay / Instruct 0,7 / Instruct 0,2 + đo đổi model | Đang chạy |
-| 3B | Trên cấu hình thắng: JSON vs chữ × kế hoạch 300 vs 600 (bật thứ tự lời dặn) | |
-| 3C | Trên cấu hình thắng: tính năng chính xác, câu chào 3 cách, S2 (ít tin cũ / đoạn ngắn), S4 (reranker 8 ứng viên) | |
-| 3D | Strict: bộ đo System 3 với qwen3:4b vs Instruct (câu 1D) | |
-| 3E | Bài thi cuối: thắng vs hôm nay, 3 lần mỗi câu | |
-| 4 | Đặt mặc định, cập nhật tài liệu, báo cáo | |
+| 3A | So: hôm nay / Instruct 0,7 / Instruct 0,2 + đo đổi model | Xong (D1) |
+| 3B | Trên cấu hình thắng: JSON vs chữ × kế hoạch 300 vs 600 (bật thứ tự lời dặn) | Xong (D2) |
+| 3C | Trên cấu hình thắng: tính năng chính xác, câu chào 3 cách, S2 (ít tin cũ / đoạn ngắn), S4 (reranker 8 ứng viên) | Xong (D3, D4); S2/S4 bỏ (D2) |
+| 3D | Strict: bộ đo System 3 với qwen3:4b vs Instruct (câu 1D) | Xong (D6), chờ quyết định |
+| 3E | Bài thi cuối: thắng vs hôm nay, 3 lần mỗi câu | Xong (D5) |
+| 4 | Đặt mặc định, cập nhật tài liệu, báo cáo | Xong (D7) |
 
 ### Câu chào — 3 cách (GREETING_MODE)
 | Cách | Code làm gì | AI làm gì |
@@ -117,5 +117,63 @@ Phần A = lời người dùng (nguyên văn, chỉ thêm tiêu đề). Phần 
 4. "Hạng Vàng?" lúc đúng lúc sai dù bản ghi đã được gửi: bản ghi chỉ ghi "Vàng / Ưu đãi: …", thiếu tên cột → bộ đọc v4 ghi "Hạng thành viên: Vàng" ở dòng đầu mỗi bản ghi bảng.
 5. **Bộ nhớ ghi rác:** "Bạn còn nhớ mình tên gì không?" làm AI ghi điều nhớ "Người dùng hỏi tên mình", các câu sau trả lời "bạn tên là người dùng hỏi tên mình". Đã lọc bằng code (bỏ điều nhớ dạng "Người dùng hỏi / muốn biết / chào / cảm ơn …"); bộ đo xoá bộ nhớ tài khoản đo trước mỗi câu.
 6. **Kế hoạch ẩn không có tác dụng phần lớn thời gian đo:** Ollama 0.40 không giữ thứ tự trường của khuôn JSON — từ vòng A đến C1 model viết `{"answer": …, "plan": …}` (kế hoạch viết SAU câu trả lời); ở C2 lại viết kế hoạch trước — vì C2 chạy nhầm qwen3:4b (model cũ hay viết plan trước; Instruct gần như luôn viết answer trước, kiểm trực tiếp 6/6). Thử thêm lời dặn "viết plan trước": vẫn 6/6 lần answer trước. Cách chắc chắn: đặt tên trường `a_plan`, `b_small_talk`, `c_answer`… (thứ tự chữ cái = thứ tự mong muốn) → 6/6 lần kế hoạch đứng đầu. Công tắc `JSON_PLAN_FIRST`. Hệ quả: "chữ đầu 1,0 s" của Instruct ở vòng A–C1 là nhờ KHÔNG lập kế hoạch (kế hoạch viết sau câu trả lời). Chi phí thật của việc lập kế hoạch trước: đo ở D4.
+
+### D4. Vòng D — Instruct + kế hoạch thật sự viết trước (JSON_PLAN_FIRST) + câu chào 3 cách (split dev, 1 lần)
+| Cấu hình (Instruct 0,2 + gói chính xác) | Đúng % | Không bịa % | Chào % | Hành vi | Chữ đầu | Cả câu | p90 | Viết lại nhầm |
+|---|---|---|---|---|---|---|---|---|
+| C1 + code_first (kế hoạch viết SAU câu trả lời) | 93,9 | 89 | 92 | — | 1,0 s | 3,5 s | 7,4 s | 5 |
+| **D + code_first** (kế hoạch viết TRƯỚC) | **97,0** | 89 | **100** | 21/22 | 1,25 s | **2,5 s** | **5,3 s** | **0** |
+| D + ai_only | 97,0 | 89 | 92 | — | 1,27 s | 2,3 s | 6,0 s | 0 |
+| D + ai_first | 97,0 | 89 | 92 | — | 1,54 s | 2,6 s | 5,6 s | 1 |
+
+- **Lập kế hoạch thật trước khi trả lời có lợi ở cả 3 trục:** đúng hơn (+1 câu), cả câu nhanh hơn (câu trả lời gọn hơn), chữ đầu chỉ chậm thêm ~0,25 s.
+- **Câu chào: chọn code_first.** Cả 3 cách đúng như nhau ở câu hỏi dữ liệu; chỉ code_first xử lý đúng "Ok cảm ơn bạn" ngay sau một câu trả lời có dữ liệu (2 cách kia lặp lại câu trả lời cũ kèm nguồn), và câu chào ngắn không phải chờ tìm kiếm.
+- Còn sai: "nhà thơ Trần Văn Khuyết" (người bịa) — model kể tiểu sử giả; bộ kiểm chi tiết không bắt được vì ở chat thường chỉ kiểm số điện thoại / email / web. 21/22 hành vi: câu "Team 7 là ai?" trả lời "đội ngũ hỗ trợ khách hàng của tôi" (không xưng "chúng tôi/mình") — lỗi câu chữ, lúc có lúc không ở mọi cấu hình.
+
+### D5. Bài thi cuối (split exam, 32 câu chưa từng dùng khi chỉnh, mỗi câu 3 lần = 96 lượt + 22 tình huống hành vi)
+| | Hôm nay (qwen3:4b, như trước NV5) | **NV5 (cấu hình mới)** |
+|---|---|---|
+| Đúng (độ chính xác + không bịa) | 73,1 % | **92,3 %** |
+| Không bịa (riêng nhóm bịa) | 55,6 % | **83,3 %** |
+| Câu chào khi bật dữ liệu | 50 % | **100 %** |
+| Hành vi (22 tình huống) | 22/22 | 21/22 |
+| Lỗi hành vi tổng (chào + 22 tình huống) | 9 | **1** |
+| Chữ đầu / cả câu (trung vị, mọi câu) | 1,1 s / 2,7 s | 1,6 s / 2,9 s |
+| Cả câu p90 | 4,3 s | 4,9 s |
+| — câu có dữ liệu thường | 3,1 s | 3,6 s |
+| — câu đếm / liệt kê cả bảng (công cụ bảng) | 0 % đúng | 100 % đúng, 4,9 s |
+| — chat thường (không bật dữ liệu) | 2,2 s | **1,4 s** |
+| — câu chào | 2,0 s | **1,3 s** |
+| "Suy nghĩ kỹ" (2 tình huống) | 47 s | 26 s |
+
+- Câu cải thiện rõ nhất (đúng ở 3/3 lần, trước 0–1/3): đếm bạn nam (17), liệt kê bạn sinh 2019, đếm Ấp Tân Hòa (14), web / giá / giám đốc Team 7 không còn bịa, mọi câu chào.
+- Còn sai trong bài thi: "Bé Bảo sinh ngày nào?" (0/3, không hỏi lại "Bảo nào?") — **lỗi code đã sửa sau bài thi** (từ "bao" của "bao nhiêu" bị coi là từ chung nên tên "Bảo" bị bỏ; nay gộp "bao nhiêu" thành một từ, thêm test); số này trong bảng là TRƯỚC khi sửa. "Nước nào diện tích lớn nhất?" → "Việt Nam" (0/3, kiến thức sai của model Instruct; model cũ trả lời đúng "Nga").
+- Đánh đổi (theo quy tắc A4): đúng +19 điểm %, lỗi hành vi 9 → 1, đổi lại câu có dữ liệu chậm thêm ~0,5 s (lập kế hoạch trước + lời dặn dài hơn), câu đếm cả bảng thêm ~1,9 s; vẫn dưới ngân sách 5 s (p90 4,9 s).
+
+### D6. Strict với model Instruct (câu 1D, bộ đo System 3, 449 câu DEV, `bench.py strict`)
+| | qwen3:4b (hiện tại) | Instruct |
+|---|---|---|
+| top-1 / top-3 | 97,4 % / 99,0 % | 97,4 % / 99,0 % |
+| Đúng hành vi | 97,8 % | 97,8 % |
+| Bịa số | 0,5 % | 0,5 % |
+| Thời gian trung vị / p90 | 29 ms / 2,5 s | 31 ms / 3,8 s |
+
+- Đúng y hệt (Strict chủ yếu trả lời bằng luật, AI chỉ viết lại một phần). p90 chậm hơn 1,3 s với Instruct (một lần đo, chưa rõ là nhiễu hay thật).
+- Lợi nếu đổi Strict sang Instruct: hết **4,4–5,5 s nạp lại model** mỗi lần chuyển Strict ↔ Friendly. Chưa đổi — chờ người dùng quyết (không đổi kiến trúc System 3; chỉ là biến `LLM_MODEL` trong `Launch web.bat`).
+
+### D7. Mặc định mới (config.py, nút ⚙ vẫn đổi được)
+`FRIENDLY_MODEL = qwen3:4b-instruct-2507-q4_K_M`, `FRIENDLY_TEMPERATURE = 0.2`, `THINK_MODEL = qwen3:4b`, `KEEP_MODELS_LOADED`, `PROMPT_CACHE_ORDER`, `JSON_PLAN_FIRST`, `GREETING_MODE = code_first`, `GROUNDING_CHECK = rewrite`, `AMBIGUITY_CHECK`, `TABLE_TOOL`, `SEARCH_FOLLOWUP`, `RERANK_RESCUE`, `STRICT_BUSINESS_FACTS` = bật. `FAST_FORMAT = json`, `PLAN_MAX_CHARS = 300` giữ nguyên. Test NV1–NV3 chạy với các cài đặt NV5 tắt (`system4/tests/nv5_off.py`); `test_nv5.py` kiểm từng tính năng và cả cấu hình mặc định mới.
+
+### D8. Việc ngoài kế hoạch đã làm / lỗi cũ tìm thấy
+- `system4/scraper/normalize.py` (NV4, phiên trước): biểu thức tìm năm trong số hiệu văn bản chứa ký tự điều khiển thay cho `\b` (cùng loại lỗi chèn code như `SEARCH_FOLLOWUP`) nên nhánh dự phòng không bao giờ khớp → đã sửa, test_nv4 xanh.
+- Bộ nhớ ghi câu hỏi thành "điều nhớ" (D3 mục 5) → đã lọc.
+
+### D9. Còn lại / hướng sau
+| Việc | Lợi ước tính | Ghi chú |
+|---|---|---|
+| Đổi Strict sang Instruct | bỏ 4,4–5,5 s mỗi lần chuyển chế độ | chờ quyết định (D6) |
+| Giảm ngữ cảnh model Friendly (8192 → 4096/6144) để card 6 GB không đầy | ~0,25 s mỗi câu có dữ liệu (tạo vector câu hỏi 0,2–0,35 s → ~0,03 s) | chưa đo; hội thoại rất dài dựa vào tóm tắt sớm hơn |
+| Kiến thức chung sai của model 4B (Úc → Sydney, diện tích lớn nhất → Việt Nam, nhà thơ bịa) | — | code không kiểm được; cần model lớn hơn hoặc nguồn tra cứu |
+| Câu trả lời dài về thủ tục (300+ token, 5–6 s) | tốc độ | có thể thêm lời dặn "trả lời gọn" — chưa đo ảnh hưởng độ chính xác |
 
 - Ghi chú để sau: tạo vector câu hỏi trong server mất 0,2–0,35 s, chạy riêng chỉ 0,03 s — có thể do card 6 GB đầy (model trả lời + bge-m3 + reranker), một phần bị đẩy sang CPU. Hướng sửa: giảm ngữ cảnh model Friendly (giờ khác model với System 3 nên không còn cần 8192). Lợi ~0,25 s mỗi câu Chuyên gia.

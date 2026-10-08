@@ -17,6 +17,8 @@ os.environ.update(S3_DB_PATH=os.path.join(TMP, "s3.db"), S3_USE_LLM="0", S4_ENAB
 from fastapi.testclient import TestClient
 import main
 from system3.system4.server import auth, llm, settings
+import nv5_off
+nv5_off.apply()   # test này kiểm hành vi trước NV5 (NV5 bật từng tính năng ở test_nv5.py)
 
 COOKIE = auth.COOKIE
 HTML = {"accept": "text/html"}

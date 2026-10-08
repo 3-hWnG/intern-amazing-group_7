@@ -240,7 +240,7 @@ def _map_legal(raw: dict) -> list[dict]:
     out = []
     for x in raw.get("legalBasisesDetails") or []:
         code = clean(x.get("code"))
-        m = re.search(r"/(\d{4})/", code) or re.search(r"(19|20)(\d{2})", code)
+        m = re.search(r"/(\d{4})/", code) or re.search(r"\b(19|20)(\d{2})\b", code)
         out.append({"doc_code": code, "doc_name": clean(x.get("name")),
                     "doc_year": m.group(1) if m and len(m.group(1)) == 4 else ""})
     return out

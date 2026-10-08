@@ -378,7 +378,7 @@ def strict(args):
     env = dict(os.environ, PYTHONPATH=str(PYROOT), PYTHONIOENCODING="utf-8", S3_USE_LLM="1", LLM_MODEL=args.model)
     unload_models()
     subprocess.run([str(PY), "run.py", "--adapter", "answer_adapter:adapter", "--name", args.name, "--split", args.split],
-                   cwd=REPO / "eval", env=env)
+                   cwd=PYROOT / "system3" / "eval", env=env)   # adapter của System 3 tự tìm server/ qua đường dẫn pyroot/system3
 
 
 if __name__ == "__main__":
