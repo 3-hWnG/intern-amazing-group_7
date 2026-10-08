@@ -67,16 +67,35 @@ def _resolve_clarify(turn: Turn) -> tuple[str, str | None]:
 
 
 _RESET = ("hoi viec khac", "chu de khac", "chu de moi", "quen di", "bat dau lai")
+_RESET_RE = re.compile(r"(?<![0-9a-z])(?:" + "|".join(_RESET) + r")(?![0-9a-z])")
 
 
 def _reset_request(text: str) -> str | None:
     """Luật đơn giản (không LLM): người dùng nói rõ chuyển việc -> phần còn lại của câu ("" nếu chỉ là lệnh)."""
     f = fold(text)
-    if not any(p in f for p in _RESET):
+    if not _RESET_RE.search(f):
         return None
-    for p in _RESET:
-        f = f.replace(p, " ")
+    f = _RESET_RE.sub(" ", f)
     return " ".join(w for w in re.findall(r"[0-9a-z]+", f) if w not in ("nhe", "di", "oi", "minh", "toi", "ban"))
+
+
+def _strip_reset(text: str) -> str:
+    """Bỏ cụm 'hỏi việc khác'... khỏi câu GỐC (giữ dấu) để Planner không truy hồi theo chữ 'khác'/'mới'."""
+    chars, idx = [], []
+    for i, ch in enumerate(text):
+        for g in (" " if ch.isspace() else fold(ch)):
+            chars.append(g)
+            idx.append(i)
+    spans = []
+    for m in _RESET_RE.finditer("".join(chars)):
+        s, e = idx[m.start()], idx[m.end() - 1] + 1
+        while e < len(text) and not fold(text[e]) and not text[e].isspace():
+            e += 1
+        spans.append((s, e))
+    for s, e in reversed(spans):
+        text = text[:s] + " " + text[e:]
+    return re.sub(r"\s+", " ", text).strip(" \t,;:.-–—!?")
+
 
 
 def _head(conn, pid: str | None) -> str | None:
@@ -104,10 +123,11 @@ def handle_turn(turn: Turn) -> dict:
         rest = _reset_request(text)
         store.reset_session(turn.conversation_id)
         turn.session_facts, turn.shown_procedures, turn.state = [], [], None
-        if len(rest.split()) < 3:          # chỉ là lệnh, chưa có câu hỏi mới
+        if len(rest.split()) < 2:
             return {"kind": "chitchat", "clarify": None, "plan": {}, "trace": {"question": "", "reset": True},
                     "blocks": [{"title": "", "sources": [],
                                 "text": "Mình đã bỏ qua các thông tin bạn kể trước đó. Bạn muốn hỏi về thủ tục nào?"}]}
+        text = _strip_reset(text) or text
 
     pc = pre_check(text)
     state = turn.state if turn.state is not None else store.get_state(turn.conversation_id)
@@ -184,7 +204,7 @@ def handle_turn(turn: Turn) -> dict:
 
     # ---- bộ nhớ: trạng thái hội thoại theo thủ tục THỰC SỰ đã trả lời (không theo đề xuất của resolve: biến thể mặc định, nút chọn, giả định)
     new_state = ConvState.from_dict(plan.ctx.get("state_before") or state)
-    direct = [rt for rt in routed.tasks if rt.route == "direct"]
+    direct = [rt for rt in routed.tasks if rt.route == "direct"] if not clarify else []
     for rt in direct:
         new_state.note(rt.procedure_id, rt.fields)
     new_state.loose = bool((plan.state or {}).get("loose")) if direct else new_state.loose
@@ -194,7 +214,7 @@ def handle_turn(turn: Turn) -> dict:
     trace["state"] = new_state.to_dict()
     # ---- bộ nhớ
     for rt in routed.tasks:
-        if rt.route == "direct":
+        if rt.route == "direct" and not clarify:
             store.add_shown(turn.conversation_id, rt.procedure_id, rt.procedure_label)
         for c in rt.context_facts:
             store.add_fact(turn.conversation_id, "fact", c, rt.procedure_id or "")

@@ -31,6 +31,7 @@ from config import DEV_MODE, HOST, LLM_MODEL, PORT, TABLE_BUTTON, WEB_DIR
 from core import queue
 from core.llm import loaded_models, model_name, warm_up
 from planner import hybrid
+from policy import mask_pii
 from db import store
 
 
@@ -308,7 +309,7 @@ async def chat(body: ChatIn, cid_mem: str = Depends(_cid)):
                              pick_proc=body.proc_id, memory=user_memory.for_policy(cid_mem))
     # FINAL-PRODUCT: [B3] lưu nguyên văn người dùng gõ (chưa che CCCD/SĐT) vào messages.content; title hộp thoại cũng lấy 60 ký tự đầu. Bản cuối: che PII trước khi ghi (mục 2)
     store.add_message(cid, "user", text)
-    store.set_title_if_new(cid, text)
+    store.set_title_if_new(cid, mask_pii(text))
 
     box = {}
 
@@ -323,7 +324,9 @@ async def chat(body: ChatIn, cid_mem: str = Depends(_cid)):
         raise HTTPException(503, str(e))
     chunks = [c async for c in queue.manager.stream(j)]   # chờ worker xong
     if "res" not in box:
-        raise HTTPException(500, "".join(chunks).strip() or j.error or "lỗi xử lý")
+        import logging
+        logging.getLogger("uvicorn.error").error("chat job lỗi: %s", j.error or "".join(chunks).strip())
+        raise HTTPException(500, "Hệ thống xử lý quá lâu, vui lòng thử lại." if j.error == "timeout" else "Có lỗi khi xử lý, vui lòng thử lại.")
 
     r = box["res"]
     blocks, clar, kind = r.get("blocks", []), r.get("clarify"), r.get("kind", "answer")

@@ -105,7 +105,7 @@ def _vertical(domain: str) -> str:
     return ""
 
 
-_CGEN = set("dang ky thu tuc ho so truong hop doi voi cho viec cua va hoac theo trong tai ve nguoi cong dan viet nam gom".split())
+_CGEN = set("dang ky thu tuc ho so truong hop doi voi cho viec cua va hoac theo trong tai ve nguoi cong dan viet nam gom nha em toi minh tui ban ong ba anh chi con chau gia dinh bac chu co di".split())
 # Từ ĐỜI THƯỜNG chỉ hoàn cảnh -> chữ trong TÊN TRƯỜNG HỢP của condition_index (người dân nói "ở chùa", bộ đội, ở trọ; dữ liệu viết "cơ sở tín ngưỡng, cơ sở tôn giáo"...).
 # ponytail: bảng tay ~8 nhóm; chỉ dùng để khớp mục điều kiện, không đổi truy hồi thủ tục. Mở rộng theo log thật.
 _SITUATION = [(re.compile(rx), syn) for rx, syn in [

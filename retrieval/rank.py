@@ -17,6 +17,7 @@ from system3.data.search import _fold
 
 from . import query as _query
 from .query import Query, understand, split_segments, strip_condition, FIELD_CUES, STOP, NAME_ABBR, COND_W
+from .variants import choose_variant
 from .refs import ordinal, pure_reference, pick, options_from_text, extract_negation, split_compare, load_name_neg
 from .context import ConvState, markers, event_hints, strip_labels, _PH
 
@@ -40,13 +41,14 @@ EXTRA_IDF = 3.0          # chữ có IDF >= mức này coi là 'hiếm'
 UNCERTAIN_EXTRAS = 3
 # Chữ 'sự kiện' đổi nghĩa thủ tục (mất, hủy, thu hồi…): tên có mà câu hỏi không có => phạt (đo: 'làm hộ chiếu' ≠ 'trình báo MẤT hộ chiếu').
 EVENT_TOKENS = {'mat', 'hong', 'huy', 'xoa'}
-EVENT_BIGRAMS = {('thu', 'hoi'), ('cham', 'dut'), ('tam', 'dung'), ('tam', 'ngung'), ('dung', 'thuc'), ('dinh', 'chinh')}
+EVENT_BIGRAMS = {('thu', 'hoi'), ('cham', 'dut'), ('tam', 'dung'), ('tam', 'ngung'), ('dung', 'thuc'), ('dinh', 'chinh'), ('chua', 'du')}
 EVENT_PENALTY = 0.35
 # Tên MỞ ĐẦU bằng động từ vòng đời (đổi/cấp lại/gia hạn/điều chỉnh...): thủ tục dành cho người ĐÃ có giấy; câu hỏi không nhắc vòng đời đó thì nhường bản gốc ("xin giấy xác nhận khuyết tật" != "Đổi, cấp lại Giấy xác nhận khuyết tật").
-LIFECYCLE_LEAD = [("doi",), ("cap", "lai"), ("gia", "han"), ("dieu", "chinh"), ("thay", "doi"), ("sua", "doi"), ("bo", "sung"), ("dang", "ky", "lai"), ("tiep", "tuc")]
+LIFECYCLE_LEAD = [("doi",), ("cap", "lai"), ("gia", "han"), ("dieu", "chinh"), ("thay", "doi"), ("sua", "doi"), ("bo", "sung"), ("dang", "ky", "lai"), ("tiep", "tuc"), ("cap", "dieu", "chinh"), ("cap", "doi")]
 LIFECYCLE_PENALTY = 0.12
 LIFE_WORDS = {"cap", "lai", "doi", "gia", "han", "thay", "sua", "bo", "sung", "huy", "thu", "hoi", "xoa", "lam", "tiep", "tuc", "dieu", "chinh"}   # động từ vòng đời: không đủ để GỌI TÊN thủ tục
 LIFECYCLE_CUES = {"mat", "hong", "rach", "that", "lac", "het", "han", "sai", "nham", "loi"}     # câu nói giấy bị mất/hỏng/hết hạn/sai => đang hỏi vòng đời (cấp lại/đổi/gia hạn), không phạt
+_CIRCUMSTANCE = {'bi', 'mat', 'chay', 'rach', 'nat', 'hong', 'huy', 'tieu', 'lai', 'cap', 'xin', 'lam', 'giay', 'chung', 'nhan'}
 VERTICAL = ("Thuế", "Hải quan")
 CHITCHAT = set("chao xin hello hi alo cam on ban ten ai khoe ok oke vang da tam biet bye thanks thank you tro ly "
                "ad admin bot nhieu hom nay hoi vay thoi nha nhe nhen oi a ban tot qua tuyet gioi hay hen gap lai".split())
@@ -64,6 +66,8 @@ OOS_TOPICS = re.compile(
     r"uong thuoc|chua benh|trieu chung|ke don thuoc|dau (?:dau|bung|rang|lung)|"
     r"visa|nhap quoc tich|nhap tich|thoi quoc tich|"
     r"diem thi|thi dai hoc|thi tot nghiep|tieng anh|ngoai ngu|dich (?:giup|cau|sang)|gia vang|gia xang|thoi tiet|chung khoan|bitcoin|tien ao|co phieu|"
+    r"gio (?:mo cua|lam viec)|may gio|lich lam viec|thu bay co lam viec|"
+    r"that nghiep|tro cap that nghiep|bao hiem that nghiep|giay chung sinh|"
     r"nau (?:an|pho|com)|cong thuc nau|du lich|dat (?:ve|phong)|ve may bay|khach san)(?!\w)")
 _PASSPORT = re.compile(r"(?<!\w)ho chieu(?!\w)")
 _PASSPORT_OK = re.compile(r"(?<!\w)(mat|trinh bao|bi mat|that lac)(?!\w)")
@@ -81,7 +85,7 @@ _PREFIX_RE = re.compile(r"^(?:\([^)]{2,30}\)\s*|[^-–]{2,40}?\s[-–]\s)")
 def _lead(p: dict, tset: set):
     """Tên MỞ ĐẦU bằng động từ vòng đời (đổi/cấp lại/gia hạn...) mà câu hỏi không nhắc vòng đời đó -> trả cụm đầu (bị phạt, và không coi là 'anh em gần' của bản gốc)."""
     lead = next((l for l in LIFECYCLE_LEAD if tuple(p["ctoks"][:len(l)]) == l), None)
-    return lead if lead and not (set(lead) & tset) and not (tset & LIFECYCLE_CUES) else None
+    return lead if lead and not set(lead).issubset(tset) and not (tset & LIFECYCLE_CUES) else None
 
 
 def _core_name(name: str) -> str:
@@ -246,14 +250,18 @@ class Index:
         return c[0]["proc_id"] if c else None
 
     # ---- chấm điểm -------------------------------------------------------
-    def _fix(self, term: str) -> str:
-        """Sai chính tả nhẹ: gần đúng 1 chữ trong kho (chỉ khi chữ lạ và đủ dài)."""
+    def _fix(self, term: str, prev: str | None = None, nxt: str | None = None) -> str:
+        """Sai chính tả nhẹ: gần đúng 1 chữ trong kho (chỉ khi chữ lạ và đủ dài).
+        Ưu tiên ứng viên tạo thành bigram hợp lệ trong CSDL với từ đứng trước hoặc sau."""
         if term in self.vocab or len(term) < 4:
             return term
         best = [v for v in self._by_len.get(len(term), []) + self._by_len.get(len(term) - 1, [])
                 + self._by_len.get(len(term) + 1, []) if v[0] == term[0] and _dam1(term, v)]
         if best:
-            return max(best, key=lambda v: self.idf.get(v, 0))
+            bg_cands = [v for v in best if (prev and (prev, v) in _query.NAME_BIGRAMS) or (nxt and (v, nxt) in _query.NAME_BIGRAMS)]
+            if bg_cands:
+                return max(bg_cands, key=lambda v: (len(v) == len(term), self.idf.get(v, 0)))
+            return max(best, key=lambda v: (len(v) == len(term), self.idf.get(v, 0)))
         m = difflib.get_close_matches(term, self._vocab_list, n=1, cutoff=0.88)
         return m[0] if m else term
 
@@ -270,8 +278,13 @@ class Index:
     def rank(self, q: Query, limit: int = 5) -> list[Hit]:
         if not q.terms:
             return []
-        terms = [self._fix(t) for t in q.terms]
-        accs = [a if self._fix(t) == t else self._fix(t) for t, a in zip(q.terms, q.accented)]
+        fixed = []
+        for i, t in enumerate(q.terms):
+            prev_t = fixed[-1] if i > 0 else None
+            nxt_t = q.terms[i + 1] if i + 1 < len(q.terms) else None
+            fixed.append(self._fix(t, prev_t, nxt_t))
+        terms = fixed
+        accs = [a if fixed[i] == t else fixed[i] for i, (t, a) in enumerate(zip(q.terms, q.accented))]
         w = [self._weight(t) for t in terms]
         total = sum(w) or 1.0
         prov_set = {_fold(x) for x in q.provinces}
@@ -518,6 +531,9 @@ def _contextualize(idx: Index, st: ConvState, segs: list, mk: dict, negs: list) 
                 sg.decision, sg.why = "follow_up", "nêu lại đúng thủ tục đang nói"
             elif pid in st.history:
                 sg.decision, sg.why = "return", "nêu thủ tục đã nói trước đó"
+                if (mk.get("conn") or mk.get("tail")) and not sg.query.fields and st.fields:
+                    sg.query.fields = list(st.fields)
+                    sg.why += "; kế thừa mục đang hỏi " + ",".join(st.fields)
             elif _related(idx, pid, st.topic):
                 sg.decision, sg.why = "new_related", "thủ tục mới cùng lĩnh vực với thủ tục đang nói"
                 if (mk.get("conn") or mk.get("tail")) and not sg.query.fields and st.fields:
@@ -638,8 +654,13 @@ _NEG_W = {"không", "khong", "ko", "chẳng", "chang", "chả", "cha", "chưa", 
 _PAST_W = {"đi", "di", "đang", "dang", "từng", "tung", "đã", "da", "vừa", "vua", "mới", "moi", "bị", "bi"}   # "từng làm thanh niên xung phong": làm = nghề, không phải yêu cầu
 
 
+_Q_TAIL = re.compile(r"\b(?:khong|ko|k|duoc khong|dc ko|sao|the nao|ha|nhi)\s*[?]?\s*$")
+
+
 def _asks(text: str) -> bool:
-    """Câu có động từ YÊU CẦU (muốn/cần/xin/hỏi/làm/nếu/trường hợp...), khác lời kể."""
+    """Câu có động từ YÊU CẦU (muốn/cần/xin/hỏi/làm/nếu/trường hợp...) hoặc trợ từ nghi vấn, khác lời kể."""
+    if _Q_TAIL.search(_fold(text or "")):
+        return True
     ws = re.findall(r"\w+", (text or "").lower())
     for i, w in enumerate(ws):
         if w in _ASK_W:
@@ -905,6 +926,19 @@ def _resolve_text(idx: Index, text: str, st: ConvState, accept: float, options: 
         if top and top.flags:    # ưu tiên bản không bị cờ nếu điểm sát nhau
             alt = next((h for h in sg.hits if not h.flags and h.score >= top.score - 0.08), None)
             top = alt or top
+        if top and top.extras >= 10:
+            top_toks = set(_fold(top.name).split())
+            qterms = sg.query.terms
+            top_matched = {t for t in qterms if t in top_toks}
+            for h in sg.hits[1:]:
+                if h.score >= top.score - 0.04 and h.prec >= 2.0 * top.prec and h.extras <= 4 and not h.flags:
+                    alt_toks = set(_fold(h.name).split())
+                    alt_matched = {t for t in qterms if t in alt_toks}
+                    subst_miss = [t for t in top_matched if t not in alt_matched and t not in _CIRCUMSTANCE and idx.idf.get(t, 0) >= 3.0]
+                    if not subst_miss:
+                        sg.hits[0], sg.hits[sg.hits.index(h)] = h, top
+                        top = h
+                        break
         if not top:
             sg.reason = "no_match"
         elif topic_out or (top.hi_match == 0 and top.hi_miss > 0 and top.prec < NAMED_PREC_CTX * 2.5):
@@ -920,6 +954,9 @@ def _resolve_text(idx: Index, text: str, st: ConvState, accept: float, options: 
             sg.reason = "flagged:" + ",".join(top.flags)
         else:
             sg.proc_id, sg.reason = top.proc_id, "in_scope"
+            _alt = choose_variant(idx, sg, top.proc_id, text)      # đổi sang biến thể anh em cùng họ khi câu hỏi nói ra trục khác biệt (xem variants.py)
+            if _alt:
+                sg.proc_id = _alt
             sg.uncertain = top.score < UNCERTAIN_SCORE or top.cov < UNCERTAIN_COV or top.extras >= UNCERTAIN_EXTRAS
             sg.ambiguous = any(h.head != top.head and h.score >= top.score - AMBIG_GAP for h in sg.hits[1:])
             sg.near = _near(idx, sg.query, top, sg.hits) or _domain_near(idx, sg.query, top)
@@ -966,7 +1003,7 @@ def _resolve_text(idx: Index, text: str, st: ConvState, accept: float, options: 
     merged = " ".join(st.story + [text])                  # (e) lời kể ở lượt trước (nếu có) + câu hiện tại
     hint, rest = event_hints(merged)
     # câu nói về việc KHÁC có chữ 'đám cưới' ("xin giấy phép tổ chức đám cưới ngoài trời"): còn chữ nghiệp vụ lạ ngoài sự kiện => không đoán
-    odd = sum(idx._weight(t) >= HI_IDF for t in understand(idx.conn, rest, idx.syn).terms if len(t) >= 4 and t not in ("phuong",)) >= 3   # ponytail: đếm >=3 chữ hiếm lạ; đủ cho ca đo được, chưa phải mô hình
+    odd = sum(idx._weight(t) >= HI_IDF for t in understand(idx.conn, rest, idx.syn).terms if len(t) >= 4 and t not in ("phuong",) and t not in _fold(hint).split()) >= 3   # ponytail: đếm >=3 chữ hiếm lạ; đủ cho ca đo được, chưa phải mô hình
     if events and hint and not odd and not any(_is_named(sg) and _hit_of(sg).prec >= 0.3 for sg in all_segs) and not any(sg.oos_topic for sg in segs):
         alt = _resolve_text(idx, hint + " " + merged, ConvState(), accept, events=False, one=True)   # sự kiện đời sống ("bé mới sinh") -> tên thủ tục thường gặp
         if any(s.proc_id for s in alt):

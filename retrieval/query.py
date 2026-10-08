@@ -85,14 +85,20 @@ def _norm_keep_accent(text: str) -> str:
 
 # Cụm chứa chữ trùng STOP nhưng là nghiệp vụ: giữ nguyên (đo: "bản sao", "căn cước", "làm lại" mất chữ).
 PROTECT = ("ky lai", "ban sao", "ban chinh", "ban dich", "cap lai", "lam lai", "can cuoc", "can cu", "cho thue",
-           "cha me con", "con nuoi", "giay to ca nhan", "cap doi", "ho so", "cho phep")
+           "cha me con", "con nuoi", "giay to ca nhan", "cap doi", "ho so", "cho phep",
+           "so do", "so hong", "ma chay", "nguoi co cong", "xay dung nha o", "nha o")
 # Viết tắt/gõ tắt/sai chính tả hay gặp, MỞ RỘNG SAU KHI bỏ stop (để canonical không bị stop nuốt).
 EXTRA_SYN = {"hso": "ho so", "bn": "bao nhieu", "onl": "online", "onlinee": "online", "ng": "nguoi",
              "giay tow": "giay to", "tow": "to", "ki": "ky", "kí": "ky", "kj": "ky", "dky": "dang ky",
              "dk": "dang ky", "tt": "thuong tru", "tamtru": "tam tru",
              "gp": "giay phep", "gcn": "giay chung nhan", "cccd": "can cuoc cong dan", "cmnd": "chung minh nhan dan", "gks": "giay khai sinh",
              "hk": "ho khau", "hkd": "ho kinh doanh", "dkkd": "dang ky kinh doanh", "qsdd": "quyen su dung dat", "gtlq": "giay to lien quan",
-             "ub": "uy ban", "ubnd": "uy ban nhan dan", "ho tich": "ho tich"}
+             "so do": "giay chung nhan quyen su dung dat", "so hong": "giay chung nhan quyen su dung dat", "ma chay": "mai tang", "mai tang phi": "mai tang", "tang le": "mai tang",
+             "ub": "uy ban", "ubnd": "uy ban nhan dan", "ho tich": "ho tich",
+             "thcs": "trung hoc co so", "thpt": "trung hoc pho thong"}
+
+# Mọi tiền tố đánh số hoặc nhãn lượt hội thoại đầu câu: "Turn 1:", "Lượt 2:", "Câu 3 -", "Q1:", "Step 4.", v.v.
+_LABEL_PREFIX_RE = re.compile(r"^(?:(?:[a-zA-Z_À-ỹ]+|\b)\s*\d+\s*[:\-\.\|]\s*)+", re.IGNORECASE)
 # Viết tắt nằm TRONG tên thủ tục ("Giải quyết hưởng chế độ TNLĐ, BNN", "Giải quyết hưởng BHXH một lần"): Index khai triển trong tên, câu hỏi cũng khai triển,
 # nên người dân gõ "tai nạn lao động" hay "TNLĐ" đều khớp. Giá trị có dấu (để khớp dấu). Liệt kê từ các chữ HOA trong tên (xem tests).
 NAME_ABBR = {"bhxh": "bảo hiểm xã hội", "bhyt": "bảo hiểm y tế", "bhtn": "bảo hiểm thất nghiệp", "bhtnld": "bảo hiểm tai nạn lao động",
@@ -110,7 +116,10 @@ COLLOQUIAL = [(r"độc thân", "tình trạng hôn nhân"), (r"báo tử", "kha
               (r"(?:lấy|cưới) (?:vợ|chồng)", "kết hôn"),
               (r"(?:giấy )?(?:chứng nhận|xác nhận)(?: là)? chưa (?:từng )?(?:đăng ký )?kết hôn", "giấy xác nhận tình trạng hôn nhân"),
               (r"xóa (?:tên )?(?:trong |khỏi )?(?:sổ )?hộ khẩu", "xóa đăng ký thường trú"),
-              (r"(?:đổi|sửa|thay) (?:họ|ngày sinh|năm sinh|quê quán|dân tộc)|(?:đổi|sửa|thay) tên (?:cho )?(?:con|bé|cháu)|(?:sửa|đổi) tên trong (?:giấy )?khai sinh|sai (?:họ|tên|ngày sinh|năm sinh) (?:trong )?(?:giấy )?khai sinh|(?:sửa|chỉnh sửa|đính chính) (?:giấy )?khai sinh", "thay đổi cải chính bổ sung thông tin hộ tịch")]
+              (r"xây (?:dựng )?nhà(?: ở)?", "xây dựng nhà ở"),
+              (r"(?:đổi|sửa|thay) (?:họ|ngày sinh|năm sinh|quê quán|dân tộc)|(?:đổi|sửa|thay) tên (?:cho )?(?:con|bé|cháu)|(?:sửa|đổi) tên trong (?:giấy )?khai sinh|sai (?:họ|tên|ngày sinh|năm sinh) (?:trong )?(?:giấy )?khai sinh|(?:sửa|chỉnh sửa|đính chính) (?:giấy )?khai sinh", "thay đổi cải chính bổ sung thông tin hộ tịch"),
+              (r"người cao tuổi hưởng trợ cấp|trợ cấp người cao tuổi|trợ cấp (?:từ )?(?:đủ )?75 tuổi", "trợ cấp hưu trí xã hội"),
+              (r"lấn ranh(?: giới)?|lấn đất", "tranh chấp đất đai")]
 _COLLOQUIAL_RE = [(re.compile(r"(?<!\w)(?:" + p + r")(?!\w)"), r) for p, r in COLLOQUIAL]
 # người gõ KHÔNG DẤU ("doc than", "sao y") cũng được lợi: bản bỏ dấu của cùng luật, chỉ chạy khi cả câu không có dấu; bỏ luật ngắn (bỏ dấu "đẻ" thành "de" trùng "để")
 _COLLOQUIAL_FOLD = [(re.compile(r"(?<!\w)(?:" + _fold(p) + r")(?!\w)"), r) for p, r in COLLOQUIAL if len(_fold(p)) >= 7]
@@ -131,6 +140,29 @@ NAME_BIGRAMS: set = set()
 NAME_NGRAMS: set = set()      # bigram + trigram trong tên (dùng cho split_segments)
 EXTRA_KNOWN: set = set()      # chữ diễn ngôn/thứ tự/xã giao (rank.py nạp): cũng là từ vựng để tách chữ dính ("chắckhông", "cuốicùng", "thìsao")
 VOCAB: set = set()            # chữ (đã bỏ dấu) trong tên/lĩnh vực của kho (Index nạp): từ vựng để tách chữ gõ dính liền
+
+
+def _ensure_bigrams(conn=None):
+    global NAME_BIGRAMS, NAME_NGRAMS
+    if not NAME_BIGRAMS and conn:
+        for r in conn.execute("SELECT name FROM procedures WHERE status='active'"):
+            toks = _fold(r[0]).split()
+            NAME_BIGRAMS.update(zip(toks, toks[1:]))
+            NAME_NGRAMS.update(zip(toks, toks[1:]))
+            NAME_NGRAMS.update(zip(toks, toks[1:], toks[2:]))
+
+
+def split_glued_token(token: str) -> str:
+    """Tự động tách các từ bị dính chữ (không dấu/không cách) dựa trên bigram tên thủ tục trong CSDL.
+    Ví dụ: 'kethon' -> 'ket hon', 'khaisinh' -> 'khai sinh', 'chungthuc' -> 'chung thuc'.
+    Hoàn toàn data-driven, không cần hardcode từ điển thủ công."""
+    if len(token) <= 3 or not NAME_BIGRAMS:
+        return token
+    for i in range(2, len(token) - 1):
+        pair = (token[:i], token[i:])
+        if pair in NAME_BIGRAMS:
+            return f"{token[:i]} {token[i:]}"
+    return token
 
 
 # ---- tách chữ DÍNH LIỀN ("kethon", "dangkykhaisinh", "muondangky") --------------------------------------------------------------------------------------
@@ -289,7 +321,7 @@ def _tidy_fields(q: Query, f0: str) -> None:
 
 _SUBJ = re.compile(r"^ (?:gia dinh|nha|vo chong|ong|ba|bo|me|con|cha|anh|chi|em|chau|co|chu|bac|e)(?: (?:toi|em|minh|tui|cua toi|cua em|cua minh))?(?= (?:can|muon|dang|vua|se|phai|di|xin|hoi|dinh) )")
 _MODAL_GO = re.compile(r" (?:can|muon|phai|nen|dinh|se|xin) (?:di|den|ra|len|vao) (?=(?:khai|dang|xoa|lam|nop|xin|tach|chung|cap|doi|gia|thong|dk|ky) )")
-_BENEF = re.compile(r" cho (me|bo|cha|ba|ong|vo|chong|anh|chi|chau|bac|chu|di|cau|co)(?: (?:em|toi|minh|tui|cua em|cua toi|cua minh))?(?= )")
+_BENEF = re.compile(r" cho (?:(me|bo|cha|ba|ong|vo|chong|con|anh|chi|chau|bac|chu|di|cau|co)(?:\s+(?:noi|ngoai|trai|gai|de|nuoi|ruot|ho|chong|dau|re))?|be|em be)(?: (?:em|toi|minh|tui|cua em|cua toi|cua minh))?(?:\s+\d+\s+tuoi)?(?= )")
 
 
 def _phi_in_name(folded: str) -> bool:
@@ -303,7 +335,9 @@ def _squash(text: str) -> str:
 
 def understand(conn, text: str, syn: dict | None = None) -> Query:
     q = Query(raw=text)
-    text = _squash(text or "")                  # kéo dài chữ ("khôngggg", "đăngggg ký"): bỏ lặp từ 3 lần trở lên (trừ viết tắt thật như "cccd")
+    _ensure_bigrams(conn)
+    clean_text = _LABEL_PREFIX_RE.sub("", text or "").strip()
+    text = _squash(clean_text)                  # kéo dài chữ ("khôngggg", "đăngggg ký"): bỏ lặp từ 3 lần trở lên (trừ viết tắt thật như "cccd")
     folded = f" {_fold(_SPOKEN.sub('không', _colloquial(unglue_text((text or '').lower()))))} "     # 'hổng/hông' (không) khác 'hỏng' (hư): xử lý TRƯỚC khi bỏ dấu
     for pat, name in _PROVINCE_PATTERNS:
         if f" {pat} " in folded:
@@ -329,7 +363,8 @@ def understand(conn, text: str, syn: dict | None = None) -> Query:
     folded = _SUBJ.sub(" ", folded, count=1)           # "gia đình cần đi khai tử": chủ ngữ + động từ yêu cầu, không phải chữ của tên thủ tục
     folded = _MODAL_GO.sub(" ", folded)               # "cần đi khai tử", "muốn đến đăng ký": 'đi/đến' là động từ đưa đường, 'đi khai' tình cờ có trong tên khác
     for m in list(_BENEF.finditer(folded)):          # "khai tử cho mẹ em": người thụ hưởng là người nhà, không phải chữ của tên thủ tục
-        if ("cho", m.group(1)) not in NAME_BIGRAMS:
+        k = m.group(1) or "be"
+        if ("cho", k) not in NAME_BIGRAMS:
             folded = folded.replace(m.group(0), " ", 1)
     f2 = folded.strip() + " "
     m = _LEAD_RE.match(f2)
@@ -403,20 +438,35 @@ def _joins(lw: list[str], d: str, rw: list[str]) -> bool:
     return not tri or any(t in NAME_NGRAMS for t in tri)
 
 
+# Các động từ hành động hành chính đánh dấu Intent thủ tục mới
+ACTION_VERBS = {"dang", "ky", "khai", "xin", "cap", "chung", "thuc", "lam", "nop", "thong", "bao", "doi", "xac", "nhan", "giai", "quyet", "rut", "xoa", "tach", "chuyen"}
+
+
 def split_segments(text: str) -> list[str]:
-    """Luật tách multi-intent (fallback của Planner): ?, ;, 'còn', 'và', 'với lại', dấu phẩy.
-    Không tách tại chỗ nằm TRONG một tên thủ tục ("Cấp, cấp lại ...", "Công nhận và giải quyết ..."): cặp chữ hai bên ranh giới
-    (kèm từ nối nếu là chữ) có trong NAME_BIGRAMS thì nối lại.
-    ponytail: tách thô theo từ nối; Planner LLM thay thế sau. Đoạn quá ngắn gộp vào đoạn trước."""
+    """Luật tách multi-intent: ?, ;, 'còn', 'và', 'với lại', dấu phẩy.
+    Không tách tại chỗ nằm TRONG một tên thủ tục.
+    Không tách các vế phụ/bổ ngữ/hoàn cảnh không mang động từ hành động hành chính mới."""
     t = (text or "").lower().strip()
     pieces = re.split(r"(\s*(?:[?;,.]|(?<!\w)(?:còn|với lại|voi lai|và|va|sau đó|sau do|ngoài ra|ngoai ra)(?!\w))\s*)", t)   # [đoạn, nối, đoạn, ...]
     segs = [pieces[0]]
     for i in range(1, len(pieces) - 1, 2):
-        d, nxt = _fold(pieces[i]), pieces[i + 1]
-        lw, rw = _fold(segs[-1]).split()[-1:], _fold(nxt).split()[:1]
-        if d in ("?", "."):       # hết câu: ranh giới thật
+        d, nxt = _fold(pieces[i]).strip(), pieces[i + 1]
+        nxt_f = _fold(nxt).strip()
+        nxt_words = set(nxt_f.split())
+
+        if d in ("?", ".", ";"):       # hết câu: ranh giới thật
             segs.append(nxt)
-        elif _joins(_fold(segs[-1]).split(), d, _fold(nxt).split()):
+            continue
+
+        lw, rw = _fold(segs[-1]).split()[-1:], nxt_f.split()[:1]
+        if _joins(_fold(segs[-1]).split(), d, rw):
+            segs[-1] += pieces[i] + nxt
+            continue
+
+        has_action = bool(nxt_words & ACTION_VERBS)
+        is_passive_or_cond = bool(re.match(r"^(?:duoc|bi|co|phai|nam|o|tai)\b", nxt_f) or re.search(r"\bthi\b", nxt_f))
+
+        if d in ("va", "voi lai", "va lai") and (is_passive_or_cond or not has_action):
             segs[-1] += pieces[i] + nxt
         else:
             segs.append(nxt)

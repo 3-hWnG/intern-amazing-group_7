@@ -42,7 +42,7 @@ _CONN = re.compile(r"^(?:(?:a|ok|oke|uh|um|da|vang|ua|ah)\s+)*(?:con|the con|vay
 _AMOUNT = re.compile(r"^(?:(?:a|ok|oke|uh|um|da|vang|ua|ah)\s+)*(?:the |vay |con |roi )*(?:het )?bao nhieu(?: tien| the| vay| a| nhi| nhe)*\s*$")     # "thế bao nhiêu", "bao nhiêu vậy": câu cụt hỏi tiền
 _TAIL = re.compile(r"(?:thi|vay) (?:sao|the nao|lam sao|nhu the nao|ra sao|duoc khong|co sao khong|co duoc khong)\s*$|^(?:sao|the nao)\s*$")
 _NEED = re.compile(r"\bcan (?:phai )?(?:lam|dang ky|khai bao|nop|xin|chuan bi|di)\b.*\bgi\b|\b(?:phai|nen) lam (?:gi|sao)\b")
-_COND = re.compile(r"(?:^|\s)(?:neu|truong hop|trong truong hop|doi voi)(?:\s|$)")
+_COND = re.compile(r"(?:^|\s)(?:neu|truong hop|trong truong hop|doi voi)(?:\s|$)|(?:^|\s)(?:toi|em|minh|tui)\s+la\b.{1,25}\bthi\b")
 
 
 # Nhãn lượt hội thoại ở ĐẦU câu ("Turn 2:", "User:", "Câu 2:", "Q:", "Bạn:", "Hỏi:", "Lượt 2 -", "[User]", "2)", "- ", "> "): không phải lời người dùng.
@@ -184,6 +184,8 @@ EVENTS: list[tuple[str, str]] = [
     (r"(?<!cai )(?<!muc )(?<!so )\bcuoi\b(?! cung)|\bdam cuoi\b|\blay (?:vo|chong)\b|\bket hon\b", "đăng ký kết hôn"),
     # người thân qua đời (không nhầm "mất giấy/mất thẻ/mất việc": động từ "mất" đứng cuối cụm hoặc theo thời điểm)
     (r"\bqua doi\b|\btu tran\b|\bnguoi (?:than )?(?:vua |moi |da )?(?:chet|mat)\b|\b" + _KIN + _PRON + r"(?: vua| moi| da)? (?:mat|chet|qua doi|tu tran)(?!\s+(?:giay|the|so|ho|bang|can|tien|viec|dien|nuoc|xe|dat|nha|tich|chung)\b)\b", "đăng ký khai tử"),
+    # thường trú / chuyển hộ khẩu
+    (r"\b(?:chuyen|nhap|doi) (?:so )?ho khau\b|\bho khau\b.{0,25}\bchuyen (?:ve|den|di|sang)\b|\bnhap khau\b", "đăng ký thường trú"),
     # chỗ ở
     (r"\bo tro\b|\bthue tro\b|\bchuyen (?:len|den|ve|cho o|nha)\b", "đăng ký tạm trú"),
     # kinh doanh nhỏ
@@ -210,8 +212,15 @@ def event_hints(text: str) -> tuple[str, str]:
     # chữ gõ không dấu thì loại các cách dùng thứ tự ("cái cuoi", "cuoi cung") bằng chính regex.
     f = _fold((text or "").lower().replace("cuối", "cuoiq"))
     hints, rest = [], f
+    has_ho_khau = bool(re.search(r"\bho khau\b", f))
+    has_mai_tang = bool(re.search(r"\b(?:mai tang|ma chay|hoa tang)\b", f))
     for rx, h in _EVENTS:
+        if h == "đăng ký tạm trú" and has_ho_khau:
+            continue
         if rx.search(f):
-            hints.append(h)
+            if h == "đăng ký khai tử" and has_mai_tang:
+                hints.append("hỗ trợ chi phí mai táng")
+            else:
+                hints.append(h)
             rest = rx.sub(" ", rest)
     return " ".join(hints), rest.replace("cuoiq", "cuoi")

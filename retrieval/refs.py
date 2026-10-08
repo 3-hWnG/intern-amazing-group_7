@@ -14,24 +14,31 @@ _MARK = r"(?:cai|so|muc|y|phuong an|cau|chon|lay|thu tu|dap an|lua chon|thu tuc)
 _NUMW = r"(nhat|mot|hai|ba|bon|\d)"
 # "cái thứ hai", "số 2", "chọn 1", "lấy cái 3", "thứ 3", "phương án thứ ba"
 _ORD_N = re.compile(rf"\b(?:{_MARK}\s+)*(?:thu\s+)?{_NUMW}\b")
-_ORD_POS = re.compile(r"\b(?:(?:cai|y|muc|phuong an|cau|dap an|lua chon)\s+)?(dau tien|dau|cuoi cung|sau cung|cuoi|giua|o giua)\b")
+_ORD_POS = re.compile(r"\b(?:(?:cai|y|muc|phuong an|cau|dap an|lua chon)\s+)?(dau tien|dau|cuoi cung|sau cung|cuoi|chot|sau|duoi|tren|truoc|giua|o giua|o tren|o duoi|ben tren|ben duoi)\b")
 _FILLER = {"ua", "uh", "um", "do", "day", "nay", "kia", "a", "nhe", "nha", "di", "nhi", "ma", "thi", "con", "oi", "da", "va",
-           "cai", "thu", "chon", "lay", "so", "muc", "y", "phuong", "an", "cau", "o", "la", "luon", "ha"}
+           "cai", "thu", "chon", "lay", "so", "muc", "y", "phuong", "an", "cau", "o", "la", "luon", "ha", "chot", "tren", "duoi", "sau", "truoc"}
 
 
 def ordinal(text: str) -> tuple[str, str] | None:
     """-> (kiểu, rest): kiểu 'n:2' | 'first' | 'last' | 'middle'; rest = phần câu còn lại SAU KHI bỏ cụm thứ tự (đã bỏ dấu).
     None nếu không phải tham chiếu thứ tự thuần (còn chữ nghiệp vụ lạ thì coi là câu hỏi mới)."""
     # "thứ tư" (= 4) và "thứ tự" (= trật tự) cùng gấp thành "thu tu": phân biệt khi còn dấu rồi mới bỏ dấu
-    f = _fold(re.sub(r"(?<!\w)(thứ|số|mục|cái|ý|câu) tư(?!\w)", r" bốn", (text or "").lower()))
+    f = _fold(re.sub(r"(?<!\w)(thứ|số|mục|cái|ý|câu) tư(?!\w)", r"  bốn", (text or "").lower()))
     kind, span = None, None
     m = _ORD_POS.search(f)
     # "đâu" (ở đâu) và "cưới" gấp dấu thành "dau"/"cuoi" trùng "đầu"/"cuối": chữ trần chỉ là thứ tự khi có từ chỉ định (cái/mục...) hoặc còn dấu "đầu"/"cuối"
     if m and m.group(0) == m.group(1) and m.group(1) in ("dau", "cuoi") and not re.search(r"đầu|cuối", (text or "").lower()):
         m = None
+    if m and m.group(0) == m.group(1) and m.group(1) in ("sau", "truoc", "tren", "duoi", "chot"):
+        m = None
     if m and (m.group(0) != m.group(1) or len(f.split()) <= 6 or "thu" in f.split() or "cai" in f.split()):
         w = m.group(1)
-        kind = "first" if w.startswith("dau") else ("last" if w in ("cuoi", "cuoi cung", "sau cung") else "middle")
+        if w in ("dau tien", "dau", "tren", "truoc", "o tren", "ben tren"):
+            kind = "first"
+        elif w in ("cuoi cung", "sau cung", "cuoi", "chot", "sau", "duoi", "o duoi", "ben duoi"):
+            kind = "last"
+        elif w in ("giua", "o giua"):
+            kind = "middle"
         span = m.span()
     else:
         for m in _ORD_N.finditer(f):
