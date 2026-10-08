@@ -143,7 +143,7 @@ SETTINGS = [
          help="Chi tiết (tìm kiếm, lời dặn, suy nghĩ ẩn…) cho nút 🔍 Soi; mỗi câu khoảng 10-20 KB. Câu cũ hơn tự xoá."),
     dict(key="FRIENDLY_MODEL", type="str", group="AI (Friendly)", label="Model dùng chung (Strict + Friendly)",
          help="Chọn trong danh sách model đã có trong Ollama hoặc gõ tên. Dùng cho Friendly (trả lời nhanh, bộ nhớ, tóm tắt) VÀ bước LLM của Strict, nên đổi qua lại hai chế độ không phải nạp lại model. Gợi ý: qwen3:4b-instruct-2507-q4_K_M (không suy nghĩ)."),
-    dict(key="THINK_MODEL", type="str", optional=True, group="AI (Friendly)", label="Model Suy nghĩ kỹ",
+    dict(key="THINK_MODEL", type="str", optional=True, group="AI (Friendly)", label="Model Suy nghĩ kỹ (cho Friendly mode)",
          help="Model cho \"Suy nghĩ kỹ\" (phải biết suy nghĩ, vd. qwen3:4b). Để trống = dùng model trả lời nhanh."),
     dict(key="DEFAULT_ANSWER_MODE", type="choice", choices=["fast", "think"], group="AI (Friendly)",
          label="Chế độ trả lời mặc định",
