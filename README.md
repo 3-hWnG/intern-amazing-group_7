@@ -8,6 +8,7 @@ Dựng lại từ Git (Phase 28): `python run_server.py eval/run_all.py` (thêm 
 
 ## System 4 (Friendly mode, song song trên cùng web) — nhánh `System_3&4`
 `Launch web.bat` giờ bật thêm **đăng nhập/đăng ký** và công tắc **Strict | Friendly** (Strict = System 3 bên dưới, không đổi). `S4_ENABLED=0` → web System 3 như cũ.
+**Một model cho cả hai chế độ:** ⚙ Cài đặt → "Model dùng chung (Strict + Friendly)" chọn model Ollama cho Friendly (nhanh, bộ nhớ, tóm tắt) và bước LLM của Strict (tác dụng ngay, không khởi động lại; thắng biến `LLM_MODEL`). "Suy nghĩ kỹ" của Friendly có ô model riêng.
 Xem [system4/README.md](system4/README.md), nhiệm vụ [docs/SYSTEM4_NV1_NEN_TANG.md](docs/SYSTEM4_NV1_NEN_TANG.md) … NV4, deploy [docs/SYSTEM4_DEPLOY.md](docs/SYSTEM4_DEPLOY.md).
 
 ## Kiến trúc đang chạy
