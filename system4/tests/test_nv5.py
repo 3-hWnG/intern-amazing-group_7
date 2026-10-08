@@ -96,6 +96,13 @@ assert ground.ungrounded("Mẹ của bé là Trần Thị Mỹ Hạnh, sinh ngà
 bad = ground.ungrounded("Hotline 1900 8888 99, giảm 25% cho hạng Vàng, liên hệ chị Nguyễn Thị Lan.", src, kb=True)
 assert "1900 8888 99" in bad and "25" in bad and any("Nguyễn Thị Lan" in b for b in bad), bad
 assert ground.ungrounded("Có 2 bạn tên An và 3 bước cần làm.", src, kb=True) == [], "số đếm nhỏ không bị bắt"
+# báo nhầm thấy khi đo vòng C: tên vắt qua dòng / qua dấu câu, "8:00" = "8 giờ", chữ IN HOA
+assert ground.ungrounded("Mẹ của bé là Trần Thị Mỹ Hạnh.\nNguồn: [1]", src, kb=True) == []
+assert ground.ungrounded("Làm việc từ 8:00 đến 17 giờ 30. Chủ nhật nghỉ.", src + " Thứ Bảy", kb=True) == []
+assert ground.ungrounded("THỦ TỤC Hành chính", src, kb=True) == []
+# câu hỏi tiếp (SEARCH_FOLLOWUP): "Còn ... thì sao?" 6 chữ vẫn ghép câu hỏi trước
+from system3.system4.server import chat as chat_mod
+assert chat_mod._followup("Còn số điện thoại thì sao?") and not chat_mod._followup("Hạng Kim cương được những ưu đãi nào?")
 g = ground.ungrounded("Bạn có thể gọi hotline 1900 8888 của Team 7 hoặc email hotro@team7.vn, xem python.org.", "Team 7", kb=False, business="Team 7")
 assert "1900 8888" in g and "hotro@team7.vn" in g and not any("python" in x for x in g), g
 

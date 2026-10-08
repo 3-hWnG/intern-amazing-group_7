@@ -117,9 +117,17 @@ def clarify_streak(path: list[dict]) -> int:
     return n
 
 
+_FOLLOW = re.compile(r"^(còn|vậy|thế|rồi|thế còn|vậy còn|ok,? còn)\b|\b(đó|ấy|kia|thì sao|nữa|như trên|vừa rồi)\b", re.I)
+
+
+def _followup(text: str) -> bool:
+    """SEARCH_FOLLOWUP: câu hỏi tiếp kiểu "Còn số điện thoại thì sao?", "Bạn ấy sinh ngày nào?" (<= 10 chữ) cũng ghép câu trước."""
+    return len(text.split()) <= 10 and bool(_FOLLOW.search(text.lower()))
+
+
 def search_query(text: str, history_path: list[dict]) -> str:
     """Câu để tìm dữ liệu: câu ngắn kiểu "còn phí thì sao?" ghép thêm câu hỏi trước của người dùng để đủ ngữ cảnh."""
-    if len(text.split()) >= 6:
+    if len(text.split()) >= 6 and not (settings.get("SEARCH_FOLLOWUP") and _followup(text)):
         return text
     prev = next((m["content"] for m in reversed(history_path) if m["role"] == "user"), "")
     return f"{prev} {text}".strip()

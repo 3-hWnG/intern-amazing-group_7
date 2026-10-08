@@ -191,7 +191,9 @@ def search(user_id: int, query: str, dataset_ids: list[int] | None = None, overr
         for c, sc in zip(cands, scores):
             c["score"] = round(sc, 2)
         ranked = sorted(cands, key=lambda c: c["score"], reverse=True)
-        passed = [c for c in ranked if c["score"] >= cfg("RERANK_MIN_SCORE")]
+        rescue = cfg("RERANK_RESCUE") and kw and vec and kw[0] == vec[0][0]   # cả tìm từ khoá và tìm theo nghĩa cùng xếp hạng 1
+        passed = [c for c in ranked if c["score"] >= cfg("RERANK_MIN_SCORE") or (rescue and c["id"] == kw[0])]
+        info["rescued"] = bool(rescue and any(c["id"] == kw[0] and c["score"] < cfg("RERANK_MIN_SCORE") for c in ranked))
     else:
         ranked = passed = cands
     out = passed[:cfg("RETRIEVAL_TOP_K")]

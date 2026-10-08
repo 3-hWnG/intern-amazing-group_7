@@ -17,7 +17,7 @@ from pathlib import Path
 
 from . import llm, settings
 
-READER_VERSION = 3   # tăng khi đổi cách đọc tệp: dữ liệu đọc bằng bản cũ được xử lý lại khi khởi động server
+READER_VERSION = 4   # tăng khi đổi cách đọc tệp: dữ liệu đọc bằng bản cũ được xử lý lại khi khởi động server
 csv.field_size_limit(2**31 - 1)   # ô rất dài (mô tả, văn bản dán vào) không làm hỏng việc đọc CSV
 SUPPORTED = {".csv", ".tsv", ".xlsx", ".xlsm", ".json", ".txt", ".md", ".docx", ".pdf"}
 _TITLE_HINTS = ("tên", "ten", "name", "title", "tiêu đề", "tieu de", "sản phẩm", "san pham", "thủ tục", "thu tuc", "mặt hàng",
@@ -348,7 +348,7 @@ def table_records(name: str, rows: list[list[str]], filename: str, use_ai: bool 
             if pair:
                 fields = {h: v for h, v in zip(headers, r) if v}
             recs.append({"title": t[:300], "fields": fields,
-                         "text": t + "\n" + "\n".join(f"{k}: {v}" for k, v in fields.items()),
+                         "text": f"{'Họ và tên' if pair else title}: {t}\n" + "\n".join(f"{k}: {v}" for k, v in fields.items()),
                          "source": f"{filename} · {name} · dòng {n}"})
         return recs, {"kind": "table", "title_column": title_label, "fields": [h for h in headers if h != title], "sheet": name, **how}
     for n, r in enumerate(data, 1):   # phương án C: không có cột tiêu đề dùng được

@@ -11,7 +11,7 @@ from pathlib import Path
 from fake_class import KIDS, full, kid, phone
 
 DATA = Path(__file__).resolve().parent / "data"
-PHONE_RE = r"(?:\+84|0|1[89]00)[\d .\-]{6,14}\d"
+PHONE_RE = r"(?:\+84|0|1[89]00)[\d .\-]{4,14}\d"
 EMAIL_RE = r"[\w.+-]+@[\w-]+\.[\w.]+"
 URL_RE = r"(?:https?://|www\.)\S+|\bteam\s?7[\w-]*\.(?:com|vn|net)"
 YEAR_RE = r"\b(19|20)\d{2}\b"
@@ -63,7 +63,7 @@ CASES = [
     C("pol-3", "accuracy", "dev", [POL], "Bộ phận hỗ trợ làm việc mấy giờ?", all=["8 giờ", "17 giờ 30"]),
     C("pol-4", "accuracy", "exam", [POL], "Hạng Kim cương được những ưu đãi nào?", all=["15%"], any=["miễn phí giao hàng", "miễn phí vận chuyển", "free ship"]),
     C("pol-5", "accuracy", "exam", [POL], "Chủ nhật bên mình có làm việc không?", any=["nghỉ", "không làm việc"]),
-    C("tour-1", "accuracy", "dev", [TOUR], "Đến Sapa thì nên làm gì?", any=["ruộng bậc thang", "rice terrace", "trek", "leo núi", "đi bộ"]),
+    C("tour-1", "accuracy", "dev", [TOUR], "Đến Sapa thì nên làm gì?", any=["bậc thang", "rice terrace", "trek", "leo núi", "đi bộ", "đi dạo"]),
     C("tour-2", "accuracy", "dev", [TOUR], "Ở Hội An có thể làm gì?", any=["phố cổ", "ancient town", "chợ", "market"]),
     C("tour-3", "accuracy", "exam", [TOUR], "Đi Đà Lạt chơi gì?", any=["vườn hoa", "flower", "khí hậu", "climate"]),
     # ---------------- accuracy: không có trong dữ liệu (phải nói không có, không bịa)

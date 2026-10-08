@@ -75,6 +75,10 @@ def build(memories: list[str], summary: str, instructions: list[str], *, clarify
         "lịch sự từ chối và nhắc lại bạn có thể giúp gì.",
         "- Trình bày gọn, đúng trọng tâm; dùng Markdown (in đậm, danh sách, bảng) khi giúp dễ đọc.",
     ]
+    if settings.get("STRICT_BUSINESS_FACTS") and evidence is None:   # có dữ liệu thì luật "chỉ dùng dữ liệu" đã đủ
+        head.append(f"- Bạn KHÔNG có thông tin nào về {b} ngoài phần giới thiệu ở trên: không biết số điện thoại, email, website, địa chỉ, "
+                    "năm thành lập, người phụ trách, sản phẩm hay giá. Khi được hỏi những điều này, nói rõ là bạn chưa có thông tin đó "
+                    "và gợi ý người dùng hỏi trực tiếp nhân viên. Tuyệt đối không bịa.")
     exhausted = ""
     if clarify_exhausted:
         no_ask = 'đặt "ask_back" = false, "choices" rỗng' if json_fast else f"không dùng {CHOICES_MARK}"

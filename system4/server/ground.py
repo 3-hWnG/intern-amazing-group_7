@@ -36,18 +36,22 @@ def _clean(answer: str) -> str:
 
 def _names(text: str) -> list[str]:
     """Cụm >= 2 chữ viết hoa liền nhau (tên người / nơi chốn / tổ chức). Chữ đầu câu viết hoa nên thử cả cụm bỏ chữ đầu."""
-    out, run = [], []
-    for m in re.finditer(r"\S+", text):
-        w = m.group().strip(".,;:!?\"'()[]")
-        ok = bool(w) and _WORD.fullmatch(w) is not None and w[0].isupper()
-        if ok:
-            run.append(w)
-            continue
+    out = []
+    for line in text.splitlines():   # cụm tên không vắt qua dòng
+        run = []
+        for m in re.finditer(r"\S+", line):
+            raw = m.group()
+            w = raw.strip(".,;:!?\"'()[]")
+            ok = (bool(w) and _WORD.fullmatch(w) is not None and w[0].isupper()
+                  and not (len(w) > 1 and w.isupper()))   # CHỮ IN HOA TOÀN BỘ (tiêu đề, viết tắt) không phải tên
+            if ok:
+                run.append(w)
+            if not ok or raw.rstrip("\"')]")[-1:] in ".,;:!?":   # hết cụm khi gặp chữ thường hoặc dấu câu
+                if len(run) >= 2:
+                    out.append(" ".join(run))
+                run = []
         if len(run) >= 2:
             out.append(" ".join(run))
-        run = []
-    if len(run) >= 2:
-        out.append(" ".join(run))
     return out
 
 
@@ -89,7 +93,7 @@ def ungrounded(answer: str, allowed_text: str, kb: bool, business: str = "") -> 
             d = _digits(n)
             if d in allowed_digits or n in allowed_text:
                 continue
-            if all(_digits(p) in allowed_digits for p in parts) and len(parts) > 1:
+            if all(_digits(p) in allowed_digits or not p.strip('0') for p in parts) and len(parts) > 1:
                 continue   # "29 tháng 7 năm 2020" / "29/7/2020" viết khác nhau nhưng cùng các số
             bad.append(n)
         has = lambda p: re.search(r"(?<!\w)" + re.escape(fold(p)) + r"(?!\w)", allowed_f) is not None

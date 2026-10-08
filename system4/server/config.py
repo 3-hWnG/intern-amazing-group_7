@@ -83,6 +83,9 @@ GROUNDING_CHECK = 'off'
 AMBIGUITY_CHECK = False
 AMBIGUITY_MAX = 5
 TABLE_TOOL = False
+SEARCH_FOLLOWUP = False
+RERANK_RESCUE = False
+STRICT_BUSINESS_FACTS = False
 # ==== HẾT MẶC ĐỊNH ====
 
 # Danh sách cài đặt hiện trên panel. type: str | text (nhiều dòng) | int | float | bool | choice | rules
@@ -183,4 +186,12 @@ SETTINGS = [
     dict(key="TABLE_TOOL", type="bool", group="Tốc độ & độ chính xác", label="Công cụ bảng (đếm / tổng / liệt kê)",
          help="Bật: câu hỏi kiểu \"bao nhiêu bạn nữ\", \"liệt kê tất cả\", \"tổng\" -> AI đổi câu hỏi thành phép lọc, code tính trên TOÀN BỘ bảng. "
               "Thêm khoảng 1-2 giây cho các câu này."),
+    dict(key="SEARCH_FOLLOWUP", type="bool", group="Tốc độ & độ chính xác", label="Nhận câu hỏi tiếp tốt hơn",
+         help="Bật: câu hỏi tiếp kiểu \"Còn số điện thoại thì sao?\", \"Bạn ấy sinh ngày nào?\" (tối đa 10 chữ, có còn / vậy / đó / ấy / thì sao…) "
+              "được ghép với câu hỏi trước khi tìm dữ liệu. Tắt: chỉ ghép câu dưới 6 chữ."),
+    dict(key="RERANK_RESCUE", type="bool", group="Tốc độ & độ chính xác", label="Giữ bản ghi cả hai cách tìm cùng xếp đầu",
+         help="Bật: bản ghi đứng đầu cả tìm từ khoá lẫn tìm theo nghĩa vẫn được gửi cho AI dù reranker chấm dưới ngưỡng "
+              "(vd. câu rất ngắn \"Hạng Vàng?\")."),
+    dict(key="STRICT_BUSINESS_FACTS", type="bool", group="Tốc độ & độ chính xác", label="Không bịa thông tin doanh nghiệp",
+         help="Bật: thêm lời dặn \"không có thông tin nào về doanh nghiệp ngoài phần giới thiệu\" (số điện thoại, địa chỉ, năm thành lập, giá…)."),
 ]

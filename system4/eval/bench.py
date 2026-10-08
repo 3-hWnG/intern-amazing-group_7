@@ -167,6 +167,11 @@ class Client:
                 assert r.status_code == 200, r.text
                 (self.active.add if want else self.active.discard)(k)
 
+    def forget(self):
+        """Xoá bộ nhớ của tài khoản bench: điều nhớ từ câu trước không được ảnh hưởng câu sau."""
+        for m in self.c.get("/s4/memory").json()["items"]:
+            self.c.delete(f"/s4/memory/{m['id']}")
+
     def chat(self, text: str, cid: str | None = None) -> dict:
         t0, first, final_first, evs = time.time(), None, None, []
         with self.c.stream("POST", "/s4/chat", json={"text": text, "conversation_id": cid}) as r:
@@ -242,12 +247,15 @@ def run(args):
         for c in cases:
             for rep in range(args.repeat):
                 cl.use(c["datasets"])
+                cl.forget()
                 cid, r = None, None
                 for t in c["turns"]:
                     r = cl.chat(t, cid); cid = r["cid"]
                 ok, why = score(c["check"], r["content"], r["meta"])
                 runs.append({"id": c["id"], "suite": c["suite"], "split": c["split"], "rep": rep, "pass": ok, "why": why,
                              "answer": r["content"][:600], "choices": r["meta"].get("choices"),
+                             "sources": [s.get("title") for s in r["meta"].get("sources") or []],
+                             "consulted": [s.get("title") for s in r["meta"].get("consulted") or []],
                              "small_talk": r["meta"].get("small_talk"), "grounding": r["meta"].get("grounding"),
                              "ambiguity": r["meta"].get("ambiguity"), "guard": r["meta"].get("guard"),
                              **{k: r[k] for k in ("first_s", "final_first_s", "total_s", "search_ms", "search_parts", "table_ms", "llm_calls",
