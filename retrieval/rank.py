@@ -542,21 +542,30 @@ def _contextualize(idx: Index, st: ConvState, segs: list, mk: dict, negs: list) 
 _POLARITY = {"khong", "phai", "la"}
 
 
+def _contiguous(idx: Index, q: Query, h: Hit) -> bool:
+    """Câu hỏi là phần ĐẦU (cụm gốc) tên lõi của `h` -> `h` là một dạng/anh em thật của cụm đó dù tên dài.
+    Nguyên nhân gốc của việc bỏ sót hỏi lại: phạt `prec` (câu / độ dài cả tên) loại các anh em có tên dài ("gia hạn" ~ "Gia hạn giấy phép lao động đối với ..."),
+    nên cụm gốc chung ("gia hạn", "xét tuyển", "thu hồi") chỉ còn 1-2 ứng viên và Policy trả lời luôn. Chỉ nới cho cụm ĐỨNG ĐẦU tên: cụm nằm giữa/cuối tên dài
+    ("thường trú" ~ "Cấp giấy xác nhận công dân Việt Nam thường trú ở khu vực biên giới") vẫn bị NEAR_PREC loại, tránh hỏi thừa khi một thủ tục đã gọi đúng."""
+    ts = [idx._fix(t) for t in q.terms]
+    return len(ts) >= 1 and _is_prefix(ts, idx.byid(h.proc_id)["ctoks"])
+
+
 def _near(idx: Index, q: Query, top: Hit, hits: list) -> list[str]:
     """>= 3 NHÓM thủ tục gần nhau mà câu hỏi không phân biệt được -> trả proc_id đại diện mỗi nhóm (Policy hỏi lại); ngược lại [].
     Nhóm = các thủ tục có tên lõi là mở rộng theo tiền tố của nhau (cùng family: "đăng ký khai sinh" ~ "... lưu động") hoặc chỉ khác
     nhau về phủ định/hệ từ ("người dịch là CTV" ~ "không phải là CTV"); mỗi nhóm đếm một lần.
     Ứng viên: không cờ phạm vi, không bản riêng tỉnh (trừ khi câu nêu tỉnh), điểm sát top, khối lượng chữ khớp không kém top đáng kể
     (kém nhiều = người dùng đã nêu từ phân biệt cho top)."""
-    if top.prec >= NAMED_PREC:
-        return []
-    pool = [top]
+    if top.prec >= NAMED_PREC or [idx._fix(t) for t in q.terms] == idx.byid(top.proc_id)["ctoks"]:
+        return []      # người dùng gõ ĐÚNG nguyên tên lõi của top (kể cả khi tên khác chứa trọn tên đó: "khám bệnh, chữa bệnh BHYT" ~ "Ký hợp đồng khám bệnh, chữa bệnh BHYT") là đã gọi tên
+    pool, local = [top], set()
     for h in hits:
         if h is top or h.flags or h.proc_id == top.proc_id:
             continue
-        if h.province and not q.provinces and not top.province:
-            continue
-        if h.score >= top.score - NEAR_GAP and h.cov >= top.cov - 0.05 and top.cmass - h.cmass < NEAR_MASS and h.prec >= NEAR_PREC * top.prec:
+        if h.score >= top.score - NEAR_GAP and h.cov >= top.cov - 0.05 and top.cmass - h.cmass < NEAR_MASS and (h.prec >= NEAR_PREC * top.prec or (_contiguous(idx, q, h) and not (top.province and h.province and not q.provinces))):
+            if h.province and not q.provinces and not top.province:
+                local.add(h.proc_id)      # bản riêng của tỉnh: KHÔNG là lựa chọn để hiện, nhưng là bằng chứng nhóm thủ tục này có nhiều dạng (đếm vào số nhóm)
             pool.append(h)
     if len(pool) < 3:
         return []
@@ -589,7 +598,8 @@ def _near(idx: Index, q: Query, top: Hit, hits: list) -> list[str]:
         if r not in seen:
             seen.add(r)
             reps.append(h.proc_id)
-    return reps if len(reps) >= 3 else []
+    shown = [r for r in reps if r not in local]
+    return shown if len(reps) >= 3 and len(shown) >= 2 else []      # >= 3 dạng (kể cả bản riêng tỉnh), nhưng chỉ hiện các dạng không gắn tỉnh (cần >= 2)
 
 
 def _merge_same(segs: list) -> list:

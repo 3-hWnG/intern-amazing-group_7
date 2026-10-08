@@ -12,7 +12,7 @@ from system3.data.search import _PROVINCE_PATTERNS, _fold, synonyms_map
 
 # field -> cụm (đã bỏ dấu). Cụm dài khớp trước. Tên field = SECTION_CUES của bảng cũ.
 FIELD_CUES: dict[str, list[str]] = {
-    "components": ["can nhung giay gi", "can giay gi", "giay gi", "mang nhung gi", "mang gi", "ho so the nao", "ho so nhu the nao", "ho so ra sao", "nop cai gi", "nop nhung gi", "phai nop gi", "giay to", "ho so gom", "ho so", "thanh phan", "can nhung gi", "can gi", "can chuan bi",
+    "components": ["can nhung giay to gi", "can giay to gi", "can ho so gi", "can nhung giay gi", "can giay gi", "giay gi", "mang nhung gi", "mang gi", "ho so the nao", "ho so nhu the nao", "ho so ra sao", "nop cai gi", "nop nhung gi", "phai nop gi", "giay to", "ho so gom", "ho so", "thanh phan", "can nhung gi", "can gi", "can chuan bi",
                    "chuan bi gi", "chuan bi nhung gi", "mang theo", "can mang"],
     "fees": ["thu bao nhieu", "dong bao nhieu", "phai dong bao nhieu", "ton tien", "ton phi", "le phi bao nhieu tien", "le phi bao nhieu", "co thu phi khong", "thu phi", "het bao nhieu", "mat bao nhieu", "le phi", "mien phi", "co mat phi", "mat phi", "bao nhieu tien", "ton bao nhieu", "mat bao nhieu tien",
              "co mat tien", "mat tien", "phi la", "phi bao nhieu", "phi"],
@@ -49,7 +49,7 @@ PRE_SYN = {"hso": "ho so", "onl": "online", "ow": "o", "bn": "bao nhieu", "j": "
 # Một số chữ trên là nghiệp vụ nếu đứng trong cụm đặc thù; giữ nguyên cụm trước khi bỏ stop.
 KEEP_PHRASES = ["con nho", "cho thue", "cap lai", "lam lai"]
 
-_DROP_PHRASES = ("linh vuc", "thong tin ve thu tuc", "cho minh hoi", "cho toi hoi", "cho hoi", "vui long", "lam on", "thu tuc", "ho so thu tuc",
+_DROP_PHRASES = ("nho tu van", "xin tu van", "tim hieu", "tu van", "can biet", "muon biet", "huong dan", "linh vuc", "thong tin ve thu tuc", "cho minh hoi", "cho toi hoi", "cho hoi", "vui long", "lam on", "thu tuc", "ho so thu tuc",
                  "binh thuong", "thuong thoi", "phai lam sao", "phai lam gi", "phai lam nhung gi", "lam giay to", "lam giay")
 _SEG_SPLIT = re.compile(r"\s*(?:[?;,.]|(?<!\w)(?:còn|với lại|và|sau đó|ngoài ra)(?!\w))\s*")
 # "nếu/trường hợp <điều kiện> thì <câu chính>": điều kiện KHÔNG phải tên thủ tục.
