@@ -127,7 +127,7 @@
         const btn = el("button", "choice-item");
         btn.type = "button";
         btn.append(el("span", "choice-text", v.label));
-        btn.onclick = () => send(v.label);
+        btn.onclick = () => send(v.label, null, v.proc_id);
         row.appendChild(btn);
       });
       c.appendChild(row);
@@ -267,7 +267,7 @@
     $("clear-all").hidden = !conversations.length;
   }
 
-  async function send(text, replyTo) {
+  async function send(text, replyTo, procId) {
     if (sending || !text.trim()) return;
     sending = true; $("send").disabled = true;
     if (box.querySelector(".empty")) box.innerHTML = "";
@@ -279,6 +279,7 @@
     try {
       const body = { text, conversation_id: convId };
       if (replyTo) body.reply_to = replyTo;
+      if (procId) body.proc_id = procId;
       const r = await api("/chat", body);
       convId = r.conversation_id; store.set(convId);
       status.remove();
