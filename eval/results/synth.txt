@@ -4,10 +4,8 @@
 [test] procs=259 cases=777 top1=96.4% | chính xác từng thủ tục (strict) 95.9%
    abbr 100%(80) | ask 100%(65) | ask_casual 98%(66) | casual 99%(73) | casual_nodau 99%(81) | clean 100%(67) | drop 79%(58) | long 92%(73) | nodau 100%(68) | swap 96%(85) | typo 93%(61)
    [glued] test: 96.1% (747/777) | cùng câu có dấu cách: 97.2%
-[ambig] gọi đúng tên: 116 ca, hỏi thừa 1 (0.9%), chọn sai 0 (0.0%)
-   OVER ('khám bệnh, chữa bệnh bảo hiểm y tế', 3)
-[ambig] gõ cụm đầu chung của >=3 thủ tục: 12 ca, hỏi lại đúng 11 (91.7%)
-   MISS ('Hỗ trợ chi', 'ho tro chi phi mai tang cho doi tuong ba', 4)
+[ambig] gọi đúng tên: 116 ca, hỏi thừa 0 (0.0%), chọn sai 0 (0.0%)
+[ambig] gõ cụm đầu chung của >=3 thủ tục: 12 ca, hỏi lại đúng 12 (100.0%)
 [oos] 38/40 chặn đúng
    LEAK ('hỗ trợ chi phí hỏa táng', ['1.012169']) [('Hỗ trợ chi phí hỏa táng trên địa bàn thành phố Huế', 1.134, 1.0)]
    LEAK ('đổi giấy phép lái xe quốc tế', ['1.115979']) [('Đổi giấy phép lái xe quân sự, Công an', 0.825, 0.811)]

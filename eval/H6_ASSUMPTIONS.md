@@ -1,0 +1,130 @@
+# H6 - gia dinh & ly do (moi cau mot dong)
+
+Format: id | cau hoi | dap an (proc_id) | ly do. '~' = cau doi thuong. Nhieu id = chap nhan bat ky (clarify: tap hop ung vien hop ly).
+
+- h6-001 | khai bao tam vang can mang theo giay to gi vay a | 1.003677 | [answer] ~khong dau. Khai bao tam vang.
+- h6-002 | thong bao luu tru mat bao lau thi xong | 2.001159 | [answer] ~khong dau, cau cut. Thong bao luu tru (1 gio).
+- h6-003 | e vừa bán nhà chuyển đi tỉnh khác, muốn xóa đăng ký thường trú ở chỗ cũ thì cần giấy tờ gì ạ, tại e k rành thủ tục lắm | 1.003197 | [answer] ~ke hoan canh, viet tat. Xoa dang ky thuong tru.
+- h6-004 | xoa dang ky thuong tru nop o dau, cong an xa hay len huyen vay | 1.003197 | [answer] ~khong dau. Cong an cap xa.
+- h6-005 | xin xác nhận thông tin về cư trú mất bao nhiêu ngày | 1.010041 | [answer] Xac nhan thong tin ve cu tru.
+- h6-006 | Kính gửi cơ quan, tôi muốn hỏi thủ tục đăng ký giám hộ cho người bị mất năng lực hành vi dân sự thì hồ sơ gồm những gì? | 1.004837 | [answer] ~lich su. Mac dinh giam ho trong nuoc (khong yeu to NN).
+- h6-007 | nhan con nuoi trong nuoc le phi bao nhieu | 2.001263 | [answer] ~khong dau. Dang ky viec nuoi con nuoi trong nuoc, le phi 400.000d. Khong nham voi dang ky lai (2.001255).
+- h6-008 | trinh bao mat ho chieu roi bao lau thi xu ly xong | 1.010386 | [answer] ~khong dau. Trinh bao mat ho chieu pho thong (cap xa).
+- h6-009 | the can cuoc bi hu muon lam lai thi nop le phi bao nhieu | 1.116410 | [answer] ~khong dau. Cap, cap doi, cap lai the can cuoc; ghi le phi cap doi.
+- h6-010 | khóa tài khoản định danh điện tử tại xã mất mấy ngày | 3.000283 | [answer] Khoa tai khoan dinh danh dien tu; khac 'khoa can cuoc dien tu' 3.000285 va mo khoa 3.000284.
+- h6-011 | chung thuc di chuc het bao nhieu tien | 2.001019 | [answer] ~khong dau. 50.000d/di chuc.
+- h6-012 | cần giấy tờ gì để chứng thực chữ ký của mình trên giấy ủy quyền | 2.000884 | [answer] Chung thuc chu ky trong giay to, van ban.
+- h6-013 | photo giay to roi chung thuc ban sao tu ban chinh tinh phi bao nhieu mot trang | 2.000815 | [answer] ~khong dau. 2.000d/trang.
+- h6-014 | Anh em trong nhà thỏa thuận một người từ chối nhận phần di sản của ba, vậy chứng thực văn bản từ chối mất bao lâu | 2.001016 | [answer] ~ke hoan canh. Chung thuc van ban tu choi nhan di san.
+- h6-015 | xin cap ban sao tu so goc can giay to gi | 2.000908 | [answer] ~khong dau. 'Cap ban sao tu so goc' (chung thuc) 2.000908; khong nham voi 'ban sao trich luc ho tich' 2.000635.
+- h6-016 | thủ tục công nhận người có uy tín trong cộng đồng dân tộc mất bao lâu | 1.012222 | [answer] Cong nhan nguoi co uy tin (20 ngay lam viec).
+- h6-017 | tạm ngừng kinh doanh hộ kinh doanh tui muốn nghỉ 6 tháng thì làm sao, cần hồ sơ gì | 1.001570 | [answer] ~ke hoan canh. Tam ngung kinh doanh cua ho kinh doanh.
+- h6-018 | dong cua tiem han luon khong kinh doanh nua thi can lam thu tuc gi | 1.001266 | [answer] ~khong dau. Cham dut hoat dong ho kinh doanh.
+- h6-019 | đổi chủ hộ kinh doanh sang tên con trai thì thủ tục thế nào | 2.000720 | [answer] Dang ky thay doi noi dung dang ky ho kinh doanh (thay doi chu ho la 1 case).
+- h6-020 | đăng ký thành lập tổ hợp tác có phải đóng lệ phí không | 2.002637 | [answer] Khong thu le phi dang ky to hop tac (text_only).
+- h6-021 | dang ky mau con dau moi can ho so gi | 1.115231 | [answer] ~khong dau. Dang ky mau con dau MOI (khac 'dang ky lai mau con dau' 1.115232).
+- h6-022 | mua xe may moi roi dang ky xe nop ho so o dau, bao lau co bien so | 1.115970 | [answer] ~ke hoan canh. Dang ky, cap chung nhan dang ky xe, bien so.
+- h6-023 | đổi bằng lái xe của công an quân đội sang bằng dân sự lệ phí bao nhiêu | 1.115979 | [answer] Doi GPLX quan su, Cong an; 115.000d.
+- h6-024 | thông báo tổ chức lễ hội ở xã phải báo trước bao nhiêu ngày | 1.003622 | [answer] Thong bao to chuc le hoi cap xa (15 ngay). Co the nham 'dang ky le hoi' 1.013791 nhung cau noi 'thong bao'.
+- h6-025 | xét tặng danh hiệu gia đình văn hóa cần điều kiện gì | 6.006758 | [answer] Ban tinh Lao Cai nhung la thu tuc duy nhat ve gia dinh van hoa trong DB.
+- h6-026 | muon lap cau lac bo the thao o thon thi can nhung gi | 2.000794 | [answer] ~khong dau. Cong nhan CLB the duc the thao co so.
+- h6-027 | con trai 17 tuổi đăng ký nghĩa vụ quân sự lần đầu cần mang gì | 1.013133 | [answer] ~ke hoan canh. Dang ky NVQS lan dau.
+- h6-028 | xin giay xac nhan than nhan cua nguoi co cong nop o dau | 1.010833 | [answer] ~khong dau. UBND cap xa.
+- h6-029 | ba em là cựu chiến binh vừa mất, gia đình xin mai táng phí thì bao lâu có tiền | 2.002307 | [answer] ~storytelling. Mai tang phi doi voi cuu chien binh (25 ngay).
+- h6-030 | ho tro chi phi mai tang cho doi tuong bao tro xa hoi can ho so gi | 1.001731,3.000731 | [answer] ~khong dau. 1.001731 chinh; 3.000731 (Da Nang) cung hop ly -> chap nhan ca hai.
+- h6-031 | xin xác định mức độ khuyết tật lần đầu cho bé nhà em thì mất bao lâu | 1.001699 | [answer] Xac dinh/xac dinh lai muc do khuyet tat va cap giay xac nhan (25 ngay lam viec).
+- h6-032 | muốn thôi làm hòa giải viên thì viết đơn gửi ai | 2.000930 | [answer] Thoi lam hoa giai vien (cap xa).
+- h6-033 | tuyen sinh lop 6 nop online o dau | 3.000182 | [answer] ~khong dau. Tuyen sinh THCS - truc tuyen.
+- h6-034 | đề nghị miễn giảm học phí học nghề cần giấy tờ gì | 1.014335 | [answer] Mien giam hoc phi giao duc nghe nghiep.
+- h6-035 | doanh nghiep dang ky noi quy lao dong nop o dau bao lau | 2.001955 | [answer] ~khong dau. 7 ngay lam viec.
+- h6-036 | minh chi tham gia BHYT thoi, lam the lan dau can giay gi | 1.001939 | [answer] ~khong dau. Dang ky dong, cap the BHYT doi voi nguoi chi tham gia BHYT.
+- h6-037 | rút BHXH một lần cần hồ sơ gì | 1.001613 | [answer] Giai quyet huong BHXH mot lan.
+- h6-038 | vợ sinh con thì chồng hưởng chế độ thai sản cần những giấy gì | 2.000693,1.001667 | [answer] 2.000693 chinh; 1.001667 (om dau, thai san, duong suc) cung chap nhan.
+- h6-039 | so bao hiem xa hoi bi rach muon cap lai | 1.002759 | [answer] ~khong dau. Cap lai, doi, dieu chinh thong tin tren so BHXH, the BHYT.
+- h6-040 | nhận nuôi tạm thời một cháu bé hoàn cảnh khó khăn thì phải thông báo ở đâu | 2.001944,1.004941 | [answer] Cham soc thay the: thong bao nhan (2.001944) hoac dang ky nhan (1.004941); chap nhan ca hai.
+- h6-041 | đăng ký cai nghiện ma túy tự nguyện cho con thì thủ tục thế nào | 3.000527 | [answer] Dang ky cai nghien ma tuy tu nguyen.
+- h6-042 | giải quyết tố cáo mất tối đa bao lâu | 1.004327 | [answer] To cao (60 ngay lam viec); khac khieu nai 1.004335.
+- h6-043 | công nhận ban quản trị nhà chung cư cần điều kiện gì | 1.012888 | [answer] Cong nhan Ban quan tri nha chung cu.
+- h6-044 | xin tạm dùng vỉa hè để bán hàng thì cấp phép ở đâu, cần giấy gì | 1.013274 | [answer] Cap phep su dung tam thoi long duong, via he vao muc dich khac.
+- h6-045 | gia han giay phep xay dung nha cap 4 mat may ngay | 1.013227 | [answer] ~khong dau. Gia han GPXD cap III, IV (5 ngay).
+- h6-046 | đăng ký sinh hoạt tôn giáo tập trung thời gian giải quyết bao lâu | 1.012590 | [answer] Dang ky sinh hoat ton giao tap trung (20 ngay).
+- h6-047 | Thành lập hội cần bao nhiêu hội viên sáng lập | 1.013703 | [answer] Thanh lap hoi.
+- h6-048 | tach thua dat o can giay to gi | 1.115932 | [answer] ~khong dau. Tach thua, hop thua dat.
+- h6-049 | lệ phí trước bạ nhà đất khai ở đâu | 1.007277 | [answer] Khai le phi truoc ba nha dat - Thue co so.
+- h6-050 | cho thuê nhà khai thuế ở đâu vậy | 1.007689 | [answer] Khai thue ca nhan cho thue bat dong san - Thue co so.
+- h6-051 | khoi phuc ma so thue can ho so gi | 1.008510 | [answer] ~khong dau.
+- h6-052 | ho kinh doanh nop thua thue xin hoan lai thi lam sao | 1.014979 | [answer] Hoan nop thua cac loai thue doi voi ho kinh doanh, ca nhan.
+- h6-053 | mở quán bi-a cầm đồ giấy chứng nhận đủ điều kiện an ninh trật tự cấp mới lệ phí bao nhiêu | 3.000243 | [answer] Cap moi GCN du dieu kien ANTT: 300.000d. Cap doi 3.000244 / cap lai 1.115230 la thu tuc khac.
+- h6-054 | giay chung nhan dang ky ho kinh doanh bi mat roi xin cap lai | 2.000575 | [answer] DISTINGUISH: ten day du nhieu bien the nhung co 'bi mat' -> 2.000575 (truong hop cap lai do mat).
+- h6-055 | con em thuộc hộ cận nghèo học mẫu giáo thì được hỗ trợ ăn trưa theo điều kiện gì | 1.001622 | [answer] DISTINGUISH: Ho tro an trua tre mau giao, co 'ho can ngheo' chon case.
+- h6-056 | người lao động nước ngoài là chuyên gia xin cấp giấy phép lao động cần hồ sơ gì | 1.014199 | [answer] DISTINGUISH: GPLD NN voi 'chuyen gia' (case 1.3).
+- h6-057 | dang ky thuong tru vao nha thue nha muon nha o nho can giay to gi | 1.004222 | [answer] DISTINGUISH ~khong dau: dang ky thuong tru, case thue/muon/o nho.
+- h6-058 | đăng ký kết hôn có yếu tố nước ngoài cần những giấy tờ gì | 2.000806 | [answer] DISTINGUISH: co 'yeu to nuoc ngoai' -> 2.000806 (khong phai ban tai khu vuc bien gioi 1.000094).
+- h6-059 | thu hoi bien so xe do xe het nien han su dung phai nop gi | 1.115971 | [answer] DISTINGUISH ~khong dau: Thu hoi chung nhan dang ky xe, case het nien han.
+- h6-060 | đăng ký khai sinh lưu động cho các cháu ở thôn xa thì thời gian bao lâu | 1.003583 | [answer] DISTINGUISH: 'luu dong' -> 1.003583.
+- h6-061 | dang ky khai sinh ket hop nhan cha me con thi nop ho so gi | 1.000689 | [answer] DISTINGUISH ~khong dau: 'ket hop nhan cha, me, con' (trong nuoc) -> 1.000689; ban co yeu to NN la 1.001695.
+- h6-062 | em muon xin tro cap | 1.001776,1.014027,1.010801,2.000762,2.001396,2.001157,1.001731 | [clarify] VAGUE (a): tro cap xa hoi / huu tri xa hoi / than nhan liet si / thanh nien xung phong... qua nhieu loai.
+- h6-063 | làm giấy tờ cho xe | 1.115970,1.115971,1.013313,1.115979 | [clarify] VAGUE (a): dang ky xe, thu hoi, xac nhan noi dau do, doi GPLX.
+- h6-064 | bên mình có hỗ trợ gì cho hộ nghèo không ạ | 1.011606,1.011607,1.116214,1.116215,1.012825,1.001622,1.014103 | [clarify] VAGUE (a): cong nhan ho ngheo, sinh ke, an trua, mien giam hoc phi...
+- h6-065 | xin giay xac nhan | 1.010833,1.010041,1.004873,1.013314,1.014363,1.014103 | [clarify] VAGUE (a) ~khong dau: nhieu loai giay xac nhan (than nhan co cong, cu tru, hon nhan, nha o, XNC...).
+- h6-066 | dang ky cho con | 1.001193,1.001022,2.001263,1.001939,1.000689 | [clarify] VAGUE (a) ~khong dau: khai sinh/nhan cha me con/nuoi con nuoi/the BHYT...
+- h6-067 | muốn đổi giấy | 1.116410,1.115979,3.000351,1.002759,2.000575,1.004859 | [clarify] VAGUE (a): doi the can cuoc, GPLX, so BHXH, giay hon...; khong ro giay nao.
+- h6-068 | nha co nguoi mat roi phai lam nhung thu tuc gi | 1.000656,1.003197,2.002307,1.001731,2.000821,2.002913 | [clarify] VAGUE (a) ~khong dau: khai tu, xoa thuong tru, mai tang phi, tu tuat, lien thong.
+- h6-069 | bảo hiểm | 1.001939,1.001613,2.000693,1.002759,1.001742,1.014193,2.000821 | [clarify] VAGUE (a) mot tu: BHYT/BHXH nhieu thu tuc.
+- h6-070 | Thủ tục đăng ký thường trú | 1.004222 | [clarify] NAMED+VARIANTS (b): 8 case (chu so huu, thue/muon, co so ton giao, don vi dong quan, co so tro giup...). Hoi lai truong hop.
+- h6-071 | Hỗ trợ ăn trưa đối với trẻ em mẫu giáo | 1.001622 | [clarify] NAMED+VARIANTS (b): 5 nhom doi tuong (khong nguon nuoi duong, con liet si, ho ngheo, khuyet tat, vung kho khan).
+- h6-072 | Cấp giấy phép lao động đối với người lao động nước ngoài làm việc tại Việt Nam | 1.014199 | [clarify] NAMED+VARIANTS (b): ~14 case (quan ly, giam doc dieu hanh, chuyen gia, lao dong ky thuat, doi vi tri...).
+- h6-073 | dang ky mua thue mua thue nha o xa hoi, vay von xay dung cai tao nha o | 1.014632 | [clarify] NAMED+VARIANTS (b) ~khong dau: 7 truong hop xac nhan khac nhau.
+- h6-074 | Thu hồi chứng nhận đăng ký xe, biển số xe | 1.115971 | [clarify] NAMED+VARIANTS (b): het nien han / chuyen quyen / xe ngoai giao.
+- h6-075 | Giải quyết hưởng chế độ thai sản | 2.000693 | [clarify] NAMED+VARIANTS (b): NLD dong BHXH bat buoc / bao luu / bat kha khang... (debatable: co the tra loi chung).
+- h6-076 | thu tuc kham benh chua benh bao hiem y te | 1.014193 | [clarify] NAMED+VARIANTS (b) ~khong dau: 9 truong hop (tre <6 tuoi, cap cuu, cho cap the, chuyen tuyen...).
+- h6-077 | Cấp Bằng “Tổ quốc ghi công” | 1.010772,1.010774,1.010775,1.010781 | [clarify] NAMED+VARIANTS (b): nhieu truong hop hy sinh + 3 thu tuc cap Bang lien quan trong cung nhom.
+- h6-078 | đăng ký thay đổi nội dung đăng ký hộ kinh doanh | 2.000720 | [clarify] NAMED+VARIANTS (b): doi ten/dia chi/von/nganh nghe; doi chu ho (4 truong hop); doi thanh vien (debatable).
+- h6-079 | Giải quyết hưởng chế độ TNLĐ, BNN đối với trường hợp bị TNLĐ, BNN lần đầu | 1.001632 | [clarify] NAMED+VARIANTS (b): TNLD / BNN / da nghi huu / tu nguyen... (debatable).
+- h6-080 | em muon tim hieu ve sinh hoat ton giao tap trung | 1.012590,1.012584,1.012582,1.012585 | [clarify] MID-NAME (c) ~khong dau: dang ky, doi dia diem (2), doi nguoi dai dien.
+- h6-081 | làm thủ tục về trường phổ thông dân tộc bán trú | 5.003848,5.003849,5.003850,5.003851,5.003852 | [clarify] MID-NAME (c): thanh lap / cho phep hoat dong / sap nhap / giai the.
+- h6-082 | người có uy tín trong cộng đồng | 1.012222,1.012223 | [clarify] MID-NAME (c): cong nhan hay dua ra khoi danh sach/thay the.
+- h6-083 | thiet bi giam sat hanh trinh tau ca | 1.014570,1.014927,1.014606 | [clarify] MID-NAME (c) ~khong dau: ho tro nang cap/thay the TB GSHT; ho tro phi thue bao (Hue). Ban tinh khac nhau.
+- h6-084 | lễ hội ở xã | 1.003622,1.013791 | [clarify] MID-NAME (c): thong bao to chuc le hoi vs dang ky le hoi quy mo cap xa.
+- h6-085 | nuôi con nuôi | 2.001263,2.001255,2.002363 | [clarify] MID-NAME (c): dang ky nuoi con nuoi trong nuoc / dang ky lai / ghi so viec da giai quyet o co quan khac.
+- h6-086 | phương án ứng phó thiên tai | 2.000206,1.003446,1.003440 | [clarify] MID-NAME (c): cong trinh thuy dien / thuy loi / khan cap.
+- h6-087 | em muon lam ho chieu moi lan dau thi nop o dau | - | [apologize] Chi co 'trinh bao mat ho chieu' (1.010386) - khong co thu tuc cap ho chieu. Co the bi khop nham.
+- h6-088 | cho mình hỏi xin phiếu lý lịch tư pháp số 2 để đi xin việc thì cần giấy tờ gì | - | [apologize] DB khong co thu tuc cap phieu ly lich tu phap (domain LLTP chi co 2 muc khong lien quan).
+- h6-089 | con trai mình sắp nhập ngũ muốn xin tạm hoãn nghĩa vụ quân sự vì đang học đại học thì làm sao | - | [apologize] Khong co tam hoan NVQS (chi co dang ky NVQS lan dau 1.013133 - de nham).
+- h6-090 | thi sat hach lay bang lai xe may A1 lan dau dang ky o dau | - | [apologize] Khong co sat hach cap GPLX lan dau (chi co doi GPLX).
+- h6-091 | cuoi nam phai nop le phi mon bai cho cua hang thi nop the nao | - | [apologize] Khong co le phi mon bai.
+- h6-092 | Xe ô tô nhà mình sắp hết hạn đăng kiểm, thủ tục đăng kiểm cần những gì và phí bao nhiêu? | - | [apologize] Khong co dang kiem phuong tien co gioi.
+- h6-093 | mua ban nha dat xong ra cong chung hop dong o dau, phi cong chung tinh sao | - | [apologize] Khong co cong chung (chi co chung thuc UBND). De nham voi cac thu tuc chung thuc 2.000xxx.
+- h6-094 | chồng mình là người Hàn muốn xin thẻ tạm trú dài hạn ở Việt Nam, hồ sơ gồm gì | - | [apologize] Khong co the tam tru cho nguoi nuoc ngoai / visa.
+- h6-095 | quán cà phê nhà em đang đặt tên, muốn đăng ký bảo hộ nhãn hiệu độc quyền thì nộp ở đâu | - | [apologize] Khong co dang ky nhan hieu / so huu tri tue.
+- h6-096 | nha toi muon mo quan karaoke thi xin giay phep kinh doanh karaoke o dau ha ban | - | [apologize] Khong co cap phep karaoke / van hoa (chi co GCN ANTT 3.000243 - de nham).
+- h6c-01.t1 | chồng em được hưởng chế độ gì khi vợ sinh con, cần giấy gì | 2.000693,1.001667 | [answer] follow-up (cung thu tuc) roi doi chu de sang khai sinh. Khai sinh mac dinh trong nuoc 1.001193 (field place debatable).
+- h6c-01.t2 | thế thời gian giải quyết là bao lâu | 2.000693,1.001667 | [answer] 
+- h6c-01.t3 | ok cảm ơn, mà đăng ký khai sinh cho bé thì nộp ở đâu | 1.001193 | [answer] 
+- h6c-02.t1 | xin hỗ trợ cho con đi học | 1.001622,1.003702,1.014335,1.014337 | [clarify] clarify roi thu hep; place -> Co so giao duc mam non.
+- h6c-02.t2 | bé học mẫu giáo, nhà thuộc hộ cận nghèo | 1.001622 | [answer] 
+- h6c-02.t3 | nộp hồ sơ cho ai | 1.001622 | [answer] 
+- h6c-03.t1 | khai tử cho ông ngoại thì cần chuẩn bị giấy gì | 1.000656 | [answer] doi chu de roi quay lai chu de dau (khai tu -> xoa thuong tru -> khai tu).
+- h6c-03.t2 | nhân tiện muốn xóa đăng ký thường trú của ông luôn, cần gì | 1.003197 | [answer] 
+- h6c-03.t3 | quay lại vụ khai tử, bao lâu thì xong | 1.000656 | [answer] 
+- h6c-04.t1 | quan ca phe cua toi muon nghi 3 thang roi mo lai | 1.001570 | [answer] tiep noi roi sang thu tuc khac. place cua 1.001570 la co quan dang ky kinh doanh (debatable).
+- h6c-04.t2 | hồ sơ nộp ở phường hay quận | 1.001570 | [answer] 
+- h6c-04.t3 | à còn mở quán cầm đồ thì giấy chứng nhận đủ điều kiện an ninh trật tự cấp mới mất bao nhiêu tiền | 3.000243 | [answer] 
+- h6c-05.t1 | xin giấy phép | 1.014199,1.013225,1.013061,1.013274,3.000243,1.001662 | [clarify] clarify -> thu hep (cap moi) -> thu tuc lien quan (gia han).
+- h6c-05.t2 | giấy phép xây nhà ở cấp 4 mới ở nông thôn | 1.013225 | [answer] 
+- h6c-05.t3 | xây xong rồi mà giấy phép sắp hết hạn muốn gia hạn thì mất bao nhiêu ngày | 1.013227 | [answer] 
+- h6c-06.t1 | bà nội mất để lại mảnh đất, mấy anh em thỏa thuận một người từ chối nhận phần, ra chứng thực ở đâu cần giấy gì | 2.001016 | [answer] storytelling; turn 3 'moi loai' = ca hai (deu 50.000d/van ban) nen chap nhan ca hai.
+- h6c-06.t2 | còn nếu các anh em còn lại muốn phân chia di sản đó với nhau thì sao | 2.001406 | [answer] 
+- h6c-06.t3 | phí mỗi loại là bao nhiêu | 2.001406,2.001016 | [answer] 
+- h6c-07.t1 | đăng ký tạm trú cho người thuê nhà cần gì | 1.004194 | [answer] xen cau ngoai DB (cap ho chieu) giua hai cau co dap an.
+- h6c-07.t2 | tiện thể làm luôn hộ chiếu cho cả nhà ở đây được không | - | [apologize] 
+- h6c-07.t3 | thôi vậy, tạm trú sắp hết hạn gia hạn thì mất mấy ngày | 1.002755 | [answer] 
+- h6c-08.t1 | mat the can cuoc phai lam sao | 1.116410 | [answer] chuoi follow-up: the can cuoc -> khoa -> mo khoa tai khoan dinh danh.
+- h6c-08.t2 | trong lúc chờ có muốn khóa tài khoản định danh điện tử đi cho đỡ lo bị lợi dụng thì làm sao | 3.000283 | [answer] 
+- h6c-08.t3 | khoa roi thi mo lai the nao | 3.000284 | [answer] 
+- h6c-09.t1 | hội | 1.013703,1.013708,1.013707,1.013702,1.013704,1.013709,1.013706 | [clarify] clarify mot tu -> thu hep -> thu tuc lien quan (giai the, 45 ngay).
+- h6c-09.t2 | thành lập hội thì cần hồ sơ gì | 1.013703 | [answer] 
+- h6c-09.t3 | rồi sau này muốn hội tự giải thể thì mất bao lâu | 1.013708 | [answer] 
+- h6c-10.t1 | cho thuê nhà mỗi tháng 10 triệu thì khai thuế ở đâu | 1.007689 | [answer] doi sang thu tuc thue khac; 'cai do' = le phi truoc ba.
+- h6c-10.t2 | còn lệ phí trước bạ khi sang tên nhà thì cần giấy gì | 1.007277 | [answer] 
+- h6c-10.t3 | cái đó bao nhiêu ngày thì xong | 1.007277 | [answer] 

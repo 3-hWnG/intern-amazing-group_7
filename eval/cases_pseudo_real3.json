@@ -1,0 +1,440 @@
+[
+ {
+  "id": "pr3-01",
+  "q": "Chi oi em sinh con gai hom 20/9 o nha, chua dang ky gi het, hom nay moi di hoi, ho so khai sinh can gi vay chi, chong em dang di lam xa",
+  "expect_ids": [
+   "1.001193"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau, ke chuyen, cau hoi o cuoi."
+ },
+ {
+  "id": "pr3-02",
+  "q": "me chong mat hom qua ca nha dang roi, nghe noi phai bao tu roi cat luon thuong tru gi do, chi chi giup em lam cai gi truoc",
+  "expect_ids": [
+   "1.000656",
+   "1.003197"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau, nhieu y. Khai tu truoc, xoa thuong tru sau; chap nhan ca hai (neu ca hai duoc de cap la tot)."
+ },
+ {
+  "id": "pr3-03",
+  "q": "e can giay xac nhan doc than di lam thu tuc ket hon, nhung e o sai gon ma ho khau que, nop xa nao a",
+  "expect_ids": [
+   "1.004873"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "~khong dau, teencode. Debatable: bien 'nop xa nao' - noi cu tru hien tai hoac noi dang ky thuong tru."
+ },
+ {
+  "id": "pr3-04",
+  "q": "tam tru moi chuyen vo tro thang truoc chu nha bao phai dk tam tru ko thi bi phat, dk phai mang theo gi + het bao nhieu tien",
+  "expect_ids": [
+   "1.004194"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents",
+   "fee"
+  ],
+  "notes": "~viet tat dk, ko, nhieu y (giay to + phi)."
+ },
+ {
+  "id": "pr3-05",
+  "q": "can cuoc cua e hu roi doi the moi mat ca tuan ko a",
+  "expect_ids": [
+   "1.116410"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~teencode. Cap doi the can cuoc: 7 ngay lam viec."
+ },
+ {
+  "id": "pr3-06",
+  "turns": [
+   {
+    "q": "e muon mo quan tra sua thi dang ky gi",
+    "expect_ids": [
+     "1.001612"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "ra giay mat bao lau thi duoc mo",
+    "expect_ids": [
+     "1.001612"
+    ],
+    "beh": "answer",
+    "fields": [
+     "time"
+    ]
+   },
+   {
+    "q": "sau nay nghi ban thi sao",
+    "expect_ids": [
+     "1.001266"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   }
+  ],
+  "notes": "~khong dau. Dang ky hkd -> thoi gian -> cham dut."
+ },
+ {
+  "id": "pr3-07",
+  "q": "hom bua em lam mat cccd ben ben xe, gio em phai lam sao",
+  "expect_ids": [
+   "1.116410"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~ke chuyen, mat the -> cap lai the can cuoc."
+ },
+ {
+  "id": "pr3-08",
+  "q": "chu tich xa co giai quyet duoc vu lan chiem ranh gioi dat khong hay bat buoc len toa",
+  "expect_ids": [
+   "1.013967",
+   "1.012812"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "~khong dau. Debatable: tranh chap dat dai thuoc tham quyen Chu tich xa vs hoa giai tranh chap."
+ },
+ {
+  "id": "pr3-09",
+  "q": "ong noi 85 tuoi o que khong co luong huu co duoc tro cap gi ko",
+  "expect_ids": [
+   "1.014027"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "~khong dau, ke hoan canh. Tro cap huu tri xa hoi."
+ },
+ {
+  "id": "pr3-10",
+  "q": "con trai em hoc cao dang nghe nha thuoc dien can ngheo xin mien giam hoc phi can nop nhung gi",
+  "expect_ids": [
+   "1.014335"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau."
+ },
+ {
+  "id": "pr3-11",
+  "q": "chong em mat roi em muon linh tuat bhxh, ho so gom gi a",
+  "expect_ids": [
+   "2.000821"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~viet tat. Giai quyet huong che do tu tuat."
+ },
+ {
+  "id": "pr3-12",
+  "turns": [
+   {
+    "q": "lam the can cuoc cho con 5 tuoi",
+    "expect_ids": [
+     "1.116410"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "can bo hay me di cung con",
+    "expect_ids": [
+     "1.116410"
+    ],
+    "beh": "answer",
+    "fields": [
+     "conditions"
+    ]
+   },
+   {
+    "q": "a luon, dang ky thuong tru cho be thi sao",
+    "expect_ids": [
+     "1.004222"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   }
+  ],
+  "notes": "~khong dau. Can cuoc tre em -> dieu kien -> chuyen sang dang ky thuong tru. Debatable luot 2: du lieu co the khong noi ro, chap nhan tra loi 'khong tim thay'."
+ },
+ {
+  "id": "pr3-13",
+  "q": "sinh con duoc bao lau thi duoc nhan tien thai san, ho so ntn",
+  "expect_ids": [
+   "2.000693"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time",
+   "documents"
+  ],
+  "notes": "~viet tat 'ntn'. Che do thai san."
+ },
+ {
+  "id": "pr3-14",
+  "q": "mo quan karaoke ban dem co can giay chung nhan an ninh trat tu k, nop o cong an xa dc ko",
+  "expect_ids": [
+   "3.000243"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "~teencode. Cap moi GCN du dieu kien ANTT (thuc hien tai cap xa)."
+ },
+ {
+  "id": "pr3-15",
+  "q": "diem game net cong cong thi dang ky o dau, can nhung giay to gi",
+  "expect_ids": [
+   "1.013792"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Cap GCN du dieu kien diem cung cap dich vu tro choi dien tu cong cong."
+ },
+ {
+  "id": "pr3-16",
+  "q": "nuoi heo bi dich chet het co duoc ho tro khong, dieu kien the nao",
+  "expect_ids": [
+   "1.013997"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "~khong dau. Ho tro co so san xuat bi thiet hai do dich benh dong vat."
+ },
+ {
+  "id": "pr3-17",
+  "q": "ho em tre han dong thue nha dat bi tinh tien cham nop, co truong hop nao khong bi tinh khong",
+  "expect_ids": [
+   "1.008589"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "~khong dau. Khong tinh tien cham nop. Debatable: 1.008590 (gia han nop thue) la thu tuc lien quan."
+ },
+ {
+  "id": "pr3-18",
+  "turns": [
+   {
+    "q": "tach ho phai sao",
+    "expect_ids": [
+     "1.010038"
+    ],
+    "beh": "answer",
+    "fields": [
+     "conditions"
+    ]
+   },
+   {
+    "q": "phi bn",
+    "expect_ids": [
+     "1.010038"
+    ],
+    "beh": "answer",
+    "fields": [
+     "fee"
+    ]
+   },
+   {
+    "q": "tach xong ma sai thong tin cu tru thi dieu chinh the nao",
+    "expect_ids": [
+     "1.010039"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   }
+  ],
+  "notes": "~khong dau, viet tat. Tach ho -> phi -> chuyen sang dieu chinh thong tin cu tru."
+ },
+ {
+  "id": "pr3-19",
+  "q": "thue dat nong nghiep ho em khai o dau vay",
+  "expect_ids": [
+   "1.007695"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "~khong dau, cut. Khai thue su dung dat nong nghiep."
+ },
+ {
+  "id": "pr3-20",
+  "q": "em muon thi cong chuc o xa thi ho so gom gi",
+  "expect_ids": [
+   "1.014111",
+   "1.014113"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Thi tuyen vs xet tuyen cong chuc; chap nhan ca hai."
+ },
+ {
+  "id": "pr3-21",
+  "q": "mẹ em bị liệt, nhà muốn xin trợ cấp gì đó",
+  "expect_ids": [
+   "1.001699",
+   "1.001776",
+   "1.014027"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "Mo ho: xac dinh khuyet tat / tro cap xa hoi hang thang / huu tri xa hoi."
+ },
+ {
+  "id": "pr3-22",
+  "q": "nhà em muốn xây thêm tầng 2 có phải xin phép không",
+  "expect_ids": [
+   "1.013225",
+   "1.013229",
+   "1.013226"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "Cau dang yes/no nhung thu tuc (cap moi / sua chua cai tao / dieu chinh) chua ro."
+ },
+ {
+  "id": "pr3-23",
+  "q": "đất bà nội để lại chưa ai làm sổ giờ muốn làm sổ cho bố thì sao",
+  "expect_ids": [
+   "1.013978",
+   "1.115240",
+   "1.115375",
+   "2.001406",
+   "1.007674"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "Dat chua cap so + thua ke: dang ky lan dau / chung thuc phan chia di san / thue. Rat mo."
+ },
+ {
+  "id": "pr3-24",
+  "q": "lam giay to cho be sinh ra o nuoc ngoai",
+  "expect_ids": [
+   "2.000528",
+   "2.000522",
+   "1.000893",
+   "1.000110"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "~khong dau. Khai sinh co yeu to nuoc ngoai: nhieu bien the."
+ },
+ {
+  "id": "pr3-25",
+  "q": "dang ky giay phep kinh doanh",
+  "expect_ids": [
+   "1.001612",
+   "1.005280",
+   "2.002637"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "~khong dau. Ho kinh doanh vs hop tac xa vs to hop tac."
+ },
+ {
+  "id": "pr3-26",
+  "q": "tau ca nha em ban gia roi hoi co ho tro gi ko",
+  "expect_ids": [
+   "1.014599",
+   "1.014925",
+   "1.115156",
+   "3.000580",
+   "1.014604",
+   "1.014971"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "~khong dau, teencode. Nhieu thu tuc ho tro giai ban tau ca / chuyen doi nghe."
+ },
+ {
+  "id": "pr3-27",
+  "q": "em mat bang lai xe may roi cap lai o dau vay",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "~khong dau. DB khong co cap lai GPLX (chi doi GPLX quan su/nuoc ngoai)."
+ },
+ {
+  "id": "pr3-28",
+  "q": "tui muon ly hon don phuong, nop don o dau",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "~teencode. Ly hon trong nuoc thuoc toa an, khong co trong DB."
+ },
+ {
+  "id": "pr3-29",
+  "q": "hoi nha em o que, ba ma sinh em ra khong lam khai sinh, giay to gi cung khong con, gio 30 tuoi can lam giay khai sinh thi co duoc ko a",
+  "expect_ids": [
+   "1.004772",
+   "1.004884"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau, ke chuyen. Khai sinh cho nguoi da co ho so/giay to ca nhan (1.004772) hoac dang ky lai khai sinh (1.004884); debatable, chap nhan ca hai."
+ },
+ {
+  "id": "pr3-30",
+  "q": "co xin ban sao giay khai sinh online duoc ko, mat may ngay",
+  "expect_ids": [
+   "2.000635"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~teencode. Cap ban sao trich luc ho tich/giay khai sinh."
+ }
+]

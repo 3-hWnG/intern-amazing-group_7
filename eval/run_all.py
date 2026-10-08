@@ -66,7 +66,7 @@ def main():
         step_cmd("dựng", "DB V10.6 (rebuild_v106_db --force)", ["eval/rebuild_v106_db.py", "--force"])
     def blk_tests():
         step_cmd("test", "test_data", ["-m", "system3.data.tests.test_data"])
-        for t in ("memory_test", "context_test", "answer_llm_test", "planner_hybrid_test", "p20_api_test", "p23_input_test", "p26_memory_test"):
+        for t in ("memory_test", "context_test", "answer_llm_test", "planner_hybrid_test", "p20_api_test", "p23_input_test", "p26_memory_test", "p30_clarify_test", "p31_variants_test"):
             step_cmd("test", f"server/tests/{t}", [f"server/tests/{t}.py"])
         step_cmd("test", "server/smoke_test", ["server/smoke_test.py"])
         step_cmd("test", "eval/selftest", ["eval/selftest.py"])

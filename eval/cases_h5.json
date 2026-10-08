@@ -1,0 +1,1367 @@
+[
+ {
+  "id": "h5-001",
+  "q": "ban oi cho minh hoi dang ky ket hon can mang theo nhung giay to gi",
+  "expect_ids": [
+   "1.000894"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Ket hon trong nuoc, mac dinh (khong yeu to nuoc ngoai)."
+ },
+ {
+  "id": "h5-002",
+  "q": "Kính gửi cán bộ, tôi muốn hỏi lệ phí đăng ký nhận cha, mẹ, con là bao nhiêu và có được miễn không ạ",
+  "expect_ids": [
+   "1.001022"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "~lich su. DB: muc le phi do HDND tinh quyet, mien cho ho ngheo/nguoi co cong/khuyet tat."
+ },
+ {
+  "id": "h5-003",
+  "q": "dang ky khai sinh mat may ngay thi co ket qua",
+  "expect_ids": [
+   "1.001193"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~khong dau, cut."
+ },
+ {
+  "id": "h5-004",
+  "q": "Chồng em mất tuần trước, giờ em phải đi làm giấy khai tử cho chồng mà không biết hồ sơ gồm những gì, ai đi nộp cũng được hả chị",
+  "expect_ids": [
+   "1.000656"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~ke chuyen, cau hoi o cuoi. Khai tu mac dinh trong nuoc."
+ },
+ {
+  "id": "h5-005",
+  "q": "xin giay xac nhan da doc than de lam thu tuc mua nha thi mat bao lau",
+  "expect_ids": [
+   "1.004873"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~khong dau. Giay xac nhan tinh trang hon nhan: 3 ngay lam viec."
+ },
+ {
+  "id": "h5-006",
+  "q": "ra o rieng muon tach ho thi mat phi bn",
+  "expect_ids": [
+   "1.010038"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "~viet tat 'bn'. Tach ho: 10.000d/lan nop truc tiep."
+ },
+ {
+  "id": "h5-007",
+  "q": "tam tru o tro thi dang ky o dau vay ban",
+  "expect_ids": [
+   "1.004194"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "~khong dau, goi 'ban'. Dang ky tam tru tai Cong an cap xa."
+ },
+ {
+  "id": "h5-008",
+  "q": "Anh chị ơi cho em hỏi gia hạn tạm trú cần chuẩn bị giấy tờ gì, em đang ở trọ",
+  "expect_ids": [
+   "1.002755"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~ke hoan canh."
+ },
+ {
+  "id": "h5-009",
+  "q": "di lam xa 2 thang phai khai bao tam vang o dau",
+  "expect_ids": [
+   "1.003677"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "~khong dau. Khai bao tam vang tai Cong an cap xa."
+ },
+ {
+  "id": "h5-010",
+  "q": "xoa thuong tru khi chuyen di noi khac can dieu kien gi",
+  "expect_ids": [
+   "1.003197"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "~khong dau. Thu tuc Xoa dang ky thuong tru (khong nham voi xoa tam tru 1.010028)."
+ },
+ {
+  "id": "h5-011",
+  "q": "DK thong bao luu tru cho khach den choi nha mat bao lau",
+  "expect_ids": [
+   "2.001159"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~viet tat 'DK', khong dau. Thong bao luu tru: 1 gio."
+ },
+ {
+  "id": "h5-012",
+  "q": "the can cuoc bi hu muon doi lai thi le phi bao nhieu",
+  "expect_ids": [
+   "1.116410"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "~khong dau. Cap, cap doi, cap lai the can cuoc; DB ghi giam 50% den het 31/12/2026."
+ },
+ {
+  "id": "h5-013",
+  "q": "mo khoa tai khoan dinh danh dien tu VNeID la lam sao, can giay to gi",
+  "expect_ids": [
+   "3.000284"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau, ten rieng 'VNeID'. Mo khoa tai khoan dinh danh dien tu (khong phai mo khoa can cuoc dien tu 3.000286). Debatable: chap nhan 3.000286 neu he thong hoi lai."
+ },
+ {
+  "id": "h5-014",
+  "q": "xin khoa can cuoc dien tu thi mat may ngay",
+  "expect_ids": [
+   "3.000285"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~khong dau. Khoa can cuoc dien tu: 3 ngay lam viec."
+ },
+ {
+  "id": "h5-015",
+  "q": "chung thuc chu ky tren giay uy quyen thi ton bao nhieu",
+  "expect_ids": [
+   "2.000884"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "~khong dau. Chung thuc chu ky (phi theo /truong hop)."
+ },
+ {
+  "id": "h5-016",
+  "q": "chứng thực di chúc có mất phí không",
+  "expect_ids": [
+   "2.001019"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "Phi chung thuc di chuc (so tien /di chuc)."
+ },
+ {
+  "id": "h5-017",
+  "q": "photo ban sao bang tot nghiep roi mang len xa chung thuc duoc khong, can gi",
+  "expect_ids": [
+   "2.000815"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "~khong dau, ke kieu. Chung thuc ban sao tu ban chinh."
+ },
+ {
+  "id": "h5-018",
+  "q": "ba mat roi anh em muon chia dat ba de lai thi lam van ban phan chia di san chung thuc nhu the nao",
+  "expect_ids": [
+   "2.001406"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~ke hoan canh. Chung thuc van ban phan chia di san (dong san, QSDD, nha o)."
+ },
+ {
+  "id": "h5-019",
+  "q": "ba em bi liet nua nguoi muon xin giay xac nhan khuyet tat de nhan tro cap, ho so gom nhung gi",
+  "expect_ids": [
+   "1.001699"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau, ke hoan canh. Xac dinh muc do khuyet tat va cap giay xac nhan."
+ },
+ {
+  "id": "h5-020",
+  "q": "nha co nguoi thuoc dien bao tro xa hoi vua mat, xin tien ho tro mai tang can nhung gi",
+  "expect_ids": [
+   "1.001731",
+   "1.014028"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Debatable: hai thu tuc ho tro mai tang (doi tuong bao tro xa hoi / doi tuong huong tro cap huu tri xa hoi); chap nhan ca hai."
+ },
+ {
+  "id": "h5-021",
+  "q": "Bà ngoại em 82 tuổi có được nhận trợ cấp hưu trí xã hội không, điều kiện gì",
+  "expect_ids": [
+   "1.014027"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "~ke hoan canh."
+ },
+ {
+  "id": "h5-022",
+  "q": "dong cua quan roi muon cham dut ho kinh doanh thi lam sao",
+  "expect_ids": [
+   "1.001266"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Cham dut hoat dong ho kinh doanh."
+ },
+ {
+  "id": "h5-023",
+  "q": "tam nghi kinh doanh 6 thang roi mo lai som hon du kien thi thong bao the nao",
+  "expect_ids": [
+   "1.001570"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Tam ngung/tiep tuc kinh doanh truoc han cua ho kinh doanh."
+ },
+ {
+  "id": "h5-024",
+  "q": "mất giấy chứng nhận đăng ký hộ kinh doanh xin cấp lại cần giấy gì",
+  "expect_ids": [
+   "2.000575"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Cap lai/cap doi GCN dang ky ho kinh doanh."
+ },
+ {
+  "id": "h5-025",
+  "q": "doi dia chi ho kinh doanh thi nop le phi bao nhieu",
+  "expect_ids": [
+   "2.000720"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "~khong dau. Dang ky thay doi noi dung ho kinh doanh; le phi do HDND tinh."
+ },
+ {
+  "id": "h5-026",
+  "q": "xin giay phep xay nha cap 4 o nong thon phai nop ho so gi",
+  "expect_ids": [
+   "1.013225"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Cap GPXD moi nha o rieng le / cong trinh cap III, IV."
+ },
+ {
+  "id": "h5-027",
+  "q": "gia han giay phep xay dung can dieu kien gi",
+  "expect_ids": [
+   "1.013227"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "~khong dau. Gia han GPXD cong trinh cap III, IV."
+ },
+ {
+  "id": "h5-028",
+  "q": "dang ky khai thac nuoc gieng khoan o nha thi nop cho ai",
+  "expect_ids": [
+   "1.001662"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "~khong dau. Dang ky khai thac nuoc duoi dat - Chu tich UBND cap xa."
+ },
+ {
+  "id": "h5-029",
+  "q": "Xin tổ chức lễ hội ở thôn thì phải thông báo trước bao lâu",
+  "expect_ids": [
+   "1.003622"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "Thong bao to chuc le hoi cap xa (15 ngay). Debatable: 1.013791 (dang ky le hoi quy mo cap xa) cung hop ly; chap nhan ca hai."
+ },
+ {
+  "id": "h5-030",
+  "q": "đăng ký sinh hoạt tôn giáo tập trung mất bao lâu thì có kết quả",
+  "expect_ids": [
+   "1.012590"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "Dang ky sinh hoat ton giao tap trung (cap xa): 20 ngay."
+ },
+ {
+  "id": "h5-031",
+  "q": "nhóm em đổi người đại diện sinh hoạt tôn giáo thì làm thế nào",
+  "expect_ids": [
+   "1.012585"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Dang ky thay doi nguoi dai dien nhom sinh hoat ton giao tap trung."
+ },
+ {
+  "id": "h5-032",
+  "q": "thon em muon xin cong nhan cau lac bo the duc the thao co so thi lam sao",
+  "expect_ids": [
+   "2.000794"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Cong nhan CLB TDTT co so."
+ },
+ {
+  "id": "h5-033",
+  "q": "em dang la hoa giai vien nhung gio muon xin thoi thi thu tuc the nao",
+  "expect_ids": [
+   "2.000930"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Thoi lam hoa giai vien (cap xa); khong nham voi cong nhan hoa giai vien."
+ },
+ {
+  "id": "h5-034",
+  "q": "hai nha tranh chap ranh gioi dat khong thoa thuan duoc nho chu tich xa giai quyet thi mat bao lau",
+  "expect_ids": [
+   "1.013967",
+   "1.012812"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~khong dau, ke kieu. Debatable: giai quyet tranh chap thuoc tham quyen Chu tich UBND xa (1.013967) la chinh; hoa giai tranh chap dat dai (1.012812) chap nhan duoc."
+ },
+ {
+  "id": "h5-035",
+  "q": "so do nha em ghi sai ten chu ho muon dinh chinh lai thi can gi",
+  "expect_ids": [
+   "1.012796"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Dinh chinh Giay chung nhan da cap lan dau co sai sot."
+ },
+ {
+  "id": "h5-036",
+  "q": "dat o cua nha em duoc cap so truoc nam 2004, muon xac dinh lai dien tich dat o thi phai thoa dieu kien gi",
+  "expect_ids": [
+   "1.012817"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "~khong dau. Xac dinh lai dien tich dat o cua ho cap GCN truoc 01/7/2004."
+ },
+ {
+  "id": "h5-037",
+  "q": "nop le phi truoc ba nha dat o dau",
+  "expect_ids": [
+   "1.007277"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "~khong dau, cut. Khai le phi truoc ba nha, dat - Thue co so."
+ },
+ {
+  "id": "h5-038",
+  "q": "nhận thừa kế đất từ bố thì kê khai thuế thu nhập cá nhân như thế nào, cần giấy tờ gì",
+  "expect_ids": [
+   "1.007674"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Khai thue TNCN voi chuyen nhuong BDS / nhan thua ke, qua tang la BDS."
+ },
+ {
+  "id": "h5-039",
+  "q": "ma so thue bi dong gio muon khoi phuc lai thi can nhung gi",
+  "expect_ids": [
+   "1.008510"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Khoi phuc ma so thue."
+ },
+ {
+  "id": "h5-040",
+  "q": "dang ky ma so thue cho con nho lam nguoi phu thuoc",
+  "expect_ids": [
+   "1.008498"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~cut, khong dau. Dang ky thue lan dau doi voi ca nhan, nguoi phu thuoc."
+ },
+ {
+  "id": "h5-041",
+  "q": "me liet si muon xin tro cap tho cung liet si thi ho so nhu the nao",
+  "expect_ids": [
+   "1.010803"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Tro cap tho cung liet si."
+ },
+ {
+  "id": "h5-042",
+  "q": "giay chung nhan nguoi co cong cua me em bi mat xin cap lai o dau",
+  "expect_ids": [
+   "1.010814"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Cap bo sung/cap lai giay chung nhan nguoi co cong. Fields co the them 'place'."
+ },
+ {
+  "id": "h5-043",
+  "q": "cuu chien binh mat roi nguoi nha xin mai tang phi thi nop o dau",
+  "expect_ids": [
+   "2.002307"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "~khong dau. Mai tang phi doi voi cuu chien binh - UBND cap xa."
+ },
+ {
+  "id": "h5-044",
+  "q": "con em hoc mau giao 5 tuoi nha thuoc dien ngheo co duoc ho tro an trua khong dieu kien the nao",
+  "expect_ids": [
+   "1.001622"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "~ke hoan canh. Ho tro an trua doi voi tre em mau giao."
+ },
+ {
+  "id": "h5-045",
+  "q": "xin mien giam hoc phi cho con dang hoc trung cap nghe thi nop gi",
+  "expect_ids": [
+   "1.014335"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Mien giam hoc phi co so GDNN."
+ },
+ {
+  "id": "h5-046",
+  "q": "dang ky nghia vu quan su lan dau cho con trai 17 tuoi can ho so gi",
+  "expect_ids": [
+   "1.013133"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau."
+ },
+ {
+  "id": "h5-047",
+  "q": "đổi bằng lái xe nước ngoài sang bằng Việt Nam phí bao nhiêu",
+  "expect_ids": [
+   "3.000351"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "Doi GPLX cua nguoi nuoc ngoai: 115.000d/lan. Fields: fee."
+ },
+ {
+  "id": "h5-048",
+  "q": "co dang ky xe may o cong an xa duoc khong",
+  "expect_ids": [
+   "1.115970"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "~khong dau. Dang ky xe/bien so: co thuc hien o Cong an cap xa."
+ },
+ {
+  "id": "h5-049",
+  "q": "dang ky bhxh tu nguyen cho me 55 tuoi o que",
+  "expect_ids": [
+   "1.002179"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~viet tat 'bhxh', khong dau. Dang ky dong BHXH tu nguyen; cap so BHXH."
+ },
+ {
+  "id": "h5-050",
+  "q": "rut BHXH 1 lan can nhung giay to gi",
+  "expect_ids": [
+   "1.001613"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~viet tat. Giai quyet huong BHXH mot lan."
+ },
+ {
+  "id": "h5-051",
+  "q": "dang ky cai nghien ma tuy tu nguyen ho so gom gi",
+  "expect_ids": [
+   "3.000527"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau."
+ },
+ {
+  "id": "h5-052",
+  "q": "dang ky giam ho cho chau mo coi cha me can giay to gi",
+  "expect_ids": [
+   "1.004837"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Dang ky giam ho trong nuoc."
+ },
+ {
+  "id": "h5-053",
+  "q": "mất giấy chứng nhận kết hôn muốn đăng ký lại thì thủ tục thế nào",
+  "expect_ids": [
+   "1.004746"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Dang ky lai ket hon. Debatable: cung co the la 'cap ban sao trich luc' 2.000635 nhung cau noi 'dang ky lai'."
+ },
+ {
+  "id": "h5-054",
+  "q": "xac nhan thong tin cu tru o cong an xa mat bao lau",
+  "expect_ids": [
+   "1.010041"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~khong dau."
+ },
+ {
+  "id": "h5-055",
+  "q": "mo quan karaoke can giay chung nhan an ninh trat tu thi nop o dau",
+  "expect_ids": [
+   "3.000243"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "~khong dau. Cap moi GCN du dieu kien ANTT (cap xa)."
+ },
+ {
+  "id": "h5-056",
+  "q": "xin ho tro dao tao nghe cho lao dong nong thon dieu kien nhu the nao",
+  "expect_ids": [
+   "2.002821"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "~khong dau."
+ },
+ {
+  "id": "h5-057",
+  "q": "sinh con ma cha me chua dang ky ket hon thi khai sinh kieu gi",
+  "expect_ids": [
+   "1.000689",
+   "1.001193"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Khai sinh ket hop nhan cha me con (1.000689) la sat nhat; chap nhan 1.001193 (khai sinh thuong)."
+ },
+ {
+  "id": "h5-058",
+  "q": "xin giấy phép xây nhà",
+  "expect_ids": [
+   "1.013225",
+   "1.013226",
+   "1.013227",
+   "1.013228",
+   "1.013229",
+   "1.013232",
+   "1.009122"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "Nhieu bien the GPXD (moi/dieu chinh/gia han/cap lai/sua chua/di doi/co thoi han). Cau qua chung."
+ },
+ {
+  "id": "h5-059",
+  "q": "lam giay phep lao dong cho nguoi nuoc ngoai",
+  "expect_ids": [
+   "1.014199",
+   "1.014200",
+   "1.014201",
+   "1.014196",
+   "1.014197",
+   "1.014198"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Cap moi / cap lai / gia han giay phep lao dong va giay xac nhan khong thuoc dien."
+ },
+ {
+  "id": "h5-060",
+  "q": "làm lại giấy tờ hộ tịch bị mất",
+  "expect_ids": [
+   "2.000635",
+   "1.004884",
+   "1.004746",
+   "1.005461"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Khong ro giay nao: ban sao trich luc, dang ky lai khai sinh/ket hon/khai tu."
+ },
+ {
+  "id": "h5-061",
+  "q": "dang ky thay doi ho kinh doanh",
+  "expect_ids": [
+   "2.000720",
+   "1.014034",
+   "1.001570",
+   "1.001266"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. 'Thay doi' mo ho: doi noi dung, cap nhat thong tin, tam ngung, cham dut."
+ },
+ {
+  "id": "h5-062",
+  "q": "khoa tai khoan vneid thi lam sao",
+  "expect_ids": [
+   "3.000283",
+   "3.000285"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Khoa tai khoan dinh danh dien tu vs khoa can cuoc dien tu."
+ },
+ {
+  "id": "h5-063",
+  "q": "nha co nguoi mat xin ho tro tien mai tang",
+  "expect_ids": [
+   "1.001731",
+   "1.014028",
+   "2.002307",
+   "2.002308",
+   "1.010456",
+   "1.014359",
+   "3.000731"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Rat nhieu thu tuc mai tang phi theo doi tuong."
+ },
+ {
+  "id": "h5-064",
+  "q": "thủ tục hỗ trợ hỏa táng ở xã",
+  "expect_ids": [
+   "1.012749",
+   "1.014036",
+   "1.012169",
+   "1.014582"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "Cac thu tuc ho tro hoa tang theo tinh/thanh pho khac nhau; chua biet dia phuong."
+ },
+ {
+  "id": "h5-065",
+  "q": "dang ky tam tru tam vang",
+  "expect_ids": [
+   "1.004194",
+   "1.003677",
+   "1.002755"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Hai thu tuc khac nhau (tam tru vs tam vang) + gia han."
+ },
+ {
+  "id": "h5-066",
+  "q": "xin ho tro hoc tap cho con",
+  "expect_ids": [
+   "1.014336",
+   "1.014337",
+   "1.003702",
+   "1.014581",
+   "1.001622"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "Nhieu thu tuc ho tro chi phi hoc tap theo cap hoc / loai truong."
+ },
+ {
+  "id": "h5-067",
+  "q": "đăng ký hợp tác xã",
+  "expect_ids": [
+   "1.005280",
+   "2.002637",
+   "1.004979",
+   "1.005277"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Thanh lap HTX / to hop tac / thay doi noi dung."
+ },
+ {
+  "id": "h5-068",
+  "q": "xin ho tro phat trien san xuat",
+  "expect_ids": [
+   "1.012124",
+   "1.014023",
+   "1.014399",
+   "1.014772",
+   "1.011467",
+   "1.011468",
+   "1.012123",
+   "1.012253"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "~khong dau. San xuat cong dong vs lien ket chuoi gia tri, nhieu chuong trinh."
+ },
+ {
+  "id": "h5-069",
+  "q": "đăng ký hoạt động tôn giáo",
+  "expect_ids": [
+   "1.012590",
+   "1.012585",
+   "1.012584",
+   "1.012582"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Dang ky moi / doi nguoi dai dien / doi dia diem."
+ },
+ {
+  "id": "h5-070",
+  "q": "xin chung thuc giay to",
+  "expect_ids": [
+   "2.000815",
+   "2.000884",
+   "2.001035",
+   "2.001016",
+   "2.001019",
+   "2.001406"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~cut. Chung thuc ban sao / chu ky / hop dong giao dich / di chuc..."
+ },
+ {
+  "id": "h5-071",
+  "q": "xin giay phep thi cong tren duong",
+  "expect_ids": [
+   "1.013061",
+   "1.009159",
+   "1.009161",
+   "1.009162",
+   "1.009163",
+   "1.009165"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Nhieu loai giay phep thi cong (duong bo dang khai thac, cap nuoc, via he, dau noi...)."
+ },
+ {
+  "id": "h5-072",
+  "q": "xin tro cap hang thang cho nguoi gia nguoi khuyet tat",
+  "expect_ids": [
+   "1.001776",
+   "1.014027",
+   "1.001699"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Tro cap xa hoi hang thang vs huu tri xa hoi vs xac dinh khuyet tat."
+ },
+ {
+  "id": "h5-073",
+  "q": "lam the bhyt",
+  "expect_ids": [
+   "1.001939",
+   "1.002051",
+   "1.002759",
+   "1.002179"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~viet tat. Cap moi cho nguoi chi tham gia BHYT / dang ky dong BHXH-BHYT / cap lai doi."
+ },
+ {
+  "id": "h5-074",
+  "q": "nhận chăm sóc trẻ em thay thế",
+  "expect_ids": [
+   "1.004941",
+   "2.001944",
+   "1.004944",
+   "2.001942"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Dang ky / thong bao / cham dut / chuyen tre cham soc thay the."
+ },
+ {
+  "id": "h5-075",
+  "q": "nop thue khi mua ban nha dat",
+  "expect_ids": [
+   "1.007277",
+   "1.007674",
+   "1.007695"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Le phi truoc ba vs thue TNCN chuyen nhuong BDS vs thue su dung dat."
+ },
+ {
+  "id": "h5-076",
+  "q": "mới nghỉ việc muốn nhận bảo hiểm thất nghiệp thì nộp hồ sơ ở đâu",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "DB khong co thu tuc bao hiem that nghiep."
+ },
+ {
+  "id": "h5-077",
+  "q": "muon thanh lap cong ty TNHH thi dang ky o dau",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "~khong dau. DB chi co ho kinh doanh va HTX, khong co dang ky cong ty TNHH."
+ },
+ {
+  "id": "h5-078",
+  "q": "con em muon di thi bang lai xe o to hang B thi dang ky o dau",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "DB chi co doi GPLX quan su/nuoc ngoai, khong co thi/cap moi GPLX."
+ },
+ {
+  "id": "h5-079",
+  "q": "vo chong em muon ly hon thuan tinh thi nop don o dau",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "DB chi co ghi so ly hon da giai quyet o nuoc ngoai (2.000554), khong co ly hon trong nuoc (toa an)."
+ },
+ {
+  "id": "h5-080",
+  "q": "xin visa du lich Nhat Ban can ho so gi",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "Ngoai pham vi: khong co thu tuc xin visa nuoc ngoai."
+ },
+ {
+  "id": "h5-081",
+  "q": "bang tot nghiep THPT cua em bi mat cap lai o dau",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "DB khong co thu tuc cap lai bang tot nghiep."
+ },
+ {
+  "id": "h5-082",
+  "q": "xe oto nha em den han dang kiem thi lam sao",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "DB khong co dang kiem phuong tien."
+ },
+ {
+  "id": "h5-083",
+  "q": "xin cap giay phep hanh nghe phong kham tu nhan",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "DB khong co thu tuc cap phep hanh nghe y."
+ },
+ {
+  "id": "h5-084",
+  "q": "thủ tục nhập quốc tịch Việt Nam cho người nước ngoài",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "DB khong co thu tuc quoc tich."
+ },
+ {
+  "id": "h5c-01",
+  "turns": [
+   {
+    "q": "dang ky ket hon can gi",
+    "expect_ids": [
+     "1.000894"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "ben nu o tinh khac thi nop o xa ben nao",
+    "expect_ids": [
+     "1.000894"
+    ],
+    "beh": "answer",
+    "fields": [
+     "conditions"
+    ]
+   },
+   {
+    "q": "a ma em co can xin giay xac nhan tinh trang hon nhan truoc khong",
+    "expect_ids": [
+     "1.004873"
+    ],
+    "beh": "answer",
+    "fields": [
+     "conditions"
+    ]
+   }
+  ],
+  "notes": "~khong dau. Ket hon -> dieu kien noi nop -> chuyen sang giay xac nhan tinh trang hon nhan."
+ },
+ {
+  "id": "h5c-02",
+  "turns": [
+   {
+    "q": "khai tu cho ong ngoai can giay to gi",
+    "expect_ids": [
+     "1.000656"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "roi xoa thuong tru luon thi sao",
+    "expect_ids": [
+     "1.003197"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "cai do mat may ngay",
+    "expect_ids": [
+     "1.003197"
+    ],
+    "beh": "answer",
+    "fields": [
+     "time"
+    ]
+   }
+  ],
+  "notes": "Doi thoai: khai tu -> xoa thuong tru (chuyen de) -> thoi gian (tham chieu cau truoc)."
+ },
+ {
+  "id": "h5c-03",
+  "turns": [
+   {
+    "q": "tach ho can dieu kien gi",
+    "expect_ids": [
+     "1.010038"
+    ],
+    "beh": "answer",
+    "fields": [
+     "conditions"
+    ]
+   },
+   {
+    "q": "phi bao nhieu",
+    "expect_ids": [
+     "1.010038"
+    ],
+    "beh": "answer",
+    "fields": [
+     "fee"
+    ]
+   },
+   {
+    "q": "cam on nha, ma uy ban xa lam viec may gio vay",
+    "expect_ids": [],
+    "beh": "apologize",
+    "fields": []
+   }
+  ],
+  "notes": "Follow-up phi, roi hoi gio lam viec (ngoai du lieu DB)."
+ },
+ {
+  "id": "h5c-04",
+  "turns": [
+   {
+    "q": "em ban hang online muon dang ky ho kinh doanh",
+    "expect_ids": [
+     "1.001612"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "le phi bao nhieu a",
+    "expect_ids": [
+     "1.001612"
+    ],
+    "beh": "answer",
+    "fields": [
+     "fee"
+    ]
+   },
+   {
+    "q": "gio muon dong cua luon thi sao",
+    "expect_ids": [
+     "1.001266"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   }
+  ],
+  "notes": "Dang ky hkd -> phi -> chuyen sang cham dut hkd."
+ },
+ {
+  "id": "h5c-05",
+  "turns": [
+   {
+    "q": "lam giay phep lao dong cho nguoi nuoc ngoai",
+    "expect_ids": [
+     "1.014199",
+     "1.014200",
+     "1.014201",
+     "1.014196",
+     "1.014197",
+     "1.014198"
+    ],
+    "beh": "clarify",
+    "fields": []
+   },
+   {
+    "q": "lan dau, cap moi cho ky su nguoi An Do",
+    "expect_ids": [
+     "1.014199"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "bao lau thi co",
+    "expect_ids": [
+     "1.014199"
+    ],
+    "beh": "answer",
+    "fields": [
+     "time"
+    ]
+   }
+  ],
+  "notes": "Mo ho -> lam ro cap moi -> thoi gian."
+ },
+ {
+  "id": "h5c-06",
+  "turns": [
+   {
+    "q": "ban dat cho em trai thi ke khai thue the nao",
+    "expect_ids": [
+     "1.007674"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "va le phi truoc ba nha dat",
+    "expect_ids": [
+     "1.007277"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "nop o dau",
+    "expect_ids": [
+     "1.007277"
+    ],
+    "beh": "answer",
+    "fields": [
+     "place"
+    ]
+   }
+  ],
+  "notes": "~khong dau. Debatable cau 1: 'ban dat cho em trai' co the la chuyen nhuong (1.007674); 'tang cho' cung vao cung thu tuc."
+ },
+ {
+  "id": "h5c-07",
+  "turns": [
+   {
+    "q": "lam the bhyt",
+    "expect_ids": [
+     "1.001939",
+     "1.002051",
+     "1.002759",
+     "1.002179"
+    ],
+    "beh": "clarify",
+    "fields": []
+   },
+   {
+    "q": "minh khong di lam chi tham gia bhyt thoi",
+    "expect_ids": [
+     "1.001939"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "mat bao lau",
+    "expect_ids": [
+     "1.001939"
+    ],
+    "beh": "answer",
+    "fields": [
+     "time"
+    ]
+   }
+  ],
+  "notes": "~viet tat. Mo ho -> lam ro doi tuong chi tham gia BHYT -> thoi gian."
+ },
+ {
+  "id": "h5c-08",
+  "turns": [
+   {
+    "q": "chung thuc di chuc can giay to gi",
+    "expect_ids": [
+     "2.001019"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "phi bao nhieu",
+    "expect_ids": [
+     "2.001019"
+    ],
+    "beh": "answer",
+    "fields": [
+     "fee"
+    ]
+   },
+   {
+    "q": "con chung thuc ban sao cccd cung o do duoc ko",
+    "expect_ids": [
+     "2.000815"
+    ],
+    "beh": "answer",
+    "fields": [
+     "conditions"
+    ]
+   }
+  ],
+  "notes": "Di chuc -> phi -> chuyen chung thuc ban sao."
+ },
+ {
+  "id": "h5c-09",
+  "turns": [
+   {
+    "q": "giay chung nhan nguoi co cong cua ba bi mat, xin cap lai",
+    "expect_ids": [
+     "1.010814"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "bao lau co lai",
+    "expect_ids": [
+     "1.010814"
+    ],
+    "beh": "answer",
+    "fields": [
+     "time"
+    ]
+   },
+   {
+    "q": "thoi hoi cai khac, dang ky nghia vu quan su lan dau cho con trai the nao",
+    "expect_ids": [
+     "1.013133"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   }
+  ],
+  "notes": "~khong dau. Cap lai GCN nguoi co cong -> thoi gian -> chuyen de sang dang ky nghia vu quan su."
+ }
+]
