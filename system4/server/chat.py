@@ -12,6 +12,9 @@ Thứ tự trong một lượt:
   4. AI sinh chữ        -> lọc chữ ngoài Latin/emoji; guardrail "replace"; lọt nhiều chữ lạ -> viết lại 1 lần
   5. lưu câu trả lời    -> nút lựa chọn khi AI hỏi lại
   6. việc nền           -> bộ nhớ (chỉ khi tin nhắn đáng nhớ), tóm tắt hội thoại dài
+NV5 (mỗi bước bật/tắt trong ⚙, mặc định tắt = như trước): câu chào khi bật dữ liệu (GREETING_MODE), công cụ bảng (TABLE_TOOL),
+hỏi lại khi trùng tên (AMBIGUITY_CHECK, trả lời bằng code), kiểm chi tiết bịa rồi viết lại (GROUNDING_CHECK), thứ tự lời dặn
+để Ollama dùng lại phần đã đọc (PROMPT_CACHE_ORDER), chế độ Nhanh dạng chữ (FAST_FORMAT=text).
 Sự kiện SSE: meta, queue, start, thinking, switch, delta, restart, replace, done | error, memory.
 """
 from __future__ import annotations
@@ -21,7 +24,7 @@ import re
 import time
 import uuid
 
-from . import context, db, guard, lang, llm, memory, persona, search, settings
+from . import ambig, context, db, greet, ground, guard, lang, llm, memory, persona, search, settings, tabletool
 
 _background: set = set()   # giữ tham chiếu tới việc nền để không bị dọn mất giữa chừng
 _turns: dict[str, dict] = {}   # lượt đang chạy: turn_id -> {"user": id, "fast": cờ "Trả lời nhanh"}
@@ -123,8 +126,10 @@ def search_query(text: str, history_path: list[dict]) -> str:
 
 
 def build_messages(user_id: int, cid: str, history_path: list[dict], text: str, *, fast: bool,
-                   leak_retry: bool = False, evidence: list[dict] | None = None) -> tuple[list[dict], dict]:
-    """Lời dặn hệ thống + lịch sử + tin mới. Trả (messages, thông tin để quyết định / lưu meta)."""
+                   leak_retry: bool = False, evidence: list[dict] | None = None, extra: list[str] | None = None,
+                   small_talk: bool = False) -> tuple[list[dict], dict]:
+    """Lời dặn hệ thống + lịch sử + tin mới. Trả (messages, thông tin để quyết định / lưu meta).
+    extra: lời dặn thêm cho riêng lần gửi này (câu xã giao, viết lại vì chi tiết bịa). small_talk: AI được đánh dấu câu xã giao."""
     block, instructions = guard.check_input(text)
     foreign = not lang.is_vietnamese(text)
     streak = clarify_streak(history_path)
@@ -132,12 +137,21 @@ def build_messages(user_id: int, cid: str, history_path: list[dict], text: str, 
     exhausted = streak if streak >= limit and limit > 0 else (max(streak, 1) if limit == 0 else 0)
     if leak_retry:
         instructions = instructions + ["Lần trước bạn đã dùng chữ không phải tiếng Việt. Lần này CHỈ viết tiếng Việt bằng chữ cái Latin."]
+    instructions = instructions + list(extra or [])
     mems = [m["text"] for m in db.list_memories(user_id)]
-    kw = dict(clarify_exhausted=exhausted, upset=persona.negative(text), foreign=foreign, fast=fast, evidence=evidence)
+    cache = settings.get("PROMPT_CACHE_ORDER")
+    kw = dict(clarify_exhausted=exhausted, upset=persona.negative(text), foreign=foreign, fast=fast, evidence=evidence,
+              cache_order=cache, text_format=fast and settings.get("FAST_FORMAT") == "text", small_talk=small_talk)
     draft = persona.build(mems, "", instructions, **kw)
-    summary, hist = context.history(cid, history_path, len(draft))
+    size = len(draft) if isinstance(draft, str) else len(draft[0]) + len(draft[1])
+    summary, hist = context.history(cid, history_path, size)
     system = persona.build(mems, summary, instructions, **kw) if summary else draft
-    msgs = [{"role": "system", "content": system}] + hist + [{"role": "user", "content": text}]
+    if cache:   # phần không đổi trong lời dặn hệ thống; dữ liệu + lời dặn riêng đi cùng tin nhắn mới (Ollama dùng lại phần đã đọc)
+        system, tail = system
+        last = text + (f"\n\n---\n(Thông tin cho trợ lý, người dùng không thấy)\n{tail}" if tail else "")
+    else:
+        last = text
+    msgs = [{"role": "system", "content": system}] + hist + [{"role": "user", "content": last}]
     return msgs, {"block": block, "foreign": foreign, "exhausted": bool(exhausted), "streak": streak, "instructions": instructions,
                   "upset": kw["upset"], "memories": len(mems), "summary": bool(summary), "history": len(hist)}
 
@@ -162,14 +176,26 @@ def _check(body: list[str], clean: str, state: dict):
     return None
 
 
+def _stat(t, state: dict) -> bool:
+    """Mẩu số đo Ollama (cuối luồng): lưu cho 🔍 / bộ đo."""
+    if isinstance(t, llm.Stats):
+        state.setdefault("llm_stats", []).append(dict(t))
+        return True
+    return False
+
+
 async def _think(msgs: list[dict], prefix: str, state: dict, flag: dict):
-    """Chế độ Suy nghĩ kỹ. Cờ "Trả lời nhanh" bật -> dừng ngay (state["interrupted"])."""
+    """Chế độ Suy nghĩ kỹ. Cờ "Trả lời nhanh" bật -> dừng ngay (state["interrupted"]).
+    state["ask_small"]: AI có thể mở đầu bằng [XÃ GIAO] -> code bỏ dấu này đi trước khi hiện chữ."""
     filt, body = lang.LatinFilter(), []
-    state.update(parts=body, filter=filt, replaced=None, mode="think", choices=None)
+    state.update(parts=body, filter=filt, replaced=None, mode="think", choices=None, small_talk=False)
     if prefix:
         yield sse({"type": "delta", "text": prefix + "\n\n"})
-    told = False
+    told, head = False, "" if state.get("ask_small") else None
+    mark = persona.SMALL_TALK_MARK
     async for t in llm.stream_chat(msgs):
+        if _stat(t, state):
+            continue
         if flag["fast"] and not body:   # chỉ ngắt khi chưa có chữ trả lời (đang suy nghĩ)
             state["interrupted"] = True
             return   # thoát -> stream dừng gọi model
@@ -179,6 +205,18 @@ async def _think(msgs: list[dict], prefix: str, state: dict, flag: dict):
                 told = True
                 yield sse({"type": "thinking"})
             continue
+        if head is not None:   # giữ lại vài chữ đầu để xem có dấu [XÃ GIAO] không
+            head += t
+            if len(head.lstrip()) < len(mark) and mark.startswith(head.lstrip()):
+                continue
+            if head.lstrip().startswith(mark):
+                state["small_talk"] = True
+                t = head.lstrip()[len(mark):].lstrip()
+            else:
+                t = head
+            head = None
+            if not t:
+                continue
         clean = filt.feed(t)
         if not clean:
             continue
@@ -190,13 +228,17 @@ async def _think(msgs: list[dict], prefix: str, state: dict, flag: dict):
 
 
 async def _fast(msgs: list[dict], prefix: str, state: dict):
-    """Chế độ Nhanh: JSON có cấu trúc, hiện dần phần "answer"."""
+    """Chế độ Nhanh. FAST_FORMAT=json: JSON có cấu trúc, hiện dần phần "answer". text: dòng kế hoạch ẩn rồi chữ tự do."""
+    if settings.get("FAST_FORMAT") == "text":
+        async for ev in _fast_text(msgs, prefix, state):
+            yield ev
+        return
     filt, body, ans = lang.LatinFilter(), [], AnswerStream()
-    state.update(parts=body, filter=filt, replaced=None, mode="fast", choices=None, sources=[], ans=ans)
+    state.update(parts=body, filter=filt, replaced=None, mode="fast", fmt="json", choices=None, sources=[], ans=ans, small_talk=False)
     if prefix:
         yield sse({"type": "delta", "text": prefix + "\n\n"})
-    async for t in llm.stream_json(msgs, persona.FAST_SCHEMA_KB if state.get("kb") else persona.FAST_SCHEMA):
-        if isinstance(t, llm.Thought):
+    async for t in llm.stream_json(msgs, persona.fast_schema(bool(state.get("kb")), bool(state.get("ask_small")))):
+        if _stat(t, state) or isinstance(t, llm.Thought):
             continue
         clean = filt.feed(ans.feed(t))
         if not clean:
@@ -210,9 +252,55 @@ async def _fast(msgs: list[dict], prefix: str, state: dict):
     if not body and isinstance(d.get("answer"), str):   # phòng khi tách dần trượt: lấy từ JSON hoàn chỉnh
         body.append(filt.feed(d["answer"]))
     state["sources"] = [x for x in d.get("sources") or [] if isinstance(x, int)]
+    state["small_talk"] = bool(d.get("small_talk"))
     if d.get("ask_back"):
         cf = lang.LatinFilter()
         state["choices"] = [x for x in (cf.feed(str(c)).strip() for c in d.get("choices") or []) if x][:4]
+
+
+_SEP = re.compile(r"^[ \t]*" + re.escape(persona.TEXT_SEP) + r"[ \t]*\r?\n", re.M)
+
+
+async def _fast_text(msgs: list[dict], prefix: str, state: dict):
+    """FAST_FORMAT=text: model viết "KẾ HOẠCH: …" / "===" / câu trả lời. Phần trước "===" giữ lại (ẩn), phần sau hiện dần.
+    Lựa chọn hỏi lại theo mẫu [[CHOICES]] như Suy nghĩ kỹ (tách khi lưu)."""
+    filt, body, raw = lang.LatinFilter(), [], []
+    state.update(parts=body, filter=filt, replaced=None, mode="fast", fmt="text", choices=None, sources=[], ans=None,
+                 raw_text=raw, small_talk=False)
+    if prefix:
+        yield sse({"type": "delta", "text": prefix + "\n\n"})
+    buf, started, limit = "", False, settings.get("PLAN_MAX_CHARS") + 200
+    async for t in llm.stream_text(msgs):
+        if _stat(t, state) or isinstance(t, llm.Thought):
+            continue
+        raw.append(t)
+        if not started:
+            buf += t
+            m = _SEP.search(buf)
+            lead = buf.lstrip()
+            if m:
+                started, t = True, buf[m.end():]
+            elif len(lead) >= len(persona.PLAN_PREFIX) and not lead.startswith(persona.PLAN_PREFIX):
+                started, t = True, buf   # model bỏ qua dòng kế hoạch: hiện luôn
+            elif len(buf) > limit and "\n" in lead:
+                started, t = True, lead.partition("\n")[2]   # có kế hoạch nhưng thiếu "===": bỏ dòng đầu
+            else:
+                continue
+        if not t:
+            continue
+        clean = filt.feed(t)
+        if not clean:
+            continue
+        rep = _check(body, clean, state)
+        if rep:
+            yield rep
+            return
+        yield sse({"type": "delta", "text": clean})
+    plan, answer, small = persona.parse_text("".join(raw))
+    state["plan"], state["small_talk"] = plan, small
+    if not body and answer:   # kết thúc khi chưa qua "===" (câu trả lời ngắn)
+        body.append(filt.feed(answer))
+        yield sse({"type": "delta", "text": body[-1]})
 
 
 async def _after_turn(user_id: int, cid: str, text: str, mid: int | None = None) -> dict:
@@ -228,6 +316,25 @@ async def _after_turn(user_id: int, cid: str, text: str, mid: int | None = None)
         return {"added": [], "removed": []}
 
 
+def _refusal(content: str) -> bool:
+    n = lang.normalize(content)
+    return any(p in n for p in _REFUSAL)
+
+
+def _allowed_text(text: str, history_path: list[dict], evidence: list[dict] | None) -> str:
+    """Chữ được phép dùng làm nguồn cho chi tiết trong câu trả lời (kiểm chi tiết bịa)."""
+    parts = [text, settings.get("BUSINESS_NAME"), settings.get("BUSINESS_DESCRIPTION") or ""]
+    parts += [m["content"] for m in history_path if m["role"] == "user"]
+    for e in evidence or []:
+        parts += [e["title"], e.get("dataset", ""), e["text"]]
+    return "\n".join(parts)
+
+
+def _answer_text(state: dict) -> str:
+    raw = "".join(state.get("parts") or [])
+    return raw if state.get("mode") == "fast" and state.get("fmt") == "json" else persona.split_choices(raw)[0]
+
+
 async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list[dict], mode: str = "fast"):
     """Async generator SSE cho một lượt. user_mid = tin người dùng mà câu trả lời nối vào."""
     mode = "think" if mode == "think" else "fast"
@@ -235,27 +342,69 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
     flag = _turns[turn_id] = {"user": user["id"], "fast": False}
     try:
         evidence, sinfo, t0 = None, None, time.perf_counter()
-        if db.active_datasets(user["id"]):   # có bộ dữ liệu đang bật -> Chuyên gia: tìm trước khi hỏi AI
-            evidence, sinfo = await asyncio.to_thread(search.search, user["id"], search_query(text, history_path))
+        active = db.active_datasets(user["id"])
+        gm = settings.get("GREETING_MODE") if active else "off"
+        gate = gm in ("code_first", "ai_first") and greet.is_greeting(text, history_path)   # quy tắc code: ngắn + có từ chào
+        small_by_code = gm == "code_first" and gate        # code nhận trước: không tra dữ liệu
+        ask_small = gm != "off" and not small_by_code       # AI được đánh dấu câu xã giao
+        amb, table = None, None
+        squery = search_query(text, history_path)
+        if active and not small_by_code:   # có bộ dữ liệu đang bật -> Chuyên gia: tìm trước khi hỏi AI
+            evidence, sinfo = await asyncio.to_thread(search.search, user["id"], squery)
             sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
-        bm = lambda **k: build_messages(user["id"], cid, history_path, text, evidence=evidence, **k)
+            ids = [d["id"] for d in active]
+            if settings.get("TABLE_TOOL") and tabletool.triggered(text):
+                t1 = time.perf_counter()
+                async with llm.Turn():
+                    table = await asyncio.to_thread(tabletool.run, squery, ids)
+                if table:
+                    table["info"]["ms"] = int((time.perf_counter() - t1) * 1000)
+                    sinfo["table_tool"] = table["info"]
+                    if table["evidence"]:
+                        evidence = [table["evidence"]] + evidence
+            if settings.get("AMBIGUITY_CHECK") and not (table and table["evidence"]):
+                amb = await asyncio.to_thread(ambig.check, squery, ids, {c["id"] for c in sinfo.get("candidates", [])})
+                sinfo["ambiguity"] = amb
+        extra0 = [greet.SMALL_TALK_INSTRUCTION] if small_by_code else []
+        bm = lambda **k: build_messages(user["id"], cid, history_path, text, **{"evidence": evidence, "extra": extra0,
+                                                                                "small_talk": ask_small and evidence is not None, **k})
         msgs, info = bm(fast=mode == "fast")
         prompts = [{"why": "lần gửi đầu", "messages": msgs}]
         yield sse({"type": "meta", "conversation_id": cid, "user_message_id": user_mid, "turn_id": turn_id, "mode": mode,
                    "specialist": evidence is not None})
+        checks = {"foreign": info["foreign"], "upset": info["upset"], "streak": info["streak"], "greeting_gate": gate,
+                  "greeting_mode": gm}
         if info["block"]:   # guardrail chặn: không gọi AI, không ghi nhớ
             b = info["block"]
             bmid = db.add_message(cid, "assistant", b["message"], "done", user_mid, {"guard": b["name"]})
-            db.save_trace(bmid, cid, user["id"], {"mode": mode, "query": text, "blocked_by": b["name"],
-                                                  "checks": {k: info[k] for k in ("foreign", "upset", "streak")}}, settings.get("TRACE_KEEP"))
+            db.save_trace(bmid, cid, user["id"], {"mode": mode, "query": text, "blocked_by": b["name"], "checks": checks},
+                          settings.get("TRACE_KEEP"))
             yield sse({"type": "delta", "text": b["message"]})
+            yield sse({"type": "done"})
+            return
+        if amb and not info["exhausted"]:   # trùng tên: hỏi lại bằng code, không gọi AI
+            q = ambig.question(amb)
+            meta = {"specialist": True, "choices": amb["options"], "ambiguity": amb["phrase"], "mode": mode,
+                    "retrieval": {k: sinfo.get(k) for k in ("datasets", "reranked", "candidates_n", "keyword", "vector", "search_ms")},
+                    "timing": {"llm_ms": 0, "total_ms": int((time.perf_counter() - t0) * 1000)}}
+            amid = db.add_message(cid, "assistant", q, "done", user_mid, meta)
+            db.save_trace(amid, cid, user["id"], {"mode": mode, "specialist": True, "query": squery, "retrieval": sinfo,
+                                                  "checks": {**checks, "ambiguity": amb}, "prompts": [],
+                                                  "output": {"final_text": q}, "timing": meta["timing"]}, settings.get("TRACE_KEEP"))
+            yield sse({"type": "delta", "text": q})
             yield sse({"type": "done"})
             return
         pos = llm.queue_position()
         if pos:
             yield sse({"type": "queue", "position": pos})
         prefix = settings.get("LANG_FALLBACK_APOLOGY") if info["foreign"] else ""
-        state, meta, status, err = {"kb": evidence is not None}, {}, "done", None
+        state = {"kb": evidence is not None, "ask_small": ask_small and evidence is not None}
+        meta, status, err, small = {}, "done", None, small_by_code
+
+        async def gen(m):   # chạy lại đúng chế độ hiện tại (viết lại sau khi kiểm)
+            g = _fast(m, prefix, state) if state["mode"] == "fast" else _think(m, prefix, state, flag)
+            async for ev in g:
+                yield ev
         try:
             async with llm.Turn():
                 t_llm = time.perf_counter()
@@ -272,17 +421,47 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                         prompts.append({"why": "bấm Trả lời nhanh: gửi lại ở chế độ Nhanh", "messages": msgs})
                     async for ev in _fast(msgs, prefix, state):
                         yield ev
-                if evidence == [] and not state.get("replaced") and kb_violation("".join(state.get("parts") or [])):
+                # ---- câu xã giao (NV5): AI tự đánh dấu; ai_first: code kiểm lại
+                ai_small = bool(state.get("small_talk")) and state["ask_small"]
+                if ai_small:
+                    small = True
+                    if gm == "ai_first" and not gate and greet.looks_like_question(text):
+                        small, meta["small_talk_override"] = False, "rejected"   # AI nói xã giao nhưng tin nhắn là câu hỏi
+                elif gm == "ai_first" and gate and evidence is not None and not state.get("replaced") and _refusal(_answer_text(state)):
+                    meta["small_talk_override"] = "forced"   # câu chào ngắn mà AI trả lời "không có trong dữ liệu": viết lại
+                    small = True
+                    yield sse({"type": "restart"})
+                    msgs, _ = bm(fast=state["mode"] == "fast", evidence=None, small_talk=False, extra=[greet.SMALL_TALK_INSTRUCTION])
+                    prompts.append({"why": "câu chào bị trả lời 'không có trong dữ liệu': viết lại kiểu xã giao", "messages": msgs})
+                    state["kb"], state["ask_small"] = False, False
+                    async for ev in gen(msgs):
+                        yield ev
+                if small:
+                    meta["small_talk"] = "code" if small_by_code else meta.get("small_talk_override") or "ai"
+                if evidence == [] and not small and not state.get("replaced") and kb_violation("".join(state.get("parts") or [])):
                     # yêu cầu .docx: không dùng kiến thức chung. Tìm không thấy mà AI vẫn tự trả lời -> thay bằng câu cố định
                     state["replaced"] = {"name": "Chỉ trả lời từ dữ liệu", "message": settings.get("KB_NOT_FOUND_MESSAGE")}
                     yield sse({"type": "replace", "text": state["replaced"]["message"]})
+                # ---- kiểm chi tiết bịa (NV5, 2A): viết lại một lần
+                if settings.get("GROUNDING_CHECK") == "rewrite" and not small and not state.get("replaced"):
+                    kb = evidence is not None
+                    allowed = _allowed_text(text, history_path, evidence)
+                    items = ground.ungrounded(_answer_text(state), allowed, kb, settings.get("BUSINESS_NAME"))
+                    if items:
+                        meta["grounding"] = {"items": items}
+                        yield sse({"type": "restart"})
+                        msgs, _ = bm(fast=state["mode"] == "fast", extra=extra0 + [ground.rewrite_instruction(items, kb)])
+                        prompts.append({"why": "chi tiết không có nguồn: viết lại", "messages": msgs})
+                        async for ev in gen(msgs):
+                            yield ev
+                        if not state.get("replaced"):
+                            meta["grounding"]["after"] = ground.ungrounded(_answer_text(state), allowed, kb, settings.get("BUSINESS_NAME"))
                 if not state.get("replaced") and state["filter"].heavy_leak():   # lọt nhiều chữ lạ: viết lại một lần
                     meta["leak_retry"] = True
                     yield sse({"type": "restart"})
-                    fast = state["mode"] == "fast"
-                    msgs, _ = bm(fast=fast, leak_retry=True)
+                    msgs, _ = bm(fast=state["mode"] == "fast", leak_retry=True)
                     prompts.append({"why": "lọt nhiều chữ lạ: viết lại", "messages": msgs})
-                    async for ev in (_fast(msgs, prefix, state) if fast else _think(msgs, prefix, state, flag)):
+                    async for ev in gen(msgs):
                         yield ev
         except (llm.QueueFull, llm.LLMError) as e:
             status, err = "error", str(e)
@@ -299,22 +478,23 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             if state.get("replaced"):
                 meta["guard"] = state["replaced"]["name"]
                 content, choices = state["replaced"]["message"], []
-            elif state.get("mode") == "fast":
+            elif state.get("mode") == "fast" and state.get("fmt") == "json":
                 content, choices = "".join(state.get("parts") or []).strip(), state.get("choices") or []
             else:
                 content, choices = persona.split_choices("".join(state.get("parts") or []))
             if prefix and not state.get("replaced") and (content or status != "error"):
                 content = f"{prefix}\n\n{content}".strip()
-            if evidence is not None:   # Chuyên gia: nguồn = các đoạn AI ghi [n] (hoặc liệt kê trong "sources")
-                cited = sorted({int(n) for n in re.findall(r"\[(\d{1,2})\]", content)} | set(state.get("sources") or []))
+            if evidence is not None:
                 meta["specialist"] = True
+                meta["retrieval"] = {k: sinfo.get(k) for k in ("datasets", "reranked", "candidates_n", "keyword", "vector", "search_ms")}
+            if evidence is not None and not small:   # Chuyên gia: nguồn = các đoạn AI ghi [n] (hoặc liệt kê trong "sources")
+                cited = sorted({int(n) for n in re.findall(r"\[(\d{1,2})\]", content)} | set(state.get("sources") or []))
                 meta["sources"] = [{"n": n, "record_id": evidence[n - 1]["id"], "title": evidence[n - 1]["title"],
                                     "dataset": evidence[n - 1]["dataset"], "score": evidence[n - 1].get("score")}
                                    for n in cited if 1 <= n <= len(evidence)]
                 if not meta["sources"]:
                     meta["consulted"] = [{"record_id": e["id"], "title": e["title"], "dataset": e["dataset"], "score": e.get("score")}
                                          for e in evidence[:3]]
-                meta["retrieval"] = {k: sinfo.get(k) for k in ("datasets", "reranked", "candidates_n", "keyword", "vector", "search_ms")}
             if choices and not info["exhausted"]:
                 meta["choices"] = choices
             elif choices:   # đã hết lượt hỏi lại mà AI vẫn đưa lựa chọn: hiện như văn bản
@@ -328,18 +508,24 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                 a = state.get("ans")
                 db.save_trace(mid, cid, user["id"], {
                     "mode": mode, "final_mode": meta["mode"], "specialist": evidence is not None, "status": status, "error": err,
-                    "query": search_query(text, history_path) if evidence is not None else text,
+                    "query": squery if evidence is not None else text,
                     "retrieval": sinfo,
-                    "checks": {"foreign": info["foreign"], "upset": info["upset"], "clarify_streak": info["streak"],
+                    "checks": {**checks, "clarify_streak": info["streak"],
                                "clarify_exhausted": info["exhausted"], "instructions": info["instructions"],
                                "guard_replaced": meta.get("guard"), "kb_guard": meta.get("guard") == "Chỉ trả lời từ dữ liệu",
                                "filtered": meta.get("filtered"), "leak_retry": meta.get("leak_retry", False),
                                "interrupted": meta.get("interrupted", False), "memories_in_prompt": info["memories"],
-                               "summary_in_prompt": info["summary"], "history_messages": info["history"]},
+                               "summary_in_prompt": info["summary"], "history_messages": info["history"],
+                               "small_talk": meta.get("small_talk"), "small_talk_override": meta.get("small_talk_override"),
+                               "grounding": meta.get("grounding")},
                     "prompts": prompts,
-                    "output": {"raw_json": a.raw if a else None, "plan": (a.final().get("plan") if a else None),
+                    "output": {"raw_json": a.raw if a else None,
+                               "raw_text": "".join(state.get("raw_text") or []) or None,
+                               "plan": (a.final().get("plan") if a else state.get("plan")),
                                "thinking": "".join(state.get("thinking") or [])[:30000], "final_text": content},
-                    "timing": {**meta.get("timing", {}), "search_ms": (sinfo or {}).get("search_ms")},
+                    "timing": {**meta.get("timing", {}), "search_ms": (sinfo or {}).get("search_ms"),
+                               "search_parts": (sinfo or {}).get("timing"), "llm_stats": state.get("llm_stats"),
+                               "table_ms": ((table or {}).get("info") or {}).get("ms")},
                 }, settings.get("TRACE_KEEP"))
         if err:
             yield sse({"type": "error", "message": err})

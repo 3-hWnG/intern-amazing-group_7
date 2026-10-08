@@ -180,7 +180,22 @@
               : !("header_row" in p) ? "chưa ghi lại (tệp xử lý trước khi có thông tin này — bấm \"Xử lý lại\" để xem)" : "không có (đặt tên Cột 1, Cột 2…)"],
             ["Bỏ qua phía trên", p.skipped_above && p.skipped_above.length ? p.skipped_above.join(" ⏎ ") : undefined],
             ["Cột tiêu đề bản ghi", p.title_column], ["Các trường", p.fields ? p.fields.join(", ") : undefined], ["Số đoạn", p.chunks],
+            ["Cách nhận ra", [p.two_row_header ? "tiêu đề cột hai tầng (đã ghép)" : "", p.sideways ? "bảng nằm ngang (đã xoay lại)" : "",
+              p.header_chosen ? "dòng tiêu đề do bạn chọn" : ""].filter(Boolean).join(" · ") || undefined],
           ]));
+          if (p.kind === "table" || p.kind === "rows") {   /* chọn lại dòng tiêu đề cột rồi xử lý lại tệp */
+            const row = el("div", "src-row"), inp = el("input"), go = el("button", "", "Đọc lại");
+            inp.type = "number"; inp.min = "0"; inp.style.width = "5em"; inp.value = p.header_row || "";
+            inp.title = "Số dòng trong tệp chứa tên cột; 0 = để hệ thống tự đoán";
+            go.type = "button";
+            go.onclick = async () => {
+              const r = await fetch("/s4/datasets/" + dsId + "/header", { method: "POST", headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ part: p.sheet, row: +inp.value || 0 }) });
+              if (r.ok) { go.textContent = "Đang xử lý lại…"; go.disabled = true; } else alert("Không lưu được: " + (await r.text()));
+            };
+            row.append(el("span", "", "Dòng tiêu đề cột:"), inp, go);
+            w.appendChild(row);
+          }
         });
         return w;
       },

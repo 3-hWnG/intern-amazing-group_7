@@ -6,6 +6,7 @@ Tạo một tài khoản thử mới, chạy ~20 tình huống, in bảng kết 
 Tình huống và đáp án do agent soạn (chưa có câu hỏi thật của người dùng).
 """
 import json
+import os
 import re
 import sys
 import threading
@@ -18,7 +19,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[2].parent / "pyroot"))
 from system3.system4.server.lang import allowed, is_vietnamese  # noqa: E402
 
 BASE = sys.argv[1] if len(sys.argv) > 1 else "http://127.0.0.1:8399"
-OUT = Path(__file__).resolve().parent / "results" / "nv2_behavior.json"
+OUT = Path(os.environ.get("NV2_OUT") or Path(__file__).resolve().parent / "results" / "nv2_behavior.json")   # bench.py đặt NV2_OUT
 c = httpx.Client(base_url=BASE, timeout=600)
 user = f"eval{int(time.time())}"
 assert c.post("/s4/auth/signup", json={"username": user, "password": "matkhau123"}).status_code == 200, "không đăng ký được"

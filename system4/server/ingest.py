@@ -1,6 +1,8 @@
 """Đọc tệp người dùng tải lên và đổi sang CẤU TRÚC ĐỊNH SẴN (NV3, 4A: không cần người dùng xác nhận).
 
 Một bản ghi = {title, fields {tên trường: giá trị}, text (chữ để tìm), source (tệp · trang tính · dòng / trang)}.
+NV5 (A5): tiêu đề cột hai tầng (ô gộp "Điểm" trên "Toán | Văn"), bảng nằm ngang (tên trường ở cột đầu), nhiều bảng trong
+một trang tính (cách nhau bởi dòng trống), và người dùng tự chọn dòng tiêu đề trong "Cách đọc" (overrides).
 - Bảng (CSV, Excel, JSON danh sách, bảng trong Word): code chọn cột tiêu đề, AI kiểm lại, code duyệt.
   Không khớp được -> phương án C: mỗi dòng thành một đoạn chữ "cột: giá trị; …" (kind = rows).
 - Văn bản (TXT/MD, đoạn văn Word, PDF): chia theo tiêu đề / đoạn, mỗi phần ~CHUNK_CHARS ký tự (kind = text).
@@ -15,7 +17,7 @@ from pathlib import Path
 
 from . import llm, settings
 
-READER_VERSION = 2   # tăng khi đổi cách đọc tệp: dữ liệu đọc bằng bản cũ được xử lý lại khi khởi động server
+READER_VERSION = 3   # tăng khi đổi cách đọc tệp: dữ liệu đọc bằng bản cũ được xử lý lại khi khởi động server
 csv.field_size_limit(2**31 - 1)   # ô rất dài (mô tả, văn bản dán vào) không làm hỏng việc đọc CSV
 SUPPORTED = {".csv", ".tsv", ".xlsx", ".xlsm", ".json", ".txt", ".md", ".docx", ".pdf"}
 _TITLE_HINTS = ("tên", "ten", "name", "title", "tiêu đề", "tieu de", "sản phẩm", "san pham", "thủ tục", "thu tuc", "mặt hàng",
@@ -62,8 +64,12 @@ def read(path: Path) -> list[tuple]:
         return [("table", path.stem, [[_cell(c) for c in r] for r in csv.reader(io.StringIO(text), dialect)])]
     if ext in (".xlsx", ".xlsm"):
         import openpyxl
-        wb = openpyxl.load_workbook(path, read_only=True, data_only=True)
-        out = [("table", ws.title, [[_cell(c) for c in row] for row in ws.iter_rows(values_only=True)]) for ws in wb.worksheets]
+        small = path.stat().st_size < 15 * 1024 * 1024   # tệp nhỏ: đọc đủ để biết ô gộp (tiêu đề hai tầng); tệp lớn: đọc nhanh
+        wb = openpyxl.load_workbook(path, read_only=not small, data_only=True)
+        out = []
+        for ws in wb.worksheets:
+            merged = [(m.min_row, m.min_col - 1, m.max_row, m.max_col - 1) for m in ws.merged_cells.ranges] if small else []
+            out.append(("table", ws.title, [[_cell(c) for c in row] for row in ws.iter_rows(values_only=True)], merged))
         wb.close()
         return out
     if ext == ".json":
@@ -177,19 +183,67 @@ def _name_pair(headers: list[str]) -> tuple[int, int] | None:
     return None
 
 
-def _clean_table(rows: list[list[str]]) -> tuple[list[str], list[list[str]], dict]:
-    """Trả (tên cột, dòng dữ liệu, cách đọc: dòng tiêu đề trong tệp, các dòng bỏ qua phía trên)."""
-    numbered = [(n, r) for n, r in enumerate(rows, 1) if any(c for c in r)]   # số dòng thật trong tệp
+def _two_row_header(top: list[str], sub: list[str], spans: list[tuple[int, int]]) -> list[str] | None:
+    """Tiêu đề hai tầng: dòng trên có nhãn nhóm phủ nhiều cột (ô gộp, vd. "Điểm"), dòng dưới có nhãn từng cột ("Toán", "Văn").
+    spans = các khoảng cột gộp ở dòng trên (từ Excel). Không có thông tin ô gộp (CSV, tệp lớn): chỉ nhận khi nhãn nhóm
+    phủ >= 3 cột, để cặp "Họ | (trống)" quen thuộc không bị nhầm. Trả tên cột đã ghép hoặc None."""
+    filled = [c for c in sub if c]
+    if len(filled) < 2 or any(_numeric(c) for c in filled) or any(len(c) > 60 for c in filled):
+        return None   # dòng dưới là dữ liệu, không phải nhãn
+    spans = [(a, b) for a, b in spans if b > a]
+    if not spans:
+        j = 0
+        while j < len(top):
+            if top[j]:
+                k = j + 1
+                while k < len(top) and not top[k] and sub[k]:
+                    k += 1
+                if k - j >= 3 and sub[j]:
+                    spans.append((j, k - 1))
+                j = k
+            else:
+                j += 1
+    spans = [(a, b) for a, b in spans if any(sub[j] for j in range(a, min(b, len(sub) - 1) + 1))]
+    if not spans:
+        return None
+    names = list(top)
+    for a, b in spans:
+        for j in range(a, min(b, len(names) - 1) + 1):
+            if sub[j]:
+                names[j] = f"{top[a]} - {sub[j]}" if top[a] else sub[j]
+    for j in range(len(names)):
+        if not names[j] and sub[j]:
+            names[j] = sub[j]
+    return names
+
+
+def _clean_table(rows: list[list[str]], merged: list | None = None, header_row: int | None = None,
+                 offset: int = 0) -> tuple[list[str], list[list[str]], dict]:
+    """Trả (tên cột, dòng dữ liệu, cách đọc: dòng tiêu đề trong tệp, các dòng bỏ qua phía trên).
+    header_row = dòng tiêu đề người dùng chọn (số dòng trong trang tính); offset = số dòng phía trên phần bảng này."""
+    numbered = [(n, r) for n, r in enumerate(rows, offset + 1) if any(c for c in r)]   # số dòng thật trong tệp
     rows = [r for _, r in numbered]
     if not rows:
         return [], [], {}
     width = max(len(r) for r in rows)
     rows = [r + [""] * (width - len(r)) for r in rows]
-    hi = _header_index(rows)
+    hi = next((i for i, (n, _) in enumerate(numbered) if n == header_row), None) if header_row else None
+    chosen = hi is not None
+    if not chosen:
+        hi = _header_index(rows)
     how = {"header_row": numbered[hi][0] if hi is not None else None,
            "skipped_above": [" | ".join(c for c in r if c)[:160] for r in rows[:hi or 0]]}
+    if chosen:
+        how["header_chosen"] = True
+    two = None
+    if hi is not None and hi + 1 < len(rows):
+        spans = [(a, b) for (r1, a, r2, b) in (merged or []) if r1 == numbered[hi][0] and b > a]
+        two = _two_row_header(rows[hi], rows[hi + 1], spans)
     if hi is None:
         headers, data = [f"Cột {i + 1}" for i in range(width)], rows
+    elif two:
+        headers, data = two, rows[hi + 2:]
+        how["two_row_header"] = True
     else:
         headers, data = rows[hi], rows[hi + 1:]
         headers = [h or ("Họ và tên đệm" if i + 1 < width and _norm(headers[i + 1]) == "ten" else f"Cột {i + 1}")
@@ -233,10 +287,43 @@ def _ai_title(headers: list[str], data: list[list[str]], guess: str | None) -> s
     return t if t in headers else None
 
 
-def table_records(name: str, rows: list[list[str]], filename: str, use_ai: bool = True) -> tuple[list[dict], dict]:
-    headers, data, how = _clean_table(rows)
+def _consistency(lines: list[list[str]]) -> list[float]:
+    """Mỗi dòng (hoặc cột): tỉ lệ ô cùng kiểu (toàn số / toàn chữ). 1.0 = đồng nhất."""
+    out = []
+    for l in lines:
+        v = [c for c in l if c]
+        if len(v) >= 2:
+            k = sum(_numeric(c) for c in v) / len(v)
+            out.append(max(k, 1 - k))
+    return out
+
+
+def _sideways(headers: list[str], data: list[list[str]]) -> bool:
+    """Bảng nằm ngang: cột đầu là tên trường ("Giá", "Màu"…), mỗi cột sau là một bản ghi. Nhận ra khi từng DÒNG cùng kiểu
+    (dòng "Giá" toàn số) còn từng CỘT lẫn kiểu — ngược với bảng thường. Chỉ xét bảng nhỏ có cả dòng số và dòng chữ."""
+    if not 2 <= len(data) <= 40 or len(headers) < 3:
+        return False
+    labels = [r[0] for r in data]
+    if not all(l and not _numeric(l) and len(l) <= 60 for l in labels) or len(set(labels)) != len(labels):
+        return False
+    body = [r[1:] for r in data]
+    rows_c, cols_c = _consistency(body), _consistency([list(c) for c in zip(*body)])
+    if not rows_c or not cols_c:
+        return False
+    kinds = [sum(_numeric(c) for c in l if c) / max(1, sum(1 for c in l if c)) for l in body]
+    return (sum(rows_c) / len(rows_c) >= 0.9 and sum(cols_c) / len(cols_c) <= 0.75
+            and any(k >= 0.8 for k in kinds) and any(k <= 0.2 for k in kinds))
+
+
+def table_records(name: str, rows: list[list[str]], filename: str, use_ai: bool = True, merged: list | None = None,
+                  header_row: int | None = None, offset: int = 0) -> tuple[list[dict], dict]:
+    headers, data, how = _clean_table(rows, merged, header_row, offset)
     if not data:
         return [], {"kind": "empty"}
+    if _sideways(headers, data):   # xoay lại: mỗi cột thành một bản ghi
+        corner = headers[0] if headers[0] and not headers[0].startswith("Cột") else "Tên"
+        headers, data = [corner] + [r[0] for r in data], [[h] + [r[i] for r in data] for i, h in enumerate(headers) if i > 0]
+        how["sideways"] = True
     if len(headers) == 1:   # một cột: là ghi chú/văn bản (câu dài) thì coi như văn bản
         vals = [headers[0]] + [r[0] for r in data]
         if sum(len(v) for v in vals) / len(vals) > 40 or headers[0].startswith("Cột"):
@@ -295,14 +382,58 @@ def text_records(title: str, text: str, source: str) -> list[dict]:
             for i, t in enumerate(pieces, 1)]
 
 
-def to_records(path: Path, filename: str, use_ai: bool = True) -> tuple[list[dict], dict]:
-    """Tệp -> (bản ghi theo cấu trúc định sẵn, mô tả cách đã khớp)."""
+def _blocks(rows: list[list[str]]) -> list[tuple[int, list[list[str]]]]:
+    """Nhiều bảng trong một trang tính: tách tại dòng trống khi phần sau bắt đầu bằng dòng tiêu đề riêng.
+    Phần quá nhỏ (dòng tên bảng phía trên) gộp vào phần sau; dòng trống giữa dữ liệu thì gộp vào phần trước.
+    Trả [(số dòng phía trên phần này, các dòng)]."""
+    segs, cur, start = [], [], 0
+    for i, r in enumerate(rows):
+        if any(c for c in r):
+            if not cur:
+                start = i
+            cur.append(r)
+        elif cur:
+            segs.append((start, cur)); cur = []
+    if cur:
+        segs.append((start, cur))
+    out: list[tuple[int, list[list[str]]]] = []
+    pending = None
+    for start, seg in segs:
+        if pending is not None:   # phần nhỏ phía trên (tên bảng) gộp vào phần này
+            seg = rows[pending:start] + seg
+            start, pending = pending, None
+        if len(seg) < 3:
+            pending = start
+            continue
+        width = max(sum(1 for c in r if c) for r in seg[:5])
+        is_new = out and _header_index(seg) == 0 and width >= 2 and [c for c in seg[0] if c] != [c for c in out[-1][1][0] if c]
+        if out and not is_new:
+            p0, prev = out[-1]
+            out[-1] = (p0, rows[p0:start] + seg)
+        else:
+            out.append((start, seg))
+    if pending is not None:
+        if out:
+            p0, prev = out[-1]
+            out[-1] = (p0, rows[p0:])
+        else:
+            out.append((pending, rows[pending:]))
+    return out or [(0, rows)]
+
+
+def to_records(path: Path, filename: str, use_ai: bool = True, overrides: dict | None = None) -> tuple[list[dict], dict]:
+    """Tệp -> (bản ghi theo cấu trúc định sẵn, mô tả cách đã khớp). overrides = {tên phần: dòng tiêu đề người dùng chọn}."""
     recs, maps = [], []
+    overrides = overrides or {}
     for part in read(path):
         if part[0] == "table":
-            r, m = table_records(part[1], part[2], filename, use_ai)
-            if r:
-                recs += r; maps.append(m if m["kind"] != "text" else {"kind": "text", "title": m["title"], "chunks": m["chunks"]})
+            merged = part[3] if len(part) > 3 else None
+            blocks = _blocks(part[2])
+            for k, (off, rows) in enumerate(blocks, 1):
+                pname = part[1] if len(blocks) == 1 else f"{part[1]} · bảng {k}"
+                r, m = table_records(pname, rows, filename, use_ai, merged, overrides.get(pname), off)
+                if r:
+                    recs += r; maps.append(m if m["kind"] != "text" else {"kind": "text", "title": m["title"], "chunks": m["chunks"]})
         else:
             r = text_records(part[1], part[2], part[3])
             if r:

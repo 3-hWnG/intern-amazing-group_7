@@ -71,6 +71,18 @@ EVIDENCE_CHARS = 700
 KB_NOT_FOUND_MESSAGE = 'Thông tin này không có trong các bộ dữ liệu đang bật nên chúng tôi không thể trả lời. Bạn có thể hỏi cụ thể hơn về nội dung trong dữ liệu, hoặc tắt bộ dữ liệu để trò chuyện chung.'
 EMBED_MODEL = 'bge-m3'
 TRACE_KEEP = 1000
+THINK_MODEL = ''
+KEEP_MODELS_LOADED = False
+PROMPT_CACHE_ORDER = False
+FAST_FORMAT = 'json'
+PLAN_MAX_CHARS = 300
+GREETING_MODE = 'off'
+GREETING_MAX_WORDS = 4
+GREETING_WORDS = 'xin chào|chào|hello|hi|hey|alo|cảm ơn|cám ơn|thank|thanks|tks|tạm biệt|bye|goodbye|hẹn gặp lại|chúc ngủ ngon|good night|good morning|ok|oke|okay|vâng|dạ|tuyệt'
+GROUNDING_CHECK = 'off'
+AMBIGUITY_CHECK = False
+AMBIGUITY_MAX = 5
+TABLE_TOOL = False
 # ==== HẾT MẶC ĐỊNH ====
 
 # Danh sách cài đặt hiện trên panel. type: str | text (nhiều dòng) | int | float | bool | choice | rules
@@ -125,7 +137,10 @@ SETTINGS = [
          help="Đổi model phải xử lý lại toàn bộ dữ liệu."),
     dict(key="TRACE_KEEP", type="int", group="Bộ công cụ dev", label="Giữ chi tiết bao nhiêu câu trả lời gần nhất", min=50, max=100000,
          help="Chi tiết (tìm kiếm, lời dặn, suy nghĩ ẩn…) cho nút 🔍 Soi; mỗi câu khoảng 10-20 KB. Câu cũ hơn tự xoá."),
-    dict(key="FRIENDLY_MODEL", type="str", group="AI (Friendly)", label="Model", help="Tên model trong Ollama."),
+    dict(key="FRIENDLY_MODEL", type="str", group="AI (Friendly)", label="Model (trả lời nhanh)",
+         help="Tên model trong Ollama cho chế độ Nhanh, bộ nhớ, tóm tắt. Ứng viên: qwen3:4b-instruct-2507-q4_K_M (không suy nghĩ)."),
+    dict(key="THINK_MODEL", type="str", optional=True, group="AI (Friendly)", label="Model Suy nghĩ kỹ",
+         help="Model cho \"Suy nghĩ kỹ\" (phải biết suy nghĩ, vd. qwen3:4b). Để trống = dùng model trả lời nhanh."),
     dict(key="DEFAULT_ANSWER_MODE", type="choice", choices=["fast", "think"], group="AI (Friendly)",
          label="Chế độ trả lời mặc định",
          help="fast = trả lời nhanh (~1-3 giây, không suy nghĩ). think = suy nghĩ kỹ (~30 giây). Người dùng vẫn bật/tắt "
@@ -138,4 +153,34 @@ SETTINGS = [
          min=0, max=200, help="Bao nhiêu tin gần nhất của hội thoại được gửi cho AI để giữ ngữ cảnh."),
     dict(key="FRIENDLY_TIMEOUT", type="int", group="AI (Friendly)", label="Thời gian chờ tối đa (giây)", min=10, max=600),
     dict(key="FRIENDLY_QUEUE_MAX", type="int", group="AI (Friendly)", label="Số câu hỏi tối đa đang chờ", min=1, max=500),
+    # ---- NV5: tốc độ & độ chính xác (mặc định = như trước NV5; bộ đo system4/eval/bench.py chọn giá trị tốt nhất)
+    dict(key="KEEP_MODELS_LOADED", type="bool", group="Tốc độ & độ chính xác", label="Giữ model luôn nạp sẵn",
+         help="Bật: nạp model trả lời ngay khi bật server và không tự gỡ khỏi card đồ hoạ (tránh câu chậm 10+ giây). "
+              "Tốn 3-4 GB bộ nhớ card đồ hoạ cả khi không dùng."),
+    dict(key="PROMPT_CACHE_ORDER", type="bool", group="Tốc độ & độ chính xác", label="Sắp lời dặn để AI đọc lại nhanh",
+         help="Bật: phần lời dặn không đổi đứng trước, dữ liệu tìm được + lời dặn riêng từng câu đặt cuối (cạnh câu hỏi) "
+              "để Ollama dùng lại phần đã đọc ở câu trước."),
+    dict(key="FAST_FORMAT", type="choice", choices=["json", "text"], group="Tốc độ & độ chính xác", label="Cách AI viết ở chế độ Nhanh",
+         help="json = ép khuôn JSON {plan, answer, ...} (như trước). text = một dòng kế hoạch ẩn rồi viết câu trả lời tự do "
+              "(chỉ dùng với model không suy nghĩ, vd. bản Instruct). Cả hai đều giữ bước lập kế hoạch."),
+    dict(key="PLAN_MAX_CHARS", type="int", group="Tốc độ & độ chính xác", label="Độ dài kế hoạch ẩn tối đa (ký tự)", min=100, max=1500,
+         help="AI ghi kế hoạch ngắn trước khi trả lời (người dùng không thấy). Dài hơn có thể chính xác hơn nhưng chậm hơn."),
+    dict(key="GREETING_MODE", type="choice", choices=["off", "code_first", "ai_first", "ai_only"], group="Tốc độ & độ chính xác",
+         label="Chào hỏi khi đang bật dữ liệu",
+         help="off = như trước (mọi tin đều tra dữ liệu). code_first = code nhận câu chào ngắn trước (bỏ qua tìm kiếm), AI xử lý phần còn lại. "
+              "ai_first = AI tự nhận câu xã giao, code kiểm lại. ai_only = chỉ AI quyết định."),
+    dict(key="GREETING_MAX_WORDS", type="int", group="Tốc độ & độ chính xác", label="Câu chào: tối đa bao nhiêu chữ", min=1, max=12,
+         help="Code chỉ coi là câu chào khi tin nhắn có tối đa từng ấy chữ VÀ có từ chào hỏi (vd. \"Hi, mình muốn hỏi thủ tục X\" không tính)."),
+    dict(key="GREETING_WORDS", type="str", group="Tốc độ & độ chính xác", label="Từ chào hỏi / cảm ơn / tạm biệt",
+         help="Cách nhau bởi |. Gõ có dấu; code tự nhận cả bản không dấu cho từ dài (\"cam on\", \"chao\")."),
+    dict(key="GROUNDING_CHECK", type="choice", choices=["off", "rewrite"], group="Tốc độ & độ chính xác", label="Kiểm chi tiết bịa",
+         help="rewrite: câu trả lời có số / ngày / số điện thoại / email / tên riêng không có trong dữ liệu (hoặc số điện thoại, email "
+              "của doanh nghiệp không có trong mô tả) -> AI viết lại một lần, được báo rõ chi tiết nào không có. Chỉ tốn thêm 2-4 giây khi bắt được."),
+    dict(key="AMBIGUITY_CHECK", type="bool", group="Tốc độ & độ chính xác", label="Hỏi lại khi trùng tên",
+         help="Bật: tên được hỏi khớp 2 đến N bản ghi trong một bảng (vd. hai bạn tên An) -> hỏi \"Bạn muốn hỏi về mục nào?\" kèm nút họ tên đầy đủ."),
+    dict(key="AMBIGUITY_MAX", type="int", group="Tốc độ & độ chính xác", label="Trùng tên: tối đa N bản ghi", min=2, max=10,
+         help="Khớp nhiều hơn số này thì coi là từ chung (vd. \"giấy phép\"), không hỏi lại."),
+    dict(key="TABLE_TOOL", type="bool", group="Tốc độ & độ chính xác", label="Công cụ bảng (đếm / tổng / liệt kê)",
+         help="Bật: câu hỏi kiểu \"bao nhiêu bạn nữ\", \"liệt kê tất cả\", \"tổng\" -> AI đổi câu hỏi thành phép lọc, code tính trên TOÀN BỘ bảng. "
+              "Thêm khoảng 1-2 giây cho các câu này."),
 ]

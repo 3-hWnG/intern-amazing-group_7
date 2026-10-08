@@ -16,7 +16,7 @@ import threading
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from . import admin, auth, config, datasets, db, routes, search, strict
+from . import admin, auth, config, datasets, db, llm, routes, search, strict
 
 PUBLIC = {"/s4/login", "/s4/auth/login", "/s4/auth/signup", "/s4/auth/logout", "/s4/public", "/health", "/favicon.ico"}
 _CONV = re.compile(r"^/conversations/([^/]+)")
@@ -27,6 +27,7 @@ def install(app, s3_store) -> None:
     datasets.resume_unfinished()   # tệp đang nạp dở khi tắt server -> nạp lại
     if os.environ.get("S4_WARMUP", "1") == "1":   # test đặt S4_WARMUP=0
         threading.Thread(target=search.warm_up, name="s4-warmup", daemon=True).start()   # nạp sẵn bge-m3 + reranker
+        threading.Thread(target=llm.warm_up, name="s4-warmup-llm", daemon=True).start()   # KEEP_MODELS_LOADED: nạp sẵn model trả lời
     state = {"legacy": False}
 
     def strict_list(user: dict) -> list[dict]:

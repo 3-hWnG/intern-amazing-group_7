@@ -8,7 +8,9 @@ import atexit
 import logging
 import re
 import threading
+import time
 import unicodedata
+from concurrent.futures import ThreadPoolExecutor
 
 import ollama
 
@@ -21,6 +23,7 @@ RERANKER_DIR = config.S4_DIR / "models" / "bge-reranker-v2-m3"
 _lock = threading.Lock()    # nạp model / chạy reranker
 _qlock = threading.Lock()   # Qdrant local mode: một thao tác tại một thời điểm (luồng nạp dữ liệu + luồng trả lời)
 _q = None
+_pool = ThreadPoolExecutor(max_workers=2, thread_name_prefix="s4-embed")
 _rr = {"model": None, "tok": None, "device": None, "failed": False}
 
 
@@ -40,7 +43,7 @@ def _qdrant():
 
 def embed(texts: list[str]) -> list[list[float]]:
     res = ollama.Client(host=config.OLLAMA_HOST, timeout=300).embed(
-        model=settings.get("EMBED_MODEL"), input=[t[:3000] for t in texts], keep_alive="30m")
+        model=settings.get("EMBED_MODEL"), input=[t[:3000] for t in texts], keep_alive=-1 if settings.get("KEEP_MODELS_LOADED") else "30m")
     return res["embeddings"]
 
 
@@ -152,9 +155,17 @@ def search(user_id: int, query: str, dataset_ids: list[int] | None = None, overr
         info["candidates"] = []
         return [], info
     n = cfg("RETRIEVAL_CANDIDATES")
+    ms = {}
+    t0 = time.perf_counter()
+    emb = _pool.submit(embed, [query])   # tạo vector câu hỏi (Ollama) song song với tìm từ khoá (SQLite)
     kw = _keyword_search(query, ids, n)
+    ms["keyword_ms"] = int((time.perf_counter() - t0) * 1000)
     try:
-        vec = _vector_search(embed([query])[0], ids, n)
+        qv = emb.result()[0]
+        ms["embed_ms"] = int((time.perf_counter() - t0) * 1000)
+        t1 = time.perf_counter()
+        vec = _vector_search(qv, ids, n)
+        ms["vector_ms"] = int((time.perf_counter() - t1) * 1000)
     except Exception as e:
         log.warning("tìm theo nghĩa lỗi: %s", e)
         vec = []
@@ -171,7 +182,10 @@ def search(user_id: int, query: str, dataset_ids: list[int] | None = None, overr
     info.update(keyword=len(kw), vector=len(vec), candidates_n=len(cands))
     scores = None
     if cfg("RERANKER_ENABLED") and cands:
+        t1 = time.perf_counter()
         scores = rerank(query, [c["text"] for c in cands])
+        ms["rerank_ms"] = int((time.perf_counter() - t1) * 1000)
+    info["timing"] = ms
     if scores is not None:
         info["reranked"] = True
         for c, sc in zip(cands, scores):

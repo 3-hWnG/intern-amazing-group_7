@@ -32,6 +32,11 @@ class FeedbackIn(BaseModel):
     value: int   # 1 | -1 | 0
 
 
+class HeaderRowIn(BaseModel):
+    part: str   # tên phần trong "Cách đọc" (trang tính, hoặc "trang tính · bảng 2")
+    row: int    # số dòng trong trang tính; 0 = tự đoán
+
+
 class DatasetPatch(BaseModel):
     active: bool | None = None
     name: str | None = None
@@ -323,6 +328,25 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
     def retry_dataset(ds_id: int, request: Request):
         ds = own_dataset(request, ds_id)
         db.update_dataset(ds_id, status="queued", progress=0, message="Đang chờ xử lý lại…")
+        datasets.enqueue(ds["id"])
+        return {"ok": True}
+
+    @r.post("/datasets/{ds_id}/header")
+    def set_header_row(ds_id: int, body: HeaderRowIn, request: Request):
+        """"Cách đọc": người dùng chọn lại dòng tiêu đề cột cho một bảng (0 = để hệ thống tự đoán) -> xử lý lại tệp."""
+        ds = own_dataset(request, ds_id)
+        try:
+            mapping = json.loads(ds.get("mapping") or "{}")
+        except ValueError:
+            mapping = {}
+        ov = dict(mapping.get("overrides") or {})
+        if body.row > 0:
+            ov[body.part] = body.row
+        else:
+            ov.pop(body.part, None)
+        mapping["overrides"] = ov
+        db.update_dataset(ds_id, mapping=json.dumps(mapping, ensure_ascii=False), status="queued", progress=0,
+                          message="Đang chờ xử lý lại với dòng tiêu đề đã chọn…")
         datasets.enqueue(ds["id"])
         return {"ok": True}
 

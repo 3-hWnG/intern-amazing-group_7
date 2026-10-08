@@ -34,3 +34,6 @@ eval/results/*
 system4/runtime/
 system4/models/
 system4/server/config.py.bak
+# NV5 bộ đo: server riêng + kết quả thô (kết quả chọn lọc ghi trong docs/SYSTEM4_NV5_TOC_DO_CHINH_XAC.md)
+system4/eval/bench_runtime/
+system4/eval/results/bench/

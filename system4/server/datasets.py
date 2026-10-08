@@ -138,7 +138,13 @@ def process(ds_id: int) -> None:
         pass
     db.delete_records(ds_id)
     try:
-        recs, mapping = ingest.to_records(path, ds["filename"])
+        overrides = json.loads(ds.get("mapping") or "{}").get("overrides") or {}   # dòng tiêu đề người dùng tự chọn ("Cách đọc")
+    except ValueError:
+        overrides = {}
+    try:
+        recs, mapping = ingest.to_records(path, ds["filename"], overrides=overrides)
+        if overrides:
+            mapping["overrides"] = overrides
     except ingest.IngestError as e:
         db.update_dataset(ds_id, status="error", progress=0, message=str(e))
         return

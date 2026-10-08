@@ -356,7 +356,8 @@
       row.appendChild(el("span", "", srcs.length ? "Nguồn:" : "Đã tra cứu:"));
       (srcs.length ? srcs : consulted).forEach((s) => {
         const c = el("button", "src-chip", (s.n ? "[" + s.n + "] " : "") + s.title);
-        c.type = "button"; c.title = s.title + " · " + s.dataset; c.onclick = () => openRecord(s.record_id);
+        c.type = "button"; c.title = s.title + " · " + s.dataset;
+        if (s.record_id) c.onclick = () => openRecord(s.record_id); else c.disabled = true;   /* kết quả công cụ bảng: không có bản ghi riêng */
         row.appendChild(c);
       });
       w.appendChild(row);
