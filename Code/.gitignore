@@ -1,0 +1,49 @@
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+*.log
+# DB dựng lại được bằng: python -m system3.data.build (58 MB)
+data/runtime/
+*.db
+*.db-wal
+*.db-shm
+# kết quả đo: chỉ giữ vài file mốc
+eval/results/*
+!eval/results/baseline.json
+!eval/results/dot3_p8_baseline.json
+!eval/results/coord_r3.json
+!eval/results/coord_h2_r3.json
+!eval/results/coord_h3.json
+!eval/results/final_llm_h3.json
+!eval/results/concise_base.json
+!eval/results/v20.json
+!eval/results/v20_concise.json
+!eval/results/h4_rules.json
+!eval/results/h4_hybrid.json
+!eval/results/pr2_rules.json
+!eval/results/pr2_hybrid.json
+!eval/results/pseudo_real.json
+!eval/results/team.json
+!eval/results/h3_final.json
+# nguồn số cho eval/check_docs.py (nhỏ)
+!eval/results/p23d.json
+!eval/results/p23_concise.json
+!eval/results/ctx.json
+!eval/results/ctx_p23.json
+!eval/results/perturb_p23.json
+!eval/results/synth.txt
+!eval/results/p26.json
+eval/runtime/
+# mã V10.6 vendor (eval/vendor_v106, ~80 KB) và các file ca nhỏ: COMMIT (không ignore)
+# Tệp khoá tạm của Word/LibreOffice khi đang mở .docx
+.~lock.*#
+~$*
+# System 4: dữ liệu chạy (DB, dataset người dùng), model tải về, bản sao lưu config
+system4/runtime/
+system4/models/
+system4/server/config.py.bak
+# NV5 bộ đo: server riêng + kết quả thô (kết quả chọn lọc ghi trong docs/SYSTEM4_NV5_TOC_DO_CHINH_XAC.md)
+system4/eval/bench_runtime/
+system4/eval/results/bench/

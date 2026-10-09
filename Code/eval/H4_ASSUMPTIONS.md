@@ -1,0 +1,124 @@
+# H4 / pseudo_real2 - gia dinh & ly do (moi cau mot dong)
+
+Format: id | cau hoi | dap an (proc_id) | ly do. '~' = cau doi thuong (khong dau/viet tat/ke hoan canh).
+
+- h4-001 | giay to xin cap lai giay xac nhan khuyet tat can nhung gi | 1.001653 | ~khong dau. Thu tuc Doi, cap lai Giay xac nhan khuyet tat.
+- h4-002 | khai tu cho ong noi thi bao lau co ket qua vay | 1.000656 | ~khong dau, cau cut. Mac dinh khai tu trong nuoc (khong co yeu to NN).
+- h4-003 | Giấy xác nhận tình trạng hôn nhân nộp ở đâu vậy ad | 1.004873 | ~goi 'ad'.
+- h4-004 | tách hộ thì phải đủ điều kiện gì mới được | 1.010038 | Thu tuc 'Tach ho' duy nhat.
+- h4-005 | tạm trú sắp hết hạn muốn gia hạn mang theo giấy gì | 1.002755 | Gia han tam tru.
+- h4-006 | thủ tục công nhận hòa giải viên nộp hồ sơ ở đâu | 1.002211 | Co 'cong nhan hoa giai vien (cap xa)'; khong nham voi cong nhan to truong (2.000950).
+- h4-007 | nhà em có cây xanh trước cửa cản đường điện muốn xin chặt thì cần giấy tờ gì | 1.002693,1.014052 | ~ke hoan canh. Hai thu tuc chat ha cay xanh (chung va UBND xa); chap nhan ca hai.
+- h4-008 | đăng ký hoạt động tín ngưỡng cần hồ sơ gì | 1.012592 | Phan biet voi 'bo sung hoat dong tin nguong' 1.012591 - cau noi 'dang ky' tro.
+- h4-009 | muốn mở tiệm tạp hoá nhỏ đăng ký hộ kinh doanh thì nộp ở đâu | 1.001612 | ~ke hoan canh.
+- h4-010 | đăng ký nghĩa vụ quân sự lần đầu thì ai phải đi đăng ký | 1.013133 | Khop truc tiep ten/noi dung thu tuc.
+- h4-011 | xét gia đình văn hóa phải đạt tiêu chí nào | 6.006758 | Co the DB khong liet ke day du tieu chi; chi can tra ve thu tuc/dieu kien co trong du lieu.
+- h4-012 | lễ hội làng mình tổ chức thì phải thông báo trước bao nhiêu ngày | 1.003622,1.013791 | Co 2 thu tuc le hoi cap xa (thong bao 1.003622, dang ky 1.013791); chap nhan ca hai, uu tien thong bao.
+- h4-013 | hồ sơ xin hỗ trợ mai táng cho người đang nhận trợ cấp xã hội hàng tháng gồm gì | 1.001731,3.000731 | Hai thu tuc gan nhau cung ten doi tuong; chap nhan ca hai.
+- h4-014 | mat bang to quoc ghi cong gia dinh minh muon xin cap lai thi can giay to gi | 1.010778 | ~khong dau, thieu dau cau.
+- h4-015 | nhận con nuôi trong nước hồ sơ gồm những gì | 2.001263 | 'trong nuoc' => 2.001263 (khong phai co yeu to NN/bien gioi).
+- h4-016 | xin xac nhan thong tin cu tru mat may ngay | 1.010041 | ~khong dau.
+- h4-017 | thông báo lưu trú là gì, nhà có khách ở lại có phải báo không | 2.001159 | ~hoi doi thuong.
+- h4-018 | làm giám hộ cho cháu nhỏ mồ côi cha mẹ thì cần giấy tờ gì | 1.004837 | ~ke hoan canh.
+- h4-019 | khai báo tạm vắng khi đi làm xa dài ngày có phải làm không | 1.003677 | ~doi thuong.
+- h4-020 | cấp giấy xác nhận thân nhân người có công cần đem theo gì | 1.010833 | Khop truc tiep ten/noi dung thu tuc.
+- h4-021 | đăng ký sinh hoạt tôn giáo tập trung nộp hồ sơ tại đâu | 1.012590 | Khop truc tiep ten/noi dung thu tuc.
+- h4-022 | xây nhà cấp 4 mới trong xã cần xin phép không, hồ sơ gì | 1.013225 | Nhà ở riêng lẻ cấp III/IV; cung cap 1.013225 (cap moi). 1.009122 la co thoi han nen khong chap nhan.
+- h4-023 | đăng ký khai sinh cho con cần giấy tờ gì, có mất phí không, bao lâu thì lấy được giấy khai sinh | 1.001193 | Hoi nhieu thong tin mot thu tuc.
+- h4-024 | cho mình hỏi đăng ký kết hôn hồ sơ gồm gì, nộp ở đâu, lệ phí bao nhiêu | 1.000894 | Mac dinh ket hon trong nuoc, chua co yeu to NN.
+- h4-025 | đổi thẻ căn cước thì cần giấy tờ gì, phí bao nhiêu, bao lâu nhận được | 1.116410 | Khop truc tiep ten/noi dung thu tuc.
+- h4-026 | dk thuong tru can dieu kien gi, ho so nhung gi, may ngay xong | 1.004222 | ~viet tat, khong dau.
+- h4-027 | xin giay xac nhan tinh trang hon nhan can giay to gi, ton bao nhieu, may ngay lay | 1.004873 | ~khong dau.
+- h4-028 | chứng thực chữ ký ở đâu, phí bao nhiêu, mang giấy tờ gì | 2.000884 | Khop truc tiep ten/noi dung thu tuc.
+- h4-029 | đăng ký lại khai sinh điều kiện là gì, hồ sơ gì, mất mấy ngày | 1.004884 | Khop truc tiep ten/noi dung thu tuc.
+- h4-030 | đăng ký tạm trú giấy tờ gì, mất mấy ngày, có tốn tiền ko | 1.004194 | ~viet tat.
+- h4-031 | chứng thực bản sao từ bản chính mỗi trang bao nhiêu tiền | 2.000815 | DB: 2.000 dong/trang (kiem tra fees_clean).
+- h4-032 | chứng thực chữ ký một trường hợp thu bao nhiêu | 2.000884 | DB: 10.000 dong/truong hop.
+- h4-033 | chung thuc di chuc het bao nhieu tien | 2.001019 | ~khong dau. DB: 50.000 dong/di chuc.
+- h4-034 | làm lại thẻ căn cước bị mất tốn bao nhiêu | 1.116410 | ~doi thuong. DB: cap lai 70.000 (uu dai 50% den 31/12/2026).
+- h4-035 | bản sao trích lục khai sinh lệ phí bao nhiêu một bản | 2.000635 | DB: 8.000 dong.
+- h4-036 | đăng ký nuôi con nuôi trong nước tốn bao nhiêu tiền | 2.001263 | DB: 400.000 dong.
+- h4-037 | xác định mức độ khuyết tật mất bao nhiêu ngày làm việc | 1.001699 | DB: 25 ngay lam viec.
+- h4-038 | đổi bằng lái xe của người nước ngoài thu phí bao nhiêu một lần | 3.000351 | DB: 115.000 dong/lan. (Chi la bang lai nuoc ngoai, khong phai bang lai thuong.)
+- h4-039 | cho mình hỏi thủ tục xin cấp giấy chứng nhận quyền sử dụng đất | 1.012753,1.013978,1.115240,1.115375,1.115454,1.115582,1.115621 | Rat nhieu bien the (lan dau, cap lai, tai dinh cu, ca nhan/to chuc...). Khong the chon duy nhat.
+- h4-040 | nhà mình muốn được công nhận hộ nghèo làm thế nào | 1.011606,1.011607,1.116214,1.116215 | Dinh ky hang nam vs thuong xuyen vs trong nam; can hoi lai.
+- h4-041 | cần chứng thực chữ ký người dịch | 2.000992,2.001008 | Hai bien the: nguoi dich la CTV cua UBND hay khong.
+- h4-042 | tôi muốn đăng ký lại | 1.004746,1.004884,1.005461 | Cau cut: dang ky lai ket hon/khai sinh/khai tu.
+- h4-043 | hỗ trợ chuyển đổi nghề cho tàu cá | 1.014604,1.014971,1.115156,3.000580 | Nhieu thu tuc ho tro chuyen doi nghe/giai ban theo nghi quyet tinh khac nhau.
+- h4-044 | xin giay phep xay dung | 1.013225,1.013226,1.013227,1.013228,1.013229,1.009122 | ~khong dau. Moi / dieu chinh / gia han / cap lai / sua chua.
+- h4-045 | xin hỗ trợ mai táng phí cho người nhà vừa mất | 1.001731,1.010456,2.002307,2.002308,3.000731,1.014028 | Doi tuong khac nhau (bao tro XH, cuu chien binh, TNXP...). Can hoi doi tuong.
+- h4-046 | xin giấy xác nhận | 1.004873,1.010041,1.010833,1.014103,1.010386 | Qua mo ho, khong ro xac nhan gi.
+- h4-047 | giải thể thì làm sao nhỉ | 1.004982,1.013708,1.014947,2.002893,1.012974 | ~cau cut. Giai the hop tac xa / hoi / quy / truong...
+- h4-048 | đính chính giấy chứng nhận đã cấp có sai sót | 1.012796,1.115226,1.115355,1.115516,1.115628 | Nhieu ban dinh chinh GCN dat theo tinh/cap khac nhau; khong ro noi cap.
+- h4-049 | hỗ trợ phát triển sản xuất cộng đồng thủ tục thế nào | 1.012124,1.014023,1.014399,1.014772,1.011467,1.011468 | Nhieu thu tuc cung ten theo chuong trinh muc tieu khac nhau.
+- h4-050 | ba me em de lai dat, em muon lam giay to dat sang ten cho em thi lam sao | 1.115535,1.115562,1.012753,1.013978 | ~ke hoan canh khong dau. Thua ke/dang ky bien dong dat: nhieu bien the, can hoi them (da co GCN chua?).
+- h4-051 | bé sinh ra mà bố mẹ chưa đăng ký kết hôn, bố muốn nhận con ngay lúc khai sinh thì sao | 1.000689,1.001193 | Khai sinh ket hop nhan cha me con.
+- h4-052 | chồng em là người Hàn, hai vợ chồng muốn đăng ký kết hôn ở xã được không | 2.000806 | Ket hon co yeu to nuoc ngoai (tai xa chi khi co dieu kien; chap nhan thu tuc 2.000806).
+- h4-053 | em ở sát biên giới, em lấy chồng bên Lào giờ muốn đăng ký kết hôn | 1.000094,2.000806 | ~ke hoan canh. Bien gioi uu tien 1.000094.
+- h4-054 | ông mất đã 3 năm rồi giờ mới đi khai tử có được không | 1.000656,1.005461 | ~ke hoan canh. Khai tu qua han / dang ky lai khai tu.
+- h4-055 | nhà em thuê trọ, chủ nhà không cho đăng ký thường trú thì có cách nào không | 1.004222,1.013314 | ~ke hoan canh. Xac nhan dien tich nha o + dang ky thuong tru.
+- h4-056 | gia đình sống trên ghe ở sông, muốn xin xác nhận nơi đậu để đăng ký cư trú | 1.013313 | ~ke hoan canh.
+- h4-057 | bà ngoại nằm liệt giường không đi được, xã có đến tận nhà đăng ký khai tử cho không | 1.000419 | ~ke hoan canh. Khai tu luu dong.
+- h4-058 | hộ nhà em đang ghi nợ tiền sử dụng đất vì tái định cư, giờ có tiền muốn trả nợ | 1.012996 | ~ke hoan canh. Thanh toan, xoa no tien su dung dat.
+- h4-059 | đăng ký khai sinh căn cứ vào luật nào | 1.001193 | Yeu cau can cu phap ly. Thu tuc co 15 van ban trong legal_basis.
+- h4-060 | thủ tục tách hộ dựa trên văn bản pháp luật nào vậy | 1.010038 | Khop truc tiep ten/noi dung thu tuc.
+- h4-061 | chứng thực di chúc quy định ở nghị định nào | 2.001019 | Khop truc tiep ten/noi dung thu tuc.
+- h4-062 | cho em xin nguồn văn bản quy định thủ tục xin giấy phép xây dựng nhà ở riêng lẻ cấp 4 | 1.013225 | Co 3 van ban legal_basis.
+- h4-063 | đăng ký hộ kinh doanh theo thông tư nào, nói rõ nguồn giúp em | 1.001612 | Co 6 van ban.
+- h4-064 | khai sinh cho con xong rồi làm luôn đăng ký thường trú cho bé thì làm sao | 1.001193,1.004222,3.000722 | Hai viec; chap nhan lien thong 3.000722.
+- h4-065 | mình muốn đăng ký tạm trú mới và khai báo tạm vắng ở chỗ cũ | 1.004194,1.003677 | Hai viec.
+- h4-066 | bố mất rồi, vừa phải đi khai tử vừa xin hỗ trợ mai táng, hồ sơ mỗi cái gì | 1.000656,1.001731,3.000731,2.002913 | ~ke hoan canh. Hai viec; chap nhan lien thong 2.002913.
+- h4-067 | em cần chứng thực di chúc và chứng thực văn bản từ chối nhận di sản | 2.001019,2.001016 | Hai viec.
+- h4-068 | đổi thẻ căn cước đồng thời điều chỉnh thông tin trong cơ sở dữ liệu dân cư | 1.116410,1.012564,1.014066 | Hai viec.
+- h4-069 | nghi ban hang roi nen dong cua ho kinh doanh, tien the cap lai luon giay chung nhan ho kinh doanh bi mat | 1.001266,2.000575 | ~khong dau, cau lung cung. Hai viec: cham dut hoat dong + cap lai GCN.
+- h4-070 | xóa tạm trú ở quê và đăng ký thường trú ở chỗ mới | 1.010028,1.004222 | Hai viec.
+- h4-071 | làm hộ chiếu mới cần giấy tờ gì ở phường | apologize | DB chi co 'trinh bao mat ho chieu' (1.010386); khong co cap ho chieu.
+- h4-072 | xin cấp phiếu lý lịch tư pháp số 1 ở đâu | apologize | Da kiem tra: khong co thu tuc Ly lich tu phap khop (chi co 2 muc khong lien quan).
+- h4-073 | muốn thành lập công ty TNHH thì làm sao | apologize | Khong co dang ky doanh nghiep (chi co ho kinh doanh/HTX); cap tinh.
+- h4-074 | bị mất việc rồi xin trợ cấp thất nghiệp ở đâu | apologize | ~Khong co thu tuc bao hiem that nghiep trong DB.
+- h4-075 | dang kiem xe oto o dau | apologize | ~khong dau. Khong co dang kiem trong DB.
+- h4-076 | em muốn thi bằng lái xe B2 thì đăng ký thế nào | apologize | Chi co doi GPLX quan su/nuoc ngoai; khong co sat hach cap moi.
+- h4-077 | khám sức khỏe để đi làm nộp hồ sơ ở xã được không | apologize | Khong co thu tuc kham suc khoe.
+- h4-078 | xin giấy phép mở quán karaoke | apologize | Khong co thu tuc karaoke trong DB (khac voi GCN an ninh trat tu).
+- h4-079 | xin visa di nhat can giay to gi | apologize | Ngoai pham vi xa; DB khong co cap thi thuc di nuoc ngoai.
+- h4-080 | cap lai bang tot nghiep thpt bi that lac o dau | apologize | ~khong dau. Khong co thu tuc van bang chung chi.
+- h4-081 | đăng ký bản quyền tác giả cho cuốn sách tôi viết | apologize | Khong co thu tuc ban quyen tac gia.
+- h4-082 | bị phạt nguội giao thông nộp tiền phạt ở đâu | apologize | Khong co thu tuc nop phat vi pham giao thong.
+- h4c-01 | đăng ký khai sinh cho con cần những gì || thế có mất phí không || xong rồi muốn đăng ký thường trú cho bé luôn thì sao | 1.001193,1.004222,3.000722 | Doi thoai: khai sinh -> phi -> thuong tru.
+- h4c-02 | mình muốn xin giấy phép xây nhà || nhà cấp 4 xây mới ở xã || mất bao lâu thì có giấy phép | 1.009122,1.013225,1.013226,1.013227,1.013228,1.013229 | Mo ho roi thu hep.
+- h4c-03 | nhà mình nghèo muốn được công nhận hộ nghèo || là công nhận định kỳ hằng năm ấy || nộp đơn ở đâu | 1.011606,1.011607,1.116214,1.116215 | Lan 2 chon dinh ky; chap nhan 2 ban (chuan cu/da chieu).
+- h4c-04 | ba mình mới mất || đi khai tử cần giấy tờ gì || có được hỗ trợ tiền mai táng không | 1.000656,1.001731,1.014028,2.002307,2.002913,3.000731 | Cau 1 chua ro y dinh -> hoi lai; luot 3 nhieu doi tuong.
+- h4c-05 | đăng ký tạm trú làm thế nào || hết hạn rồi thì gia hạn sao || còn khi chuyển đi nơi khác thì xóa tạm trú ra sao | 1.002755,1.004194,1.010028 | Doi thoai tam tru - gia han - xoa.
+- h4c-06 | chứng thực di chúc || phí bao nhiêu || còn chứng thực chữ ký người dịch thì sao | 2.000992,2.001008,2.001019 | Luot 3 doi chu de, 2 bien the.
+- h4c-07 | mình muốn mở hộ kinh doanh bán quần áo || nếu bán ế muốn nghỉ vài tháng thì làm sao || nghỉ hẳn luôn thì sao | 1.001266,1.001570,1.001612 | Vong doi ho kinh doanh.
+- h4c-08 | làm thẻ căn cước ở đâu vậy || con mình 5 tuổi có làm được không || làm xong thì xin luôn hộ chiếu cho cháu nhé | 1.116410 | Luot 3 ngoai kho (cap ho chieu). Luot 2: DB co the khong neu do tuoi; chap nhan tra loi theo du lieu hien co.
+- pr2-01 | nha em bi chay mat so do roi lam lai the nao a | 1.115621 | ~khong dau, ke hoan canh. Cap lai GCN do bi mat.
+- pr2-02 | bà nội 72 tuổi ở quê có được xã hỗ trợ tiền gì không | 1.014589,1.014027 | ~ke hoan canh. 70-75 tuoi (1.014589) hoac tro cap huu tri xa hoi tu 75 (1.014027); chap nhan ca hai.
+- pr2-03 | ba em la cuu chien binh vua mat xin tien mai tang o dau | 2.002307 | ~khong dau.
+- pr2-04 | con e bi tat bam sinh muon xin giay xac nhan khuyet tat | 1.001699 | ~teen, sai dau.
+- pr2-05 | e muon xin xac nhan thoat ngheo de con dc giam hoc phi | 1.014103 | ~viet tat/teen.
+- pr2-06 | chồng em nghiện, giờ chịu đi cai tự nguyện thì đăng ký ở đâu | 3.000527 | ~ke hoan canh.
+- pr2-07 | nha toi cho nguoi nuoc ngoai o tro thi phai khai bao gi | 1.000253 | ~khong dau. Khai bao tam tru cho nguoi nuoc ngoai.
+- pr2-08 | anh em minh muon lap hop tac xa trong thon thi nop o dau | 1.005280 | ~doi thuong.
+- pr2-09 | con gái 4 tuổi đi mẫu giáo thì có được hỗ trợ tiền ăn trưa ko | 1.001622 | ~ke hoan canh.
+- pr2-10 | minh lam hoa giai vien nhung gio het muon nghi thi lam don the nao | 2.000930 | ~khong dau.
+- pr2-11 | đất nhà em hàng xóm lấn ranh, em muốn nhờ xã hòa giải thì làm sao | 1.012812,1.115453,1.013967,1.115452 | ~ke hoan canh. Hoa giai tranh chap dat dai cap xa; chap nhan ban giai quyet cua chu tich xa.
+- pr2-12 | bố mình là thương binh làm mất giấy chứng nhận rồi | 1.010814 | ~ke hoan canh, cau cut.
+- pr2-13 | nha em muon keo nuoc may vao nha phai xin phep xa khong | 1.009159 | ~khong dau.
+- pr2-14 | cho tôi hỏi muốn tổ chức giảng đạo ngoài địa bàn thì làm gì | 1.013798 | Khop truc tiep ten/noi dung thu tuc.
+- pr2-15 | nhóm em muốn tổ chức lễ ngoài cơ sở tôn giáo thì xin ai | 1.013797 | ~doi thuong.
+- pr2-16 | doi bang lai xe nuoc ngoai cua chong em thi nop o dau | 3.000351 | ~khong dau. Chong la nguoi nuoc ngoai.
+- pr2-17 | xin dang ky hoat dong in an o xa duoc khong | 3.000569 | ~khong dau. Xac nhan dang ky hoat dong in (cap xa).
+- pr2-18 | bị heo rừng húc bị thương nặng có được xã hỗ trợ tiền viện phí không | 3.000724 | ~ke hoan canh. Dong vat rung gay ra.
+- pr2-19 | e lam cong nhan luong thap co duoc cong nhan nguoi lao dong thu nhap thap k | 3.000412 | ~viet tat.
+- pr2-20 | em là công chức xã muốn xin thôi việc thì làm thủ tục ra sao | 6.005261 | Thoi viec doi voi cong chuc.
+- pr2-21 | cap lai giay chung nhan so nha o dau a | 1.009141 | ~khong dau.
+- pr2-22 | em moi mua xe may muon dang ky bien so o dau | 1.115970 | ~khong dau. Dang ky xe (domain khac nhung co trong DB).
+- pr2-23 | xin cấp giấy chứng nhận người cao tuổi hưởng trợ cấp 75 tuổi trở lên | 1.014027 | Tro cap huu tri xa hoi.
+- pr2-24 | xin ho tro chi phi hoa tang cho nguoi nha | 1.012749,1.014036,1.012169,1.014582 | ~khong dau. Nhieu thu tuc ho tro hoa tang theo dia phuong khac nhau (Hue, Bac Ninh...). Can hoi tinh/thanh.
+- pr2-25 | lam lai so ho khau bi mat o dau vay | apologize | ~Khong co so ho khau (da bo); khong co thu tuc khop trong DB.
+- pr2-26 | mua bảo hiểm xe máy ở đâu rẻ | apologize | Khong co thu tuc va ngoai tham quyen.
+- pr2-27 | hôm nay trời có mưa không bạn | apologize | Chit-chat ngoai pham vi.
+- pr2-28 | xin giấy chứng nhận độc thân | 1.004873 | ~Cach goi khac cua giay xac nhan tinh trang hon nhan.
+- pr2c-01 | e muon xin cai giay xac nhan de lam ho ngheo || xac nhan thoat ngheo cho con di hoc || nop cho ai | 1.011606,1.011607,1.014103,1.116214,1.116215 | ~khong dau; mo ho roi cu the.
+- pr2c-02 | cho minh hoi thu tuc nhan chau lam con nuoi || chau o trong nuoc luon, la con cua em gai minh || le phi bao nhieu | 1.003005,2.001263,2.002349 | ~khong dau; bien the trong nuoc vs bien gioi.

@@ -1,0 +1,3394 @@
+[
+ {
+  "id": "dev-01",
+  "cat": "ctx_a",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "còn lệ phí?",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-02",
+  "cat": "ctx_a",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004194"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "mất mấy ngày",
+  "exp": [
+   "1.004194"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.004194",
+   "history": [
+    "1.004194"
+   ],
+   "state_before": {
+    "topic": "1.004194",
+    "history": [
+     "1.004194"
+    ],
+    "order": [
+     "1.004194"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-03",
+  "cat": "ctx_a",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.000894"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "nộp ở đâu vậy",
+  "exp": [
+   "1.000894"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-04",
+  "cat": "ctx_a",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004222"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "rồi nộp ở đâu",
+  "exp": [
+   "1.004222"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.004222",
+   "history": [
+    "1.004222"
+   ],
+   "state_before": {
+    "topic": "1.004222",
+    "history": [
+     "1.004222"
+    ],
+    "order": [
+     "1.004222"
+    ],
+    "fields": [
+     "processing_time"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-05",
+  "cat": "ctx_a",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.000656"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "rồi sao nữa",
+  "exp": [
+   "1.000656"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.000656",
+   "history": [
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.000656"
+    ],
+    "order": [
+     "1.000656"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-06",
+  "cat": "ctx_a",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004194"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "con le phi bn",
+  "exp": [
+   "1.004194"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.004194",
+   "history": [
+    "1.004194"
+   ],
+   "state_before": {
+    "topic": "1.004194",
+    "history": [
+     "1.004194"
+    ],
+    "order": [
+     "1.004194"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-07",
+  "cat": "ctx_a",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.010038"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "làm online dc ko",
+  "exp": [
+   "1.010038"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.010038",
+   "history": [
+    "1.010038"
+   ],
+   "state_before": {
+    "topic": "1.010038",
+    "history": [
+     "1.010038"
+    ],
+    "order": [
+     "1.010038"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-08",
+  "cat": "ctx_a",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.116410"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "mấy ngày có",
+  "exp": [
+   "1.116410"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.116410",
+   "history": [
+    "1.116410"
+   ],
+   "state_before": {
+    "topic": "1.116410",
+    "history": [
+     "1.116410"
+    ],
+    "order": [
+     "1.116410"
+    ],
+    "fields": [
+     "fees"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-09",
+  "cat": "ctx_b",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "có nộp mạng được không",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [
+     "processing_time"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-10",
+  "cat": "ctx_b",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.001612"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "có làm trực tuyến không",
+  "exp": [
+   "1.001612"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.001612",
+   "history": [
+    "1.001612"
+   ],
+   "state_before": {
+    "topic": "1.001612",
+    "history": [
+     "1.001612"
+    ],
+    "order": [
+     "1.001612"
+    ],
+    "fields": [
+     "fees"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-11",
+  "cat": "ctx_b",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.002755"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "vậy thời hạn bao lâu",
+  "exp": [
+   "1.002755"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.002755",
+   "history": [
+    "1.002755"
+   ],
+   "state_before": {
+    "topic": "1.002755",
+    "history": [
+     "1.002755"
+    ],
+    "order": [
+     "1.002755"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-12",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001022"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "thế còn đăng ký nhận cha mẹ con thì sao",
+  "exp": [
+   "1.001022"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói; kế thừa mục đang hỏi components",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-13",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "2.000635"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "rồi muốn xin bản sao trích lục khai sinh thì làm sao",
+  "exp": [
+   "2.000635"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói",
+   "topic_before": "1.001022",
+   "history": [
+    "1.001193",
+    "1.001022"
+   ],
+   "state_before": {
+    "topic": "1.001022",
+    "history": [
+     "1.001193",
+     "1.001022"
+    ],
+    "order": [
+     "1.001193",
+     "1.001022"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-14",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "3.000722"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "rồi bảo hiểm y tế cho trẻ em thì sao",
+  "exp": [
+   "3.000722"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "2.000635",
+   "history": [
+    "1.001193",
+    "1.001022",
+    "2.000635"
+   ],
+   "state_before": {
+    "topic": "2.000635",
+    "history": [
+     "1.001193",
+     "1.001022",
+     "2.000635"
+    ],
+    "order": [
+     "1.001193",
+     "1.001022",
+     "2.000635"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-15",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.004194"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "còn tạm trú thì sao",
+  "exp": [
+   "1.004194"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói; kế thừa mục đang hỏi components",
+   "topic_before": "1.004222",
+   "history": [
+    "1.004222"
+   ],
+   "state_before": {
+    "topic": "1.004222",
+    "history": [
+     "1.004222"
+    ],
+    "order": [
+     "1.004222"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-16",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.004873"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "thế giấy xác nhận tình trạng hôn nhân thì sao",
+  "exp": [
+   "1.004873"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói; kế thừa mục đang hỏi components",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-17",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.003197"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "còn xóa đăng ký thường trú cho người mất",
+  "exp": [
+   "1.003197",
+   "2.002913"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.000656",
+   "history": [
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.000656"
+    ],
+    "order": [
+     "1.000656"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-18",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001731"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "người mất có được hỗ trợ chi phí mai táng không",
+  "exp": [
+   "1.001731",
+   "3.000725"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.000656",
+   "history": [
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.000656"
+    ],
+    "order": [
+     "1.000656"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-19",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001570"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "còn muốn tạm ngừng kinh doanh thì sao",
+  "exp": [
+   "1.001570"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói; kế thừa mục đang hỏi components",
+   "topic_before": "1.001612",
+   "history": [
+    "1.001612"
+   ],
+   "state_before": {
+    "topic": "1.001612",
+    "history": [
+     "1.001612"
+    ],
+    "order": [
+     "1.001612"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-20",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "2.001019"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "thế chứng thực di chúc?",
+  "exp": [
+   "2.001019"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói; kế thừa mục đang hỏi components",
+   "topic_before": "2.000884",
+   "history": [
+    "2.000884"
+   ],
+   "state_before": {
+    "topic": "2.000884",
+    "history": [
+     "2.000884"
+    ],
+    "order": [
+     "2.000884"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-21",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001612"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "thế còn đăng ký thành lập hộ kinh doanh thì sao",
+  "exp": [
+   "1.001612"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-22",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001699"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "thế còn xác định mức độ khuyết tật thì sao",
+  "exp": [
+   "1.001699"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.004194",
+   "history": [
+    "1.004194"
+   ],
+   "state_before": {
+    "topic": "1.004194",
+    "history": [
+     "1.004194"
+    ],
+    "order": [
+     "1.004194"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-23",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.004837"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "còn đăng ký giám hộ?",
+  "exp": [
+   "1.004837"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-24",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.004884"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "còn đăng ký lại khai sinh thì sao",
+  "exp": [
+   "1.004884"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói; kế thừa mục đang hỏi components",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-25",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.000689"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "vậy khai sinh kết hợp nhận cha mẹ con thì cần gì",
+  "exp": [
+   "1.000689"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-26",
+  "cat": "ctx_d",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001022"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "ý tôi là đăng ký nhận cha mẹ con chứ không phải khai sinh",
+  "exp": [
+   "1.001022"
+  ],
+  "trace": {
+   "decision": "correction",
+   "why": "người dùng sửa ý: bỏ thủ tục bị phủ định/nêu lại thủ tục đúng",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-27",
+  "cat": "ctx_d",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.004222"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "không phải, ý mình hỏi thường trú cơ",
+  "exp": [
+   "1.004222"
+  ],
+  "trace": {
+   "decision": "correction",
+   "why": "người dùng sửa ý: bỏ thủ tục bị phủ định/nêu lại thủ tục đúng",
+   "topic_before": "1.004194",
+   "history": [
+    "1.004194"
+   ],
+   "state_before": {
+    "topic": "1.004194",
+    "history": [
+     "1.004194"
+    ],
+    "order": [
+     "1.004194"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-28",
+  "cat": "ctx_d",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.000593"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "nhầm rồi, tôi hỏi kết hôn lưu động",
+  "exp": [
+   "1.000593"
+  ],
+  "trace": {
+   "decision": "correction",
+   "why": "người dùng sửa ý: bỏ thủ tục bị phủ định/nêu lại thủ tục đúng",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-29",
+  "cat": "ctx_d",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.004873"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "sai rồi, tôi muốn hỏi cấp giấy xác nhận tình trạng hôn nhân",
+  "exp": [
+   "1.004873"
+  ],
+  "trace": {
+   "decision": "correction",
+   "why": "người dùng sửa ý: bỏ thủ tục bị phủ định/nêu lại thủ tục đúng",
+   "topic_before": "1.000656",
+   "history": [
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.000656"
+    ],
+    "order": [
+     "1.000656"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-30",
+  "cat": "ctx_d",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.003197"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "à không, tôi cần hỏi xóa đăng ký thường trú, phí bao nhiêu",
+  "exp": [
+   "1.003197"
+  ],
+  "trace": {
+   "decision": "correction",
+   "why": "người dùng sửa ý: bỏ thủ tục bị phủ định/nêu lại thủ tục đúng",
+   "topic_before": "1.010038",
+   "history": [
+    "1.010038"
+   ],
+   "state_before": {
+    "topic": "1.010038",
+    "history": [
+     "1.010038"
+    ],
+    "order": [
+     "1.010038"
+    ],
+    "fields": [
+     "fees"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-31",
+  "cat": "ctx_e",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "giờ cần làm giấy tờ gì cho bé",
+  "exp": [
+   "1.000689",
+   "1.001193",
+   "3.000722"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "từ nối/đại từ/hỏi mục, không còn chữ nghiệp vụ lạ, tên thủ tục mới phủ yếu; chữ lạ ['gio'] chỉ hạ độ tin cậy",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": true
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-32",
+  "cat": "ctx_e",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.000656"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "tôi cần đi đăng ký gì",
+  "exp": [
+   "1.000656",
+   "2.002913"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "từ nối/đại từ/hỏi mục, không còn chữ nghiệp vụ lạ, tên thủ tục mới phủ yếu",
+   "topic_before": "1.000656",
+   "history": [
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.000656"
+    ],
+    "order": [
+     "1.000656"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": true
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-33",
+  "cat": "ctx_e",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.000894"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "cần đăng ký gì ở phường",
+  "exp": [
+   "1.000894"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "từ nối/đại từ/hỏi mục, không còn chữ nghiệp vụ lạ, tên thủ tục mới phủ yếu",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": true
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-34",
+  "cat": "ctx_e",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.004194"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "cần khai báo cư trú gì",
+  "exp": [
+   "1.004194",
+   "1.004222",
+   "1.010040"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "từ nối/đại từ/hỏi mục, không còn chữ nghiệp vụ lạ, tên thủ tục mới phủ yếu",
+   "topic_before": "1.004194",
+   "history": [
+    "1.004194"
+   ],
+   "state_before": {
+    "topic": "1.004194",
+    "history": [
+     "1.004194"
+    ],
+    "order": [
+     "1.004194"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": true
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-35",
+  "cat": "ctx_e",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001612"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "cần đăng ký hộ kinh doanh gì",
+  "exp": [
+   "1.001612"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "nêu lại đúng thủ tục đang nói",
+   "topic_before": "1.001612",
+   "history": [
+    "1.001612"
+   ],
+   "state_before": {
+    "topic": "1.001612",
+    "history": [
+     "1.001612"
+    ],
+    "order": [
+     "1.001612"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": true
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-36",
+  "cat": "ctx_f",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.000894"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "thủ tục này do ai giải quyết",
+  "exp": [
+   "1.000894"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-37",
+  "cat": "ctx_f",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004194"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "cái đó nộp online được không",
+  "exp": [
+   "1.004194"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.004194",
+   "history": [
+    "1.004194"
+   ],
+   "state_before": {
+    "topic": "1.004194",
+    "history": [
+     "1.004194"
+    ],
+    "order": [
+     "1.004194"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-38",
+  "cat": "ctx_f",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004837"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "nó mất bao lâu",
+  "exp": [
+   "1.004837"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.004837",
+   "history": [
+    "1.004837"
+   ],
+   "state_before": {
+    "topic": "1.004837",
+    "history": [
+     "1.004837"
+    ],
+    "order": [
+     "1.004837"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-39",
+  "cat": "ctx_f",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "vậy thì tôi nộp ở đâu",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-40",
+  "cat": "ctx_g",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "quay lại cái khai sinh lúc nãy, lệ phí bao nhiêu",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "return",
+   "why": "dấu hiệu quay lại (any) -> thủ tục đã nói",
+   "topic_before": "1.004194",
+   "history": [
+    "1.001193",
+    "1.004194"
+   ],
+   "state_before": {
+    "topic": "1.004194",
+    "history": [
+     "1.001193",
+     "1.004194"
+    ],
+    "order": [
+     "1.001193",
+     "1.004194"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-41",
+  "cat": "ctx_g",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.000894"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "à còn cái đầu tiên, nộp ở đâu",
+  "exp": [
+   "1.000894"
+  ],
+  "trace": {
+   "decision": "return",
+   "why": "chỉ thứ tự trong danh sách đã nói/đã hiện",
+   "topic_before": "1.000656",
+   "history": [
+    "1.000894",
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.000894",
+     "1.000656"
+    ],
+    "order": [
+     "1.000894",
+     "1.000656"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-42",
+  "cat": "ctx_g",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004222"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "quay lại thường trú, mất bao lâu",
+  "exp": [
+   "1.004222"
+  ],
+  "trace": {
+   "decision": "return",
+   "why": "dấu hiệu quay lại (any) -> thủ tục đã nói",
+   "topic_before": "1.004194",
+   "history": [
+    "1.004222",
+    "1.004194"
+   ],
+   "state_before": {
+    "topic": "1.004194",
+    "history": [
+     "1.004222",
+     "1.004194"
+    ],
+    "order": [
+     "1.004222",
+     "1.004194"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-43",
+  "cat": "ctx_g",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "còn cái trước đó thì phí bao nhiêu",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "return",
+   "why": "dấu hiệu quay lại (prev) -> thủ tục đã nói",
+   "topic_before": "1.001022",
+   "history": [
+    "1.001193",
+    "1.001022"
+   ],
+   "state_before": {
+    "topic": "1.001022",
+    "history": [
+     "1.001193",
+     "1.001022"
+    ],
+    "order": [
+     "1.001193",
+     "1.001022"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-44",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.004194"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "đăng ký tạm trú nộp ở đâu",
+  "exp": [
+   "1.004194"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-45",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "2.001019"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "chứng thực di chúc cần gì",
+  "exp": [
+   "2.001019"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-46",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [],
+  "behavior": "apologize",
+  "bad": [],
+  "last": "hôm nay trời đẹp nhỉ",
+  "exp": [],
+  "trace": {
+   "decision": "independent",
+   "why": "chữ nghiệp vụ lạ còn dư, không nối",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-47",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [],
+  "behavior": "apologize",
+  "bad": [],
+  "last": "làm hộ chiếu ở đâu",
+  "exp": [],
+  "trace": {
+   "decision": "independent",
+   "why": "chủ đề ngoài phạm vi",
+   "topic_before": "1.004194",
+   "history": [
+    "1.004194"
+   ],
+   "state_before": {
+    "topic": "1.004194",
+    "history": [
+     "1.004194"
+    ],
+    "order": [
+     "1.004194"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-48",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001612"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "đăng ký thành lập hộ kinh doanh cần gì",
+  "exp": [
+   "1.001612"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-49",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.116410"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "cấp lại thẻ căn cước phí bao nhiêu",
+  "exp": [
+   "1.116410"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.000656",
+   "history": [
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.000656"
+    ],
+    "order": [
+     "1.000656"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-50",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [],
+  "behavior": "answer",
+  "bad": [],
+  "last": "xin chào",
+  "exp": [],
+  "trace": {
+   "decision": "independent",
+   "why": "xã giao",
+   "topic_before": "1.010038",
+   "history": [
+    "1.010038"
+   ],
+   "state_before": {
+    "topic": "1.010038",
+    "history": [
+     "1.010038"
+    ],
+    "order": [
+     "1.010038"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-51",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [],
+  "behavior": "apologize",
+  "bad": [],
+  "last": "thi bằng lái xe ở đâu",
+  "exp": [],
+  "trace": {
+   "decision": "independent",
+   "why": "chủ đề ngoài phạm vi",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-52",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001699"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "xác định mức độ khuyết tật cần giấy tờ gì",
+  "exp": [
+   "1.001699"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.001612",
+   "history": [
+    "1.001612"
+   ],
+   "state_before": {
+    "topic": "1.001612",
+    "history": [
+     "1.001612"
+    ],
+    "order": [
+     "1.001612"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-53",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.004194"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "còn tạm trú cần giấy tờ gì",
+  "exp": [
+   "1.004194"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-54",
+  "cat": "ctx_i",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "còn nếu bé sinh ở nhà thì sao",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu điều kiện, phần chính không nêu thủ tục mới",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-55",
+  "cat": "ctx_i",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.004194"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "nếu tôi ở nhà thuê thì sao",
+  "exp": [
+   "1.004194"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu điều kiện, phần chính không nêu thủ tục mới",
+   "topic_before": "1.004194",
+   "history": [
+    "1.004194"
+   ],
+   "state_before": {
+    "topic": "1.004194",
+    "history": [
+     "1.004194"
+    ],
+    "order": [
+     "1.004194"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-56",
+  "cat": "ctx_i",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.000894"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "trường hợp một bên là người nước ngoài thì sao",
+  "exp": [
+   "1.000894",
+   "2.000806"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu điều kiện, phần chính không nêu thủ tục mới",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-57",
+  "cat": "ctx_i",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "bé sinh ra không có giấy chứng sinh thì sao",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "story",
+   "why": "lời kể sự kiện đời sống (đăng ký khai sinh) ghép với câu hỏi -> thủ tục",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "dev-58",
+  "cat": "ctx_i",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.116410"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "nếu bị mất thẻ thì sao",
+  "exp": [
+   "1.116410"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu điều kiện, phần chính không nêu thủ tục mới",
+   "topic_before": "1.116410",
+   "history": [
+    "1.116410"
+   ],
+   "state_before": {
+    "topic": "1.116410",
+    "history": [
+     "1.116410"
+    ],
+    "order": [
+     "1.116410"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-59",
+  "cat": "ctx_a",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.003677"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "phải nộp cái gì vậy",
+  "exp": [
+   "1.003677"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.003677",
+   "history": [
+    "1.003677"
+   ],
+   "state_before": {
+    "topic": "1.003677",
+    "history": [
+     "1.003677"
+    ],
+    "order": [
+     "1.003677"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-60",
+  "cat": "ctx_a",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.011607"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "ai giải quyết cái này",
+  "exp": [
+   "1.011607"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.011607",
+   "history": [
+    "1.011607"
+   ],
+   "state_before": {
+    "topic": "1.011607",
+    "history": [
+     "1.011607"
+    ],
+    "order": [
+     "1.011607"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-61",
+  "cat": "ctx_a",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.116410"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "ok, thế nộp trên mạng được không",
+  "exp": [
+   "1.116410"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.116410",
+   "history": [
+    "1.116410"
+   ],
+   "state_before": {
+    "topic": "1.116410",
+    "history": [
+     "1.116410"
+    ],
+    "order": [
+     "1.116410"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-62",
+  "cat": "ctx_a",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "2.000884"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "mất tiền không",
+  "exp": [
+   "2.000884",
+   "2.000992"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "2.000884",
+   "history": [
+    "2.000884"
+   ],
+   "state_before": {
+    "topic": "2.000884",
+    "history": [
+     "2.000884"
+    ],
+    "order": [
+     "2.000884"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-63",
+  "cat": "ctx_b",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "2.000720"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "bao lâu thì xong",
+  "exp": [
+   "2.000720"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "2.000720",
+   "history": [
+    "2.000720"
+   ],
+   "state_before": {
+    "topic": "2.000720",
+    "history": [
+     "2.000720"
+    ],
+    "order": [
+     "2.000720"
+    ],
+    "fields": [
+     "fees"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-64",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "2.001255"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "còn đăng ký lại việc nuôi con nuôi thì sao",
+  "exp": [
+   "2.001255"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói",
+   "topic_before": "2.001263",
+   "history": [
+    "2.001263"
+   ],
+   "state_before": {
+    "topic": "2.001263",
+    "history": [
+     "2.001263"
+    ],
+    "order": [
+     "2.001263"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-65",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.000656"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "thế còn khai tử",
+  "exp": [
+   "1.000656"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói; kế thừa mục đang hỏi components",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-66",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "còn khai sinh nữa nhỉ",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói; kế thừa mục đang hỏi components",
+   "topic_before": "1.000656",
+   "history": [
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.000656"
+    ],
+    "order": [
+     "1.000656"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-67",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.004194"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "à còn tạm trú thì sao",
+  "exp": [
+   "1.004194"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói",
+   "topic_before": "1.003677",
+   "history": [
+    "1.003677"
+   ],
+   "state_before": {
+    "topic": "1.003677",
+    "history": [
+     "1.003677"
+    ],
+    "order": [
+     "1.003677"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-68",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001266"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "rồi muốn chấm dứt hoạt động hộ kinh doanh thì sao",
+  "exp": [
+   "1.001266"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói; kế thừa mục đang hỏi components",
+   "topic_before": "1.001612",
+   "history": [
+    "1.001612"
+   ],
+   "state_before": {
+    "topic": "1.001612",
+    "history": [
+     "1.001612"
+    ],
+    "order": [
+     "1.001612"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-69",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001776"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "thế còn trợ cấp xã hội hàng tháng",
+  "exp": [
+   "1.001776"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.011607",
+   "history": [
+    "1.011607"
+   ],
+   "state_before": {
+    "topic": "1.011607",
+    "history": [
+     "1.011607"
+    ],
+    "order": [
+     "1.011607"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-70",
+  "cat": "ctx_c",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "2.000942"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "bên cạnh đó chứng thực bản sao từ bản chính thì cần gì",
+  "exp": [
+   "2.000815",
+   "2.000942"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói",
+   "topic_before": "2.000884",
+   "history": [
+    "2.000884"
+   ],
+   "state_before": {
+    "topic": "2.000884",
+    "history": [
+     "2.000884"
+    ],
+    "order": [
+     "2.000884"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-71",
+  "cat": "ctx_d",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.003197"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "ý mình là xóa đăng ký thường trú chứ không phải đăng ký thường trú",
+  "exp": [
+   "1.003197"
+  ],
+  "trace": {
+   "decision": "correction",
+   "why": "người dùng sửa ý: bỏ thủ tục bị phủ định/nêu lại thủ tục đúng",
+   "topic_before": "1.004222",
+   "history": [
+    "1.004222"
+   ],
+   "state_before": {
+    "topic": "1.004222",
+    "history": [
+     "1.004222"
+    ],
+    "order": [
+     "1.004222"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-72",
+  "cat": "ctx_d",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "2.001019"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "không phải, tôi hỏi chứng thực di chúc",
+  "exp": [
+   "2.001019"
+  ],
+  "trace": {
+   "decision": "correction",
+   "why": "người dùng sửa ý: bỏ thủ tục bị phủ định/nêu lại thủ tục đúng",
+   "topic_before": "2.000884",
+   "history": [
+    "2.000884"
+   ],
+   "state_before": {
+    "topic": "2.000884",
+    "history": [
+     "2.000884"
+    ],
+    "order": [
+     "2.000884"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-73",
+  "cat": "ctx_d",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.004746"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "nhầm, tôi muốn đăng ký lại kết hôn",
+  "exp": [
+   "1.004746"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-74",
+  "cat": "ctx_e",
+  "ok": false,
+  "fields_ok": null,
+  "tops": [
+   "2.000635"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "giờ phải làm gì để có giấy khai sinh",
+  "exp": [
+   "1.000689",
+   "1.001193",
+   "3.000722"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": true
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-75",
+  "cat": "ctx_e",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.000656"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "cần làm giấy tờ gì ở phường",
+  "exp": [
+   "1.000656",
+   "1.003197",
+   "2.002913"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "từ nối/đại từ/hỏi mục, không còn chữ nghiệp vụ lạ, tên thủ tục mới phủ yếu",
+   "topic_before": "1.000656",
+   "history": [
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.000656"
+    ],
+    "order": [
+     "1.000656"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": true
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-76",
+  "cat": "ctx_e",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.000894"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "thủ tục đăng ký ở xã thế nào",
+  "exp": [
+   "1.000894"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "từ nối/đại từ/hỏi mục, không còn chữ nghiệp vụ lạ, tên thủ tục mới phủ yếu",
+   "topic_before": "1.000894",
+   "history": [
+    "1.000894"
+   ],
+   "state_before": {
+    "topic": "1.000894",
+    "history": [
+     "1.000894"
+    ],
+    "order": [
+     "1.000894"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-77",
+  "cat": "ctx_f",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.010038"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "thủ tục đó mất phí không",
+  "exp": [
+   "1.010038"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "1.010038",
+   "history": [
+    "1.010038"
+   ],
+   "state_before": {
+    "topic": "1.010038",
+    "history": [
+     "1.010038"
+    ],
+    "order": [
+     "1.010038"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-78",
+  "cat": "ctx_f",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "2.001263"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "vậy thì nộp ở đâu thế",
+  "exp": [
+   "2.001263"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu cụt/chỉ hỏi mục, không nêu thủ tục",
+   "topic_before": "2.001263",
+   "history": [
+    "2.001263"
+   ],
+   "state_before": {
+    "topic": "2.001263",
+    "history": [
+     "2.001263"
+    ],
+    "order": [
+     "2.001263"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-79",
+  "cat": "ctx_g",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "thôi quay lại khai sinh, mất bao lâu",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "return",
+   "why": "dấu hiệu quay lại (any) -> thủ tục đã nói",
+   "topic_before": "1.000656",
+   "history": [
+    "1.001193",
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.001193",
+     "1.000656"
+    ],
+    "order": [
+     "1.001193",
+     "1.000656"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-80",
+  "cat": "ctx_g",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004194"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "cái đầu tiên ấy, lệ phí bao nhiêu",
+  "exp": [
+   "1.004194"
+  ],
+  "trace": {
+   "decision": "return",
+   "why": "chỉ thứ tự trong danh sách đã nói/đã hiện",
+   "topic_before": "2.000884",
+   "history": [
+    "1.004194",
+    "1.000894",
+    "2.000884"
+   ],
+   "state_before": {
+    "topic": "2.000884",
+    "history": [
+     "1.004194",
+     "1.000894",
+     "2.000884"
+    ],
+    "order": [
+     "1.004194",
+     "1.000894",
+     "2.000884"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-81",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001193"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "đăng ký khai sinh cần gì",
+  "exp": [
+   "1.001193"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "2.000884",
+   "history": [
+    "2.000884"
+   ],
+   "state_before": {
+    "topic": "2.000884",
+    "history": [
+     "2.000884"
+    ],
+    "order": [
+     "2.000884"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-82",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001612"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "thành lập hộ kinh doanh cần gì",
+  "exp": [
+   "1.001612"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.003677",
+   "history": [
+    "1.003677"
+   ],
+   "state_before": {
+    "topic": "1.003677",
+    "history": [
+     "1.003677"
+    ],
+    "order": [
+     "1.003677"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-83",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [],
+  "behavior": "answer",
+  "bad": [],
+  "last": "cảm ơn nhé",
+  "exp": [],
+  "trace": {
+   "decision": "independent",
+   "why": "xã giao",
+   "topic_before": "1.001193",
+   "history": [
+    "1.001193"
+   ],
+   "state_before": {
+    "topic": "1.001193",
+    "history": [
+     "1.001193"
+    ],
+    "order": [
+     "1.001193"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-84",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [],
+  "behavior": "apologize",
+  "bad": [],
+  "last": "mua bảo hiểm xe máy ở đâu",
+  "exp": [],
+  "trace": {
+   "decision": "independent",
+   "why": "chữ nghiệp vụ lạ còn dư, không nối",
+   "topic_before": "1.011607",
+   "history": [
+    "1.011607"
+   ],
+   "state_before": {
+    "topic": "1.011607",
+    "history": [
+     "1.011607"
+    ],
+    "order": [
+     "1.011607"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-85",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": true,
+  "tops": [
+   "1.004194"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "đăng ký tạm trú mất bao lâu",
+  "exp": [
+   "1.004194"
+  ],
+  "trace": {
+   "decision": "new_related",
+   "why": "thủ tục mới cùng lĩnh vực với thủ tục đang nói",
+   "topic_before": "1.004222",
+   "history": [
+    "1.004222"
+   ],
+   "state_before": {
+    "topic": "1.004222",
+    "history": [
+     "1.004222"
+    ],
+    "order": [
+     "1.004222"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-86",
+  "cat": "ctx_h",
+  "ok": true,
+  "fields_ok": false,
+  "tops": [
+   "2.000884"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "chứng thực chữ ký ở đâu",
+  "exp": [
+   "2.000884",
+   "2.000992"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.000656",
+   "history": [
+    "1.000656"
+   ],
+   "state_before": {
+    "topic": "1.000656",
+    "history": [
+     "1.000656"
+    ],
+    "order": [
+     "1.000656"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-87",
+  "cat": "ctx_i",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001612"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "nếu tôi chỉ bán online thì sao",
+  "exp": [
+   "1.001612"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu điều kiện, phần chính không nêu thủ tục mới",
+   "topic_before": "1.001612",
+   "history": [
+    "1.001612"
+   ],
+   "state_before": {
+    "topic": "1.001612",
+    "history": [
+     "1.001612"
+    ],
+    "order": [
+     "1.001612"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-88",
+  "cat": "ctx_i",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "2.000884"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "trường hợp người ký là người khuyết tật thì sao?",
+  "exp": [
+   "2.000884",
+   "2.000992"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu điều kiện, phần chính không nêu thủ tục mới",
+   "topic_before": "2.000884",
+   "history": [
+    "2.000884"
+   ],
+   "state_before": {
+    "topic": "2.000884",
+    "history": [
+     "2.000884"
+    ],
+    "order": [
+     "2.000884"
+    ],
+    "fields": [
+     "components"
+    ],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-89",
+  "cat": "ctx_i",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "2.001263"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "còn nếu nhận con của người thân thì sao",
+  "exp": [
+   "2.001263"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu điều kiện, phần chính không nêu thủ tục mới",
+   "topic_before": "2.001263",
+   "history": [
+    "2.001263"
+   ],
+   "state_before": {
+    "topic": "2.001263",
+    "history": [
+     "2.001263"
+    ],
+    "order": [
+     "2.001263"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-90",
+  "cat": "ctx_i",
+  "ok": true,
+  "fields_ok": null,
+  "tops": [
+   "1.001699"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "nếu không đi lại được thì làm sao",
+  "exp": [
+   "1.001699"
+  ],
+  "trace": {
+   "decision": "follow_up",
+   "why": "câu điều kiện, phần chính không nêu thủ tục mới",
+   "topic_before": "1.001699",
+   "history": [
+    "1.001699"
+   ],
+   "state_before": {
+    "topic": "1.001699",
+    "history": [
+     "1.001699"
+    ],
+    "order": [
+     "1.001699"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ },
+ {
+  "id": "hold-91",
+  "cat": "ctx_i",
+  "ok": false,
+  "fields_ok": null,
+  "tops": [
+   "1.013979"
+  ],
+  "behavior": "answer",
+  "bad": [],
+  "last": "mà tôi chưa có sổ đỏ thì sao",
+  "exp": [
+   "1.004194"
+  ],
+  "trace": {
+   "decision": "independent",
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "topic_before": "1.004194",
+   "history": [
+    "1.004194"
+   ],
+   "state_before": {
+    "topic": "1.004194",
+    "history": [
+     "1.004194"
+    ],
+    "order": [
+     "1.004194"
+    ],
+    "fields": [],
+    "story": [],
+    "loose": false
+   }
+  },
+  "llm": {}
+ }
+]

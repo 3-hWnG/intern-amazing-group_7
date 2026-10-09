@@ -1,0 +1,1117 @@
+{
+ "base": 649,
+ "by": {
+  "label": [
+   649,
+   649
+  ],
+  "bullet": [
+   649,
+   649
+  ],
+  "quote": [
+   649,
+   649
+  ],
+  "emoji": [
+   649,
+   649
+  ],
+  "polite": [
+   646,
+   649
+  ],
+  "upper": [
+   649,
+   649
+  ],
+  "space": [
+   649,
+   649
+  ],
+  "punct": [
+   645,
+   649
+  ],
+  "glue": [
+   627,
+   649
+  ],
+  "nodau": [
+   595,
+   606
+  ],
+  "mixed": [
+   649,
+   649
+  ]
+ },
+ "rate": 99.43630214205186,
+ "bad": [
+  {
+   "id": "clarify_conditional-06",
+   "kind": "punct",
+   "orig": "Nếu người mất không có giấy báo tử thì đăng ký khai tử cần giấy tờ gì?",
+   "noisy": "Nếu người mất không có giấy báo tử , thì đăng ký khai tử cần giấy tờ gì",
+   "base": [
+    [
+     "1.000656"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.010055",
+     "1.000656"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "đầu hội thoại / chưa có thủ tục đang nói | đầu hội thoại / chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "clarify_conditional-08",
+   "kind": "punct",
+   "orig": "Nếu mất giấy xác nhận khuyết tật thì xin cấp lại ở đâu?",
+   "noisy": "Nếu mất giấy xác nhận khuyết tật , thì xin cấp lại ở đâu?",
+   "base": [
+    [
+     "1.001653"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.001653",
+     "1.003930"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "đầu hội thoại / chưa có thủ tục đang nói | đầu hội thoại / chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "evidence_citation-15",
+   "kind": "glue",
+   "orig": "Thường trú cần giấy tờ gì? Nêu rõ nguồn giúp mình.",
+   "noisy": "Thườngtrú cần giấy tờgì? Nêu rõ nguồn giúp mình.",
+   "base": [
+    [
+     "1.004222"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": false,
+   "why": "chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "multi_intent-04",
+   "kind": "glue",
+   "orig": "Cho mình hỏi các bước tách hộ và các bước xóa đăng ký thường trú",
+   "noisy": "Cho mình hỏi cácbước tách hộvà các bước xóa đăng ký thường trú",
+   "base": [
+    [
+     "1.010038",
+     "1.003197"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.003197"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "đầu hội thoại / chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "multi_intent-07",
+   "kind": "glue",
+   "orig": "Tạm trú với thường trú khác nhau chỗ nào?",
+   "noisy": "Tạm trú vớithường trú khác nhau chỗnào?",
+   "base": [
+    [
+     "1.004194",
+     "1.004222"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.004194"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "đầu hội thoại / chưa có thủ tục đang nói | chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "multi_intent-10",
+   "kind": "nodau",
+   "orig": "Đăng ký khai tử cần gì và xin cấp lại sổ hộ khẩu giấy ở đâu?",
+   "noisy": "Dang ky khai tu can gi va xin cap lai so ho khau giay o dau?",
+   "base": [
+    [
+     "1.000656"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.000656",
+     "1.006391"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "đầu hội thoại / chưa có thủ tục đang nói | đầu hội thoại / chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "ctx_cond_evidence-15",
+   "kind": "nodau",
+   "orig": "Tôi là cán bộ, sắp đi công tác xa nhà trên 1 tháng. Trường hợp này khai báo tạm vắng làm sao, nêu nguồn.",
+   "noisy": "Toi la can bo, sap di cong tac xa nha tren 1 thang. Truong hop nay khai bao tam vang lam sao, neu nguon.",
+   "base": [
+    [
+     "1.003677"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "2.000605",
+     "1.003677"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "đầu hội thoại / chưa có thủ tục đang nói | đầu hội thoại / chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "rule_condition-05",
+   "kind": "glue",
+   "orig": "Nhờ người khác đi đăng ký hộ kinh doanh thì cần giấy tờ ủy quyền gì?",
+   "noisy": "Nhờ người khác đi đăng ký hộkinh doanh thì cần giấy tờủy quyền gì?",
+   "base": [
+    [
+     "1.001612"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": false,
+   "why": "chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "rule_compare-01",
+   "kind": "glue",
+   "orig": "Chứng thực bản sao với chứng thực chữ ký khác nhau thế nào?",
+   "noisy": "Chứng thực bản sao với chứng thựcchữ ký khácnhau thế nào?",
+   "base": [
+    [
+     "2.000815",
+     "2.000884"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "2.000884"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "rule_compare-04",
+   "kind": "glue",
+   "orig": "Đăng ký giám hộ và đăng ký chấm dứt giám hộ khác gì nhau?",
+   "noisy": "Đăng ký giám hộvà đăng ký chấm dứtgiám hộ khác gì nhau?",
+   "base": [
+    [
+     "1.004837",
+     "1.004845"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.004845"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "rule_order-03",
+   "kind": "glue",
+   "orig": "Số 2 nhé",
+   "noisy": "Số 2nhé",
+   "base": [
+    [
+     "1.011607"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": false,
+   "why": "không có tín hiệu nối",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "p16-p16_A_ctrl-03",
+   "kind": "glue",
+   "orig": "đăng ký khai tử lưu động",
+   "noisy": "đăng ký khai tử lưuđộng",
+   "base": [
+    [
+     "1.000419"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.000656"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "đầu hội thoại / chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p16-p16_A_ctrl-04",
+   "kind": "punct",
+   "orig": "gia hạn giấy phép lao động cho người nước ngoài",
+   "noisy": "gia hạn giấy phép lao động; cho người nước ngoài.",
+   "base": [
+    [
+     "1.014201"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.014201",
+     "1.000253"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "đầu hội thoại / chưa có thủ tục đang nói | đầu hội thoại / chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p16-p16_B_scope-01",
+   "kind": "polite",
+   "orig": "Con tôi sắp vào lớp 6, đăng ký học ở đâu?",
+   "noisy": "Alo ad ơi con tôi sắp vào lớp 6, đăng ký học ở đâu nhé ạ?",
+   "base": [
+    [
+     "3.000182"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": false,
+   "why": "chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "p16-p16_B_scope-14",
+   "kind": "nodau",
+   "orig": "xin giấy chứng nhận chưa đăng ký kết hôn",
+   "noisy": "xin giay chung nhan chua dang ky ket hon",
+   "base": [
+    [
+     "1.004873"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.000894"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "đầu hội thoại / chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p16-p16_B_scope-17",
+   "kind": "nodau",
+   "orig": "Gia đình tôi muốn thoát nghèo thì làm sao",
+   "noisy": "Gia dinh toi muon thoat ngheo thi lam sao",
+   "base": [
+    [
+     "1.116215"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.116214"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "lời kể sự kiện đời sống (công nhận hộ nghèo) ghép với câu hỏi -> thủ tục",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p16-p16_B_scope-22",
+   "kind": "glue",
+   "orig": "Mẹ em mất, muốn đi xóa hộ khẩu của mẹ thì làm thế nào",
+   "noisy": "Mẹ em mất, muốn đi xóahộ khẩu của mẹ thì làm thếnào",
+   "base": [
+    [
+     "1.003197"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.000656"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "lời kể sự kiện đời sống (đăng ký khai tử) ghép với câu hỏi -> thủ tục",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p16-p16_B_scope-22",
+   "kind": "nodau",
+   "orig": "Mẹ em mất, muốn đi xóa hộ khẩu của mẹ thì làm thế nào",
+   "noisy": "Me em mat, muon di xoa ho khau cua me thi lam the nao",
+   "base": [
+    [
+     "1.003197"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.000656"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "lời kể sự kiện đời sống (đăng ký khai tử) ghép với câu hỏi -> thủ tục",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p16-p16_B_scope-23",
+   "kind": "nodau",
+   "orig": "xin cấp sổ đỏ lần đầu cho mảnh đất của ông bà để lại",
+   "noisy": "xin cap so do lan dau cho manh dat cua ong ba de lai",
+   "base": [
+    [
+     "1.012753"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": false,
+   "why": "chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "p18-p18_B_multi-01",
+   "kind": "glue",
+   "orig": "Tách hộ cần giấy tờ gì còn khai tử mất bao lâu?",
+   "noisy": "Táchhộ cần giấy tờ gì còn khai tửmất bao lâu?",
+   "base": [
+    [
+     "1.010038",
+     "1.000656"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.010038"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "đầu hội thoại / chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p18-p18_B_multi-01",
+   "kind": "nodau",
+   "orig": "Tách hộ cần giấy tờ gì còn khai tử mất bao lâu?",
+   "noisy": "Tach ho can giay to gi con khai tu mat bao lau?",
+   "base": [
+    [
+     "1.010038",
+     "1.000656"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.010038"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p18-p18_B_multi-02",
+   "kind": "glue",
+   "orig": "Đăng ký tạm vắng phí bao nhiêu, ngoài ra chứng thực chữ ký nộp ở đâu?",
+   "noisy": "Đăng ký tạmvắng phí bao nhiêu, ngoài ra chứng thực chữ kýnộp ở đâu?",
+   "base": [
+    [
+     "1.003677",
+     "2.000884"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.003677"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "đầu hội thoại / chưa có thủ tục đang nói | chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "p18-p18_B_multi-04",
+   "kind": "glue",
+   "orig": "Thường trú cần giấy tờ gì; tạm trú mất bao lâu?",
+   "noisy": "Thường trú cần giấy tờgì; tạm trú mất baolâu?",
+   "base": [
+    [
+     "1.004222",
+     "1.004194"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.004194"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "chưa có thủ tục đang nói | đầu hội thoại / chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p18-p18_F_casual-12",
+   "kind": "glue",
+   "orig": "khai tử cho mẹ em cần gì vậy",
+   "noisy": "khaitử chomẹ em cần gì vậy",
+   "base": [
+    [
+     "1.000656"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": false,
+   "why": "chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "p18-p18_C_clarify-07",
+   "kind": "nodau",
+   "orig": "bên mình có thủ tục nào về bảo trợ xã hội không",
+   "noisy": "ben minh co thu tuc nao ve bao tro xa hoi khong",
+   "base": [
+    [
+     "1.001731"
+    ],
+    "clarify"
+   ],
+   "got": [
+    [
+     "2.000282"
+    ],
+    "clarify"
+   ],
+   "ctx": false,
+   "why": "đầu hội thoại / chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p18-p18_E_scope-06",
+   "kind": "nodau",
+   "orig": "ông em không muốn nhận trợ cấp hưu trí xã hội nữa, thôi hưởng thế nào",
+   "noisy": "ong em khong muon nhan tro cap huu tri xa hoi nua, thoi huong the nao",
+   "base": [
+    [
+     "1.014027"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.014027",
+     "1.014312"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "đầu hội thoại / chưa có thủ tục đang nói | đầu hội thoại / chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p18-p18_E_scope-07",
+   "kind": "glue",
+   "orig": "hỗ trợ chi phí y tế cho người tham gia hoạt động chữ thập đỏ bị tai nạn",
+   "noisy": "hỗ trợ chi phí y tếcho người thamgia hoạt động chữ thập đỏ bị tai nạn",
+   "base": [
+    [
+     "1.013710"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": false,
+   "why": "chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "p19-p19_G_time-02",
+   "kind": "glue",
+   "orig": "khai tử thời gian giải quyết thế nào ạ",
+   "noisy": "khai tửthời gian giải quyết thế nàoạ",
+   "base": [
+    [
+     "1.000656"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": false,
+   "why": "chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "p19-p19_H_cond-04",
+   "kind": "glue",
+   "orig": "Nếu mẹ tôi mất thì tôi cần làm gì để đi khai tử?",
+   "noisy": "Nếu mẹtôi mất thì tôi cầnlàm gì để đi khai tử?",
+   "base": [
+    [
+     "1.000656"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": false,
+   "why": "chưa có thủ tục đang nói",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "p23-p23_L1-12",
+   "kind": "polite",
+   "orig": "Câu hỏi 2: vậy hồ sơ gồm những gì?",
+   "noisy": "Chào bạn, câu hỏi 2: vậy hồ sơ gồm những gì dạ?",
+   "base": [
+    [
+     "1.002755"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "2.000794"
+    ],
+    "answer"
+   ],
+   "ctx": false,
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p23-p23_L1-16",
+   "kind": "glue",
+   "orig": "> vậy cần giấy tờ gì?",
+   "noisy": "> vậy cần giấy tờgì?",
+   "base": [
+    [
+     "1.003197"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": false,
+   "why": "chữ nghiệp vụ lạ còn dư, không nối",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "p23-p23_L1-22",
+   "kind": "glue",
+   "orig": "User: vậy giấy tờ gì zzz",
+   "noisy": "User: vậy giấy tờgì zzz",
+   "base": [
+    [
+     "1.001193"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": false,
+   "why": "chữ nghiệp vụ lạ còn dư, không nối",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "dev-14",
+   "kind": "punct",
+   "orig": "rồi bảo hiểm y tế cho trẻ em thì sao",
+   "noisy": "rồi bảo hiểm y tế, cho trẻ em thì sao",
+   "base": [
+    [
+     "3.000722"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.014193",
+     "1.001622"
+    ],
+    "answer"
+   ],
+   "ctx": true,
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì | thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "hold-69",
+   "kind": "nodau",
+   "orig": "thế còn trợ cấp xã hội hàng tháng",
+   "noisy": "the con tro cap xa hoi hang thang",
+   "base": [
+    [
+     "1.001776"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "3.000733"
+    ],
+    "clarify"
+   ],
+   "ctx": true,
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "hold-86",
+   "kind": "glue",
+   "orig": "chứng thực chữ ký ở đâu",
+   "noisy": "chứng thực chữ kýở đâu",
+   "base": [
+    [
+     "2.000884"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": true,
+   "why": "chữ nghiệp vụ lạ còn dư, không nối",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "p16-94",
+   "kind": "glue",
+   "orig": "số 3, phí bao nhiêu",
+   "noisy": "số3, phí bao nhiêu",
+   "base": [
+    [
+     "1.014201"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "1.014199"
+    ],
+    "answer"
+   ],
+   "ctx": true,
+   "why": "từ nối/đại từ/hỏi mục, không còn chữ nghiệp vụ lạ, tên thủ tục mới phủ yếu; chữ lạ ['so3'] chỉ hạ độ tin cậy",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p16-95",
+   "kind": "nodau",
+   "orig": "à cái thứ tư",
+   "noisy": "a cai thu tu",
+   "base": [
+    [
+     "2.000424"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": true,
+   "why": "chữ nghiệp vụ lạ còn dư, không nối",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "p23-p23_L1-12",
+   "kind": "polite",
+   "orig": "Câu hỏi 2: vậy hồ sơ gồm những gì?",
+   "noisy": "Chào bạn, câu hỏi 2: vậy hồ sơ gồm những gì dạ?",
+   "base": [
+    [
+     "1.002755"
+    ],
+    "answer"
+   ],
+   "got": [
+    [
+     "2.000794"
+    ],
+    "answer"
+   ],
+   "ctx": true,
+   "why": "thủ tục mới khác lĩnh vực, không kế thừa gì",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ]
+  },
+  {
+   "id": "p23-p23_L1-16",
+   "kind": "glue",
+   "orig": "> vậy cần giấy tờ gì?",
+   "noisy": "> vậy cần giấy tờgì?",
+   "base": [
+    [
+     "1.003197"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": true,
+   "why": "chữ nghiệp vụ lạ còn dư, không nối",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  },
+  {
+   "id": "p23-p23_L1-22",
+   "kind": "glue",
+   "orig": "User: vậy giấy tờ gì zzz",
+   "noisy": "User: vậy giấy tờgì zzz",
+   "base": [
+    [
+     "1.001193"
+    ],
+    "answer"
+   ],
+   "got": [
+    [],
+    "apologize"
+   ],
+   "ctx": true,
+   "why": "chữ nghiệp vụ lạ còn dư, không nối",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ]
+  }
+ ]
+}

@@ -1,0 +1,2499 @@
+{
+ "rows": [
+  {
+   "id": "p26-a-01",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.002179"
+    ],
+    "options": [
+     "1.002179",
+     "1.001939",
+     "1.002051"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.002051"
+    ],
+    "options": [],
+    "note": "pick"
+   }
+  },
+  {
+   "id": "p26-a-02",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.002179"
+    ],
+    "options": [
+     "1.002179",
+     "1.001939",
+     "1.002051"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.002051"
+    ],
+    "options": [],
+    "note": "pick"
+   }
+  },
+  {
+   "id": "p26-a-03",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [],
+    "note": "pick"
+   }
+  },
+  {
+   "id": "p26-a-04",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [],
+    "note": "pick"
+   }
+  },
+  {
+   "id": "p26-a-05",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.012753"
+    ],
+    "options": [],
+    "note": "pick"
+   }
+  },
+  {
+   "id": "p26-a-06",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.012753"
+    ],
+    "options": [],
+    "note": "pick"
+   }
+  },
+  {
+   "id": "p26-a-07",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.014736"
+    ],
+    "options": [],
+    "note": "pick"
+   }
+  },
+  {
+   "id": "p26-a-08",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.014736"
+    ],
+    "options": [],
+    "note": "pick"
+   }
+  },
+  {
+   "id": "p26-a-09",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.013227"
+    ],
+    "options": [
+     "1.013227",
+     "1.014198",
+     "1.013225"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.014198"
+    ],
+    "options": [],
+    "note": "pick"
+   }
+  },
+  {
+   "id": "p26-a-10",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014201"
+    ],
+    "options": [
+     "1.014201",
+     "1.013227",
+     "1.014198"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.013227"
+    ],
+    "options": [],
+    "note": "pick"
+   }
+  },
+  {
+   "id": "p26-a-11",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115375"
+    ],
+    "options": [
+     "1.115375",
+     "1.115373",
+     "1.012753",
+     "1.013978"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115375"
+    ],
+    "options": [
+     "1.115373",
+     "1.013978",
+     "1.115894"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-12",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115375"
+    ],
+    "options": [
+     "1.115375",
+     "1.115373",
+     "1.012753",
+     "1.013978"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115375"
+    ],
+    "options": [
+     "1.115375",
+     "1.012753"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-13",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115375"
+    ],
+    "options": [
+     "1.115375",
+     "1.115373",
+     "1.012753",
+     "1.013978"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115375"
+    ],
+    "options": [
+     "1.115375",
+     "1.012753",
+     "1.115894"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-14",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014963"
+    ],
+    "options": [
+     "1.014963",
+     "1.014964",
+     "1.013569",
+     "1.013586"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014963"
+    ],
+    "options": [
+     "1.013586",
+     "1.013585"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-15",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014963"
+    ],
+    "options": [
+     "1.014963",
+     "1.014964",
+     "1.013569",
+     "1.013586"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014963"
+    ],
+    "options": [
+     "1.013569",
+     "1.013586",
+     "1.013585"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-16",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.001521"
+    ],
+    "options": [
+     "1.001521",
+     "1.001632",
+     "1.001643",
+     "1.001667"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.001521"
+    ],
+    "options": [
+     "1.001521",
+     "1.001632",
+     "1.001643"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-17",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.001521"
+    ],
+    "options": [
+     "1.001521",
+     "1.001632",
+     "1.001643",
+     "1.001667"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.001521"
+    ],
+    "options": [
+     "1.001632",
+     "1.001643",
+     "1.001667"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-18",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115379"
+    ],
+    "options": [
+     "1.115379",
+     "1.116109",
+     "1.115746"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115379"
+    ],
+    "options": [
+     "1.115379",
+     "1.116109"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-19",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115379"
+    ],
+    "options": [
+     "1.115379",
+     "1.116109",
+     "1.115746"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115379"
+    ],
+    "options": [
+     "1.115379",
+     "1.116109"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-20",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115210"
+    ],
+    "options": [
+     "1.115210",
+     "1.115514",
+     "1.115692"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115210"
+    ],
+    "options": [
+     "1.115210",
+     "1.115514"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-21",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014201"
+    ],
+    "options": [
+     "1.014201",
+     "1.013227",
+     "1.014198"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014201"
+    ],
+    "options": [
+     "1.014201",
+     "1.014198"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-22",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014737",
+     "1.014594",
+     "1.014592"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-23",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-24",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.001798",
+     "1.116466"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-25",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.001798",
+     "1.116466"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-26",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.013979"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-27",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.012753",
+     "1.013979"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-a-28",
+   "group": "a",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.013227"
+    ],
+    "options": [
+     "1.013227",
+     "1.014198",
+     "1.013225"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.013227"
+    ],
+    "options": [
+     "1.013227",
+     "1.013225"
+    ],
+    "note": "shrink"
+   }
+  },
+  {
+   "id": "p26-b-01",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.002179"
+    ],
+    "options": [
+     "1.002179",
+     "1.001939",
+     "1.002051"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.002179"
+    ],
+    "options": [
+     "1.002179",
+     "1.001939",
+     "1.002051"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-02",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.002179"
+    ],
+    "options": [
+     "1.002179",
+     "1.001939",
+     "1.002051"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.002179"
+    ],
+    "options": [
+     "1.002179",
+     "1.001939",
+     "1.002051"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-03",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-04",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-05",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-06",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-07",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-08",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-09",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.013227"
+    ],
+    "options": [
+     "1.013227",
+     "1.014198",
+     "1.013225"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.013227"
+    ],
+    "options": [
+     "1.013227",
+     "1.014198",
+     "1.013225"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-10",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014201"
+    ],
+    "options": [
+     "1.014201",
+     "1.013227",
+     "1.014198"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014201"
+    ],
+    "options": [
+     "1.014201",
+     "1.013227",
+     "1.014198"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-11",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115375"
+    ],
+    "options": [
+     "1.115375",
+     "1.115373",
+     "1.012753",
+     "1.013978"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115375"
+    ],
+    "options": [
+     "1.115375",
+     "1.115373",
+     "1.012753",
+     "1.013978"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-12",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115375"
+    ],
+    "options": [
+     "1.115375",
+     "1.115373",
+     "1.012753",
+     "1.013978"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115375"
+    ],
+    "options": [
+     "1.115375",
+     "1.115373",
+     "1.012753",
+     "1.013978"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-13",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115375"
+    ],
+    "options": [
+     "1.115375",
+     "1.115373",
+     "1.012753",
+     "1.013978"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115375"
+    ],
+    "options": [
+     "1.115375",
+     "1.115373",
+     "1.012753",
+     "1.013978"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-14",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014963"
+    ],
+    "options": [
+     "1.014963",
+     "1.014964",
+     "1.013569",
+     "1.013586"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014963"
+    ],
+    "options": [
+     "1.014963",
+     "1.014964",
+     "1.013569",
+     "1.013586"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-15",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014963"
+    ],
+    "options": [
+     "1.014963",
+     "1.014964",
+     "1.013569",
+     "1.013586"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014963"
+    ],
+    "options": [
+     "1.014963",
+     "1.014964",
+     "1.013569",
+     "1.013586"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-16",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.001521"
+    ],
+    "options": [
+     "1.001521",
+     "1.001632",
+     "1.001643",
+     "1.001667"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.001521"
+    ],
+    "options": [
+     "1.001521",
+     "1.001632",
+     "1.001643",
+     "1.001667"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-17",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.001521"
+    ],
+    "options": [
+     "1.001521",
+     "1.001632",
+     "1.001643",
+     "1.001667"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.001521"
+    ],
+    "options": [
+     "1.001521",
+     "1.001632",
+     "1.001643",
+     "1.001667"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-18",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115379"
+    ],
+    "options": [
+     "1.115379",
+     "1.116109",
+     "1.115746"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115379"
+    ],
+    "options": [
+     "1.115379",
+     "1.116109",
+     "1.115746"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-19",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115379"
+    ],
+    "options": [
+     "1.115379",
+     "1.116109",
+     "1.115746"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115379"
+    ],
+    "options": [
+     "1.115379",
+     "1.116109",
+     "1.115746"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-20",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115210"
+    ],
+    "options": [
+     "1.115210",
+     "1.115514",
+     "1.115692"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115210"
+    ],
+    "options": [
+     "1.115210",
+     "1.115514",
+     "1.115692"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-21",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014201"
+    ],
+    "options": [
+     "1.014201",
+     "1.013227",
+     "1.014198"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014201"
+    ],
+    "options": [
+     "1.014201",
+     "1.013227",
+     "1.014198"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-22",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-23",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-24",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-25",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-26",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-27",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-b-28",
+   "group": "b",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.013227"
+    ],
+    "options": [
+     "1.013227",
+     "1.014198",
+     "1.013225"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.013227"
+    ],
+    "options": [
+     "1.013227",
+     "1.014198",
+     "1.013225"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-01",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.001193"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.001193"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-02",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.000894"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.000894"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-03",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.000656"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.000656"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-04",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.003677"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.003677"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-05",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.010038"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.010038"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-06",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.004222"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.004222"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-07",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "2.000884"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "2.000884"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-08",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.004837"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.004837"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-09",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.003197"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.003197"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-10",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.004194"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.004194"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-11",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.002755"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.002755"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-12",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.001022"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.001022"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-13",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.005280"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.005280"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-14",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.001798"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.001798"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-15",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.014604"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.014604"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-16",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.115373"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.115373"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-17",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "2.002637"
+    ],
+    "options": [
+     "2.002637",
+     "2.002226",
+     "1.005280"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "2.002637"
+    ],
+    "options": [
+     "2.002637",
+     "2.002226",
+     "1.005280"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-18",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115941"
+    ],
+    "options": [
+     "1.115941",
+     "1.012818",
+     "1.116534"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115941"
+    ],
+    "options": [
+     "1.115941",
+     "1.012818",
+     "1.116534"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-19",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "2.001396"
+    ],
+    "options": [
+     "2.001396",
+     "1.014310",
+     "1.014312",
+     "1.001776"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "2.001396"
+    ],
+    "options": [
+     "2.001396",
+     "1.014310",
+     "1.014312",
+     "1.001776"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-20",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "apologize",
+    "pids": [],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "apologize",
+    "pids": [],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-21",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014599"
+    ],
+    "options": [
+     "1.014599",
+     "1.014925",
+     "1.014604"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014599"
+    ],
+    "options": [
+     "1.014599",
+     "1.014925",
+     "1.014604"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-22",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014599"
+    ],
+    "options": [
+     "1.014599",
+     "1.014925",
+     "1.014604"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014599"
+    ],
+    "options": [
+     "1.014599",
+     "1.014925",
+     "1.014604"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-23",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115898"
+    ],
+    "options": [
+     "1.115898",
+     "1.012818",
+     "1.115941",
+     "1.116534"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115898"
+    ],
+    "options": [
+     "1.115898",
+     "1.012818",
+     "1.115941",
+     "1.116534"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-c-24",
+   "group": "c",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115898"
+    ],
+    "options": [
+     "1.115898",
+     "1.012818",
+     "1.115941",
+     "1.116534"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115898"
+    ],
+    "options": [
+     "1.115898",
+     "1.012818",
+     "1.115941",
+     "1.116534"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-d-01",
+   "group": "d",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.002179"
+    ],
+    "options": [
+     "1.002179",
+     "1.001939",
+     "1.002051"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.002179"
+    ],
+    "options": [
+     "1.002179",
+     "1.001939",
+     "1.002051"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-d-02",
+   "group": "d",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014193"
+    ],
+    "options": [
+     "1.014193",
+     "1.001798",
+     "1.116466"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-d-03",
+   "group": "d",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.012536"
+    ],
+    "options": [
+     "1.012536",
+     "1.014474",
+     "1.014737",
+     "1.014736"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-d-04",
+   "group": "d",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115750"
+    ],
+    "options": [
+     "1.115750",
+     "1.012753",
+     "1.013979"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-d-05",
+   "group": "d",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014963"
+    ],
+    "options": [
+     "1.014963",
+     "1.014964",
+     "1.013569",
+     "1.013586"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.014963"
+    ],
+    "options": [
+     "1.014963",
+     "1.014964",
+     "1.013569",
+     "1.013586"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-d-06",
+   "group": "d",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115379"
+    ],
+    "options": [
+     "1.115379",
+     "1.116109",
+     "1.115746"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "1.115379"
+    ],
+    "options": [
+     "1.115379",
+     "1.116109",
+     "1.115746"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-d-07",
+   "group": "d",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.001193"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.001193"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-d-08",
+   "group": "d",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.004194"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.004194"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-d-09",
+   "group": "d",
+   "ok": true,
+   "base": {
+    "behavior": "answer",
+    "pids": [
+     "1.013952"
+    ],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "answer",
+    "pids": [
+     "1.013952"
+    ],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-d-10",
+   "group": "d",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "2.001396"
+    ],
+    "options": [
+     "2.001396",
+     "1.014310",
+     "1.014312",
+     "1.001776"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "2.001396"
+    ],
+    "options": [
+     "2.001396",
+     "1.014310",
+     "1.014312",
+     "1.001776"
+    ],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-d-11",
+   "group": "d",
+   "ok": true,
+   "base": {
+    "behavior": "apologize",
+    "pids": [],
+    "options": [],
+    "note": ""
+   },
+   "got": {
+    "behavior": "apologize",
+    "pids": [],
+    "options": [],
+    "note": ""
+   }
+  },
+  {
+   "id": "p26-d-12",
+   "group": "d",
+   "ok": true,
+   "base": {
+    "behavior": "clarify",
+    "pids": [
+     "2.002637"
+    ],
+    "options": [
+     "2.002637",
+     "2.002226",
+     "1.005280"
+    ],
+    "note": ""
+   },
+   "got": {
+    "behavior": "clarify",
+    "pids": [
+     "2.002637"
+    ],
+    "options": [
+     "2.002637",
+     "2.002226",
+     "1.005280"
+    ],
+    "note": ""
+   }
+  }
+ ],
+ "summary": {
+  "n": 92,
+  "ok": 92,
+  "a_clarify_base": 28,
+  "a_clarify_with_profile": 18,
+  "pick": 10,
+  "shrink": 18
+ }
+}

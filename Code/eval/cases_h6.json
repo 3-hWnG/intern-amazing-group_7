@@ -1,0 +1,1492 @@
+[
+ {
+  "id": "h6-001",
+  "q": "khai bao tam vang can mang theo giay to gi vay a",
+  "expect_ids": [
+   "1.003677"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Khai bao tam vang."
+ },
+ {
+  "id": "h6-002",
+  "q": "thong bao luu tru mat bao lau thi xong",
+  "expect_ids": [
+   "2.001159"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~khong dau, cau cut. Thong bao luu tru (1 gio)."
+ },
+ {
+  "id": "h6-003",
+  "q": "e vừa bán nhà chuyển đi tỉnh khác, muốn xóa đăng ký thường trú ở chỗ cũ thì cần giấy tờ gì ạ, tại e k rành thủ tục lắm",
+  "expect_ids": [
+   "1.003197"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~ke hoan canh, viet tat. Xoa dang ky thuong tru."
+ },
+ {
+  "id": "h6-004",
+  "q": "xoa dang ky thuong tru nop o dau, cong an xa hay len huyen vay",
+  "expect_ids": [
+   "1.003197"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "~khong dau. Cong an cap xa."
+ },
+ {
+  "id": "h6-005",
+  "q": "xin xác nhận thông tin về cư trú mất bao nhiêu ngày",
+  "expect_ids": [
+   "1.010041"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "Xac nhan thong tin ve cu tru."
+ },
+ {
+  "id": "h6-006",
+  "q": "Kính gửi cơ quan, tôi muốn hỏi thủ tục đăng ký giám hộ cho người bị mất năng lực hành vi dân sự thì hồ sơ gồm những gì?",
+  "expect_ids": [
+   "1.004837"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~lich su. Mac dinh giam ho trong nuoc (khong yeu to NN)."
+ },
+ {
+  "id": "h6-007",
+  "q": "nhan con nuoi trong nuoc le phi bao nhieu",
+  "expect_ids": [
+   "2.001263"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "~khong dau. Dang ky viec nuoi con nuoi trong nuoc, le phi 400.000d. Khong nham voi dang ky lai (2.001255)."
+ },
+ {
+  "id": "h6-008",
+  "q": "trinh bao mat ho chieu roi bao lau thi xu ly xong",
+  "expect_ids": [
+   "1.010386"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~khong dau. Trinh bao mat ho chieu pho thong (cap xa)."
+ },
+ {
+  "id": "h6-009",
+  "q": "the can cuoc bi hu muon lam lai thi nop le phi bao nhieu",
+  "expect_ids": [
+   "1.116410"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "~khong dau. Cap, cap doi, cap lai the can cuoc; ghi le phi cap doi."
+ },
+ {
+  "id": "h6-010",
+  "q": "khóa tài khoản định danh điện tử tại xã mất mấy ngày",
+  "expect_ids": [
+   "3.000283"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "Khoa tai khoan dinh danh dien tu; khac 'khoa can cuoc dien tu' 3.000285 va mo khoa 3.000284."
+ },
+ {
+  "id": "h6-011",
+  "q": "chung thuc di chuc het bao nhieu tien",
+  "expect_ids": [
+   "2.001019"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "~khong dau. 50.000d/di chuc."
+ },
+ {
+  "id": "h6-012",
+  "q": "cần giấy tờ gì để chứng thực chữ ký của mình trên giấy ủy quyền",
+  "expect_ids": [
+   "2.000884"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Chung thuc chu ky trong giay to, van ban."
+ },
+ {
+  "id": "h6-013",
+  "q": "photo giay to roi chung thuc ban sao tu ban chinh tinh phi bao nhieu mot trang",
+  "expect_ids": [
+   "2.000815"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "~khong dau. 2.000d/trang."
+ },
+ {
+  "id": "h6-014",
+  "q": "Anh em trong nhà thỏa thuận một người từ chối nhận phần di sản của ba, vậy chứng thực văn bản từ chối mất bao lâu",
+  "expect_ids": [
+   "2.001016"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~ke hoan canh. Chung thuc van ban tu choi nhan di san."
+ },
+ {
+  "id": "h6-015",
+  "q": "xin cap ban sao tu so goc can giay to gi",
+  "expect_ids": [
+   "2.000908"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. 'Cap ban sao tu so goc' (chung thuc) 2.000908; khong nham voi 'ban sao trich luc ho tich' 2.000635."
+ },
+ {
+  "id": "h6-016",
+  "q": "thủ tục công nhận người có uy tín trong cộng đồng dân tộc mất bao lâu",
+  "expect_ids": [
+   "1.012222"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "Cong nhan nguoi co uy tin (20 ngay lam viec)."
+ },
+ {
+  "id": "h6-017",
+  "q": "tạm ngừng kinh doanh hộ kinh doanh tui muốn nghỉ 6 tháng thì làm sao, cần hồ sơ gì",
+  "expect_ids": [
+   "1.001570"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~ke hoan canh. Tam ngung kinh doanh cua ho kinh doanh."
+ },
+ {
+  "id": "h6-018",
+  "q": "dong cua tiem han luon khong kinh doanh nua thi can lam thu tuc gi",
+  "expect_ids": [
+   "1.001266"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Cham dut hoat dong ho kinh doanh."
+ },
+ {
+  "id": "h6-019",
+  "q": "đổi chủ hộ kinh doanh sang tên con trai thì thủ tục thế nào",
+  "expect_ids": [
+   "2.000720"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Dang ky thay doi noi dung dang ky ho kinh doanh (thay doi chu ho la 1 case)."
+ },
+ {
+  "id": "h6-020",
+  "q": "đăng ký thành lập tổ hợp tác có phải đóng lệ phí không",
+  "expect_ids": [
+   "2.002637"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "Khong thu le phi dang ky to hop tac (text_only)."
+ },
+ {
+  "id": "h6-021",
+  "q": "dang ky mau con dau moi can ho so gi",
+  "expect_ids": [
+   "1.115231"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Dang ky mau con dau MOI (khac 'dang ky lai mau con dau' 1.115232)."
+ },
+ {
+  "id": "h6-022",
+  "q": "mua xe may moi roi dang ky xe nop ho so o dau, bao lau co bien so",
+  "expect_ids": [
+   "1.115970"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~ke hoan canh. Dang ky, cap chung nhan dang ky xe, bien so."
+ },
+ {
+  "id": "h6-023",
+  "q": "đổi bằng lái xe của công an quân đội sang bằng dân sự lệ phí bao nhiêu",
+  "expect_ids": [
+   "1.115979"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "Doi GPLX quan su, Cong an; 115.000d."
+ },
+ {
+  "id": "h6-024",
+  "q": "thông báo tổ chức lễ hội ở xã phải báo trước bao nhiêu ngày",
+  "expect_ids": [
+   "1.003622"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "Thong bao to chuc le hoi cap xa (15 ngay). Co the nham 'dang ky le hoi' 1.013791 nhung cau noi 'thong bao'."
+ },
+ {
+  "id": "h6-025",
+  "q": "xét tặng danh hiệu gia đình văn hóa cần điều kiện gì",
+  "expect_ids": [
+   "6.006758"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "Ban tinh Lao Cai nhung la thu tuc duy nhat ve gia dinh van hoa trong DB."
+ },
+ {
+  "id": "h6-026",
+  "q": "muon lap cau lac bo the thao o thon thi can nhung gi",
+  "expect_ids": [
+   "2.000794"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Cong nhan CLB the duc the thao co so."
+ },
+ {
+  "id": "h6-027",
+  "q": "con trai 17 tuổi đăng ký nghĩa vụ quân sự lần đầu cần mang gì",
+  "expect_ids": [
+   "1.013133"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~ke hoan canh. Dang ky NVQS lan dau."
+ },
+ {
+  "id": "h6-028",
+  "q": "xin giay xac nhan than nhan cua nguoi co cong nop o dau",
+  "expect_ids": [
+   "1.010833"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "~khong dau. UBND cap xa."
+ },
+ {
+  "id": "h6-029",
+  "q": "ba em là cựu chiến binh vừa mất, gia đình xin mai táng phí thì bao lâu có tiền",
+  "expect_ids": [
+   "2.002307"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~storytelling. Mai tang phi doi voi cuu chien binh (25 ngay)."
+ },
+ {
+  "id": "h6-030",
+  "q": "ho tro chi phi mai tang cho doi tuong bao tro xa hoi can ho so gi",
+  "expect_ids": [
+   "1.001731",
+   "3.000731"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. 1.001731 chinh; 3.000731 (Da Nang) cung hop ly -> chap nhan ca hai."
+ },
+ {
+  "id": "h6-031",
+  "q": "xin xác định mức độ khuyết tật lần đầu cho bé nhà em thì mất bao lâu",
+  "expect_ids": [
+   "1.001699"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "Xac dinh/xac dinh lai muc do khuyet tat va cap giay xac nhan (25 ngay lam viec)."
+ },
+ {
+  "id": "h6-032",
+  "q": "muốn thôi làm hòa giải viên thì viết đơn gửi ai",
+  "expect_ids": [
+   "2.000930"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Thoi lam hoa giai vien (cap xa)."
+ },
+ {
+  "id": "h6-033",
+  "q": "tuyen sinh lop 6 nop online o dau",
+  "expect_ids": [
+   "3.000182"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "~khong dau. Tuyen sinh THCS - truc tuyen."
+ },
+ {
+  "id": "h6-034",
+  "q": "đề nghị miễn giảm học phí học nghề cần giấy tờ gì",
+  "expect_ids": [
+   "1.014335"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Mien giam hoc phi giao duc nghe nghiep."
+ },
+ {
+  "id": "h6-035",
+  "q": "doanh nghiep dang ky noi quy lao dong nop o dau bao lau",
+  "expect_ids": [
+   "2.001955"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~khong dau. 7 ngay lam viec."
+ },
+ {
+  "id": "h6-036",
+  "q": "minh chi tham gia BHYT thoi, lam the lan dau can giay gi",
+  "expect_ids": [
+   "1.001939"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Dang ky dong, cap the BHYT doi voi nguoi chi tham gia BHYT."
+ },
+ {
+  "id": "h6-037",
+  "q": "rút BHXH một lần cần hồ sơ gì",
+  "expect_ids": [
+   "1.001613"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Giai quyet huong BHXH mot lan."
+ },
+ {
+  "id": "h6-038",
+  "q": "vợ sinh con thì chồng hưởng chế độ thai sản cần những giấy gì",
+  "expect_ids": [
+   "2.000693",
+   "1.001667"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "2.000693 chinh; 1.001667 (om dau, thai san, duong suc) cung chap nhan."
+ },
+ {
+  "id": "h6-039",
+  "q": "so bao hiem xa hoi bi rach muon cap lai",
+  "expect_ids": [
+   "1.002759"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Cap lai, doi, dieu chinh thong tin tren so BHXH, the BHYT."
+ },
+ {
+  "id": "h6-040",
+  "q": "nhận nuôi tạm thời một cháu bé hoàn cảnh khó khăn thì phải thông báo ở đâu",
+  "expect_ids": [
+   "2.001944",
+   "1.004941"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "Cham soc thay the: thong bao nhan (2.001944) hoac dang ky nhan (1.004941); chap nhan ca hai."
+ },
+ {
+  "id": "h6-041",
+  "q": "đăng ký cai nghiện ma túy tự nguyện cho con thì thủ tục thế nào",
+  "expect_ids": [
+   "3.000527"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Dang ky cai nghien ma tuy tu nguyen."
+ },
+ {
+  "id": "h6-042",
+  "q": "giải quyết tố cáo mất tối đa bao lâu",
+  "expect_ids": [
+   "1.004327"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "To cao (60 ngay lam viec); khac khieu nai 1.004335."
+ },
+ {
+  "id": "h6-043",
+  "q": "công nhận ban quản trị nhà chung cư cần điều kiện gì",
+  "expect_ids": [
+   "1.012888"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "Cong nhan Ban quan tri nha chung cu."
+ },
+ {
+  "id": "h6-044",
+  "q": "xin tạm dùng vỉa hè để bán hàng thì cấp phép ở đâu, cần giấy gì",
+  "expect_ids": [
+   "1.013274"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Cap phep su dung tam thoi long duong, via he vao muc dich khac."
+ },
+ {
+  "id": "h6-045",
+  "q": "gia han giay phep xay dung nha cap 4 mat may ngay",
+  "expect_ids": [
+   "1.013227"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "~khong dau. Gia han GPXD cap III, IV (5 ngay)."
+ },
+ {
+  "id": "h6-046",
+  "q": "đăng ký sinh hoạt tôn giáo tập trung thời gian giải quyết bao lâu",
+  "expect_ids": [
+   "1.012590"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "Dang ky sinh hoat ton giao tap trung (20 ngay)."
+ },
+ {
+  "id": "h6-047",
+  "q": "Thành lập hội cần bao nhiêu hội viên sáng lập",
+  "expect_ids": [
+   "1.013703"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "Thanh lap hoi."
+ },
+ {
+  "id": "h6-048",
+  "q": "tach thua dat o can giay to gi",
+  "expect_ids": [
+   "1.115932"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau. Tach thua, hop thua dat."
+ },
+ {
+  "id": "h6-049",
+  "q": "lệ phí trước bạ nhà đất khai ở đâu",
+  "expect_ids": [
+   "1.007277"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "Khai le phi truoc ba nha dat - Thue co so."
+ },
+ {
+  "id": "h6-050",
+  "q": "cho thuê nhà khai thuế ở đâu vậy",
+  "expect_ids": [
+   "1.007689"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "Khai thue ca nhan cho thue bat dong san - Thue co so."
+ },
+ {
+  "id": "h6-051",
+  "q": "khoi phuc ma so thue can ho so gi",
+  "expect_ids": [
+   "1.008510"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "~khong dau."
+ },
+ {
+  "id": "h6-052",
+  "q": "ho kinh doanh nop thua thue xin hoan lai thi lam sao",
+  "expect_ids": [
+   "1.014979"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "Hoan nop thua cac loai thue doi voi ho kinh doanh, ca nhan."
+ },
+ {
+  "id": "h6-053",
+  "q": "mở quán bi-a cầm đồ giấy chứng nhận đủ điều kiện an ninh trật tự cấp mới lệ phí bao nhiêu",
+  "expect_ids": [
+   "3.000243"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "Cap moi GCN du dieu kien ANTT: 300.000d. Cap doi 3.000244 / cap lai 1.115230 la thu tuc khac."
+ },
+ {
+  "id": "h6-054",
+  "q": "giay chung nhan dang ky ho kinh doanh bi mat roi xin cap lai",
+  "expect_ids": [
+   "2.000575"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "DISTINGUISH: ten day du nhieu bien the nhung co 'bi mat' -> 2.000575 (truong hop cap lai do mat)."
+ },
+ {
+  "id": "h6-055",
+  "q": "con em thuộc hộ cận nghèo học mẫu giáo thì được hỗ trợ ăn trưa theo điều kiện gì",
+  "expect_ids": [
+   "1.001622"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions"
+  ],
+  "notes": "DISTINGUISH: Ho tro an trua tre mau giao, co 'ho can ngheo' chon case."
+ },
+ {
+  "id": "h6-056",
+  "q": "người lao động nước ngoài là chuyên gia xin cấp giấy phép lao động cần hồ sơ gì",
+  "expect_ids": [
+   "1.014199"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "DISTINGUISH: GPLD NN voi 'chuyen gia' (case 1.3)."
+ },
+ {
+  "id": "h6-057",
+  "q": "dang ky thuong tru vao nha thue nha muon nha o nho can giay to gi",
+  "expect_ids": [
+   "1.004222"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "DISTINGUISH ~khong dau: dang ky thuong tru, case thue/muon/o nho."
+ },
+ {
+  "id": "h6-058",
+  "q": "đăng ký kết hôn có yếu tố nước ngoài cần những giấy tờ gì",
+  "expect_ids": [
+   "2.000806"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "DISTINGUISH: co 'yeu to nuoc ngoai' -> 2.000806 (khong phai ban tai khu vuc bien gioi 1.000094)."
+ },
+ {
+  "id": "h6-059",
+  "q": "thu hoi bien so xe do xe het nien han su dung phai nop gi",
+  "expect_ids": [
+   "1.115971"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "DISTINGUISH ~khong dau: Thu hoi chung nhan dang ky xe, case het nien han."
+ },
+ {
+  "id": "h6-060",
+  "q": "đăng ký khai sinh lưu động cho các cháu ở thôn xa thì thời gian bao lâu",
+  "expect_ids": [
+   "1.003583"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "DISTINGUISH: 'luu dong' -> 1.003583."
+ },
+ {
+  "id": "h6-061",
+  "q": "dang ky khai sinh ket hop nhan cha me con thi nop ho so gi",
+  "expect_ids": [
+   "1.000689"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "DISTINGUISH ~khong dau: 'ket hop nhan cha, me, con' (trong nuoc) -> 1.000689; ban co yeu to NN la 1.001695."
+ },
+ {
+  "id": "h6-062",
+  "q": "em muon xin tro cap",
+  "expect_ids": [
+   "1.001776",
+   "1.014027",
+   "1.010801",
+   "2.000762",
+   "2.001396",
+   "2.001157",
+   "1.001731"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "VAGUE (a): tro cap xa hoi / huu tri xa hoi / than nhan liet si / thanh nien xung phong... qua nhieu loai."
+ },
+ {
+  "id": "h6-063",
+  "q": "làm giấy tờ cho xe",
+  "expect_ids": [
+   "1.115970",
+   "1.115971",
+   "1.013313",
+   "1.115979"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "VAGUE (a): dang ky xe, thu hoi, xac nhan noi dau do, doi GPLX."
+ },
+ {
+  "id": "h6-064",
+  "q": "bên mình có hỗ trợ gì cho hộ nghèo không ạ",
+  "expect_ids": [
+   "1.011606",
+   "1.011607",
+   "1.116214",
+   "1.116215",
+   "1.012825",
+   "1.001622",
+   "1.014103"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "VAGUE (a): cong nhan ho ngheo, sinh ke, an trua, mien giam hoc phi..."
+ },
+ {
+  "id": "h6-065",
+  "q": "xin giay xac nhan",
+  "expect_ids": [
+   "1.010833",
+   "1.010041",
+   "1.004873",
+   "1.013314",
+   "1.014363",
+   "1.014103"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "VAGUE (a) ~khong dau: nhieu loai giay xac nhan (than nhan co cong, cu tru, hon nhan, nha o, XNC...)."
+ },
+ {
+  "id": "h6-066",
+  "q": "dang ky cho con",
+  "expect_ids": [
+   "1.001193",
+   "1.001022",
+   "2.001263",
+   "1.001939",
+   "1.000689"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "VAGUE (a) ~khong dau: khai sinh/nhan cha me con/nuoi con nuoi/the BHYT..."
+ },
+ {
+  "id": "h6-067",
+  "q": "muốn đổi giấy",
+  "expect_ids": [
+   "1.116410",
+   "1.115979",
+   "3.000351",
+   "1.002759",
+   "2.000575",
+   "1.004859"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "VAGUE (a): doi the can cuoc, GPLX, so BHXH, giay hon...; khong ro giay nao."
+ },
+ {
+  "id": "h6-068",
+  "q": "nha co nguoi mat roi phai lam nhung thu tuc gi",
+  "expect_ids": [
+   "1.000656",
+   "1.003197",
+   "2.002307",
+   "1.001731",
+   "2.000821",
+   "2.002913"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "VAGUE (a) ~khong dau: khai tu, xoa thuong tru, mai tang phi, tu tuat, lien thong."
+ },
+ {
+  "id": "h6-069",
+  "q": "bảo hiểm",
+  "expect_ids": [
+   "1.001939",
+   "1.001613",
+   "2.000693",
+   "1.002759",
+   "1.001742",
+   "1.014193",
+   "2.000821"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "VAGUE (a) mot tu: BHYT/BHXH nhieu thu tuc."
+ },
+ {
+  "id": "h6-070",
+  "q": "Thủ tục đăng ký thường trú",
+  "expect_ids": [
+   "1.004222"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "NAMED+VARIANTS (b): 8 case (chu so huu, thue/muon, co so ton giao, don vi dong quan, co so tro giup...). Hoi lai truong hop."
+ },
+ {
+  "id": "h6-071",
+  "q": "Hỗ trợ ăn trưa đối với trẻ em mẫu giáo",
+  "expect_ids": [
+   "1.001622"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "NAMED+VARIANTS (b): 5 nhom doi tuong (khong nguon nuoi duong, con liet si, ho ngheo, khuyet tat, vung kho khan)."
+ },
+ {
+  "id": "h6-072",
+  "q": "Cấp giấy phép lao động đối với người lao động nước ngoài làm việc tại Việt Nam",
+  "expect_ids": [
+   "1.014199"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "NAMED+VARIANTS (b): ~14 case (quan ly, giam doc dieu hanh, chuyen gia, lao dong ky thuat, doi vi tri...)."
+ },
+ {
+  "id": "h6-073",
+  "q": "dang ky mua thue mua thue nha o xa hoi, vay von xay dung cai tao nha o",
+  "expect_ids": [
+   "1.014632"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "NAMED+VARIANTS (b) ~khong dau: 7 truong hop xac nhan khac nhau."
+ },
+ {
+  "id": "h6-074",
+  "q": "Thu hồi chứng nhận đăng ký xe, biển số xe",
+  "expect_ids": [
+   "1.115971"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "NAMED+VARIANTS (b): het nien han / chuyen quyen / xe ngoai giao."
+ },
+ {
+  "id": "h6-075",
+  "q": "Giải quyết hưởng chế độ thai sản",
+  "expect_ids": [
+   "2.000693"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "NAMED+VARIANTS (b): NLD dong BHXH bat buoc / bao luu / bat kha khang... (debatable: co the tra loi chung)."
+ },
+ {
+  "id": "h6-076",
+  "q": "thu tuc kham benh chua benh bao hiem y te",
+  "expect_ids": [
+   "1.014193"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "NAMED+VARIANTS (b) ~khong dau: 9 truong hop (tre <6 tuoi, cap cuu, cho cap the, chuyen tuyen...)."
+ },
+ {
+  "id": "h6-077",
+  "q": "Cấp Bằng “Tổ quốc ghi công”",
+  "expect_ids": [
+   "1.010772",
+   "1.010774",
+   "1.010775",
+   "1.010781"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "NAMED+VARIANTS (b): nhieu truong hop hy sinh + 3 thu tuc cap Bang lien quan trong cung nhom."
+ },
+ {
+  "id": "h6-078",
+  "q": "đăng ký thay đổi nội dung đăng ký hộ kinh doanh",
+  "expect_ids": [
+   "2.000720"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "NAMED+VARIANTS (b): doi ten/dia chi/von/nganh nghe; doi chu ho (4 truong hop); doi thanh vien (debatable)."
+ },
+ {
+  "id": "h6-079",
+  "q": "Giải quyết hưởng chế độ TNLĐ, BNN đối với trường hợp bị TNLĐ, BNN lần đầu",
+  "expect_ids": [
+   "1.001632"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "NAMED+VARIANTS (b): TNLD / BNN / da nghi huu / tu nguyen... (debatable)."
+ },
+ {
+  "id": "h6-080",
+  "q": "em muon tim hieu ve sinh hoat ton giao tap trung",
+  "expect_ids": [
+   "1.012590",
+   "1.012584",
+   "1.012582",
+   "1.012585"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "MID-NAME (c) ~khong dau: dang ky, doi dia diem (2), doi nguoi dai dien."
+ },
+ {
+  "id": "h6-081",
+  "q": "làm thủ tục về trường phổ thông dân tộc bán trú",
+  "expect_ids": [
+   "5.003848",
+   "5.003849",
+   "5.003850",
+   "5.003851",
+   "5.003852"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "MID-NAME (c): thanh lap / cho phep hoat dong / sap nhap / giai the."
+ },
+ {
+  "id": "h6-082",
+  "q": "người có uy tín trong cộng đồng",
+  "expect_ids": [
+   "1.012222",
+   "1.012223"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "MID-NAME (c): cong nhan hay dua ra khoi danh sach/thay the."
+ },
+ {
+  "id": "h6-083",
+  "q": "thiet bi giam sat hanh trinh tau ca",
+  "expect_ids": [
+   "1.014570",
+   "1.014927",
+   "1.014606"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "MID-NAME (c) ~khong dau: ho tro nang cap/thay the TB GSHT; ho tro phi thue bao (Hue). Ban tinh khac nhau."
+ },
+ {
+  "id": "h6-084",
+  "q": "lễ hội ở xã",
+  "expect_ids": [
+   "1.003622",
+   "1.013791"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "MID-NAME (c): thong bao to chuc le hoi vs dang ky le hoi quy mo cap xa."
+ },
+ {
+  "id": "h6-085",
+  "q": "nuôi con nuôi",
+  "expect_ids": [
+   "2.001263",
+   "2.001255",
+   "2.002363"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "MID-NAME (c): dang ky nuoi con nuoi trong nuoc / dang ky lai / ghi so viec da giai quyet o co quan khac."
+ },
+ {
+  "id": "h6-086",
+  "q": "phương án ứng phó thiên tai",
+  "expect_ids": [
+   "2.000206",
+   "1.003446",
+   "1.003440"
+  ],
+  "beh": "clarify",
+  "fields": [],
+  "notes": "MID-NAME (c): cong trinh thuy dien / thuy loi / khan cap."
+ },
+ {
+  "id": "h6-087",
+  "q": "em muon lam ho chieu moi lan dau thi nop o dau",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "Chi co 'trinh bao mat ho chieu' (1.010386) - khong co thu tuc cap ho chieu. Co the bi khop nham."
+ },
+ {
+  "id": "h6-088",
+  "q": "cho mình hỏi xin phiếu lý lịch tư pháp số 2 để đi xin việc thì cần giấy tờ gì",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "DB khong co thu tuc cap phieu ly lich tu phap (domain LLTP chi co 2 muc khong lien quan)."
+ },
+ {
+  "id": "h6-089",
+  "q": "con trai mình sắp nhập ngũ muốn xin tạm hoãn nghĩa vụ quân sự vì đang học đại học thì làm sao",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "Khong co tam hoan NVQS (chi co dang ky NVQS lan dau 1.013133 - de nham)."
+ },
+ {
+  "id": "h6-090",
+  "q": "thi sat hach lay bang lai xe may A1 lan dau dang ky o dau",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "Khong co sat hach cap GPLX lan dau (chi co doi GPLX)."
+ },
+ {
+  "id": "h6-091",
+  "q": "cuoi nam phai nop le phi mon bai cho cua hang thi nop the nao",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "Khong co le phi mon bai."
+ },
+ {
+  "id": "h6-092",
+  "q": "Xe ô tô nhà mình sắp hết hạn đăng kiểm, thủ tục đăng kiểm cần những gì và phí bao nhiêu?",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "Khong co dang kiem phuong tien co gioi."
+ },
+ {
+  "id": "h6-093",
+  "q": "mua ban nha dat xong ra cong chung hop dong o dau, phi cong chung tinh sao",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "Khong co cong chung (chi co chung thuc UBND). De nham voi cac thu tuc chung thuc 2.000xxx."
+ },
+ {
+  "id": "h6-094",
+  "q": "chồng mình là người Hàn muốn xin thẻ tạm trú dài hạn ở Việt Nam, hồ sơ gồm gì",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "Khong co the tam tru cho nguoi nuoc ngoai / visa."
+ },
+ {
+  "id": "h6-095",
+  "q": "quán cà phê nhà em đang đặt tên, muốn đăng ký bảo hộ nhãn hiệu độc quyền thì nộp ở đâu",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "Khong co dang ky nhan hieu / so huu tri tue."
+ },
+ {
+  "id": "h6-096",
+  "q": "nha toi muon mo quan karaoke thi xin giay phep kinh doanh karaoke o dau ha ban",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "Khong co cap phep karaoke / van hoa (chi co GCN ANTT 3.000243 - de nham)."
+ },
+ {
+  "id": "h6c-01",
+  "turns": [
+   {
+    "q": "chồng em được hưởng chế độ gì khi vợ sinh con, cần giấy gì",
+    "expect_ids": [
+     "2.000693",
+     "1.001667"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "thế thời gian giải quyết là bao lâu",
+    "expect_ids": [
+     "2.000693",
+     "1.001667"
+    ],
+    "beh": "answer",
+    "fields": [
+     "time"
+    ]
+   },
+   {
+    "q": "ok cảm ơn, mà đăng ký khai sinh cho bé thì nộp ở đâu",
+    "expect_ids": [
+     "1.001193"
+    ],
+    "beh": "answer",
+    "fields": [
+     "place"
+    ]
+   }
+  ],
+  "notes": "follow-up (cung thu tuc) roi doi chu de sang khai sinh. Khai sinh mac dinh trong nuoc 1.001193 (field place debatable)."
+ },
+ {
+  "id": "h6c-02",
+  "turns": [
+   {
+    "q": "xin hỗ trợ cho con đi học",
+    "expect_ids": [
+     "1.001622",
+     "1.003702",
+     "1.014335",
+     "1.014337"
+    ],
+    "beh": "clarify",
+    "fields": []
+   },
+   {
+    "q": "bé học mẫu giáo, nhà thuộc hộ cận nghèo",
+    "expect_ids": [
+     "1.001622"
+    ],
+    "beh": "answer",
+    "fields": [
+     "conditions"
+    ]
+   },
+   {
+    "q": "nộp hồ sơ cho ai",
+    "expect_ids": [
+     "1.001622"
+    ],
+    "beh": "answer",
+    "fields": [
+     "place"
+    ]
+   }
+  ],
+  "notes": "clarify roi thu hep; place -> Co so giao duc mam non."
+ },
+ {
+  "id": "h6c-03",
+  "turns": [
+   {
+    "q": "khai tử cho ông ngoại thì cần chuẩn bị giấy gì",
+    "expect_ids": [
+     "1.000656"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "nhân tiện muốn xóa đăng ký thường trú của ông luôn, cần gì",
+    "expect_ids": [
+     "1.003197"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "quay lại vụ khai tử, bao lâu thì xong",
+    "expect_ids": [
+     "1.000656"
+    ],
+    "beh": "answer",
+    "fields": [
+     "time"
+    ]
+   }
+  ],
+  "notes": "doi chu de roi quay lai chu de dau (khai tu -> xoa thuong tru -> khai tu)."
+ },
+ {
+  "id": "h6c-04",
+  "turns": [
+   {
+    "q": "quan ca phe cua toi muon nghi 3 thang roi mo lai",
+    "expect_ids": [
+     "1.001570"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "hồ sơ nộp ở phường hay quận",
+    "expect_ids": [
+     "1.001570"
+    ],
+    "beh": "answer",
+    "fields": [
+     "place"
+    ]
+   },
+   {
+    "q": "à còn mở quán cầm đồ thì giấy chứng nhận đủ điều kiện an ninh trật tự cấp mới mất bao nhiêu tiền",
+    "expect_ids": [
+     "3.000243"
+    ],
+    "beh": "answer",
+    "fields": [
+     "fee"
+    ]
+   }
+  ],
+  "notes": "tiep noi roi sang thu tuc khac. place cua 1.001570 la co quan dang ky kinh doanh (debatable)."
+ },
+ {
+  "id": "h6c-05",
+  "turns": [
+   {
+    "q": "xin giấy phép",
+    "expect_ids": [
+     "1.014199",
+     "1.013225",
+     "1.013061",
+     "1.013274",
+     "3.000243",
+     "1.001662"
+    ],
+    "beh": "clarify",
+    "fields": []
+   },
+   {
+    "q": "giấy phép xây nhà ở cấp 4 mới ở nông thôn",
+    "expect_ids": [
+     "1.013225"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "xây xong rồi mà giấy phép sắp hết hạn muốn gia hạn thì mất bao nhiêu ngày",
+    "expect_ids": [
+     "1.013227"
+    ],
+    "beh": "answer",
+    "fields": [
+     "time"
+    ]
+   }
+  ],
+  "notes": "clarify -> thu hep (cap moi) -> thu tuc lien quan (gia han)."
+ },
+ {
+  "id": "h6c-06",
+  "turns": [
+   {
+    "q": "bà nội mất để lại mảnh đất, mấy anh em thỏa thuận một người từ chối nhận phần, ra chứng thực ở đâu cần giấy gì",
+    "expect_ids": [
+     "2.001016"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "còn nếu các anh em còn lại muốn phân chia di sản đó với nhau thì sao",
+    "expect_ids": [
+     "2.001406"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "phí mỗi loại là bao nhiêu",
+    "expect_ids": [
+     "2.001406",
+     "2.001016"
+    ],
+    "beh": "answer",
+    "fields": [
+     "fee"
+    ]
+   }
+  ],
+  "notes": "storytelling; turn 3 'moi loai' = ca hai (deu 50.000d/van ban) nen chap nhan ca hai."
+ },
+ {
+  "id": "h6c-07",
+  "turns": [
+   {
+    "q": "đăng ký tạm trú cho người thuê nhà cần gì",
+    "expect_ids": [
+     "1.004194"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "tiện thể làm luôn hộ chiếu cho cả nhà ở đây được không",
+    "expect_ids": [],
+    "beh": "apologize",
+    "fields": []
+   },
+   {
+    "q": "thôi vậy, tạm trú sắp hết hạn gia hạn thì mất mấy ngày",
+    "expect_ids": [
+     "1.002755"
+    ],
+    "beh": "answer",
+    "fields": [
+     "time"
+    ]
+   }
+  ],
+  "notes": "xen cau ngoai DB (cap ho chieu) giua hai cau co dap an."
+ },
+ {
+  "id": "h6c-08",
+  "turns": [
+   {
+    "q": "mat the can cuoc phai lam sao",
+    "expect_ids": [
+     "1.116410"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "trong lúc chờ có muốn khóa tài khoản định danh điện tử đi cho đỡ lo bị lợi dụng thì làm sao",
+    "expect_ids": [
+     "3.000283"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "khoa roi thi mo lai the nao",
+    "expect_ids": [
+     "3.000284"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   }
+  ],
+  "notes": "chuoi follow-up: the can cuoc -> khoa -> mo khoa tai khoan dinh danh."
+ },
+ {
+  "id": "h6c-09",
+  "turns": [
+   {
+    "q": "hội",
+    "expect_ids": [
+     "1.013703",
+     "1.013708",
+     "1.013707",
+     "1.013702",
+     "1.013704",
+     "1.013709",
+     "1.013706"
+    ],
+    "beh": "clarify",
+    "fields": []
+   },
+   {
+    "q": "thành lập hội thì cần hồ sơ gì",
+    "expect_ids": [
+     "1.013703"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "rồi sau này muốn hội tự giải thể thì mất bao lâu",
+    "expect_ids": [
+     "1.013708"
+    ],
+    "beh": "answer",
+    "fields": [
+     "time"
+    ]
+   }
+  ],
+  "notes": "clarify mot tu -> thu hep -> thu tuc lien quan (giai the, 45 ngay)."
+ },
+ {
+  "id": "h6c-10",
+  "turns": [
+   {
+    "q": "cho thuê nhà mỗi tháng 10 triệu thì khai thuế ở đâu",
+    "expect_ids": [
+     "1.007689"
+    ],
+    "beh": "answer",
+    "fields": [
+     "place"
+    ]
+   },
+   {
+    "q": "còn lệ phí trước bạ khi sang tên nhà thì cần giấy gì",
+    "expect_ids": [
+     "1.007277"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "cái đó bao nhiêu ngày thì xong",
+    "expect_ids": [
+     "1.007277"
+    ],
+    "beh": "answer",
+    "fields": [
+     "time"
+    ]
+   }
+  ],
+  "notes": "doi sang thu tuc thue khac; 'cai do' = le phi truoc ba."
+ }
+]

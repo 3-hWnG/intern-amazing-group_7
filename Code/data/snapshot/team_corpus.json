@@ -1,0 +1,2438 @@
+[
+    {
+        "procedure_id": "PROC-0001",
+        "name": "Thủ tục xác nhận tình trạng hôn nhân",
+        "field": "Hộ tịch",
+        "application_method": "Trực tuyến",
+        "receiving_location": "Bộ phận Một cửa - UBND cấp xã/phường/thị trấn nơi thường trú",
+        "processing_time": {
+            "text": "Trong 03 ngày làm việc (nếu nhận hồ sơ sau 15 giờ thì trả kết quả vào ngày hôm sau)"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Xuất trình giấy tờ chứng minh thông tin cư trú ( bản photo hộ khẩu bản chính nếu có, hoặc giấy xác nhận thông tin cư trú CT07 có mốc thời gian do Công an phường cấp), Chứng minh nhân dân (hoặc căn cước công dân, hộ chiếu):, 01 bản photo của người yêu cầu",
+                "condition": "Có điều kiện"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0002",
+        "name": "Thủ tục đăng ký khai sinh",
+        "field": "Hộ tịch",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ hành chính công phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "1 ngày"
+        },
+        "fees": [
+            {
+                "amount_text": "Bản chính: Không thu phí Bản sao: 8.000đ/bản",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy chứng sinh (Bản chính), Chứng minh nhân dân (hoặc căn cước công dân, hộ chiếu) của, 2 vợ chồng (01 bản photo)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận kết hôn (01 bản photo), (xuất trình bản chính để đối chiếu)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0003",
+        "name": "Thủ tục đăng ký khai tử",
+        "field": "Hộ tịch",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ hành chính công phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "trong ngày làm việc (nếu nhận hồ sơ sau 15 giờ thì trả kết quả vào hôm sau)"
+        },
+        "fees": [
+            {
+                "amount_text": "Bản chính: Không thu phí Bản sao: 8.000đ/bản",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Chứng minh nhân dân hoặc căn cước công dân, hộ chiếu của người chết và người yêu cầu: 01 bản photo (có mối quan hệ nhân thân với người đã chết), Chứng minh nhân dân (hoặc căn cước công dân, hộ chiếu) 01 bản photo của hai người làm chứng (Lưu ý: vợ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "chồng",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "con không được làm chứng trong đơn)",
+                "condition": "Có điều kiện"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0004",
+        "name": "Thủ tục đăng ký kết hôn",
+        "field": "Hộ tịch",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ hành chính công phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "Trong ngày làm việc (nếu nhận hồ sơ sau 15 giờ thì trả kết quả vào ngày hôm sau)."
+        },
+        "fees": [
+            {
+                "amount_text": "Bản chính: Không thu phí Bản sao: 8.000đ/bản",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Chứng minh nhân dân (hoặc căn cước công dân, hộ chiếu) của bên nam và bên nữ 01 bản photo (Xuất trình bản chính)",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Giấy tờ chứng minh thông tin cư trú: thông báo đăng ký tạm trú (do công an phường cấp)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0005",
+        "name": "Thủ tục nhận cha mẹ con",
+        "field": "Hộ tịch",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ hành chính công phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "Trong 07 ngày làm việc."
+        },
+        "fees": [
+            {
+                "amount_text": "Bản chính: Không thu phí Bản sao: 8.000đ/bản",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy xác nhận thông tin cư trú của Công an cấp (thay thế Hộ khẩu): 01 Bản photo (Xuất trình bản chính), Chứng minh nhân dân (hoặc căn cước công dân, hộ chiếu): 01 bản photo của người yêu cầu",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Tờ khai nhận cha, mẹ con (phải ghi ý kiến của người hiện đang là mẹ hoặc cha)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "“Tôi đồng ý cho Ông/Bà………..nhận bé………..là con.” Ký ghi rõ họ và tên",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Văn bản của cơ quan y tế, cơ quan giám định xác nhận quan hệ, cha, mẹ, con (bản chính) nếu có, Cam kết con chung có ít nhất 02 người làm chứng về mối quan hệ cha, mẹ, con khi không có chứng cứ chứng minh quan hệ cha, mẹ, con theo quy định",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0006",
+        "name": "Đăng ký kết hôn có yếu tố nước ngoài",
+        "field": "Hộ tịch",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ hành chính công phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "5 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Bản chính: Không thu phí Bản sao: 8.000đ/bản sao",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Tờ khai theo quy định (có mẫu sẵn)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ tùy thân (CMND, CCCD, Hộ chiếu, thẻ ID ....). Phải dịch thuật sang tiếng Việt Nam nếu các giấy tờ trên do cơ quan nước ngoài cấp",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ chứng minh nơi cư trú của người đăng ký kết hôn (Hộ khẩu",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "sổ tạm trú",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Đơn xin xác nhận tạm trú, thẻ ID",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "bằng lái xe chứng minh nơi cư trú bên nước ngoài...) tại phường Tăng Nhơn Phú, Phải dịch thuật sang tiếng Việt Nam nếu các giấy tờ trên do cơ quan nước ngoài cấp",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy xác nhận của tổ chức y tế có thẩm quyền xác nhận các bên không mắc bệnh tâm thần (Khám ở Bệnh viện Tâm thần. Địa chỉ: 766 Võ Văn Kiệt, (Phường 1, Quận 5) nay là phường Chợ Quán, TP.HCM)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ xác nhận tình trạng hôn nhân của vợ và chồng, Nếu có ly hôn phải nộp thêm bản quyết định ly hôn của Tòa án cấp, Tuyên thệ độc thân hoặc văn bản chứng minh độc thân của vợ hoặc chồng bên nước ngoài cấp. Khi về sử dụng tại Việt Nam phải được hợp pháp hóa lãnh sự văn bản đó và dịch thuật sang tiếng Việt Nam và được công chứng, Bản sao trích lục hộ tịch về việc đã ghi vào sổ ly hôn hoặc hủy việc kết hôn , Nếu là công dân nước ngoài (đã bỏ quốc tịch Việt Nam) thì không cẩn làm thủ tục ghi chú ly hôn, Nếu là công dân Việt Nam khi ly hôn ở nước ngoài thì phải làm thủ tục ghi chú ly hôn tại nơi đăng ký ly hôn hoặc nơi trước khi xuất cảnh",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Văn bản của cơ quan đơn vị quản lý xác nhận công chức viên chức đang phục vụ trong lực lượng vũ trang kết hôn",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0007",
+        "name": "Nội quy lao động",
+        "field": "Lao động - Tiền lương",
+        "application_method": "Trực tuyến",
+        "receiving_location": "Bộ phận Một cửa - Phòng Lao động - Thương binh và Xã hội (UBND cấp huyện) hoặc Sở LĐTBXH",
+        "processing_time": {
+            "text": "7 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Công văn đăng ký",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Biên bản họp thông qua nội quy lao động",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Nội quy lao động",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0008",
+        "name": "Xác định, xác định lại mức độ khuyết tật và cấp Giấy xác nhận khuyết tật",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ hành chính công phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "25 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "(Mẫu 01) Đơn đề nghị xác định, xác định lại mức độ khuyết tật và cấp, cấp đổi, cấp lại giấy xác nhận khuyết tật, Bản sao các giấy tờ liên quan đến khuyết tật  như: bệnh án",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "giấy tờ khám, điều trị, phẫu thuật hoặc các giấy tờ liên quan khác. Căn cước công dân",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0009",
+        "name": "Thủ tục hỗ trợ chi phí khuyến khích hoả táng đối với người dân có hộ khẩu Thành phố Hồ Chí Minh",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Trực tiếp",
+        "receiving_location": "Trung tâm Phục vụ hành chính công phường Tăng Nhơn phú",
+        "processing_time": {
+            "text": "12 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Tờ khai thông tin hộ gia đình, cá nhân, tổ chức nhận chi phí hỗ trợ khuyến khích hỏa táng, hóa đơn VAT của đơn vị cung cấp dịch vụ hỏa táng (bản chính). Căn cước công dân của người đứng đơn",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0010",
+        "name": "Giải quyết chế độ trợ cấp thờ cúng liệt sĩ.",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ hành chính công phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "17 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Cá nhân làm đơn đề nghị theo Mẫu số 18 Phụ lục I Nghị định số 131/2021/NĐ-CP",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "văn bản ủy quyền của những người cùng hàng thừa kế (xác nhận chữ ký của cơ quan có thẩm quyền) và bản sao được chứng thực Bằng “Tổ quốc ghi công”. Tường trình thân nhân của liệt sĩ",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0011",
+        "name": "Cấp đổi Bằng “Tổ quốc ghi công”",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Trực tiếp",
+        "receiving_location": "Trung tâm Phục vụ hành chính công phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "129 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Đơn đề nghị theo Mẫu số 16 Phụ lục I Nghị định số 131/2021/NĐ-CP",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Bản gốc Bằng “Tổ quốc ghi công”",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Một trong các giấy tờ chứng minh thân nhân đã được giải quyết chế độ ưu đãi: Quyết định hưởng trợ cấp",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "sổ nhận trợ cấp ưu đãi",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "danh sách chi trả trợ cấp hằng tháng hoặc trợ cấp một lần khi báo tử có ký nhận của người hưởng trợ cấp",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "giấy tờ khác do cơ quan có thẩm quyền ban hành, xác nhận được lập từ ngày 31 tháng 12 năm 1994 trở về trước",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0012",
+        "name": "Cấp giấy xác nhận thân nhân của người có công",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ hành ch1inh công",
+        "processing_time": {
+            "text": "05 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Đơn đề nghị cấp giấy xác nhận thân nhân của người có công. Bản sao được chứng thực từ một trong các giấy tờ sau",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận người có công hoặc Kỷ niệm chương người hoạt động cách mạng, kháng chiến, bảo vệ Tổ quốc, làm nghĩa vụ quốc tế bị địch bắt tù, đày",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Huân chương, Huy chương kháng chiến",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Huân chương, Huy chương chiến thắng",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kỷ niệm chương “Tổ quốc ghi công”",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "bằng “Có công với nước”",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ do cơ quan có thẩm quyền ban hành, xác nhận mối quan hệ với người có công gồm: căn cước công dân",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0013",
+        "name": "Giải quyết chế độ trợ cấp thờ cúng liệt sĩ",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Cả hai",
+        "receiving_location": "Tổ Nội vụ - Phòng Văn hóa - Xã hội phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "05 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Đơn đề nghị Mẫu số 18 Phụ lục I Nghị định số 131/2021/NĐ-CP (Bản chính)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Bằng Tổ quốc ghi công (bản sao được chứng thực)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Văn bản ủy quyền (Bản chính)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0014",
+        "name": "Hỗ trợ chi phí khuyến khích hỏa táng",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ Hành chính công phường Tăng Nhơn Phú, số 29 Lê Văn Việt, phường Tăng Nhơn Phú, TP.HCM",
+        "processing_time": {
+            "text": "12 (muời hai) ngày làm việc, kể từ ngày nhận được hồ sơ"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "1/ Bản chính tờ khai thông tin gia đình, cá nhân, tổ chức nhận chi phí hỗ trợ khuyến khích hỏa táng",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "2/ Bản photo (kèm bản chính để đố chiếu) hoặc bản sao giấy chứng từ của người được hỏa táng",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "3/Bản chính hóa đơn đã được thanh toán của cơ sở hỏa táng theo quy định của Bộ Tài chính",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "4/ Đối với cá nhân thực hiện thủ tục thông qua ủy quyền hoặc đại diện tổ chức, đoàn thể thực hiện thủ tục: xuất trình văn bản ủy quyền hoặc giấy giới thiệu theo quy định",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0015",
+        "name": "Hỗ trợ chi phí mai táng cho đối tượng bảo trợ xã hội",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ hành chính công phường Tăng Nhơn Phú, số 29 Lê Văn Việt, phường Tăng Nhơn Phú, TP.HCM",
+        "processing_time": {
+            "text": "Ba (03) ngày làm việc, kể từ ngày nhận đủ hồ sơ và hợp lệ"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "1/ Bản chínhTờ khai đề nghị hỗ trợ chi phí mai táng (theo mẫu số 04 ban hành kèm theo Phụ lục tại Nghị định số 20/2021/NĐ-CP ngày 15/3/2021)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "2/ Bản sao Giấy chứng tử của đối tượng",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "3/ Bản sao Quyết định đối với trường hợp người từ đủ 80 tuổi đang hưởng trợ cấp tuất bảo hiểm xã hội hàng tháng",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0016",
+        "name": "Thực hiện, điều chỉnh, thôi hưởng trợ cấp xã hội hàng tháng, hỗ trợ kinh phí chăm sóc, nuôi dưỡng hàng tháng",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ Hành chính công phường Tăng Nhơn Phú, số 29 Lê Văn Việt, phường Tăng Nhơn Phú, TP.HCM",
+        "processing_time": {
+            "text": "Mười (10) ngày làm việc, kể từ ngày nhận đủ hồ sơ và hợp lệ"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "I. Trường hợp đề nghị trợ cấp xã hội hàng tháng:, Bản chính Tờ khai của đối tượng (theo Mẫu số 1a, 1b, 1c, 1d, 1đ ban hành kèm theo Nghị định số 20/2021/NĐ-CP), II. Trường hợp đề nghị hỗ trợ kinh phí chăm sóc, nuôi dưỡng hàng tháng:, 1/ Bản chính Tờ khai nhận chăm sóc, nuôi dưỡng đối tượng bảo trợ xã hội (theo Mẫu số 2b ban hành kèm theo Nghị định số 20/2021/NĐ-CP), 2/ Bản chính Tờ khai của đối tượng được nhận chăm sóc, nuôi dưỡng trong trường hợp đối tượng không hưởng trợ cấp xã hội hàng tháng (theo Mẫu số 03 ban hành kèm theo Nghị định số 20/2021/NĐ-CP), 3/ Bản chính Tờ khai nhận chăm sóc, nuôi dưỡng đối tượng bảo trợ xã hội (theo Mẫu số 2b ban hành kèm theo Nghị định số 20/2021/NĐ-CP), III. Các giấy tờ khác kèm theo :, 1/ Giấy xác nhận thông tin về cư trú hoặc Giấy thông báo số định danh cá nhân và thông tin trong Cơ sở dữ liệu quốc gia về dân cư",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "chứng minh thư nhân dân hoặc thẻ căn cước công dân (Dùng để đối chiếu thông tin trên Tờ khai), 2/ Giấy khai sinh của trẻ em đối với trường hợp xét trợ cấp xã hội đối với trẻ em, người đơn thân nghèo đang nuôi con, người khuyết tật đang nuôi con, 3/ Giấy tờ xác nhận bị nhiễm HIV của cơ quan y tế có thẩm quyền đối với trường hợp bị nhiễm HIV, 4/ Giấy tờ xác nhận đang mang thai của cơ quan y tế có thẩm quyền đối với trường hợp người khuyết tật đang mang thai, 5/ Giấy xác nhận khuyết tật đối với trường hợp người khuyết tật",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0017",
+        "name": "Hưởng trợ cấp khi người có công đang hưởng trợ cấp ưu đãi từ trần",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Cả hai",
+        "receiving_location": "Tổ Nội vụ - Phòng Văn hóa - xã hội",
+        "processing_time": {
+            "text": "Đ/v trợ cấp 1 lần và trợ cấp mai táng: 16 ngày, Đ/v trợ cấp tuất hàng tháng: 12 ngày"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Đối với trợ cấp một lần và trợ cấp mai táng:, Bản khai theo Mẫu số 12 Phụ lục I Nghị định số 131/2021/NĐ-CP (01bản chính)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy báo tử hoặc trích lục khai tử ( 01 bản sao)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy ủy quyền ( 01 bản sao)",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Giấy báo tử hoặc trích lục khai tử ( 01 bản sao)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy khai sinh hoặc trích lục khai sinh đối với trường hợp thân nhân là con chưa đủ 18 tuổi (01 bản sao)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy xác nhận của cơ sở giáo dục nơi đang theo học đối với trường hợp thân nhân là con từ đủ 18 tuổi trở lên đang đi học",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "nếu đnà theo học tại cơ sở giáo dục nghề nghiệp hoặc giáo dục đại học thì phải có thêm bản sao được chứng thực từ Bằng tốt nghiệp trung học phổ thông hoặc giấy xác nhân của cơ sở giáo dục trung học phổ thông về thời điểm kết thúc học (01 bản chính)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy ủy quyền  ( 01 bản sao)",
+                "condition": "Có điều kiện"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0018",
+        "name": "Thực hiện, điều chỉnh, thôi hưởng trợ cấp hưu trí xã hội",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ Hành chính công phường Tăng Nhơn Phú, 29 Lê Văn Việt, phường Tăng Nhơn Phú, TP.HCM",
+        "processing_time": {
+            "text": "Mười (10) ngày làm việc, kể từ ngày nhận đủ hồ sơ và hợp lệ"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Bản chính Văn bản đề nghị hưởng trợ cấp hưu trí xã hội (theo Mẫu số 01 ban hành kèm theo Nghị định số 176/2025/NĐ-CP)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0019",
+        "name": "Hỗ trợ chi phí mai táng đối với đối tượng hưởng trợ cấp hưu trí xã hội",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ Hành chính công phường Tăng Nhơn Phú, 29 Lê Văn Việt, phường Tăng Nhơn Phú, TP.HCM",
+        "processing_time": {
+            "text": "Ba (3) ngày làm việc, kể từ ngày nhận đủ hồ sơ và hợp lệ"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Bản chính Tờ khai đề nghị hỗ trợ chi phí mai táng (theo Mẫu số 02 ban hành kèm theo Nghị định số 176/2025/NĐ-CP)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0020",
+        "name": "Giải quyết chế độ hỗ trợ để theo học đến trình độ đại học tại các cơ sở giáo dục thuộc hệ thống giáo dục quốc dân",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Cả hai",
+        "receiving_location": "Tổ nội vụ - Phòng Văn hóa - Xã hội",
+        "processing_time": {
+            "text": "5 ngày"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Đơn đề nghị theo Mẫu số 20 Phụ lục I Nghị định số 131/2021/NĐ-CP ( 01 bản chính)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy xác nhậ theo Mẫu số 41 Nghị định số 131/2021/NĐ-CP",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0021",
+        "name": "Xác định, xác định lại mức độ khuyết tật và cấp giấy xác nhận khuyết tật",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Cả hai",
+        "receiving_location": "Trung tâm Phục vụ Hành chính công phường Tăng Nhơn Phú, 29 Lê Văn Việt, phường Tăng Nhơn Phú, TP.HCM",
+        "processing_time": {
+            "text": "25 ngày làm việc, kể từ ngày nhận đủ hồ sơ và hợp lệ;"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "I. Đơn đề nghị xác định, xác định lại mức độ khuyết tật và cấp, cấp đổi, cấp lại giáy xác nhận khuyết tật (theo mẫu số 01 ban hành kèm theo Thông tư 01/2019/TT-BLĐTBXH), II. Đối với trường hợp xác định mức độ khuyết tật:, 1/ Các giấy tờ y tế chứng minh về khuyết tật: bệnh án",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "giấy tờ khám, điều trị, phẫu thuật hoặc các giấy tờ liên quan khác , 2/ Kết luận của Hội đồng Giám định y khoa về khả năng tự phục vụ, mức độ suy giảm khả năng lao động đối với trường hợp người khuyết tật đã có kết luận của Hội đồng giám định y khoa trước ngày 01/6/2012, III. Đối với trường hợp xác định lại khuyết tật: Các giấy tờ y tế chứng minh về khuyết tật: bệnh án",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "giấy tờ khám, điều trị, phẫu thuật, Giáy xác nhận khuyết tật cũ hoặc các giấy tờ liên quan khác , IV. Các giấy tờ khác kèm theo (đối với trường hợp nộp trực tiếp) dùng đẻ đối chiếu các thông tin trên Tờ khai, 1/ Giấy xác nhận thông tin về cư trú hoặc Giấy thông báo số định danh cá nhân và thông tin trong Cơ sở dữ liệu quốc gia về dân cư",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "chứng minh thư nhân dân hoặc thẻ căn cước công dân của đối tượng, người đại diện hợp pháp, 2/ Bản chính, bản sao hoặc bản chụp Giấy khai sinh đối với trẻ em",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0022",
+        "name": "Giải quyết chế độ người hoạt động kháng chiến giải phóng dân tộc, bảo vệ tổ quốc và làm nghĩa vụ quốc tế",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Cả hai",
+        "receiving_location": "Tổ Nội vụ - Phòng Văn hóa - xã hội",
+        "processing_time": {
+            "text": "5 ngày"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Bản khai theo mẫu số 11 Phục lục I Nghi định số 131/2021/NĐ-CP (01 bản chính)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy báo tử hoặc trích lục khai tử ( đối với trường hợp chết mà chưa được hưởng chế độ ưu đãi) (01 bản chính), Huân chương Kháng chiến, Huân chương Chiến thắng, Huy chương kháng chiến, Huy chương Chiến thắng hoặc giấy chứng nhận đeo huân chương, huy chương.( 01 bản sao được chứng thực)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Quyết định tặng thưởng Huân chương Kháng chiến, Huân chương chiến thắng, Huy chương kháng chiến, Huy chương chiến thắng ( 01 bản sao được chứng thực)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy xác nhận về khen thưởng tổng kết thành tích kháng chiến và thời gian hoạt động kháng chiến thực tế của cơ quan Thi đua - Khen thưởng cấp tỉnh trở lên ( 01 bản sao được chứng thực)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0023",
+        "name": "HỒ SƠ CẤP GIẤY PHÉP XÂY DỰNG",
+        "field": "Kinh tế - Hạ tầng và đô thị",
+        "application_method": "Trực tuyến",
+        "receiving_location": "Bộ phận Một cửa - UBND cấp huyện (Phòng Quản lý đô thị / Kinh tế - Hạ tầng)",
+        "processing_time": {
+            "text": "20"
+        },
+        "fees": [
+            {
+                "amount_text": "Theo quy định của HĐND cấp tỉnh (khoảng 50.000 - 150.000 đồng/giấy phép)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "NỘP TRỰC TUYẾN QUA CỔNG DỊCH VỤ CÔNG QUỐC GIA",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0024",
+        "name": "THÔNG TIN QUY HOẠCH",
+        "field": "Kinh tế - Hạ tầng và đô thị",
+        "application_method": "Trực tuyến",
+        "receiving_location": "TTPVHCC",
+        "processing_time": {
+            "text": "10 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (cung cấp thông tin trực tiếp tại cơ quan có thẩm quyền)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Đơn đề nghị cung cấp thông tin quy hoạch",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận quyền sử dụng đất, quyền sở hữu nhà ở & tài sản gắn liền với đất hoặc giấy tờ pháp lý liên quan đến nhà đất",
+                "condition": "Có điều kiện"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0025",
+        "name": "CẤP GIẤY PHÉP XÂY DỰNG",
+        "field": "Kinh tế - Hạ tầng và đô thị",
+        "application_method": "Trực tuyến",
+        "receiving_location": "TTPVHCC",
+        "processing_time": {
+            "text": "15"
+        },
+        "fees": [
+            {
+                "amount_text": "Theo quy định của HĐND cấp tỉnh (khoảng 50.000 - 150.000 đồng/giấy phép)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Đơn đề nghị cấp giấy phép xây dựng, sửa chữa, cải tạo công trình theo Mẫu số 1 Phụ lục số II Nghị định số 175/2024/NĐ-CP ngày 30/12/2024 của Chính phủ, Một trong những giấy tờ hợp pháp về đất đai chứng minh sự phù hợp mục đích sử dụng đất và sở hữu công trình để cấp phép xây dựng theo quy định tại Điều 53 của Nghị định số 175/2024/NĐ-CP. Trường hợp giấy chứng nhận cũ không có tọa độ theo tài liệu 02/CT-UB phải có bản vẽ hiện trạng có duyệt kiểm định kèm theo, Bản vẽ thiết kế xây dựng, Cam kết đảm bảo an toàn cho các công trình liền kề (có chứng thực chữ ký), Cam kết tháo dỡ toàn bộ nhà cũ trước khi xây dựng công trình theo giấy phép xây dựng (có chứng thực chữ ký) – áp dụng đối với thửa đất có nhà hiện hữu, Hồ sơ năng lực của đơn vị tư vấn thiết kế",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0026",
+        "name": "Vay vốn hỗ trợ tạo việc làm, duy trì và mở rộng việc làm từ Quỹ quốc gia về việc làm đối với người lao động",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Trực tiếp",
+        "receiving_location": "Phòng giao dịch Ngân hàng Chính sách xã hội (NHCSXH) cấp huyện hoặc Điểm giao dịch tại UBND xã",
+        "processing_time": {
+            "text": "5 ngày"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Danh sách đề nghị vay vốn",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy đề nghị vay vốn, CCCD, Biên bản họp",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0027",
+        "name": "Chuyển trường đối với học sinh THCS",
+        "field": "giáo dục và đào tạo",
+        "application_method": "Trực tiếp",
+        "receiving_location": "Trung tâm Phục vụ hành chính công Phường Tăng Nhơn Phú, Địa chỉ: 29 Lê Văn Việt, Phường Tăng Nhơn Phú, Thành phố Hồ Chí Minh",
+        "processing_time": {
+            "text": "3–5 ngày làm việc kể từ khi nhận đủ hồ sơ hợp lệ."
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Đơn xin chuyển trường (có xác nhận của trường đi)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy giới thiệu của phường đi",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy giới thiệu của trường đi",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy xác nhận nơi cư trú hoặc giấy xác nhận mã định danh (bản photo), Bản sao khai sinh, Học bạ (bản photo)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "khi đến nhận giấy giới thiệu thì mang bản chính, Các giấy tờ khác liên quan",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Đơn xin chuyển trường (có xác nhận của trường đến)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy giới thiệu của trường đi",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy xác nhận nơi cư trú hoặc giấy xác nhận mã định danh (bản photo), Bản sao khai sinh, Học bạ (bản photo)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "khi đến nhận giấy giới thiệu thì mang bản chính, Các giấy tờ khác liên quan",
+                "condition": "Có điều kiện"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0028",
+        "name": "THÔNG BÁO KHỞI CÔNG",
+        "field": "Kinh tế - Hạ tầng và đô thị",
+        "application_method": "Trực tuyến",
+        "receiving_location": "UBND cấp xã hoặc Đội Quản lý trật tự đô thị / Phòng Kinh tế - Hạ tầng cấp huyện",
+        "processing_time": {
+            "text": "1"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Thông báo khởi công xây dựng nhà ở riêng lẻ (bản chính)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy phép xây dựng (kèm bản vẽ thiết kế) bản sao), Biên bản cắm mốc ranh (bản chính)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận quyền sử dụng đất, quyền sở hữu tài sản gắn liền với đất (bản sao)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Hợp đồng thi công công trình hoặc đơn vị thi công (bảo sao), CCCD (bản sao)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0029",
+        "name": "ĐĂNG KÝ ĐẤT ĐAI, TÀI SẢN GẮN LIỀN VỚI ĐẤT LẦN ĐẦU",
+        "field": "Kinh tế - Hạ tầng và đô thị",
+        "application_method": "Trực tuyến",
+        "receiving_location": "Bộ phận Một cửa cấp huyện / Chi nhánh Văn phòng Đăng ký đất đai",
+        "processing_time": {
+            "text": "THEO QUY ĐỊNH"
+        },
+        "fees": [
+            {
+                "amount_text": "Theo quy định của HĐND cấp tỉnh (phí thẩm định hồ sơ và lệ phí cấp GCN quyền sử dụng đất)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Đối với người đang sử dụng đất, chủ sở hữu tài sản gắn liền với đất là tổ chức trong nước, tổ chức tôn giáo, tổ chức tôn giáo trực thuộc, tổ chức nước ngoài có chức năng ngoại giao, tổ chức kinh tế có vốn đầu tư nước ngoài (sau đây gọi chung là tổ chức), người gốc Việt Nam định cư ở nước ngoài nhận thừa kế quyền sử dụng đất theo quy định tại điểm h khoản 1 Điều 28 Luật Đất đai thì hồ sơ nộp gồm",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Đơn đăng ký đất đai, tài sản gắn liền với đất theo Mẫu số 15 ban hành kèm theo Nghị định này, Một trong các loại giấy tờ quy định tại Điều 137, khoản 4, khoản 5 Điều 148, khoản 4, khoản 5 Điều 149 Luật Đất đai",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Giấy tờ về việc nhận thừa kế quyền sử dụng đất theo quy định của pháp luật về dân sự đối với người gốc Việt Nam định cư ở nước ngoài, Sơ đồ hoặc bản trích lục bản đồ địa chính hoặc mảnh trích đo bản đồ địa chính thửa đất",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "mảnh trích đo bản đồ địa chính thửa đất  đối với người gốc Việt Nam định cư ở nước ngoài, Báo cáo kết quả rà soát hiện trạng sử dụng đất theo Mẫu số 15đ ban hành kèm theo Nghị định này đối với trường hợp tổ chức trong nước, tổ chức tôn giáo, tổ chức tôn giáo trực thuộc đang sử dụng đất",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Quyết định vị trí đóng quân hoặc văn bản giao cơ sở nhà đất hoặc địa điểm công trình quốc phòng, an ninh được cấp có thẩm quyền phê duyệt cho đơn vị quân đội",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "đơn vị công an",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "đơn vị sự nghiệp công lập thuộc Quân đội nhân dân, Công an nhân dân",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "doanh nghiệp nhà nước do Bộ Quốc phòng, Bộ Công an được giao quản lý, sử dụng đất, công trình gắn liền với đất, Hồ sơ thiết kế xây dựng công trình đã được cơ quan chuyên môn về xây dựng thẩm định hoặc đã có văn bản chấp thuận kết quả nghiệm thu hoàn thành hạng mục công trình, công trình xây dựng theo quy định của pháp luật về xây dựng đối với trường hợp chứng nhận quyền sở hữu công trình xây dựng trên đất nông nghiệp mà chủ sở hữu công trình không có một trong các loại giấy tờ quy định tại Điều 149 Luật Đất đai hoặc công trình được miễn giấy phép xây dựng theo quy định của pháp luật về xây dựng, Chứng từ thực hiện nghĩa vụ tài chính",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "giấy tờ liên quan đến việc miễn, giảm nghĩa vụ tài chính về đất đai, tài sản gắn liền với đất",
+                "condition": "Có điều kiện"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0030",
+        "name": "Vay vốn hỗ trợ tạo việc làm, duy trì và mở rộng việc làm từ Quỹ quốc gia về việc làm đối với cơ sở sản xuất, kinh doanh.",
+        "field": "Văn hóa - Xã hội",
+        "application_method": "Trực tiếp",
+        "receiving_location": "Phòng giao dịch Ngân hàng Chính sách xã hội (NHCSXH) cấp huyện hoặc Điểm giao dịch tại UBND xã",
+        "processing_time": {
+            "text": "5 ngày"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy đề nghị vay vốn, Danh sách đề nghị vay vốn, Biên bản họp",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0031",
+        "name": "HỒ SƠ CẤP SỐ NHÀ",
+        "field": "Kinh tế - Hạ tầng và đô thị",
+        "application_method": "Trực tuyến",
+        "receiving_location": "Bộ phận Một cửa - UBND cấp huyện (Phòng Quản lý đô thị / Kinh tế - Hạ tầng)",
+        "processing_time": {
+            "text": "theo quy định"
+        },
+        "fees": [
+            {
+                "amount_text": "Theo quy định của HĐND cấp tỉnh",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Đối với nhà chưa hoàn công:, 1-        Đơn xin cấp số nhà, 2-        Giấy chứng nhận Quyền sử dụng đất, quyền sở hữu tài sản gắn liền với đất, 3-        Giấy phép Xây dựng  và bản vẽ thiết kế, 4-        Biên bản lần cuối của Thanh tra xây dựng, 5-        Hình ảnh hiện trạng căn nhà, 6-        Căn cước công dân, 7-        Giấy uỷ quyền (Nếu đi nộp thay)./, Đối với nhà đã hoàn công:, 1- Đơn xin cấp số nhà, 2- Giấy chứng nhận Quyền sử dụng đất, quyền sở hữu tài sản gắn liền với đất, 3- Hình ảnh hiện trạng căn nhà, 4- Căn cước công dân, 5- Giấy uỷ quyền (Nếu đi nộp thay)",
+                "condition": "Có điều kiện"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0032",
+        "name": "XÁC NHẬN VỊ TRÍ NHÀ - ĐẤT",
+        "field": "Kinh tế - Hạ tầng và đô thị",
+        "application_method": "Trực tuyến",
+        "receiving_location": "Bộ phận Một cửa - Cơ quan có thẩm quyền theo quy định",
+        "processing_time": {
+            "text": "05"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Hồ sơ xác nhận vị trí nhà - đất",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Đơn xin xác nhận vị trí nhà – đất",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận quyền sử dụng đất",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Sổ hộ khẩu tại địa chỉ mong muốn xác nhận , Các căn cứ tài liệu chứng minh khác, Trường hợp người sử dụng đất, chủ sở hữu tài sản gắn liền với đất thực hiện thủ tục thông qua người đại diện theo quy định của pháp luật về dân sự thì phải có văn bản về việc ủy quyền theo quy định của pháp luật về dân sự, CCCD (bản sao)",
+                "condition": "Có điều kiện"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0033",
+        "name": "XÁC NHẬN TÌNH TRẠNG NHÀ Ở",
+        "field": "Kinh tế - Hạ tầng và đô thị",
+        "application_method": "Trực tuyến",
+        "receiving_location": "UBND cấp xã/phường/thị trấn nơi có nhà ở",
+        "processing_time": {
+            "text": "05"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Trường hợp có Giấy phép xây dựng",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Đơn xác nhận tình trạng nhà ở",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận quyền sử dụng đất, quyền sở hữu tài sản gắn liền với đất (bản sao kèm theo Bản chính để đối chiếu)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy phép xây dựng và bản vẽ thiết kế (bản sao)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Quyết định hoặc Thông báo cấp số nhà, CCCD (bản sao)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy ủy quyền (nếu đi nộp thay)",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Đơn xác nhận tình trạng nhà ở",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận quyền sử dụng đất, quyền sở hữu tài sản gắn liền với đất (bản sao kèm theo Bản chính để đối chiếu)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "nếu có",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Thông báo cấp số nhà",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Bản vẽ sơ đồ nhà đất",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "(bản sao), CCCD (bản sao)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy ủy quyền (nếu đi nộp thay)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0034",
+        "name": "Thủ tục Đăng ký thành lập hộ kinh doanh",
+        "field": "Kinh tế - Hạ tầng và đô thị",
+        "application_method": "Trực tuyến",
+        "receiving_location": "Trung tâm Phục vụ Hành chính công phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "100.000 đồng/lần (hoặc theo quy định của HĐND cấp tỉnh)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy đề nghị đăng ký hộ kinh doanh, Bản sao văn bản ủy quyền của thành viên hộ gia đình cho một thành viên làm chủ hộ kinh doanh đối với trường hợp hộ kinh doanh do các thành viên hộ gia đình đăng ký thành lập. Văn bản ủy quyền này phải được công chứng hoặc chứng thực theo quy định của pháp luật",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0035",
+        "name": "Đăng ký thay đổi nội dung đăng ký hộ kinh doanh",
+        "field": "Kinh tế - Hạ tầng và đô thị",
+        "application_method": "Trực tuyến",
+        "receiving_location": "TTPVHCC phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "50.000 đồng/lần (hoặc theo quy định của HĐND cấp tỉnh)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy đề nghị đăng ký thay đổi nội dung đăng ký hộ kinh doanh, Bản sao văn bản ủy quyền của các thành viên hộ gia đình cho một thành viên làm chủ hộ kinh doanh. Văn bản ủy quyền này phải được công chứng hoặc chứng thực theo quy định của pháp luật , Bản sao văn bản ủy quyền của thành viên mới cho chủ hộ kinh doanh trong trường hợp tiếp nhận thành viên mới. Văn bản ủy quyền này phải được công chứng hoặc chứng thực theo quy định của pháp luật (Trường hợp thay đổi thành viên hộ gia đình đăng ký hộ kinh doanh)",
+                "condition": "Có điều kiện"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0036",
+        "name": "Tạm ngừng kinh doanh/tiếp tục kinh doanh trước thời hạn đã thông báo của hộ kinh doanh",
+        "field": "Kinh tế - Hạ tầng và đô thị",
+        "application_method": "Trực tuyến",
+        "receiving_location": "TTPVHCC phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy đề nghị đăng ký tạm ngừng kinh doanh/tiếp tục kinh doanh trước thời hạn đã đăng ký",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0037",
+        "name": "Chấm dứt hoạt động hộ kinh doanh",
+        "field": "Kinh tế - Hạ tầng và đô thị",
+        "application_method": "Trực tuyến",
+        "receiving_location": "TTPVHCC phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Thông báo chấm dứt hoạt động hộ kinh doanh",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0038",
+        "name": "Cấp lại Giấy chứng nhận đăng ký hộ kinh doanh",
+        "field": "Kinh tế - Hạ tầng và đô thị",
+        "application_method": "Trực tuyến",
+        "receiving_location": "TTPVHCC phường Tăng Nhơn Phú",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "50.000 đồng/lần (hoặc theo quy định của HĐND cấp tỉnh)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy đề nghị cấp lại Giấy chứng nhận đăng ký hộ kinh doanh",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0039",
+        "name": "Thủ tục xét, cấp học bổng chính sách",
+        "field": "Giáo dục và Đào tạo",
+        "application_method": "Trực tiếp",
+        "receiving_location": "Phòng Văn hóa - Xã hội thuộc Ủy ban nhân dân phường Tăng Nhơn Phú (Địa chỉ: Số 29, đường Lê Văn Việt, phường Tăng Nhơn Phú, Thành phố Hồ Chí Minh).",
+        "processing_time": {
+            "text": "không quy định cụ thể (chi trả theo học kỳ)"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí (Không thu lệ phí)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Đơn đề nghị miễn, giảm học phí dành cho học sinh, sinh viên đang học tại các cơ sở giáo dục nghề nghiệp, giáo dục đại học (theo Phụ lục IV của Nghị định 238/2025/NĐ-CP)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy xác nhận và dự toán kinh phí của các cơ sở giáo dục nghề nghiệp, giáo dục đại học (theo Phụ lục V, VI của Nghị định 238/2025/NĐ-CP), Bản sao chứng thực văn bằng tốt nghiệp hoặc xác nhận tốt nghiệp tạm thời hoặc xác nhận học bạ việc hoàn thành chương trình trung học cơ sở (quy định đối tượng tại điểm 1.1 mục 1 Thông báo này)/trung học phổ thông (quy định đối tượng tại điểm 1.3 mục 1 Thông báo này) của hiệu trưởng xác nhận, Bản sao chứng thực của cơ quan quản lý trong các trường hợp thuộc nhóm đối tượng tại điểm 1.4 mục 1 Thông báo này, Hóa đơn hoặc biên lai đóng tiền học phí, Bản sao Căn cước công dân của sinh viên, Bản sao Căn cước công dân của cha/mẹ, người có tên trong Đơn đề nghị chi trả tiền miễn, giảm học phí, Thông tin chuyển khoản (ATM) của người học hoặc tài khoản của cha hoặc mẹ hoặc người giám hộ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy xác nhận nơi cư trú của công an hoặc bản chụp màn hình thể hiện thông tin nơi cư trú trên ứng dụng VNeID (in kèm hồ sơ)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0040",
+        "name": "chứng thực chữ ký - chứng thực Hợp đồng giao dịch/Di chúc",
+        "field": "Chứng thực - sao y",
+        "application_method": "Cả hai",
+        "receiving_location": "Việc chứng thực được thực hiện tại Trung tâm Phục vụ hành chính công, trừ trường hợp người yêu cầu chứng thực thuộc diện già yếu, không thể đi lại được, đang bị tạm giữ, tạm giam, thi hành án phạt tù hoặc có lý do chính đáng khác.",
+        "processing_time": {
+            "text": "Trong ngày tiếp nhận yêu cầu hoặc trong ngày làm việc tiếp theo, nếu tiếp nhận yêu cầu sau 15 giờ hoặc có thể kéo dài hơn theo thỏa thuận bằng văn bản với người yêu cầu chứng thực."
+        },
+        "fees": [
+            {
+                "amount_text": "10.000 đồng/trường hợp (đối với chứng thực chữ ký) 50.000 đồng/trường hợp (đối với hợp đồng giao dịch/Di chúc)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Người yêu cầu chứng thực chữ ký của mình phải xuất trình các giấy tờ sau đây:, Người yêu cầu chứng thực xuất trình bản chính hoặc bản sao có chứng thực Giấy chứng minh nhân dân/Thẻ căn cước công dân/Thẻ căn cước/Giấy chứng nhận căn cước hoặc Hộ chiếu",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "giấy tờ xuất nhập cảnh/giấy tờ có giá trị đi lại quốc tế còn giá trị sử dụng hoặc xuất trình Căn cước điện tử",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "văn bản mà mình sẽ ký, Tại thời điểm chứng thực, người yêu cầu chứng thực minh mẫn, nhận thức và làm chủ được hành vi của mình và yêu cầu người yêu cầu chứng thực ký trước mặt người tiếp nhận hồ sơ, Thủ tục chứng thực chữ ký trong giấy ủy quyền đối với trường hợp ủy quyền không có thù lao, không có nghĩa vụ bồi thường của bên được ủy quyền và không liên quan đến việc chuyển quyền sở hữu tài sản, quyền sử dụng bất động sản",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0041",
+        "name": "Thu hồi giấy chứng nhận đăng ký, biển số xe thực hiện bằng dịch vụ công trực tuyến một phần hoặc trực tiếp tại cơ quan đăng ký xe thực hiện tại cấp trung ương, cấp tỉnh, cấp xã",
+        "field": "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ",
+        "application_method": "Cả hai",
+        "receiving_location": "Cơ quan làm thủ tục đăng ký xe cấp tỉnh, cấp xã theo quy định tại: Điều 4 Thông tư số 79/2024/TT-BCA; Điều 12 Thông tư số 13/2025/TT-BCA.",
+        "processing_time": {
+            "text": "02 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Không thu lệ phí",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy khai thu hồi chứng nhận đăng ký xe, biển số xe (Mẫu ĐKX11 ban hành kèm theo Thông tư 79/2024/TT-BCA ngày 15/11/2024 của Bộ trưởng Bộ Công an)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ của chủ xe theo quy định, 02 bản chà số máy, số khung xe, Chứng nhận đăng ký xe, Biển số xe",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0042",
+        "name": "Đăng ký xe lần đầu trực tuyến toàn trình đối với xe nhập khẩu",
+        "field": "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ",
+        "application_method": "Trực tuyến",
+        "receiving_location": "Cơ quan làm thủ tục đăng ký xe cấp tỉnh, cấp xã theo quy định tại: Điều 4 Thông tư số 79/2024/TT-BCA; Điều 12 Thông tư số 13/2025/TT-BCA.",
+        "processing_time": {
+            "text": "Từ 02 - 07 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Thông tư số 60/2023/TT-BTC ngày 07/9/2023 của Bộ Tài chính quy định mức thu, chế độ thu, nộp, quản lý lệ phí đăng ký, cấp biển số phương tiện giao thông cơ giới đường bộ.; Thông tư số 06/2025/TT-BTC ngày 24/01/2025 sửa đổi, bổ sung một số điều của các Thông tư của Bộ trưởng Bộ Tài chính quy định về phí, lệ phí.",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy khai đăng ký xe (mẫu ĐKX10/79 ban hành kèm theo Thông tư số 13/2025/TT-BCA ngày 28/02/2025 của Bộ trưởng Bộ Công an)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ của chủ xe: sử dụng Ứng dụng định danh điện tử mức độ 2 để đăng nhập trên Cổng dịch vụ công hoặc Ứng dụng định danh quốc gia",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ của xe (sử dụng dữ liệu điện tử của Hóa đơn điện tử",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Lệ phí trước bạ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Hải quan điện tử). Giấy chứng nhận chất lượng an toàn kỹ thuật và bảo vệ môi trường xe nhập khẩu hoặc thông báo miễn kiểm tra chất lượng an toàn kỹ thuật và bảo vệ môi trường xe nhập khẩu (có dán bản chà số máy, số khung có đóng dấu giáp lai của đơn vị nhập khẩu xe)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0043",
+        "name": "Đăng ký xe lần đầu trực tuyến toàn trình đối với xe sản xuất lắp ráp trong nước",
+        "field": "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ",
+        "application_method": "Trực tuyến",
+        "receiving_location": "Cơ quan làm thủ tục đăng ký xe cấp tỉnh, cấp xã theo quy định tại: Điều 4 Thông tư số 79/2024/TT-BCA; Điều 12 Thông tư số 13/2025/TT-BCA.",
+        "processing_time": {
+            "text": "Từ 02 - 07 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Thông tư số 60/2023/TT-BTC ngày 07/9/2023 của Bộ Tài chính quy định mức thu, chế độ thu, nộp, quản lý lệ phí đăng ký, cấp biển số phương tiện giao thông cơ giới đường bộ.; Thông tư số 06/2025/TT-BTC ngày 24/01/2025 sửa đổi, bổ sung một số điều của các Thông tư của Bộ trưởng Bộ Tài chính quy định về phí, lệ phí.",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy khai đăng ký xe (mẫu ĐKX10/79 ban hành kèm theo Thông tư số 13/2025/TT-BCA ngày 28/02/2025 của Bộ trưởng Bộ Công an)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ của chủ xe: sử dụng Ứng dụng định danh điện tử mức độ 2 để đăng nhập trên Cổng dịch vụ công hoặc Ứng dụng định danh quốc gia",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ của xe (sử dụng dữ liệu điện tử của Phiếu kiểm tra chất lượng xuất xưởng",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Hóa đơn điện tử",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Lệ phí trước bạ). Phiếu kiểm tra chất lượng xuất xưởng (có dán bản chà số máy, số khung có đóng dấu giáp lai của cơ sở sản xuất)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0044",
+        "name": "Cấp hộ chiếu phổ thông ở trong nước (thực hiện tại cấp trung ương)",
+        "field": "Quản lý xuất nhập cảnh",
+        "application_method": "Cả hai",
+        "receiving_location": "Cục quản lý xuất nhập cảnh",
+        "processing_time": {
+            "text": "Từ 03 - 05 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "160.000 đồng/hộ chiếu. Trường hợp cấp lại do bị hỏng hoặc bị mất: 320.000/hộ chiếu (Thông tư số 44/2023/TT-BTC ngày 29/6/2023 của Bộ Tài chính).",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy giới thiệu hoặc đề nghị của bệnh viện về việc ra nước ngoài để khám, chữa bệnh",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ xác định thân nhân ở nước ngoài bị tai nạn, bệnh tật, bị chết, Tài liệu chứng minh đối với các trường hợp vì lý do nhân đạo, khẩn cấp khác",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Văn bản đề nghị của cơ quan trực tiếp quản lý đối với cán bộ, công chức, viên chức, sĩ quan, hạ sĩ quan, quân nhân chuyên nghiệp, công nhân, viên chức trong lực lượng vũ trang, người làm việc trong tổ chức cơ yếu, Số lượng hồ sơ: 01 (một) bộ, 02 ảnh mới chụp không quá 06 tháng, cỡ 4cm x6cm, mặt nhìn thẳng, đầu để trần, rõ mặt, rõ hai tai, không đeo kính, trang phục lịch sự, phông nền trắng, Bản chụp Chứng minh nhân dân hoặc Thẻ căn cước công dân đối với trường hợp có sự thay đổi thông tin về nhân thân so với thông tin trong hộ chiếu đã cấp lần gần nhất, Bản chụp có chứng thực giấy tờ do cơ quan có thẩm quyền của Việt Nam cấp chứng minh người đại diện hợp pháp đối với người mất năng lực hành vi dân sự, người có khó khăn trong nhận thức, làm chủ hành vi theo quy định của Bộ luật dân sự, người chưa đủ 14 tuổi",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "trường hợp bản chụp không có chứng thực thì xuất trình bản chính để kiểm tra đối chiếu, Bản sao giấy khai sinh hoặc trích lục khai sinh đối với người chưa đủ 14 tuổi, Hộ chiếu phổ thông cấp lần gần nhất đối với người đã được cấp hộ chiếu",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "trường hợp bị mất hộ chiếu, phải có đơn trình báo mất hộ chiếu hoặc thông báo về việc đã tiếp nhận đơn của cơ quan có thẩm quyền quy định tại Điều 28 Luật Xuất cảnh, nhập cảnh của công dân Việt Nam, 01 tờ khai đề nghị cấp hộ chiếu phổ thông (mẫu TK01) ban hành kèm theo Thông tư số 73/2021/TT-BCA ngày 29/6/2021 của Bộ Công an. Đối với người mất năng lực hành vi dân sự, người có khó khăn trong nhận thức và làm chủ hành vi, người chưa đủ 14 tuổi",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "tờ khai do người đại diện hợp pháp khai, ký thay KHÔNG CẦN XÁC NHẬN CỦA CHÍNH QUYỀN ĐỊA PHƯƠNG (XÃ, PHƯỜNG, THỊ TRẤN NƠI CƯ TRÚ)",
+                "condition": "Có điều kiện"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0045",
+        "name": "Cấp hộ chiếu phổ thông ở trong nước (thực hiện tại cấp tỉnh)",
+        "field": "Quản lý xuất nhập cảnh",
+        "application_method": "Cả hai",
+        "receiving_location": "Công an Tỉnh",
+        "processing_time": {
+            "text": "08 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "160.000/hộ chiếu, trường hợp cấp lại do bị hư hỏng hoặc bị mất: 320.000đ/hộ chiếu (áp dụng đến hết ngày 31/12/2023 theo Thông tư số 44/2023/TT-BTC ngày 29/6/2023 của Bộ tài chính)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Bản sao giấy khai sinh hoặc trích lục giấy khai sinh đối với người chưa đủ 14 tuổi chưa được cấp mã số định danh cá nhân",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "trường hợp không có bản sao Giấy khai sinh, trích lục khai sinh thì nộp bản chụp và xuất trình bản chính để kiểm tra, đối chiếu, Bản sao giấy tờ do cơ quan có thẩm quyền của Việt Nam cấp chứng minh người đại diện hợp pháp đối với người mất năng lực hành vi dân sự, người có khó khăn trong nhận thức, làm chủ hành vi theo quy định của Bộ luật dân sự, người chưa đủ 14 tuổi",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "trường hợp không có bản sao thì nộp bản chụp và xuất trình bản chính để kiểm tra, đối chiếu, Hộ chiếu phổ thông cấp lần gần nhất còn giá trị sử dụng đối với người đã được cấp hộ chiếu",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "trường hợp hộ chiếu còn giá trị sử dụng bị mất phải kèm đơn báo mất hoặc thông báo về việc đã tiếp nhận đơn của cơ quan có thẩm quyền quy định tại điểm a khoản 2 Điều 28 Luật Xuất cảnh, nhập cảnh của công dân Việt Nam",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Tờ khai đề nghị cấp hộ chiếu phổ thông ở trong nước (mẫu TK01 dành cho người từ 14 tuổi trở lên",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "mẫu TK01a dành cho người chưa đủ 14 tuổi) ban hành kèm theo Thông tư số 31/2023/TT-BCA ngày 20/7/2023 của Bộ Công an. Đối với người mất năng lực hành vi dân sự, người có khó khăn trong nhận thức, làm chủ hành vi theo quy định của Bộ luật Dân sự, người chưa đủ 14 tuổi thì người đại diện hợp pháp khai và ký thay, Ảnh mới chụp không quá 06 tháng, cỡ 4cm x 6cm, mặt nhìn thẳng, đầu để trần, rõ mặt, rõ hai tai, không đeo kính, trang phục lịch sự, phông ảnh nền trắng",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0046",
+        "name": "Cấp mới Giấy chứng nhận đủ điều kiện về an ninh, trật tự (thực hiện tại cấp tỉnh)",
+        "field": "Quản lý ngành nghề kinh doanh có điều kiện",
+        "application_method": "Cả hai",
+        "receiving_location": "Phòng cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "05 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "300.000đ",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "1. Văn bản đề nghị cấp Giấy chứng nhận đủ điều kiện về an ninh, trật tự của cơ sở kinh doanh (Mẫu số 03 tại Phụ lục ban hành kèm theo Nghị định số 96/2016/NĐ-CP), 2. Bản sao hợp lệ một trong các loại văn bản sau đây: a) Giấy chứng nhận đăng ký kinh doanh",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký doanh nghiệp",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký đầu tư",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký hoạt động của chi nhánh",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "đơn vị trực thuộc doanh nghiệp",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký hợp tác xã, liên hiệp hợp tác xã",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký chi nhánh, địa điểm kinh doanh của hợp tác xã, liên hiệp hợp tác xã",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy phép hoạt động của cơ quan quản lý nhà nước có thẩm quyền của Việt Nam",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký hộ kinh doanh",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "văn bản thành lập hoặc cho phép hoạt động kèm theo văn bản thông báo mã số thuế đối với đơn vị sự nghiệp có thu",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "b) Trường hợp trong các văn bản quy định tại điểm a trên không thể hiện ngành, nghề đầu tư kinh doanh thì cơ sở kinh doanh phải bổ sung tài liệu chứng minh các ngành, nghề đầu tư kinh doanh mà cơ sở kinh doanh hoạt động và đề nghị ghi trong Giấy chứng nhận đủ điều kiện về an ninh, trật tự đã được cơ quan đăng ký kinh doanh hoặc cơ quan có thẩm quyền chấp thuận , 3. Bản sao hợp lệ các giấy tờ, tài liệu chứng minh bảo đảm các điều kiện an toàn về phòng cháy và chữa cháy đối với khu vực kinh doanh và kho bảo quản nguyên liệu, hàng hóa, gồm: a) Văn bản nghiệm thu về phòng cháy và chữa cháy đối với cơ sở kinh doanh thuộc danh mục quy định tại Phụ lục IV ban hành kèm theo Nghị định số 79/2014/NĐ-CP ngày 31 tháng 7 năm 2014 quy định chi tiết thi hành một số điều của Luật phòng cháy và chữa cháy và Luật sửa đổi, bổ sung một số điều của Luật phòng cháy và chữa cháy (sau đây viết gọn là Nghị định số 79/2014/NĐ-CP)",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "b) Biên bản kiểm tra về phòng cháy và chữa cháy của cơ quan Cảnh sát Phòng cháy và chữa cháy đối với các cơ sở kinh doanh không thuộc quy định tại điểm a mục 1.3.1.3 trên nhưng thuộc Danh mục quy định tại Phụ lục I ban hành kèm theo Nghị định số 79/2014/NĐ-CP",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "c) Các cơ sở kinh doanh không phải nộp tài liệu quy định tại các điểm a và b trên, gồm: Sản xuất con dấu",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "sản xuất cờ hiệu, mua, bán cờ hiệu, đèn, còi phát tín hiệu của xe được quyền ưu tiên",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh dịch vụ bảo vệ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh dịch vụ đòi nợ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh dịch vụ đặt cược",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh các thiết bị gây nhiễu, phá sóng thông tin di động",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh dịch vụ phẫu thuật thẩm mỹ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh máy kiểm tra tốc độ phương tiện giao thông cơ giới đường bộ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh thiết bị kiểm tra nồng độ cồn",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh thiết bị giám sát điện thoại di động GSM và các thiết bị giám sát điện thoại di động khác",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "d) Đối với các cơ sở kinh doanh không có kho chứa nguyên liệu hoặc sản phẩm theo quy định thì phải có hợp đồng thuê kho đảm bảo các điều kiện an toàn về phòng cháy và chữa cháy theo quy định tại các điểm a và b mục 1.3.1.3 trên",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "đ) Đối với các cơ sở kinh doanh ngành, nghề có sử dụng vật liệu nổ công nghiệp và tiền chất thuốc nổ thì các tài liệu chứng minh đảm bảo các điều kiện an toàn về phòng cháy và chữa cháy là tài liệu của kho chứa, bảo quản vật liệu nổ công nghiệp, tiền chất thuốc nổ, 4. Bản khai lý lịch (Mẫu số 02 tại Phụ lục ban hành kèm theo Nghị định này) kèm theo Phiếu lý lịch tư pháp hoặc Bản khai nhân sự (Mẫu số 02b tại Phụ lục ban hành kèm theo Nghị định này) của người chịu trách nhiệm về an ninh, trật tự của cơ sở kinh doanh, cụ thể như sau: a) Đối với người Việt Nam ở trong nước là người chịu trách nhiệm về an ninh, trật tự của cơ sở kinh doanh đứng tên trong Giấy chứng nhận đủ điều kiện về an ninh, trật tự phải có Bản khai lý lịch",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Phiếu lý lịch tư pháp (trừ những người đang thuộc biên chế của cơ quan nhà nước, lực lượng vũ trang, tổ chức chính trị, tổ chức chính trị - xã hội)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Bản khai lý lịch của những người quy định tại điểm này nếu đang thuộc biên chế của cơ quan nhà nước, lực lượng vũ trang, tổ chức chính trị, tổ chức chính trị - xã hội thì phải có xác nhận của cơ quan, tổ chức có thẩm quyền trực tiếp quản lý (trừ cơ sở kinh doanh). Đối với những người không thuộc đối tượng nêu trên phải có xác nhận của Ủy ban nhân dân xã, phường, thị trấn nơi đăng ký hộ khẩu thường trú",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "b) Đối với người Việt Nam định cư ở nước ngoài mang hộ chiếu nước ngoài và người nước ngoài phải có Bản khai nhân sự kèm theo bản sao hợp lệ Hộ chiếu, Thẻ thường trú hoặc Thẻ tạm trú hoặc Thị thực còn thời hạn lưu trú tại Việt Nam",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "c) Đối với trường hợp một cơ sở kinh doanh có nhiều người đại diện theo pháp luật thì Bản khai lý lịch, Phiếu lý lịch tư pháp hoặc Bản khai nhân sự trong hồ sơ áp dụng đối với người đứng tên trong Giấy chứng nhận đủ điều kiện về an ninh, trật tự, 5. Ngoài các tài liệu quy định nêu trên, hồ sơ đề nghị cấp mới Giấy chứng nhận đủ điều kiện về an ninh, trật tự phải có thêm tài liệu áp dụng đối với một số cơ sở kinh doanh các ngành, nghề sau đây: a) Đối với cơ sở kinh doanh dịch vụ bảo vệ không có vốn đầu tư nước ngoài, phải có bản sao hợp lệ bằng tốt nghiệp chứng minh trình độ học vấn của người chịu trách nhiệm về an ninh, trật tự của cơ sở kinh doanh đứng tên trong Giấy chứng nhận đủ điều kiện về an ninh, trật tự. b) Đối với cơ sở kinh doanh dịch vụ bảo vệ có vốn đầu tư nước ngoài, phải có: - Bản sao hợp lệ bằng tốt nghiệp chứng minh trình độ học vấn của người chịu trách nhiệm về an ninh, trật tự của cơ sở kinh doanh đứng tên trong Giấy chứng nhận đủ điều kiện về an ninh, trật tự",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Tài liệu chứng minh doanh nghiệp nước ngoài đủ điều kiện quy định tại các điểm a và b khoản 4 Điều 11 Nghị định 96/2016/NĐ-CP đã được hợp pháp hóa lãnh sự của cơ quan đại diện ngoại giao Việt Nam ở quốc gia, vùng lãnh thổ nơi doanh nghiệp nước ngoài đặt trụ sở chính. c) Đối với cơ sở kinh doanh dịch vụ bảo vệ có chức năng đào tạo nhân viên dịch vụ bảo vệ, phải có giáo trình và chương trình đào tạo nhân viên dịch vụ bảo vệ. d) Đối với các cơ sở kinh doanh ngành, nghề: Sản xuất vật liệu nổ công nghiệp",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh tiền chất thuốc nổ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh ngành, nghề có sử dụng vật liệu nổ công nghiệp để thăm dò, khai thác khoáng sản, dầu khí",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh súng quân dụng cầm tay hạng nhỏ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh casino",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh trò chơi điện tử có thưởng dành cho người nước ngoài",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh dịch vụ đặt cược, phải có văn bản cho phép hoạt động của cơ quan quản lý nhà nước chuyên ngành",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0047",
+        "name": "Cấp mới Giấy chứng nhận đủ điều kiện về an ninh, trật tự thực hiện tại Cục",
+        "field": "Quản lý ngành nghề kinh doanh có điều kiện",
+        "application_method": "Cả hai",
+        "receiving_location": "Cục Cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "05 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "300.000đ",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Bản khai lý lịch (Mẫu số 02 tại Phụ lục ban hành kèm theo Nghị định số 56/2023/NĐ-CP) kèm theo Phiếu lý lịch tư pháp hoặc Bản khai nhân sự (Mẫu số 02b tại Phụ lục ban hành kèm theo Nghị định số 96/2016/NĐ-CP) của người chịu trách nhiệm về an ninh, trật tự của cơ sở kinh doanh, cụ thể như sau: a) Đối với người Việt Nam ở trong nước là người chịu trách nhiệm về an ninh, trật tự của cơ sở kinh doanh đứng tên trong Giấy chứng nhận đủ điều kiện về an ninh, trật tự phải có Bản khai lý lịch",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Phiếu lý lịch tư pháp (trừ những người đang thuộc biên chế của lực lượng vũ trang)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Bản khai lý lịch của những người quy định tại điểm này nếu đang thuộc biên chế của lực lượng vũ trang thì phải có xác nhận của cơ quan có thẩm quyền trực tiếp quản lý (trừ cơ sở kinh doanh), Bản sao hợp lệ các giấy tờ, tài liệu chứng minh bảo đảm các điều kiện an toàn về phòng cháy và chữa cháy đối với khu vực kinh doanh và kho bảo quản nguyên liệu, hàng hóa, gồm: a) Văn bản chấp thuận kết quả nghiệm thu về phòng cháy và chữa cháy của cơ quan Cảnh sát phòng cháy và chữa cháy đối với dự án, công trình thuộc danh mục quy định tại Phụ lục V ban hành kèm theo Nghị định số 136/2020/NĐ-CP ngày 24 tháng 11 năm 2020 quy định chi tiết một số điều và biện pháp thi hành Luật Phòng cháy và chữa cháy và Luật sửa đổi, bổ sung một số điều của Luật Phòng cháy và chữa cháy (sau đây viết gọn là Nghị định số 136/2020/NĐ-CP)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "b) Biên bản kiểm tra an toàn về phòng cháy và chữa cháy của cơ quan có thẩm quyền trong quản lý về phòng cháy và chữa cháy đối với các cơ sở kinh doanh không thuộc quy định tại điểm a khoản 3 Điều này nhưng thuộc Danh mục quy định tại Phụ lục I ban hành kèm theo Nghị định số 136/2020/NĐ-CP. c) Các cơ sở kinh doanh không phải nộp tài liệu quy định tại các điểm a và b trên, gồm: Sản xuất con dấu",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "sản xuất cờ hiệu, mua, bán cờ hiệu, đèn, còi phát tín hiệu của xe được quyền ưu tiên",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh dịch vụ bảo vệ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh dịch vụ đặt cược",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh các thiết bị gây nhiễu, phá sóng thông tin di động",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh dịch vụ phẫu thuật thẩm mỹ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh máy kiểm tra tốc độ phương tiện giao thông cơ giới đường bộ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh thiết bị kiểm tra nồng độ cồn",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh thiết bị giám sát điện thoại di động GSM và các thiết bị giám sát điện thoại di động khác",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "d) Đối với các cơ sở kinh doanh không có kho chứa nguyên liệu hoặc sản phẩm theo quy định thì phải có hợp đồng thuê kho đảm bảo các điều kiện an toàn về phòng cháy và chữa cháy theo quy định tại các điểm a và b mục 1.3.1.3 trên",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "đ) Đối với các cơ sở kinh doanh ngành, nghề có sử dụng vật liệu nổ công nghiệp và tiền chất thuốc nổ thì các tài liệu chứng minh đảm bảo các điều kiện an toàn về phòng cháy và chữa cháy là tài liệu của kho chứa, bảo quản vật liệu nổ công nghiệp, tiền chất thuốc nổ, Bản sao hợp lệ một trong các loại văn bản sau đây: a) Giấy chứng nhận đăng ký kinh doanh",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký doanh nghiệp",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký đầu tư",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký hoạt động của chi nhánh",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "đơn vị trực thuộc doanh nghiệp",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký hợp tác xã, liên hiệp hợp tác xã",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký chi nhánh, địa điểm kinh doanh của hợp tác xã, liên hiệp hợp tác xã",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy phép hoạt động của cơ quan quản lý nhà nước có thẩm quyền của Việt Nam",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký hộ kinh doanh",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "văn bản thành lập hoặc cho phép hoạt động kèm theo văn bản thông báo mã số thuế đối với đơn vị sự nghiệp có thu",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "b) Trường hợp trong các văn bản quy định tại điểm a trên không thể hiện ngành, nghề đầu tư kinh doanh thì cơ sở kinh doanh phải bổ sung tài liệu chứng minh các ngành, nghề đầu tư kinh doanh mà cơ sở kinh doanh hoạt động và đề nghị ghi trong Giấy chứng nhận đủ điều kiện về an ninh, trật tự đã được cơ quan đăng ký kinh doanh hoặc cơ quan có thẩm quyền chấp thuận , Ngoài các tài liệu quy định nêu trên, hồ sơ đề nghị cấp mới Giấy chứng nhận đủ điều kiện về an ninh, trật tự phải có thêm tài liệu áp dụng đối với một số cơ sở kinh doanh các ngành, nghề sau đây: a) Đối với cơ sở kinh doanh dịch vụ bảo vệ không có vốn đầu tư nước ngoài, phải có bản sao hợp lệ bằng tốt nghiệp chứng minh trình độ học vấn của người chịu trách nhiệm về an ninh, trật tự của cơ sở kinh doanh đứng tên trong Giấy chứng nhận đủ điều kiện về an ninh, trật tự. b) Đối với cơ sở kinh doanh dịch vụ bảo vệ có vốn đầu tư nước ngoài, phải có: - Bản sao hợp lệ bằng tốt nghiệp chứng minh trình độ học vấn của người chịu trách nhiệm về an ninh, trật tự của cơ sở kinh doanh đứng tên trong Giấy chứng nhận đủ điều kiện về an ninh, trật tự",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Tài liệu chứng minh doanh nghiệp nước ngoài đủ điều kiện quy định tại các điểm a và b khoản 4 Điều 11 Nghị định 96/2016/NĐ-CP đã được hợp pháp hóa lãnh sự của cơ quan đại diện ngoại giao Việt Nam ở quốc gia, vùng lãnh thổ nơi doanh nghiệp nước ngoài đặt trụ sở chính. c) Đối với cơ sở kinh doanh dịch vụ bảo vệ có chức năng đào tạo nhân viên dịch vụ bảo vệ, phải có giáo trình và chương trình đào tạo nhân viên dịch vụ bảo vệ. d) Đối với các cơ sở kinh doanh ngành, nghề: Kinh doanh súng quân dụng cầm tay hạng nhỏ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh casino",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh trò chơi điện tử có thưởng dành cho người nước ngoài",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "kinh doanh dịch vụ đặt cược, phải có văn bản cho phép hoạt động của cơ quan quản lý nhà nước chuyên ngành",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Văn bản đề nghị cấp Giấy chứng nhận đủ điều kiện về an ninh, trật tự của cơ sở kinh doanh (Mẫu số 03 tại Phụ lục ban hành kèm theo Nghị định số 56/2023/NĐ-CP), b) Đối với người Việt Nam định cư ở nước ngoài mang hộ chiếu nước ngoài và người nước ngoài phải có Bản khai nhân sự kèm theo bản sao hợp lệ Hộ chiếu, Thẻ thường trú hoặc Thẻ tạm trú hoặc Thị thực còn thời hạn lưu trú tại Việt Nam, c) Đối với trường hợp một cơ sở kinh doanh có nhiều người đại diện theo pháp luật thì Bản khai lý lịch, Phiếu lý lịch tư pháp hoặc Bản khai nhân sự trong hồ sơ áp dụng đối với người đứng tên trong Giấy chứng nhận đủ điều kiện về an ninh, trật tự",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0048",
+        "name": "Cấp thị thực điện tử theo đề nghị của cơ quan, tổ chức",
+        "field": "Quản lý xuất nhập cảnh",
+        "application_method": "Trực tuyến",
+        "receiving_location": "Cục quản lý xuất nhập cảnh",
+        "processing_time": {
+            "text": "03 ngày"
+        },
+        "fees": [
+            {
+                "amount_text": "25USD/một thị thực giá trị một lần; 50USD/một thị thực giá trị nhiều lần",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Thông tin đề nghị cấp thị thực điện tử (NA1a) được đăng tải trên Trang thông tin cấp thị thực điện tử, Ảnh mặt chân dung 4cm x 6cm",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "ảnh trang nhân thân hộ chiếu được tải lên Trang thông tin cấp thị thực điện tử theo quy định",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0049",
+        "name": "Cấp thị thực điện tử theo đề nghị của người nước ngoài",
+        "field": "Quản lý xuất nhập cảnh",
+        "application_method": "Trực tuyến",
+        "receiving_location": "Cục quản lý xuất nhập cảnh",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "25 USD (Thị thực có giá trị một lần: 25USD/thị thực điện tử); 50 USD (Thị thực có giá trị nhiều lần: 50USD/thị thực điện tử)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Thông tin đề nghị cấp thị thực điện tử (trên Trang thông tin cấp thị thực điện tử hoặc Cổng dịch vụ công quốc gia hoặc Cổng dịch vụ công Bộ Công an) theo mẫu NA1a ban hành kèm theo Thông tư số 22/2023/TT-BCA ngày 30/6/2023 của Bộ Công an, Ảnh mới chụp của người đề nghị cấp thị thực điện tử, kích cỡ ảnh 4 x 6cm, định dạng jpeg, kích thước ≤ 2 MB, mặt nhìn thẳng, không đội mũ, không đeo kính, trang phục lịch sự, phông ảnh nền trắng, Ảnh trang nhân thân hộ chiếu được tải lên Trang thông tin cấp thị thực điện tử theo quy định",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0050",
+        "name": "Đăng ký lại mẫu con dấu (thực hiện tại cấp tỉnh)",
+        "field": "Đăng ký, quản lý con dấu",
+        "application_method": "Cả hai",
+        "receiving_location": "Phòng cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "1. Hồ sơ đối với người được cử đến nộp hồ sơ: Giấy giới thiệu hoặc Giấy ủy quyền, xuất trình Thẻ căn cước công dân hoặc Chứng minh nhân dân hoặc Hộ chiếu còn giá trị sử dụng, 2. Hồ sơ đối với cơ quan, tổ chức, chức danh nhà nước: a) Đối với cơ quan, tổ chức, chức danh nhà nước có con dấu bị biến dạng, mòn, hỏng hoặc thay đổi chất liệu: Văn bản đề nghị đăng ký lại mẫu con dấu của cơ quan, tổ chức, chức danh nhà nước sử dụng con dấu, trong đó nêu rõ lý do. b) Cơ quan, tổ chức, chức danh nhà nước có sự thay đổi về tổ chức, đổi tên, hồ sơ gồm: - Văn bản đề nghị đăng ký lại mẫu con dấu của cơ quan, tổ chức, chức danh nhà nước sử dụng con dấu, trong đó nêu rõ lý do",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Quyết định thay đổi về tổ chức, đổi tên cơ quan, tổ chức, chức danh nhà nước của cơ quan có thẩm quyền. c) Cơ quan, tổ chức, chức danh nhà nước bị mất con dấu, hồ sơ gồm: - Văn bản đề nghị đăng ký lại mẫu con dấu của cơ quan, tổ chức, chức danh nhà nước sử dụng con dấu, trong đó nêu rõ lý do và có xác nhận của cơ quan quản lý trực tiếp hoặc cơ quan có thẩm quyền",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký mẫu con dấu được cấp trước đó",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0051",
+        "name": "Đăng ký thêm con dấu (thực hiện tại cấp tỉnh)",
+        "field": "Đăng ký, quản lý con dấu",
+        "application_method": "Cả hai",
+        "receiving_location": "Phòng cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "1. Hồ sơ đối với người được cử đến nộp hồ sơ: Giấy giới thiệu hoặc Giấy ủy quyền, xuất trình Thẻ căn cước công dân hoặc Chứng minh nhân dân hoặc Hộ chiếu còn giá trị sử dụng, 2. Hồ sơ đối với cơ quan, tổ chức, chức danh nhà nước: a) Đối với cơ quan, tổ chức, chức danh nhà nước có con dấu bị biến dạng, mòn, hỏng hoặc thay đổi chất liệu: Văn bản đề nghị đăng ký lại mẫu con dấu của cơ quan, tổ chức, chức danh nhà nước sử dụng con dấu, trong đó nêu rõ lý do. b) Cơ quan, tổ chức, chức danh nhà nước có sự thay đổi về tổ chức, đổi tên, hồ sơ gồm: - Văn bản đề nghị đăng ký lại mẫu con dấu của cơ quan, tổ chức, chức danh nhà nước sử dụng con dấu, trong đó nêu rõ lý do",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Quyết định thay đổi về tổ chức, đổi tên cơ quan, tổ chức, chức danh nhà nước của cơ quan có thẩm quyền. c) Cơ quan, tổ chức, chức danh nhà nước bị mất con dấu, hồ sơ gồm: - Văn bản đề nghị đăng ký lại mẫu con dấu của cơ quan, tổ chức, chức danh nhà nước sử dụng con dấu, trong đó nêu rõ lý do và có xác nhận của cơ quan quản lý trực tiếp hoặc cơ quan có thẩm quyền",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy chứng nhận đăng ký mẫu con dấu được cấp trước đó",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0052",
+        "name": "Cấp đổi giấy chứng nhận đủ điều kiện về an ninh, trật tự thực hiện tại Cục",
+        "field": "Quản lý ngành nghề kinh doanh có điều kiện",
+        "application_method": "Cả hai",
+        "receiving_location": "Cục Cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "04 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "300.000đ",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Bản chính Giấy chứng nhận đủ điều kiện về an ninh, trật tự đã được cấp trước đó , Bản sao hợp lệ các tài liệu chứng minh sự thay đổi của các thông tin ghi trên Giấy chứng nhận đủ điều kiện về an ninh, trật tự , Tài liệu quy định tại điểm b khoản 4 Điều 19 Nghị định số 96/2016/NĐ-CP hoặc tại điểm b khoản 3 Điều 1 Nghị định số 56/2023/NĐ-CP trong trường hợp thay đổi người đứng tên trong Giấy chứng nhận đủ điều kiện về an ninh, trật tự của cơ sở kinh doanh",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Văn bản đề nghị cấp đổi Giấy chứng nhận đủ điều kiện về an ninh, trật tự của cơ sở kinh doanh (Mẫu số 03 tại Phụ lục ban hành kèm theo Nghị định số 56/2023/NĐ-CP)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0053",
+        "name": "Đăng ký dấu nổi, dấu thu nhỏ, dấu xi (thực hiện tại cấp tỉnh)",
+        "field": "Đăng ký, quản lý con dấu",
+        "application_method": "Cả hai",
+        "receiving_location": "Phòng cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "1. Hồ sơ đối với người được cử đến nộp hồ sơ: Giấy giới thiệu hoặc Giấy ủy quyền, xuất trình Thẻ căn cước công dân hoặc Chứng minh nhân dân hoặc Hộ chiếu còn giá trị sử dụng, 2. Hồ sơ đối với cơ quan, tổ chức, chức danh nhà nước: Văn bản quy định cơ quan, tổ chức, chức danh nhà nước có chức năng cấp văn bằng",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "chứng chỉ và giấy tờ có dán ảnh hoặc niêm phong tài liệu của cơ quan có thẩm quyền",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0054",
+        "name": "Cấp lại thẻ căn cước (thực hiện tại cấp tỉnh)",
+        "field": "Cấp, quản lý căn cước",
+        "application_method": "Cả hai",
+        "receiving_location": "Phòng cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "07 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Chưa quy định (hoặc theo quy định Bộ Tài chính)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Phiếu thu nhận thông tin căn cước (Mẫu CC01 ban hành kèm theo Thông tư số 17/2024/TT-BCA của Bộ Công an), Phiếu đề nghị giải quyết thủ tục về căn cước (Mẫu DC02 ban hành kèm theo Thông tư số 17/2024/TT-BCA của Bộ Công an)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ, tài liệu có giá trị pháp lý chứng minh là người đại diện hợp pháp của người dưới 14 tuổi",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0055",
+        "name": "Cấp đổi Giấy chứng nhận đủ điều kiện về an ninh, trật tự (thực hiện tại cấp tỉnh)",
+        "field": "Quản lý ngành nghề kinh doanh có điều kiện",
+        "application_method": "Cả hai",
+        "receiving_location": "Công an huyện",
+        "processing_time": {
+            "text": "04 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "300.000đ",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Bản sao hợp lệ các tài liệu chứng minh sự thay đổi của các thông tin ghi trên Giấy chứng nhận đủ điều kiện về an ninh, trật tự , Tài liệu quy định tại khoản 4 Điều 19 Nghị định số 96/2016/NĐ-CP trong trường hợp thay đổi người đứng tên trong Giấy chứng nhận đủ điều kiện về an ninh, trật tự của cơ sở kinh doanh, Bản chính Giấy chứng nhận đủ điều kiện về an ninh, trật tự đã được cấp",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Văn bản đề nghị cấp đổi Giấy chứng nhận đủ điều kiện về an ninh, trật tự của cơ sở kinh doanh (Mẫu số 03 tại Phụ lục ban hành kèm theo Nghị định số 96/2016/NĐ-CP) gửi cơ quan Công an có thẩm quyền",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0056",
+        "name": "Đổi, cấp lại Giấy chứng nhận đăng ký mẫu con dấu (thực hiện tại cấp tỉnh)",
+        "field": "Đăng ký, quản lý con dấu",
+        "application_method": "Cả hai",
+        "receiving_location": "Phòng cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Văn bản đề nghị đổi, cấp lại giấy chứng nhận đăng ký mẫu con dấu của cơ quan, tổ chức, chức danh nhà nước sử dụng con dấu, trong đó nêu rõ lý do",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy giới thiệu hoặc Giấy ủy quyền, Thẻ căn cước công dân hoặc Chứng minh nhân dân hoặc Hộ chiếu còn giá trị sử dụng",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0057",
+        "name": "Cấp lại thẻ căn cước (thực hiện tại cấp trung ương)",
+        "field": "Cấp, quản lý căn cước",
+        "application_method": "Cả hai",
+        "receiving_location": "Cục cảnh sát quản lý hành chính về trật tự, xã hội",
+        "processing_time": {
+            "text": "07 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Chưa quy định (hoặc theo quy định Bộ Tài chính)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Phiếu đề nghị giải quyết thủ tục về căn cước (Mẫu DC02 ban hành kèm theo Thông tư số 17/2024/TT-BCA của Bộ Công an)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ, tài liệu có giá trị pháp lý chứng minh là người đại diện hợp pháp của người dưới 14 tuổi, Phiếu thu nhận thông tin căn cước (Mẫu CC01 ban hành kèm theo Thông tư số 17/2024/TT-BCA của Bộ Công an)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0058",
+        "name": "Cấp lại giấy chứng nhận đủ điều kiện về an ninh, trật tự thực hiện tại Cục",
+        "field": "Quản lý ngành nghề kinh doanh có điều kiện",
+        "application_method": "Cả hai",
+        "receiving_location": "Cục Cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "04 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "300.000đ",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Biên lai nộp tiền phạt theo quy định của pháp luật",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Văn bản đề nghị cấp lại Giấy chứng nhận đủ điều kiện về an ninh, trật tự của cơ sở kinh doanh gửi cơ quan Công an có thẩm quyền (Mẫu số 03 tại Phụ lục ban hành kèm theo Nghị định số 56/2023/NĐ-CP), Bản sao hợp lệ các tài liệu bổ sung chứng minh đáp ứng đủ điều kiện để hoạt động kinh doanh",
+                "condition": "Có điều kiện"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0059",
+        "name": "Gia hạn tạm trú",
+        "field": "Đăng ký, quản lý cư trú",
+        "application_method": "Cả hai",
+        "receiving_location": "Công an Xã",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Tờ khai thay đổi thông tin cư trú (Mẫu CT01 ban hành kèm theo Thông tư số 56/2021/TT-BCA)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "đối với người gia hạn tạm trú là người chưa thành niên thì trong tờ khai phải ghi rõ ý kiến đồng ý của cha, mẹ hoặc người giám hộ, trừ trường hợp đã có ý kiến đồng ý bằng văn bản",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ, tài liệu chứng minh chỗ ở hợp pháp",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Tờ khai thay đổi thông tin cư trú (Mẫu CT01 ban hành kèm theo Thông tư số 56/2021/TT-BCA)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy giới thiệu của Thủ trưởng đơn vị quản lý trực tiếp ghi rõ nội dung để làm thủ tục gia hạn tạm trú và đơn vị có chỗ ở cho cán bộ chiến sĩ (ký tên, đóng dấu)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Tờ khai thay đổi thông tin cư trú (của từng người) (Mẫu CT01 ban hành kèm theo Thông tư số 56/2021/TT-BCA)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Văn bản đề nghị gia hạn tạm trú trong đó ghi rõ thông tin về chỗ ở hợp pháp kèm danh sách người gia hạn tạm trú. Danh sách bao gồm những thông tin cơ bản của từng người: họ, chữ đệm và tên",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "ngày, tháng, năm sinh",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "giới tính",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "số định danh cá nhân và thời hạn tạm trú",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0060",
+        "name": "Cấp đổi thẻ căn cước (thực hiện tại cấp tỉnh)",
+        "field": "Cấp, quản lý căn cước",
+        "application_method": "Cả hai",
+        "receiving_location": "Phòng cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "07 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Chưa quy định (hoặc theo quy định Bộ Tài chính)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Phiếu đề nghị giải quyết thủ tục về căn cước (Mẫu DC02 ban hành kèm theo Thông tư số 17/2024/TT-BCA của Bộ Công an)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ, tài liệu có giá trị pháp lý chứng minh là người đại diện hợp pháp của người dưới 14 tuổi, Phiếu thu nhận thông tin căn cước (Mẫu CC01 ban hành kèm theo Thông tư số 17/2024/TT-BCA của Bộ Công an)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0061",
+        "name": "Thông báo lưu trú",
+        "field": "Đăng ký, quản lý cư trú",
+        "application_method": "Cả hai",
+        "receiving_location": "Công an Xã",
+        "processing_time": {
+            "text": "Theo quy định hiện hành"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Nội dung thông báo về lưu trú bao gồm họ và tên, số định danh cá nhân hoặc số Chứng minh nhân dân, số hộ chiếu của người lưu trú",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "lý do lưu trú",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "thời gian lưu trú",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "địa chỉ lưu trú",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0062",
+        "name": "Đăng ký, cấp biển số xe lần đầu thực hiện tại Cục",
+        "field": "Đăng ký, quản lý phương tiện giao thông cơ giới đường bộ",
+        "application_method": "Cả hai",
+        "receiving_location": "Cục cảnh sát giao thông",
+        "processing_time": {
+            "text": "Từ 02 - 07 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Thông tư số 60/2023/TT-BTC ngày 07/9/2023 của Bộ Tài chính quy định mức thu, chế độ thu, nộp, miễn, quản lý lệ phí đăng ký, cấp biển phương tiện giao thông cơ giới đường bộ.",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy khai đăng ký xe (mẫu ĐKX10 ban hành kèm theo Thông tư số 79/2024/TT-BCA ngày 15/11/2024 của Bộ trưởng Bộ Công an)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ của chủ xe theo quy định",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ của xe: Chứng nhận nguồn gốc xe",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Chứng nhận quyền sở hữu hợp pháp",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Chứng từ hoàn thành nghĩa vụ tài chính",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0063",
+        "name": "Cấp đổi thẻ căn cước (thực hiện tại cấp trung ương)",
+        "field": "Cấp, quản lý căn cước",
+        "application_method": "Trực tiếp",
+        "receiving_location": "Cục cảnh sát quản lý hành chính về trật tự, xã hội",
+        "processing_time": {
+            "text": "07 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy tờ, tài liệu có giá trị pháp lý chứng minh là người đại diện hợp pháp của người dưới 14 tuổi, Phiếu thu nhận thông tin căn cước (Mẫu CC01 ban hành kèm theo Thông tư số 17/2024/TT-BCA của Bộ Công an)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0064",
+        "name": "Cấp lại Giấy chứng nhận đủ điều kiện về an ninh, trật tự (thực hiện tại cấp tỉnh)",
+        "field": "Quản lý ngành nghề kinh doanh có điều kiện",
+        "application_method": "Cả hai",
+        "receiving_location": "Phòng cảnh sát quản lý hành chính về trật tự xã hội, Công an tỉnh",
+        "processing_time": {
+            "text": "04 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "300.000đ",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Biên lai nộp tiền phạt theo quy định của pháp luật",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Văn bản đề nghị cấp lại Giấy chứng nhận đủ điều kiện về an ninh, trật tự của cơ sở kinh doanh gửi cơ quan Công an có thẩm quyền (Mẫu số 03 tại Phụ lục ban hành kèm theo Nghị định số 56/2023/NĐ-CP), Bản sao hợp lệ các tài liệu bổ sung chứng minh đáp ứng đủ điều kiện để hoạt động kinh doanh",
+                "condition": "Có điều kiện"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0065",
+        "name": "Xóa đăng ký thường trú",
+        "field": "Đăng ký, quản lý cư trú",
+        "application_method": "Cả hai",
+        "receiving_location": "Công an Xã",
+        "processing_time": {
+            "text": "05 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Tờ khai thay đổi thông tin cư trú (Mẫu CT01 ban hành kèm theo Thông tư số 56/2021/TT-BCA)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ, tài liệu chứng minh thuộc một trong các trường hợp xóa đăng ký thường trú",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0066",
+        "name": "Đăng ký mẫu con dấu mới (thực hiện tại cấp tỉnh)",
+        "field": "Đăng ký, quản lý con dấu",
+        "application_method": "Cả hai",
+        "receiving_location": "Phòng cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Giấy giới thiệu hoặc Giấy ủy quyền, Thẻ căn cước công dân hoặc Chứng minh nhân dân hoặc Hộ chiếu còn giá trị sử dụng",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Giấy phép hoạt động do cơ quan có thẩm quyền cấp đối với tổ chức phải đăng ký về lĩnh vực hoạt động theo quy định của pháp luật",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Điều lệ hoạt động của tổ chức đã được cơ quan có thẩm quyền phê duyệt",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Văn bản quy định về tổ chức, hoạt động do cơ quan có thẩm quyền cấp cho tổ chức theo quy định của pháp luật",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy phép hoạt động do cơ quan có thẩm quyền cấp đối với tổ chức phải đăng ký về lĩnh vực hoạt động theo quy định của pháp luật",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Văn bản của cơ quan có thẩm quyền chấp thuận việc thành lập tổ chức tôn giáo trực thuộc",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy phép hoạt động do cơ quan có thẩm quyền cấp đối với tổ chức phải đăng ký về lĩnh vực hoạt động theo quy định của pháp luật",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "chi nhánh, văn phòng đại diện của doanh nghiệp, hợp tác xã, Liên hiệp hợp tác xã: Giấy phép thành lập và hoạt động của cơ quan có thẩm quyền cấp cho tổ chức theo quy định của pháp luật",
+                "condition": "Có điều kiện"
+            },
+            {
+                "document_name": "Giấy phép hoạt động do cơ quan có thẩm quyền cấp đối với tổ chức phải đăng ký về lĩnh vực hoạt động theo quy định của pháp luật",
+                "condition": "Có điều kiện"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0067",
+        "name": "Cấp thẻ Căn cước cho người từ đủ 14 tuổi trở lên thực hiện tại Công an cấp tỉnh",
+        "field": "Cấp, quản lý căn cước",
+        "application_method": "Cả hai",
+        "receiving_location": "Phòng cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "07 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Phiếu đề nghị giải quyết thủ tục về căn cước (Mẫu DC02 ban hành kèm theo Thông tư số 17/2024/TT-BCA của Bộ Công an)",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "Giấy tờ pháp lý chứa thông tin công dân, Phiếu thu thập thông tin dân cư (mẫu DC01 ban hành kèm theo Thông tư số 53/2025/TT-BCA ngày 01/7/2025 của Bộ Công an), Phiếu thu nhận thông tin căn cước (Mẫu CC01 ban hành kèm theo Thông tư số 17/2024/TT-BCA của Bộ Công an)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0068",
+        "name": "Cấp Giấy phép trang bị, giấy phép sử dụng vũ khí, công cụ hỗ trợ để triển lãm, trưng bày hoặc làm đạo cụ trong hoạt động văn hóa, nghệ thuật thực hiện tại Công an cấp tỉnh",
+        "field": "Quản lý vũ khí, vật liệu nổ,  công cụ hỗ trợ và pháo",
+        "application_method": "Cả hai",
+        "receiving_location": "Phòng cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Đối với giấy phép trang bị: 10.000 đồng/khẩu-chiếc. Đối với giấy phép sử dụng vũ khí, công cụ hỗ trợ đã mất tính năng, tác dụng: 10.000 đồng/giấy.",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Văn bản đề nghị, trong đó ghi rõ tên, địa chỉ của bảo tàng",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "đơn vị biểu diễn nghệ thuật, cơ sở điện ảnh sản xuất phim có nhu cầu trang bị",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "tổ chức, doanh nghiệp bán vũ khí, công cụ hỗ trợ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "lý do",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "số lượng, chủng loại, nhãn hiệu vũ khí, công cụ hỗ trợ",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "họ tên, số định danh cá nhân hoặc số hộ chiếu của người đại diện theo pháp luật",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0069",
+        "name": "Cấp Giấy phép vận chuyển tiền chất thuốc nổ thực hiện tại Công an cấp tỉnh",
+        "field": "Quản lý vũ khí, vật liệu nổ,  công cụ hỗ trợ và pháo",
+        "application_method": "Cả hai",
+        "receiving_location": "Phòng cảnh sát quản lý hành chính về trật tự xã hội",
+        "processing_time": {
+            "text": "03 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Miễn phí",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "a) Văn bản đề nghị, trong đó ghi rõ tên, địa chỉ của tổ chức, doanh nghiệp vận chuyển",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "họ tên, số định danh cá nhân hoặc số hộ chiếu của người điều khiển phương tiện, người áp tải",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "số lệnh xuất hoặc số hoá đơn, khối lượng, số lượng, chủng loại tiền chất thuốc nổ cần vận chuyển",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "nơi đi, nơi đến, thời gian và tuyến đường vận chuyển",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "phương tiện vận chuyển, biển kiểm soát",
+                "condition": "Bắt buộc"
+            },
+            {
+                "document_name": "số giấy phép lái xe",
+                "condition": "Bắt buộc"
+            }
+        ]
+    },
+    {
+        "procedure_id": "PROC-0070",
+        "name": "Cấp thẻ căn cước cho người từ đủ 14 tuổi trở lên (thực hiện tại cấp trung ương)",
+        "field": "Cấp, quản lý căn cước",
+        "application_method": "Trực tiếp",
+        "receiving_location": "Cục cảnh sát quản lý hành chính về trật tự, xã hội",
+        "processing_time": {
+            "text": "07 ngày làm việc"
+        },
+        "fees": [
+            {
+                "amount_text": "Chưa quy định (hoặc theo quy định Bộ Tài chính)",
+                "condition": "Default"
+            }
+        ],
+        "required_documents": [
+            {
+                "document_name": "Phiếu thu nhận thông tin căn cước (Mẫu CC01 ban hành kèm theo Thông tư số 17/2024/TT-BCA của Bộ Công an)",
+                "condition": "Bắt buộc"
+            }
+        ]
+    }
+]

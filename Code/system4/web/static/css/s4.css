@@ -1,0 +1,184 @@
+/* System 4 — chỉ phần thêm vào giao diện System 3 (styles.css dùng chung, không sửa). */
+.auth-page{min-height:100vh}
+.auth-hint{font-size:13px;color:var(--ink-2);background:var(--panel-2);border:1px solid var(--line);
+  border-radius:8px;padding:8px 10px;margin:0 0 14px}
+.auth-hint[hidden],.tab[hidden],#pw2-row[hidden],.error[hidden]{display:none}
+
+/* công tắc Strict | Friendly */
+.mode-switch{display:inline-flex;flex:none;gap:2px;padding:3px;background:var(--panel-2);
+  border:1px solid var(--line);border-radius:999px}
+.mode-switch button{border:0;background:none;color:var(--ink-2);padding:5px 12px;border-radius:999px;font-size:13px}
+.mode-switch button[aria-pressed="true"]{background:var(--accent);color:#fff}
+body[data-mode="friendly"] .mode-switch button[aria-pressed="true"]{background:var(--good)}
+.mode-switch button:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+body[data-mode="friendly"] #ai-badge,body[data-mode="friendly"] #reset-topic{display:none}
+
+/* nhãn chế độ trong danh sách hội thoại */
+.mode-tag{flex:none;font-size:10.5px;font-weight:600;padding:1px 6px;margin-left:8px;border-radius:6px;border:1px solid}
+.mode-tag.strict{color:var(--accent);border-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+.mode-tag.friendly{color:var(--good);border-color:color-mix(in srgb,var(--good) 45%,transparent)}
+
+.role-tag{font-size:11px;color:var(--ink-3);margin-left:4px}
+.bubble.err{border-color:var(--danger);color:var(--danger)}
+.stopped-note{font-size:12px;color:var(--ink-3);font-style:italic}
+
+/* cửa sổ cài đặt */
+.s4-modal{position:fixed;inset:0;z-index:50;display:grid;place-items:center;padding:16px;background:rgba(0,0,0,.35)}
+.s4-modal[hidden]{display:none}
+.s4-dialog{display:flex;flex-direction:column;width:min(660px,100%);max-height:calc(100vh - 32px);
+  background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.2)}
+.s4-dialog>header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;border-bottom:1px solid var(--line)}
+.s4-dialog>header h2{margin:0;font-size:17px}
+.s4-dialog .body{overflow-y:auto;padding:4px 18px 14px}
+.s4-dialog>footer{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px;padding:12px 18px;border-top:1px solid var(--line)}
+.set-group h3{margin:16px 0 4px;font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--ink-3)}
+.set-row{display:grid;grid-template-columns:1fr 230px;gap:4px 14px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line)}
+.set-row.wide{grid-template-columns:1fr}
+.set-row b{font-size:14px;font-weight:600}
+.set-row small{display:block;font-size:12px;color:var(--ink-3)}
+.set-row input[type=text],.set-row input[type=number],.set-row select,.set-row textarea{width:100%;padding:7px 9px;
+  color:var(--ink);background:var(--panel-2);border:1px solid var(--line);border-radius:8px}
+.set-row textarea{min-height:96px;resize:vertical}
+.set-row .over{margin-left:6px;font-size:11px;font-weight:600;color:var(--warn)}
+.set-note{margin:0 18px;padding:9px 12px;font-size:13.5px;border-radius:8px;background:color-mix(in srgb,var(--good) 14%,transparent);
+  display:flex;align-items:center;justify-content:space-between;gap:10px}
+.set-note.bad{background:color-mix(in srgb,var(--danger) 14%,transparent)}
+.set-note[hidden]{display:none}
+.btn-ghost{padding:8px 14px;color:var(--ink);background:var(--panel-2);border:1px solid var(--line);border-radius:var(--radius)}
+.btn-ghost:hover{border-color:var(--ink-3)}
+/* ---- NV2: tin nhắn Friendly kiểu ChatGPT ---- */
+.bubble.md{white-space:normal}
+.bubble.md>:first-child{margin-top:0}
+.bubble.md>:last-child{margin-bottom:0}
+.bubble.md p{margin:0 0 .6em}
+.bubble.md ul,.bubble.md ol{margin:.2em 0 .6em;padding-left:1.4em}
+.bubble.md li{margin:.15em 0}
+.bubble.md h1,.bubble.md h2,.bubble.md h3,.bubble.md h4{margin:.8em 0 .4em;font-size:1.05em}
+.bubble.md code{font:13px/1.4 Consolas,monospace;background:var(--panel-2);border:1px solid var(--line);border-radius:5px;padding:1px 5px}
+.bubble.md pre{background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:10px 12px;overflow:auto}
+.bubble.md pre code{background:none;border:0;padding:0}
+.bubble.md table{border-collapse:collapse;margin:.4em 0 .7em;display:block;overflow-x:auto;max-width:100%}
+.bubble.md th,.bubble.md td{border:1px solid var(--line);padding:5px 9px;text-align:left;vertical-align:top}
+.bubble.md th{background:var(--panel-2)}
+.bubble.md blockquote{margin:.4em 0;padding-left:10px;border-left:3px solid var(--line);color:var(--ink-2)}
+.bubble.md a{color:var(--accent)}
+.msg-actions{display:flex;align-items:center;gap:2px;opacity:.55;transition:opacity .15s}
+.msg:hover .msg-actions,.msg-actions:focus-within{opacity:1}
+@media (hover:none){.msg-actions{opacity:1}}
+.icon-btn{background:none;border:0;color:var(--ink-2);font-size:14px;line-height:1;padding:5px 7px;border-radius:6px}
+.icon-btn:hover:not(:disabled){background:var(--panel-2);color:var(--ink)}
+.icon-btn:disabled{opacity:.35;cursor:default}
+.icon-btn.fb.on{background:var(--panel-2);color:var(--ink)}
+.ver-nav{display:inline-flex;align-items:center;font-size:12.5px;color:var(--ink-2);margin-right:4px}
+.ver-count{min-width:30px;text-align:center}
+.edit-box{width:min(620px,80vw);padding:10px 12px;border:1px solid var(--accent);border-radius:var(--radius);
+  background:var(--panel);color:var(--ink);resize:vertical}
+.edit-row{display:flex;justify-content:flex-end;gap:8px}
+.mem-note{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--good)}
+.dev-note{font-size:11.5px;color:var(--ink-3)}
+.user-links{display:flex;flex:none;gap:8px;white-space:nowrap}
+.user-row #user-name{min-width:0}
+
+/* chế độ trả lời: Suy nghĩ kỹ / Trả lời nhanh / Kỹ hơn */
+.think-chip{flex:none;align-self:flex-end;padding:8px 12px;border-radius:999px;font-size:13px;color:var(--ink-2);
+  background:var(--panel-2);border:1px solid var(--line)}
+.think-chip.on{color:#fff;background:var(--good);border-color:transparent}
+.think-chip:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+body[data-mode="strict"] #think-toggle{display:none}
+.fast-btn{margin-left:auto;padding:4px 10px;font-size:12.5px;border-radius:999px;color:var(--accent);
+  background:var(--panel);border:1px solid var(--accent)}
+.fast-btn:disabled{opacity:.5}
+.icon-btn.deeper{font-size:12px;padding:5px 8px}
+
+/* NV3: dữ liệu người dùng, chế độ Chuyên gia */
+body[data-mode="strict"] #attach,body[data-mode="strict"] #spec-badge{display:none}
+#attach{height:42px;min-width:42px;align-self:flex-end}
+.spec-badge{flex:none;padding:4px 10px;border-radius:999px;font-size:12.5px;color:var(--ink-2);background:var(--panel-2);border:1px solid var(--line)}
+.spec-badge.on{color:#fff;background:var(--accent);border-color:transparent}
+.file-pill.ok{border-color:var(--good)}
+.file-pill .meta{color:var(--ink-3);font-size:12px}
+.quota{margin:6px 0 10px}
+.quota .bar{height:8px;border-radius:6px;background:var(--panel-2);border:1px solid var(--line);overflow:hidden}
+.quota .bar i{display:block;height:100%;background:var(--accent)}
+.quota .bar i.full{background:var(--danger)}
+.quota small{display:block;margin-top:4px;font-size:12px;color:var(--ink-3)}
+.data-warn{margin-bottom:10px;padding:8px 10px;font-size:13px;border-radius:8px;background:color-mix(in srgb,var(--warn) 16%,transparent)}
+.data-warn[hidden]{display:none}
+.data-list{list-style:none;margin:0;padding:0}
+.data-list>li{display:flex;gap:10px;align-items:flex-start;padding:10px 2px;border-bottom:1px solid var(--line)}
+.data-list .ds-main{flex:1;min-width:0}
+.data-list .ds-name{font-weight:600;font-size:14px;overflow-wrap:anywhere}
+.data-list .ds-msg{font-size:12.5px;color:var(--ink-2);margin-top:2px}
+.data-list .ds-msg.err{color:var(--danger)}
+.data-list .ds-meta{font-size:12px;color:var(--ink-3);margin-top:2px}
+.data-list .ds-actions{display:flex;gap:2px;flex-wrap:wrap;margin-top:4px}
+.ds-progress{height:5px;border-radius:4px;background:var(--panel-2);overflow:hidden;margin-top:5px}
+.ds-progress i{display:block;height:100%;background:var(--accent);transition:width .3s}
+.mem-empty{color:var(--ink-3);text-align:center;padding:16px 0}
+.s4-dialog.wide{width:min(900px,100%)}
+.records-q{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink);margin:10px 0 4px}
+.records-list{display:flex;flex-direction:column;gap:8px;margin-bottom:10px}
+.rec-card{padding:9px 11px;border:1px solid var(--line);border-radius:8px;background:var(--panel)}
+.rec-card b{display:block;font-size:14px}
+.rec-card .rec-fields{font-size:12.5px;color:var(--ink-2);white-space:pre-wrap;overflow-wrap:anywhere;margin-top:3px;max-height:7.5em;overflow:hidden}
+.rec-card small{color:var(--ink-3);font-size:11.5px}
+.src-row{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:12.5px;color:var(--ink-3)}
+.src-chip{max-width:320px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:3px 9px;border-radius:999px;
+  font-size:12.5px;color:var(--accent);background:var(--panel);border:1px solid var(--line)}
+.src-chip:hover{border-color:var(--accent)}
+.src-table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:8px}
+.src-table th,.src-table td{border:1px solid var(--line);padding:6px 8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.src-table th{width:32%;background:var(--panel-2);font-weight:600}
+.src-text{white-space:pre-wrap;font-size:14px;margin-top:8px;overflow-wrap:anywhere}
+
+/* NV4: liên kết Quản trị */
+.admin-link{flex:none;font-size:13px;color:var(--ink-2);text-decoration:none;padding:4px 9px;border:1px solid var(--line);border-radius:999px}
+.admin-link:hover{color:var(--ink);border-color:var(--ink-3)}
+.admin-link[hidden]{display:none}
+
+/* bộ công cụ dev: 🔍 Soi, Vì sao?, Cách đọc tệp */
+.insp .s4-dialog{width:min(1100px,100%)}
+.insp-tabs{display:flex;flex-wrap:wrap;gap:6px;padding:10px 18px 0}
+.insp-tabs .tab{flex:none;padding:6px 12px;font-size:13px}
+.insp-pre{margin:6px 0 10px;padding:8px 10px;max-height:340px;overflow:auto;white-space:pre-wrap;overflow-wrap:anywhere;
+  font:12px/1.45 Consolas,monospace;background:var(--panel-2);border:1px solid var(--line);border-radius:8px}
+.insp-kv{width:100%;border-collapse:collapse;font-size:13px;margin:8px 0}
+.insp-kv th,.insp-kv td{border-bottom:1px solid var(--line);padding:5px 8px;text-align:left;vertical-align:top;overflow-wrap:anywhere}
+.insp-kv th{width:38%;color:var(--ink-2);font-weight:600}
+.insp-grid{width:100%;border-collapse:collapse;font-size:12.5px;margin-top:6px}
+.insp-grid th,.insp-grid td{border-bottom:1px solid var(--line);padding:5px 6px;text-align:left;vertical-align:top}
+.insp-grid th{background:var(--panel-2);color:var(--ink-3)}
+.insp-grid tr{cursor:pointer}
+.insp-grid tr.sent td{background:color-mix(in srgb,var(--good) 12%,transparent)}
+.insp-grid tr.failed td{color:var(--ink-3);text-decoration:line-through}
+.insp-grid tr.insp-text td{cursor:default;text-decoration:none;color:var(--ink);background:var(--panel)}
+.insp-role{font-size:12px;font-weight:600;color:var(--ink-2);margin-top:6px}
+.insp h3{font-size:13.5px;margin:12px 0 4px}
+.insp-why{padding-left:18px;font-size:14px}
+.icon-btn.inspect{font-size:13px}
+
+/* bộ nhớ */
+.mem-help{margin:12px 0 8px;font-size:13.5px;color:var(--ink-2)}
+.mem-mode{display:flex;flex-direction:column;gap:6px;padding:10px 12px;margin-bottom:10px;background:var(--panel-2);
+  border:1px solid var(--line);border-radius:8px;font-size:14px}
+.mem-list{list-style:none;margin:0;padding:0}
+.mem-list li{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 2px;border-bottom:1px solid var(--line);font-size:14px}
+.mem-list .mem-empty{color:var(--ink-3);justify-content:center}
+
+/* trình sửa guardrail */
+.rules-editor{display:flex;flex-direction:column;gap:8px}
+.rules-list{display:flex;flex-direction:column;gap:8px}
+.rule-row{display:flex;flex-direction:column;gap:6px;padding:8px 10px;background:var(--panel-2);border:1px solid var(--line);border-radius:8px}
+.rule-head{display:flex;align-items:center;gap:8px}
+.rule-head .r-name{flex:1;min-width:0}
+.rule-row input[type=text],.rule-row select,.rule-row textarea{padding:6px 8px;color:var(--ink);background:var(--panel);
+  border:1px solid var(--line);border-radius:6px;font-size:13px;width:100%}
+.rule-head select{width:auto}
+.rule-row textarea{resize:vertical;min-height:44px}
+.rules-editor>.btn-ghost{align-self:flex-start}
+
+@media (max-width:760px){
+  .set-row{grid-template-columns:1fr}
+  .mode-switch button{padding:5px 9px}
+  .chat-head .model-name{display:none}
+}

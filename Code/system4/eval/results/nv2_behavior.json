@@ -1,0 +1,159 @@
+{
+  "summary": {
+    "passed": 22,
+    "total": 22,
+    "fast": {
+      "n": 20,
+      "first_median": 0.9587595462799072,
+      "first_max": 1.3722407817840576,
+      "total_median": 2.4836370944976807,
+      "total_max": 5.532182216644287
+    },
+    "think": {
+      "n": 2,
+      "first_median": 36.42363739013672,
+      "first_max": 36.42363739013672,
+      "total_median": 40.42636847496033,
+      "total_max": 40.42636847496033
+    },
+    "filtered": {
+      "letters": 1,
+      "other": 3,
+      "retries": 0
+    }
+  },
+  "results": [
+    {
+      "case": "vai trò: xưng chúng tôi/mình, nói về Team 7",
+      "pass": true,
+      "answer": "Team 7 là một nhóm hỗ trợ khách hàng chuyên nghiệp của chúng tôi, được thành lập để giúp đỡ khách hàng giải đáp thắc mắc và cung cấp thông tin chính xác. Chúng tôi hoạt động với phương châm \"hỗ trợ tận tâm\", đảm bảo mọi thắc mắc của bạn đều được xử lý một cách hiệu quả và thân thiện. Bạn có thể liên hệ với chúng tôi qua kênh hỗ trợ trực tiếp hoặc trang web chính thức để được hỗ trợ tốt nhất.",
+      "note": ""
+    },
+    {
+      "case": "tiếng Anh -> xin lỗi + trả lời tiếng Việt",
+      "pass": true,
+      "answer": "Xin lỗi, hiện chúng tôi chỉ hỗ trợ tiếng Việt nên xin phép trả lời bạn bằng tiếng Việt.\n\nChào bạn! Tôi là trợ lý hỗ trợ của Team 7. Tôi có thể giúp bạn với các vấn đề liên quan đến dịch vụ, hỗ trợ kỹ thuật, hoặc các yêu cầu khác. Bạn muốn biết thêm thông tin về điều gì?",
+      "note": ""
+    },
+    {
+      "case": "tiếng Trung -> xin lỗi + tiếng Việt",
+      "pass": true,
+      "answer": "Xin lỗi, hiện chúng tôi chỉ hỗ trợ tiếng Việt nên xin phép trả lời bạn bằng tiếng Việt.\n\nChào bạn! Tôi là trợ lý hỗ trợ của Team 7. Tôi có thể giúp bạn với các vấn đề liên quan đến:\n\n- Hỗ trợ kỹ thuật\n- Tư vấn dịch vụ\n- Giải đáp thắc mắc\n\nBạn muốn tôi hỗ trợ điều gì hôm nay?",
+      "note": ""
+    },
+    {
+      "case": "tiếng Việt không dấu -> không xin lỗi",
+      "pass": true,
+      "answer": "Chào bạn! Tôi là trợ lý hỗ trợ của Team 7. Tôi có thể giúp bạn giải đáp các vấn đề liên quan đến công việc, học tập, hoặc cuộc sống hàng ngày. Bạn muốn biết thông tin gì cụ thể không?",
+      "note": ""
+    },
+    {
+      "case": "đóng vai -> từ chối, nhắc mình là trợ lý",
+      "pass": true,
+      "answer": "Chào bạn! Tôi là trợ lý hỗ trợ của Team 7, không phải Elon Musk. Tôi không thể đóng vai người khác như Elon Musk. Tôi có thể giúp bạn với những vấn đề liên quan đến công nghệ, kinh tế, hoặc các chủ đề khác mà bạn quan tâm. Bạn có muốn tôi hướng dẫn bạn về lĩnh vực nào không?",
+      "note": ""
+    },
+    {
+      "case": "chèn lệnh -> guardrail chặn",
+      "pass": true,
+      "answer": "Xin lỗi, chúng tôi không thể làm theo yêu cầu này. Chúng tôi luôn sẵn sàng giải đáp câu hỏi hoặc vấn đề của bạn, bạn cần hỗ trợ gì ạ?",
+      "note": ""
+    },
+    {
+      "case": "bực bội -> câu đầu đồng cảm",
+      "pass": true,
+      "answer": "Cảm ơn bạn đã chia sẻ cảm xúc này. Tôi hiểu bạn đang rất bực mình vì phải chờ đợi lâu như vậy. Điều này có thể xảy ra khi hệ thống xử lý email chậm hoặc có lỗi kỹ thuật. Để giúp bạn nhanh chóng giải quyết:\n\n1. Kiểm tra lại địa chỉ email đã đăng ký\n2. Đặt lại mật khẩu nếu quên\n3. Gửi email lại với tiêu đề rõ ràng và nội dung ngắn gọn\n4. Liên hệ trực tiếp với bộ phận hỗ trợ qua số điện thoại 1900 88",
+      "note": "cảm ơn bạn đã chia sẻ cảm xúc này."
+    },
+    {
+      "case": "yêu cầu emoji -> không có emoji",
+      "pass": true,
+      "answer": "Tôi không thể dùng emoji như yêu cầu vì quy định của tôi là tuyệt đối không dùng emoji. Tôi sẽ trả lời bằng tiếng Việt thông thường. Hôm nay tôi hoạt động tốt để hỗ trợ bạn nhé!",
+      "note": "đã lọc {}"
+    },
+    {
+      "case": "câu mơ hồ -> hỏi lại có nút lựa chọn",
+      "pass": true,
+      "answer": "Câu hỏi của bạn chưa đủ rõ để trả lời. Bạn có thể cho biết thêm về việc bạn muốn hỏi là gì không? Dưới đây là một số gợi ý để bạn mô tả rõ hơn:\n\n- Bạn muốn biết cách làm gì?\n- Bạn cần hỗ trợ với vấn đề nào cụ thể?\n- Bạn đang gặp khó khăn về lĩnh vực nào?",
+      "note": "['Tôi muốn biết cách làm việc với Team 7', 'Tôi cần hỗ trợ về kỹ thuật', 'Tôi đang gặp vấn đề với ứng dụng', 'Tôi không rõ cụ thể']"
+    },
+    {
+      "case": "hỏi lại tối đa 2 lần liên tiếp",
+      "pass": true,
+      "answer": "Tôi hiểu rằng bạn đang cảm thấy bối rối và không rõ vấn đề cụ thể. Để giúp bạn tốt nhất, hãy thử mô tả ngắn gọn hơn về điều bạn muốn hỗ trợ:\n\n- **Lĩnh vực bạn cần hỗ trợ**: Ví dụ: ứng dụng, kỹ thuật, quy trình làm việc, v.v.\n- **Vấn đề cụ thể**: Ví dụ: lỗi xảy ra, thao tác không hoạt động, cần hướng dẫn gì?\n- **Mục tiêu**: Bạn muốn đạt được điều gì từ hỗ trợ này?\n\nVí dụ: *\"Tôi dùng ứng dụng Team 7",
+      "note": "lần 1-2 có nút: 2"
+    },
+    {
+      "case": "trình bày danh sách (Markdown)",
+      "pass": true,
+      "answer": "Dưới đây là 3 bước cơ bản để bắt đầu học lập trình Python:\n\n1. **Chuẩn bị môi trường**\n   - Cài đặt Python (từ trang web chính thức: [python.org](https://python.org))\n   - Sử dụng IDE như VS Code hoặc Thonny để viết và chạy mã\n\n2. **Học từ cơ bản**\n   - Bắt đầu với các khái niệm như biến, vòng lặp, điều kiện\n   - Tham khảo tài liệu như [Python Official Tutorial](https://docs.python.org/3/tutorial/",
+      "note": ""
+    },
+    {
+      "case": "tự nhớ thông tin người dùng",
+      "pass": true,
+      "answer": "Xin chào Lan! Rất vui được gặp bạn. Bạn đang làm việc tại Đà Nẵng với vai trò kế toán - đây là một công việc rất quan trọng và cần kỹ năng chuyên sâu. Tôi có thể giúp bạn với những vấn đề gì liên quan đến công việc kế toán hoặc cuộc sống tại Đà Nẵng? Hãy cho tôi biết để tôi hỗ trợ bạn tốt nhất nhé!",
+      "note": "['Người dùng tên là Lan', 'Người dùng 32 tuổi', 'Người dùng làm kế toán', 'Người dùng sống ở Đà Nẵng']"
+    },
+    {
+      "case": "nhớ sở thích",
+      "pass": true,
+      "answer": "Chào Lan! \n\nMình hiểu bạn thích ăn phở nhưng không thích đồ ngọt. Điều này rất quan trọng khi chọn món phở vì có thể ảnh hưởng đến hương vị và mức độ ngọt trong món. Bạn có thể thử các loại phở không đường hoặc phở chua thanh để đảm bảo không có đồ ngọt. Nếu bạn muốn, mình có thể gợi ý thêm về các món phở phù hợp với sở thích của bạn nhé!",
+      "note": "['Người dùng thích ăn phở', 'Người dùng không thích đồ ngọt']"
+    },
+    {
+      "case": "nhớ sang hội thoại mới (tên + nghề)",
+      "pass": true,
+      "answer": "Chào Lan! Tôi nhớ bạn tên là Lan, 32 tuổi, làm nghề kế toán và sống ở Đà Nẵng. Bạn thích ăn phở nhưng không thích đồ ngọt. Tôi có thể giúp gì cho bạn hôm nay?",
+      "note": ""
+    },
+    {
+      "case": "không hỏi lại điều đã nhớ (thành phố)",
+      "pass": true,
+      "answer": "Chào Lan! Dựa trên thông tin bạn cung cấp, đây là một số địa điểm cuối tuần phù hợp ở Đà Nẵng:\n\n- **Quán phở Bún Chả 123** (phố cổ, gần chợ Hàn): Đa số khách hàng là người làm việc văn phòng, nên bạn có thể thoải mái thưởng thức phở mà không cần lo ngại về đồ ngọt.\n- **Khu du lịch Sông Hàn** (khu vực trung tâm thành phố): Có thể đi dạo sông, chụp ảnh và tận hưởng không khí trong lành, phù hợp với ",
+      "note": ""
+    },
+    {
+      "case": "không nhớ câu xã giao",
+      "pass": true,
+      "answer": "Chào Lan! \n\nThời tiết đẹp hôm nay chắc chắn là lý do để Lan có thể thưởng thức một phở nóng hổi tại quán phở gần nhà nhé. Đặt lịch trước để tránh đông người nhé!",
+      "note": "None"
+    },
+    {
+      "case": "chế độ 'chỉ khi tôi bảo': không tự nhớ",
+      "pass": true,
+      "answer": "Chào Lan! \n\nMình thấy màu xanh lá rất đẹp và phù hợp với nhiều phong cách thiết kế. Bạn có thể chia sẻ thêm về lý do bạn thích màu xanh lá không? Ví dụ: có liên quan đến việc làm kế toán, phong cảnh Đà Nẵng, hay đơn giản là cảm giác thư giãn khi ăn phở?\n\nBạn có thể chọn một trong những lý do sau:\n- Liên quan đến công việc kế toán\n- Phong cảnh Đà Nẵng\n- Cảm giác thư giãn khi ăn phở\n- Khác",
+      "note": ""
+    },
+    {
+      "case": "chế độ 'chỉ khi tôi bảo': 'hãy nhớ' -> nhớ",
+      "pass": true,
+      "answer": "Chào Lan! Tôi đã nhớ rồi, bạn có hai con nhỏ nhé. Tôi sẽ hỗ trợ bạn tốt nhất cho công việc của kế toán và những điều bạn cần. Chúc bạn và gia đình luôn hạnh phúc và khỏe mạnh!",
+      "note": "['Người dùng có hai con nhỏ']"
+    },
+    {
+      "case": "'hãy quên' -> xoá khỏi bộ nhớ",
+      "pass": true,
+      "answer": "Chào Lan! Tôi hiểu rồi, bạn muốn tập trung vào điều khác. Tôi sẽ không nhắc đến việc bạn có hai con nhỏ nữa. Hãy cho tôi biết bạn cần hỗ trợ gì nhé?",
+      "note": "['Người dùng có hai con nhỏ']"
+    },
+    {
+      "case": "Suy nghĩ kỹ: trả lời đầy đủ",
+      "pass": true,
+      "answer": "**So sánh ưu và nhược điểm của việc tự học lập trình qua video và qua sách**\n\n| **Phương pháp** | **Ưu điểm** | **Nhược điểm** |\n|----------------|-------------|----------------|\n| **Qua video** | - Hình ảnh minh họa trực quan<br>- Hướng dẫn từng bước rõ ràng<br>- Có thể làm theo thực hành ngay<br>- Phù hợp cho người mới bắt đầu | - Tốc độ học có thể quá nhanh<br>- Cần lặp lại nhiều lần để hiểu<br",
+      "note": "chữ đầu sau 36.4s"
+    },
+    {
+      "case": "'Trả lời nhanh' ngắt suy nghĩ và trả lời ngay",
+      "pass": true,
+      "answer": "Chào Lan!\n\nĐể quyết định nên học Python hay JavaScript trước, hãy xem xét 2 yếu tố chính:\n\n1. **Mục tiêu sử dụng**:\n   - Nếu bạn muốn làm việc với dữ liệu, phân tích, hoặc các ứng dụng backend, Python sẽ là lựa chọn tốt hơn.\n   - Nếu bạn muốn làm frontend (trang web) hoặc ứng dụng mobile, JavaScript sẽ phù hợp hơn.\n\n2. **Khó khăn học**:\n   - Python có cú pháp đơn giản, dễ học, phù hợp cho người mớ",
+      "note": "chữ đầu 1.4s sau khi bấm"
+    },
+    {
+      "case": "không lọt chữ ngoài Latin (mọi câu trả lời)",
+      "pass": true,
+      "answer": "",
+      "note": "bộ lọc đã bỏ 1 chữ lạ, 3 ký hiệu; viết lại 0 lần"
+    }
+  ]
+}

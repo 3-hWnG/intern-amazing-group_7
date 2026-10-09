@@ -1,0 +1,519 @@
+[
+ {
+  "id": "pr-01",
+  "q": "con em sinh tuần trước giờ làm giấy khai sinh cho bé thì cần mang theo gì ạ",
+  "expect_ids": [
+   "1.001193"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "khai sinh thường, trường hợp phổ biến nhất"
+ },
+ {
+  "id": "pr-02",
+  "q": "dang ky tam tru het bao nhieu tien vay",
+  "expect_ids": [
+   "1.004194"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "không dấu, hỏi phí"
+ },
+ {
+  "id": "pr-03",
+  "q": "mất giấy khai sinh của con rồi, làm lại sao",
+  "expect_ids": [
+   "1.004884",
+   "2.000635"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "case"
+  ],
+  "notes": "mơ hồ: đăng ký lại khai sinh vs cấp bản sao trích lục"
+ },
+ {
+  "id": "pr-04",
+  "q": "Bố em mất hôm qua ở quê, cần đi đâu làm giấy báo tử, mất bao lâu?",
+  "expect_ids": [
+   "1.000656",
+   "2.002913"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place",
+   "time"
+  ],
+  "notes": "kể hoàn cảnh; khai tử hoặc liên thông khai tử"
+ },
+ {
+  "id": "pr-05",
+  "q": "chung thuc di chuc phi bn ạ",
+  "expect_ids": [
+   "2.001019"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "viết tắt, thiếu dấu"
+ },
+ {
+  "id": "pr-06",
+  "q": "photo công chứng cmnd ở ubnd xã đc ko, mấy bản",
+  "expect_ids": [
+   "2.000815"
+  ],
+  "beh": "answer",
+  "fields": [
+   "conditions",
+   "fee"
+  ],
+  "notes": "nói 'công chứng' nhưng là chứng thực bản sao từ bản chính"
+ },
+ {
+  "id": "pr-07",
+  "q": "xin giấy xác nhận độc thân để đk kết hôn nộp ở đâu",
+  "expect_ids": [
+   "1.004873"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "giấy xác nhận tình trạng hôn nhân"
+ },
+ {
+  "id": "pr-08",
+  "q": "thủ tục mở hộ kinh doanh bán tạp hóa tại nhà cần giấy tờ gì",
+  "expect_ids": [
+   "1.001612"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "đăng ký thành lập hộ kinh doanh"
+ },
+ {
+  "id": "pr-09",
+  "q": "bà ngoại em 80 tuổi muốn nhận trợ cấp hàng tháng thì làm sao",
+  "expect_ids": [
+   "1.014027",
+   "1.001776"
+  ],
+  "beh": "answer",
+  "fields": [
+   "steps",
+   "documents"
+  ],
+  "notes": "trợ cấp hưu trí xã hội (>=75t); chấp nhận bản trợ cấp xã hội hàng tháng"
+ },
+ {
+  "id": "pr-10",
+  "q": "cho hỏi cấp sổ đỏ lần đầu cho hộ gia đình cần những giấy gì",
+  "expect_ids": [
+   "1.013978",
+   "1.115240",
+   "1.115443",
+   "1.115583",
+   "1.115760",
+   "1.115939",
+   "1.116082",
+   "1.116156",
+   "1.116360",
+   "3.000669",
+   "3.000717"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "province"
+  ],
+  "notes": "nhiều bản trùng tên theo tỉnh, không phân biệt được từ câu hỏi"
+ },
+ {
+  "id": "pr-11",
+  "q": "con cháu bị khuyết tật nặng làm giấy xác nhận khuyết tật ở đâu, mấy ngày có",
+  "expect_ids": [
+   "1.001699"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place",
+   "time"
+  ],
+  "notes": "xác định mức độ khuyết tật"
+ },
+ {
+  "id": "pr-12",
+  "q": "con mình sắp vào lớp 6, tuyển sinh thcs nộp hồ sơ ở đâu",
+  "expect_ids": [
+   "3.000182"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place",
+   "documents"
+  ],
+  "notes": "giáo dục"
+ },
+ {
+  "id": "pr-13",
+  "q": "nha toi o xa nay nhung ho khau o xa khac, muon chuyen ve day thi lam sao",
+  "expect_ids": [
+   "1.004222"
+  ],
+  "beh": "answer",
+  "fields": [
+   "steps",
+   "documents"
+  ],
+  "notes": "không dấu, đăng ký thường trú"
+ },
+ {
+  "id": "pr-14",
+  "q": "thẻ bhyt của con bị sai ngày sinh sửa ở đâu",
+  "expect_ids": [
+   "1.002759"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place",
+   "documents"
+  ],
+  "notes": "y tế/BHYT; thủ tục có cấp xã nhưng cơ quan thực hiện BHXH huyện"
+ },
+ {
+  "id": "pr-15",
+  "q": "nhà em thu nhập thấp muốn được công nhận hộ nghèo thì sao",
+  "expect_ids": [
+   "1.011606",
+   "1.011607",
+   "1.116214",
+   "1.116215"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "period"
+  ],
+  "notes": "nhiều bản (định kỳ/thường xuyên/trong năm; chuẩn cũ/mới)"
+ },
+ {
+  "id": "pr-16",
+  "q": "xin giay phep xay nha 2 tang tren dat nha o nong thon",
+  "expect_ids": [
+   "1.013225",
+   "1.009122"
+  ],
+  "beh": "answer",
+  "fields": [
+   "documents"
+  ],
+  "notes": "giấy phép xây dựng nhà ở riêng lẻ"
+ },
+ {
+  "id": "pr-17",
+  "q": "me em mat, lo mai tang phi dc ho tro ko",
+  "expect_ids": [
+   "1.001731",
+   "1.014028",
+   "3.000731",
+   "2.002307",
+   "1.010456"
+  ],
+  "beh": "clarify",
+  "fields": [
+   "beneficiary_type"
+  ],
+  "notes": "nhiều chế độ mai táng phí, thiếu đối tượng"
+ },
+ {
+  "id": "pr-18",
+  "q": "cho con 14 tuổi làm thẻ căn cước thì đi đâu",
+  "expect_ids": [
+   "1.116410"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place",
+   "documents"
+  ],
+  "notes": "cấp thẻ căn cước"
+ },
+ {
+  "id": "pr-19",
+  "q": "cháu trai 17 tuổi đăng ký nghĩa vụ quân sự lần đầu nộp ở đâu",
+  "expect_ids": [
+   "1.013133"
+  ],
+  "beh": "answer",
+  "fields": [
+   "place"
+  ],
+  "notes": "NVQS"
+ },
+ {
+  "id": "pr-20",
+  "q": "làm thủ tục nhận con nuôi trong nước tốn bao nhiêu",
+  "expect_ids": [
+   "2.001263"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee"
+  ],
+  "notes": "nuôi con nuôi"
+ },
+ {
+  "id": "pr-21",
+  "q": "tranh chấp ranh giới đất với nhà hàng xóm, xã có hòa giải ko",
+  "expect_ids": [
+   "1.012812",
+   "1.013967"
+  ],
+  "beh": "answer",
+  "fields": [
+   "steps"
+  ],
+  "notes": "hòa giải tranh chấp đất đai"
+ },
+ {
+  "id": "pr-22",
+  "q": "nhà văn hóa thôn tổ chức lễ hội thì thông báo trước bao nhiêu ngày",
+  "expect_ids": [
+   "1.003622",
+   "1.013791"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time"
+  ],
+  "notes": "lễ hội cấp xã"
+ },
+ {
+  "id": "pr-23",
+  "q": "cho mình hỏi làm khai tử với xóa thường trú cho ông nội thì mất bao lâu, có tốn phí ko",
+  "expect_ids": [
+   "1.000656",
+   "1.003197",
+   "2.002913"
+  ],
+  "beh": "answer",
+  "fields": [
+   "time",
+   "fee"
+  ],
+  "notes": "hai việc một tin nhắn"
+ },
+ {
+  "id": "pr-24",
+  "q": "gia hạn tạm trú phí bao nhiêu, với khách ở nhà vài hôm thì báo lưu trú sao",
+  "expect_ids": [
+   "1.002755",
+   "2.001159"
+  ],
+  "beh": "answer",
+  "fields": [
+   "fee",
+   "steps"
+  ],
+  "notes": "hai việc một tin nhắn"
+ },
+ {
+  "id": "pr-25",
+  "q": "xin cấp hộ chiếu mới cho con thì nộp hồ sơ ở xã đc ko",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "cấp hộ chiếu không có trong kho (chỉ có trình báo mất hộ chiếu)"
+ },
+ {
+  "id": "pr-26",
+  "q": "em muốn ly hôn đơn phương, nộp đơn ở đâu, tốn bao nhiêu",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "ly hôn là việc của Tòa án, ngoài thẩm quyền xã"
+ },
+ {
+  "id": "pr-27",
+  "q": "thi bằng lái xe máy a1 đăng ký ở đâu vậy cán bộ",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "sát hạch GPLX không có trong kho/ngoài thẩm quyền xã"
+ },
+ {
+  "id": "pr-28",
+  "q": "cho em xin phiếu lý lịch tư pháp số 2 đi xin visa",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "LLTP thuộc Sở Tư pháp, kho không có bản phù hợp"
+ },
+ {
+  "id": "pr-29",
+  "q": "hôm nay giá vàng bao nhiêu vậy ad",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "không phải thủ tục"
+ },
+ {
+  "id": "pr-30",
+  "q": "thành lập công ty tnhh vốn 2 tỷ phải làm sao",
+  "expect_ids": [],
+  "beh": "apologize",
+  "fields": [],
+  "notes": "đăng ký doanh nghiệp cấp tỉnh, không có trong kho"
+ },
+ {
+  "id": "prc-01",
+  "turns": [
+   {
+    "q": "mình muốn đăng ký tạm trú cho con ở trọ",
+    "expect_ids": [
+     "1.004194"
+    ],
+    "beh": "answer",
+    "fields": [
+     "steps"
+    ]
+   },
+   {
+    "q": "thế còn phí?",
+    "expect_ids": [
+     "1.004194"
+    ],
+    "beh": "answer",
+    "fields": [
+     "fee"
+    ]
+   },
+   {
+    "q": "gia hạn thì sao",
+    "expect_ids": [
+     "1.002755"
+    ],
+    "beh": "answer",
+    "fields": [
+     "steps"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "prc-02",
+  "turns": [
+   {
+    "q": "chứng thực chữ ký",
+    "expect_ids": [
+     "2.000884"
+    ],
+    "beh": "answer",
+    "fields": [
+     "steps"
+    ]
+   },
+   {
+    "q": "à không, ý tôi là chứng thực bản sao từ bản chính",
+    "expect_ids": [
+     "2.000815"
+    ],
+    "beh": "answer",
+    "fields": [
+     "steps"
+    ]
+   },
+   {
+    "q": "mất bao lâu",
+    "expect_ids": [
+     "2.000815"
+    ],
+    "beh": "answer",
+    "fields": [
+     "time"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "prc-03",
+  "turns": [
+   {
+    "q": "ba mình mất rồi, đất đứng tên ba, muốn sang tên",
+    "expect_ids": [
+     "2.001406",
+     "2.001016",
+     "1.115924",
+     "1.115995",
+     "1.116292"
+    ],
+    "beh": "clarify",
+    "fields": [
+     "case"
+    ]
+   },
+   {
+    "q": "cả nhà thống nhất mấy anh chị em không nhận, để lại cho con trai cả",
+    "expect_ids": [
+     "2.001016"
+    ],
+    "beh": "answer",
+    "fields": [
+     "documents"
+    ]
+   },
+   {
+    "q": "phí bao nhiêu",
+    "expect_ids": [
+     "2.001016"
+    ],
+    "beh": "answer",
+    "fields": [
+     "fee"
+    ]
+   }
+  ]
+ },
+ {
+  "id": "prc-04",
+  "turns": [
+   {
+    "q": "làm lại giấy khai sinh",
+    "expect_ids": [
+     "1.004884",
+     "2.000635"
+    ],
+    "beh": "clarify",
+    "fields": [
+     "case"
+    ]
+   },
+   {
+    "q": "cái thứ hai, bản sao thôi",
+    "expect_ids": [
+     "2.000635"
+    ],
+    "beh": "answer",
+    "fields": [
+     "steps"
+    ]
+   },
+   {
+    "q": "phí 8 nghìn đúng không",
+    "expect_ids": [
+     "2.000635"
+    ],
+    "beh": "answer",
+    "fields": [
+     "fee"
+    ]
+   }
+  ]
+ }
+]

@@ -1,0 +1,152 @@
+# H5 / pseudo_real3 - gia dinh & ly do (moi cau mot dong)
+
+Format: id | cau hoi | dap an (proc_id) | ly do. '~' = cau doi thuong. Cau nhieu luot: moi luot mot dong con.
+
+- h5-001 | ban oi cho minh hoi dang ky ket hon can mang theo nhung giay to gi | 1.000894 | [answer/documents] ~khong dau. Ket hon trong nuoc, mac dinh (khong yeu to nuoc ngoai).
+- h5-002 | Kính gửi cán bộ, tôi muốn hỏi lệ phí đăng ký nhận cha, mẹ, con là bao nhiêu và có được miễn không ạ | 1.001022 | [answer/fee] ~lich su. DB: muc le phi do HDND tinh quyet, mien cho ho ngheo/nguoi co cong/khuyet tat.
+- h5-003 | dang ky khai sinh mat may ngay thi co ket qua | 1.001193 | [answer/time] ~khong dau, cut.
+- h5-004 | Chồng em mất tuần trước, giờ em phải đi làm giấy khai tử cho chồng mà không biết hồ sơ gồm những gì, ai đi nộp cũng được hả chị | 1.000656 | [answer/documents] ~ke chuyen, cau hoi o cuoi. Khai tu mac dinh trong nuoc.
+- h5-005 | xin giay xac nhan da doc than de lam thu tuc mua nha thi mat bao lau | 1.004873 | [answer/time] ~khong dau. Giay xac nhan tinh trang hon nhan: 3 ngay lam viec.
+- h5-006 | ra o rieng muon tach ho thi mat phi bn | 1.010038 | [answer/fee] ~viet tat 'bn'. Tach ho: 10.000d/lan nop truc tiep.
+- h5-007 | tam tru o tro thi dang ky o dau vay ban | 1.004194 | [answer/place] ~khong dau, goi 'ban'. Dang ky tam tru tai Cong an cap xa.
+- h5-008 | Anh chị ơi cho em hỏi gia hạn tạm trú cần chuẩn bị giấy tờ gì, em đang ở trọ | 1.002755 | [answer/documents] ~ke hoan canh.
+- h5-009 | di lam xa 2 thang phai khai bao tam vang o dau | 1.003677 | [answer/place] ~khong dau. Khai bao tam vang tai Cong an cap xa.
+- h5-010 | xoa thuong tru khi chuyen di noi khac can dieu kien gi | 1.003197 | [answer/conditions] ~khong dau. Thu tuc Xoa dang ky thuong tru (khong nham voi xoa tam tru 1.010028).
+- h5-011 | DK thong bao luu tru cho khach den choi nha mat bao lau | 2.001159 | [answer/time] ~viet tat 'DK', khong dau. Thong bao luu tru: 1 gio.
+- h5-012 | the can cuoc bi hu muon doi lai thi le phi bao nhieu | 1.116410 | [answer/fee] ~khong dau. Cap, cap doi, cap lai the can cuoc; DB ghi giam 50% den het 31/12/2026.
+- h5-013 | mo khoa tai khoan dinh danh dien tu VNeID la lam sao, can giay to gi | 3.000284 | [answer/documents] ~khong dau, ten rieng 'VNeID'. Mo khoa tai khoan dinh danh dien tu (khong phai mo khoa can cuoc dien tu 3.000286). Debatable: chap nhan 3.000286 neu he thong hoi lai.
+- h5-014 | xin khoa can cuoc dien tu thi mat may ngay | 3.000285 | [answer/time] ~khong dau. Khoa can cuoc dien tu: 3 ngay lam viec.
+- h5-015 | chung thuc chu ky tren giay uy quyen thi ton bao nhieu | 2.000884 | [answer/fee] ~khong dau. Chung thuc chu ky (phi theo /truong hop).
+- h5-016 | chứng thực di chúc có mất phí không | 2.001019 | [answer/fee] Phi chung thuc di chuc (so tien /di chuc).
+- h5-017 | photo ban sao bang tot nghiep roi mang len xa chung thuc duoc khong, can gi | 2.000815 | [answer/conditions] ~khong dau, ke kieu. Chung thuc ban sao tu ban chinh.
+- h5-018 | ba mat roi anh em muon chia dat ba de lai thi lam van ban phan chia di san chung thuc nhu the nao | 2.001406 | [answer/documents] ~ke hoan canh. Chung thuc van ban phan chia di san (dong san, QSDD, nha o).
+- h5-019 | ba em bi liet nua nguoi muon xin giay xac nhan khuyet tat de nhan tro cap, ho so gom nhung gi | 1.001699 | [answer/documents] ~khong dau, ke hoan canh. Xac dinh muc do khuyet tat va cap giay xac nhan.
+- h5-020 | nha co nguoi thuoc dien bao tro xa hoi vua mat, xin tien ho tro mai tang can nhung gi | 1.001731,1.014028 | [answer/documents] ~khong dau. Debatable: hai thu tuc ho tro mai tang (doi tuong bao tro xa hoi / doi tuong huong tro cap huu tri xa hoi); chap nhan ca hai.
+- h5-021 | Bà ngoại em 82 tuổi có được nhận trợ cấp hưu trí xã hội không, điều kiện gì | 1.014027 | [answer/conditions] ~ke hoan canh.
+- h5-022 | dong cua quan roi muon cham dut ho kinh doanh thi lam sao | 1.001266 | [answer/documents] ~khong dau. Cham dut hoat dong ho kinh doanh.
+- h5-023 | tam nghi kinh doanh 6 thang roi mo lai som hon du kien thi thong bao the nao | 1.001570 | [answer/documents] ~khong dau. Tam ngung/tiep tuc kinh doanh truoc han cua ho kinh doanh.
+- h5-024 | mất giấy chứng nhận đăng ký hộ kinh doanh xin cấp lại cần giấy gì | 2.000575 | [answer/documents] Cap lai/cap doi GCN dang ky ho kinh doanh.
+- h5-025 | doi dia chi ho kinh doanh thi nop le phi bao nhieu | 2.000720 | [answer/fee] ~khong dau. Dang ky thay doi noi dung ho kinh doanh; le phi do HDND tinh.
+- h5-026 | xin giay phep xay nha cap 4 o nong thon phai nop ho so gi | 1.013225 | [answer/documents] ~khong dau. Cap GPXD moi nha o rieng le / cong trinh cap III, IV.
+- h5-027 | gia han giay phep xay dung can dieu kien gi | 1.013227 | [answer/conditions] ~khong dau. Gia han GPXD cong trinh cap III, IV.
+- h5-028 | dang ky khai thac nuoc gieng khoan o nha thi nop cho ai | 1.001662 | [answer/place] ~khong dau. Dang ky khai thac nuoc duoi dat - Chu tich UBND cap xa.
+- h5-029 | Xin tổ chức lễ hội ở thôn thì phải thông báo trước bao lâu | 1.003622 | [answer/time] Thong bao to chuc le hoi cap xa (15 ngay). Debatable: 1.013791 (dang ky le hoi quy mo cap xa) cung hop ly; chap nhan ca hai.
+- h5-030 | đăng ký sinh hoạt tôn giáo tập trung mất bao lâu thì có kết quả | 1.012590 | [answer/time] Dang ky sinh hoat ton giao tap trung (cap xa): 20 ngay.
+- h5-031 | nhóm em đổi người đại diện sinh hoạt tôn giáo thì làm thế nào | 1.012585 | [answer/documents] Dang ky thay doi nguoi dai dien nhom sinh hoat ton giao tap trung.
+- h5-032 | thon em muon xin cong nhan cau lac bo the duc the thao co so thi lam sao | 2.000794 | [answer/documents] ~khong dau. Cong nhan CLB TDTT co so.
+- h5-033 | em dang la hoa giai vien nhung gio muon xin thoi thi thu tuc the nao | 2.000930 | [answer/documents] ~khong dau. Thoi lam hoa giai vien (cap xa); khong nham voi cong nhan hoa giai vien.
+- h5-034 | hai nha tranh chap ranh gioi dat khong thoa thuan duoc nho chu tich xa giai quyet thi mat bao lau | 1.013967,1.012812 | [answer/time] ~khong dau, ke kieu. Debatable: giai quyet tranh chap thuoc tham quyen Chu tich UBND xa (1.013967) la chinh; hoa giai tranh chap dat dai (1.012812) chap nhan duoc.
+- h5-035 | so do nha em ghi sai ten chu ho muon dinh chinh lai thi can gi | 1.012796 | [answer/documents] ~khong dau. Dinh chinh Giay chung nhan da cap lan dau co sai sot.
+- h5-036 | dat o cua nha em duoc cap so truoc nam 2004, muon xac dinh lai dien tich dat o thi phai thoa dieu kien gi | 1.012817 | [answer/conditions] ~khong dau. Xac dinh lai dien tich dat o cua ho cap GCN truoc 01/7/2004.
+- h5-037 | nop le phi truoc ba nha dat o dau | 1.007277 | [answer/place] ~khong dau, cut. Khai le phi truoc ba nha, dat - Thue co so.
+- h5-038 | nhận thừa kế đất từ bố thì kê khai thuế thu nhập cá nhân như thế nào, cần giấy tờ gì | 1.007674 | [answer/documents] Khai thue TNCN voi chuyen nhuong BDS / nhan thua ke, qua tang la BDS.
+- h5-039 | ma so thue bi dong gio muon khoi phuc lai thi can nhung gi | 1.008510 | [answer/documents] ~khong dau. Khoi phuc ma so thue.
+- h5-040 | dang ky ma so thue cho con nho lam nguoi phu thuoc | 1.008498 | [answer/documents] ~cut, khong dau. Dang ky thue lan dau doi voi ca nhan, nguoi phu thuoc.
+- h5-041 | me liet si muon xin tro cap tho cung liet si thi ho so nhu the nao | 1.010803 | [answer/documents] ~khong dau. Tro cap tho cung liet si.
+- h5-042 | giay chung nhan nguoi co cong cua me em bi mat xin cap lai o dau | 1.010814 | [answer/documents] ~khong dau. Cap bo sung/cap lai giay chung nhan nguoi co cong. Fields co the them 'place'.
+- h5-043 | cuu chien binh mat roi nguoi nha xin mai tang phi thi nop o dau | 2.002307 | [answer/place] ~khong dau. Mai tang phi doi voi cuu chien binh - UBND cap xa.
+- h5-044 | con em hoc mau giao 5 tuoi nha thuoc dien ngheo co duoc ho tro an trua khong dieu kien the nao | 1.001622 | [answer/conditions] ~ke hoan canh. Ho tro an trua doi voi tre em mau giao.
+- h5-045 | xin mien giam hoc phi cho con dang hoc trung cap nghe thi nop gi | 1.014335 | [answer/documents] ~khong dau. Mien giam hoc phi co so GDNN.
+- h5-046 | dang ky nghia vu quan su lan dau cho con trai 17 tuoi can ho so gi | 1.013133 | [answer/documents] ~khong dau.
+- h5-047 | đổi bằng lái xe nước ngoài sang bằng Việt Nam phí bao nhiêu | 3.000351 | [answer/fee] Doi GPLX cua nguoi nuoc ngoai: 115.000d/lan. Fields: fee.
+- h5-048 | co dang ky xe may o cong an xa duoc khong | 1.115970 | [answer/place] ~khong dau. Dang ky xe/bien so: co thuc hien o Cong an cap xa.
+- h5-049 | dang ky bhxh tu nguyen cho me 55 tuoi o que | 1.002179 | [answer/documents] ~viet tat 'bhxh', khong dau. Dang ky dong BHXH tu nguyen; cap so BHXH.
+- h5-050 | rut BHXH 1 lan can nhung giay to gi | 1.001613 | [answer/documents] ~viet tat. Giai quyet huong BHXH mot lan.
+- h5-051 | dang ky cai nghien ma tuy tu nguyen ho so gom gi | 3.000527 | [answer/documents] ~khong dau.
+- h5-052 | dang ky giam ho cho chau mo coi cha me can giay to gi | 1.004837 | [answer/documents] ~khong dau. Dang ky giam ho trong nuoc.
+- h5-053 | mất giấy chứng nhận kết hôn muốn đăng ký lại thì thủ tục thế nào | 1.004746 | [answer/documents] Dang ky lai ket hon. Debatable: cung co the la 'cap ban sao trich luc' 2.000635 nhung cau noi 'dang ky lai'.
+- h5-054 | xac nhan thong tin cu tru o cong an xa mat bao lau | 1.010041 | [answer/time] ~khong dau.
+- h5-055 | mo quan karaoke can giay chung nhan an ninh trat tu thi nop o dau | 3.000243 | [answer/place] ~khong dau. Cap moi GCN du dieu kien ANTT (cap xa).
+- h5-056 | xin ho tro dao tao nghe cho lao dong nong thon dieu kien nhu the nao | 2.002821 | [answer/conditions] ~khong dau.
+- h5-057 | sinh con ma cha me chua dang ky ket hon thi khai sinh kieu gi | 1.000689,1.001193 | [answer/documents] ~khong dau. Khai sinh ket hop nhan cha me con (1.000689) la sat nhat; chap nhan 1.001193 (khai sinh thuong).
+- h5-058 | xin giấy phép xây nhà | 1.013225,1.013226,1.013227,1.013228,1.013229,1.013232,1.009122 | [clarify/conditions] Nhieu bien the GPXD (moi/dieu chinh/gia han/cap lai/sua chua/di doi/co thoi han). Cau qua chung.
+- h5-059 | lam giay phep lao dong cho nguoi nuoc ngoai | 1.014199,1.014200,1.014201,1.014196,1.014197,1.014198 | [clarify/documents] Cap moi / cap lai / gia han giay phep lao dong va giay xac nhan khong thuoc dien.
+- h5-060 | làm lại giấy tờ hộ tịch bị mất | 2.000635,1.004884,1.004746,1.005461 | [clarify/documents] Khong ro giay nao: ban sao trich luc, dang ky lai khai sinh/ket hon/khai tu.
+- h5-061 | dang ky thay doi ho kinh doanh | 2.000720,1.014034,1.001570,1.001266 | [clarify/documents] ~khong dau. 'Thay doi' mo ho: doi noi dung, cap nhat thong tin, tam ngung, cham dut.
+- h5-062 | khoa tai khoan vneid thi lam sao | 3.000283,3.000285 | [clarify/documents] ~khong dau. Khoa tai khoan dinh danh dien tu vs khoa can cuoc dien tu.
+- h5-063 | nha co nguoi mat xin ho tro tien mai tang | 1.001731,1.014028,2.002307,2.002308,1.010456,1.014359,3.000731 | [clarify/documents] ~khong dau. Rat nhieu thu tuc mai tang phi theo doi tuong.
+- h5-064 | thủ tục hỗ trợ hỏa táng ở xã | 1.012749,1.014036,1.012169,1.014582 | [clarify/conditions] Cac thu tuc ho tro hoa tang theo tinh/thanh pho khac nhau; chua biet dia phuong.
+- h5-065 | dang ky tam tru tam vang | 1.004194,1.003677,1.002755 | [clarify/documents] ~khong dau. Hai thu tuc khac nhau (tam tru vs tam vang) + gia han.
+- h5-066 | xin ho tro hoc tap cho con | 1.014336,1.014337,1.003702,1.014581,1.001622 | [clarify/conditions] Nhieu thu tuc ho tro chi phi hoc tap theo cap hoc / loai truong.
+- h5-067 | đăng ký hợp tác xã | 1.005280,2.002637,1.004979,1.005277 | [clarify/documents] Thanh lap HTX / to hop tac / thay doi noi dung.
+- h5-068 | xin ho tro phat trien san xuat | 1.012124,1.014023,1.014399,1.014772,1.011467,1.011468,1.012123,1.012253 | [clarify/conditions] ~khong dau. San xuat cong dong vs lien ket chuoi gia tri, nhieu chuong trinh.
+- h5-069 | đăng ký hoạt động tôn giáo | 1.012590,1.012585,1.012584,1.012582 | [clarify/documents] Dang ky moi / doi nguoi dai dien / doi dia diem.
+- h5-070 | xin chung thuc giay to | 2.000815,2.000884,2.001035,2.001016,2.001019,2.001406 | [clarify/documents] ~cut. Chung thuc ban sao / chu ky / hop dong giao dich / di chuc...
+- h5-071 | xin giay phep thi cong tren duong | 1.013061,1.009159,1.009161,1.009162,1.009163,1.009165 | [clarify/documents] ~khong dau. Nhieu loai giay phep thi cong (duong bo dang khai thac, cap nuoc, via he, dau noi...).
+- h5-072 | xin tro cap hang thang cho nguoi gia nguoi khuyet tat | 1.001776,1.014027,1.001699 | [clarify/documents] Tro cap xa hoi hang thang vs huu tri xa hoi vs xac dinh khuyet tat.
+- h5-073 | lam the bhyt | 1.001939,1.002051,1.002759,1.002179 | [clarify/documents] ~viet tat. Cap moi cho nguoi chi tham gia BHYT / dang ky dong BHXH-BHYT / cap lai doi.
+- h5-074 | nhận chăm sóc trẻ em thay thế | 1.004941,2.001944,1.004944,2.001942 | [clarify/documents] Dang ky / thong bao / cham dut / chuyen tre cham soc thay the.
+- h5-075 | nop thue khi mua ban nha dat | 1.007277,1.007674,1.007695 | [clarify/documents] Le phi truoc ba vs thue TNCN chuyen nhuong BDS vs thue su dung dat.
+- h5-076 | mới nghỉ việc muốn nhận bảo hiểm thất nghiệp thì nộp hồ sơ ở đâu | (khong co - apologize) | [apologize] DB khong co thu tuc bao hiem that nghiep.
+- h5-077 | muon thanh lap cong ty TNHH thi dang ky o dau | (khong co - apologize) | [apologize] ~khong dau. DB chi co ho kinh doanh va HTX, khong co dang ky cong ty TNHH.
+- h5-078 | con em muon di thi bang lai xe o to hang B thi dang ky o dau | (khong co - apologize) | [apologize] DB chi co doi GPLX quan su/nuoc ngoai, khong co thi/cap moi GPLX.
+- h5-079 | vo chong em muon ly hon thuan tinh thi nop don o dau | (khong co - apologize) | [apologize] DB chi co ghi so ly hon da giai quyet o nuoc ngoai (2.000554), khong co ly hon trong nuoc (toa an).
+- h5-080 | xin visa du lich Nhat Ban can ho so gi | (khong co - apologize) | [apologize] Ngoai pham vi: khong co thu tuc xin visa nuoc ngoai.
+- h5-081 | bang tot nghiep THPT cua em bi mat cap lai o dau | (khong co - apologize) | [apologize] DB khong co thu tuc cap lai bang tot nghiep.
+- h5-082 | xe oto nha em den han dang kiem thi lam sao | (khong co - apologize) | [apologize] DB khong co dang kiem phuong tien.
+- h5-083 | xin cap giay phep hanh nghe phong kham tu nhan | (khong co - apologize) | [apologize] DB khong co thu tuc cap phep hanh nghe y.
+- h5-084 | thủ tục nhập quốc tịch Việt Nam cho người nước ngoài | (khong co - apologize) | [apologize] DB khong co thu tuc quoc tich.
+- h5c-01.1 | dang ky ket hon can gi | 1.000894 | [answer/documents] ~khong dau. Ket hon -> dieu kien noi nop -> chuyen sang giay xac nhan tinh trang hon nhan.
+- h5c-01.2 | ben nu o tinh khac thi nop o xa ben nao | 1.000894 | [answer/conditions] (luot tiep)
+- h5c-01.3 | a ma em co can xin giay xac nhan tinh trang hon nhan truoc khong | 1.004873 | [answer/conditions] (luot tiep)
+- h5c-02.1 | khai tu cho ong ngoai can giay to gi | 1.000656 | [answer/documents] Doi thoai: khai tu -> xoa thuong tru (chuyen de) -> thoi gian (tham chieu cau truoc).
+- h5c-02.2 | roi xoa thuong tru luon thi sao | 1.003197 | [answer/documents] (luot tiep)
+- h5c-02.3 | cai do mat may ngay | 1.003197 | [answer/time] (luot tiep)
+- h5c-03.1 | tach ho can dieu kien gi | 1.010038 | [answer/conditions] Follow-up phi, roi hoi gio lam viec (ngoai du lieu DB).
+- h5c-03.2 | phi bao nhieu | 1.010038 | [answer/fee] (luot tiep)
+- h5c-03.3 | cam on nha, ma uy ban xa lam viec may gio vay | (khong co - apologize) | [apologize] (luot tiep)
+- h5c-04.1 | em ban hang online muon dang ky ho kinh doanh | 1.001612 | [answer/documents] Dang ky hkd -> phi -> chuyen sang cham dut hkd.
+- h5c-04.2 | le phi bao nhieu a | 1.001612 | [answer/fee] (luot tiep)
+- h5c-04.3 | gio muon dong cua luon thi sao | 1.001266 | [answer/documents] (luot tiep)
+- h5c-05.1 | lam giay phep lao dong cho nguoi nuoc ngoai | 1.014199,1.014200,1.014201,1.014196,1.014197,1.014198 | [clarify] Mo ho -> lam ro cap moi -> thoi gian.
+- h5c-05.2 | lan dau, cap moi cho ky su nguoi An Do | 1.014199 | [answer/documents] (luot tiep)
+- h5c-05.3 | bao lau thi co | 1.014199 | [answer/time] (luot tiep)
+- h5c-06.1 | ban dat cho em trai thi ke khai thue the nao | 1.007674 | [answer/documents] ~khong dau. Debatable cau 1: 'ban dat cho em trai' co the la chuyen nhuong (1.007674); 'tang cho' cung vao cung thu tuc.
+- h5c-06.2 | va le phi truoc ba nha dat | 1.007277 | [answer/documents] (luot tiep)
+- h5c-06.3 | nop o dau | 1.007277 | [answer/place] (luot tiep)
+- h5c-07.1 | lam the bhyt | 1.001939,1.002051,1.002759,1.002179 | [clarify] ~viet tat. Mo ho -> lam ro doi tuong chi tham gia BHYT -> thoi gian.
+- h5c-07.2 | minh khong di lam chi tham gia bhyt thoi | 1.001939 | [answer/documents] (luot tiep)
+- h5c-07.3 | mat bao lau | 1.001939 | [answer/time] (luot tiep)
+- h5c-08.1 | chung thuc di chuc can giay to gi | 2.001019 | [answer/documents] Di chuc -> phi -> chuyen chung thuc ban sao.
+- h5c-08.2 | phi bao nhieu | 2.001019 | [answer/fee] (luot tiep)
+- h5c-08.3 | con chung thuc ban sao cccd cung o do duoc ko | 2.000815 | [answer/conditions] (luot tiep)
+- h5c-09.1 | giay chung nhan nguoi co cong cua ba bi mat, xin cap lai | 1.010814 | [answer/documents] ~khong dau. Cap lai GCN nguoi co cong -> thoi gian -> chuyen de sang dang ky nghia vu quan su.
+- h5c-09.2 | bao lau co lai | 1.010814 | [answer/time] (luot tiep)
+- h5c-09.3 | thoi hoi cai khac, dang ky nghia vu quan su lan dau cho con trai the nao | 1.013133 | [answer/documents] (luot tiep)
+
+- pr3-01 | Chi oi em sinh con gai hom 20/9 o nha, chua dang ky gi het, hom nay moi di hoi, ho so khai sinh can gi vay chi, chong em dang di lam xa | 1.001193 | [answer/documents] ~khong dau, ke chuyen, cau hoi o cuoi.
+- pr3-02 | me chong mat hom qua ca nha dang roi, nghe noi phai bao tu roi cat luon thuong tru gi do, chi chi giup em lam cai gi truoc | 1.000656,1.003197 | [answer/documents] ~khong dau, nhieu y. Khai tu truoc, xoa thuong tru sau; chap nhan ca hai (neu ca hai duoc de cap la tot).
+- pr3-03 | e can giay xac nhan doc than di lam thu tuc ket hon, nhung e o sai gon ma ho khau que, nop xa nao a | 1.004873 | [answer/place] ~khong dau, teencode. Debatable: bien 'nop xa nao' - noi cu tru hien tai hoac noi dang ky thuong tru.
+- pr3-04 | tam tru moi chuyen vo tro thang truoc chu nha bao phai dk tam tru ko thi bi phat, dk phai mang theo gi + het bao nhieu tien | 1.004194 | [answer/documents+fee] ~viet tat dk, ko, nhieu y (giay to + phi).
+- pr3-05 | can cuoc cua e hu roi doi the moi mat ca tuan ko a | 1.116410 | [answer/time] ~teencode. Cap doi the can cuoc: 7 ngay lam viec.
+- pr3-06.1 | e muon mo quan tra sua thi dang ky gi | 1.001612 | [answer/documents] ~khong dau. Dang ky hkd -> thoi gian -> cham dut.
+- pr3-06.2 | ra giay mat bao lau thi duoc mo | 1.001612 | [answer/time] (luot tiep)
+- pr3-06.3 | sau nay nghi ban thi sao | 1.001266 | [answer/documents] (luot tiep)
+- pr3-07 | hom bua em lam mat cccd ben ben xe, gio em phai lam sao | 1.116410 | [answer/documents] ~ke chuyen, mat the -> cap lai the can cuoc.
+- pr3-08 | chu tich xa co giai quyet duoc vu lan chiem ranh gioi dat khong hay bat buoc len toa | 1.013967,1.012812 | [answer/conditions] ~khong dau. Debatable: tranh chap dat dai thuoc tham quyen Chu tich xa vs hoa giai tranh chap.
+- pr3-09 | ong noi 85 tuoi o que khong co luong huu co duoc tro cap gi ko | 1.014027 | [answer/conditions] ~khong dau, ke hoan canh. Tro cap huu tri xa hoi.
+- pr3-10 | con trai em hoc cao dang nghe nha thuoc dien can ngheo xin mien giam hoc phi can nop nhung gi | 1.014335 | [answer/documents] ~khong dau.
+- pr3-11 | chong em mat roi em muon linh tuat bhxh, ho so gom gi a | 2.000821 | [answer/documents] ~viet tat. Giai quyet huong che do tu tuat.
+- pr3-12.1 | lam the can cuoc cho con 5 tuoi | 1.116410 | [answer/documents] ~khong dau. Can cuoc tre em -> dieu kien -> chuyen sang dang ky thuong tru. Debatable luot 2: du lieu co the khong noi ro, chap nhan tra loi 'khong tim thay'.
+- pr3-12.2 | can bo hay me di cung con | 1.116410 | [answer/conditions] (luot tiep)
+- pr3-12.3 | a luon, dang ky thuong tru cho be thi sao | 1.004222 | [answer/documents] (luot tiep)
+- pr3-13 | sinh con duoc bao lau thi duoc nhan tien thai san, ho so ntn | 2.000693 | [answer/time+documents] ~viet tat 'ntn'. Che do thai san.
+- pr3-14 | mo quan karaoke ban dem co can giay chung nhan an ninh trat tu k, nop o cong an xa dc ko | 3.000243 | [answer/place] ~teencode. Cap moi GCN du dieu kien ANTT (thuc hien tai cap xa).
+- pr3-15 | diem game net cong cong thi dang ky o dau, can nhung giay to gi | 1.013792 | [answer/documents] ~khong dau. Cap GCN du dieu kien diem cung cap dich vu tro choi dien tu cong cong.
+- pr3-16 | nuoi heo bi dich chet het co duoc ho tro khong, dieu kien the nao | 1.013997 | [answer/conditions] ~khong dau. Ho tro co so san xuat bi thiet hai do dich benh dong vat.
+- pr3-17 | ho em tre han dong thue nha dat bi tinh tien cham nop, co truong hop nao khong bi tinh khong | 1.008589 | [answer/conditions] ~khong dau. Khong tinh tien cham nop. Debatable: 1.008590 (gia han nop thue) la thu tuc lien quan.
+- pr3-18.1 | tach ho phai sao | 1.010038 | [answer/conditions] ~khong dau, viet tat. Tach ho -> phi -> chuyen sang dieu chinh thong tin cu tru.
+- pr3-18.2 | phi bn | 1.010038 | [answer/fee] (luot tiep)
+- pr3-18.3 | tach xong ma sai thong tin cu tru thi dieu chinh the nao | 1.010039 | [answer/documents] (luot tiep)
+- pr3-19 | thue dat nong nghiep ho em khai o dau vay | 1.007695 | [answer/place] ~khong dau, cut. Khai thue su dung dat nong nghiep.
+- pr3-20 | em muon thi cong chuc o xa thi ho so gom gi | 1.014111,1.014113 | [answer/documents] ~khong dau. Thi tuyen vs xet tuyen cong chuc; chap nhan ca hai.
+- pr3-21 | mẹ em bị liệt, nhà muốn xin trợ cấp gì đó | 1.001699,1.001776,1.014027 | [clarify] Mo ho: xac dinh khuyet tat / tro cap xa hoi hang thang / huu tri xa hoi.
+- pr3-22 | nhà em muốn xây thêm tầng 2 có phải xin phép không | 1.013225,1.013229,1.013226 | [clarify/conditions] Cau dang yes/no nhung thu tuc (cap moi / sua chua cai tao / dieu chinh) chua ro.
+- pr3-23 | đất bà nội để lại chưa ai làm sổ giờ muốn làm sổ cho bố thì sao | 1.013978,1.115240,1.115375,2.001406,1.007674 | [clarify] Dat chua cap so + thua ke: dang ky lan dau / chung thuc phan chia di san / thue. Rat mo.
+- pr3-24 | lam giay to cho be sinh ra o nuoc ngoai | 2.000528,2.000522,1.000893,1.000110 | [clarify] ~khong dau. Khai sinh co yeu to nuoc ngoai: nhieu bien the.
+- pr3-25 | dang ky giay phep kinh doanh | 1.001612,1.005280,2.002637 | [clarify] ~khong dau. Ho kinh doanh vs hop tac xa vs to hop tac.
+- pr3-26 | tau ca nha em ban gia roi hoi co ho tro gi ko | 1.014599,1.014925,1.115156,3.000580,1.014604,1.014971 | [clarify] ~khong dau, teencode. Nhieu thu tuc ho tro giai ban tau ca / chuyen doi nghe.
+- pr3-27 | em mat bang lai xe may roi cap lai o dau vay | (khong co - apologize) | [apologize] ~khong dau. DB khong co cap lai GPLX (chi doi GPLX quan su/nuoc ngoai).
+- pr3-28 | tui muon ly hon don phuong, nop don o dau | (khong co - apologize) | [apologize] ~teencode. Ly hon trong nuoc thuoc toa an, khong co trong DB.
+- pr3-29 | hoi nha em o que, ba ma sinh em ra khong lam khai sinh, giay to gi cung khong con, gio 30 tuoi can lam giay khai sinh thi co duoc ko a | 1.004772,1.004884 | [answer/documents] ~khong dau, ke chuyen. Khai sinh cho nguoi da co ho so/giay to ca nhan (1.004772) hoac dang ky lai khai sinh (1.004884); debatable, chap nhan ca hai.
+- pr3-30 | co xin ban sao giay khai sinh online duoc ko, mat may ngay | 2.000635 | [answer/time] ~teencode. Cap ban sao trich luc ho tich/giay khai sinh.
