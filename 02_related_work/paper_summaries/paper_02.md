@@ -1,54 +1,41 @@
-# Paper 02 Summary: GovAI-Pipe: A Layered AI Governance Pipeline for Citizen-Facing AI in Turkey's e-Government Gateway
+# Paper 02 Summary
 
 ## Citation
-- **Tên bài báo:** GovAI-Pipe: A Layered AI Governance Pipeline for Citizen-Facing AI in Turkey's e-Government Gateway
-- **Tác giả:** Ahmet Kaplan
-- **Năm xuất bản:** 2026
-- **Nguồn / Hội nghị:** *GovTech Journal / arXiv*
-- **Phân loại tiêu chí:** `Liên quan trực tiếp (Legal QA / E-Gov)`
 
----
+Tên bài: Integrating Information Retrieval and Large Language Models for Vietnamese Legal Document Query Systems
+Tác giả: Pham Thi Xuan Hien, Duong Ngoc Thao Nhi, Pham Thi Ngoc Huyen
+Năm: 2025
+Nguồn: Proceedings of IC3K 2025 - KMIS Track, SCITEPRESS
+DOI/Link: https://doi.org/10.5220/0013751200004000
 
 ## Problem
-Bài báo giải quyết vấn đề cốt lõi trong lĩnh vực E-Government National Portals: Khi người dùng tương tác với hệ thống, các giải pháp truyền thống thường gặp khó khăn về độ chính xác, tính bảo mật dữ liệu, hiện tượng trôi ngữ nghĩa hoặc rào cản ngôn ngữ địa phương.
 
----
+Hệ thống văn bản pháp quy Việt Nam có tính đa tầng phức tạp (Luật, Nghị định, Thông tư), khiến người dân mất nhiều thời gian tra cứu và dễ hiểu sai quy định.
 
 ## Method
-- **Phương pháp / Mô hình:** 4-Layer Governance Pipeline (Pre-retrieval Scope to Post-generation Audit)
-- **Kiến trúc kỹ thuật:** Tích hợp mô-đun xử lý chuyên sâu, kết hợp các thành phần tiền xử lý, trích xuất đặc trưng có cấu trúc và kiểm soát đầu ra nghiêm ngặt.
 
----
+Xây dựng hệ thống RAG phân cấp liên kết giữa Luật gốc và các Nghị định, Thông tư hướng dẫn thi hành, trích xuất điều khoản có căn cứ rõ ràng.
 
 ## Dataset
-- **Dữ liệu sử dụng:** 1.500 dịch vụ công quốc gia e-Devlet
-- **Đặc điểm:** Ngữ liệu thực tế, chuẩn hóa và phản ánh đúng bài toán nghiệp vụ chuyên ngành.
 
----
+45.000 văn bản pháp luật Việt Nam & 350.000 cặp hỏi-đáp pháp lý
 
 ## Evaluation
-- **Chỉ số đánh giá:** Policy Compliance Rate (94.6%), Risk Mitigation Rate
-- **Đối sánh:** So sánh với các mô hình baseline truyền thống và mô hình ngôn ngữ chưa được tinh chỉnh chuyên biệt.
 
----
+Accuracy (89%), Latency Reduction (-58%), User Satisfaction (4.23/5)
 
 ## Results
-- **Kết quả chính:** Định hình các cổng kiểm soát phạm vi (Scope Gates) và kiểm tra tuân thủ trước khi trả lời công dân
-- Cải thiện vượt bậc về độ chính xác trích xuất, giảm thiểu đáng kể lỗi sai lệch thực tế và tối ưu hóa tài nguyên phần cứng.
 
----
+Giảm 58% thời gian xử lý so với tra cứu thủ công và đạt độ chính xác 89% trên 12 nhóm lĩnh vực pháp luật tại Việt Nam.
 
 ## Limitations
-- Một số trường hợp câu hỏi quá dài hoặc câu hỏi đa ý phức tạp vẫn đòi hỏi phân rã trung gian.
-- Chi phí tính toán có thể tăng nếu không có cơ chế phân luồng thông minh.
 
----
+Chưa xử lý đàm thoại đa lượt (multi-turn) và chưa có cơ chế cô lập trạng thái khi người dùng làm rõ câu hỏi.
 
-## Relevance to our topic (Sys_3_4)
-- **Mức độ liên quan:** `DIRECT` - Cơ sở thiết kế Macro Scope Intent và các bộ lọc từ chối câu hỏi ngoài phạm vi (OOS) trong Sys_3_4
-- Đóng góp trực tiếp vào luận chứng khoa học và thiết kế kiến trúc của trợ lý AI pháp lý Sys_3_4.
+## Relevance to our topic
 
----
+Nghiên cứu trực tiếp gần nhất về hỏi đáp văn bản quy phạm pháp luật tại Việt Nam, cung cấp bài học về trích xuất điều khoản văn bản.
 
-## Possible improvement in Sys_3_4
-- Sys_3_4 kết hợp phương pháp này vào kiến trúc kép **Dual-Engine (Strict + Friendly)**, bổ sung cơ chế cô lập trạng thái hỏi lại (*Clarify State Isolation*) và lớp kiểm chứng hậu kỳ tất định (*Post-hoc Verifier*) để đạt độ chính xác số liệu tuyệt đối (0% ảo giác).
+## Possible improvement
+
+Sys_3_4 kế thừa việc chia cắt dữ liệu theo tầng và phát triển thêm bộ nhớ ngữ cảnh đa lượt ConvState có cô lập trạng thái hỏi lại.

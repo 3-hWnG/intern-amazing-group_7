@@ -1,54 +1,41 @@
-# Paper 01 Summary: GuidaPA: Privacy-Preserving Chatbot for Public Administration via Federated Learning
+# Paper 01 Summary
 
 ## Citation
-- **Tên bài báo:** GuidaPA: Privacy-Preserving Chatbot for Public Administration via Federated Learning
-- **Tác giả:** Jimenez-Gutierrez et al.
-- **Năm xuất bản:** 2026
-- **Nguồn / Hội nghị:** *IEEE Trans. on E-Government*
-- **Phân loại tiêu chí:** `Liên quan trực tiếp (Legal QA / E-Gov)`
 
----
+Tên bài: ViGPTQA: State-of-the-Art LLMs for Vietnamese Question Answering
+Tác giả: Minh-Thuan Nguyen, Khanh-Tung Tran, Vincent Nguyen, Xuan-Son Vu
+Năm: 2023
+Nguồn: Proceedings of EMNLP 2023 (Industry Track)
+DOI/Link: https://aclanthology.org/2023.emnlp-industry.71/
 
 ## Problem
-Bài báo giải quyết vấn đề cốt lõi trong lĩnh vực E-Government / Municipal Admin: Khi người dùng tương tác với hệ thống, các giải pháp truyền thống thường gặp khó khăn về độ chính xác, tính bảo mật dữ liệu, hiện tượng trôi ngữ nghĩa hoặc rào cản ngôn ngữ địa phương.
 
----
+Các mô hình ngôn ngữ lớn đa ngôn ngữ thường thiếu dữ liệu chuẩn cho tiếng Việt, dẫn đến hiểu sai thuật ngữ pháp lý và văn phong hành chính công tại Việt Nam.
 
 ## Method
-- **Phương pháp / Mô hình:** Federated Learning + 4-bit QLoRA on On-Premise Servers
-- **Kiến trúc kỹ thuật:** Tích hợp mô-đun xử lý chuyên sâu, kết hợp các thành phần tiền xử lý, trích xuất đặc trưng có cấu trúc và kiểm soát đầu ra nghiêm ngặt.
 
----
+Đề xuất kiến trúc ViGPTQA kết hợp mô hình nền tảng ViGPT được tinh chỉnh chỉ dẫn chuyên sâu cho tiếng Việt với cơ chế trích xuất ngữ cảnh nghiệp vụ hành chính.
 
 ## Dataset
-- **Dữ liệu sử dụng:** SIGESON & SIDFORS Municipal Guidelines
-- **Đặc điểm:** Ngữ liệu thực tế, chuẩn hóa và phản ánh đúng bài toán nghiệp vụ chuyên ngành.
 
----
+Bộ Benchmark Hỏi - Đáp Pháp lý & Hành chính tiếng Việt
 
 ## Evaluation
-- **Chỉ số đánh giá:** ROUGE-1 (61.1%), BLEU-4 (45.0%), METEOR (63.9%)
-- **Đối sánh:** So sánh với các mô hình baseline truyền thống và mô hình ngôn ngữ chưa được tinh chỉnh chuyên biệt.
 
----
+Exact Match, F1-Score, Human Evaluation
 
 ## Results
-- **Kết quả chính:** Bảo vệ dữ liệu công dân bằng cách giữ mô hình và dữ liệu xử lý tại chỗ (On-premise)
-- Cải thiện vượt bậc về độ chính xác trích xuất, giảm thiểu đáng kể lỗi sai lệch thực tế và tối ưu hóa tài nguyên phần cứng.
 
----
+ViGPT đạt độ chính xác vượt trội so với các baseline mã nguồn mở cùng kích thước trên các bài toán hỏi đáp pháp lý và hành chính công tiếng Việt.
 
 ## Limitations
-- Một số trường hợp câu hỏi quá dài hoặc câu hỏi đa ý phức tạp vẫn đòi hỏi phân rã trung gian.
-- Chi phí tính toán có thể tăng nếu không có cơ chế phân luồng thông minh.
 
----
+Chưa tích hợp cơ chế kiểm chứng số liệu thời gian thực (post-hoc verification) để chống ảo giác số liệu tài chính.
 
-## Relevance to our topic (Sys_3_4)
-- **Mức độ liên quan:** `DIRECT` - Củng cố quyết định kỹ thuật của Sys_3_4: Chạy hoàn toàn cục bộ bằng Ollama/vLLM, không gửi dữ liệu ra bên ngoài
-- Đóng góp trực tiếp vào luận chứng khoa học và thiết kế kiến trúc của trợ lý AI pháp lý Sys_3_4.
+## Relevance to our topic
 
----
+Bài báo nền tảng khẳng định mô hình trợ lý phải tối ưu hóa năng lực ngôn ngữ tiếng Việt bản địa thay vì dùng dịch máy tiếng Anh; định hướng việc chọn Qwen2.5 trong Sys_3_4.
 
-## Possible improvement in Sys_3_4
-- Sys_3_4 kết hợp phương pháp này vào kiến trúc kép **Dual-Engine (Strict + Friendly)**, bổ sung cơ chế cô lập trạng thái hỏi lại (*Clarify State Isolation*) và lớp kiểm chứng hậu kỳ tất định (*Post-hoc Verifier*) để đạt độ chính xác số liệu tuyệt đối (0% ảo giác).
+## Possible improvement
+
+Sys_3_4 bổ sung cơ chế kiểm chứng tất định verify_point và kiểm soát ngân sách trích dẫn để đảm bảo 0% ảo giác số tiền lệ phí.

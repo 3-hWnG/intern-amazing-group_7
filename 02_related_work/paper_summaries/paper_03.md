@@ -1,54 +1,41 @@
-# Paper 03 Summary: From Values to Benchmarks: Evaluating Large Language Models for Governmental Use in Dutch
+# Paper 03 Summary
 
 ## Citation
-- **Tên bài báo:** From Values to Benchmarks: Evaluating Large Language Models for Governmental Use in Dutch
-- **Tác giả:** Samson et al. (City of Amsterdam & TNO)
-- **Năm xuất bản:** 2026
-- **Nguồn / Hội nghị:** *ACM FAccT / GovAI*
-- **Phân loại tiêu chí:** `Domain Ứng dụng & Quản trị công`
 
----
+Tên bài: Legal Documents Query Application for Vietnamese Law Using LLM and RAG Techniques
+Tác giả: Ngô Tuấn Anh, Nguyễn Việt Hoàng, Ngô Thanh Tùng, Doãn Trung Tùng
+Năm: 2025
+Nguồn: The 10th International Conference on Intelligent Information Technology (ICIIT 2025)
+DOI/Link: https://doi.org/10.1145/iciit.2025
 
 ## Problem
-Bài báo giải quyết vấn đề cốt lõi trong lĩnh vực Municipal Governance & Civic Services: Khi người dùng tương tác với hệ thống, các giải pháp truyền thống thường gặp khó khăn về độ chính xác, tính bảo mật dữ liệu, hiện tượng trôi ngữ nghĩa hoặc rào cản ngôn ngữ địa phương.
 
----
+Phân chia đoạn văn bản theo độ dài token cố định làm đứt gãy ngữ cảnh của các điều khoản luật, dẫn đến việc mô hình trích dẫn thiếu căn cứ hoặc sai hiệu lực văn bản.
 
 ## Method
-- **Phương pháp / Mô hình:** Multi-Criteria Public Sector Evaluation Protocol
-- **Kiến trúc kỹ thuật:** Tích hợp mô-đun xử lý chuyên sâu, kết hợp các thành phần tiền xử lý, trích xuất đặc trưng có cấu trúc và kiểm soát đầu ra nghiêm ngặt.
 
----
+Phân chia chunk theo đúng cấu trúc Điều - Khoản - Điểm và làm giàu metadata về ngày ban hành, cơ quan ban hành và tình trạng hiệu lực văn bản.
 
 ## Dataset
-- **Dữ liệu sử dụng:** 1.200 câu hỏi hành chính đô thị Amsterdam
-- **Đặc điểm:** Ngữ liệu thực tế, chuẩn hóa và phản ánh đúng bài toán nghiệp vụ chuyên ngành.
 
----
+Bộ văn bản quy phạm pháp luật Việt Nam
 
 ## Evaluation
-- **Chỉ số đánh giá:** Regulatory Error Rate (38.2% on standard models)
-- **Đối sánh:** So sánh với các mô hình baseline truyền thống và mô hình ngôn ngữ chưa được tinh chỉnh chuyên biệt.
 
----
+Precision, Recall, Hallucination Reduction Rate
 
 ## Results
-- **Kết quả chính:** Chỉ ra sự thất bại nghiêm trọng của các mô hình thương mại chung trên quy tắc hành chính địa phương
-- Cải thiện vượt bậc về độ chính xác trích xuất, giảm thiểu đáng kể lỗi sai lệch thực tế và tối ưu hóa tài nguyên phần cứng.
 
----
+Cải thiện đáng kể độ chính xác truy xuất và loại bỏ hiện tượng mô hình dẫn chiếu văn bản đã hết hiệu lực thi hành.
 
 ## Limitations
-- Một số trường hợp câu hỏi quá dài hoặc câu hỏi đa ý phức tạp vẫn đòi hỏi phân rã trung gian.
-- Chi phí tính toán có thể tăng nếu không có cơ chế phân luồng thông minh.
 
----
+Chưa tối ưu hóa cho các câu hỏi sử dụng từ ngữ đời thường, tiếng lóng, gõ không dấu của người dân.
 
-## Relevance to our topic (Sys_3_4)
-- **Mức độ liên quan:** `DOMAIN` - Khẳng định sự cần thiết của hệ thống chuyên biệt cấp xã/phường Sys_3_4 tại Việt Nam
-- Đóng góp trực tiếp vào luận chứng khoa học và thiết kế kiến trúc của trợ lý AI pháp lý Sys_3_4.
+## Relevance to our topic
 
----
+Minh chứng khoa học cho phương pháp cắt lớp dữ liệu theo trường nghiệp vụ (field_chunks) trong Sys_3_4.
 
-## Possible improvement in Sys_3_4
-- Sys_3_4 kết hợp phương pháp này vào kiến trúc kép **Dual-Engine (Strict + Friendly)**, bổ sung cơ chế cô lập trạng thái hỏi lại (*Clarify State Isolation*) và lớp kiểm chứng hậu kỳ tất định (*Post-hoc Verifier*) để đạt độ chính xác số liệu tuyệt đối (0% ảo giác).
+## Possible improvement
+
+Sys_3_4 kết hợp phân đoạn có cấu trúc với bộ chuẩn hóa gập dấu âm tiết và tách từ dính (unglue) để phục vụ tốt ngôn ngữ đời thường.

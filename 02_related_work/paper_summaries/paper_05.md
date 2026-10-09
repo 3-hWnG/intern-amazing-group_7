@@ -1,54 +1,41 @@
-# Paper 05 Summary: LegalCheck: Retrieval- and Context-Augmented Generation for Drafting Municipal Legal Advice Letters
+# Paper 05 Summary
 
 ## Citation
-- **Tên bài báo:** LegalCheck: Retrieval- and Context-Augmented Generation for Drafting Municipal Legal Advice Letters
-- **Tác giả:** van der Meer & Rossi
-- **Năm xuất bản:** 2026
-- **Nguồn / Hội nghị:** *ICAIL 2026 (AI & Law)*
-- **Phân loại tiêu chí:** `Liên quan trực tiếp (Legal QA / E-Gov)`
 
----
+Tên bài: GuidaPA: Privacy-Preserving Chatbot for Public Administration via Federated Learning
+Tác giả: Jimenez-Gutierrez et al.
+Năm: 2026
+Nguồn: IEEE Transactions on E-Government
+DOI/Link: https://doi.org/10.1109/TEGOV.2026.01386
 
 ## Problem
-Bài báo giải quyết vấn đề cốt lõi trong lĩnh vực Municipal Public Admin (Amsterdam): Khi người dùng tương tác với hệ thống, các giải pháp truyền thống thường gặp khó khăn về độ chính xác, tính bảo mật dữ liệu, hiện tượng trôi ngữ nghĩa hoặc rào cản ngôn ngữ địa phương.
 
----
+Cơ quan hành chính công không thể gửi dữ liệu người dân lên các API đám mây thương mại vì rủi ro lộ lọt thông tin định danh cá nhân (PII).
 
 ## Method
-- **Phương pháp / Mô hình:** Context-Augmented Generation + Clause Grounding Verification
-- **Kiến trúc kỹ thuật:** Tích hợp mô-đun xử lý chuyên sâu, kết hợp các thành phần tiền xử lý, trích xuất đặc trưng có cấu trúc và kiểm soát đầu ra nghiêm ngặt.
 
----
+Huấn luyện liên kết phân tán bảo vệ quyền riêng tư qua 15 vòng truyền thông, chạy mô hình cục bộ trên máy chủ đô thị.
 
 ## Dataset
-- **Dữ liệu sử dụng:** 184 hồ sơ pháp lý thực tế tại Amsterdam
-- **Đặc điểm:** Ngữ liệu thực tế, chuẩn hóa và phản ánh đúng bài toán nghiệp vụ chuyên ngành.
 
----
+SIGESON & SIDFORS Municipal Guidelines
 
 ## Evaluation
-- **Chỉ số đánh giá:** Clause Precision (81.3%), Faithfulness (84.1%)
-- **Đối sánh:** So sánh với các mô hình baseline truyền thống và mô hình ngôn ngữ chưa được tinh chỉnh chuyên biệt.
 
----
+ROUGE-1 (61.10%), BLEU-4 (45.02%), METEOR (63.94%)
 
 ## Results
-- **Kết quả chính:** Cơ chế kiểm chứng điều khoản pháp luật, chống trích dẫn sai luật
-- Cải thiện vượt bậc về độ chính xác trích xuất, giảm thiểu đáng kể lỗi sai lệch thực tế và tối ưu hóa tài nguyên phần cứng.
 
----
+Đạt chất lượng phản hồi xấp xỉ mô hình tập trung trong khi dữ liệu không bao giờ rời khỏi máy chủ địa phương.
 
 ## Limitations
-- Một số trường hợp câu hỏi quá dài hoặc câu hỏi đa ý phức tạp vẫn đòi hỏi phân rã trung gian.
-- Chi phí tính toán có thể tăng nếu không có cơ chế phân luồng thông minh.
 
----
+Bộ dữ liệu còn nhỏ (39 trang) và chưa đánh giá độ chính xác số liệu tài chính.
 
-## Relevance to our topic (Sys_3_4)
-- **Mức độ liên quan:** `DIRECT` - Nền tảng cho thiết kế bộ kiểm chứng hậu kỳ `verify_point` trong Sys_3_4
-- Đóng góp trực tiếp vào luận chứng khoa học và thiết kế kiến trúc của trợ lý AI pháp lý Sys_3_4.
+## Relevance to our topic
 
----
+Cơ sở lý luận bảo vệ kiến trúc vận hành 100% on-premise của Sys_3_4 qua Ollama/vLLM.
 
-## Possible improvement in Sys_3_4
-- Sys_3_4 kết hợp phương pháp này vào kiến trúc kép **Dual-Engine (Strict + Friendly)**, bổ sung cơ chế cô lập trạng thái hỏi lại (*Clarify State Isolation*) và lớp kiểm chứng hậu kỳ tất định (*Post-hoc Verifier*) để đạt độ chính xác số liệu tuyệt đối (0% ảo giác).
+## Possible improvement
+
+Sys_3_4 triển khai mô hình SLM chạy hoàn toàn cục bộ, kết hợp cơ chế che giấu PII trong log trace.
