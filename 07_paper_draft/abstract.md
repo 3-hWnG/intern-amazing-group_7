@@ -1,0 +1,12 @@
+# Abstract
+
+Public administration in Vietnam is undergoing rapid national digital transformation under governmental directives such as Project 06. However, ordinary citizens encounter substantial barriers when navigating grassroots-level administrative procedures (commune and ward levels). These difficulties arise from complex statutory language, multi-tiered regulatory decrees, and colloquial citizen queries characterized by shorthand, unaccented typing, multi-intent requests, and personal demographic conditions. General-purpose Large Language Models (LLMs) frequently exhibit hallucinations regarding administrative fees and statutory processing deadlines, succumb to prompt injection attacks, and lose context across extended multi-turn dialogues.
+
+This paper presents **Sys_3_4**, an enterprise-grade, domain-adaptable legal artificial intelligence assistant that unifies a deterministic, zero-hallucination **Strict Engine (System 3)** with a conversational, domain-flexible **Friendly Engine (System 4)**. **Sys_3_4** resolves multi-turn conversational degradation via:
+1. A deterministic dialogue state machine equipped with *Clarify State Isolation* that eliminates phantom procedure contamination during disambiguation turns;
+2. A colloquial demographic condition extractor tailored to Vietnamese phrasing;
+3. A vector-based Semantic Cache (GPTCache) on Redis;
+4. A dynamic query complexity router (RouteLLM); and
+5. A paged memory serving engine using PagedAttention (vLLM).
+
+We report comprehensive, unembellished empirical evaluations across both controlled developmental suites and unseen blind test sets. On the official blind evaluation suite (**HOLDOUT-4**, 90 items / 106 dialogue turns), **Sys_3_4** attains a **75.3% Top-1 retrieval accuracy** (58/77) and **82.1% behavioral accuracy** (87/106), compared to only 10.6% Top-1 and 31.9% behavioral accuracy in the initial system baseline. On the controlled developmental benchmark (DEV, 209 cases), it achieves **96.3% Top-1** and **97.6% behavioral accuracy** with **0.0% numerical hallucination**. On real-world municipal cases (10 team test queries), the system scores **7/10 PASS**, with failures transparently attributed to portal snapshot data omissions. Operating in pure deterministic rule mode, **Sys_3_4** delivers a median latency of **20--33 ms** (p95 of 49--80 ms) on consumer edge hardware, demonstrating that deterministic RAG with disciplined context isolation outperforms over-parameterized LLM planning for public service delivery.

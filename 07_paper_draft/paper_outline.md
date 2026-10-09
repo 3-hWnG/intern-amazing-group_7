@@ -1,0 +1,35 @@
+# Paper Outline
+
+- **Title:** Sys_3_4: An Enterprise Context-Aware and Dual-Engine Legal AI Assistant for Vietnamese Public Administration
+- **Abstract**
+- **1. Introduction**
+  - 1.1 Public Administration Transformation in Vietnam
+  - 1.2 Core Technical Challenges in Civic Legal QA
+  - 1.3 Key Contributions
+- **2. Related Work**
+  - 2.1 E-Government Chatbots & Public Administration AI
+  - 2.2 Legal RAG and Statutory Query Systems
+  - 2.3 Fact-Checking, Grounding, and Hallucination Verification
+  - 2.4 Hybrid Sparse-Dense Retrieval
+  - 2.5 Local SLMs and Edge Computing
+- **3. Proposed System Architecture (Sys_3_4)**
+  - 3.1 Dual-Engine Decoupling (Strict vs. Friendly)
+  - 3.2 Syllable-Level IDF with Accent Mismatch Penalties
+  - 3.3 Multi-Turn Context Tracking with Clarify State Isolation
+  - 3.4 Hybrid Retrieval with RRF and Cross-Encoder Reranking
+  - 3.5 Deterministic Post-Hoc Fact-Checking Verifier
+- **4. Experimental Methodology**
+  - 4.1 Dataset Construction & Benchmark Splits
+  - 4.2 Baseline Models
+  - 4.3 Evaluation Metrics
+- **5. Results and Empirical Analysis**
+  - 5.1 Retrieval and Behavioral Accuracy
+  - 5.2 Multi-Turn Context Resolution Evaluation
+  - 5.3 Factuality and Zero-Hallucination Verification
+  - 5.4 Latency and Resource Consumption Profiling
+- **6. Discussion, Limitations, and Future Work**
+  - 6.1 Practical Lessons in Public Sector AI
+  - 6.2 Limitations of Portal Snapshot Data
+  - 6.3 Future Work
+- **7. Conclusion**
+- **References**
