@@ -1,0 +1,92 @@
+{"id": "p26-a-01", "group": "a", "question": "Cho hỏi thủ tục đăng ký đóng bảo hiểm", "profile": {"user_type": "business"}, "expected": {"note": "pick", "acceptable": ["1.002051"]}}
+{"id": "p26-a-02", "group": "a", "question": "Cho hỏi thủ tục đăng ký đóng bảo hiểm", "profile": {"mcq_subject": "Hợp tác xã"}, "expected": {"note": "pick", "acceptable": ["1.002051"]}}
+{"id": "p26-a-03", "group": "a", "question": "thủ tục khám chữa bệnh bảo hiểm y tế", "profile": {"user_type": "citizen"}, "expected": {"note": "pick", "acceptable": ["1.014193"]}}
+{"id": "p26-a-04", "group": "a", "question": "Khám bệnh chữa bệnh bằng thẻ bảo hiểm y tế làm sao", "profile": {"user_type": "citizen"}, "expected": {"note": "pick", "acceptable": ["1.014193"]}}
+{"id": "p26-a-05", "group": "a", "question": "Cấp giấy chứng nhận quyền sử dụng đất", "profile": {"user_type": "business"}, "expected": {"note": "pick", "acceptable": ["1.012753"]}}
+{"id": "p26-a-06", "group": "a", "question": "cấp giấy chứng nhận quyền sử dụng đất cần giấy tờ gì", "profile": {"user_type": "business"}, "expected": {"note": "pick", "acceptable": ["1.012753"]}}
+{"id": "p26-a-07", "group": "a", "question": "phê duyệt dự án", "profile": {"user_type": "business"}, "expected": {"note": "pick", "acceptable": ["1.014736"]}}
+{"id": "p26-a-08", "group": "a", "question": "phê duyệt dự án", "profile": {"mcq_subject": "Hợp tác xã"}, "expected": {"note": "pick", "acceptable": ["1.014736"]}}
+{"id": "p26-a-09", "group": "a", "question": "Cấp gia hạn giấy phép", "profile": {"mcq_subject": "Hợp tác xã"}, "expected": {"note": "pick", "acceptable": ["1.014198"]}}
+{"id": "p26-a-10", "group": "a", "question": "gia hạn giấy phép", "profile": {"user_type": "citizen"}, "expected": {"note": "pick", "acceptable": ["1.013227"]}}
+{"id": "p26-a-11", "group": "a", "question": "Thủ tục đăng ký đất đai tài sản gắn liền với đất lần đầu", "profile": {"user_type": "citizen"}, "expected": {"note": "shrink", "acceptable": ["1.115373", "1.013978"]}}
+{"id": "p26-a-12", "group": "a", "question": "Thủ tục đăng ký đất đai tài sản gắn liền với đất lần đầu", "profile": {"user_type": "business"}, "expected": {"note": "shrink", "acceptable": ["1.115375", "1.012753"]}}
+{"id": "p26-a-13", "group": "a", "question": "Thủ tục đăng ký đất đai tài sản gắn liền với đất lần đầu", "profile": {"mcq_subject": "Tổ chức (không bao gồm doanh nghiệp, HTX)"}, "expected": {"note": "shrink", "acceptable": ["1.115375", "1.012753", "1.115894"]}}
+{"id": "p26-a-14", "group": "a", "question": "thủ tục nhập cảnh xuất cảnh", "profile": {"mcq_subject": "Hợp tác xã"}, "expected": {"note": "shrink", "acceptable": ["1.013586", "1.013585"]}}
+{"id": "p26-a-15", "group": "a", "question": "thủ tục nhập cảnh xuất cảnh", "profile": {"user_type": "business"}, "expected": {"note": "shrink", "acceptable": ["1.013569", "1.013586", "1.013585"]}}
+{"id": "p26-a-16", "group": "a", "question": "Giải quyết hưởng chế độ tai nạn lao động", "profile": {"user_type": "citizen"}, "expected": {"note": "shrink", "acceptable": ["1.001521", "1.001632", "1.001643"]}}
+{"id": "p26-a-17", "group": "a", "question": "Giải quyết hưởng chế độ tai nạn lao động", "profile": {"user_type": "business"}, "expected": {"note": "shrink", "acceptable": ["1.001632", "1.001643", "1.001667"]}}
+{"id": "p26-a-18", "group": "a", "question": "gia hạn sử dụng đất khi hết thời hạn", "profile": {"user_type": "business"}, "expected": {"note": "shrink", "acceptable": ["1.115379", "1.116109"]}}
+{"id": "p26-a-19", "group": "a", "question": "gia hạn sử dụng đất khi hết thời hạn", "profile": {"mcq_subject": "Hợp tác xã"}, "expected": {"note": "shrink", "acceptable": ["1.115379", "1.116109"]}}
+{"id": "p26-a-20", "group": "a", "question": "Đăng ký, cấp Giấy chứng nhận đối với trường hợp hộ gia đình đã được cấp giấy chứng nhận một phần diện tích", "profile": {"user_type": "citizen"}, "expected": {"note": "shrink", "acceptable": ["1.115210", "1.115514"]}}
+{"id": "p26-a-21", "group": "a", "question": "gia hạn giấy phép", "profile": {"mcq_subject": "Hợp tác xã"}, "expected": {"note": "shrink", "acceptable": ["1.014201", "1.014198"]}}
+{"id": "p26-a-22", "group": "a", "question": "phê duyệt dự án", "profile": {"user_type": "citizen"}, "expected": {"note": "shrink", "acceptable": ["1.012536", "1.014737", "1.014594", "1.014592"]}}
+{"id": "p26-a-23", "group": "a", "question": "phê duyệt dự án", "profile": {"mcq_subject": "Tổ chức (không bao gồm doanh nghiệp, HTX)"}, "expected": {"note": "shrink", "acceptable": ["1.012536", "1.014474", "1.014737"]}}
+{"id": "p26-a-24", "group": "a", "question": "thủ tục khám chữa bệnh bảo hiểm y tế", "profile": {"user_type": "business"}, "expected": {"note": "shrink", "acceptable": ["1.001798", "1.116466"]}}
+{"id": "p26-a-25", "group": "a", "question": "thủ tục khám chữa bệnh bảo hiểm y tế", "profile": {"mcq_subject": "Tổ chức (không bao gồm doanh nghiệp, HTX)"}, "expected": {"note": "shrink", "acceptable": ["1.001798", "1.116466"]}}
+{"id": "p26-a-26", "group": "a", "question": "Cấp giấy chứng nhận quyền sử dụng đất", "profile": {"user_type": "citizen"}, "expected": {"note": "shrink", "acceptable": ["1.115750", "1.013979"]}}
+{"id": "p26-a-27", "group": "a", "question": "Cấp giấy chứng nhận quyền sử dụng đất", "profile": {"mcq_subject": "Tổ chức (không bao gồm doanh nghiệp, HTX)"}, "expected": {"note": "shrink", "acceptable": ["1.012753", "1.013979"]}}
+{"id": "p26-a-28", "group": "a", "question": "Cấp gia hạn giấy phép", "profile": {"user_type": "citizen"}, "expected": {"note": "shrink", "acceptable": ["1.013227", "1.013225"]}}
+{"id": "p26-b-01", "group": "b", "question": "Cho hỏi thủ tục đăng ký đóng bảo hiểm", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-02", "group": "b", "question": "Cho hỏi thủ tục đăng ký đóng bảo hiểm", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-03", "group": "b", "question": "thủ tục khám chữa bệnh bảo hiểm y tế", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-04", "group": "b", "question": "Khám bệnh chữa bệnh bằng thẻ bảo hiểm y tế làm sao", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-05", "group": "b", "question": "Cấp giấy chứng nhận quyền sử dụng đất", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-06", "group": "b", "question": "cấp giấy chứng nhận quyền sử dụng đất cần giấy tờ gì", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-07", "group": "b", "question": "phê duyệt dự án", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-08", "group": "b", "question": "phê duyệt dự án", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-09", "group": "b", "question": "Cấp gia hạn giấy phép", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-10", "group": "b", "question": "gia hạn giấy phép", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-11", "group": "b", "question": "Thủ tục đăng ký đất đai tài sản gắn liền với đất lần đầu", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-12", "group": "b", "question": "Thủ tục đăng ký đất đai tài sản gắn liền với đất lần đầu", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-13", "group": "b", "question": "Thủ tục đăng ký đất đai tài sản gắn liền với đất lần đầu", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-14", "group": "b", "question": "thủ tục nhập cảnh xuất cảnh", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-15", "group": "b", "question": "thủ tục nhập cảnh xuất cảnh", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-16", "group": "b", "question": "Giải quyết hưởng chế độ tai nạn lao động", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-17", "group": "b", "question": "Giải quyết hưởng chế độ tai nạn lao động", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-18", "group": "b", "question": "gia hạn sử dụng đất khi hết thời hạn", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-19", "group": "b", "question": "gia hạn sử dụng đất khi hết thời hạn", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-20", "group": "b", "question": "Đăng ký, cấp Giấy chứng nhận đối với trường hợp hộ gia đình đã được cấp giấy chứng nhận một phần diện tích", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-21", "group": "b", "question": "gia hạn giấy phép", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-22", "group": "b", "question": "phê duyệt dự án", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-23", "group": "b", "question": "phê duyệt dự án", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-24", "group": "b", "question": "thủ tục khám chữa bệnh bảo hiểm y tế", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-25", "group": "b", "question": "thủ tục khám chữa bệnh bảo hiểm y tế", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-26", "group": "b", "question": "Cấp giấy chứng nhận quyền sử dụng đất", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-27", "group": "b", "question": "Cấp giấy chứng nhận quyền sử dụng đất", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-b-28", "group": "b", "question": "Cấp gia hạn giấy phép", "profile": {}, "expected": {"behavior": "clarify"}}
+{"id": "p26-c-01", "group": "c", "question": "Đăng ký khai sinh cần giấy tờ gì?", "profile": {"user_type": "business"}, "expected": {"behavior": "answer", "acceptable": ["1.001193"]}}
+{"id": "p26-c-02", "group": "c", "question": "Làm thủ tục đăng ký kết hôn cần gì", "profile": {"mcq_subject": "Hợp tác xã"}, "expected": {"behavior": "answer", "acceptable": ["1.000894"]}}
+{"id": "p26-c-03", "group": "c", "question": "đăng ký khai tử mất bao lâu", "profile": {"mcq_subject": "Tổ chức (không bao gồm doanh nghiệp, HTX)"}, "expected": {"behavior": "answer", "acceptable": ["1.000656"]}}
+{"id": "p26-c-04", "group": "c", "question": "khai báo tạm vắng nộp ở đâu", "profile": {"user_type": "business"}, "expected": {"behavior": "answer", "acceptable": ["1.003677"]}}
+{"id": "p26-c-05", "group": "c", "question": "tách hộ lệ phí bao nhiêu", "profile": {"mcq_subject": "Hợp tác xã"}, "expected": {"behavior": "answer", "acceptable": ["1.010038"]}}
+{"id": "p26-c-06", "group": "c", "question": "đăng ký thường trú cho con cần giấy tờ gì", "profile": {"user_type": "business"}, "expected": {"behavior": "answer", "acceptable": ["1.004222"]}}
+{"id": "p26-c-07", "group": "c", "question": "chứng thực chữ ký ở đâu", "profile": {"mcq_subject": "Tổ chức (không bao gồm doanh nghiệp, HTX)"}, "expected": {"behavior": "answer", "acceptable": ["2.000884"]}}
+{"id": "p26-c-08", "group": "c", "question": "đăng ký giám hộ cần giấy tờ gì", "profile": {"mcq_subject": "Hợp tác xã"}, "expected": {"behavior": "answer", "acceptable": ["1.004837"]}}
+{"id": "p26-c-09", "group": "c", "question": "xóa đăng ký thường trú", "profile": {"user_type": "business"}, "expected": {"behavior": "answer", "acceptable": ["1.003197"]}}
+{"id": "p26-c-10", "group": "c", "question": "đăng ký tạm trú mất bao lâu", "profile": {"user_type": "citizen"}, "expected": {"behavior": "answer", "acceptable": ["1.004194"]}}
+{"id": "p26-c-11", "group": "c", "question": "gia hạn tạm trú", "profile": {"mcq_subject": "Tổ chức (không bao gồm doanh nghiệp, HTX)"}, "expected": {"behavior": "answer", "acceptable": ["1.002755"]}}
+{"id": "p26-c-12", "group": "c", "question": "đăng ký nhận cha mẹ con", "profile": {"user_type": "business"}, "expected": {"behavior": "answer", "acceptable": ["1.001022"]}}
+{"id": "p26-c-13", "group": "c", "question": "Đăng ký thành lập hợp tác xã", "profile": {"user_type": "citizen"}, "expected": {"behavior": "answer", "acceptable": ["1.005280"]}}
+{"id": "p26-c-14", "group": "c", "question": "ký hợp đồng khám bệnh chữa bệnh bảo hiểm y tế", "profile": {"user_type": "citizen"}, "expected": {"behavior": "answer", "acceptable": ["1.001798"]}}
+{"id": "p26-c-15", "group": "c", "question": "hỗ trợ chuyển đổi nghề giải bản tàu cá", "profile": {"user_type": "citizen"}, "expected": {"behavior": "answer", "acceptable": ["1.014604"]}}
+{"id": "p26-c-16", "group": "c", "question": "đăng ký đất đai tài sản gắn liền với đất lần đầu đối với tổ chức đang sử dụng đất", "profile": {"mcq_subject": "Hợp tác xã"}, "expected": {"behavior": "answer", "acceptable": ["1.115373"]}}
+{"id": "p26-c-17", "group": "c", "question": "Đăng ký thành lập tổ hợp tác", "profile": {"mcq_subject": "Hợp tác xã"}, "expected": {"behavior": "clarify", "acceptable": ["2.002637"]}}
+{"id": "p26-c-18", "group": "c", "question": "thủ tục thu hồi giấy chứng nhận lần đầu đã cấp không đúng quy định", "profile": {"user_type": "business"}, "expected": {"behavior": "clarify", "acceptable": ["1.115941"]}}
+{"id": "p26-c-19", "group": "c", "question": "xin trợ cấp hàng tháng", "profile": {"user_type": "business"}, "expected": {"behavior": "clarify", "acceptable": ["1.001776"]}}
+{"id": "p26-c-20", "group": "c", "question": "làm hộ chiếu ở đâu", "profile": {"user_type": "business"}, "expected": {"behavior": "apologize", "acceptable": []}}
+{"id": "p26-c-21", "group": "c", "question": "thủ tục hỗ trợ giải bản tàu cá", "profile": {"user_type": "business"}, "expected": {"behavior": "clarify", "acceptable": ["1.014599"]}}
+{"id": "p26-c-22", "group": "c", "question": "thủ tục hỗ trợ giải bản tàu cá", "profile": {"mcq_subject": "Tổ chức (không bao gồm doanh nghiệp, HTX)"}, "expected": {"behavior": "clarify", "acceptable": ["1.014599"]}}
+{"id": "p26-c-23", "group": "c", "question": "Thu hồi giấy chứng nhận đã cấp không đúng quy định", "profile": {"user_type": "business"}, "expected": {"behavior": "clarify", "acceptable": ["1.115898"]}}
+{"id": "p26-c-24", "group": "c", "question": "Thu hồi giấy chứng nhận đã cấp không đúng quy định", "profile": {"mcq_subject": "Hợp tác xã"}, "expected": {"behavior": "clarify", "acceptable": ["1.115898"]}}
+{"id": "p26-d-01", "group": "d", "question": "Cho hỏi thủ tục đăng ký đóng bảo hiểm", "profile": {}, "expected": {}}
+{"id": "p26-d-02", "group": "d", "question": "thủ tục khám chữa bệnh bảo hiểm y tế", "profile": {"user_type": "other"}, "expected": {}}
+{"id": "p26-d-03", "group": "d", "question": "phê duyệt dự án", "profile": {}, "expected": {}}
+{"id": "p26-d-04", "group": "d", "question": "Cấp giấy chứng nhận quyền sử dụng đất", "profile": {"user_type": "other"}, "expected": {}}
+{"id": "p26-d-05", "group": "d", "question": "thủ tục nhập cảnh xuất cảnh", "profile": {}, "expected": {}}
+{"id": "p26-d-06", "group": "d", "question": "gia hạn sử dụng đất khi hết thời hạn", "profile": {"user_type": "other"}, "expected": {}}
+{"id": "p26-d-07", "group": "d", "question": "Đăng ký khai sinh cần giấy tờ gì?", "profile": {}, "expected": {}}
+{"id": "p26-d-08", "group": "d", "question": "đăng ký tạm trú mất bao lâu", "profile": {"user_type": "other"}, "expected": {}}
+{"id": "p26-d-09", "group": "d", "question": "Điều chỉnh quyết định giao đất cho thuê đất", "profile": {}, "expected": {}}
+{"id": "p26-d-10", "group": "d", "question": "xin trợ cấp hàng tháng", "profile": {"user_type": "other"}, "expected": {}}
+{"id": "p26-d-11", "group": "d", "question": "hôm nay trời đẹp quá", "profile": {}, "expected": {}}
+{"id": "p26-d-12", "group": "d", "question": "Đăng ký thành lập tổ hợp tác", "profile": {"user_type": "other"}, "expected": {}}

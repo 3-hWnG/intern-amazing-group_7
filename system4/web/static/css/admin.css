@@ -1,0 +1,55 @@
+/* System 4 — trang Quản trị (NV4). Dùng chung biến màu của styles.css. */
+.admin-page{min-height:100vh}
+.admin-head{display:flex;align-items:center;gap:16px;padding:12px 20px;background:var(--panel);border-bottom:1px solid var(--line)}
+.admin-head h1{margin:0;font-size:18px;flex:1}
+.admin-tabs{display:flex;gap:6px;padding:12px 20px 0;max-width:1200px;margin:0 auto}
+.admin-tabs .tab{flex:none;padding:8px 14px}
+.admin-main{max-width:1200px;margin:0 auto;padding:12px 20px 40px}
+.admin-tab[hidden]{display:none}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.card h2{margin:0 0 10px;font-size:15px}
+.row{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.row-between{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.row input,.row select,.search,.num{padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink)}
+.num{width:80px}
+.search{width:280px;max-width:100%}
+.grid{width:100%;border-collapse:collapse;font-size:13.5px}
+.grid th,.grid td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+.grid th{color:var(--ink-3);font-weight:600;font-size:12.5px;background:var(--panel-2)}
+.grid tr.clickable{cursor:pointer}
+.grid tr.clickable:hover td{background:var(--panel-2)}
+.grid td.actions{white-space:nowrap}
+.grid .name{max-width:520px;overflow-wrap:anywhere}
+.tag{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:6px;margin-left:4px;border:1px solid var(--line);color:var(--ink-2)}
+.tag.on{color:#fff;background:var(--good);border-color:transparent}
+.tag.warn{color:var(--warn);border-color:var(--warn)}
+.tag.bad{color:var(--danger);border-color:var(--danger)}
+.job{margin-top:10px;padding:9px 12px;border-radius:8px;font-size:13.5px;background:var(--panel-2);border:1px solid var(--line)}
+.job.done{background:color-mix(in srgb,var(--good) 14%,transparent)}
+.job.error{background:color-mix(in srgb,var(--danger) 14%,transparent)}
+.job pre{margin:8px 0 0;max-height:160px;overflow:auto;font:12px/1.4 Consolas,monospace;white-space:pre-wrap}
+.job .bar{height:6px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:6px}
+.job .bar i{display:block;height:100%;background:var(--accent)}
+.field{margin:10px 0}
+.field label{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px}
+.field label small{font-weight:400;color:var(--ink-3)}
+.field textarea{width:100%;min-height:42px;padding:7px 9px;font:13px/1.45 Consolas,monospace;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink);resize:vertical}
+.field textarea[readonly]{opacity:.85}
+.diff-counts{display:flex;gap:14px;margin:6px 0 12px;font-size:14px}
+.diff-list{list-style:none;padding:0;margin:0 0 12px}
+.diff-list li{padding:5px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.diff-field{margin:10px 0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.diff-field b{display:block;padding:5px 9px;background:var(--panel-2);font-size:13px}
+.diff-field pre{margin:0;padding:6px 9px;font:12px/1.4 Consolas,monospace;white-space:pre-wrap;max-height:200px;overflow:auto}
+.diff-field pre.old{background:color-mix(in srgb,var(--danger) 8%,transparent)}
+.diff-field pre.new{background:color-mix(in srgb,var(--good) 10%,transparent)}
+.lab-ds{display:flex;flex-wrap:wrap;gap:10px;margin:10px 0;font-size:13px}
+.lab-params{margin-top:6px}
+.chat-view{display:flex;flex-direction:column;gap:10px}
+.chat-view .u{align-self:flex-end;max-width:80%;padding:8px 12px;border-radius:10px;background:var(--accent);color:#fff;white-space:pre-wrap}
+.chat-view .a{align-self:flex-start;max-width:90%;padding:8px 12px;border-radius:10px;background:var(--panel-2);border:1px solid var(--line);white-space:pre-wrap;overflow-wrap:anywhere}
+.chat-view .a .btn-ghost{margin-top:6px;padding:3px 9px;font-size:12px}
+.conv-pick{list-style:none;padding:0;margin:0}
+.conv-pick li{padding:7px 4px;border-bottom:1px solid var(--line);cursor:pointer}
+.conv-pick li:hover{background:var(--panel-2)}
+@media (max-width:760px){.admin-head,.admin-tabs,.admin-main{padding-left:12px;padding-right:12px}.grid{font-size:12.5px}}

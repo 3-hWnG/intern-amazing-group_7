@@ -1,0 +1,228 @@
+{"id": "p30-c-000", "split": "tune", "kind": "clarify", "sub": "stem", "question": "gia hạn", "expected": {"behavior": "clarify"}, "n_match": 13}
+{"id": "p30-c-001", "split": "held", "kind": "clarify", "sub": "stem", "question": "khai báo làm thế nào ạ", "expected": {"behavior": "clarify"}, "n_match": 8}
+{"id": "p30-c-002", "split": "tune", "kind": "clarify", "sub": "stem", "question": "Tôi cần thu hồi", "expected": {"behavior": "clarify"}, "n_match": 8}
+{"id": "p30-c-003", "split": "held", "kind": "clarify", "sub": "stem", "question": "cho mình hỏi thủ tục giao đất", "expected": {"behavior": "clarify"}, "n_match": 9}
+{"id": "p30-c-004", "split": "tune", "kind": "clarify", "sub": "stem", "question": "thủ tục chuyển đổi cần giấy tờ gì", "expected": {"behavior": "clarify"}, "n_match": 16}
+{"id": "p30-c-005", "split": "held", "kind": "clarify", "sub": "stem", "question": "giúp mình chứng thực chữ ký với", "expected": {"behavior": "clarify"}, "n_match": 3}
+{"id": "p30-c-006", "split": "tune", "kind": "clarify", "sub": "stem", "question": "em muốn xét tuyển", "expected": {"behavior": "clarify"}, "n_match": 3}
+{"id": "p30-c-007", "split": "held", "kind": "clarify", "sub": "stem", "question": "công bố nộp ở đâu", "expected": {"behavior": "clarify"}, "n_match": 21}
+{"id": "p30-c-008", "split": "tune", "kind": "clarify", "sub": "stem", "question": "cấp giấy phép", "expected": {"behavior": "clarify"}, "n_match": 27}
+{"id": "p30-c-009", "split": "held", "kind": "clarify", "sub": "stem", "question": "đăng ký lại làm thế nào ạ", "expected": {"behavior": "clarify"}, "n_match": 23}
+{"id": "p30-c-010", "split": "tune", "kind": "clarify", "sub": "stem", "question": "Tôi cần phê duyệt", "expected": {"behavior": "clarify"}, "n_match": 22}
+{"id": "p30-c-011", "split": "held", "kind": "clarify", "sub": "stem", "question": "cho mình hỏi thủ tục thông báo", "expected": {"behavior": "clarify"}, "n_match": 21}
+{"id": "p30-c-012", "split": "tune", "kind": "clarify", "sub": "stem", "question": "thủ tục đề nghị cần giấy tờ gì", "expected": {"behavior": "clarify"}, "n_match": 18}
+{"id": "p30-c-013", "split": "held", "kind": "clarify", "sub": "stem", "question": "giúp mình thẩm định với", "expected": {"behavior": "clarify"}, "n_match": 15}
+{"id": "p30-c-014", "split": "tune", "kind": "clarify", "sub": "stem", "question": "em muốn cho phép", "expected": {"behavior": "clarify"}, "n_match": 33}
+{"id": "p30-c-015", "split": "held", "kind": "clarify", "sub": "stem", "question": "chứng thực nộp ở đâu", "expected": {"behavior": "clarify"}, "n_match": 12}
+{"id": "p30-c-016", "split": "tune", "kind": "clarify", "sub": "stem", "question": "tiếp nhận", "expected": {"behavior": "clarify"}, "n_match": 15}
+{"id": "p30-c-017", "split": "held", "kind": "clarify", "sub": "stem", "question": "thành lập làm thế nào ạ", "expected": {"behavior": "clarify"}, "n_match": 16}
+{"id": "p30-c-018", "split": "tune", "kind": "clarify", "sub": "stem", "question": "Tôi cần giải thể", "expected": {"behavior": "clarify"}, "n_match": 10}
+{"id": "p30-c-019", "split": "held", "kind": "clarify", "sub": "stem", "question": "cho mình hỏi thủ tục thanh toán", "expected": {"behavior": "clarify"}, "n_match": 6}
+{"id": "p30-c-020", "split": "tune", "kind": "clarify", "sub": "stem", "question": "thủ tục sáp nhập cần giấy tờ gì", "expected": {"behavior": "clarify"}, "n_match": 10}
+{"id": "p30-c-021", "split": "held", "kind": "clarify", "sub": "stem", "question": "giúp mình xóa đăng ký với", "expected": {"behavior": "clarify"}, "n_match": 6}
+{"id": "p30-c-022", "split": "tune", "kind": "clarify", "sub": "stem", "question": "em muốn sửa đổi bổ sung", "expected": {"behavior": "clarify"}, "n_match": 7}
+{"id": "p30-c-023", "split": "held", "kind": "clarify", "sub": "stem", "question": "điều chỉnh nộp ở đâu", "expected": {"behavior": "clarify"}, "n_match": 30}
+{"id": "p30-c-024", "split": "tune", "kind": "clarify", "sub": "stem", "question": "chấm dứt", "expected": {"behavior": "clarify"}, "n_match": 9}
+{"id": "p30-c-025", "split": "held", "kind": "clarify", "sub": "stem", "question": "tuyển chọn làm thế nào ạ", "expected": {"behavior": "clarify"}, "n_match": 4}
+{"id": "p30-c-026", "split": "tune", "kind": "clarify", "sub": "stem", "question": "Tôi cần ghi vào sổ", "expected": {"behavior": "clarify"}, "n_match": 4}
+{"id": "p30-c-027", "split": "held", "kind": "clarify", "sub": "stem", "question": "cho mình hỏi thủ tục công nhận", "expected": {"behavior": "clarify"}, "n_match": 66}
+{"id": "p30-c-028", "split": "tune", "kind": "clarify", "sub": "stem", "question": "thủ tục xác nhận cần giấy tờ gì", "expected": {"behavior": "clarify"}, "n_match": 28}
+{"id": "p30-c-029", "split": "held", "kind": "clarify", "sub": "stem", "question": "giúp mình hỗ trợ chi phí với", "expected": {"behavior": "clarify"}, "n_match": 8}
+{"id": "p30-c-030", "split": "tune", "kind": "clarify", "sub": "stem", "question": "em muốn cấp bản sao", "expected": {"behavior": "clarify"}, "n_match": 5}
+{"id": "p30-c-031", "split": "held", "kind": "clarify", "sub": "stem", "question": "cấp bằng nộp ở đâu", "expected": {"behavior": "clarify"}, "n_match": 7}
+{"id": "p30-c-032", "split": "tune", "kind": "clarify", "sub": "stem", "question": "biên phòng", "expected": {"behavior": "clarify"}, "n_match": 13}
+{"id": "p30-c-033", "split": "held", "kind": "clarify", "sub": "stem", "question": "cho thuê làm thế nào ạ", "expected": {"behavior": "clarify"}, "n_match": 13}
+{"id": "p30-c-034", "split": "tune", "kind": "clarify", "sub": "stem", "question": "Tôi cần trình báo mất", "expected": {"behavior": "clarify"}, "n_match": 3}
+{"id": "p30-c-035", "split": "held", "kind": "clarify", "sub": "stem", "question": "cho mình hỏi thủ tục đăng ký thay đổi", "expected": {"behavior": "clarify"}, "n_match": 13}
+{"id": "p30-c-036", "split": "tune", "kind": "clarify", "sub": "stem", "question": "thủ tục đăng ký chấm dứt cần giấy tờ gì", "expected": {"behavior": "clarify"}, "n_match": 4}
+{"id": "p30-c-037", "split": "held", "kind": "clarify", "sub": "stem", "question": "giúp mình cho ý kiến với", "expected": {"behavior": "clarify"}, "n_match": 3}
+{"id": "p30-c-038", "split": "tune", "kind": "clarify", "sub": "stem", "question": "em muốn cấp đổi", "expected": {"behavior": "clarify"}, "n_match": 66}
+{"id": "p30-c-039", "split": "held", "kind": "clarify", "sub": "stem", "question": "thay đổi nộp ở đâu", "expected": {"behavior": "clarify"}, "n_match": 22}
+{"id": "p30-c-040", "split": "tune", "kind": "clarify", "sub": "stem", "question": "công nhận hộ", "expected": {"behavior": "clarify"}, "n_match": 12}
+{"id": "p30-c-041", "split": "held", "kind": "clarify", "sub": "stem", "question": "cấp lại làm thế nào ạ", "expected": {"behavior": "clarify"}, "n_match": 21}
+{"id": "p30-c-042", "split": "tune", "kind": "clarify", "sub": "stem", "question": "Tôi cần hỗ trợ", "expected": {"behavior": "clarify"}, "n_match": 33}
+{"id": "p30-c-043", "split": "held", "kind": "clarify", "sub": "stem", "question": "cho mình hỏi thủ tục trợ cấp", "expected": {"behavior": "clarify"}, "n_match": 40}
+{"id": "p30-c-044", "split": "tune", "kind": "clarify", "sub": "stem", "question": "thủ tục đăng ký nhận cần giấy tờ gì", "expected": {"behavior": "clarify"}, "n_match": 33}
+{"id": "p30-c-045", "split": "held", "kind": "clarify", "sub": "stem", "question": "giúp mình đăng ký kết với", "expected": {"behavior": "clarify"}, "n_match": 10}
+{"id": "p30-c-046", "split": "tune", "kind": "clarify", "sub": "stem", "question": "em muốn cấp giấy xác nhận", "expected": {"behavior": "clarify"}, "n_match": 11}
+{"id": "p30-c-047", "split": "held", "kind": "clarify", "sub": "stem", "question": "phê duyệt đề nộp ở đâu", "expected": {"behavior": "clarify"}, "n_match": 7}
+{"id": "p30-c-048", "split": "tune", "kind": "clarify", "sub": "stem", "question": "đăng ký khai", "expected": {"behavior": "clarify"}, "n_match": 23}
+{"id": "p30-c-049", "split": "held", "kind": "clarify", "sub": "stem", "question": "giải quyết chế độ làm thế nào ạ", "expected": {"behavior": "clarify"}, "n_match": 39}
+{"id": "p30-c-050", "split": "tune", "kind": "clarify", "sub": "stem", "question": "Tôi cần cấp gia hạn", "expected": {"behavior": "clarify"}, "n_match": 8}
+{"id": "p30-c-051", "split": "held", "kind": "clarify", "sub": "hand", "question": "cho mình hỏi thủ tục mai táng phí", "expected": {"behavior": "clarify"}, "n_match": 7}
+{"id": "p30-c-052", "split": "tune", "kind": "clarify", "sub": "hand", "question": "thủ tục hỗ trợ người có công cần giấy tờ gì", "expected": {"behavior": "clarify"}, "n_match": 3}
+{"id": "p30-c-053", "split": "held", "kind": "clarify", "sub": "hand", "question": "giúp mình liệt sĩ với", "expected": {"behavior": "clarify"}, "n_match": 8}
+{"id": "p30-c-054", "split": "tune", "kind": "clarify", "sub": "hand", "question": "em muốn bảo hiểm y tế", "expected": {"behavior": "clarify"}, "n_match": 11}
+{"id": "p30-c-055", "split": "held", "kind": "clarify", "sub": "hand", "question": "trẻ em nộp ở đâu", "expected": {"behavior": "clarify"}, "n_match": 13}
+{"id": "p30-c-056", "split": "tune", "kind": "clarify", "sub": "hand", "question": "xin giấy phép", "expected": {"behavior": "clarify"}, "n_match": 31}
+{"id": "p30-c-057", "split": "held", "kind": "clarify", "sub": "hand", "question": "cấp giấy chứng nhận làm thế nào ạ", "expected": {"behavior": "clarify"}, "n_match": 24}
+{"id": "p30-c-058", "split": "tune", "kind": "clarify", "sub": "hand", "question": "Tôi cần đất đai", "expected": {"behavior": "clarify"}, "n_match": 5}
+{"id": "p30-c-059", "split": "held", "kind": "clarify", "sub": "hand", "question": "cho mình hỏi thủ tục người nước ngoài", "expected": {"behavior": "clarify"}, "n_match": 44}
+{"id": "p30-c-060", "split": "tune", "kind": "clarify", "sub": "hand", "question": "thủ tục thương binh cần giấy tờ gì", "expected": {"behavior": "clarify"}, "n_match": 4}
+{"id": "p30-c-061", "split": "held", "kind": "clarify", "sub": "hand", "question": "giúp mình trợ cấp hàng tháng với", "expected": {"behavior": "clarify"}, "n_match": 10}
+{"id": "p30-c-062", "split": "tune", "kind": "clarify", "sub": "hand", "question": "em muốn đăng ký hoạt động", "expected": {"behavior": "clarify"}, "n_match": 17}
+{"id": "p30-c-063", "split": "held", "kind": "clarify", "sub": "hand", "question": "trường học nộp ở đâu", "expected": {"behavior": "clarify"}, "n_match": 55}
+{"id": "p30-c-064", "split": "tune", "kind": "clarify", "sub": "hand", "question": "tàu thuyền", "expected": {"behavior": "clarify"}, "n_match": 7}
+{"id": "p30-c-065", "split": "held", "kind": "clarify", "sub": "hand", "question": "giấy phép xây dựng làm thế nào ạ", "expected": {"behavior": "clarify"}, "n_match": 7}
+{"id": "p30-c-066", "split": "tune", "kind": "clarify", "sub": "hand", "question": "Tôi cần nhập cảnh xuất cảnh", "expected": {"behavior": "clarify"}, "n_match": 12}
+{"id": "p30-c-067", "split": "held", "kind": "clarify", "sub": "hand", "question": "cho mình hỏi thủ tục hỗ trợ giáo dục", "expected": {"behavior": "clarify"}, "n_match": 5}
+{"id": "p30-c-068", "split": "tune", "kind": "clarify", "sub": "hand", "question": "thủ tục nhà ở cần giấy tờ gì", "expected": {"behavior": "clarify"}, "n_match": 17}
+{"id": "p30-c-069", "split": "held", "kind": "clarify", "sub": "hand", "question": "Mẹ tôi muốn hưởng trợ cấp, làm thế nào?", "expected": {"behavior": "clarify"}, "n_match": 40}
+{"id": "p30-c-070", "split": "tune", "kind": "clarify", "sub": "hand", "question": "Em muốn xin hỗ trợ cho gia đình người có công", "expected": {"behavior": "clarify"}, "n_match": 3}
+{"id": "p30-c-071", "split": "held", "kind": "clarify", "sub": "hand", "question": "Tôi muốn đăng ký thành lập", "expected": {"behavior": "clarify"}, "n_match": 4}
+{"id": "p30-c-072", "split": "tune", "kind": "clarify", "sub": "hand", "question": "Cho hỏi thủ tục đăng ký hợp tác xã", "expected": {"behavior": "clarify"}, "n_match": 15}
+{"id": "p30-c-073", "split": "held", "kind": "clarify", "sub": "hand", "question": "Công ty tôi muốn chấm dứt hoạt động", "expected": {"behavior": "clarify"}, "n_match": 4}
+{"id": "p30-c-074", "split": "tune", "kind": "clarify", "sub": "hand", "question": "Xin giấy xác nhận", "expected": {"behavior": "clarify"}, "n_match": 11}
+{"id": "p30-c-075", "split": "held", "kind": "clarify", "sub": "hand", "question": "Tôi muốn xin hỗ trợ", "expected": {"behavior": "clarify"}, "n_match": 33}
+{"id": "p30-c-076", "split": "tune", "kind": "clarify", "sub": "hand", "question": "Cần làm giấy tờ cho người nước ngoài", "expected": {"behavior": "clarify"}, "n_match": 44}
+{"id": "p30-c-077", "split": "held", "kind": "clarify", "sub": "hand", "question": "Cho tôi hỏi về bảo hiểm xã hội", "expected": {"behavior": "clarify"}, "n_match": 10}
+{"id": "p30-c-078", "split": "tune", "kind": "clarify", "sub": "hand", "question": "Hồ sơ xin phép xây dựng", "expected": {"behavior": "clarify"}, "n_match": 8}
+{"id": "p30-c-079", "split": "held", "kind": "clarify", "sub": "hand", "question": "Xin cấp lại giấy", "expected": {"behavior": "clarify"}, "n_match": 15}
+{"id": "p30-c-080", "split": "tune", "kind": "clarify", "sub": "hand", "question": "Thủ tục về hộ tịch", "expected": {"behavior": "clarify"}, "n_match": 10}
+{"id": "p30-c-081", "split": "held", "kind": "clarify", "sub": "hand", "question": "liên quan đến cư trú làm thế nào ạ", "expected": {"behavior": "clarify"}, "n_match": 6}
+{"id": "p30-c-082", "split": "tune", "kind": "clarify", "sub": "hand", "question": "Tôi cần giáo dục mầm non", "expected": {"behavior": "clarify"}, "n_match": 7}
+{"id": "p30-c-083", "split": "held", "kind": "clarify", "sub": "hand", "question": "cho mình hỏi thủ tục điều chỉnh thông tin", "expected": {"behavior": "clarify"}, "n_match": 6}
+{"id": "p30-c-084", "split": "tune", "kind": "clarify", "sub": "hand", "question": "thủ tục dân quân tự vệ cần giấy tờ gì", "expected": {"behavior": "clarify"}, "n_match": 5}
+{"id": "p30-c-085", "split": "held", "kind": "clarify", "sub": "hand", "question": "giúp mình hoạt động tôn giáo với", "expected": {"behavior": "clarify"}, "n_match": 7}
+{"id": "p30-c-086", "split": "tune", "kind": "clarify", "sub": "hand", "question": "em muốn quyền lợi cho người lao động", "expected": {"behavior": "clarify"}, "n_match": 16}
+{"id": "p30-c-087", "split": "held", "kind": "clarify", "sub": "hand", "question": "về y tế nộp ở đâu", "expected": {"behavior": "clarify"}, "n_match": 14}
+{"id": "p30-a-000", "split": "tune", "kind": "answer", "sub": "full", "question": "cho mình hỏi thủ tục công nhận ban quản trị nhà chung cư", "expected": {"behavior": "answer", "acceptable": ["1.012888"]}, "n_match": null}
+{"id": "p30-a-001", "split": "held", "kind": "answer", "sub": "full", "question": "thủ tục thi tuyển công chức cần giấy tờ gì", "expected": {"behavior": "answer", "acceptable": ["1.014111"]}, "n_match": null}
+{"id": "p30-a-002", "split": "tune", "kind": "answer", "sub": "full", "question": "giúp mình dừng thực hiện thủ tục đăng ký hộ kinh doanh với", "expected": {"behavior": "answer", "acceptable": ["1.014035"]}, "n_match": null}
+{"id": "p30-a-003", "split": "held", "kind": "answer", "sub": "full", "question": "em muốn đổi cấp lại giấy xác nhận khuyết tật", "expected": {"behavior": "answer", "acceptable": ["1.001653"]}, "n_match": null}
+{"id": "p30-a-004", "split": "tune", "kind": "answer", "sub": "full", "question": "hoàn trả các khoản thu ngân sách nhà nước qua kbnn nộp ở đâu", "expected": {"behavior": "answer", "acceptable": ["3.000116"]}, "n_match": null}
+{"id": "p30-a-005", "split": "held", "kind": "answer", "sub": "full", "question": "giải quyết hưởng bhxh một lần", "expected": {"behavior": "answer", "acceptable": ["1.001613"]}, "n_match": null}
+{"id": "p30-a-006", "split": "tune", "kind": "answer", "sub": "full", "question": "đăng ký thay đổi nội dung đăng ký hộ kinh doanh làm thế nào ạ", "expected": {"behavior": "answer", "acceptable": ["2.000720"]}, "n_match": null}
+{"id": "p30-a-007", "split": "held", "kind": "answer", "sub": "full", "question": "Tôi cần cấp lại đổi điều chỉnh thông tin trên sổ bhxh thẻ bhyt", "expected": {"behavior": "answer", "acceptable": ["1.002759"]}, "n_match": null}
+{"id": "p30-a-008", "split": "tune", "kind": "answer", "sub": "full", "question": "cho mình hỏi thủ tục mở khóa căn cước điện tử", "expected": {"behavior": "answer", "acceptable": ["3.000286"]}, "n_match": null}
+{"id": "p30-a-009", "split": "held", "kind": "answer", "sub": "full", "question": "thủ tục đăng ký lại khai tử có yếu tố nước ngoài cần giấy tờ gì", "expected": {"behavior": "answer", "acceptable": ["2.000497"]}, "n_match": null}
+{"id": "p30-a-010", "split": "tune", "kind": "answer", "sub": "full", "question": "giúp mình thăm viếng mộ liệt sĩ với", "expected": {"behavior": "answer", "acceptable": ["1.013750"]}, "n_match": null}
+{"id": "p30-a-011", "split": "held", "kind": "answer", "sub": "full", "question": "em muốn miễn nhiệm đối với công chức viên chức lãnh đạo quản lý", "expected": {"behavior": "answer", "acceptable": ["6.005259"]}, "n_match": null}
+{"id": "p30-a-012", "split": "tune", "kind": "answer", "sub": "full", "question": "tiếp nhận vào làm công chức không giữ chức vụ lãnh đạo quản lý nộp ở đâu", "expected": {"behavior": "answer", "acceptable": ["5.003873"]}, "n_match": null}
+{"id": "p30-a-013", "split": "held", "kind": "answer", "sub": "full", "question": "khám bệnh chữa bệnh bảo hiểm y tế", "expected": {"behavior": "answer", "acceptable": ["1.014193"]}, "n_match": null}
+{"id": "p30-a-014", "split": "tune", "kind": "answer", "sub": "full", "question": "cấp giấy phép chặt hạ dịch chuyển cây xanh làm thế nào ạ", "expected": {"behavior": "answer", "acceptable": ["1.002693"]}, "n_match": null}
+{"id": "p30-a-015", "split": "held", "kind": "answer", "sub": "full", "question": "Tôi cần đăng ký cấp chứng nhận đăng ký xe biển số xe", "expected": {"behavior": "answer", "acceptable": ["1.115970"]}, "n_match": null}
+{"id": "p30-a-016", "split": "tune", "kind": "answer", "sub": "full", "question": "cho mình hỏi thủ tục đăng ký việc nuôi con nuôi trong nước", "expected": {"behavior": "answer", "acceptable": ["2.001263"]}, "n_match": null}
+{"id": "p30-a-017", "split": "held", "kind": "answer", "sub": "full", "question": "thủ tục giải quyết hưởng chế độ thai sản cần giấy tờ gì", "expected": {"behavior": "answer", "acceptable": ["2.000693"]}, "n_match": null}
+{"id": "p30-a-018", "split": "tune", "kind": "answer", "sub": "full", "question": "giúp mình đăng ký bổ sung hoạt động tín ngưỡng với", "expected": {"behavior": "answer", "acceptable": ["1.012591"]}, "n_match": null}
+{"id": "p30-a-019", "split": "held", "kind": "answer", "sub": "full", "question": "em muốn hỗ trợ ăn trưa đối với trẻ em mẫu giáo", "expected": {"behavior": "answer", "acceptable": ["1.001622"]}, "n_match": null}
+{"id": "p30-a-020", "split": "tune", "kind": "answer", "sub": "full", "question": "đăng ký phương tiện hoạt động vui chơi giải trí dưới nước lần đầu nộp ở đâu", "expected": {"behavior": "answer", "acceptable": ["2.001215"]}, "n_match": null}
+{"id": "p30-a-021", "split": "held", "kind": "answer", "sub": "full", "question": "chấm dứt hoạt động tổ hợp tác", "expected": {"behavior": "answer", "acceptable": ["2.002642"]}, "n_match": null}
+{"id": "p30-a-022", "split": "tune", "kind": "answer", "sub": "full", "question": "đánh giá phân hạng sản phẩm ocop làm thế nào ạ", "expected": {"behavior": "answer", "acceptable": ["3.000611"]}, "n_match": null}
+{"id": "p30-a-023", "split": "held", "kind": "answer", "sub": "full", "question": "Tôi cần thông báo lưu trú", "expected": {"behavior": "answer", "acceptable": ["2.001159"]}, "n_match": null}
+{"id": "p30-a-024", "split": "tune", "kind": "answer", "sub": "full", "question": "cho mình hỏi thủ tục chuyển hình thức giao đất cho thuê đất", "expected": {"behavior": "answer", "acceptable": ["1.013950"]}, "n_match": null}
+{"id": "p30-a-025", "split": "held", "kind": "answer", "sub": "full", "question": "thủ tục đăng ký giám hộ cần giấy tờ gì", "expected": {"behavior": "answer", "acceptable": ["1.004837"]}, "n_match": null}
+{"id": "p30-a-026", "split": "tune", "kind": "answer", "sub": "full", "question": "giúp mình đăng ký hoạt động tín ngưỡng với", "expected": {"behavior": "answer", "acceptable": ["1.012592"]}, "n_match": null}
+{"id": "p30-a-027", "split": "held", "kind": "answer", "sub": "full", "question": "em muốn cấp giấy phép thành lập và công nhận điều lệ quỹ", "expected": {"behavior": "answer", "acceptable": ["1.014942"]}, "n_match": null}
+{"id": "p30-a-028", "split": "tune", "kind": "answer", "sub": "full", "question": "sáp nhập chia tách trường phổ thông dân tộc bán trú nộp ở đâu", "expected": {"behavior": "answer", "acceptable": ["5.003851"]}, "n_match": null}
+{"id": "p30-a-029", "split": "held", "kind": "answer", "sub": "full", "question": "xác nhận thay đổi thông tin đăng ký hoạt động in", "expected": {"behavior": "answer", "acceptable": ["3.000570"]}, "n_match": null}
+{"id": "p30-a-030", "split": "tune", "kind": "answer", "sub": "full", "question": "đính chính giấy chứng nhận 01 làm thế nào ạ", "expected": {"behavior": "answer", "acceptable": ["1.116216"]}, "n_match": null}
+{"id": "p30-a-031", "split": "held", "kind": "answer", "sub": "full", "question": "Tôi cần đăng ký hợp đồng lao động trực tiếp giao kết", "expected": {"behavior": "answer", "acceptable": ["1.013734"]}, "n_match": null}
+{"id": "p30-a-032", "split": "tune", "kind": "answer", "sub": "full", "question": "cho mình hỏi thủ tục hỗ trợ chi phí mai táng cho đối tượng bảo trợ xã hội", "expected": {"behavior": "answer", "acceptable": ["1.001731"]}, "n_match": null}
+{"id": "p30-a-033", "split": "held", "kind": "answer", "sub": "full", "question": "thủ tục xác nhận thông tin hộ tịch cần giấy tờ gì", "expected": {"behavior": "answer", "acceptable": ["2.002516"]}, "n_match": null}
+{"id": "p30-a-034", "split": "tune", "kind": "answer", "sub": "full", "question": "giúp mình đăng ký đóng cấp thẻ bhyt đối với người chỉ tham gia bhyt với", "expected": {"behavior": "answer", "acceptable": ["1.001939"]}, "n_match": null}
+{"id": "p30-a-035", "split": "held", "kind": "answer", "sub": "full", "question": "em muốn khóa tài khoản định danh điện tử", "expected": {"behavior": "answer", "acceptable": ["3.000283"]}, "n_match": null}
+{"id": "p30-a-036", "split": "tune", "kind": "answer", "sub": "full", "question": "đăng ký lại kết hôn có yếu tố nước ngoài nộp ở đâu", "expected": {"behavior": "answer", "acceptable": ["2.000513"]}, "n_match": null}
+{"id": "p30-a-037", "split": "held", "kind": "answer", "sub": "full", "question": "cấp giấy xác nhận thân nhân của người có công", "expected": {"behavior": "answer", "acceptable": ["1.010833"]}, "n_match": null}
+{"id": "p30-a-038", "split": "tune", "kind": "answer", "sub": "full", "question": "đăng ký lại việc nuôi con nuôi trong nước làm thế nào ạ", "expected": {"behavior": "answer", "acceptable": ["2.001255"]}, "n_match": null}
+{"id": "p30-a-039", "split": "held", "kind": "answer", "sub": "full", "question": "Tôi cần thành lập hoặc cho phép thành lập trung tâm học tập cộng đồng", "expected": {"behavior": "answer", "acceptable": ["1.012969"]}, "n_match": null}
+{"id": "p30-a-040", "split": "tune", "kind": "answer", "sub": "sibling", "question": "cho mình hỏi thủ tục giải thể nhà trẻ trường mẫu giáo trường mầm non", "expected": {"behavior": "answer", "acceptable": ["2.002893"]}, "n_match": null}
+{"id": "p30-a-041", "split": "held", "kind": "answer", "sub": "sibling", "question": "thủ tục thành lập hội cần giấy tờ gì", "expected": {"behavior": "answer", "acceptable": ["1.013703"]}, "n_match": null}
+{"id": "p30-a-042", "split": "tune", "kind": "answer", "sub": "sibling", "question": "giúp mình đăng ký khai sinh lưu động với", "expected": {"behavior": "answer", "acceptable": ["1.003583"]}, "n_match": null}
+{"id": "p30-a-043", "split": "held", "kind": "answer", "sub": "sibling", "question": "em muốn xét tuyển công chức", "expected": {"behavior": "answer", "acceptable": ["1.014113"]}, "n_match": null}
+{"id": "p30-a-044", "split": "tune", "kind": "answer", "sub": "sibling", "question": "đăng ký kết hôn nộp ở đâu", "expected": {"behavior": "answer", "acceptable": ["1.000894"]}, "n_match": null}
+{"id": "p30-a-045", "split": "held", "kind": "answer", "sub": "sibling", "question": "chứng thực chữ ký trong các giấy tờ văn bản", "expected": {"behavior": "answer", "acceptable": ["2.000884"]}, "n_match": null}
+{"id": "p30-a-046", "split": "tune", "kind": "answer", "sub": "sibling", "question": "giải thể trung tâm học tập cộng đồng làm thế nào ạ", "expected": {"behavior": "answer", "acceptable": ["3.000308"]}, "n_match": null}
+{"id": "p30-a-047", "split": "held", "kind": "answer", "sub": "sibling", "question": "Tôi cần xóa đăng ký tạm trú", "expected": {"behavior": "answer", "acceptable": ["1.010028"]}, "n_match": null}
+{"id": "p30-a-048", "split": "tune", "kind": "answer", "sub": "sibling", "question": "cho mình hỏi thủ tục đăng ký lại phương tiện hoạt động vui chơi giải trí dưới nước", "expected": {"behavior": "answer", "acceptable": ["2.001214"]}, "n_match": null}
+{"id": "p30-a-049", "split": "held", "kind": "answer", "sub": "sibling", "question": "thủ tục đăng ký khai sinh có yếu tố nước ngoài tại khu vực biên giới cần giấy tờ gì", "expected": {"behavior": "answer", "acceptable": ["1.000110"]}, "n_match": null}
+{"id": "p30-a-050", "split": "tune", "kind": "answer", "sub": "sibling", "question": "giúp mình công nhận tổ trưởng tổ hòa giải với", "expected": {"behavior": "answer", "acceptable": ["2.000950"]}, "n_match": null}
+{"id": "p30-a-051", "split": "held", "kind": "answer", "sub": "sibling", "question": "em muốn cấp đổi giấy chứng nhận đủ điều kiện về an ninh trật tự", "expected": {"behavior": "answer", "acceptable": ["3.000244"]}, "n_match": null}
+{"id": "p30-a-052", "split": "tune", "kind": "answer", "sub": "sibling", "question": "chứng thực di chúc nộp ở đâu", "expected": {"behavior": "answer", "acceptable": ["2.001019"]}, "n_match": null}
+{"id": "p30-a-053", "split": "held", "kind": "answer", "sub": "sibling", "question": "đăng ký chấm dứt giám hộ", "expected": {"behavior": "answer", "acceptable": ["1.004845"]}, "n_match": null}
+{"id": "p30-a-054", "split": "tune", "kind": "answer", "sub": "sibling", "question": "xác nhận thông tin về cư trú làm thế nào ạ", "expected": {"behavior": "answer", "acceptable": ["1.010041"]}, "n_match": null}
+{"id": "p30-a-055", "split": "held", "kind": "answer", "sub": "sibling", "question": "Tôi cần đăng ký kết hôn có yếu tố nước ngoài", "expected": {"behavior": "answer", "acceptable": ["2.000806"]}, "n_match": null}
+{"id": "p30-a-056", "split": "tune", "kind": "answer", "sub": "sibling", "question": "cho mình hỏi thủ tục cấp đổi bằng tổ quốc ghi công", "expected": {"behavior": "answer", "acceptable": ["1.010777"]}, "n_match": null}
+{"id": "p30-a-057", "split": "held", "kind": "answer", "sub": "sibling", "question": "thủ tục đăng ký khai tử có yếu tố nước ngoài tại khu vực biên giới cần giấy tờ gì", "expected": {"behavior": "answer", "acceptable": ["1.004827"]}, "n_match": null}
+{"id": "p30-a-058", "split": "tune", "kind": "answer", "sub": "sibling", "question": "giúp mình giải quyết chế độ người có công giúp đỡ cách mạng với", "expected": {"behavior": "answer", "acceptable": ["1.010820"]}, "n_match": null}
+{"id": "p30-a-059", "split": "held", "kind": "answer", "sub": "sibling", "question": "em muốn đăng ký lại khai tử", "expected": {"behavior": "answer", "acceptable": ["1.005461"]}, "n_match": null}
+{"id": "p30-a-060", "split": "tune", "kind": "answer", "sub": "sibling", "question": "gia hạn tạm trú nộp ở đâu", "expected": {"behavior": "answer", "acceptable": ["1.002755"]}, "n_match": null}
+{"id": "p30-a-061", "split": "held", "kind": "answer", "sub": "sibling", "question": "cho phép trường phổ thông dân tộc bán trú hoạt động giáo dục", "expected": {"behavior": "answer", "acceptable": ["5.003849"]}, "n_match": null}
+{"id": "p30-a-062", "split": "tune", "kind": "answer", "sub": "sibling", "question": "khai báo tạm vắng làm thế nào ạ", "expected": {"behavior": "answer", "acceptable": ["1.003677"]}, "n_match": null}
+{"id": "p30-a-063", "split": "held", "kind": "answer", "sub": "sibling", "question": "Tôi cần công nhận ban vận động thành lập hội", "expected": {"behavior": "answer", "acceptable": ["1.013702"]}, "n_match": null}
+{"id": "p30-a-064", "split": "tune", "kind": "answer", "sub": "sibling", "question": "cho mình hỏi thủ tục giải thể trường tiểu học", "expected": {"behavior": "answer", "acceptable": ["1.001639"]}, "n_match": null}
+{"id": "p30-a-065", "split": "held", "kind": "answer", "sub": "sibling", "question": "thủ tục thông báo tổ chức lễ hội cấp xã cần giấy tờ gì", "expected": {"behavior": "answer", "acceptable": ["1.003622"]}, "n_match": null}
+{"id": "p30-a-066", "split": "tune", "kind": "answer", "sub": "sibling", "question": "giúp mình thanh toán thù lao cho hòa giải viên với", "expected": {"behavior": "answer", "acceptable": ["2.002080"]}, "n_match": null}
+{"id": "p30-a-067", "split": "held", "kind": "answer", "sub": "sibling", "question": "em muốn xác nhận vốn nước ngoài qua kho bạc nhà nước", "expected": {"behavior": "answer", "acceptable": ["3.000123"]}, "n_match": null}
+{"id": "p30-a-068", "split": "tune", "kind": "answer", "sub": "sibling", "question": "đăng ký lại khai sinh nộp ở đâu", "expected": {"behavior": "answer", "acceptable": ["1.004884"]}, "n_match": null}
+{"id": "p30-a-069", "split": "held", "kind": "answer", "sub": "sibling", "question": "cấp bản sao từ sổ gốc", "expected": {"behavior": "answer", "acceptable": ["2.000908"]}, "n_match": null}
+{"id": "p30-a-070", "split": "tune", "kind": "answer", "sub": "unique", "question": "tất toán tài khoản làm thế nào ạ", "expected": {"behavior": "answer", "acceptable": ["3.000114"]}, "n_match": null}
+{"id": "p30-a-071", "split": "held", "kind": "answer", "sub": "unique", "question": "Tôi cần thanh toán thù lao", "expected": {"behavior": "answer", "acceptable": ["2.002080"]}, "n_match": null}
+{"id": "p30-a-072", "split": "tune", "kind": "answer", "sub": "unique", "question": "cho mình hỏi thủ tục sửa lỗi sai sót", "expected": {"behavior": "answer", "acceptable": ["2.000927"]}, "n_match": null}
+{"id": "p30-a-073", "split": "held", "kind": "answer", "sub": "unique", "question": "thủ tục phục hồi hoạt động cần giấy tờ gì", "expected": {"behavior": "answer", "acceptable": ["3.000494"]}, "n_match": null}
+{"id": "p30-a-074", "split": "tune", "kind": "answer", "sub": "unique", "question": "giúp mình lập danh sách với", "expected": {"behavior": "answer", "acceptable": ["2.002303"]}, "n_match": null}
+{"id": "p30-a-075", "split": "held", "kind": "answer", "sub": "unique", "question": "em muốn hỗ trợ ăn trưa", "expected": {"behavior": "answer", "acceptable": ["1.001622"]}, "n_match": null}
+{"id": "p30-a-076", "split": "tune", "kind": "answer", "sub": "unique", "question": "xóa đăng ký thuê nộp ở đâu", "expected": {"behavior": "answer", "acceptable": ["1.012766"]}, "n_match": null}
+{"id": "p30-a-077", "split": "held", "kind": "answer", "sub": "unique", "question": "điều động nhà giáo", "expected": {"behavior": "answer", "acceptable": ["5.003870"]}, "n_match": null}
+{"id": "p30-a-078", "split": "tune", "kind": "answer", "sub": "unique", "question": "miễn nhiệm làm thế nào ạ", "expected": {"behavior": "answer", "acceptable": ["6.005259"]}, "n_match": null}
+{"id": "p30-a-079", "split": "held", "kind": "answer", "sub": "unique", "question": "Tôi cần đăng ký đến đi", "expected": {"behavior": "answer", "acceptable": ["1.013587"]}, "n_match": null}
+{"id": "p30-a-080", "split": "tune", "kind": "answer", "sub": "unique", "question": "cho mình hỏi thủ tục thuyên chuyển nhà giáo", "expected": {"behavior": "answer", "acceptable": ["5.003871"]}, "n_match": null}
+{"id": "p30-a-081", "split": "held", "kind": "answer", "sub": "hand", "question": "em muốn làm khai tử cho ông nội", "expected": {"behavior": "answer", "acceptable": ["1.000656"]}, "n_match": null}
+{"id": "p30-a-082", "split": "tune", "kind": "answer", "sub": "hand", "question": "tách hộ khẩu cần giấy tờ gì", "expected": {"behavior": "answer", "acceptable": ["1.010038"]}, "n_match": null}
+{"id": "p30-a-083", "split": "held", "kind": "answer", "sub": "hand", "question": "khai báo tạm vắng ở đâu", "expected": {"behavior": "answer", "acceptable": ["1.003677"]}, "n_match": null}
+{"id": "p30-a-084", "split": "tune", "kind": "answer", "sub": "hand", "question": "đăng ký kết hôn lệ phí bao nhiêu", "expected": {"behavior": "answer", "acceptable": ["1.000894"]}, "n_match": null}
+{"id": "p30-a-085", "split": "held", "kind": "answer", "sub": "hand", "question": "chứng thực di chúc", "expected": {"behavior": "answer", "acceptable": ["2.001019"]}, "n_match": null}
+{"id": "p30-a-086", "split": "tune", "kind": "answer", "sub": "hand", "question": "gia hạn tạm trú", "expected": {"behavior": "answer", "acceptable": ["1.002755"]}, "n_match": null}
+{"id": "p30-a-087", "split": "held", "kind": "answer", "sub": "hand", "question": "hòa giải tranh chấp đất đai", "expected": {"behavior": "answer", "acceptable": ["1.012812"]}, "n_match": null}
+{"id": "p30-a-088", "split": "tune", "kind": "answer", "sub": "hand", "question": "đăng ký khai sinh cho con", "expected": {"behavior": "answer", "acceptable": ["1.001193"]}, "n_match": null}
+{"id": "p30-fc-000", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "giải quyết hưởng thì phải làm sao", "expected": {"behavior": "clarify"}, "n_match": 16}
+{"id": "p30-fc-001", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "cho em hỏi về cấp giấy", "expected": {"behavior": "clarify"}, "n_match": 61}
+{"id": "p30-fc-002", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "tôi đang tìm hiểu giải quyết", "expected": {"behavior": "clarify"}, "n_match": 56}
+{"id": "p30-fc-003", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "thực hiện?", "expected": {"behavior": "clarify"}, "n_match": 23}
+{"id": "p30-fc-004", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "nhờ tư vấn trình báo với", "expected": {"behavior": "clarify"}, "n_match": 17}
+{"id": "p30-fc-005", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "mình cần biết về cho thuê nhà", "expected": {"behavior": "clarify"}, "n_match": 7}
+{"id": "p30-fc-006", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "giải thể trường thì phải làm sao", "expected": {"behavior": "clarify"}, "n_match": 4}
+{"id": "p30-fc-007", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "cho em hỏi về cấp lại giấy", "expected": {"behavior": "clarify"}, "n_match": 15}
+{"id": "p30-fc-008", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "tôi đang tìm hiểu đăng ký thay đổi", "expected": {"behavior": "clarify"}, "n_match": 13}
+{"id": "p30-fc-009", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "chấp thuận?", "expected": {"behavior": "clarify"}, "n_match": 4}
+{"id": "p30-fc-010", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "nhờ tư vấn chấm dứt hoạt động với", "expected": {"behavior": "clarify"}, "n_match": 4}
+{"id": "p30-fc-011", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "mình cần biết về công bố mở", "expected": {"behavior": "clarify"}, "n_match": 4}
+{"id": "p30-fc-012", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "đăng ký phương tiện thì phải làm sao", "expected": {"behavior": "clarify"}, "n_match": 15}
+{"id": "p30-fc-013", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "cho em hỏi về cấp giấy xác nhận", "expected": {"behavior": "clarify"}, "n_match": 11}
+{"id": "p30-fc-014", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "tôi đang tìm hiểu thôi", "expected": {"behavior": "clarify"}, "n_match": 30}
+{"id": "p30-fc-015", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "điều chỉnh thông tin?", "expected": {"behavior": "clarify"}, "n_match": 6}
+{"id": "p30-fc-016", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "nhờ tư vấn nuôi con nuôi với", "expected": {"behavior": "clarify"}, "n_match": 5}
+{"id": "p30-fc-017", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "mình cần biết về thủy sản", "expected": {"behavior": "clarify"}, "n_match": 11}
+{"id": "p30-fc-018", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "thủy lợi thì phải làm sao", "expected": {"behavior": "clarify"}, "n_match": 11}
+{"id": "p30-fc-019", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "cho em hỏi về rừng", "expected": {"behavior": "clarify"}, "n_match": 8}
+{"id": "p30-fc-020", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "tôi đang tìm hiểu đường bộ", "expected": {"behavior": "clarify"}, "n_match": 12}
+{"id": "p30-fc-021", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "an ninh trật tự?", "expected": {"behavior": "clarify"}, "n_match": 6}
+{"id": "p30-fc-022", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "nhờ tư vấn giấy phép lao động với", "expected": {"behavior": "clarify"}, "n_match": 6}
+{"id": "p30-fc-023", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "mình cần biết về quân nhân", "expected": {"behavior": "clarify"}, "n_match": 30}
+{"id": "p30-fc-024", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "thiên tai thì phải làm sao", "expected": {"behavior": "clarify"}, "n_match": 4}
+{"id": "p30-fc-025", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "cho em hỏi về đăng ký xe", "expected": {"behavior": "clarify"}, "n_match": 25}
+{"id": "p30-fc-026", "split": "fresh", "kind": "clarify", "sub": "fresh", "question": "tôi đang tìm hiểu học bổng", "expected": {"behavior": "clarify"}, "n_match": 31}
+{"id": "p30-fa-000", "split": "fresh", "kind": "answer", "sub": "fresh-full", "question": "tôi đang tìm hiểu đăng ký nghĩa vụ quân sự lần đầu", "expected": {"behavior": "answer", "acceptable": ["1.013133"]}, "n_match": null}
+{"id": "p30-fa-001", "split": "fresh", "kind": "answer", "sub": "fresh-full", "question": "công nhận hộ nghèo hộ cận nghèo thường xuyên hằng năm?", "expected": {"behavior": "answer", "acceptable": ["1.011607"]}, "n_match": null}
+{"id": "p30-fa-002", "split": "fresh", "kind": "answer", "sub": "fresh-full", "question": "nhờ tư vấn đăng ký cấp sao bản án tài liệu trong hồ sơ vụ án với", "expected": {"behavior": "answer", "acceptable": ["3.000165"]}, "n_match": null}
+{"id": "p30-fa-003", "split": "fresh", "kind": "answer", "sub": "fresh-full", "question": "mình cần biết về đăng ký kết hôn có yếu tố nước ngoài", "expected": {"behavior": "answer", "acceptable": ["2.000806"]}, "n_match": null}
+{"id": "p30-fa-004", "split": "fresh", "kind": "answer", "sub": "fresh-full", "question": "chấp thuận phương án bảo đảm an toàn giao thông đường thủy nội địa thì phải làm sao", "expected": {"behavior": "answer", "acceptable": ["1.009465"]}, "n_match": null}
+{"id": "p30-fa-005", "split": "fresh", "kind": "answer", "sub": "fresh-full", "question": "cho em hỏi về đăng ký kết hôn lưu động", "expected": {"behavior": "answer", "acceptable": ["1.000593"]}, "n_match": null}
+{"id": "p30-fa-006", "split": "fresh", "kind": "answer", "sub": "fresh-full", "question": "tôi đang tìm hiểu tích hợp cập nhật điều chỉnh thông tin trên thẻ căn cước", "expected": {"behavior": "answer", "acceptable": ["1.014060"]}, "n_match": null}
+{"id": "p30-fa-007", "split": "fresh", "kind": "answer", "sub": "fresh-full", "question": "chia tách sáp nhập hợp nhất hội?", "expected": {"behavior": "answer", "acceptable": ["1.013707"]}, "n_match": null}
+{"id": "p30-fa-008", "split": "fresh", "kind": "answer", "sub": "fresh-full", "question": "nhờ tư vấn hợp nhất sáp nhập chia tách quỹ với", "expected": {"behavior": "answer", "acceptable": ["1.014946"]}, "n_match": null}
+{"id": "p30-fa-009", "split": "fresh", "kind": "answer", "sub": "fresh-full", "question": "mình cần biết về xét tuyển sinh vào trường phổ thông dân tộc nội trú", "expected": {"behavior": "answer", "acceptable": ["1.005090"]}, "n_match": null}
+{"id": "p30-fa-010", "split": "fresh", "kind": "answer", "sub": "fresh-full", "question": "cấp cấp đổi cấp lại thẻ căn cước thì phải làm sao", "expected": {"behavior": "answer", "acceptable": ["1.116410"]}, "n_match": null}
+{"id": "p30-fa-011", "split": "fresh", "kind": "answer", "sub": "fresh-full", "question": "cho em hỏi về xác nhận đăng ký thu hồi khoáng sản", "expected": {"behavior": "answer", "acceptable": ["1.014258"]}, "n_match": null}
+{"id": "p30-fa-012", "split": "fresh", "kind": "answer", "sub": "fresh-sibling", "question": "tôi đang tìm hiểu công nhận người có uy tín", "expected": {"behavior": "answer", "acceptable": ["1.012222"]}, "n_match": null}
+{"id": "p30-fa-013", "split": "fresh", "kind": "answer", "sub": "fresh-sibling", "question": "trình báo mất thẻ abtc?", "expected": {"behavior": "answer", "acceptable": ["1.011728"]}, "n_match": null}
+{"id": "p30-fa-014", "split": "fresh", "kind": "answer", "sub": "fresh-sibling", "question": "nhờ tư vấn xác nhận cán bộ quân đội nghỉ hưu mắc bệnh hiểm nghèo với", "expected": {"behavior": "answer", "acceptable": ["2.002761"]}, "n_match": null}
+{"id": "p30-fa-015", "split": "fresh", "kind": "answer", "sub": "fresh-sibling", "question": "mình cần biết về tiếp nhận hồ sơ đăng ký lễ hội quy mô cấp xã", "expected": {"behavior": "answer", "acceptable": ["1.013791"]}, "n_match": null}
+{"id": "p30-fa-016", "split": "fresh", "kind": "answer", "sub": "fresh-sibling", "question": "công nhận hòa giải viên thì phải làm sao", "expected": {"behavior": "answer", "acceptable": ["1.002211"]}, "n_match": null}
+{"id": "p30-fa-017", "split": "fresh", "kind": "answer", "sub": "fresh-sibling", "question": "cho em hỏi về thành lập trường phổ thông dân tộc bán trú", "expected": {"behavior": "answer", "acceptable": ["5.003848"]}, "n_match": null}
+{"id": "p30-fa-018", "split": "fresh", "kind": "answer", "sub": "fresh-sibling", "question": "tôi đang tìm hiểu chứng thực việc sửa đổi bổ sung hủy bỏ giao dịch", "expected": {"behavior": "answer", "acceptable": ["2.000913"]}, "n_match": null}
+{"id": "p30-fa-019", "split": "fresh", "kind": "answer", "sub": "fresh-sibling", "question": "hỗ trợ người lao động đi làm việc ở nước ngoài theo hợp đồng?", "expected": {"behavior": "answer", "acceptable": ["2.002820"]}, "n_match": null}
+{"id": "p30-fa-020", "split": "fresh", "kind": "answer", "sub": "fresh-sibling", "question": "nhờ tư vấn khai báo hoạt động phát hành xuất bản phẩm với", "expected": {"behavior": "answer", "acceptable": ["3.000576"]}, "n_match": null}
+{"id": "p30-fa-021", "split": "fresh", "kind": "answer", "sub": "fresh-sibling", "question": "mình cần biết về phê duyệt đối tượng được hỗ trợ phí bảo hiểm nông nghiệp", "expected": {"behavior": "answer", "acceptable": ["1.005412"]}, "n_match": null}
+{"id": "p30-fa-022", "split": "fresh", "kind": "answer", "sub": "fresh-sibling", "question": "cho phép trường phổ thông dân tộc nội trú hoạt động giáo dục thì phải làm sao", "expected": {"behavior": "answer", "acceptable": ["6.006710"]}, "n_match": null}
+{"id": "p30-fa-023", "split": "fresh", "kind": "answer", "sub": "fresh-sibling", "question": "cho em hỏi về đăng ký khai tử có yếu tố nước ngoài", "expected": {"behavior": "answer", "acceptable": ["1.001766"]}, "n_match": null}
