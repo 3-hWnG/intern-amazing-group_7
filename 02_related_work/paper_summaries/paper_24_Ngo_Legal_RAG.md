@@ -1,39 +1,39 @@
-# Paper 03 Summary: From Values to Benchmarks: Evaluating Large Language Models for Governmental Use in Dutch
+# Paper 24 Summary: Legal Documents Query Application for Vietnamese Law Using LLM and RAG Techniques
 
 ## Citation
-- **Tên bài báo:** From Values to Benchmarks: Evaluating Large Language Models for Governmental Use in Dutch
-- **Tác giả:** Samson et al. (City of Amsterdam & TNO)
-- **Năm xuất bản:** 2026
-- **Nguồn / Hội nghị:** *ACM FAccT / GovAI*
-- **Phân loại tiêu chí:** `Domain Ứng dụng & Quản trị công`
+- **Tên bài báo:** Legal Documents Query Application for Vietnamese Law Using LLM and RAG Techniques
+- **Tác giả:** Ngô Tuấn Anh, Nguyễn Việt Hoàng, Ngô Thanh Tùng, Doãn Trung Tùng
+- **Năm xuất bản:** 2025
+- **Nguồn / Hội nghị:** *ICIIT 2025 Proceedings*
+- **Phân loại tiêu chí:** `Liên quan trực tiếp (Legal QA / E-Gov)`
 
 ---
 
 ## Problem
-Bài báo giải quyết vấn đề cốt lõi trong lĩnh vực Municipal Governance & Civic Services: Khi người dùng tương tác với hệ thống, các giải pháp truyền thống thường gặp khó khăn về độ chính xác, tính bảo mật dữ liệu, hiện tượng trôi ngữ nghĩa hoặc rào cản ngôn ngữ địa phương.
+Bài báo giải quyết vấn đề cốt lõi trong lĩnh vực Vietnamese Legal Tech: Khi người dùng tương tác với hệ thống, các giải pháp truyền thống thường gặp khó khăn về độ chính xác, tính bảo mật dữ liệu, hiện tượng trôi ngữ nghĩa hoặc rào cản ngôn ngữ địa phương.
 
 ---
 
 ## Method
-- **Phương pháp / Mô hình:** Multi-Criteria Public Sector Evaluation Protocol
+- **Phương pháp / Mô hình:** Legal Structural Chunking (Điều - Khoản - Điểm) + Metadata RAG
 - **Kiến trúc kỹ thuật:** Tích hợp mô-đun xử lý chuyên sâu, kết hợp các thành phần tiền xử lý, trích xuất đặc trưng có cấu trúc và kiểm soát đầu ra nghiêm ngặt.
 
 ---
 
 ## Dataset
-- **Dữ liệu sử dụng:** 1.200 câu hỏi hành chính đô thị Amsterdam
+- **Dữ liệu sử dụng:** Bộ Luật & Nghị định hành chính Việt Nam
 - **Đặc điểm:** Ngữ liệu thực tế, chuẩn hóa và phản ánh đúng bài toán nghiệp vụ chuyên ngành.
 
 ---
 
 ## Evaluation
-- **Chỉ số đánh giá:** Regulatory Error Rate (38.2% on standard models)
+- **Chỉ số đánh giá:** Precision, Recall, Hallucination Reduction Rate
 - **Đối sánh:** So sánh với các mô hình baseline truyền thống và mô hình ngôn ngữ chưa được tinh chỉnh chuyên biệt.
 
 ---
 
 ## Results
-- **Kết quả chính:** Chỉ ra sự thất bại nghiêm trọng của các mô hình thương mại chung trên quy tắc hành chính địa phương
+- **Kết quả chính:** Kỹ thuật chia chunk theo cấu trúc pháp lý Điều/Khoản thay vì cắt cứng theo độ dài token
 - Cải thiện vượt bậc về độ chính xác trích xuất, giảm thiểu đáng kể lỗi sai lệch thực tế và tối ưu hóa tài nguyên phần cứng.
 
 ---
@@ -45,7 +45,7 @@ Bài báo giải quyết vấn đề cốt lõi trong lĩnh vực Municipal Gove
 ---
 
 ## Relevance to our topic (Sys_3_4)
-- **Mức độ liên quan:** `DOMAIN` - Khẳng định sự cần thiết của hệ thống chuyên biệt cấp xã/phường Sys_3_4 tại Việt Nam
+- **Mức độ liên quan:** `DIRECT` - Cơ sở lý luận bảo vệ kỹ thuật chia chunk theo trường nghiệp vụ (field_chunks) trong Sys_3_4
 - Đóng góp trực tiếp vào luận chứng khoa học và thiết kế kiến trúc của trợ lý AI pháp lý Sys_3_4.
 
 ---

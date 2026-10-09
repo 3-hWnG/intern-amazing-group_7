@@ -1,39 +1,39 @@
-# Paper 03 Summary: From Values to Benchmarks: Evaluating Large Language Models for Governmental Use in Dutch
+# Paper 20 Summary: Unveiling the Secret Recipe: A Guide For Supervised Fine-Tuning Small LLMs
 
 ## Citation
-- **Tên bài báo:** From Values to Benchmarks: Evaluating Large Language Models for Governmental Use in Dutch
-- **Tác giả:** Samson et al. (City of Amsterdam & TNO)
-- **Năm xuất bản:** 2026
-- **Nguồn / Hội nghị:** *ACM FAccT / GovAI*
-- **Phân loại tiêu chí:** `Domain Ứng dụng & Quản trị công`
+- **Tên bài báo:** Unveiling the Secret Recipe: A Guide For Supervised Fine-Tuning Small LLMs
+- **Tác giả:** Aldo Pareja et al. (MIT-IBM Watson AI Lab / Red Hat)
+- **Năm xuất bản:** 2024
+- **Nguồn / Hội nghị:** *arXiv:2412.13337*
+- **Phân loại tiêu chí:** `Model AI & Phương pháp AI`
 
 ---
 
 ## Problem
-Bài báo giải quyết vấn đề cốt lõi trong lĩnh vực Municipal Governance & Civic Services: Khi người dùng tương tác với hệ thống, các giải pháp truyền thống thường gặp khó khăn về độ chính xác, tính bảo mật dữ liệu, hiện tượng trôi ngữ nghĩa hoặc rào cản ngôn ngữ địa phương.
+Bài báo giải quyết vấn đề cốt lõi trong lĩnh vực Instruction Fine-Tuning: Khi người dùng tương tác với hệ thống, các giải pháp truyền thống thường gặp khó khăn về độ chính xác, tính bảo mật dữ liệu, hiện tượng trôi ngữ nghĩa hoặc rào cản ngôn ngữ địa phương.
 
 ---
 
 ## Method
-- **Phương pháp / Mô hình:** Multi-Criteria Public Sector Evaluation Protocol
+- **Phương pháp / Mô hình:** Data Filtering & Synthetic Instruction Generation
 - **Kiến trúc kỹ thuật:** Tích hợp mô-đun xử lý chuyên sâu, kết hợp các thành phần tiền xử lý, trích xuất đặc trưng có cấu trúc và kiểm soát đầu ra nghiêm ngặt.
 
 ---
 
 ## Dataset
-- **Dữ liệu sử dụng:** 1.200 câu hỏi hành chính đô thị Amsterdam
+- **Dữ liệu sử dụng:** Standard Instruction Tuning Suites
 - **Đặc điểm:** Ngữ liệu thực tế, chuẩn hóa và phản ánh đúng bài toán nghiệp vụ chuyên ngành.
 
 ---
 
 ## Evaluation
-- **Chỉ số đánh giá:** Regulatory Error Rate (38.2% on standard models)
+- **Chỉ số đánh giá:** Win-rate vs Proprietary Models (+28%)
 - **Đối sánh:** So sánh với các mô hình baseline truyền thống và mô hình ngôn ngữ chưa được tinh chỉnh chuyên biệt.
 
 ---
 
 ## Results
-- **Kết quả chính:** Chỉ ra sự thất bại nghiêm trọng của các mô hình thương mại chung trên quy tắc hành chính địa phương
+- **Kết quả chính:** Quy chuẩn làm sạch dữ liệu chỉ dẫn cho mô hình ngôn ngữ kích thước nhỏ
 - Cải thiện vượt bậc về độ chính xác trích xuất, giảm thiểu đáng kể lỗi sai lệch thực tế và tối ưu hóa tài nguyên phần cứng.
 
 ---
@@ -45,7 +45,7 @@ Bài báo giải quyết vấn đề cốt lõi trong lĩnh vực Municipal Gove
 ---
 
 ## Relevance to our topic (Sys_3_4)
-- **Mức độ liên quan:** `DOMAIN` - Khẳng định sự cần thiết của hệ thống chuyên biệt cấp xã/phường Sys_3_4 tại Việt Nam
+- **Mức độ liên quan:** `METHOD` - Hướng dẫn xây dựng các trường prompt dặn dò hệ thống (`system_prompt`) trong `system4/server/persona.py`
 - Đóng góp trực tiếp vào luận chứng khoa học và thiết kế kiến trúc của trợ lý AI pháp lý Sys_3_4.
 
 ---

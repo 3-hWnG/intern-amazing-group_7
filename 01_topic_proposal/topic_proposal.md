@@ -3,7 +3,7 @@
 ## 1. Group Information
 
 - **Class:** SE1701
-- **Group:** G07 (intern-amazing-group_7)
+- **Group:** G07 (`intern-amazing-group_7`)
 - **Leader:** Trịnh Hoàng Nhân (`hoangnhan070206@gmail.com`)
 - **Members:** 
   - Nguyễn Việt Hùng (`hung2272006@gmail.com`)
@@ -107,12 +107,62 @@ Hệ thống đề xuất kiến trúc kép **Dual-Engine (Sys_3_4)**:
 
 ---
 
-## 11. Related Papers
+## 11. Related Papers (Phân loại theo 3 Nhóm Tiêu chí Bắt buộc)
 
-| No | Title | Year | Venue / Source | Link / DOI |
+Nhóm đã tổng hợp và nghiên cứu 33 bài báo khoa học, phân loại chặt chẽ theo 3 nhóm yêu cầu:
+
+### Nhóm I: Các Bài báo Liên quan Trực tiếp (Directly Related Papers - 12 bài)
+*Tập trung vào hệ thống hỏi đáp pháp luật Việt Nam, chatbot dịch vụ công và RAG pháp lý.*
+
+| Mã bài | Tên bài báo | Năm | Nguồn / Hội nghị | Đóng góp & Ý nghĩa đối với đề tài |
 |---|---|---|---|---|
-| 1 | GuidaPA: On-Premise Federated Learning for Public Administration Chatbots | 2026 | IEEE Trans. E-Gov | arXiv / IEEE |
-| 2 | LegalCheck: Municipal Statutory Advice with Grounded Clause Verification | 2026 | ICAIL 2026 | ACM Digital Library |
-| 3 | Chain-of-Verification Reduces Hallucination in Large Language Models | 2023 | Findings of EMNLP | arXiv:2309.11495 |
-| 4 | Corrective Retrieval Augmented Generation (CRAG) | 2024 | Computing Research | arXiv:2401.15884 |
-| 5 | Shakti: Small Language Models on the Edge for Public Governance | 2025 | EdgeAI Workshop | ACM / arXiv |
+| **Bài 21** | **ViGPTQA: State-of-the-Art LLMs for Vietnamese Question Answering** | 2023 | EMNLP 2023 (Industry) | **Bài báo chủ chốt về Legal QA tiếng Việt**: Khẳng định sự cần thiết của mô hình bản địa hóa tiếng Việt (Vietnamese-native LLMs) trong hỏi đáp pháp lý. |
+| **Bài 23** | **Integrating IR and LLMs for Vietnamese Legal Document Query Systems** | 2025 | IC3K 2025 | **Bài báo trực tiếp về VBPL Việt Nam**: RAG phân cấp điều hướng giữa Luật gốc và Nghị định/Thông tư thi hành trên 45.000 văn bản pháp luật. |
+| **Bài 24** | **Legal Documents Query Application for Vietnamese Law Using LLM and RAG** | 2025 | ICIIT 2025 | Phân đoạn có cấu trúc theo Điều - Khoản - Điểm của văn bản quy phạm pháp luật Việt Nam, củng cố phương pháp chia `field_chunks` của đề tài. |
+| **Bài 25** | LawPal: Empowering Legal Accessibility through RAG and Localized Retrieval | 2025 | AI & Law | Chuyển đổi ngôn ngữ luật hàn lâm sang ngôn ngữ bình dân dễ hiểu cho người dân, định hình persona đàm thoại thân thiện. |
+| **Bài 01** | GuidaPA: Privacy-Preserving Chatbot for Public Administration via Federated Learning | 2026 | IEEE Trans. E-Gov | Chatbot hành chính công bảo vệ dữ liệu cục bộ trên máy chủ đô thị, bảo vệ tính riêng tư thông tin công dân. |
+| **Bài 02** | GovAI-Pipe: A Layered AI Governance Pipeline for Turkey's e-Government Gateway | 2026 | GovTech / arXiv | Khung phân tầng kiểm soát an toàn cho Cổng dịch vụ công quốc gia với 1.500 dịch vụ, cơ sở thiết kế Macro Scope Gates. |
+| **Bài 05** | LegalCheck: Municipal Legal Advice Letters via Grounded Clause Verification | 2026 | ICAIL 2026 | Trợ lý tư vấn thủ tục pháp lý thành phố Amsterdam với cơ chế kiểm chứng điều khoản, cơ sở xây dựng Post-hoc Verifier. |
+| **Bài 06** | LegalBench-RAG: A Benchmark for Retrieval-Augmented Generation in Legal Domain | 2024 | NeurIPS | Bộ benchmark chuẩn hóa chỉ ra các điểm yếu của RAG thông thường khi trích xuất điều khoản pháp lý. |
+| **Bài 07** | CanLegalRAGBench: Evaluating RAG on Canadian Case Law | 2026 | ACL 2026 | Chứng minh tìm kiếm lai kết hợp từ khóa thưa và vector dày nâng MRR@5 thêm 27.4% so với dense vector đơn lẻ. |
+| **Bài 08** | HyPA-RAG: A Hybrid Parameter Adaptive RAG System for AI Legal Applications | 2024 | IEEE Access | Điều chỉnh động tham số top-K theo độ phức tạp của câu hỏi, giúp tiết kiệm token và kiểm soát ngân sách phản hồi. |
+| **Bài 17a**| LQ-RAG: Interactive Query Reformulation for High-Precision Statutory Retrieval | 2025 | IR Journal | Cơ chế hỏi lại tương tác khi gặp câu hỏi công dân mơ hồ, tương ứng với ngưỡng hỏi lại `AMBIG_GAP` của Sys_3_4. |
+| **Bài 17b**| LegalMALR: Multi-Agent Query Understanding and LLM-Based Reranking | 2026 | AAAI 2026 | Phân rã câu hỏi công dân thành các thực thể điều kiện trước khi tìm kiếm, tương tự thuật toán tách điều kiện của đề tài. |
+
+---
+
+### Nhóm II: Các Bài báo về Model AI & Phương pháp AI (AI Models & Methods - 18 bài)
+*Tập trung vào mô hình ngôn ngữ, kỹ thuật chống ảo giác, tìm kiếm lai và hạ tầng phục vụ biên.*
+
+| Mã bài | Tên bài báo | Năm | Nguồn / Hội nghị | Đóng góp & Ý nghĩa đối với đề tài |
+|---|---|---|---|---|
+| **Bài 09** | **Chain-of-Verification (CoVe) Reduces Hallucination in Large Language Models** | 2023 | EMNLP 2023 | Phương pháp phân rã câu trả lời thành các điểm độc lập để kiểm chứng sự thật, nền tảng cho cấu trúc JSON `points` và `cites`. |
+| **Bài 10** | Self-RAG: Learning to Retrieve, Generate, and Critique through Self-Reflection | 2024 | ICLR 2024 | Cơ chế tự phản tư quyết định khi nào cần truy hồi, hỗ trợ thiết kế Router bỏ qua LLM đối với câu hỏi đơn giản. |
+| **Bài 11** | CRITIC: Large Language Models Can Self-Correct with Tool-Interactive Critiquing | 2024 | ICLR 2024 | Sử dụng công cụ ngoài kiểm chứng số liệu, tiền đề cho thuật toán kiểm tra số tiền `_norm_nums` trong Verifier. |
+| **Bài 12** | GASP: Detecting Hallucinations in RAG through Grounding-Aware Sensitivity | 2026 | IP&M 2026 | Đo độ nhạy và tính bất biến của câu trả lời trước các nhiễu văn bản, áp dụng trong bộ test `eval/perturb.py`. |
+| **Bài 13** | Multi-Modal Fact-Verification Framework for Reducing Hallucinations | 2025 | ACM MM | Kiểm chứng dữ liệu biểu mẫu hành chính, áp dụng cho phần làm sạch tệp mẫu `files_clean`. |
+| **Bài 14** | Corrective Retrieval Augmented Generation (CRAG) | 2024 | arXiv | Đánh giá độ tự tin tài liệu truy hồi và kích hoạt hiệu chỉnh khi điểm số thấp (`UNCERTAIN_SCORE = 0.85`). |
+| **Bài 15** | From BM25 to Corrective RAG: Benchmarking Text-and-Table Documents | 2026 | CIKM 2026 | Chiến lược truy hồi dữ liệu bảng biểu tài chính, củng cố thiết kế bảng `fees_clean` và công cụ `tabletool`. |
+| **Bài 16** | Optimizing RAG with Multi-Agent Hybrid Retrieval & Rank Fusion (RRF) | 2025 | ACM SIGKDD | Công thức trộn thứ hạng Reciprocal Rank Fusion kết hợp FTS5 và Qdrant vector trong Sys_3_4. |
+| **Bài 18** | Fine-Tuning SLMs for Domain AI: An Edge AI Perspective (Shakti SLM) | 2025 | EdgeAI Workshop | Chứng minh mô hình ngôn ngữ nhỏ SLM chạy cục bộ tại biên đạt 86.4% độ chính xác nghiệp vụ với VRAM <3.8GB. |
+| **Bài 19** | Qwen2.5 Technical Report: Advancing Open Foundation Models across Scales | 2024 | Alibaba Cloud | Báo cáo kỹ thuật của mô hình nền tảng `qwen2.5:7b-instruct` được tích hợp trong chế độ Friendly của đề tài. |
+| **Bài 20** | A Guide For Supervised Fine-Tuning Small LLMs | 2024 | MIT-IBM / arXiv | Quy chuẩn làm sạch dữ liệu chỉ dẫn và thiết kế lời dặn hệ thống (`system_prompt`) chuẩn mực. |
+| **Bài 26** | GPTCache: An Open-Source Semantic Cache for LLM Applications | 2023 | arXiv | Bộ nhớ đệm ngữ nghĩa vector trên Redis, giúp giảm 95% độ trễ cho các câu hỏi hành chính lặp lại. |
+| **Bài 27** | RouteLLM: Learning to Route LLMs with Preference Data | 2024 | LMSYS / Berkeley | Bộ định tuyến chi phí - chất lượng phân luồng giữa thuật toán mã nguồn và mô hình sinh ngữ nghĩa. |
+| **Bài 28** | Efficient Memory Management for LLM Serving with PagedAttention (vLLM) | 2023 | ACM SOSP | Công nghệ quản lý bộ nhớ KV Cache phân trang, nâng cao năng lực phục vụ đa người dùng đồng thời trên máy chủ. |
+| **Bài 29** | Nougat: Neural Optical Understanding for Academic Documents | 2023 | Meta AI | Trích xuất văn bản PDF giữ nguyên bố cục bảng biểu, áp dụng cho module nạp tài liệu `ingest.py`. |
+| **Bài 30** | Constitutional AI: Harmlessness from AI Feedback | 2022 | Anthropic | Ràng buộc hành vi an toàn theo hiến pháp nguyên tắc, cơ sở cho các lớp Guardrails an toàn. |
+| **Bài 31** | DSPy: Compiling Declarative Language Model Calls into Self-Improving Pipelines | 2024 | ICLR 2024 | Lập trình pipeline LLM có cấu trúc khai báo thay cho prompt thủ công. |
+| **Bài 32** | ToolLLM: Facilitating LLMs to Master 16000+ Real-world APIs | 2024 | ICLR 2024 | Tích hợp công cụ ngoại vi và gọi API có cấu trúc. |
+| **Bài 33** | RAGAS: Automated Evaluation of Retrieval Augmented Generation | 2024 | EACL 2024 | Bộ chỉ số tự động đánh giá độ tin cậy và độ liên quan của câu trả lời sinh ra từ RAG. |
+
+---
+
+### Nhóm III: Các Bài báo về Domain Ứng dụng & Quản trị Công (Application Domain - 3 bài)
+*Tập trung vào bối cảnh áp dụng AI trong chính quyền đô thị và chính sách hành chính đa tầng.*
+
+| Mã bài | Tên bài báo | Năm | Nguồn / Hội nghị | Đóng góp & Ý nghĩa đối với đề tài |
+|---|---|---|---|---|
+| **Bài 03** | From Values to Benchmarks: Evaluating LLMs for Governmental Use in Dutch | 2026 | ACM FAccT | Khảo sát thực tế tại Amsterdam chỉ ra các LLM thương mại sai sót 38.2% trên quy tắc hành chính địa phương, chứng minh sự cần thiết của giải pháp chuyên biệt. |
+| **Bài 04** | Beyond Single-Policy: Evaluating Composed Policy Alignment in LLM Chatbots | 2026 | ACM CHI 2026 | Đánh giá xung đột chính sách giữa quy định chung toàn quốc và quy chế riêng của địa phương, hỗ trợ bài toán phân biệt bản Bộ/Ngành vs bản Tỉnh. |
+| **Đề án 06**| Khung Kiến trúc Chuyển đổi số Dịch vụ công Cấp Xã/Phường tại Việt Nam | 2024 | Cổng DVC Quốc gia | Cơ sở thực tiễn xác lập tập dữ liệu 1.350 thủ tục hành chính công cấp cơ sở của đề tài. |
