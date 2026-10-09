@@ -1,9 +1,29 @@
-# System 3 + 4 — Trợ lý thủ tục hành chính cấp xã/phường (trạng thái sau Phase 23–26, 2026-10-07)
+# Sys_3_4: An Enterprise Context-Aware and Dual-Engine Legal AI Assistant for Vietnamese Public Administration
 
-Project RIÊNG, dùng lại dữ liệu của repo V10.6 (snapshot trong `data/snapshot`, 1.350 thủ tục). Không import Backend/Frontend của V10.6.
-Tài liệu: [docs/SETUP.md](docs/SETUP.md) (cài đặt) · [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (kiến trúc, bảng timeout) · [docs/EVAL.md](docs/EVAL.md) (cách đo, quy tắc bộ mù) · [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) (cổng hồi quy) · [docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md) (lỗi đã biết, ai quyết) · [docs/FINAL_PRODUCT_CHECKLIST.md](docs/FINAL_PRODUCT_CHECKLIST.md) (đừng quên cho bản cuối: dev/người dùng, che PII, quyền hộp thoại, công tắc AI) · [docs/BAO_CAO_DOT4.md](docs/BAO_CAO_DOT4.md) (báo cáo ngắn đợt 4) · kế hoạch: [PLAN_SYSTEM3](docs/PLAN_SYSTEM3.md), [DOT3](docs/PLAN_SYSTEM3_DOT3.md), [DOT4](docs/PLAN_SYSTEM3_DOT4.md), [DOT5](docs/PLAN_SYSTEM3_DOT5.md).
-Chạy: `python run_server.py` ở thư mục gốc (cổng 8300). Không cần `PYTHONPATH`, thư mục gốc tên gì cũng được. Bước sinh chữ bật mặc định và cần Ollama + `qwen3:4b`; không có Ollama thì lượt đó rơi về câu trả lời bằng code, hoặc đặt `S3_USE_LLM=0` để tắt hẳn. Mọi thứ hiện giờ là **chế độ nhà phát triển**, chưa an toàn cho người dùng thường: xem [docs/FINAL_PRODUCT_CHECKLIST.md](docs/FINAL_PRODUCT_CHECKLIST.md).
-Kiểm tài liệu so với số đo thật: `python eval/check_docs.py` (phải sạch).
+> **Nhánh:** `draft` | **Mã nhóm:** SE1701_G07 (`intern-amazing-group_7`)  
+> **Thành viên:** Trịnh Hoàng Nhân (Leader), Nguyễn Việt Hùng, Phạm Lê Thiên Đan
+
+## Cấu trúc Hồ sơ Nghiên cứu & Bài báo Học thuật (Section 7 Standard)
+
+Toàn bộ tài liệu học thuật của đề tài được tổ chức theo quy chuẩn cấu trúc thư mục nghiên cứu nhóm trên Git:
+
+```text
+.
+├── 01_topic_proposal/       # Đề xuất đề tài và nhật ký chỉnh sửa (topic_proposal.md, topic_revision_log.md)
+├── 02_related_work/          # Khảo sát tài liệu, 32 bài báo, ma trận đối sánh (paper_list.md, literature_review_matrix.md)
+├── 03_problem_and_gap/       # Vấn đề thực tế, khoảng trống nghiên cứu, 4 câu hỏi nghiên cứu (RQ1 - RQ4)
+├── 04_proposed_system/       # Kiến trúc hệ thống, tích hợp AI, sơ đồ luồng dữ liệu (system_architecture.md, diagrams/)
+├── 05_methodology/           # Phương pháp luận, tập dữ liệu 1.350 thủ tục, baseline và chỉ số đánh giá
+├── 06_experiment_results/    # Thiết lập thực nghiệm, kết quả bộ mù HOLDOUT-4, bảng số đo độ trễ p50/p95
+├── 07_paper_draft/           # Toàn văn bài báo khoa học chuẩn IEEE/ACM (abstract, intro, full_paper.md, full_paper.tex)
+├── 08_final_submission/      # Bản nộp hoàn chỉnh: bài báo PDF (final_paper.pdf), file Word và slide báo cáo
+└── weekly_reports/           # Báo cáo tiến độ hằng tuần của nhóm (week_01.md đến week_04.md)
+```
+
+---
+
+# Hướng dẫn Kỹ thuật & Triển khai Hệ thống Sys_3_4
+
 Dựng lại từ Git (Phase 28): `python run_server.py eval/run_all.py` (thêm `--quick` để bỏ phần chậm) dựng DB, dựng DB V10.6 từ mã vendor `eval/vendor_v106/`, chạy mọi gate không GPU và in bảng số kèm ngưỡng; xem [eval/REPRODUCE.md](eval/REPRODUCE.md). Không cần `repo/` cạnh `system3`.
 
 ## System 4 (Friendly mode, song song trên cùng web) — nhánh `System_3&4`
