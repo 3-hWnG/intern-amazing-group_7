@@ -77,7 +77,7 @@ def fast_schema(kb: bool, small_talk: bool = False) -> dict:
 
 def build(memories: list[str], summary: str, instructions: list[str], *, clarify_exhausted: int = 0,
           upset: bool = False, foreign: bool = False, fast: bool = False, evidence: list[dict] | None = None,
-          cache_order: bool = False, text_format: bool = False, small_talk: bool = False):
+          cache_order: bool = False, text_format: bool = False, small_talk: bool = False, web: bool = False):
     """fast=True: chế độ Nhanh (JSON theo fast_schema, hoặc text_format = dòng kế hoạch + chữ tự do); False: Suy nghĩ kỹ.
     evidence=None: AI chung; danh sách (có thể rỗng): Chuyên gia, chỉ được trả lời từ các đoạn dữ liệu này.
     small_talk=True: AI tự đánh dấu câu xã giao (GREETING_MODE ai_* / phần còn lại của code_first).
@@ -120,8 +120,9 @@ def build(memories: list[str], summary: str, instructions: list[str], *, clarify
                     "Nếu đã đủ rõ thì trả lời luôn, không thêm mẫu này. Thông tin đã biết về người dùng thì không hỏi lại.")
     kb_rules, kb_data = [], []
     if evidence is not None:
-        kb_rules = ["", "CHẾ ĐỘ CHUYÊN GIA (người dùng đã bật bộ dữ liệu của họ):",
-                    "- CHỈ trả lời bằng thông tin trong \"Dữ liệu tham khảo\" bên dưới. KHÔNG dùng kiến thức chung, không suy đoán thêm.",
+        kb_rules = ["", "CHẾ ĐỘ TÌM WEB (người dùng bật nút Tìm web; đây là kết quả DuckDuckGo):" if web else "CHẾ ĐỘ CHUYÊN GIA (người dùng đã bật bộ dữ liệu của họ):",
+                    "- CHỈ trả lời bằng thông tin trong \"Dữ liệu tham khảo\" bên dưới. KHÔNG dùng kiến thức chung, không suy đoán thêm."
+                    + (" Kết quả web có thể sai hoặc cũ: nêu rõ là theo nguồn nào." if web else ""),
                     "- Ghi số đoạn [1], [2]… ngay sau ý lấy từ đoạn đó" + ('; liệt kê các số đã dùng trong "sources".' if json_fast else "."),
                     "- Nếu dữ liệu không có thông tin cần để trả lời: nói rõ là không có trong dữ liệu, rồi hỏi lại để người dùng nói cụ thể hơn"
                     + (' ("ask_back" = true, kèm "choices").' if json_fast else f" (kèm {CHOICES_MARK}).")]
@@ -137,7 +138,8 @@ def build(memories: list[str], summary: str, instructions: list[str], *, clarify
             for i, e in enumerate(evidence, 1):
                 kb_data.append(f"[{i}] {e['title']} (nguồn: {e['dataset']})\n{e['text'] if e.get('full') else e['text'][:settings.get('EVIDENCE_CHARS')]}")
         else:
-            kb_data = ["", "Dữ liệu tham khảo: KHÔNG tìm thấy đoạn nào liên quan đến câu hỏi trong các bộ dữ liệu đang bật."]
+            kb_data = ["", "Dữ liệu tham khảo: KHÔNG tìm thấy kết quả web nào cho câu hỏi này (có thể mất mạng)." if web else
+                       "Dữ liệu tham khảo: KHÔNG tìm thấy đoạn nào liên quan đến câu hỏi trong các bộ dữ liệu đang bật."]
     mem = (["", "Những điều đã biết về người dùng (dùng khi liên quan, không hỏi lại):"] + [f"- {m}" for m in memories]) if memories else []
     summ = ["", "Tóm tắt phần đầu cuộc trò chuyện:", summary] if summary else []
     extra = list(instructions)

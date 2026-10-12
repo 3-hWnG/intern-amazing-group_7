@@ -27,10 +27,12 @@ import user_memory
 import os
 import threading
 
-from config import DEV_MODE, HOST, LLM_MODEL, PORT, TABLE_BUTTON, WEB_DIR
-from core import queue
+from config import (DEV_MODE, HOST, LLM_MODEL, PORT, TABLE_BUTTON, WEB_DIR, WEBSEARCH_MODE, WEBSEARCH_RESULTS,
+                    WEBSEARCH_TIMEOUT)
+from core import queue, websearch
 from core.llm import loaded_models, model_name, warm_up
 from planner import hybrid
+from policy import mask_pii
 from db import store
 
 
@@ -161,6 +163,7 @@ class ChatIn(BaseModel):
     conversation_id: str | None = None
     reply_to: int | None = None
     proc_id: str | None = None          # Phase 31: nút "dạng khác"
+    websearch: bool = False             # nút "Tìm web"
 
 
 @app.get("/")
@@ -308,13 +311,23 @@ async def chat(body: ChatIn, cid_mem: str = Depends(_cid)):
                              pick_proc=body.proc_id, memory=user_memory.for_policy(cid_mem))
     # FINAL-PRODUCT: [B3] lưu nguyên văn người dùng gõ (chưa che CCCD/SĐT) vào messages.content; title hộp thoại cũng lấy 60 ký tự đầu. Bản cuối: che PII trước khi ghi (mục 2)
     store.add_message(cid, "user", text)
-    store.set_title_if_new(cid, text)
+    store.set_title_if_new(cid, mask_pii(text))
 
     box = {}
 
     def job(emit):
         t0 = time.perf_counter()
-        box["res"] = orchestrator.handle_turn(turn)
+        only = body.websearch and WEBSEARCH_MODE == "only"
+        res = ({"kind": "answer", "blocks": [], "clarify": None, "plan": {}, "trace": {}} if only
+               else orchestrator.handle_turn(turn))
+        if body.websearch and res.get("kind") != "clarify":   # đang chờ người dùng chọn thì chưa tra web
+            wb, winfo = websearch.web_block(text, WEBSEARCH_RESULTS, WEBSEARCH_TIMEOUT)
+            if res.get("blocks"):   # có đáp án thủ tục ở trên: web chỉ để tham khảo (con số web có thể cũ / khác dữ liệu chính thức)
+                wb["title"] += " (tham khảo; nếu khác phần trên thì theo phần trên)"
+            res["blocks"] = list(res.get("blocks") or []) + [wb]
+            if isinstance(res.get("trace"), dict):
+                res["trace"]["web"] = winfo
+        box["res"] = res
         box["ms"] = int((time.perf_counter() - t0) * 1000)
 
     try:
@@ -323,7 +336,9 @@ async def chat(body: ChatIn, cid_mem: str = Depends(_cid)):
         raise HTTPException(503, str(e))
     chunks = [c async for c in queue.manager.stream(j)]   # chờ worker xong
     if "res" not in box:
-        raise HTTPException(500, "".join(chunks).strip() or j.error or "lỗi xử lý")
+        import logging
+        logging.getLogger("uvicorn.error").error("chat job lỗi: %s", j.error or "".join(chunks).strip())
+        raise HTTPException(500, "Hệ thống xử lý quá lâu, vui lòng thử lại." if j.error == "timeout" else "Có lỗi khi xử lý, vui lòng thử lại.")
 
     r = box["res"]
     blocks, clar, kind = r.get("blocks", []), r.get("clarify"), r.get("kind", "answer")

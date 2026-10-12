@@ -6,6 +6,7 @@ Ollama tự xếp hàng giữa System 3 và System 4 vì cả hai dùng chung m�
 from __future__ import annotations
 import asyncio
 import json
+import os
 import threading
 
 import ollama
@@ -48,7 +49,7 @@ class QueueFull(RuntimeError):
     pass
 
 
-_gate = asyncio.Semaphore(1)
+_gate = asyncio.Semaphore(max(1, int(os.environ.get("S4_CONCURRENCY", "1"))))   # >1 chỉ có ích khi Ollama đặt OLLAMA_NUM_PARALLEL tương ứng
 _waiting = 0
 
 

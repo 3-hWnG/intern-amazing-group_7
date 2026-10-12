@@ -16,7 +16,7 @@ import threading
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from . import admin, auth, config, datasets, db, llm, routes, search, settings, strict
+from . import admin, auth, config, datasets, db, domains, llm, routes, search, settings, strict
 
 PUBLIC = {"/s4/login", "/s4/auth/login", "/s4/auth/signup", "/s4/auth/logout", "/s4/public", "/health", "/favicon.ico"}
 _CONV = re.compile(r"^/conversations/([^/]+)")
@@ -26,6 +26,8 @@ def install(app, s3_store) -> None:
     db.init_db()
     from core import llm as s3_llm   # Strict dùng chung model với Friendly: model chọn ở ⚙ Cài đặt (FRIENDLY_MODEL)
     s3_llm.MODEL_PROVIDER = lambda: settings.get("FRIENDLY_MODEL")
+    from core import websearch as s3_web   # khối Tìm web của Strict dùng model riêng (WEBSEARCH_MODEL)
+    s3_web.MODEL_PROVIDER = lambda: settings.get("WEBSEARCH_MODEL")
     datasets.resume_unfinished()   # tệp đang nạp dở khi tắt server -> nạp lại
     if os.environ.get("S4_WARMUP", "1") == "1":   # test đặt S4_WARMUP=0
         threading.Thread(target=search.warm_up, name="s4-warmup", daemon=True).start()   # nạp sẵn bge-m3 + reranker
@@ -47,6 +49,7 @@ def install(app, s3_store) -> None:
     app.include_router(routes.make_router(s3_store, strict_list, drop_strict))
     app.include_router(strict.make_router(app, s3_store))
     app.include_router(admin.make_router(s3_store))
+    app.include_router(domains.make_router())
     app.mount("/s4/static", StaticFiles(directory=str(config.WEB_DIR / "static")), name="s4_static")
 
     def deny(code: int, detail: str) -> JSONResponse:
@@ -71,6 +74,9 @@ def install(app, s3_store) -> None:
             return FileResponse(config.WEB_DIR / "templates" / "index.html", headers={"Cache-Control": "no-cache"})
         if (path.startswith("/dev/") or (path == "/config" and method != "GET")) and user["role"] != "dev":
             return deny(403, "Chỉ tài khoản dev được dùng chức năng này")
+
+        if path == "/chat" and method == "POST" and not db.can_use_domain(user, db.get_domain(1)):
+            return deny(403, "Domain Thủ tục đang khoá: chỉ dev và cán bộ dùng được")
 
         if path == "/conversations":   # danh sách / xoá tất cả của System 3 -> chỉ của người này
             if method == "GET":

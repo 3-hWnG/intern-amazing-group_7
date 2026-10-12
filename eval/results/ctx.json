@@ -653,7 +653,7 @@
   "tops": [
    "1.001731"
   ],
-  "behavior": "answer",
+  "behavior": "clarify",
   "bad": [],
   "last": "người mất có được hỗ trợ chi phí mai táng không",
   "exp": [
@@ -1596,7 +1596,7 @@
   ],
   "trace": {
    "decision": "return",
-   "why": "dấu hiệu quay lại (prev) -> thủ tục đã nói",
+   "why": "chỉ thứ tự trong danh sách đã nói/đã hiện",
    "topic_before": "1.001022",
    "history": [
     "1.001193",
@@ -2095,20 +2095,18 @@
  {
   "id": "dev-57",
   "cat": "ctx_i",
-  "ok": true,
+  "ok": false,
   "fields_ok": null,
-  "tops": [
-   "1.001193"
-  ],
-  "behavior": "answer",
+  "tops": [],
+  "behavior": "apologize",
   "bad": [],
   "last": "bé sinh ra không có giấy chứng sinh thì sao",
   "exp": [
    "1.001193"
   ],
   "trace": {
-   "decision": "story",
-   "why": "lời kể sự kiện đời sống (đăng ký khai sinh) ghép với câu hỏi -> thủ tục",
+   "decision": "independent",
+   "why": "chủ đề ngoài phạm vi",
    "topic_before": "1.001193",
    "history": [
     "1.001193"

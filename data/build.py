@@ -79,6 +79,17 @@ def _fee_line(f: dict) -> str:
                                   f["submission_method"]) if x)
 
 
+def _bullet(name: str, qty: str = "") -> str:
+    """Dòng giấy tờ: nguồn đã có sẵn ký hiệu đầu dòng ('- ', '+ ', '* ') thì KHÔNG thêm '- ' nữa (trước đây ra '- - ...').
+    '+' là mục con -> thụt 2 ký tự. Chỉ đổi định dạng, không đổi chữ."""
+    n = (name or "").strip()
+    if n[:2] in ("- ", "* ", "• "):
+        n = n[2:].lstrip()
+    elif n.startswith("+ "):
+        return f"  {n}{qty}"
+    return f"- {n}{qty}"
+
+
 def build_fees_and_chunks(conn):
     for (pid,) in conn.execute("SELECT proc_id FROM procedures").fetchall():
         rec = R.build_record(conn, pid)
@@ -100,7 +111,7 @@ def build_fees_and_chunks(conn):
         for c in rec["components"]:
             q = (f" (bản chính {c['original_qty']}, bản sao {c['copy_qty']})"
                  if c["original_qty"] or c["copy_qty"] else "")
-            by_case.setdefault(c["case_ordinal"], []).append(f"- {c['name']}{q}")
+            by_case.setdefault(c["case_ordinal"], []).append(_bullet(c["name"], q))
         names = {c["ordinal"]: c["case_name"] for c in rec["cases"]}
         chunks["components"] = [
             (k, (names.get(k, "") + "\n" if names.get(k) else "") + "\n".join(lines))

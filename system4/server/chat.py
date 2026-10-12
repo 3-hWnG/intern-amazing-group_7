@@ -24,7 +24,7 @@ import re
 import time
 import uuid
 
-from . import ambig, context, db, greet, ground, guard, lang, llm, memory, persona, search, settings, tabletool
+from . import ambig, context, db, greet, ground, guard, lang, llm, memory, persona, search, settings, tabletool, websearch
 
 _background: set = set()   # giữ tham chiếu tới việc nền để không bị dọn mất giữa chừng
 _turns: dict[str, dict] = {}   # lượt đang chạy: turn_id -> {"user": id, "fast": cờ "Trả lời nhanh"}
@@ -135,7 +135,7 @@ def search_query(text: str, history_path: list[dict]) -> str:
 
 def build_messages(user_id: int, cid: str, history_path: list[dict], text: str, *, fast: bool,
                    leak_retry: bool = False, evidence: list[dict] | None = None, extra: list[str] | None = None,
-                   small_talk: bool = False) -> tuple[list[dict], dict]:
+                   small_talk: bool = False, web: bool = False) -> tuple[list[dict], dict]:
     """Lời dặn hệ thống + lịch sử + tin mới. Trả (messages, thông tin để quyết định / lưu meta).
     extra: lời dặn thêm cho riêng lần gửi này (câu xã giao, viết lại vì chi tiết bịa). small_talk: AI được đánh dấu câu xã giao."""
     block, instructions = guard.check_input(text)
@@ -149,7 +149,7 @@ def build_messages(user_id: int, cid: str, history_path: list[dict], text: str, 
     mems = [m["text"] for m in db.list_memories(user_id)]
     cache = settings.get("PROMPT_CACHE_ORDER")
     kw = dict(clarify_exhausted=exhausted, upset=persona.negative(text), foreign=foreign, fast=fast, evidence=evidence,
-              cache_order=cache, text_format=fast and settings.get("FAST_FORMAT") == "text", small_talk=small_talk)
+              cache_order=cache, text_format=fast and settings.get("FAST_FORMAT") == "text", small_talk=small_talk, web=web)
     draft = persona.build(mems, "", instructions, **kw)
     size = len(draft) if isinstance(draft, str) else len(draft[0]) + len(draft[1])
     summary, hist = context.history(cid, history_path, size)
@@ -343,22 +343,27 @@ def _answer_text(state: dict) -> str:
     return raw if state.get("mode") == "fast" and state.get("fmt") == "json" else persona.split_choices(raw)[0]
 
 
-async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list[dict], mode: str = "fast"):
+async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list[dict], mode: str = "fast", web: bool = False):
     """Async generator SSE cho một lượt. user_mid = tin người dùng mà câu trả lời nối vào."""
     mode = "think" if mode == "think" else "fast"
     turn_id = uuid.uuid4().hex
     flag = _turns[turn_id] = {"user": user["id"], "fast": False}
     try:
         evidence, sinfo, t0 = None, None, time.perf_counter()
-        active = db.active_datasets(user["id"])
+        dom = db.get_domain((db.get_conversation(cid) or {}).get("domain_id")) or db.get_domain(2)
+        active = db.active_datasets(user["id"], dom["id"], user["role"])
         gm = settings.get("GREETING_MODE") if active else "off"
         gate = gm in ("code_first", "ai_first") and greet.is_greeting(text, history_path)   # quy tắc code: ngắn + có từ chào
         small_by_code = gm == "code_first" and gate        # code nhận trước: không tra dữ liệu
         ask_small = gm != "off" and not small_by_code       # AI được đánh dấu câu xã giao
         amb, table = None, None
         squery = search_query(text, history_path)
-        if active and not small_by_code:   # có bộ dữ liệu đang bật -> Chuyên gia: tìm trước khi hỏi AI
-            evidence, sinfo = await asyncio.to_thread(search.search, user["id"], squery)
+        if web:   # nút "Tìm web": chỉ DuckDuckGo, bỏ qua bộ dữ liệu và câu xã giao
+            gm, gate, small_by_code, ask_small = "off", False, False, False
+            evidence, sinfo = await asyncio.to_thread(websearch.search, squery)
+            sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
+        elif active and not small_by_code:   # có bộ dữ liệu đang bật -> Chuyên gia: tìm trước khi hỏi AI
+            evidence, sinfo = await asyncio.to_thread(search.search, user["id"], squery, [d["id"] for d in active])
             sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
             ids = [d["id"] for d in active]
             if settings.get("TABLE_TOOL") and tabletool.triggered(text):
@@ -374,8 +379,10 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                 amb = await asyncio.to_thread(ambig.check, squery, ids, {c["id"] for c in sinfo.get("candidates", [])})
                 sinfo["ambiguity"] = amb
         extra0 = [greet.SMALL_TALK_INSTRUCTION] if small_by_code else []
+        if dom["guardrail"]:   # guardrail của domain: lời dặn gửi thẳng cho AI ngay trước khi soạn câu trả lời
+            extra0.append(f"Quy tắc riêng của lĩnh vực «{dom['name']}»: {dom['guardrail']}")
         bm = lambda **k: build_messages(user["id"], cid, history_path, text, **{"evidence": evidence, "extra": extra0,
-                                                                                "small_talk": ask_small and evidence is not None, **k})
+                                                                                "small_talk": ask_small and evidence is not None, "web": web, **k})
         msgs, info = bm(fast=mode == "fast")
         prompts = [{"why": "lần gửi đầu", "messages": msgs}]
         yield sse({"type": "meta", "conversation_id": cid, "user_message_id": user_mid, "turn_id": turn_id, "mode": mode,
@@ -446,7 +453,7 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                         yield ev
                 if small:
                     meta["small_talk"] = "code" if small_by_code else meta.get("small_talk_override") or "ai"
-                if evidence == [] and not small and not state.get("replaced") and kb_violation("".join(state.get("parts") or [])):
+                if evidence == [] and not web and not small and not state.get("replaced") and kb_violation("".join(state.get("parts") or [])):
                     # yêu cầu .docx: không dùng kiến thức chung. Tìm không thấy mà AI vẫn tự trả lời -> thay bằng câu cố định
                     state["replaced"] = {"name": "Chỉ trả lời từ dữ liệu", "message": settings.get("KB_NOT_FOUND_MESSAGE")}
                     yield sse({"type": "replace", "text": state["replaced"]["message"]})
@@ -494,14 +501,16 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                 content = f"{prefix}\n\n{content}".strip()
             if evidence is not None:
                 meta["specialist"] = True
-                meta["retrieval"] = {k: sinfo.get(k) for k in ("datasets", "reranked", "candidates_n", "keyword", "vector", "search_ms")}
+                meta["retrieval"] = {k: sinfo.get(k) for k in ("datasets", "reranked", "candidates_n", "keyword", "vector", "search_ms", "web", "error")}
+            if web:
+                meta["web"] = True
             if evidence is not None and not small:   # Chuyên gia: nguồn = các đoạn AI ghi [n] (hoặc liệt kê trong "sources")
                 cited = sorted({int(n) for n in re.findall(r"\[(\d{1,2})\]", content)} | set(state.get("sources") or []))
-                meta["sources"] = [{"n": n, "record_id": evidence[n - 1]["id"], "title": evidence[n - 1]["title"],
+                meta["sources"] = [{"n": n, "record_id": evidence[n - 1]["id"], "url": evidence[n - 1].get("url"), "title": evidence[n - 1]["title"],
                                     "dataset": evidence[n - 1]["dataset"], "score": evidence[n - 1].get("score")}
                                    for n in cited if 1 <= n <= len(evidence)]
                 if not meta["sources"]:
-                    meta["consulted"] = [{"record_id": e["id"], "title": e["title"], "dataset": e["dataset"], "score": e.get("score")}
+                    meta["consulted"] = [{"record_id": e["id"], "url": e.get("url"), "title": e["title"], "dataset": e["dataset"], "score": e.get("score")}
                                          for e in evidence[:3]]
             if choices and not info["exhausted"]:
                 meta["choices"] = choices

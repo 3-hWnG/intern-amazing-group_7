@@ -4,7 +4,7 @@ import json
 import sqlite3
 import uuid
 
-from config import DB_PATH, SCHEMA_PATH
+from config import DB_PATH, SCHEMA_PATH, HISTORY_MESSAGES, SHOWN_MAX, TRACE_KEEP
 
 
 def conn() -> sqlite3.Connection:
@@ -106,10 +106,11 @@ def get_messages(cid: str) -> list[dict]:
     return out
 
 
-def recent_history(cid: str, turns: int = 5) -> list[dict]:
-    """turns lượt gần nhất (user+assistant), cũ -> mới. Gọi TRƯỚC khi lưu tin mới."""
+def recent_history(cid: str, n: int | None = None) -> list[dict]:
+    """n tin gần nhất (user+assistant; mặc định HISTORY_MESSAGES), cũ -> mới. Gọi TRƯỚC khi lưu tin mới.
+    Tin cũ hơn vẫn nằm trong DB để hiển thị nhưng không vào ngữ cảnh. ponytail: cửa sổ cắt theo số tin; thẻ hỏi lại là 1 tin."""
     rows = _run("SELECT role,content FROM messages WHERE conversation_id=? ORDER BY id DESC LIMIT ?",
-                (cid, turns * 2), many=True)
+                (cid, HISTORY_MESSAGES if n is None else n), many=True)
     return [dict(r) for r in reversed(rows)]
 
 
@@ -117,6 +118,8 @@ def recent_history(cid: str, turns: int = 5) -> list[dict]:
 def add_trace(cid: str, message_id: int, trace: dict, total_ms: int) -> None:
     _run("INSERT OR REPLACE INTO turn_traces VALUES (?,?,?,?)",
          (cid, message_id, json.dumps(trace, ensure_ascii=False), total_ms))
+    # giới hạn dung lượng: chỉ giữ TRACE_KEEP lượt gần nhất
+    _run("DELETE FROM turn_traces WHERE rowid <= (SELECT MAX(rowid) FROM turn_traces) - ?", (TRACE_KEEP,))
 
 
 def get_trace(cid: str, message_id: int) -> dict | None:
@@ -156,6 +159,18 @@ def add_shown(cid: str, proc_id: str, label: str) -> None:
     _run("INSERT OR IGNORE INTO shown_procedures VALUES "
          "(?,?,?,(SELECT COALESCE(MAX(ordinal),0)+1 FROM shown_procedures WHERE conversation_id=?))",
          (cid, proc_id, label, cid))
+    # chỉ giữ SHOWN_MAX thủ tục mới nhất (thầy: 8 là quá nhiều)
+    _run("DELETE FROM shown_procedures WHERE conversation_id=? AND ordinal <= "
+         "(SELECT COALESCE(MAX(ordinal),0) FROM shown_procedures WHERE conversation_id=?) - ?", (cid, cid, SHOWN_MAX))
+
+
+def count_proc(proc_id: str, label: str) -> None:
+    _run("INSERT INTO proc_stats(proc_id,label,n) VALUES (?,?,1) "
+         "ON CONFLICT(proc_id) DO UPDATE SET n=n+1, label=excluded.label, last_at=datetime('now')", (proc_id, label))
+
+
+def top_procs(limit: int = 20) -> list[dict]:
+    return [dict(r) for r in _run("SELECT proc_id,label,n,last_at FROM proc_stats ORDER BY n DESC, last_at DESC LIMIT ?", (limit,), many=True)]
 
 
 def get_state(cid: str) -> dict | None:

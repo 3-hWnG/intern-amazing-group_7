@@ -43,6 +43,15 @@ APOLOGY = {
     "injection": "Mình chỉ hỗ trợ tra cứu thủ tục hành chính cấp xã/phường và không thể làm theo yêu cầu đó.",
 }
 CHITCHAT = "Xin chào! Mình là trợ lý tra cứu thủ tục hành chính cấp xã/phường. Bạn cần hỏi thủ tục nào?"
+
+
+def _chitchat_reply(q: str) -> str:
+    f = fold(q or "")
+    if re.search(r"\b(?:cam on|thanks|thank you|biet on)\b", f):
+        return "Không có gì ạ! Nếu bạn cần hỗ trợ thêm thông tin thủ tục nào khác, cứ nhắn mình nhé."
+    if re.search(r"\b(?:tam biet|bye|goodbye|hen gap lai)\b", f):
+        return "Tạm biệt bạn! Chúc bạn một ngày tốt lành và thực hiện thủ tục thuận lợi nhé."
+    return CHITCHAT
 MAX_CHARS = 1100
 SUMMARY_CHARS = 450
 
@@ -193,6 +202,8 @@ def _merge(tasks):
         if k in merged:
             m = merged[k]
             m.fields += [f for f in t.fields if f not in m.fields]
+            for f, st in t.field_status.items():
+                m.field_status.setdefault(f, st)
             m.conditions += [c for c in t.conditions if c not in m.conditions]
             m.soft_conditions += [c for c in t.soft_conditions if c not in m.soft_conditions]
             m.cases += [c for c in t.cases if c not in m.cases]
@@ -215,7 +226,7 @@ def answer(routed, *, conn=None, question: str = "", llm=None) -> dict:
         return {"kind": "clarify", "blocks": [], "clarify": routed.clarify, "verify": []}
     for t in _merge(routed.tasks):
         if t.route == "chitchat":
-            blocks.append({"title": "", "text": CHITCHAT, "sources": []})
+            blocks.append({"title": "", "text": _chitchat_reply(question), "sources": []})
         elif t.route == "note":
             blocks.append({"title": "Đã ghi nhận", "text": "Mình đã ghi nhận thông tin bạn cung cấp: " + "; ".join(t.context_facts or ["(không có)"]), "sources": []})
         elif t.route == "apologize":

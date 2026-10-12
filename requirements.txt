@@ -10,6 +10,7 @@ ollama==0.6.3
 python-multipart==0.0.32    # form đăng nhập, tải file lên
 bcrypt==5.0.0               # mã hoá mật khẩu
 qdrant-client==1.19.1       # kho vector (Qdrant chạy local mode, chưa dùng ở NV1)
+ddgs==9.16.0               # nút Tìm web (DuckDuckGo)
 openpyxl==3.1.5             # đọc Excel (NV3)
 python-docx==1.2.0          # đọc Word (NV3)
 pypdf==6.19.0               # đọc PDF (NV3)

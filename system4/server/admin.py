@@ -86,6 +86,15 @@ def make_router(s3_store) -> APIRouter:
     def other_active_devs(uid: int) -> int:
         return db.run("SELECT COUNT(*) n FROM users WHERE role='dev' AND disabled=0 AND id<>?", (uid,), one=True)["n"]
 
+    @r.get("/stats")
+    def stats(request: Request, limit: int = 20):
+        """Thống kê: thủ tục Strict được trả lời nhiều nhất, số 👍/👎, số tài khoản theo loại."""
+        dev(request)
+        fb = lambda t: {k: db.run(f"SELECT COUNT(*) n FROM {t} WHERE feedback=?", (v,), one=True)["n"] for k, v in (("up", 1), ("down", -1))}
+        return {"procedures": s3_store.top_procs(max(1, min(limit, 200))),
+                "feedback": {"friendly": fb("messages"), "strict": fb("strict_nodes")},
+                "roles": {x["role"]: x["n"] for x in db.run("SELECT role, COUNT(*) n FROM users GROUP BY role", many=True)}}
+
     @r.get("/users")
     def users(request: Request):
         dev(request)
@@ -94,8 +103,8 @@ def make_router(s3_store) -> APIRouter:
     @r.post("/users")
     def create_user(body: NewUser, request: Request):
         dev(request)
-        if body.role not in ("dev", "user"):
-            raise HTTPException(422, "Vai trò phải là dev hoặc user")
+        if body.role not in db.ROLES:
+            raise HTTPException(422, "Vai trò phải là dev, can_bo hoặc user")
         e = auth.check_new_account(body.username.strip(), body.password)
         if e:
             raise HTTPException(422, e)
@@ -116,8 +125,8 @@ def make_router(s3_store) -> APIRouter:
         if losing_dev and other_active_devs(uid) == 0:
             raise HTTPException(422, "Phải còn ít nhất một tài khoản dev đang hoạt động")
         if body.role is not None:
-            if body.role not in ("dev", "user"):
-                raise HTTPException(422, "Vai trò phải là dev hoặc user")
+            if body.role not in db.ROLES:
+                raise HTTPException(422, "Vai trò phải là dev, can_bo hoặc user")
             db.run("UPDATE users SET role=? WHERE id=?", (body.role, uid))
         if body.disabled is not None:
             db.run("UPDATE users SET disabled=? WHERE id=?", (1 if body.disabled else 0, uid))

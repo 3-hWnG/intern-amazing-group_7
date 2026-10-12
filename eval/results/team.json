@@ -7,7 +7,7 @@
   "facts_missing": [],
   "extra_tasks": 0,
   "forbidden": [],
-  "chars": 1105,
+  "chars": 1103,
   "tops": [
    "1.000894"
   ],
@@ -19,15 +19,17 @@
   "group": "Định lượng",
   "beh_ok": true,
   "proc_ok": true,
-  "facts_missing": [],
+  "facts_missing": [
+   "8[.]000|8000"
+  ],
   "extra_tasks": 0,
   "forbidden": [],
-  "chars": 300,
+  "chars": 379,
   "tops": [
    "1.001193"
   ],
   "note": "8.000đ lấy từ corpus nhóm (team_fee_overlay)",
-  "pass": true
+  "pass": false
  },
  {
   "id": "TC03",
@@ -39,7 +41,7 @@
   ],
   "extra_tasks": 0,
   "forbidden": [],
-  "chars": 1211,
+  "chars": 1209,
   "tops": [
    "1.001022"
   ],
@@ -86,7 +88,7 @@
   ],
   "extra_tasks": 0,
   "forbidden": [],
-  "chars": 1446,
+  "chars": 1440,
   "tops": [
    "1.000656"
   ],
@@ -116,7 +118,7 @@
   "facts_missing": [],
   "extra_tasks": 0,
   "forbidden": [],
-  "chars": 2924,
+  "chars": 2993,
   "tops": [
    "1.001193",
    "1.000894"
@@ -145,7 +147,7 @@
   "facts_missing": [],
   "extra_tasks": 0,
   "forbidden": [],
-  "chars": 1358,
+  "chars": 1356,
   "tops": [
    "1.000894"
   ],

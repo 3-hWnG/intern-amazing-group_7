@@ -173,7 +173,7 @@ def describe() -> list[dict]:
     """Cho panel: mỗi cài đặt kèm giá trị đang dùng, mặc định, có đang ghi đè không."""
     o = _load_overrides()
     return [{**s, "value": get(k), "default": _defaults[k], "overridden": k in o,
-             **({"options": ollama_models()} if k in ("FRIENDLY_MODEL", "THINK_MODEL") else {})} for k, s in SPECS.items()]
+             **({"options": ollama_models()} if k in ("FRIENDLY_MODEL", "THINK_MODEL", "WEBSEARCH_MODEL") else {})} for k, s in SPECS.items()]
 
 
 def ollama_models() -> list[str]:

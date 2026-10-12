@@ -21,6 +21,7 @@
     return d;
   }
   const fmtSize = (b) => (b < 1048576 ? Math.max(1, Math.round(b / 1024)) + " KB" : (b / 1048576).toFixed(1) + " MB");
+  const ROLES = { user: "Người dân", can_bo: "Cán bộ", dev: "Dev" };
   const SRC = { original: "Gốc", edit: "Sửa tay", scrape: "Cào" };
   const row = (cells, cls) => { const tr = el("tr", cls || ""); cells.forEach((c) => { const td = el("td"); if (c instanceof Node) td.appendChild(c); else td.textContent = c == null ? "" : String(c); tr.appendChild(td); }); return tr; };
   const head = (t, cols) => { t.innerHTML = ""; const tr = el("tr"); cols.forEach((c) => tr.appendChild(el("th", "", c))); t.appendChild(tr); };
@@ -31,7 +32,7 @@
     t.onclick = () => {
       document.querySelectorAll(".admin-tabs .tab").forEach((x) => x.classList.toggle("active", x === t));
       document.querySelectorAll(".admin-tab").forEach((s) => { s.hidden = s.id !== "tab-" + t.dataset.tab; });
-      ({ strict: loadProcs, datasets: loadDatasets, users: loadUsers, lab: loadLab })[t.dataset.tab]();
+      ({ strict: loadProcs, datasets: loadDatasets, users: loadUsers, lab: loadLab, stats: loadStats })[t.dataset.tab]();
     };
   });
   document.querySelectorAll(".s4-modal").forEach((m) => {
@@ -285,7 +286,7 @@
     const t = $("users"); head(t, ["Tên", "Vai trò", "Trạng thái", "Hội thoại", "Dữ liệu", "Bộ nhớ", "Tạo lúc (UTC)", ""]);
     users.forEach((u) => {
       const role = el("select");
-      ["user", "dev"].forEach((x) => { const o = el("option", "", x); o.value = x; o.selected = u.role === x; role.appendChild(o); });
+      Object.entries(ROLES).forEach(([x, name]) => { const o = el("option", "", name); o.value = x; o.selected = u.role === x; role.appendChild(o); });
       role.onchange = () => patch(u, { role: role.value }, () => { role.value = u.role; });
       const st = span(u.disabled ? "đã khoá" : "hoạt động", u.disabled ? "tag bad" : "tag on");
       const act = el("div");
@@ -312,6 +313,18 @@
     try { const r = await api("/s4/admin/users", { username: f.username.value.trim(), password: f.password.value, role: f.role.value }); f.reset(); renderUsers(r.users); }
     catch (err) { alert(err.message); }
   });
+
+  /* ================= Thống kê ================= */
+  async function loadStats() {
+    let r; try { r = await api("/s4/admin/stats"); } catch (e) { alert(e.message); return; }
+    const t = $("stat-procs"); head(t, ["#", "Thủ tục", "Số lần", "Gần nhất (UTC)"]);
+    r.procedures.forEach((p, i) => t.appendChild(row([i + 1, p.label + " (" + p.proc_id + ")", p.n, p.last_at])));
+    if (!r.procedures.length) t.appendChild(row(["", "Chưa có dữ liệu", "", ""]));
+    const o = $("stat-other"); head(o, ["Mục", "Số lượng"]);
+    o.appendChild(row(["Friendly 👍 / 👎", r.feedback.friendly.up + " / " + r.feedback.friendly.down]));
+    o.appendChild(row(["Strict 👍 / 👎", r.feedback.strict.up + " / " + r.feedback.strict.down]));
+    Object.entries(ROLES).forEach(([k, name]) => o.appendChild(row(["Tài khoản " + name, r.roles[k] || 0])));
+  }
 
   /* ================= Hội thoại của người dùng (chỉ xem) + 🔍 ================= */
   async function openUserConvs(u) {
