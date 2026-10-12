@@ -27,8 +27,9 @@ import user_memory
 import os
 import threading
 
-from config import DEV_MODE, HOST, LLM_MODEL, PORT, TABLE_BUTTON, WEB_DIR
-from core import queue
+from config import (DEV_MODE, HOST, LLM_MODEL, PORT, TABLE_BUTTON, WEB_DIR, WEBSEARCH_MODE, WEBSEARCH_RESULTS,
+                    WEBSEARCH_TIMEOUT)
+from core import queue, websearch
 from core.llm import loaded_models, model_name, warm_up
 from planner import hybrid
 from policy import mask_pii
@@ -162,6 +163,7 @@ class ChatIn(BaseModel):
     conversation_id: str | None = None
     reply_to: int | None = None
     proc_id: str | None = None          # Phase 31: nút "dạng khác"
+    websearch: bool = False             # nút "Tìm web"
 
 
 @app.get("/")
@@ -315,7 +317,17 @@ async def chat(body: ChatIn, cid_mem: str = Depends(_cid)):
 
     def job(emit):
         t0 = time.perf_counter()
-        box["res"] = orchestrator.handle_turn(turn)
+        only = body.websearch and WEBSEARCH_MODE == "only"
+        res = ({"kind": "answer", "blocks": [], "clarify": None, "plan": {}, "trace": {}} if only
+               else orchestrator.handle_turn(turn))
+        if body.websearch and res.get("kind") != "clarify":   # đang chờ người dùng chọn thì chưa tra web
+            wb, winfo = websearch.web_block(text, WEBSEARCH_RESULTS, WEBSEARCH_TIMEOUT)
+            if res.get("blocks"):   # có đáp án thủ tục ở trên: web chỉ để tham khảo (con số web có thể cũ / khác dữ liệu chính thức)
+                wb["title"] += " (tham khảo; nếu khác phần trên thì theo phần trên)"
+            res["blocks"] = list(res.get("blocks") or []) + [wb]
+            if isinstance(res.get("trace"), dict):
+                res["trace"]["web"] = winfo
+        box["res"] = res
         box["ms"] = int((time.perf_counter() - t0) * 1000)
 
     try:

@@ -7,7 +7,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response, StreamingResponse
 from pydantic import BaseModel
 
-from . import auth, chat as chat_turn, config, datasets, db, export, memory, search, settings
+from . import auth, chat as chat_turn, config, datasets, db, domains, export, memory, search, settings
 
 
 class Credentials(BaseModel):
@@ -22,6 +22,8 @@ class ChatIn(BaseModel):
     edit_of: int | None = None          # sửa tin người dùng này -> phiên bản mới
     regenerate_of: int | None = None    # tạo lại câu trả lời này -> phiên bản mới
     mode: str | None = None             # fast | think; trống = DEFAULT_ANSWER_MODE
+    websearch: bool = False             # nút "Tìm web": chỉ DuckDuckGo, không qua bộ dữ liệu
+    domain_id: int | None = None        # domain của hội thoại MỚI (hội thoại có sẵn giữ domain của nó); trống = Trò chuyện chung
 
 
 class SwitchIn(BaseModel):
@@ -40,6 +42,7 @@ class HeaderRowIn(BaseModel):
 class DatasetPatch(BaseModel):
     active: bool | None = None
     name: str | None = None
+    locked: bool | None = None   # chỉ dev: khoá = chỉ dev và cán bộ dùng
 
 
 class MemoryModeIn(BaseModel):
@@ -149,8 +152,9 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
     @r.get("/conversations")
     def conversations(request: Request):
         u = _user(request)
-        rows = [{**c, "mode": "strict"} for c in strict_list(u)] + \
-               [{**c, "mode": "friendly"} for c in db.list_conversations(u["id"])]
+        usable = {d["id"] for d in db.visible_domains(u)}
+        rows = [{**c, "mode": "strict", "domain_id": 1} for c in strict_list(u) if 1 in usable] + \
+               [{**c, "mode": "friendly"} for c in db.list_conversations(u["id"]) if c["domain_id"] in usable]
         rows.sort(key=lambda c: c["created_at"], reverse=True)
         rows.sort(key=lambda c: c["pinned"], reverse=True)   # sort ổn định: ghim lên đầu, trong nhóm mới nhất trước
         return {"conversations": rows}
@@ -232,6 +236,12 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
             own_friendly(request, cid)
         elif cid:
             own_friendly(request, cid)
+        if cid:
+            dom = db.get_domain(db.get_conversation(cid)["domain_id"])
+        else:
+            dom = db.get_domain(body.domain_id or 2)
+        if not dom or dom["engine"] != "friendly" or not db.can_use_domain(u, dom):
+            raise HTTPException(403, "Bạn không dùng được domain này")
         if body.regenerate_of:
             m = own_message(request, cid, body.regenerate_of)
             if m["role"] != "assistant" or not m["parent_id"]:
@@ -250,13 +260,13 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
                 parent = m["parent_id"]
             else:
                 if not cid:
-                    cid = db.create_conversation(u["id"])
+                    cid = db.create_conversation(u["id"], dom["id"])
                 parent = db.current_leaf(cid)
             user_mid = db.add_message(cid, "user", text, "done", parent)
             db.set_title_if_new(cid, text)
         history = db.get_path(cid)[:-1]   # nhánh tới trước tin người dùng
         mode = body.mode if body.mode in ("fast", "think") else settings.get("DEFAULT_ANSWER_MODE")
-        return StreamingResponse(chat_turn.run(u, cid, user_mid, text, history, mode), media_type="text/event-stream",
+        return StreamingResponse(chat_turn.run(u, cid, user_mid, text, history, mode, body.websearch), media_type="text/event-stream",
                                  headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
     @r.post("/turns/{turn_id}/fast")
@@ -275,20 +285,32 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
             raise HTTPException(404, "không có bộ dữ liệu này")
         return ds
 
+    def readable_dataset(request: Request, ds_id: int) -> dict:
+        """Xem nội dung (bản ghi, nguồn): chủ, dev, hoặc dataset dùng chung của domain cứng mà mình được dùng."""
+        u = _user(request)
+        ds = db.get_dataset(ds_id)
+        if not ds or not db.readable_dataset(u, ds):
+            raise HTTPException(404, "không có bộ dữ liệu này")
+        return ds
+
     def ds_view(d: dict) -> dict:
         try:
             mapping = json.loads(d.get("mapping") or "{}")
         except ValueError:
             mapping = {}
         return {k: d[k] for k in ("id", "user_id", "name", "filename", "size_bytes", "kind", "status", "progress", "message",
-                                  "n_records", "created_at")} | {"active": bool(d["active"]), "mapping": mapping,
-                                                                  "username": d.get("username")}
+                                  "n_records", "created_at", "domain_id")} | {"active": bool(d["active"]), "mapping": mapping,
+                                                                              "locked": bool(d.get("locked")), "username": d.get("username")}
 
     @r.get("/datasets")
-    def list_datasets(request: Request):
+    def list_datasets(request: Request, domain_id: int = 2):
         u = _user(request)
-        return {"datasets": [ds_view(d) for d in db.list_datasets(u["id"])], "quota": datasets.quota(u),
-                "active": datasets.active_summary(u["id"]), "formats": sorted(datasets.ingest.SUPPORTED)}
+        dom = db.get_domain(domain_id)
+        if not dom or not db.can_use_domain(u, dom):
+            raise HTTPException(404, "không có domain này")
+        return {"datasets": [ds_view(d) for d in db.visible_datasets(u, domain_id)], "quota": datasets.quota(u),
+                "active": datasets.active_summary(u["id"], domain_id, u["role"]), "formats": sorted(datasets.ingest.SUPPORTED),
+                "can_upload": domains.can_upload(u, dom), "domain": domains.view(u, dom)}
 
     @r.post("/datasets")
     async def upload_dataset(request: Request):
@@ -298,16 +320,29 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         if f is None or not getattr(f, "filename", None):
             raise HTTPException(422, "Chưa chọn tệp")
         try:
-            d = await asyncio.to_thread(datasets.save_upload, u, f.filename, f.file)
+            domain_id = int(form.get("domain_id") or 2)
+        except ValueError:
+            raise HTTPException(422, "domain_id không hợp lệ") from None
+        dom = db.get_domain(domain_id)
+        if not dom or not db.can_use_domain(u, dom):
+            raise HTTPException(404, "không có domain này")
+        if not domains.can_upload(u, dom):
+            raise HTTPException(403, "Domain này không cho tải dữ liệu lên (domain cứng chỉ dev tải; domain mềm cần dev bật quyền tải)")
+        try:
+            d = await asyncio.to_thread(datasets.save_upload, u, f.filename, f.file, None, domain_id)
         except ValueError as e:
             raise HTTPException(422, str(e)) from None
         finally:
             await f.close()
-        return {"dataset": ds_view({**d, "username": u["username"]}), "active": datasets.active_summary(u["id"])}
+        return {"dataset": ds_view({**d, "username": u["username"]}), "active": datasets.active_summary(u["id"], domain_id, u["role"])}
 
     @r.patch("/datasets/{ds_id}")
     def patch_dataset(ds_id: int, body: DatasetPatch, request: Request):
         ds = own_dataset(request, ds_id)
+        if body.locked is not None:
+            if _user(request)["role"] != "dev":
+                raise HTTPException(403, "Chỉ dev khoá được bộ dữ liệu")
+            db.update_dataset(ds_id, locked=1 if body.locked else 0)
         if body.name is not None and body.name.strip():
             db.update_dataset(ds_id, name=body.name.strip()[:120])
         if body.active is not None:
@@ -316,13 +351,13 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
                 if err:
                     raise HTTPException(422, err)
             db.update_dataset(ds_id, active=1 if body.active else 0)
-        return {"dataset": ds_view(db.get_dataset(ds_id) | {"username": None}), "active": datasets.active_summary(ds["user_id"])}
+        return {"dataset": ds_view(db.get_dataset(ds_id) | {"username": None}), "active": datasets.active_summary(ds["user_id"], ds["domain_id"], "dev")}
 
     @r.delete("/datasets/{ds_id}")
     def delete_dataset(ds_id: int, request: Request):
         ds = own_dataset(request, ds_id)
         datasets.delete(ds)
-        return {"ok": True, "active": datasets.active_summary(ds["user_id"])}
+        return {"ok": True, "active": datasets.active_summary(ds["user_id"], ds["domain_id"], "dev")}
 
     @r.post("/datasets/{ds_id}/retry")
     def retry_dataset(ds_id: int, request: Request):
@@ -352,7 +387,7 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
 
     @r.get("/datasets/{ds_id}/records")
     def dataset_records(ds_id: int, request: Request, q: str = "", offset: int = 0, limit: int = 50):
-        own_dataset(request, ds_id)
+        readable_dataset(request, ds_id)
         rows, total = db.browse_records(ds_id, q.strip(), max(0, offset), min(max(1, limit), 200))
         return {"records": rows, "total": total}
 
@@ -389,7 +424,7 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         recs = db.get_records([rec_id])
         if not recs:
             raise HTTPException(404, "không có bản ghi này")
-        ds = own_dataset(request, recs[0]["dataset_id"])
+        ds = readable_dataset(request, recs[0]["dataset_id"])
         return {"record": recs[0], "dataset": {"id": ds["id"], "name": ds["name"], "filename": ds["filename"]}}
 
     # -------------------------------------------------- bộ nhớ của mỗi người

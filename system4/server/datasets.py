@@ -36,8 +36,8 @@ def quota(user: dict) -> dict:
     return {"used": used, "limit": limit, "max_file": None if user["role"] == "dev" else settings.get("MAX_UPLOAD_MB") * 1024 * 1024}
 
 
-def active_summary(user_id: int) -> dict:
-    act = db.active_datasets(user_id)
+def active_summary(user_id: int, domain_id: int | None = None, role: str = "dev") -> dict:
+    act = db.active_datasets(user_id, domain_id, role)
     n_ds, n_rec = len(act), sum(d["n_records"] for d in act)
     warn = []
     if n_ds > settings.get("ACTIVE_WARN_DATASETS"):
@@ -50,7 +50,7 @@ def active_summary(user_id: int) -> dict:
 
 def can_activate(user_id: int, ds: dict) -> str | None:
     """Giới hạn cứng khi bật thêm một bộ dữ liệu. Trả câu báo lỗi hoặc None."""
-    act = [d for d in db.active_datasets(user_id) if d["id"] != ds["id"]]
+    act = [d for d in db.active_datasets(user_id, ds.get("domain_id")) if d["id"] != ds["id"]]
     if len(act) + 1 > settings.get("ACTIVE_MAX_DATASETS"):
         return f"Chỉ được bật tối đa {settings.get('ACTIVE_MAX_DATASETS')} bộ dữ liệu cùng lúc. Hãy tắt bớt một bộ."
     if sum(d["n_records"] for d in act) + ds["n_records"] > settings.get("ACTIVE_MAX_RECORDS"):
@@ -59,14 +59,14 @@ def can_activate(user_id: int, ds: dict) -> str | None:
 
 
 # --------------------------------------------------------------- tải lên
-def save_upload(user: dict, filename: str, stream, size_hint: int | None = None) -> dict:
+def save_upload(user: dict, filename: str, stream, size_hint: int | None = None, domain_id: int = 2) -> dict:
     """Ghi tệp theo từng khúc, kiểm cỡ tệp và dung lượng còn lại. Lỗi -> ValueError (câu báo tiếng Việt)."""
     name = safe_name(filename)
     if Path(name).suffix.lower() not in ingest.SUPPORTED:
         raise ValueError(f"Chưa hỗ trợ tệp {Path(name).suffix or '(không đuôi)'}. Hỗ trợ: CSV, Excel (.xlsx), JSON, TXT/MD, Word (.docx), PDF.")
     q = quota(user)
     room = None if q["limit"] is None else q["limit"] - q["used"]
-    ds_id = db.create_dataset(user["id"], Path(name).stem, name, 0)
+    ds_id = db.create_dataset(user["id"], Path(name).stem, name, 0, domain_id)
     d = folder(user["id"], ds_id)
     d.mkdir(parents=True, exist_ok=True)
     size = 0

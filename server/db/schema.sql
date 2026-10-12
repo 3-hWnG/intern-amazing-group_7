@@ -33,6 +33,13 @@ CREATE TABLE IF NOT EXISTS shown_procedures (
   ordinal         INTEGER NOT NULL DEFAULT 0,
   PRIMARY KEY (conversation_id, proc_id)
 );
+-- Thống kê: mỗi lần thủ tục được trả lời trực tiếp thì +1 (bền, không bị xoá cùng turn_traces; không lưu nội dung câu hỏi)
+CREATE TABLE IF NOT EXISTS proc_stats (
+  proc_id TEXT PRIMARY KEY,
+  label   TEXT NOT NULL DEFAULT '',
+  n       INTEGER NOT NULL DEFAULT 0,
+  last_at TEXT NOT NULL DEFAULT (datetime('now'))
+);
 CREATE TABLE IF NOT EXISTS turn_traces (
   conversation_id TEXT NOT NULL REFERENCES conversations(id) ON DELETE CASCADE,
   message_id      INTEGER NOT NULL REFERENCES messages(id) ON DELETE CASCADE,

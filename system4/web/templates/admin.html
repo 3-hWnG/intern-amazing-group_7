@@ -19,6 +19,7 @@
   <button type="button" class="tab active" data-tab="strict" role="tab">Dữ liệu Strict (thủ tục)</button>
   <button type="button" class="tab" data-tab="datasets" role="tab">Dữ liệu người dùng</button>
   <button type="button" class="tab" data-tab="users" role="tab">Người dùng</button>
+  <button type="button" class="tab" data-tab="stats" role="tab">Thống kê</button>
   <button type="button" class="tab" data-tab="lab" role="tab">Thử tìm kiếm</button>
 </nav>
 
@@ -84,13 +85,25 @@
       <form id="new-user" class="row">
         <input name="username" placeholder="Tên đăng nhập hoặc email" required maxlength="64">
         <input name="password" type="password" placeholder="Mật khẩu" required>
-        <select name="role"><option value="user">user</option><option value="dev">dev</option></select>
+        <select name="role"><option value="user">Người dân</option><option value="can_bo">Cán bộ</option><option value="dev">Dev</option></select>
         <button class="primary" type="submit">Tạo</button>
       </form>
     </div>
     <div class="card">
       <h2>Người dùng</h2>
       <table class="grid" id="users"></table>
+    </div>
+  </section>
+  <!-- Tab: thống kê -->
+  <section id="tab-stats" class="admin-tab" hidden>
+    <div class="card">
+      <h2>Thủ tục được hỏi nhiều nhất (Strict)</h2>
+      <p class="muted small">Đếm mỗi lần một thủ tục được trả lời trực tiếp. Không lưu nội dung câu hỏi.</p>
+      <table class="grid" id="stat-procs"></table>
+    </div>
+    <div class="card">
+      <h2>Phản hồi 👍 / 👎 và tài khoản</h2>
+      <table class="grid" id="stat-other"></table>
     </div>
   </section>
   <!-- Tab 4: phòng thử tìm kiếm (bộ công cụ dev) -->

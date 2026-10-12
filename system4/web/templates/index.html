@@ -37,10 +37,9 @@
     <header class="chat-head">
       <button id="toggle-sidebar" class="icon" type="button" aria-label="Ẩn/hiện thanh bên">☰</button>
       <h1 id="conv-title">Instant Specialist</h1>
-      <div class="mode-switch" role="group" aria-label="Chế độ">
-        <button type="button" data-mode="strict" aria-pressed="true" title="Strict: trả lời thủ tục hành chính, nghiêm ngặt, có nguồn (System 3)">Strict</button>
-        <button type="button" data-mode="friendly" aria-pressed="false" title="Friendly: trò chuyện với AI (System 4)">Friendly</button>
-      </div>
+      <div class="mode-switch domain-bar" id="domain-bar" role="group" aria-label="Domain"></div>
+      <select id="domain-more" class="domain-more" aria-label="Domain khác" hidden></select>
+      <button id="open-domains" class="link" type="button" title="Xem, thêm, ghim, sửa domain">Domain</button>
       <button id="spec-badge" class="spec-badge" type="button" title="Dữ liệu của tôi">AI chung</button>
       <span id="model-name" class="model-name"></span>
       <button id="ai-badge" class="ai-badge" type="button" title="Cấu hình AI (Strict)">AI: …</button>
@@ -58,6 +57,8 @@
         <textarea id="input" rows="2" placeholder="Nhập câu hỏi…" autocomplete="off"></textarea>
         <button id="think-toggle" class="think-chip" type="button" aria-pressed="false"
                 title="Suy nghĩ kỹ: AI suy nghĩ trước khi trả lời (khoảng 30 giây, kỹ hơn). Tắt = trả lời nhanh.">Suy nghĩ kỹ</button>
+        <button id="web-toggle" class="think-chip" type="button" aria-pressed="false"
+                title="Tìm web (DuckDuckGo). Friendly: chỉ trả lời từ web, không dùng bộ dữ liệu. Strict: thêm khối tra cứu web dưới câu trả lời thủ tục. Câu hỏi được gửi ra internet.">Tìm web</button>
         <button id="send" class="primary" type="submit">Gửi</button>
       </div>
     </form>
@@ -77,6 +78,25 @@
       <button id="settings-default" class="btn-ghost" type="button" title="Ghi các giá trị đang hiện vào config.py làm mặc định mới">Đặt làm mặc định</button>
       <button id="settings-save" class="primary" type="button">Lưu</button>
     </footer>
+  </div>
+</div>
+<div id="domain-modal" class="s4-modal" hidden>
+  <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="domain-title">
+    <header>
+      <h2 id="domain-title">Domain</h2>
+      <button id="domain-close" class="icon" type="button" aria-label="Đóng">✕</button>
+    </header>
+    <div class="body">
+      <p class="mem-help">Mỗi domain là một lĩnh vực có luật riêng. <b>Cứng</b>: không xoá được, dữ liệu dùng chung do dev tải. <b>Mềm</b>: kiểu Friendly, bạn thêm được. Guardrail là lời dặn gửi thẳng cho AI trước khi trả lời trong domain đó. Dữ liệu của domain này không hiện ở domain khác.</p>
+      <ul id="domain-list" class="data-list"></ul>
+      <form id="domain-new" class="dom-form">
+        <h3>Thêm domain</h3>
+        <input name="name" placeholder="Tên domain (ví dụ: Du lịch)" maxlength="40" required>
+        <textarea name="guardrail" rows="2" maxlength="1000" placeholder="Guardrail (không bắt buộc): lời dặn cho AI trong domain này"></textarea>
+        <label id="domain-new-hard" class="dom-check" hidden><input type="checkbox" name="hard"> Domain cứng (chỉ dev)</label>
+        <button class="primary" type="submit">Thêm</button>
+      </form>
+    </div>
   </div>
 </div>
 <div id="memory" class="s4-modal" hidden>
@@ -141,6 +161,6 @@
 <script src="/s4/static/vendor/marked.umd.js?v=18.1.0"></script>
 <script src="/s4/static/vendor/purify.min.js?v=3.4.16"></script>
 <script src="/s4/static/js/inspector.js?v=dev1"></script>
-<script src="/s4/static/js/app.js?v=dev3"></script>
+<script src="/s4/static/js/app.js?v=dev9"></script>
 </body>
 </html>

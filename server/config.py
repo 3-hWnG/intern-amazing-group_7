@@ -61,12 +61,22 @@ ANSWER_LLM_NUM_PREDICT = _int("ANSWER_LLM_NUM_PREDICT", 200)      # Phase 27: gi
 ANSWER_LLM_PASSAGE_CHARS = _int("ANSWER_LLM_PASSAGE_CHARS", 450)  # Phase 27: cắt mỗi đoạn dữ liệu đưa cho LLM (trước: 700)
 LLM_THINK = _bool("LLM_THINK", False)      # qwen3: False = tắt thinking
 
-# Hàng đợi: 1 worker (GPU 6 GB).
-QUEUE_CONCURRENCY = 1
+# Bộ nhớ hội thoại Strict (kế hoạch tuần tới 2a): giữ ít thủ tục / tin nhắn, cũ hơn tự xoá
+SHOWN_MAX = _int("S3_SHOWN_MAX", 2)                # số thủ tục đã hiển thị còn nhớ (trước: không giới hạn, tới 8)
+HISTORY_MESSAGES = _int("S3_HISTORY_MESSAGES", 3)  # số tin gần nhất đưa vào ngữ cảnh lượt sau (trước: 10)
+TRACE_KEEP = _int("S3_TRACE_KEEP", 300)            # chi tiết (turn_traces) giữ bao nhiêu lượt gần nhất toàn hệ thống
+# Hàng đợi: mặc định 1 worker (GPU 6 GB). Chạy song song: đặt S3_QUEUE_CONCURRENCY=N VÀ OLLAMA_NUM_PARALLEL=N cho Ollama (xem eval/measure_parallel.py)
+QUEUE_CONCURRENCY = _int("S3_QUEUE_CONCURRENCY", 1)
 QUEUE_MAX_DEPTH = _int("QUEUE_MAX_DEPTH", 20)
 QUEUE_JOB_TIMEOUT = _int("QUEUE_JOB_TIMEOUT", 180)
 
 # FINAL-PRODUCT: [B2] DEV_MODE là công tắc DUY NHẤT tách dev/người dùng, chỉ gắn vào /chat (khối dev), POST /config, /dev/*. Bản cuối: chế độ người dùng = dev ít quyền; chặn plan/trace/config/?dev=1 khi không dev (docs/FINAL_PRODUCT_CHECKLIST.md mục 1)
+# Nút "Tìm web" của Strict: combined = câu trả lời thủ tục + thêm khối "Tra cứu thêm trên web"; only = chỉ khối web (docs/PLAN_TUAN_TOI.md mục 1)
+WEBSEARCH_MODE = _str("S3_WEBSEARCH_MODE", "combined")
+# Model cho khối web của Strict: phải là model KHÔNG suy nghĩ (qwen3:4b hay viết suy luận vào câu trả lời). System 4 cho chọn ở ⚙
+WEBSEARCH_MODEL = _str("S3_WEBSEARCH_MODEL", "qwen3:4b-instruct-2507-q4_K_M")
+WEBSEARCH_RESULTS = _int("S3_WEBSEARCH_RESULTS", 5)
+WEBSEARCH_TIMEOUT = _int("S3_WEBSEARCH_TIMEOUT", 8)
 DEV_MODE = _bool("S3_DEV", False)           # true: mọi phản hồi kèm plan/trace
 
 # Phase 20: nút "Tạo bảng full" trong câu trả lời (thay dòng "xem đầy đủ trên Cổng Dịch vụ công"); 0 = về như cũ

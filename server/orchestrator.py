@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import os
 import re
+import threading
 import time
 from dataclasses import dataclass, field
 
@@ -97,6 +98,24 @@ def _strip_reset(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip(" \t,;:.-–—!?")
 
 
+_PLAN_LOCK = threading.Lock()
+_LIST = re.compile(r"liet ke (cac |het |nhung )?thu tuc|danh sach (cac )?thu tuc|co bao nhieu thu tuc|co (nhung|may) thu tuc")
+_COUNT = re.compile(r"bao nhieu|may thu tuc")
+
+
+def _list_request(text: str) -> str | None:
+    """Ý "liệt kê" (kế hoạch tuần tới 2b). Chưa có truy vấn SQL nên liệt kê tạm các thủ tục gần câu hỏi nhất, nói rõ chưa đầy đủ.
+    ponytail: chưa đếm / lọc theo giá được ("bao nhiêu thủ tục giá 20k" cần SQL; thầy: chưa làm). Trả None nếu không phải ý liệt kê."""
+    f = fold(text)
+    if not _LIST.search(f):
+        return None
+    conn = data_api.connect()
+    hits = data_api.search(conn, text, 10)
+    if not hits:
+        return "Mình chưa liệt kê được: không thấy thủ tục nào khớp với yêu cầu này."
+    names = "\n".join(f"{i}. {h['name']}" for i, h in enumerate(hits, 1))
+    head = ("Mình chưa đếm được số lượng thủ tục" if _COUNT.search(f) else "Mình chưa liệt kê đầy đủ được")
+    return f"{head} (chưa có công cụ truy vấn danh sách). Đây là {len(hits)} thủ tục gần nhất với yêu cầu của bạn:\n{names}\nBạn hỏi tên một thủ tục để xem chi tiết."
 
 def _head(conn, pid: str | None) -> str | None:
     fam = data_api.family_of(conn, pid) if pid else None
@@ -129,6 +148,11 @@ def handle_turn(turn: Turn) -> dict:
                                 "text": "Mình đã bỏ qua các thông tin bạn kể trước đó. Bạn muốn hỏi về thủ tục nào?"}]}
         text = _strip_reset(text) or text
 
+    listing = None if (answered_clarify or turn.pick_proc) else _list_request(text)
+    if listing:
+        return {"kind": "answer", "clarify": None, "plan": {}, "trace": {"question": mask_pii(turn.text), "intent": "list"},
+                "blocks": [{"title": "Danh sách thủ tục (tạm)", "text": listing, "sources": []}]}
+
     pc = pre_check(text)
     state = turn.state if turn.state is not None else store.get_state(turn.conversation_id)
     last_proc = (state or {}).get("topic") or (turn.shown_procedures[-1]["proc_id"] if turn.shown_procedures else None)
@@ -138,7 +162,8 @@ def handle_turn(turn: Turn) -> dict:
     trace = {"question": mask_pii(turn.text), "flags": pc["flags"]}
 
     t1 = time.perf_counter()
-    plan = make_plan(_turns(turn, pc["text"]), last_proc=last_proc, facts=facts, shown=turn.shown_procedures, state=state)
+    with _PLAN_LOCK:   # Planner dùng chung một kết nối SQLite: nhiều worker song song thì xếp hàng ở bước này (vài ms)
+        plan = make_plan(_turns(turn, pc["text"]), last_proc=last_proc, facts=facts, shown=turn.shown_procedures, state=state)
     trace["plan_ms"] = int((time.perf_counter() - t1) * 1000)
     trace["plan_source"] = plan.source
     if plan.llm_trace:                     # Phase 19: nhật ký Planner hybrid (gọi hay không, ms, đề xuất, confidence, chấp nhận/từ chối + lý do, kế hoạch cuối)
@@ -216,6 +241,7 @@ def handle_turn(turn: Turn) -> dict:
     for rt in routed.tasks:
         if rt.route == "direct" and not clarify:
             store.add_shown(turn.conversation_id, rt.procedure_id, rt.procedure_label)
+            store.count_proc(rt.procedure_id, rt.procedure_label)
         for c in rt.context_facts:
             store.add_fact(turn.conversation_id, "fact", c, rt.procedure_id or "")
 

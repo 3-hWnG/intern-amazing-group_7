@@ -33,6 +33,13 @@ def _migrate(c: sqlite3.Connection) -> None:
                      ("summary_upto", "INTEGER NOT NULL DEFAULT 0")):
         if col not in cols("conversations"):
             c.execute(f"ALTER TABLE conversations ADD COLUMN {col} {ddl}")
+    for t, col, ddl in (("conversations", "domain_id", "INTEGER NOT NULL DEFAULT 2"), ("datasets", "domain_id", "INTEGER NOT NULL DEFAULT 2"),
+                        ("datasets", "locked", "INTEGER NOT NULL DEFAULT 0")):
+        if col not in cols(t):
+            c.execute(f"ALTER TABLE {t} ADD COLUMN {col} {ddl}")
+    if c.execute("SELECT COUNT(*) FROM domains").fetchone()[0] == 0:   # hai domain có sẵn, không xoá được
+        c.execute("INSERT INTO domains(id,name,kind,engine,sort) VALUES (1,'Thủ tục','hard','strict',0)")
+        c.execute("INSERT INTO domains(id,name,kind,engine,user_upload,sort) VALUES (2,'Trò chuyện chung','soft','friendly',1,1)")
     added = False
     for col, ddl in (("parent_id", "INTEGER"), ("meta", "TEXT NOT NULL DEFAULT '{}'"),
                      ("feedback", "INTEGER NOT NULL DEFAULT 0")):
@@ -64,6 +71,10 @@ def run(sql: str, args=(), one=False, many=False):
 
 
 # ---------------------------------------------------------------- người dùng
+# 3 loại tài khoản: dev (quản trị), can_bo (cán bộ: dùng được mọi dữ liệu), user (người dân: chỉ dữ liệu không bị khoá, xem 2c)
+ROLES = {"dev": "Dev", "can_bo": "Cán bộ", "user": "Người dân"}
+
+
 def count_users() -> int:
     return run("SELECT COUNT(*) n FROM users", one=True)["n"]
 
@@ -162,19 +173,19 @@ def friendly_owner(cid: str) -> int | None:
     return r["user_id"] if r else None
 
 
-def create_conversation(user_id: int) -> str:
+def create_conversation(user_id: int, domain_id: int = 2) -> str:
     cid = uuid.uuid4().hex
-    run("INSERT INTO conversations(id,user_id) VALUES (?,?)", (cid, user_id))
+    run("INSERT INTO conversations(id,user_id,domain_id) VALUES (?,?,?)", (cid, user_id, domain_id))
     return cid
 
 
 def list_conversations(user_id: int) -> list[dict]:
-    return run("SELECT id,title,created_at,pinned FROM conversations WHERE user_id=? "
+    return run("SELECT id,title,created_at,pinned,domain_id FROM conversations WHERE user_id=? "
                "ORDER BY pinned DESC, rowid DESC", (user_id,), many=True)
 
 
 def get_conversation(cid: str) -> dict | None:
-    return run("SELECT id,title,created_at,pinned FROM conversations WHERE id=?", (cid,), one=True)
+    return run("SELECT id,title,created_at,pinned,domain_id FROM conversations WHERE id=?", (cid,), one=True)
 
 
 def rename_conversation(cid: str, title: str) -> None:
@@ -314,8 +325,8 @@ def set_memory_mode(user_id: int, mode: str) -> None:
 
 
 # ------------------------------------------------------- dữ liệu người dùng (NV3)
-def create_dataset(user_id: int, name: str, filename: str, size: int) -> int:
-    return run("INSERT INTO datasets(user_id,name,filename,size_bytes) VALUES (?,?,?,?)", (user_id, name, filename, size))
+def create_dataset(user_id: int, name: str, filename: str, size: int, domain_id: int = 2) -> int:
+    return run("INSERT INTO datasets(user_id,name,filename,size_bytes,domain_id) VALUES (?,?,?,?,?)", (user_id, name, filename, size, domain_id))
 
 
 def get_dataset(ds_id: int) -> dict | None:
@@ -333,8 +344,53 @@ def update_dataset(ds_id: int, **cols) -> None:
     run(f"UPDATE datasets SET {', '.join(k + '=?' for k in keys)} WHERE id=?", (*[cols[k] for k in keys], ds_id))
 
 
-def active_datasets(user_id: int) -> list[dict]:
-    return run("SELECT id, name, n_records FROM datasets WHERE user_id=? AND active=1 AND status='ready'", (user_id,), many=True)
+_ELEVATED = ("dev", "can_bo")   # được dùng domain / dataset đã khoá
+
+
+def active_datasets(user_id: int, domain_id: int | None = None, role: str = "dev") -> list[dict]:
+    """Bộ dữ liệu đang bật. domain_id None = mọi domain của riêng người này. Có domain_id: dataset RIÊNG của người này trong domain đó,
+    cộng dataset dùng chung của domain cứng (người dùng thường không thấy dataset đã khoá)."""
+    if domain_id is None:
+        return run("SELECT id, name, n_records FROM datasets WHERE user_id=? AND active=1 AND status='ready'", (user_id,), many=True)
+    return run("SELECT d.id, d.name, d.n_records FROM datasets d JOIN domains m ON m.id=d.domain_id "
+               "WHERE d.domain_id=? AND d.active=1 AND d.status='ready' "
+               "AND (d.user_id=? OR (m.kind='hard' AND (d.locked=0 OR ? IN ('dev','can_bo'))))", (domain_id, user_id, role), many=True)
+
+
+def visible_datasets(user: dict, domain_id: int) -> list[dict]:
+    """Danh sách hiện trong "Dữ liệu" của một domain: của mình + dùng chung của domain cứng (không thấy cái đã khoá nếu là Người dân)."""
+    return run("SELECT d.*, u.username FROM datasets d JOIN users u ON u.id=d.user_id JOIN domains m ON m.id=d.domain_id "
+               "WHERE d.domain_id=? AND (d.user_id=? OR (m.kind='hard' AND (d.locked=0 OR ? IN ('dev','can_bo')))) ORDER BY d.id DESC",
+               (domain_id, user["id"], user["role"]), many=True)
+
+
+def readable_dataset(user: dict, ds: dict) -> bool:
+    """Xem được nội dung dataset: chủ, dev, hoặc dataset dùng chung của domain cứng mà mình được dùng."""
+    if ds["user_id"] == user["id"] or user["role"] == "dev":
+        return True
+    d = get_domain(ds["domain_id"])
+    return bool(d and d["kind"] == "hard" and can_use_domain(user, d) and (not ds["locked"] or user["role"] in _ELEVATED))
+
+
+# ------------------------------------------------------------------- domain
+BUILTIN_DOMAINS = (1, 2)   # Thủ tục (System 3) và Trò chuyện chung: không xoá được
+
+
+def get_domain(did: int | None) -> dict | None:
+    return run("SELECT * FROM domains WHERE id=?", (did,), one=True) if did else None
+
+
+def can_use_domain(user: dict, d: dict) -> bool:
+    """Dùng chung (owner NULL) hoặc của mình; domain đã khoá thì chỉ dev và cán bộ."""
+    return (d["owner_id"] is None or d["owner_id"] == user["id"]) and (not d["locked"] or user["role"] in _ELEVATED)
+
+
+def visible_domains(user: dict) -> list[dict]:
+    pins = {r["domain_id"]: bool(r["pinned"]) for r in run("SELECT domain_id,pinned FROM domain_pins WHERE user_id=?", (user["id"],), many=True)}
+    rows = [d for d in run("SELECT * FROM domains ORDER BY sort,id", many=True) if can_use_domain(user, d)]
+    for i, d in enumerate(rows):
+        d["pinned"] = pins.get(d["id"], i < 4)   # chưa chọn: 4 domain đầu được ghim
+    return rows
 
 
 def used_bytes(user_id: int) -> int:
