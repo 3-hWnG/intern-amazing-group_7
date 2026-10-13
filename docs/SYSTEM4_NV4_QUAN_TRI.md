@@ -77,7 +77,7 @@ Thông tin thêm:
 
 | Tab | Có gì |
 |---|---|
-| **Dữ liệu Strict (thủ tục)** | Phiên bản (Gốc = bản chép của `data/snapshot/procedures.jsonl`, luôn giữ), xem / tìm thủ tục theo phiên bản, sửa / xoá vào **bản nháp** (kiểm **chuẩn dữ liệu**: đúng các trường và kiểu như dữ liệu gốc, không đổi mã), **so sánh** (mới / không còn / thay đổi, xem từng trường cũ → mới), **Lưu thành phiên bản**, **Áp dụng** (Strict mode chuyển sang ngay), quay lại bản cũ = áp dụng bản cũ, **Cào dữ liệu mới** (chạy nền, có tiến độ, nhật ký; xong thành phiên bản mới, KHÔNG tự áp dụng) |
+| **Dữ liệu Strict (thủ tục)** | Phiên bản (Gốc = bản chép của `data/snapshot/procedures.jsonl`, luôn giữ), xem / tìm thủ tục theo phiên bản, sửa / xoá vào **bản nháp** (kiểm **chuẩn dữ liệu**: đúng các trường và kiểu như dữ liệu gốc, không đổi mã), **so sánh** (mới / không còn / thay đổi, xem từng trường cũ → mới), **Lưu thành phiên bản**, **Áp dụng** (Strict mode chuyển sang ngay), quay lại bản cũ = áp dụng bản cũ, **Cào dữ liệu mới** (chạy nền, có tiến độ, nhật ký; xong thành phiên bản mới, KHÔNG tự áp dụng), **Xuất Excel** (thêm 2026-10-13: DB thủ tục đang dùng → .xlsx, mỗi bảng một sheet, liên kết row_id / proc_id bằng công thức, sheet README kiểm số dòng không khớp; `system4/server/procs_xlsx.py`) |
 | **Dữ liệu người dùng** | Mọi bộ dữ liệu: chủ, loại, bản ghi, dung lượng, trạng thái; mở xem nội dung (2B); xoá |
 | **Người dùng** | Tạo, đổi vai trò, khoá / mở khoá (khoá = đăng xuất ngay), đặt lại mật khẩu, xoá (kèm hội thoại, dữ liệu, bộ nhớ); không tự hạ quyền / tự xoá; luôn còn ít nhất một dev |
 

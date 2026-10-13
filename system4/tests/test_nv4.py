@@ -180,6 +180,23 @@ with TestClient(main.app) as c:
     assert c.get("/s4/admin/procs").json()["draft"]["changes"] == 0
     assert c.delete(f"/s4/admin/procs/versions/{v0}").status_code == 422, "không xoá bản Gốc"
 
+    # ---------------- Xuất Excel DB thủ tục đang dùng (chỉ dev)
+    as_user("anna")
+    assert c.get("/s4/admin/procs/export.xlsx").status_code == 403
+    as_user("boss")
+    r = c.get("/s4/admin/procs/export.xlsx")
+    assert r.status_code == 200 and r.headers["content-type"].startswith("application/vnd.openxmlformats"), r.text[:200]
+    assert ".xlsx" in r.headers["content-disposition"]
+    import io
+    import openpyxl
+    xb = openpyxl.load_workbook(io.BytesIO(r.content))
+    assert xb.sheetnames[:3] == ["README", "Procedures", "Documents"] and "Versions" in xb.sheetnames, xb.sheetnames
+    xp = xb["Procedures"]
+    assert xp.max_row - 1 == n_procs() and xp["D2"].value.startswith("https://dichvucong.gov.vn/"), xp["D2"].value
+    assert xp["E2"].value.startswith("=COUNTIF('Documents'!$B$2"), xp["E2"].value
+    assert xb["Documents"]["C2"].value.startswith("=INDEX(Procedures!$B$2"), "proc_id lấy qua row_id bằng công thức"
+    assert xb["Documents"].max_row - 1 == sqlite3.connect(DATA_COPY).execute("SELECT COUNT(*) FROM checklist_items").fetchone()[0]
+
     # ---------------- Áp dụng (dựng DB thật bằng system3.data.build, trên bản sao)
     assert n_procs() == 1350
     procs.apply(v1, wait=True)

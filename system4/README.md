@@ -12,7 +12,7 @@ Trạng thái: **xong NV1 (nền tảng), NV2 (AI trò chuyện kiểu ChatGPT),
 | Dữ liệu → Chuyên gia (NV3) | Nút **+** (hoặc kéo thả) tải CSV / Excel / JSON / TXT / Word / PDF. Bật bộ dữ liệu nào thì AI chỉ trả lời từ đó, có **nguồn [n]** bấm xem bản ghi gốc; không có thì nói không có. Cửa sổ **Dữ liệu**: bật/tắt, xem, xoá, dung lượng 1 GB (dev không giới hạn), cảnh báo khi bật quá nhiều. |
 | Bộ nhớ (mọi người dùng) | Nút **Bộ nhớ** ở góc dưới thanh bên: chọn **Tự động ghi nhớ** hoặc **Chỉ nhớ khi tôi bảo "hãy nhớ…"**, xem / xoá từng điều. Điều đã nhớ dùng ở mọi hội thoại Friendly. Sau câu trả lời có dòng "Đã cập nhật bộ nhớ". |
 | Danh sách hội thoại | Một danh sách chung, mỗi dòng có nhãn Strict/Friendly. Bấm một dòng thì tự chuyển sang chế độ của nó. Mỗi người chỉ thấy hội thoại của mình. |
-| Quản trị (chỉ dev, NV4) | Trang `/s4/admin`: **Dữ liệu Strict** (phiên bản, nháp, chuẩn dữ liệu, so sánh, áp dụng, cào dichvucong.gov.vn), **Dữ liệu người dùng**, **Người dùng** (tạo, vai trò, khoá, đặt lại mật khẩu, xoá). |
+| Quản trị (chỉ dev, NV4) | Trang `/s4/admin`: **Dữ liệu Strict** (phiên bản, nháp, chuẩn dữ liệu, so sánh, áp dụng, cào dichvucong.gov.vn, **Xuất Excel** DB thủ tục đang dùng kèm liên kết row_id / proc_id / link cổng), **Dữ liệu người dùng**, **Người dùng** (tạo, vai trò, khoá, đặt lại mật khẩu, xoá). |
 | Bộ công cụ dev | Nút **🔍** dưới mỗi câu trả lời (tìm kiếm & xếp hạng, lời dặn, suy nghĩ ẩn, kiểm soát, thời gian); Quản trị → **Thử tìm kiếm**, **Hội thoại** của từng người dùng; **Cách đọc tệp**. Người dùng thường có **Vì sao?** (nguồn + độ liên quan). Chi tiết: docs/SYSTEM4_NV4_QUAN_TRI.md phần D; giới hạn Chuyên gia: docs/SYSTEM4_NV3_DATASET.md phần D. |
 | ⚙ Cài đặt (chỉ dev) | Có thêm: tên/mô tả doanh nghiệp, lời dặn thêm, **guardrail** (Chặn / Lời dặn / Thay câu trả lời, bật/tắt từng luật), câu xin lỗi ngôn ngữ, số lần hỏi lại, bộ nhớ, ngưỡng tóm tắt. **Lưu** (ghi `runtime/settings.json`) · **Đặt làm mặc định** (ghi vào `server/config.py`, bản cũ ở `config.py.bak`) · **Về mặc định**. Tải lại trang để áp dụng. |
 
@@ -39,6 +39,7 @@ Trạng thái: **xong NV1 (nền tảng), NV2 (AI trò chuyện kiểu ChatGPT),
 | `server/ingest.py`, `datasets.py`, `search.py` | NV3: đọc tệp → cấu trúc định sẵn; tải lên, dung lượng, nạp nền; tìm từ khoá (FTS5) + nghĩa (bge-m3, Qdrant local) + reranker |
 | `web/static/js/inspector.js` | bộ công cụ dev dùng chung (🔍 Soi, Vì sao?, Cách đọc tệp, bảng xếp hạng) |
 | `server/procs.py`, `admin.py`, `strict.py` | NV4: phiên bản dữ liệu Strict + áp dụng (dựng bằng `system3.data.build`); API trang Quản trị; phiên bản / phát lại cho Strict |
+| `server/procs_xlsx.py` | nút **Xuất Excel** (Quản trị → Dữ liệu Strict, `GET /s4/admin/procs/export.xlsx`, chỉ dev): mọi bảng của DB thủ tục đang dùng, sheet README ghi cách các bảng nối nhau (row_id / proc_id) + kiểm số dòng không khớp, link cổng dichvucong.gov.vn để đối chiếu |
 | `scraper/` | trình cào chép từ V10.3 (`Database/pipeline`): client, danh mục, chi tiết, chuẩn hoá; `run.py` chạy nền |
 | `eval/nv2_behavior.py`, `nv3_specialist.py` | đo trên model thật: hành vi Friendly; độ đúng + nguồn của Chuyên gia |
 | `web/` | `templates/index.html` + `static/js/app.js` = bản sao giao diện System 3 + phần thêm; `login.html`; `admin.html` + `admin.js` (Quản trị); `static/vendor/` = marked 18.1.0 + DOMPurify 3.4.16 (lưu sẵn, chạy offline) |
