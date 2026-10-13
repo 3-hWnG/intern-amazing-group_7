@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import shutil
-import sqlite3
 import tempfile
 from pathlib import Path
 
@@ -334,26 +333,34 @@ def make_router(s3_store) -> APIRouter:
         return {"job": procs.job()}
 
     @r.get("/procs/export.xlsx")
-    def export_xlsx(request: Request):
-        """Xuất DB thủ tục Strict đang dùng ra Excel (procs_xlsx). Chụp DB sang tệp tạm trước (vài giây) để lúc dựng
-        tệp Excel (~15 s) không giữ DB đang dùng — "Áp dụng" vẫn thay được DB."""
+    def export_xlsx(request: Request, version: str = "active"):
+        """Xuất DB thủ tục ra Excel (procs_xlsx). version = "active" (DB Strict đang dùng, chụp sang tệp tạm nên "Áp dụng"
+        vẫn thay được DB; ~20 s) hoặc id một phiên bản đã lưu (dựng DB tạm từ tệp .jsonl của nó; thêm ~1 phút)."""
         dev(request)
         procs_ready()
-        if procs.job()["state"] == "running":
-            raise HTTPException(409, "Đang chạy việc khác (cào / áp dụng), hãy đợi xong rồi xuất")
+        j = procs.job()
+        if j["state"] == "running" and j["kind"] == "apply":
+            raise HTTPException(409, "Đang áp dụng phiên bản, hãy đợi xong rồi xuất")
+        active = procs.active_id()
+        try:
+            vid = active if version in ("", "active") else int(version)
+        except ValueError:
+            raise HTTPException(422, "version phải là 'active' hoặc số phiên bản") from None
+        vers = procs.versions()
+        v = next((x for x in vers if x["id"] == vid), None)
+        if not v:
+            raise HTTPException(404, f"không có phiên bản {vid}")
+        if vid == active:
+            src, where = Path(procs._s3_data().DB_PATH), "data/runtime/system3.db (the database Strict mode answers from right now)"
+        else:
+            src, where = procs.VERSIONS / f"{vid}.jsonl", (f"saved version {vid} (system4/runtime/procs/versions/{vid}.jsonl), "
+                                                          "built into a temporary database with system3.data.build")
         tmp = Path(tempfile.mkdtemp(prefix="s4_export_"))
         try:
-            snap = tmp / "procs.db"
-            src = sqlite3.connect(f"file:{procs._s3_data().DB_PATH}?mode=ro", uri=True)
-            dst = sqlite3.connect(snap)
-            try:
-                src.backup(dst)
-            finally:
-                src.close()
-                dst.close()
-            active = procs.active_id()
-            out = tmp / procs_xlsx.filename(active)
-            procs_xlsx.build(snap, out, procs.versions(), active)
+            out = tmp / procs_xlsx.filename(vid)
+            res = procs_xlsx.export_file(src, out, vers, vid, active, where)
+            if vid != active and res["procedures"] != v["n_records"]:
+                raise HTTPException(500, f"DB dựng ra có {res['procedures']} thủ tục, phiên bản ghi {v['n_records']}: không xuất")
         except Exception:
             shutil.rmtree(tmp, ignore_errors=True)
             raise

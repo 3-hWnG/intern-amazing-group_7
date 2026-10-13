@@ -196,6 +196,18 @@ with TestClient(main.app) as c:
     assert xp["E2"].value.startswith("=COUNTIF('Documents'!$B$2"), xp["E2"].value
     assert xb["Documents"]["C2"].value.startswith("=INDEX(Procedures!$B$2"), "proc_id lấy qua row_id bằng công thức"
     assert xb["Documents"].max_row - 1 == sqlite3.connect(DATA_COPY).execute("SELECT COUNT(*) FROM checklist_items").fetchone()[0]
+    # phiên bản đã lưu (không phải bản đang dùng): dựng DB tạm từ .jsonl của nó, DB đang dùng không đổi
+    assert c.get("/s4/admin/procs/export.xlsx?version=abc").status_code == 422
+    assert c.get("/s4/admin/procs/export.xlsx?version=999").status_code == 404
+    n_before = n_procs()
+    r = c.get(f"/s4/admin/procs/export.xlsx?version={v1}")
+    assert r.status_code == 200, r.text[:300]
+    assert f"_v{v1}_" in r.headers["content-disposition"]
+    xb = openpyxl.load_workbook(io.BytesIO(r.content))
+    assert xb["Procedures"].max_row - 1 == 1349, "phiên bản v1 = Gốc bớt 1 thủ tục"
+    assert any("NOT the version Strict mode uses now" in str(x.value) for x in xb["README"]["A"])
+    assert [x.value or "" for x in xb["Versions"]["H"]][1:] == ["yes" if v["id"] == v1 else "" for v in sorted(procs.versions(), key=lambda x: x["id"])]
+    assert n_procs() == n_before and procs.active_id() == v0, "xuất không đổi DB / bản đang dùng"
 
     # ---------------- Áp dụng (dựng DB thật bằng system3.data.build, trên bản sao)
     assert n_procs() == 1350
