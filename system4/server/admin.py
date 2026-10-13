@@ -1,11 +1,17 @@
 """Trang Quản trị (NV4) — chỉ dev. Ba tab: Dữ liệu Strict (thủ tục của System 3), Dữ liệu người dùng, Người dùng."""
 from __future__ import annotations
 
+import shutil
+import sqlite3
+import tempfile
+from pathlib import Path
+
 from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse, RedirectResponse
 from pydantic import BaseModel
+from starlette.background import BackgroundTask
 
-from . import auth, chat, config, datasets, db, guard, llm, persona, procs, search
+from . import auth, chat, config, datasets, db, guard, llm, persona, procs, procs_xlsx, search
 
 
 class NewUser(BaseModel):
@@ -326,6 +332,33 @@ def make_router(s3_store) -> APIRouter:
         procs_ready()
         err(procs.scrape, max(0, body.limit))
         return {"job": procs.job()}
+
+    @r.get("/procs/export.xlsx")
+    def export_xlsx(request: Request):
+        """Xuất DB thủ tục Strict đang dùng ra Excel (procs_xlsx). Chụp DB sang tệp tạm trước (vài giây) để lúc dựng
+        tệp Excel (~15 s) không giữ DB đang dùng — "Áp dụng" vẫn thay được DB."""
+        dev(request)
+        procs_ready()
+        if procs.job()["state"] == "running":
+            raise HTTPException(409, "Đang chạy việc khác (cào / áp dụng), hãy đợi xong rồi xuất")
+        tmp = Path(tempfile.mkdtemp(prefix="s4_export_"))
+        try:
+            snap = tmp / "procs.db"
+            src = sqlite3.connect(f"file:{procs._s3_data().DB_PATH}?mode=ro", uri=True)
+            dst = sqlite3.connect(snap)
+            try:
+                src.backup(dst)
+            finally:
+                src.close()
+                dst.close()
+            active = procs.active_id()
+            out = tmp / procs_xlsx.filename(active)
+            procs_xlsx.build(snap, out, procs.versions(), active)
+        except Exception:
+            shutil.rmtree(tmp, ignore_errors=True)
+            raise
+        return FileResponse(out, filename=out.name, background=BackgroundTask(shutil.rmtree, tmp, ignore_errors=True),
+                            media_type="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
 
     @r.get("/procs/job")
     def job(request: Request):

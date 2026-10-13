@@ -200,6 +200,20 @@
     if (!confirm(`Strict mode sẽ chuyển sang phiên bản ${v.id} (${v.label}, ${v.n_records} thủ tục). Dựng lại DB mất khoảng 1 phút. Tiếp tục?`)) return;
     try { renderJob((await api("/s4/admin/procs/apply", { version_id: v.id })).job); } catch (e) { alert(e.message); }
   }
+  $("export-btn").onclick = async () => {
+    const b = $("export-btn"), label = b.textContent;
+    b.disabled = true; b.textContent = "Đang xuất… (~20 giây)";
+    try {
+      const res = await fetch("/s4/admin/procs/export.xlsx");
+      if (res.status === 401) { location.href = "/s4/login"; return; }
+      if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(typeof d.detail === "string" ? d.detail : res.statusText); }
+      const name = (/filename="?([^";]+)"?/.exec(res.headers.get("Content-Disposition") || "") || [])[1] || "du_lieu_strict.xlsx";
+      const url = URL.createObjectURL(await res.blob());
+      const a = el("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 10000);
+    } catch (e) { alert("Xuất Excel lỗi: " + e.message); }
+    finally { b.disabled = false; b.textContent = label; }
+  };
   $("scrape-btn").onclick = async () => {
     const limit = parseInt($("scrape-limit").value || "0", 10) || 0;
     if (!confirm((limit ? `Cào thử ${limit} thủ tục` : "Cào toàn bộ thủ tục cấp Xã/Phường (khoảng 1.350, tải vài chục MB, có thể mất hàng chục phút)") + " từ dichvucong.gov.vn? Cần internet. Kết quả thành một phiên bản mới, CHƯA áp dụng.")) return;
