@@ -13,6 +13,7 @@ import threading
 import time
 from dataclasses import dataclass, field
 
+import fee_query
 from answer import answer
 from db import store
 from planner import plan as make_plan
@@ -105,7 +106,7 @@ _COUNT = re.compile(r"bao nhieu|may thu tuc")
 
 def _list_request(text: str) -> str | None:
     """Ý "liệt kê" (kế hoạch tuần tới 2b). Chưa có truy vấn SQL nên liệt kê tạm các thủ tục gần câu hỏi nhất, nói rõ chưa đầy đủ.
-    ponytail: chưa đếm / lọc theo giá được ("bao nhiêu thủ tục giá 20k" cần SQL; thầy: chưa làm). Trả None nếu không phải ý liệt kê."""
+    ponytail: chỉ liệt kê gần đúng theo chữ; đếm / lọc theo phí đã có đường riêng ở fee_query.py (chạy trước hàm này). Trả None nếu không phải ý liệt kê."""
     f = fold(text)
     if not _LIST.search(f):
         return None
@@ -148,6 +149,10 @@ def handle_turn(turn: Turn) -> dict:
                                 "text": "Mình đã bỏ qua các thông tin bạn kể trước đó. Bạn muốn hỏi về thủ tục nào?"}]}
         text = _strip_reset(text) or text
 
+    fee = None if (answered_clarify or turn.pick_proc) else fee_query.answer(text)
+    if fee:   # đếm / liệt kê theo phí: truy vấn SQL thật (không phải liệt kê gần đúng)
+        return {"kind": "answer", "clarify": None, "plan": {}, "trace": {"question": mask_pii(turn.text), "intent": "list_fee"},
+                "blocks": [{"title": "Thủ tục theo mức phí", "text": fee, "sources": []}]}
     listing = None if (answered_clarify or turn.pick_proc) else _list_request(text)
     if listing:
         return {"kind": "answer", "clarify": None, "plan": {}, "trace": {"question": mask_pii(turn.text), "intent": "list"},

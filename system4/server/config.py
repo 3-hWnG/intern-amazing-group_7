@@ -52,7 +52,7 @@ FRIENDLY_QUEUE_MAX = 20
 FRIENDLY_EXTRA_INSTRUCTIONS = ''
 LANG_FALLBACK_APOLOGY = 'Xin lỗi, hiện chúng tôi chỉ hỗ trợ tiếng Việt nên xin phép trả lời bạn bằng tiếng Việt.'
 CLARIFY_MAX = 2
-MEMORY_DEFAULT_MODE = 'auto'
+MEMORY_DEFAULT_MODE = 'explicit'
 MEMORY_MAX_ITEMS = 50
 SUMMARY_TRIGGER = 0.6
 GUARDRAILS = SEED_GUARDRAILS
@@ -84,6 +84,7 @@ GREETING_MAX_WORDS = 4
 GREETING_WORDS = 'xin chào|chào|hello|hi|hey|alo|cảm ơn|cám ơn|thank|thanks|tks|tạm biệt|bye|goodbye|hẹn gặp lại|chúc ngủ ngon|good night|good morning|ok|oke|okay|vâng|dạ|tuyệt'
 GROUNDING_CHECK = 'rewrite'
 AMBIGUITY_CHECK = True
+CHOICE_CHECK = True
 AMBIGUITY_MAX = 5
 TABLE_TOOL = True
 SEARCH_FOLLOWUP = True
@@ -189,6 +190,8 @@ SETTINGS = [
               "của doanh nghiệp không có trong mô tả) -> AI viết lại một lần, được báo rõ chi tiết nào không có. Chỉ tốn thêm 2-4 giây khi bắt được."),
     dict(key="AMBIGUITY_CHECK", type="bool", group="Tốc độ & độ chính xác", label="Hỏi lại khi trùng tên",
          help="Bật: tên được hỏi khớp 2 đến N bản ghi trong một bảng (vd. hai bạn tên An) -> hỏi \"Bạn muốn hỏi về mục nào?\" kèm nút họ tên đầy đủ."),
+    dict(key="CHOICE_CHECK", type="bool", group="Tốc độ & độ chính xác", label="Lọc nút gợi ý theo dữ liệu",
+         help="Bật: nút lựa chọn do AI nghĩ ra chỉ hiện nếu bộ dữ liệu đang bật có đoạn khớp (mỗi nút tốn thêm một lần tìm, khoảng 0,5-2 giây tuỳ máy). Tắt: hiện mọi nút AI đưa."),
     dict(key="AMBIGUITY_MAX", type="int", group="Tốc độ & độ chính xác", label="Trùng tên: tối đa N bản ghi", min=2, max=10,
          help="Khớp nhiều hơn số này thì coi là từ chung (vd. \"giấy phép\"), không hỏi lại."),
     dict(key="TABLE_TOOL", type="bool", group="Tốc độ & độ chính xác", label="Công cụ bảng (đếm / tổng / liệt kê)",

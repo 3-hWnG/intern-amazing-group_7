@@ -121,15 +121,48 @@ def _reranker():
         return _rr if _rr["model"] is not None else None
 
 
-def rerank(query: str, texts: list[str]) -> list[float] | None:
+def rerank_pairs(pairs: list[tuple[str, str]]) -> list[float] | None:
     r = _reranker()
-    if not r or not texts:
+    if not r or not pairs:
         return None
     import torch
     with _lock, torch.no_grad():
-        x = r["tok"]([[query, t[:1500]] for t in texts], padding=True, truncation=True, max_length=384,
+        x = r["tok"]([[q, t[:1500]] for q, t in pairs], padding=True, truncation=True, max_length=384,
                      return_tensors="pt").to(r["device"])
         return r["model"](**x).logits.view(-1).float().tolist()
+
+
+def rerank(query: str, texts: list[str]) -> list[float] | None:
+    return rerank_pairs([(query, t) for t in texts])
+
+
+def supported(queries: list[str], dataset_ids: list[int], per_query: int = 2) -> list[bool]:
+    """Mỗi câu có đoạn dữ liệu nào đủ điểm trả lời không (cùng ngưỡng RERANK_MIN_SCORE, không "cứu" đoạn điểm thấp).
+    Cả lô chỉ chạy reranker MỘT lần (mỗi lần gọi tốn ~1 giây dù ít cặp), nên rẻ hơn gọi search() từng câu."""
+    if not queries or not dataset_ids:
+        return [False] * len(queries)
+    vecs = embed(queries)
+    pairs, owner = [], []
+    for k, (q, v) in enumerate(zip(queries, vecs)):
+        kw = _keyword_search(q, dataset_ids, per_query)
+        fused: dict[int, float] = {}
+        for r, rid in enumerate(kw):
+            fused[rid] = fused.get(rid, 0) + 1 / (60 + r)
+        for r, (rid, _) in enumerate(_vector_search(v, dataset_ids, per_query)):
+            fused[rid] = fused.get(rid, 0) + 1 / (60 + r)
+        top = sorted(fused, key=fused.get, reverse=True)[:per_query]
+        for rec in db.get_records(top):
+            pairs.append((q, rec["text"])); owner.append(k)
+    scores = rerank_pairs(pairs) if settings.get("RERANKER_ENABLED") else None
+    ok = [False] * len(queries)
+    if scores is None:   # không có reranker: có đoạn ứng viên là đủ (giống search())
+        for k in owner:
+            ok[k] = True
+        return ok
+    for k, sc in zip(owner, scores):
+        if sc >= settings.get("RERANK_MIN_SCORE"):
+            ok[k] = True
+    return ok
 
 
 def reranker_status() -> dict:
@@ -207,6 +240,28 @@ def search(user_id: int, query: str, dataset_ids: list[int] | None = None, overr
         "rerank": c.get("score"), "passed": c in passed, "sent": c["id"] in sent, "text": c["text"][:400],
     } for c in ranked]
     return out, info
+
+
+_OVERVIEW = re.compile(r"tom tat|tong quan|noi dung (chinh |cua |trong )?(file|tep|tai lieu|van ban)|(file|tep|tai lieu|van ban) (nay )?(noi|viet|co|la) (ve|gi)|(file|tep|tai lieu|van ban) (nay )?(noi|viet|bao gom)")
+
+
+def is_overview(text: str) -> bool:
+    """Câu hỏi về cả tài liệu ("tóm tắt file", "file này nói về gì"): tìm theo nghĩa không có đoạn nào để khớp."""
+    t = unicodedata.normalize("NFD", text.lower().replace("đ", "d"))
+    return bool(_OVERVIEW.search("".join(ch for ch in t if not unicodedata.combining(ch))))
+
+
+def overview(dataset_ids: list[int], limit: int | None = None) -> list[dict]:
+    """Phương án dự phòng cho câu hỏi tổng quát: các đoạn đầu (theo thứ tự trong tệp) của mỗi bộ dữ liệu dạng văn bản."""
+    limit = limit or settings.get("RETRIEVAL_TOP_K")
+    out = []
+    for i in dataset_ids:
+        d = db.get_dataset(i)
+        if not d or d["status"] != "ready" or d["kind"] not in ("text", "mixed"):
+            continue
+        ids = [r["id"] for r in db.run("SELECT id FROM records WHERE dataset_id=? ORDER BY id LIMIT ?", (i, limit), many=True)]
+        out += [{**r, "dataset": d["name"]} for r in sorted(db.get_records(ids), key=lambda r: r["id"])]
+    return out[:limit]
 
 
 def warm_up() -> None:

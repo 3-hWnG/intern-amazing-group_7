@@ -142,3 +142,19 @@ CREATE TABLE IF NOT EXISTS domain_pins (
   pinned    INTEGER NOT NULL,
   PRIMARY KEY (user_id, domain_id)
 );
+
+-- 👍/👎 kèm nội dung để sau này chỉnh hệ thống / fine-tune. Chụp lại câu hỏi và câu trả lời lúc bấm,
+-- nên xoá hội thoại không làm mất. value 0 (bỏ đánh giá) thì xoá dòng. Chỉ lưu cục bộ.
+CREATE TABLE IF NOT EXISTS feedback_log (
+  id         INTEGER PRIMARY KEY AUTOINCREMENT,
+  engine     TEXT NOT NULL,                 -- friendly | strict
+  msg_key    TEXT NOT NULL,                 -- id tin (Friendly) hoặc id nút (Strict)
+  user_id    INTEGER NOT NULL,
+  domain_id  INTEGER,
+  conversation_id TEXT NOT NULL,
+  prompt     TEXT NOT NULL,
+  answer     TEXT NOT NULL,
+  value      INTEGER NOT NULL,              -- 1 = 👍, -1 = 👎
+  created_at TEXT NOT NULL DEFAULT (datetime('now')),
+  UNIQUE(engine, msg_key)
+);
