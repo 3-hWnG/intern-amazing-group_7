@@ -42,11 +42,14 @@ _SUBMISSION = {
 }
 
 # Đường dẫn công khai trên Cổng DVCQG (Trung tâm dữ liệu quốc gia - Bộ Công an):
-#     "/thu-tuc-hanh-chinh/:code"
-#     "/nop-ho-so?formalityId=:code"
-# Tham số là MÃ TTHC (proc_id). Đã kiểm chứng trả về HTTP 200, vượt qua NDC WAF.
-_PORTAL = "https://dichvucong.gov.vn/thu-tuc-hanh-chinh/{code}"
-_PORTAL_SUBMIT = "https://dichvucong.gov.vn/nop-ho-so?formalityId={code}"
+#     "/thu-tuc-hanh-chinh/:id"
+#     "/nop-ho-so?formalityId=:id"
+# Tham số là ID NỘI BỘ của cổng (UUID, trường `id` của API chi tiết = `source_id`), KHÔNG phải mã TTHC (proc_id).
+# Sửa 2026-10-13: bản cũ dùng proc_id (vd /thu-tuc-hanh-chinh/1.002759) -> trang trống; đúng là
+# /thu-tuc-hanh-chinh/019d2bfb-df35-76fe-b9f6-886f8a133b5c (người dùng kiểm bằng trình duyệt). Kiểm "HTTP 200" cũ
+# không chứng minh gì: cổng là React SPA, đường dẫn nào cũng trả 200 kèm cùng một trang khung.
+_PORTAL = "https://dichvucong.gov.vn/thu-tuc-hanh-chinh/{id}"
+_PORTAL_SUBMIT = "https://dichvucong.gov.vn/nop-ho-so?formalityId={id}"
 
 
 def _epoch_ms_to_date(value) -> str:
@@ -328,12 +331,13 @@ def normalize(raw: dict) -> dict:
     # và phải có ít nhất một cách nộp trực tuyến.
     has_online = bool(raw.get("cases")) and any(
         m.get("submissionMethod") == "ONLINE" for m in raw.get("executionMethods") or [])
-    portal_url = _PORTAL.format(code=proc_id) if proc_id else ""
-    online_url = _PORTAL_SUBMIT.format(code=proc_id) if (proc_id and has_online) else ""
+    source_id = clean(raw.get("id"))
+    portal_url = _PORTAL.format(id=source_id) if source_id else ""
+    online_url = _PORTAL_SUBMIT.format(id=source_id) if (source_id and has_online) else ""
 
     record = {
         "proc_id": proc_id,
-        "source_id": clean(raw.get("id")),
+        "source_id": source_id,
         "name": name,
         "domain": "; ".join(domains),
         "description": description,
