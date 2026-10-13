@@ -56,6 +56,8 @@
       if (v.id === P.original_id) name.appendChild(span("gốc", "tag"));
       const act = el("div");
       act.appendChild(btn("Xem", () => { procView.version = String(v.id); fillVersionSelect(); loadProcList(true); $("procs").scrollIntoView({ behavior: "smooth" }); }));
+      act.appendChild(btn("Xuất Excel", (b) => exportXlsx(v.id === P.active_id ? "active" : String(v.id), b), "btn-ghost",
+        v.id === P.active_id ? "Tải DB đang dùng thành tệp Excel" : "Dựng DB tạm từ phiên bản này rồi tải thành tệp Excel (~1-2 phút, không đổi bản đang dùng)"));
       if (v.id !== P.active_id) {
         act.appendChild(btn("So sánh", () => showDiff(String(P.active_id), String(v.id), "Bản đang dùng → phiên bản " + v.id)));
         act.appendChild(btn("Áp dụng", () => applyVersion(v), "primary", "Strict mode chuyển sang phiên bản này"));
@@ -200,11 +202,12 @@
     if (!confirm(`Strict mode sẽ chuyển sang phiên bản ${v.id} (${v.label}, ${v.n_records} thủ tục). Dựng lại DB mất khoảng 1 phút. Tiếp tục?`)) return;
     try { renderJob((await api("/s4/admin/procs/apply", { version_id: v.id })).job); } catch (e) { alert(e.message); }
   }
-  $("export-btn").onclick = async () => {
-    const b = $("export-btn"), label = b.textContent;
-    b.disabled = true; b.textContent = "Đang xuất… (~20 giây)";
+  /* Xuất Excel: version = "active" (DB đang dùng, ~20 giây) hoặc id phiên bản đã lưu (dựng DB tạm, ~1-2 phút) */
+  async function exportXlsx(version, b) {
+    const label = b.textContent;
+    b.disabled = true; b.textContent = version === "active" ? "Đang xuất… (~20 giây)" : "Đang dựng + xuất… (~1-2 phút)";
     try {
-      const res = await fetch("/s4/admin/procs/export.xlsx");
+      const res = await fetch("/s4/admin/procs/export.xlsx?version=" + encodeURIComponent(version));
       if (res.status === 401) { location.href = "/s4/login"; return; }
       if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(typeof d.detail === "string" ? d.detail : res.statusText); }
       const name = (/filename="?([^";]+)"?/.exec(res.headers.get("Content-Disposition") || "") || [])[1] || "du_lieu_strict.xlsx";
@@ -213,7 +216,8 @@
       setTimeout(() => URL.revokeObjectURL(url), 10000);
     } catch (e) { alert("Xuất Excel lỗi: " + e.message); }
     finally { b.disabled = false; b.textContent = label; }
-  };
+  }
+  $("export-btn").onclick = () => exportXlsx("active", $("export-btn"));
   $("scrape-btn").onclick = async () => {
     const limit = parseInt($("scrape-limit").value || "0", 10) || 0;
     if (!confirm((limit ? `Cào thử ${limit} thủ tục` : "Cào toàn bộ thủ tục cấp Xã/Phường (khoảng 1.350, tải vài chục MB, có thể mất hàng chục phút)") + " từ dichvucong.gov.vn? Cần internet. Kết quả thành một phiên bản mới, CHƯA áp dụng.")) return;

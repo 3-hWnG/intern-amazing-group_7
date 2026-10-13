@@ -1,4 +1,12 @@
-"""Xuất DB thủ tục của Strict mode (data/runtime/system3.db) ra một tệp Excel — nút "Xuất Excel" ở Quản trị → Dữ liệu Strict.
+"""Xuất một DB thủ tục (kiểu System 3) ra một tệp Excel. Độc lập với server: chỉ cần sqlite3 + openpyxl, riêng đầu vào
+.jsonl thì dựng DB tạm bằng chính system3.data.build.
+
+Dùng trên web: Quản trị → Dữ liệu Strict → "Xuất Excel" (bản đang dùng) hoặc nút "Xuất Excel" ở từng phiên bản đã lưu.
+Dùng độc lập (ở thư mục gốc repo):
+    python run_server.py -m system3.system4.server.procs_xlsx data/runtime/system3.db
+    python run_server.py -m system3.system4.server.procs_xlsx system4/runtime/procs/versions/2.jsonl -o v2.xlsx
+    python run_server.py -m system3.system4.server.procs_xlsx system4/runtime/scrape/staging/procedures.jsonl
+Đầu vào: .db / .sqlite (DB đã dựng) hoặc .jsonl (snapshot, phiên bản đã lưu, kết quả cào).
 
 Mục đích: trích dẫn được dữ liệu và cách các bảng nối với nhau.
 - Sheet "Procedures": mỗi thủ tục một dòng, row_id (khoá) + proc_id (mã thủ tục nhà nước) + portal_url (bấm để đối chiếu
@@ -12,9 +20,15 @@ Công thức không có giá trị lưu sẵn: Excel tính khi mở (fullCalcOnL
 """
 from __future__ import annotations
 
+import argparse
 import datetime
+import os
 import re
+import shutil
 import sqlite3
+import subprocess
+import sys
+import tempfile
 from pathlib import Path
 
 from openpyxl import Workbook
@@ -69,21 +83,46 @@ P_FIRST = ["row_id", "proc_id", "name", "portal_url"]
 WIDE = {"name", "description", "amount_text", "case_name", "doc_name", "processing_time_text", "service_name", "file_name"}
 
 
-def filename(active: int | None) -> str:
-    return f"du_lieu_strict_v{active or 0}_{datetime.date.today().isoformat()}.xlsx"
+REPO = Path(__file__).resolve().parents[2]   # thư mục gốc repo (có run_server.py)
 
 
-def build(db_path: Path, out: Path, versions: list[dict] | None = None, active: int | None = None) -> dict:
-    """Ghi tệp .xlsx từ DB thủ tục. Trả {"procedures": n, "truncated": [...]}."""
+def filename(version: int | None) -> str:
+    return f"du_lieu_strict_v{version or 0}_{datetime.date.today().isoformat()}.xlsx"
+
+
+def db_from_jsonl(src: Path, out: Path, timeout: int = 1800) -> int:
+    """Dựng DB thủ tục từ một procedures.jsonl bằng chính system3.data.build (không sửa), ra tệp `out`; trả số thủ tục.
+    Chạy tiến trình con qua run_server.register_package nên không phụ thuộc tên thư mục / PYTHONPATH."""
+    out.unlink(missing_ok=True)
+    code = ("import sys, pathlib; root = pathlib.Path(sys.argv[2]); sys.path.insert(0, str(root)); "
+            "import run_server; run_server.register_package(root); "
+            "import system3.data.load as L, system3.data.build as B; p = pathlib.Path(sys.argv[1]); "
+            "B.load_snapshot = lambda path=None: L.load_snapshot(p); raise SystemExit(B.main())")
+    env = dict(os.environ, S3_DATA_DB=str(out), PYTHONIOENCODING="utf-8")
+    r = subprocess.run([sys.executable, "-c", code, str(src), str(REPO)], env=env, capture_output=True, text=True,
+                       encoding="utf-8", errors="replace", timeout=timeout)
+    if r.returncode != 0 or not out.is_file():
+        raise RuntimeError("Dựng DB từ " + src.name + " thất bại: " + (r.stderr or r.stdout)[-800:])
+    c = sqlite3.connect(str(out))
+    try:
+        return c.execute("SELECT COUNT(*) FROM procedures").fetchone()[0]
+    finally:
+        c.close()
+
+
+def build(db_path: Path, out: Path, versions: list[dict] | None = None, version: int | None = None,
+          active: int | None = None, source: str = "") -> dict:
+    """Ghi tệp .xlsx từ DB thủ tục. versions/version/active: phiên bản (tuỳ chọn, cho sheet Versions); source: dòng
+    "xuất từ đâu" ghi ở README. Trả {"procedures": n, "truncated": [...]}."""
     con = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True)
     con.row_factory = sqlite3.Row
     try:
-        return _build(con, out, versions or [], active)
+        return _build(con, out, versions or [], version, active, source or str(db_path))
     finally:
         con.close()
 
 
-def _build(con, out: Path, versions: list[dict], active: int | None) -> dict:
+def _build(con, out: Path, versions: list[dict], version: int | None, active: int | None, source: str) -> dict:
     truncated: list[str] = []
 
     def clean(v, where):
@@ -190,15 +229,17 @@ def _build(con, out: Path, versions: list[dict], active: int | None) -> dict:
         ws.cell(row=r_i, column=2, value=rec[1]).font = F_BODY
     widths(ws, [16, 30])
 
-    # ---- Versions (nguồn gốc, từ system4.db)
-    ws = wb.create_sheet("Versions")
-    vcols = ["id", "label", "source", "parent_id", "n_records", "note", "created_at"]
-    header(ws, vcols + ["active"], {}, {})
-    for r_i, v in enumerate(sorted(versions, key=lambda x: x["id"]), 2):
-        for c_i, col in enumerate(vcols, 1):
-            ws.cell(row=r_i, column=c_i, value=v.get(col)).font = F_BODY
-        ws.cell(row=r_i, column=len(vcols) + 1, value="yes" if v["id"] == active else "").font = F_BOLD
-    widths(ws, [6, 26, 12, 10, 12, 50, 22, 8])
+    # ---- Versions (nguồn gốc, từ system4.db; xuất từ tệp ngoài web thì không có)
+    if versions:
+        ws = wb.create_sheet("Versions")
+        vcols = ["id", "label", "source", "parent_id", "n_records", "note", "created_at"]
+        header(ws, vcols + ["in this file", "used by Strict now"], {}, {})
+        for r_i, v in enumerate(sorted(versions, key=lambda x: x["id"]), 2):
+            for c_i, col in enumerate(vcols, 1):
+                ws.cell(row=r_i, column=c_i, value=v.get(col)).font = F_BODY
+            ws.cell(row=r_i, column=len(vcols) + 1, value="yes" if v["id"] == version else "").font = F_BOLD
+            ws.cell(row=r_i, column=len(vcols) + 2, value="yes" if v["id"] == active else "").font = F_BOLD
+        widths(ws, [6, 26, 12, 10, 12, 50, 22, 12, 16])
 
     # ---- README
     ws = readme
@@ -211,13 +252,14 @@ def _build(con, out: Path, versions: list[dict], active: int | None) -> dict:
 
     built = con.execute("SELECT MAX(scraped_at) FROM procedures").fetchone()[0]
     upd = con.execute("SELECT MIN(source_updated_at), MAX(source_updated_at) FROM procedures").fetchone()
-    act = next((v for v in versions if v["id"] == active), None)
-    put("Strict mode procedure database: full export", Font(name=ARIAL, size=16, bold=True, color="1F3A68"))
-    put(f"Exported {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')} from data/runtime/system3.db "
-        "(the database the Strict chatbot answers from).")
-    put((f"Data version: {active} ({act['label']}, {act['n_records']} procedures)" if act else f"Data version: {active}")
-        + " — see sheet 'Versions'.")
-    put(f"Records built {built}; portal last-updated dates {upd[0]} to {upd[1]}.")
+    ver = next((v for v in versions if v["id"] == version), None)
+    put("Procedure database: full export", Font(name=ARIAL, size=16, bold=True, color="1F3A68"))
+    put(f"Exported {datetime.datetime.now().strftime('%Y-%m-%d %H:%M')} from {source}.")
+    if ver:
+        put(f"Data version: {version} ({ver['label']}, {ver['n_records']} procedures) — "
+            + ("the version Strict mode uses now." if version == active else f"NOT the version Strict mode uses now ({active}).")
+            + " See sheet 'Versions'.")
+    put(f"{n_proc} procedures. Records built {built}; portal last-updated dates {upd[0]} to {upd[1]}.")
     put("Source: National Public Service Portal API, https://dichvucong.gov.vn/api/v1 (scraper: system4/scraper/).")
     put("Numbers below are formulas: if they look empty, click 'Enable Editing' (Excel calculates them then).")
     row += 1
@@ -285,3 +327,41 @@ def _build(con, out: Path, versions: list[dict], active: int | None) -> dict:
     wb.calculation.fullCalcOnLoad = True
     wb.save(out)
     return {"procedures": n_proc, "truncated": truncated}
+
+
+def export_file(src: Path, out: Path, versions: list[dict] | None = None, version: int | None = None,
+                active: int | None = None, source: str = "") -> dict:
+    """Xuất từ một tệp bất kỳ: .db/.sqlite đọc thẳng (qua bản chụp, không giữ DB đang dùng), .jsonl dựng DB tạm trước."""
+    tmp = Path(tempfile.mkdtemp(prefix="procs_xlsx_"))
+    try:
+        snap = tmp / "procs.db"
+        if src.suffix.lower() == ".jsonl":
+            db_from_jsonl(src, snap)
+        else:
+            a = sqlite3.connect(f"file:{src}?mode=ro", uri=True)
+            b = sqlite3.connect(snap)
+            try:
+                a.backup(b)
+            finally:
+                a.close()
+                b.close()
+        return build(snap, out, versions, version, active, source or str(src))
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
+
+
+def main(argv: list[str] | None = None) -> int:
+    ap = argparse.ArgumentParser(description="Xuất DB thủ tục (.db) hoặc procedures.jsonl (snapshot / phiên bản / cào) ra .xlsx")
+    ap.add_argument("src", type=Path, help=".db / .sqlite hoặc .jsonl")
+    ap.add_argument("-o", "--out", type=Path, help="tệp .xlsx ra (mặc định: cùng tên, cạnh tệp nguồn)")
+    a = ap.parse_args(argv)
+    if not a.src.is_file():
+        ap.error(f"không thấy tệp {a.src}")
+    out = a.out or a.src.with_suffix(".xlsx")
+    res = export_file(a.src.resolve(), out)
+    print(f"{res['procedures']} thủ tục -> {out}" + (f" ({len(res['truncated'])} ô bị cắt vì quá dài)" if res["truncated"] else ""))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
