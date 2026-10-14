@@ -100,6 +100,15 @@ def make_router(s3_store) -> APIRouter:
                 "feedback": {"friendly": fb("messages"), "strict": fb("strict_nodes")},
                 "roles": {x["role"]: x["n"] for x in db.run("SELECT role, COUNT(*) n FROM users GROUP BY role", many=True)}}
 
+    @r.get("/feedback")
+    def feedback_export(request: Request, value: int = 0, limit: int = 500):
+        """Các cặp (câu hỏi, câu trả lời) đã được 👍 (value=1) hoặc 👎 (value=-1); 0 = cả hai. Dùng để rà lỗi / làm dữ liệu fine-tune."""
+        dev(request)
+        where, args = ("WHERE value=?", (value,)) if value in (1, -1) else ("", ())
+        rows = db.run(f"SELECT engine,domain_id,conversation_id,prompt,answer,value,created_at FROM feedback_log {where} ORDER BY id DESC LIMIT ?",
+                      (*args, max(1, min(limit, 5000))), many=True)
+        return {"count": len(rows), "items": rows}
+
     @r.get("/users")
     def users(request: Request):
         dev(request)

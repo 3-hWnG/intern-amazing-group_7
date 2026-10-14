@@ -194,6 +194,10 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         if m["role"] != "assistant" or body.value not in (-1, 0, 1):
             raise HTTPException(422, "chỉ đánh giá câu trả lời của AI, giá trị 1/-1/0")
         db.set_feedback(mid, body.value)
+        q = db.get_message(m["parent_id"]) if m.get("parent_id") else None
+        conv = db.run("SELECT domain_id FROM conversations WHERE id=?", (cid,), one=True)
+        db.log_feedback("friendly", mid, request.state.user["id"], conv and conv["domain_id"], cid,
+                        q["content"] if q else "", m["content"], body.value)
         return {"ok": True}
 
     @r.patch("/conversations/{cid}")
@@ -241,7 +245,7 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         else:
             dom = db.get_domain(body.domain_id or 2)
         if not dom or dom["engine"] != "friendly" or not db.can_use_domain(u, dom):
-            raise HTTPException(403, "Bạn không dùng được domain này")
+            raise HTTPException(403, "Bạn không dùng được lĩnh vực này")
         if body.regenerate_of:
             m = own_message(request, cid, body.regenerate_of)
             if m["role"] != "assistant" or not m["parent_id"]:
@@ -307,7 +311,7 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         u = _user(request)
         dom = db.get_domain(domain_id)
         if not dom or not db.can_use_domain(u, dom):
-            raise HTTPException(404, "không có domain này")
+            raise HTTPException(404, "không có lĩnh vực này")
         return {"datasets": [ds_view(d) for d in db.visible_datasets(u, domain_id)], "quota": datasets.quota(u),
                 "active": datasets.active_summary(u["id"], domain_id, u["role"]), "formats": sorted(datasets.ingest.SUPPORTED),
                 "can_upload": domains.can_upload(u, dom), "domain": domains.view(u, dom)}
@@ -325,9 +329,9 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
             raise HTTPException(422, "domain_id không hợp lệ") from None
         dom = db.get_domain(domain_id)
         if not dom or not db.can_use_domain(u, dom):
-            raise HTTPException(404, "không có domain này")
+            raise HTTPException(404, "không có lĩnh vực này")
         if not domains.can_upload(u, dom):
-            raise HTTPException(403, "Domain này không cho tải dữ liệu lên (domain cứng chỉ dev tải; domain mềm cần dev bật quyền tải)")
+            raise HTTPException(403, "Lĩnh vực này không cho tải dữ liệu lên (lĩnh vực cứng chỉ dev tải; lĩnh vực mềm cần dev bật quyền tải)")
         try:
             d = await asyncio.to_thread(datasets.save_upload, u, f.filename, f.file, None, domain_id)
         except ValueError as e:

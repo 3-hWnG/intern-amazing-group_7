@@ -60,15 +60,15 @@ def make_router() -> APIRouter:
     def get_usable(user: dict, did: int) -> dict:
         d = db.get_domain(did)
         if not d or not db.can_use_domain(user, d):
-            raise HTTPException(404, "không có domain này")
+            raise HTTPException(404, "không có lĩnh vực này")
         return d
 
     def clean_name(user: dict, name: str, own_id: int | None = None) -> str:
         name = (name or "").strip()
         if not 1 <= len(name) <= 40:
-            raise HTTPException(422, "Tên domain 1–40 ký tự")
+            raise HTTPException(422, "Tên lĩnh vực 1–40 ký tự")
         if any(d["name"].casefold() == name.casefold() and d["id"] != own_id for d in db.visible_domains(user)):
-            raise HTTPException(422, "Đã có domain trùng tên")
+            raise HTTPException(422, "Đã có lĩnh vực trùng tên")
         return name
 
     def clean_guardrail(g: str) -> str:
@@ -90,10 +90,10 @@ def make_router() -> APIRouter:
         if kind not in ("hard", "soft"):
             raise HTTPException(422, "kind phải là hard hoặc soft")
         if kind == "hard" and not dev:
-            raise HTTPException(403, "Chỉ dev thêm được domain cứng")
+            raise HTTPException(403, "Chỉ dev thêm được lĩnh vực cứng")
         if not dev:
             if db.run("SELECT COUNT(*) n FROM domains WHERE owner_id=?", (u["id"],), one=True)["n"] >= MAX_SOFT_PER_USER:
-                raise HTTPException(422, f"Mỗi người tối đa {MAX_SOFT_PER_USER} domain riêng")
+                raise HTTPException(422, f"Mỗi người tối đa {MAX_SOFT_PER_USER} lĩnh vực riêng")
             if body.locked or body.user_upload:
                 raise HTTPException(403, "Chỉ dev đổi được khoá / quyền tải dữ liệu")
         name = clean_name(u, body.name or "")
@@ -107,14 +107,14 @@ def make_router() -> APIRouter:
         u = user_of(request)
         d = get_usable(u, did)
         if not can_edit(u, d):
-            raise HTTPException(403, "Bạn không sửa được domain này")
+            raise HTTPException(403, "Bạn không sửa được lĩnh vực này")
         dev = u["role"] == "dev"
         if (body.kind is not None or body.locked is not None or body.user_upload is not None) and not dev:
             raise HTTPException(403, "Chỉ dev đổi loại / khoá / quyền tải dữ liệu")
         sets = {}
         if body.name is not None:
             if did == 1:
-                raise HTTPException(422, "Domain Thủ tục giữ nguyên tên")
+                raise HTTPException(422, "Lĩnh vực Thủ tục giữ nguyên tên")
             sets["name"] = clean_name(u, body.name, did)
         if body.guardrail is not None:
             sets["guardrail"] = clean_guardrail(body.guardrail)
@@ -126,11 +126,11 @@ def make_router() -> APIRouter:
             if body.kind not in ("hard", "soft"):
                 raise HTTPException(422, "kind phải là hard hoặc soft")
             if did == 1:
-                raise HTTPException(422, "Domain Thủ tục luôn là domain cứng")
+                raise HTTPException(422, "Lĩnh vực Thủ tục luôn là lĩnh vực cứng")
             if body.kind == "hard":   # dataset riêng của người dùng sẽ thành dùng chung: không cho (lộ dữ liệu cá nhân)
                 n = db.run("SELECT COUNT(*) n FROM datasets x JOIN users y ON y.id=x.user_id WHERE x.domain_id=? AND y.role<>'dev'", (did,), one=True)["n"]
                 if n:
-                    raise HTTPException(422, f"Domain có {n} bộ dữ liệu riêng của người dùng, xoá hoặc chuyển chúng trước khi đổi sang domain cứng")
+                    raise HTTPException(422, f"Lĩnh vực có {n} bộ dữ liệu riêng của người dùng, xoá hoặc chuyển chúng trước khi đổi sang lĩnh vực cứng")
                 sets["owner_id"] = None   # domain cứng dùng chung cho mọi người
             sets["kind"] = body.kind
         if sets:
@@ -142,9 +142,9 @@ def make_router() -> APIRouter:
         u = user_of(request)
         d = get_usable(u, did)
         if d["kind"] == "hard" or did in db.BUILTIN_DOMAINS:
-            raise HTTPException(403, "Domain cứng / domain có sẵn không xoá được")
+            raise HTTPException(403, "Lĩnh vực cứng / lĩnh vực có sẵn không xoá được")
         if not can_edit(u, d):
-            raise HTTPException(403, "Bạn không xoá được domain này")
+            raise HTTPException(403, "Bạn không xoá được lĩnh vực này")
         for ds in db.run("SELECT * FROM datasets WHERE domain_id=?", (did,), many=True):
             datasets.delete(ds)
         db.run("UPDATE conversations SET domain_id=2 WHERE domain_id=?", (did,))   # hội thoại cũ về Trò chuyện chung

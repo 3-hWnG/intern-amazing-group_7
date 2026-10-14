@@ -24,6 +24,8 @@ with TestClient(main.app) as c:
     st = c.get("/s4/admin/stats").json()
     assert st["procedures"] and st["procedures"][0]["n"] >= 2, st
     assert st["roles"]["dev"] == 1 and st["roles"]["user"] == 1 and st["feedback"]["friendly"] == {"up": 0, "down": 0}, st
+    fb = c.get("/s4/admin/feedback").json()
+    assert fb["count"] == 0 and fb["items"] == []
     # người không phải dev không xem được thống kê
     c.cookies.clear()
     tok = c.post("/s4/auth/signup", json={"username": "dan", "password": "123456"}).cookies.get(auth.COOKIE)

@@ -286,6 +286,16 @@ def set_feedback(mid: int, value: int) -> None:
     run("UPDATE messages SET feedback=? WHERE id=?", (value, mid))
 
 
+def log_feedback(engine: str, msg_key, user_id: int, domain_id, cid: str, prompt: str, answer: str, value: int) -> None:
+    """Chụp (câu hỏi, câu trả lời, 👍/👎) vào feedback_log; value 0 thì xoá dòng. Đổi ý thì ghi đè, không tạo trùng."""
+    if value == 0:
+        run("DELETE FROM feedback_log WHERE engine=? AND msg_key=?", (engine, str(msg_key)))
+        return
+    run("INSERT INTO feedback_log(engine,msg_key,user_id,domain_id,conversation_id,prompt,answer,value) VALUES (?,?,?,?,?,?,?,?) "
+        "ON CONFLICT(engine,msg_key) DO UPDATE SET value=excluded.value, prompt=excluded.prompt, answer=excluded.answer, "
+        "created_at=datetime('now')", (engine, str(msg_key), user_id, domain_id, cid, prompt, answer, value))
+
+
 def get_summary(cid: str) -> tuple[str, int]:
     r = run("SELECT summary, summary_upto FROM conversations WHERE id=?", (cid,), one=True)
     return (r["summary"], r["summary_upto"]) if r else ("", 0)

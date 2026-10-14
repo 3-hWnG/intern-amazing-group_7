@@ -130,6 +130,12 @@ with TestClient(main.app) as c:
     assert c.post(f"/s4/conversations/{cid}/messages/{a2}/feedback", json={"value": 1}).status_code == 200
     assert next(m for m in c.post(f"/s4/conversations/{cid}/switch", json={"message_id": a2}).json()["messages"] if m["id"] == a2)["feedback"] == 1
     assert c.post(f"/s4/conversations/{cid}/messages/{u1}/feedback", json={"value": 1}).status_code == 422
+    fl = db.run("SELECT prompt,answer,value FROM feedback_log WHERE engine='friendly' AND msg_key=?", (str(a2),), many=True)
+    assert len(fl) == 1 and fl[0]["value"] == 1 and fl[0]["prompt"] and fl[0]["answer"], fl
+    c.post(f"/s4/conversations/{cid}/messages/{a2}/feedback", json={"value": -1})   # đổi ý: ghi đè, không trùng
+    fl = db.run("SELECT value FROM feedback_log WHERE engine='friendly' AND msg_key=?", (str(a2),), many=True)
+    assert [x["value"] for x in fl] == [-1], fl
+    c.post(f"/s4/conversations/{cid}/messages/{a2}/feedback", json={"value": 1})
 
     # ---- hỏi lại có nút, tối đa CLARIFY_MAX (2) lần liên tiếp
     q = "Bạn muốn hỏi về việc nào ạ?\n[[CHOICES]]\n- Đăng ký tài khoản\n- Đổi mật khẩu\n- Việc khác"
@@ -201,6 +207,8 @@ with TestClient(main.app) as c:
     chat("Số điện thoại hỗ trợ là gì?")
     assert "cảm xúc tiêu cực" not in system_of()
 
+    assert c.get("/s4/memory").json()["mode"] == "explicit", "mặc định: chỉ nhớ khi được bảo"
+    c.post("/s4/memory/mode", json={"mode": "auto"})
     # ---- bộ nhớ tự động: lọc câu không đúng dạng, báo "memory", dùng ở hội thoại khác
     memory_reply.update(add=["Người dùng tên là Lan", "Hôm nay trời đẹp", "Người dùng làm kế toán ở Đà Nẵng"], remove=[])
     ev = chat("Mình là Lan, làm kế toán ở Đà Nẵng")
@@ -230,7 +238,7 @@ with TestClient(main.app) as c:
     assert len(c.get("/s4/memory").json()["items"]) == len(items) - 1
     as_user(b)
     assert c.get("/s4/memory").json()["items"] == [], "bộ nhớ riêng từng người"
-    assert c.get("/s4/memory").json()["mode"] == "auto"
+    assert c.get("/s4/memory").json()["mode"] == "explicit"
     assert c.post(f"/s4/conversations/{cid}/switch", json={"message_id": a1}).status_code == 404
     assert c.post("/s4/chat", json={"conversation_id": cid, "regenerate_of": a1}).status_code == 404
     assert c.post(f"/s4/conversations/{cid}/messages/{a2}/feedback", json={"value": 1}).status_code == 404

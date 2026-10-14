@@ -7,7 +7,7 @@
 <link rel="icon" href="data:,">
 <!-- Giao diện = bản sao trang System 3 (web/templates/index.html) + công tắc Strict/Friendly, đăng nhập, cài đặt -->
 <link rel="stylesheet" href="/static/css/styles.css?v=20261006g">
-<link rel="stylesheet" href="/s4/static/css/s4.css?v=dev1">
+<link rel="stylesheet" href="/s4/static/css/s4.css?v=dev6">
 <style>
 .block-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px}
 .block-card h4{margin:0 0 6px;font-size:14px;color:var(--accent)}
@@ -26,7 +26,6 @@
       <div class="user-row">
         <span id="user-name"></span>
         <span class="user-links">
-          <button id="open-data" class="link" type="button" title="Bộ dữ liệu bạn đã tải lên (Friendly)">Dữ liệu</button>
           <button id="open-memory" class="link" type="button" title="Những điều AI nhớ về bạn (Friendly)">Bộ nhớ</button>
           <button id="logout" class="link" type="button">Đăng xuất</button>
         </span>
@@ -37,13 +36,13 @@
     <header class="chat-head">
       <button id="toggle-sidebar" class="icon" type="button" aria-label="Ẩn/hiện thanh bên">☰</button>
       <h1 id="conv-title">Instant Specialist</h1>
-      <div class="mode-switch domain-bar" id="domain-bar" role="group" aria-label="Domain"></div>
-      <select id="domain-more" class="domain-more" aria-label="Domain khác" hidden></select>
-      <button id="open-domains" class="link" type="button" title="Xem, thêm, ghim, sửa domain">Domain</button>
-      <button id="spec-badge" class="spec-badge" type="button" title="Dữ liệu của tôi">AI chung</button>
+      <div class="mode-switch domain-bar" id="domain-bar" role="group" aria-label="Lĩnh vực"></div>
+      <select id="domain-more" class="domain-more" aria-label="Lĩnh vực khác" hidden></select>
+      <button id="open-domains" class="link" type="button" title="Xem, thêm, ghim, sửa lĩnh vực">Lĩnh vực</button>
+      <button id="spec-badge" class="spec-badge" type="button" title="Dữ liệu của lĩnh vực này (mở trình quản lý lĩnh vực)">AI chung</button>
       <span id="model-name" class="model-name"></span>
       <button id="ai-badge" class="ai-badge" type="button" title="Cấu hình AI (Strict)">AI: …</button>
-      <button id="reset-topic" type="button" title="Quên các thông tin đã kể, hỏi việc khác">Bắt đầu chủ đề mới</button>
+      <button id="reset-topic" type="button" title="Quên các thông tin đã kể, hỏi việc khác">Chủ đề mới</button>
       <a id="open-admin" class="admin-link" href="/s4/admin" title="Quản trị: dữ liệu Strict, dữ liệu người dùng, người dùng (dev)" hidden>Quản trị</a>
       <button id="open-settings" class="icon" type="button" title="Cài đặt (dev)" aria-label="Cài đặt" hidden>⚙</button>
       <div id="cfg-panel" class="cfg-panel" hidden></div>
@@ -83,17 +82,17 @@
 <div id="domain-modal" class="s4-modal" hidden>
   <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="domain-title">
     <header>
-      <h2 id="domain-title">Domain</h2>
+      <h2 id="domain-title">Lĩnh vực</h2>
       <button id="domain-close" class="icon" type="button" aria-label="Đóng">✕</button>
     </header>
     <div class="body">
-      <p class="mem-help">Mỗi domain là một lĩnh vực có luật riêng. <b>Cứng</b>: không xoá được, dữ liệu dùng chung do dev tải. <b>Mềm</b>: kiểu Friendly, bạn thêm được. Guardrail là lời dặn gửi thẳng cho AI trước khi trả lời trong domain đó. Dữ liệu của domain này không hiện ở domain khác.</p>
+      <p class="mem-help">Mỗi lĩnh vực có luật riêng. <b>Cứng</b>: không xoá được, dữ liệu dùng chung do dev tải. <b>Mềm</b>: kiểu Friendly, bạn thêm được. Guardrail là lời dặn gửi thẳng cho AI trước khi trả lời trong domain đó. Mỗi lĩnh vực có bộ dữ liệu riêng: bấm "Dữ liệu" ở dòng lĩnh vực để tải lên, bật/tắt, xem hoặc xoá; dữ liệu không hiện ở lĩnh vực khác.</p>
       <ul id="domain-list" class="data-list"></ul>
       <form id="domain-new" class="dom-form">
-        <h3>Thêm domain</h3>
-        <input name="name" placeholder="Tên domain (ví dụ: Du lịch)" maxlength="40" required>
-        <textarea name="guardrail" rows="2" maxlength="1000" placeholder="Guardrail (không bắt buộc): lời dặn cho AI trong domain này"></textarea>
-        <label id="domain-new-hard" class="dom-check" hidden><input type="checkbox" name="hard"> Domain cứng (chỉ dev)</label>
+        <h3>Thêm lĩnh vực</h3>
+        <input name="name" placeholder="Tên lĩnh vực (ví dụ: Du lịch)" maxlength="40" required>
+        <textarea name="guardrail" rows="2" maxlength="1000" placeholder="Guardrail (không bắt buộc): lời dặn cho AI trong lĩnh vực này"></textarea>
+        <label id="domain-new-hard" class="dom-check" hidden><input type="checkbox" name="hard"> Lĩnh vực cứng (chỉ dev)</label>
         <button class="primary" type="submit">Thêm</button>
       </form>
     </div>
@@ -115,23 +114,6 @@
     </div>
     <footer>
       <button id="memory-clear" class="btn-ghost" type="button">Xoá tất cả</button>
-    </footer>
-  </div>
-</div>
-<div id="data-modal" class="s4-modal" hidden>
-  <div class="s4-dialog" role="dialog" aria-modal="true" aria-labelledby="data-title">
-    <header>
-      <h2 id="data-title">Dữ liệu của tôi</h2>
-      <button id="data-close" class="icon" type="button" aria-label="Đóng">✕</button>
-    </header>
-    <div class="body">
-      <p class="mem-help">Bật bộ dữ liệu nào thì AI (Friendly) chỉ trả lời từ các bộ đó (chế độ Chuyên gia). Tắt hết = AI chung.</p>
-      <div id="data-quota" class="quota"></div>
-      <div id="data-warn" class="data-warn" hidden></div>
-      <ul id="data-list" class="data-list"></ul>
-    </div>
-    <footer>
-      <button id="data-upload" class="primary" type="button">+ Tải tệp lên</button>
     </footer>
   </div>
 </div>
@@ -161,6 +143,6 @@
 <script src="/s4/static/vendor/marked.umd.js?v=18.1.0"></script>
 <script src="/s4/static/vendor/purify.min.js?v=3.4.16"></script>
 <script src="/s4/static/js/inspector.js?v=dev1"></script>
-<script src="/s4/static/js/app.js?v=dev9"></script>
+<script src="/s4/static/js/app.js?v=dev11"></script>
 </body>
 </html>

@@ -103,6 +103,8 @@ with TestClient(main.app) as c:
     assert p[-1]["content"].startswith("Đã bắt đầu chủ đề mới")
     assert c.post(f"/s4/strict/{root}/feedback", json={"node_id": p[1]["node_id"], "value": 1}).status_code == 200
     assert c.get(f"/s4/strict/{root}/messages").json()["messages"][1]["feedback"] == 1
+    fl = db.run("SELECT prompt,answer,value FROM feedback_log WHERE engine='strict' AND msg_key=?", (str(p[1]["node_id"]),), many=True)
+    assert len(fl) == 1 and fl[0]["value"] == 1 and fl[0]["prompt"] and fl[0]["answer"], fl
     md = c.get(f"/s4/strict/{root}/export?format=md")
     assert md.status_code == 200 and "khai sinh" in md.text.lower()
     # tạo lại sau "chủ đề mới": phát lại cả lệnh chủ đề mới

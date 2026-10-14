@@ -343,6 +343,16 @@ def _answer_text(state: dict) -> str:
     return raw if state.get("mode") == "fast" and state.get("fmt") == "json" else persona.split_choices(raw)[0]
 
 
+async def _answerable(choices: list[str], dataset_ids: list[int]) -> list[str]:
+    """Giữ lựa chọn mà bộ dữ liệu đang bật có đoạn khớp. AI tự nghĩ ra lựa chọn nên có thể gợi ý điều dữ liệu không có;
+    chọn vào đó chỉ nhận "không có trong dữ liệu"."""
+    try:
+        ok = await asyncio.to_thread(search.supported, choices, dataset_ids)
+    except Exception:   # tìm lỗi: giữ nút, không đoán
+        return choices
+    return [c for c, good in zip(choices, ok) if good]
+
+
 async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list[dict], mode: str = "fast", web: bool = False):
     """Async generator SSE cho một lượt. user_mid = tin người dùng mà câu trả lời nối vào."""
     mode = "think" if mode == "think" else "fast"
@@ -364,8 +374,11 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
         elif active and not small_by_code:   # có bộ dữ liệu đang bật -> Chuyên gia: tìm trước khi hỏi AI
             evidence, sinfo = await asyncio.to_thread(search.search, user["id"], squery, [d["id"] for d in active])
-            sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
             ids = [d["id"] for d in active]
+            if not evidence and search.is_overview(text):   # "tóm tắt file": không có đoạn nào khớp thì đưa các đoạn đầu của tệp văn bản
+                evidence = await asyncio.to_thread(search.overview, ids)
+                sinfo["overview"] = len(evidence)
+            sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
             if settings.get("TABLE_TOOL") and tabletool.triggered(text):
                 t1 = time.perf_counter()
                 async with llm.Turn():
@@ -478,6 +491,10 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                     prompts.append({"why": "lọt nhiều chữ lạ: viết lại", "messages": msgs})
                     async for ev in gen(msgs):
                         yield ev
+            if settings.get("CHOICE_CHECK") and evidence is not None and not web and not small and state.get("choices") and not state.get("replaced"):
+                kept = await _answerable(state["choices"], [d["id"] for d in active])   # nút gợi ý phải trả lời được từ dữ liệu
+                meta["choices_filter"] = {"before": len(state["choices"]), "kept": len(kept)}
+                state["choices"] = kept
         except (llm.QueueFull, llm.LLMError) as e:
             status, err = "error", str(e)
         except (asyncio.CancelledError, GeneratorExit):

@@ -194,4 +194,9 @@ def split_compare(text: str) -> list[str] | None:
                     b_end = len(fw)
                 if b_end - j >= 2:
                     return [a.strip(), text[toks[j][1]:toks[b_end - 1][2]].strip()]
+    if not lo and cue >= 2:        # 'A khác gì so với B': liên từ nằm NGAY SAU cụm so sánh, B là phần còn lại
+        j0 = cue + len(next(c for c in _CMP_CUES if tuple(fw[cue:cue + len(c)]) == c))
+        for cn in _CMP_CONN:
+            if tuple(fw[j0:j0 + len(cn)]) == cn and len(fw) - (j0 + len(cn)) >= 2:
+                return [text[toks[0][1]:toks[cue - 1][2]].strip(), text[toks[j0 + len(cn)][1]:toks[-1][2]].strip()]
     return None

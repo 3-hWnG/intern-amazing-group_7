@@ -200,3 +200,16 @@ body[data-mode="strict"] #attach,body[data-mode="strict"] #spec-badge{display:no
 .dom-form h3{margin:0;font-size:14px}
 .dom-x{display:inline-block;margin-left:6px;padding:0 3px;border-radius:50%;font-size:14px;line-height:15px;opacity:.45}
 .dom-x:hover{opacity:1;background:rgba(0,0,0,.12)}
+
+/* thanh đầu: không bóp chữ trong nút (trước đây "Bắt đầu chủ đề mới" bị xuống 5 dòng ở chế độ Thủ tục); thiếu chỗ thì xuống hàng, không dồn cột */
+.chat-head{flex-wrap:wrap;row-gap:8px}
+.chat-head>*{flex:none;white-space:nowrap}
+.chat-head h1{flex:1 1 0;min-width:48px}
+.chat-head .model-name{flex:0 1 auto;max-width:170px;overflow:hidden;text-overflow:ellipsis}
+@media (min-width:900px){.chat-head{padding-left:16px;padding-right:16px}}
+
+/* dữ liệu trong trình quản lý lĩnh vực */
+.dom-data{padding:6px 10px 10px;border-radius:8px;background:var(--panel-2)}
+.dom-data .data-list>li:last-of-type{border-bottom:0}
+.data-list>.dom-row{flex-direction:column;align-items:stretch;gap:6px}
+.dom-edit[hidden]{display:none}
