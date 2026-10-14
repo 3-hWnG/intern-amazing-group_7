@@ -32,8 +32,15 @@ _INJECTION = re.compile(
     r"\b(bo qua (moi )?(huong dan|chi dan|quy tac)|ignore (all |previous |the )?(instructions|rules)|prompt he thong|system prompt|"
     r"quen (vai tro|moi thu)|tu gio ban la|ban khong con la|developer mode|jailbreak|"
     r"quen (het )?(cac |moi |tat ca )?(lenh|huong dan|quy tac|chi dan)|(in|cho biet|tiet lo|noi) .{0,20}(huong dan|chi dan|lenh) he thong)\b")
-_PHONE = re.compile(r"(?<!\d)(0\d{9,10}|\+84\d{9,10})(?!\d)")
-_ID = re.compile(r"(?<!\d)\d{9}(?!\d)|(?<!\d)\d{12}(?!\d)")
+# D1 (05_methodology/bo_evaluation_hoan_thien_v2.md, Tầng D): bản cũ chỉ bắt số LIỀN MẠCH, bỏ sót
+# CCCD/SĐT người dân gõ có dấu cách/gạch/chấm giữa các cụm (034-203-004455, 0901 234 567).
+# Bắt DẢI SỐ (mỗi chữ số cách chữ số sau tối đa 1 dấu phân cách) rồi PHÂN LOẠI BẰNG SỐ CHỮ SỐ
+# sau khi gỡ dấu phân cách, vì CCCD/SĐT không có quy tắc nhóm thống nhất (không đoán theo cách nhóm).
+_PII_SEP = r"[ \-.]?"
+_PII_RUN = re.compile(r"(?<!\d)(?:\+84" + _PII_SEP + r")?\d(?:" + _PII_SEP + r"\d){8,14}(?!\d)")
+# Không che nếu ngay sau là đơn vị tiền (đ/đồng/vnd/vnđ) -> tránh che nhầm số tiền lớn viết có
+# dấu chấm phân cách hàng nghìn kiểu Việt Nam (100.000.000 đồng = 9 chữ số, trùng độ dài CCCD).
+_PII_CURRENCY_AFTER = re.compile(r"^\s*(đồng\b|vnđ\b|vnd\b|đ(?=[\s,.\)]|$))", re.IGNORECASE)
 
 
 @dataclass
@@ -71,8 +78,28 @@ class Routed:
 
 # FINAL-PRODUCT: [B3] hàm che PII đã có nhưng chỉ dùng cho trace; bản cuối gọi nó trước khi ghi messages.content/plan_json/session_facts/title (mục 2)
 def mask_pii(text: str) -> str:
-    """Guardrail 9: che CCCD/CMND/SĐT trước khi ghi log."""
-    return _ID.sub("[ID]", _PHONE.sub("[SDT]", text or ""))
+    """Guardrail 9: che CCCD/CMND/SĐT trước khi ghi log.
+    Chịu được dấu cách/gạch/chấm giữa các cụm số (xem _PII_RUN); không che số tiền lớn có đơn vị
+    "đ/đồng/vnd" ngay sau. CÒN LỖ HỔNG ĐÃ BIẾT: số 9-12 chữ số KHÔNG kèm đơn vị tiền ngay sau
+    (vd văn bản/mã nội bộ hiếm gặp trùng độ dài) vẫn có thể bị che nhầm; chấp nhận đánh đổi để
+    ưu tiên không bỏ sót PII thật. Xem eval/safety/test_pii_injection.py, D1."""
+    if not text:
+        return ""
+
+    def _repl(m):
+        raw = m.group(0)
+        if _PII_CURRENCY_AFTER.match(m.string[m.end():m.end() + 12]):
+            return raw
+        is_intl = raw.lstrip().startswith("+84")
+        digits = re.sub(r"\D", "", raw)
+        n = len(digits)
+        if n == 9 or n == 12:
+            return "[ID]"
+        if is_intl or (digits.startswith("0") and n in (10, 11)):
+            return "[SDT]"
+        return raw
+
+    return _PII_RUN.sub(_repl, text)
 
 
 def pre_check(text: str) -> dict:

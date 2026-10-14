@@ -1,6 +1,6 @@
 # Research Gap
 
-Qua phân tích 32 công trình nghiên cứu trong và ngoài nước, nhóm xác định 4 khoảng trống nghiên cứu chính mà các công trình trước chưa giải quyết:
+Qua phân tích 33 công trình nghiên cứu trong và ngoài nước, nhóm xác định 4 khoảng trống nghiên cứu chính mà các công trình trước chưa giải quyết:
 
 1. **Khoảng trống về kiến trúc kép tất định - sinh động (Dual-Engine Gap):**
    - Các hệ thống hiện có hoặc là chatbot quy tắc cứng (Rule-based / Intent classification) rất cứng nhắc, không hiểu được câu hỏi đàm thoại tự nhiên; hoặc là RAG thuần LLM dễ sinh ảo giác và độ trễ cao (3-8 giây).

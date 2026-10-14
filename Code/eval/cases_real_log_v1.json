@@ -1,0 +1,33 @@
+[
+ {"id":"real-01","q":"con em mo coi ca cha me ong ba muon lam nguoi giam ho cho no thi thu tuc sao a may ngay xong","expect_ids":["1.004837"],"beh":"answer","fields":["time"],"notes":"khong dau; giam ho tre mo coi"},
+ {"id":"real-02","q":"nhà em làm mất giấy chứng tử của ông từ hồi xưa giờ muốn đăng ký lại thì bao lâu có","expect_ids":["1.005461"],"beh":"answer","fields":["time"],"notes":"đăng ký lại khai tử, kể hoàn cảnh"},
+ {"id":"real-03","q":"cho em hỏi xin cái giấy xác nhận cư trú thì chờ bao lâu vậy ạ","expect_ids":["1.010041"],"beh":"answer","fields":["time"],"notes":"câu ngắn, hỏi thời gian"},
+ {"id":"real-04","q":"giờ muốn tách hộ ra khỏi nhà ba mẹ thì tốn bao nhiêu tiền","expect_ids":["1.010038"],"beh":"answer","fields":["fee"],"notes":"hỏi phí, kể hoàn cảnh gia đình"},
+ {"id":"real-05","q":"ông em chuyển hẳn vào viện dưỡng lão rồi, giờ xóa thường trú ở nhà cũ thì mấy ngày xong","expect_ids":["1.003197"],"beh":"answer","fields":["time"],"notes":"kể hoàn cảnh dài"},
+ {"id":"real-06","q":"mất bằng tốt nghiệp rồi, ra xin bản sao từ sổ gốc thì có nhanh không","expect_ids":["2.000908"],"beh":"answer","fields":["time"],"notes":"hỏi mơ hồ 'nhanh không' thay vì hỏi số ngày trực tiếp"},
+ {"id":"real-07","q":"em không muốn nhận di sản ba mẹ để lại, làm văn bản từ chối chứng thực tốn nhiêu tiền","expect_ids":["2.001016"],"beh":"answer","fields":["fee"],"notes":"tình huống riêng tư"},
+ {"id":"real-08","q":"chứng thực chữ ký trong giấy ủy quyền bao nhiêu 1 lần vậy ad","expect_ids":["2.000884"],"beh":"answer","fields":["fee"],"notes":"gọi 'ad' kiểu chat page"},
+ {"id":"real-09","q":"bà em thuộc hộ bảo trợ xã hội vừa mất, xin hỗ trợ mai táng thì xử lý trong bao lâu","expect_ids":["1.001731"],"beh":"answer","fields":["time"],"notes":"tang sự, cần nhạy cảm"},
+ {"id":"real-10","q":"ông em nhận trợ cấp hưu trí xã hội mới qua đời, xin mai táng phí mất mấy ngày vậy","expect_ids":["1.014028"],"beh":"answer","fields":["time"],"notes":"dễ nhầm với real-09 (2 loại mai táng phí khác nhau)"},
+ {"id":"real-11","q":"bố em là dân công hỏa tuyến giờ mất rồi, làm chế độ mai táng phí thì bao lâu có kết quả","expect_ids":["1.010456"],"beh":"answer","fields":["time"],"notes":"loại mai táng phí thứ 3, dễ lẫn với 09/10"},
+ {"id":"real-12","q":"nhà em muốn đăng ký đi thăm viếng mộ liệt sĩ thì đợi bao lâu mới được xếp","expect_ids":["1.013750"],"beh":"answer","fields":["time"],"notes":"người có công"},
+ {"id":"real-13","q":"gia đình em đang nhận chăm sóc thay thế 1 bé, giờ muốn chấm dứt thì mất mấy ngày xử lý","expect_ids":["1.004944"],"beh":"answer","fields":["time"],"notes":"trẻ em, hoàn cảnh dài"},
+ {"id":"real-14","q":"em muốn nhận 1 đứa nhỏ làm con nuôi trong nước thì lệ phí đăng ký bao nhiêu vậy","expect_ids":["2.001263"],"beh":"answer","fields":["fee"],"notes":"nuôi con nuôi, đăng ký mới"},
+ {"id":"real-15","q":"hồi xưa em nhận con nuôi rồi có đăng ký, giờ giấy tờ thất lạc muốn làm lại thì sao ạ","expect_ids":["2.001255","2.001263"],"beh":"clarify","fields":["case"],"notes":"mơ hồ: đăng ký LẠI (giấy thất lạc, đã đăng ký trước) vs hiểu lầm thành đăng ký mới"},
+ {"id":"real-16","q":"em được tổ dân phố đề cử làm hòa giải viên, thủ tục công nhận mất bao lâu vậy","expect_ids":["1.002211"],"beh":"answer","fields":["time"],"notes":"hòa giải ở cơ sở"},
+ {"id":"real-17","q":"tổ hòa giải chỗ em vừa bầu tổ trưởng mới, làm công nhận thì chờ mấy ngày","expect_ids":["2.000950"],"beh":"answer","fields":["time"],"notes":"dễ lẫn với real-16 (hòa giải viên vs tổ trưởng tổ hòa giải)"},
+ {"id":"real-18","q":"nhóm sinh hoạt đạo của em muốn đổi người đại diện thì đăng ký xong trong bao lâu","expect_ids":["1.012585"],"beh":"answer","fields":["time"],"notes":"tín ngưỡng tôn giáo, ít gặp"},
+ {"id":"real-19","q":"em đang xin phép cho cái nhóm trẻ tư mở hoạt động, hồ sơ xử lý mất bao lâu ạ","expect_ids":["2.002894"],"beh":"answer","fields":["time"],"notes":"giáo dục mầm non"},
+ {"id":"real-20","q":"em muốn mở 1 cơ sở mầm non độc lập thì xin phép thành lập mất bao lâu","expect_ids":["1.012971"],"beh":"answer","fields":["time"],"notes":"dễ lẫn với real-19 (thành lập mới vs cho phép hoạt động)"},
+ {"id":"real-21","q":"người nhà em mất ở ngoài đường do tai nạn, khai tử lưu động có tốn phí gì không","expect_ids":["1.000419"],"beh":"answer","fields":["fee"],"notes":"tình huống thương tâm"},
+ {"id":"real-22","q":"em đi làm xa nhà vài tháng, khai báo tạm vắng xong lấy giấy trong mấy ngày","expect_ids":["1.003677"],"beh":"answer","fields":["time"],"notes":"câu phổ biến"},
+ {"id":"real-23","q":"em mới sinh con giờ phải làm sao để có giấy khai sinh cho bé ạ","expect_ids":["1.001193","1.000893"],"beh":"clarify","fields":["case"],"notes":"mơ hồ: khai sinh thường vs có yếu tố nước ngoài, câu quá chung"},
+ {"id":"real-24","q":"bằng lái xe ô tô em hết hạn rồi giờ đổi ở đâu vậy","expect_ids":[],"beh":"apologize","fields":[],"notes":"OOS: cấp tỉnh (CSGT/Sở GTVT), ngoài phạm vi xã/phường"},
+ {"id":"real-25","q":"em cần làm hộ chiếu đi xuất khẩu lao động thì chuẩn bị giấy gì vậy ạ","expect_ids":[],"beh":"apologize","fields":[],"notes":"OOS: xuất nhập cảnh cấp tỉnh/công an tỉnh"},
+ {"id":"real-26","q":"công ty em nhập 1 lô hàng về cảng thì khai hải quan làm sao","expect_ids":[],"beh":"apologize","fields":[],"notes":"OOS: hải quan, ngành dọc"},
+ {"id":"real-27","q":"cuối năm em quyết toán thuế thu nhập cá nhân thì nộp hồ sơ ở đâu vậy ạ","expect_ids":[],"beh":"apologize","fields":[],"notes":"OOS: thuế, ngành dọc"},
+ {"id":"real-28","turns":[
+    {"q":"cho em hỏi thủ tục tách hộ với ạ","expect_ids":["1.010038"],"beh":"answer","fields":["documents"]},
+    {"q":"vậy tốn bao nhiêu tiền hả bạn","expect_ids":["1.010038"],"beh":"answer","fields":["fee"]}
+  ],"notes":"đa lượt, tỉnh lược chủ thể ở lượt 2 (archetype 5)"}
+]
