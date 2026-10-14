@@ -65,6 +65,7 @@ def main():
     for name, kind in (("cases_h4.json", "blind-h4"), ("cases_h5.json", "blind-h5"), ("cases_h6.json", "blind-h6"),
                        ("cases_pseudo_real.json", "pseudo-real"), ("cases_pseudo_real2.json", "pseudo-real"), ("cases_pseudo_real3.json", "pseudo-real")):
         rows += from_flat(name, "blind", kind)
+    rows += from_flat("cases_real_log_v1.json", "holdout-used", "real-log")   # bộ viết tay kiểu người dùng thật; lỗi đã bị đọc (real-11, real-13) nên không phải blind
     rows += from_team()
     seen, out = set(), []
     for r in rows:
