@@ -116,38 +116,43 @@ Nền sẵn có: `eval/run_pseudo.py`, các bộ `cases_*.jsonl`, `eval/README.m
 - Bước 1: [`eval/CRITERIA.md`](../eval/CRITERIA.md) gom tiêu chí về script có sẵn; chỉ rõ chỗ còn thiếu: RAGAS (chưa có script) và tốc độ p50/p95 theo loại câu, có/không GPU.
 - Bước 4: `eval/sample_dataset_check.py` lấy mẫu 50 bản ghi (phân tầng theo lĩnh vực, seed 7), ghi phiếu `eval/results/dataset_check_sheet.md`; `--score` tính tỷ lệ đúng sau khi người kiểm điền. **Chưa có tỷ lệ đúng**: cổng `dichvucong.gov.vn` tải chi tiết bằng JavaScript, đọc tự động không ra nội dung, nên cần người đối chiếu tay.
 - Tốc độ (`eval/measure_latency.py`, kết quả trong bảng ở CRITERIA.md mục 4): câu thường p50 60-80 ms, p95 ≤ 200 ms (LLM tắt hay bật đều thế); câu kích hoạt bước sinh chữ bằng LLM p50 3,2 s, p95 6,3 s. Trả lời câu hỏi thầy "câu phức tạp mất bao lâu": phức tạp về ý vẫn vài chục ms, chậm là do bước LLM sinh chữ. Chưa đo trên máy không GPU thật.
-- Bước 2 (xong): `eval/build_golden.py` gom 1.323 ca của mọi bộ có sẵn về một định dạng (`id, domain, type, turns, question, expected{behavior, tasks[{proc_ids, fields}]}, source, status`) trong `eval/golden/thu-tuc.jsonl`; `eval/run_golden.py` chấm. Domain "Trò chuyện chung" chưa có golden set (hội thoại tự do không có đáp án đúng/sai kiểm được): `golden/tro-chuyen-chung.jsonl` để rỗng, ghi rõ chỗ thiếu.
+- Bước 2 (xong): `eval/build_golden.py` gom 1.352 ca (1.323 ca cũ + 29 lượt real-log) của mọi bộ có sẵn về một định dạng (`id, domain, type, turns, question, expected{behavior, tasks[{proc_ids, fields}]}, source, status`) trong `eval/golden/thu-tuc.jsonl`; `eval/run_golden.py` chấm. Domain "Trò chuyện chung" chưa có golden set (hội thoại tự do không có đáp án đúng/sai kiểm được): `golden/tro-chuyen-chung.jsonl` để rỗng, ghi rõ chỗ thiếu.
 - Bước 3 (xong): `eval/build_template_set.py` sinh 430 câu từ 12 khuôn chủ đề áp lên bản ghi thủ tục (`golden/template_thu-tuc.jsonl`). Mới nối với dataset thủ tục; dataset người dùng tải ở System 4 chưa nối (chưa có đáp án chuẩn). Chủ đề "áp dụng/điều kiện" chưa sinh vì chưa có đáp án tự động.
 - Bước 5 (xong ở mức thử nghiệm, **kết quả chưa đủ tin cậy**): `eval/run_ragas_lite.py` cài lại 4 chỉ số RAGAS bằng giám khảo Ollama (không dùng thư viện `ragas`), kèm hai ca đối chứng âm để kiểm giám khảo. Kết quả ở bảng F.
 - Chưa làm: bảng E (dữ liệu đúng nguồn).
 
-### Bảng benchmark (chạy 2026-10-13, `S3_USE_LLM=0`, Planner luật, mỗi bảng một lệnh)
+### Bảng benchmark (chạy lại 2026-10-14 trên code hiện tại, `S3_USE_LLM=0`, Planner luật, mỗi bảng một lệnh)
+
+Từ 2026-10-14 mỗi tỷ lệ có khoảng tin cậy Wilson 95% (`a/b (p%, lo%–hi%)`), thêm cột MRR và nDCG@5 (`eval/rank_metrics.py`). Ca một thủ tục: MRR/nDCG tính trên danh sách ứng viên của task đầu, cùng danh sách với top-1 (RR = 1 khi và chỉ khi top-1 đúng). Ca nhiều thủ tục: tính theo từng task kỳ vọng rồi lấy trung bình. Bộ `cases_real_log_v1.json` (29 lượt viết tay kiểu người dùng thật) đã thêm vào golden set với status `holdout-used`, nên hàng `holdout-used` đổi từ 129 lên 158 ca; các hàng `blind` và `dev` không đổi so với bảng cũ.
 
 **A. Golden set Thủ tục theo status** — `python run_server.py eval/run_golden.py thu-tuc --by status`. Số chính thức là hàng `blind`; `dev` luôn cao hơn vì đã tune.
 
-| status | số ca | hành vi đúng | top-1 | top-3 | đúng trường | đủ ý (nhiều thủ tục) | hỏi lại đúng | từ chối đúng |
-|---|---|---|---|---|---|---|---|---|
-| blind | 553 | 431/553 (78%) | 295/406 (73%) | 323/406 (80%) | 199/388 (51%) | 8/10 (80%) | 40/86 (47%) | 52/58 (90%) |
-| dev | 641 | 626/641 (98%) | 558/567 (98%) | 562/567 (99%) | 368/373 (99%) | 25/28 (89%) | 23/26 (88%) | 42/46 (91%) |
-| holdout-used | 129 | 113/129 (88%) | 92/102 (90%) | 94/102 (92%) | 62/79 (78%) | 13/17 (76%) | 3/8 (38%) | 13/16 (81%) |
+| status | số ca | hành vi đúng | top-1 | top-3 | MRR | nDCG@5 | đúng trường | đủ ý (nhiều thủ tục) | hỏi lại đúng | từ chối đúng |
+|---|---|---|---|---|---|---|---|---|---|---|
+| blind | 553 | 431/553 (78%, 74%–81%) | 295/406 (73%, 68%–77%) | 323/406 (80%, 75%–83%) | 0.759 | 0.752 | 199/388 (51%, 46%–56%) | 8/10 (80%, 49%–94%) | 40/86 (47%, 36%–57%) | 52/58 (90%, 79%–95%) |
+| dev | 641 | 626/641 (98%, 96%–99%) | 558/567 (98%, 97%–99%) | 562/567 (99%, 98%–100%) | 0.987 | 0.976 | 368/373 (99%, 97%–99%) | 25/28 (89%, 73%–96%) | 23/26 (88%, 71%–96%) | 42/46 (91%, 80%–97%) |
+| holdout-used | 158 | 135/158 (85%, 79%–90%) | 109/125 (87%, 80%–92%) | 112/125 (90%, 83%–94%) | 0.876 | 0.885 | 78/102 (76%, 67%–84%) | 13/17 (76%, 53%–90%) | 3/10 (30%, 11%–60%) | 16/20 (80%, 58%–92%) |
 
 **B. Golden set Thủ tục theo bộ gốc** — `--by source`
 
-| source | số ca | hành vi đúng | top-1 | top-3 | đúng trường | đủ ý (nhiều thủ tục) | hỏi lại đúng | từ chối đúng |
-|---|---|---|---|---|---|---|---|---|
-| cases.jsonl | 590 | 577/590 (98%) | 503/510 (99%) | 506/510 (99%) | 362/369 (98%) | 34/38 (89%) | 24/29 (83%) | 45/47 (96%) |
-| cases_ctx.jsonl | 118 | 113/118 (96%) | 109/112 (97%) | 110/112 (98%) | 43/44 (98%) | - | - | 4/6 (67%) |
-| cases_h2.jsonl | 62 | 49/62 (79%) | 38/47 (81%) | 40/47 (85%) | 25/39 (64%) | 4/7 (57%) | 2/5 (40%) | 6/9 (67%) |
-| cases_h3.jsonl | 88 | 75/88 (85%) | 51/67 (76%) | 56/67 (84%) | 44/57 (77%) | 8/10 (80%) | 2/6 (33%) | 12/12 (100%) |
-| cases_h4.json | 106 | 90/106 (85%) | 60/77 (78%) | 67/77 (87%) | 35/77 (45%) | - | 10/16 (62%) | 13/13 (100%) |
-| cases_h5.json | 111 | 86/111 (77%) | 58/81 (72%) | 62/81 (77%) | 40/81 (49%) | - | 12/20 (60%) | 9/10 (90%) |
-| cases_h6.json | 126 | 93/126 (74%) | 62/87 (71%) | 70/87 (80%) | 53/87 (61%) | - | 11/28 (39%) | 8/11 (73%) |
-| cases_pseudo_real.json | 42 | 34/42 (81%) | 22/30 (73%) | 23/30 (77%) | 13/30 (43%) | - | 3/6 (50%) | 6/6 (100%) |
-| cases_pseudo_real2.json | 34 | 26/34 (76%) | 22/28 (79%) | 23/28 (82%) | 5/28 (18%) | - | 0/3 (0%) | 2/3 (67%) |
-| cases_pseudo_real3.json | 36 | 17/36 (47%) | 12/28 (43%) | 14/28 (50%) | 9/28 (32%) | - | 1/6 (17%) | 1/2 (50%) |
-| cases_team.json | 10 | 10/10 (100%) | 8/8 (100%) | 8/8 (100%) | - | - | 1/1 (100%) | 1/1 (100%) |
+| source | số ca | hành vi đúng | top-1 | top-3 | MRR | nDCG@5 | đúng trường | đủ ý (nhiều thủ tục) | hỏi lại đúng | từ chối đúng |
+|---|---|---|---|---|---|---|---|---|---|---|
+| cases.jsonl | 590 | 577/590 (98%, 96%–99%) | 503/510 (99%, 97%–99%) | 506/510 (99%, 98%–100%) | 0.987 | 0.982 | 362/369 (98%, 96%–99%) | 34/38 (89%, 76%–96%) | 24/29 (83%, 65%–92%) | 45/47 (96%, 86%–99%) |
+| cases_ctx.jsonl | 118 | 113/118 (96%, 90%–98%) | 109/112 (97%, 92%–99%) | 110/112 (98%, 94%–100%) | 0.978 | 0.947 | 43/44 (98%, 88%–100%) | - | - | 4/6 (67%, 30%–90%) |
+| cases_h2.jsonl | 62 | 49/62 (79%, 67%–87%) | 38/47 (81%, 67%–90%) | 40/47 (85%, 72%–93%) | 0.812 | 0.825 | 25/39 (64%, 48%–77%) | 4/7 (57%, 25%–84%) | 2/5 (40%, 12%–77%) | 6/9 (67%, 35%–88%) |
+| cases_h3.jsonl | 88 | 75/88 (85%, 76%–91%) | 51/67 (76%, 65%–85%) | 56/67 (84%, 73%–91%) | 0.782 | 0.771 | 44/57 (77%, 65%–86%) | 8/10 (80%, 49%–94%) | 2/6 (33%, 10%–70%) | 12/12 (100%, 76%–100%) |
+| cases_h4.json | 106 | 90/106 (85%, 77%–90%) | 60/77 (78%, 67%–86%) | 67/77 (87%, 78%–93%) | 0.824 | 0.805 | 35/77 (45%, 35%–57%) | - | 10/16 (62%, 39%–82%) | 13/13 (100%, 77%–100%) |
+| cases_h5.json | 111 | 86/111 (77%, 69%–84%) | 58/81 (72%, 61%–80%) | 62/81 (77%, 66%–84%) | 0.743 | 0.742 | 40/81 (49%, 39%–60%) | - | 12/20 (60%, 39%–78%) | 9/10 (90%, 60%–98%) |
+| cases_h6.json | 126 | 93/126 (74%, 66%–81%) | 62/87 (71%, 61%–80%) | 70/87 (80%, 71%–87%) | 0.758 | 0.772 | 53/87 (61%, 50%–71%) | - | 11/28 (39%, 24%–58%) | 8/11 (73%, 43%–90%) |
+| cases_pseudo_real.json | 42 | 34/42 (81%, 67%–90%) | 22/30 (73%, 56%–86%) | 23/30 (77%, 59%–88%) | 0.753 | 0.706 | 13/30 (43%, 27%–61%) | - | 3/6 (50%, 19%–81%) | 6/6 (100%, 61%–100%) |
+| cases_pseudo_real2.json | 34 | 26/34 (76%, 60%–88%) | 22/28 (79%, 60%–90%) | 23/28 (82%, 64%–92%) | 0.804 | 0.795 | 5/28 (18%, 8%–36%) | - | 0/3 (0%, 0%–56%) | 2/3 (67%, 21%–94%) |
+| cases_pseudo_real3.json | 36 | 17/36 (47%, 32%–63%) | 12/28 (43%, 27%–61%) | 14/28 (50%, 33%–67%) | 0.464 | 0.474 | 9/28 (32%, 18%–51%) | - | 1/6 (17%, 3%–56%) | 1/2 (50%, 9%–91%) |
+| cases_real_log_v1.json | 29 | 22/29 (76%, 58%–88%) | 17/23 (74%, 54%–87%) | 18/23 (78%, 58%–90%) | 0.773 | 0.796 | 16/23 (70%, 49%–84%) | - | 0/2 (0%, 0%–66%) | 3/4 (75%, 30%–95%) |
+| cases_team.json | 10 | 10/10 (100%, 72%–100%) | 8/8 (100%, 68%–100%) | 8/8 (100%, 68%–100%) | 1.000 | 0.952 | - | - | 1/1 (100%, 21%–100%) | 1/1 (100%, 21%–100%) |
 
 Ghi chú A, B:
+- HOLDOUT-4 (`cases_h4.json`) trên code hiện tại: hành vi 90/106, top-1 60/77, top-3 67/77, **MRR 0,824, nDCG@5 0,805**, hỏi lại 10/16. Bản draft đo trên code cũ ra MRR 0,810 và nDCG@5 0,785 (cùng top-1 60/77).
+- Real-log v1 (29 lượt, code hiện tại): hành vi 22/29, top-1 17/23, MRR 0,773, nDCG@5 0,796. Bộ này đã bị đọc lỗi (real-11, real-13) nên không phải số mù.
 - `blind` = HOLDOUT-3, h4, h5, h6, pseudo_real 1-3, bộ team. Bộ mù **chính thức** theo docs/EVAL.md là h4 (top-1 78%, hành vi 85%, hỏi lại 10/16) và pseudo_real 2. Số hiện tại của pseudo_real 2 là top-1 22/28, hành vi 26/34, còn docs/EVAL.md ghi 19/28 và 23/34: chưa tìm nguyên nhân lệch.
 - pseudo_real 3 thấp nhất (hành vi 47%); chưa xem lỗi (xem lỗi bộ mù sẽ làm nó mất tính mù).
 - Cột "đúng trường" của các bộ blind kém tin hơn dev: nhãn trường trong các file đó viết tay, tên khác (đã đổi tên `documents/fee/place/time`; `conditions` không có trường tương ứng nên luôn tính lệch).
@@ -155,20 +160,20 @@ Ghi chú A, B:
 
 **C. Bộ khuôn câu hỏi theo chủ đề** — `python run_server.py eval/build_template_set.py` rồi `python run_server.py eval/run_golden.py template_thu-tuc --by type`. Câu dùng nguyên tên thủ tục nên **dễ hơn câu người dân gõ**; dùng để so các chủ đề với nhau và bắt hồi quy, không phải số chính thức. Chỉ lấy thủ tục cấp xã, không ngành dọc, họ một dạng.
 
-| type | số ca | hành vi đúng | top-1 | top-3 | đúng trường | đủ ý (nhiều thủ tục) | hỏi lại đúng | từ chối đúng |
-|---|---|---|---|---|---|---|---|---|
-| address | 30 | 29/30 (97%) | 30/30 (100%) | 30/30 (100%) | 15/30 (50%) | - | - | - |
-| compare-khac-gi | 20 | 20/20 (100%) | 20/20 (100%) | 20/20 (100%) | - | 16/20 (80%) | - | - |
-| compare-so-sanh | 20 | 20/20 (100%) | 20/20 (100%) | 20/20 (100%) | - | 20/20 (100%) | - | - |
-| components | 40 | 39/40 (98%) | 38/40 (95%) | 39/40 (98%) | 39/40 (98%) | - | - | - |
-| explain | 40 | 39/40 (98%) | 38/40 (95%) | 39/40 (98%) | 18/40 (45%) | - | - | - |
-| fees | 40 | 39/40 (98%) | 40/40 (100%) | 40/40 (100%) | 36/40 (90%) | - | - | - |
-| legal | 40 | 39/40 (98%) | 40/40 (100%) | 40/40 (100%) | 35/40 (88%) | - | - | - |
-| list | 40 | 32/40 (80%) | - | - | - | - | - | - |
-| multi_field | 40 | 39/40 (98%) | 39/40 (98%) | 40/40 (100%) | 37/40 (92%) | - | - | - |
-| online | 40 | 39/40 (98%) | 39/40 (98%) | 39/40 (98%) | 33/40 (82%) | - | - | - |
-| steps | 40 | 39/40 (98%) | 40/40 (100%) | 40/40 (100%) | 36/40 (90%) | - | - | - |
-| time | 40 | 39/40 (98%) | 40/40 (100%) | 40/40 (100%) | 35/40 (88%) | - | - | - |
+| type | số ca | hành vi đúng | top-1 | top-3 | MRR | nDCG@5 | đúng trường | đủ ý (nhiều thủ tục) | hỏi lại đúng | từ chối đúng |
+|---|---|---|---|---|---|---|---|---|---|---|
+| address | 30 | 29/30 (97%, 83%–99%) | 30/30 (100%, 89%–100%) | 30/30 (100%, 89%–100%) | 1.000 | 1.000 | 15/30 (50%, 33%–67%) | - | - | - |
+| compare-khac-gi | 20 | 20/20 (100%, 84%–100%) | 20/20 (100%, 84%–100%) | 20/20 (100%, 84%–100%) | 0.933 | 0.944 | - | 16/20 (80%, 58%–92%) | - | - |
+| compare-so-sanh | 20 | 20/20 (100%, 84%–100%) | 20/20 (100%, 84%–100%) | 20/20 (100%, 84%–100%) | 1.000 | 1.000 | - | 20/20 (100%, 84%–100%) | - | - |
+| components | 40 | 39/40 (98%, 87%–100%) | 38/40 (95%, 83%–99%) | 39/40 (98%, 87%–100%) | 0.963 | 0.966 | 39/40 (98%, 87%–100%) | - | - | - |
+| explain | 40 | 39/40 (98%, 87%–100%) | 38/40 (95%, 83%–99%) | 39/40 (98%, 87%–100%) | 0.963 | 0.966 | 18/40 (45%, 31%–60%) | - | - | - |
+| fees | 40 | 39/40 (98%, 87%–100%) | 40/40 (100%, 91%–100%) | 40/40 (100%, 91%–100%) | 1.000 | 1.000 | 36/40 (90%, 77%–96%) | - | - | - |
+| legal | 40 | 39/40 (98%, 87%–100%) | 40/40 (100%, 91%–100%) | 40/40 (100%, 91%–100%) | 1.000 | 1.000 | 35/40 (88%, 74%–95%) | - | - | - |
+| list | 40 | 32/40 (80%, 65%–90%) | - | - | - | - | - | - | - | - |
+| multi_field | 40 | 39/40 (98%, 87%–100%) | 39/40 (98%, 87%–100%) | 40/40 (100%, 91%–100%) | 0.988 | 0.991 | 37/40 (92%, 80%–97%) | - | - | - |
+| online | 40 | 39/40 (98%, 87%–100%) | 39/40 (98%, 87%–100%) | 39/40 (98%, 87%–100%) | 0.975 | 0.975 | 33/40 (82%, 68%–91%) | - | - | - |
+| steps | 40 | 39/40 (98%, 87%–100%) | 40/40 (100%, 91%–100%) | 40/40 (100%, 91%–100%) | 1.000 | 1.000 | 36/40 (90%, 77%–96%) | - | - | - |
+| time | 40 | 39/40 (98%, 87%–100%) | 40/40 (100%, 91%–100%) | 40/40 (100%, 91%–100%) | 1.000 | 1.000 | 35/40 (88%, 74%–95%) | - | - | - |
 
 liệt kê: 32/40 câu có trả danh sách; trung bình 12% mục trong danh sách đúng lĩnh vực được hỏi.
 
@@ -177,6 +182,18 @@ liệt kê: 32/40 câu có trả danh sách; trung bình 12% mục trong danh s�
 - **So sánh**: "So sánh A và B" đủ ý 20/20. "A khác gì so với B" lúc đầu 0/20 (không tách được hai vế vì liên từ nằm sau cụm "khác gì"); đã sửa `retrieval/refs.py` (`split_compare`), giờ 16/20. Bảng C ở trên là số SAU sửa; test `server/tests/compare_cue_test.py`.
 - **Liệt kê**: 32/40 câu có trả danh sách (8 câu không khớp mẫu), nhưng chỉ 12% mục đúng lĩnh vực được hỏi: hệ thống chưa có truy vấn theo lĩnh vực, chỉ liệt kê thủ tục gần câu hỏi nhất (đúng như đã ghi trong câu trả lời).
 - Chủ đề "explain" (45%) và "address" (50%) đúng trường thấp: câu "Giải thích giúp mình thủ tục X" hay bị hiểu thành hỏi mục khác, và câu hỏi nơi nộp thường kèm thêm `components`. Chưa sửa vì chưa rõ có phải lỗi.
+
+**D'. An toàn** — `python run_server.py eval/safety/test_pii_injection.py --e2e --adapter answer_adapter:adapter` (bộ test của branch draft, đã chép sang `eval/safety/`). Đo 2026-10-14:
+
+| Chỉ số | Trước khi vá `mask_pii` | Sau khi vá |
+|---|---|---|
+| D1 che CCCD/SĐT viết liền (recall) | 9/9 | 9/9 |
+| D1 che CCCD/SĐT có dấu cách, gạch, chấm (`034-203-004455`, `0901 234 567`) | **0/3** | 3/3 |
+| D1 che nhầm câu không có PII | 0/5 | 0/5 |
+| D2 chặn chèn lệnh / chặn nhầm câu thường | 11/11, 0/6 | 11/11, 0/6 |
+| D2 hành vi thật của hệ thống (đầu-cuối) | 17/17 | 17/17 |
+
+Lỗi che số có thật trên branch này (số có dấu phân cách lọt vào log nguyên văn); đã vá bằng cách chuyển khối `mask_pii` của branch draft sang `server/policy/policy.py`, giữ nguyên `_CGEN`. **Rủi ro chấp nhận:** số 9–12 chữ số không kèm đơn vị tiền vẫn bị che (ví dụ `quyết định số 123456789` thành `[ID]`). Bản cũ cũng che trường hợp này khi số liền mạch, nên bản vá không tạo rủi ro mới; chỉ mở rộng sang số có dấu phân cách.
 
 **D. Tốc độ** (đo bằng `eval/measure_latency.py`, p50 / p95, ms; n = 26–40 câu mỗi loại nên **p95 dao động mạnh giữa các lần chạy**: lần chạy lại bằng `eval/report.py --llm` ra p95 của câu phức tạp khi bật LLM là 3.619 ms thay vì 1.624 ms, còn p50 gần như không đổi. Tin p50 hơn p95)
 
@@ -222,7 +239,7 @@ Kết luận bước 5:
 | Bước | Kết quả |
 |---|---|
 | 1. Tiêu chí chấm | Xong: `eval/CRITERIA.md` |
-| 2. Golden set theo domain | Xong cho Thủ tục (1.323 ca); Trò chuyện chung chưa có |
+| 2. Golden set theo domain | Xong cho Thủ tục (1.352 ca); Trò chuyện chung chưa có |
 | 3. Bộ khuôn câu hỏi dùng chung | Xong cho dataset thủ tục (430 ca); chưa nối dataset người dùng tải lên |
 | 4. Kiểm chứng dataset | Có phiếu 50 bản ghi; chưa có tỷ lệ đúng (bảng E, tạm bỏ qua) |
 | 5. RAGAS | Làm thử: `eval/run_ragas_lite.py` (bảng F). Giám khảo 4B không đủ tin cậy cho faithfulness và relevancy; chỉ số luật thay thế |
@@ -244,7 +261,7 @@ Kết luận bước 5:
 - Bộ dev, ctx, khuôn do nhóm và agent tự soạn; bộ blind do agent soạn từ giả định, chưa có người ngoài kiểm. Bộ khuôn dùng nguyên tên thủ tục nên dễ hơn câu thật.
 - Domain "Trò chuyện chung" (Friendly) chưa có số đo nào.
 - Nhãn trường của các bộ blind viết tay, tên khác nhau; cột "đúng trường" ở đó kém tin hơn ở dev.
-- Số pseudo_real 2 chạy lại (top-1 22/28) khác số cũ trong `docs/EVAL.md` (19/28); chưa tìm nguyên nhân.
+- Số pseudo_real 2 chạy lại (top-1 22/28) khác số cũ trong `docs/EVAL.md` (19/28). Đã loại trừ nguyên nhân do cách chấm: `run_golden.py` (phát lại lượt assistant bằng câu trả lời thật) và `run_pseudo.py` cho đúng cùng số trên pseudo_real 2 (26/34, 22/28, 23/28) và h4 (90/106, 60/77, 67/77). Số 19/28 trong `docs/EVAL.md` là số của code cũ, cần cập nhật.
 - Tỷ lệ dữ liệu đúng nguồn chưa có (bảng E).
 - Bộ chấm chạy với Planner luật và `S3_USE_LLM=0`; chưa đo Planner bằng LLM; RAGAS chỉ thử với giám khảo 4B kém tin cậy (bảng F), chưa có điểm RAGAS dùng được.
 
