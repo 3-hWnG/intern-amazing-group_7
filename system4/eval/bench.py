@@ -172,9 +172,9 @@ class Client:
         for m in self.c.get("/s4/memory").json()["items"]:
             self.c.delete(f"/s4/memory/{m['id']}")
 
-    def chat(self, text: str, cid: str | None = None) -> dict:
+    def chat(self, text: str, cid: str | None = None, web: bool = False) -> dict:
         t0, first, final_first, evs = time.time(), None, None, []
-        with self.c.stream("POST", "/s4/chat", json={"text": text, "conversation_id": cid}) as r:
+        with self.c.stream("POST", "/s4/chat", json={"text": text, "conversation_id": cid, "websearch": web}) as r:
             buf = ""
             for chunk in r.iter_text():
                 buf += chunk
