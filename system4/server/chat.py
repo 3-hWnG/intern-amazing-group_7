@@ -502,6 +502,7 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             raise
         finally:
             meta["mode"] = state.get("mode", mode)
+            meta["model"] = llm.think_model() if meta["mode"] == "think" else settings.get("FRIENDLY_MODEL")   # model lúc trả lời, cho feedback_log
             if "t_llm" in locals():
                 meta["timing"] = {"llm_ms": int((time.perf_counter() - t_llm) * 1000), "total_ms": int((time.perf_counter() - t0) * 1000)}
             f = state.get("filter")

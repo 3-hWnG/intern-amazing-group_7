@@ -338,12 +338,32 @@
           const val = m.feedback === v ? 0 : v;
           try { await api("/s4/strict/" + convId + "/feedback", { node_id: m.node_id, value: val }); } catch (e) { alert("Lỗi: " + e.message); return; }
           m.feedback = val; bar.querySelectorAll(".fb").forEach((y) => y.classList.remove("on")); if (val) x.classList.add("on");
+          reasonChips(w, "strict", val, (reason) => api("/s4/strict/" + convId + "/feedback", { node_id: m.node_id, value: -1, reason }));
         }, "fb" + (m.feedback === v ? " on" : "")));
       });
       w.appendChild(bar);
     }
     box.appendChild(w);
     return w;
+  }
+
+  /* Sau 👎: hàng nút chọn nhanh lý do (không bắt buộc). send(reason) gửi lại 👎 kèm lý do; lý do tự mất khi bỏ 👎 / đổi 👍. */
+  const REASONS = {
+    strict: [["wrong_proc", "Sai thủ tục"], ["wrong_number", "Sai số liệu"], ["no_clarify", "Không hỏi lại"], ["other", "Khác"]],
+    friendly: [["wrong_info", "Sai thông tin"], ["off_topic", "Không đúng ý hỏi"], ["bad_format", "Dài / khó đọc"], ["other", "Khác"]],
+  };
+  function reasonChips(wrap, kind, val, send) {
+    const old = wrap.querySelector(".fb-reason"); if (old) old.remove();
+    if (val !== -1) return;
+    const row = el("div", "fb-reason", "");
+    row.appendChild(el("span", "muted small", "Vì sao? "));
+    REASONS[kind].forEach(([key, label]) => {
+      const b = el("button", "chip", label); b.type = "button";
+      b.onclick = async () => { try { await send(key); } catch (e) { alert("Lỗi: " + e.message); return; }
+        row.querySelectorAll(".chip").forEach((y) => y.classList.remove("on")); b.classList.add("on"); };
+      row.appendChild(b);
+    });
+    wrap.appendChild(row);
   }
 
   function strictUser(m) {
@@ -510,6 +530,7 @@
           m.feedback = val;
           bar.querySelectorAll(".fb").forEach((y) => y.classList.remove("on"));
           if (val) x.classList.add("on");
+          reasonChips(w, "friendly", val, (reason) => api("/s4/conversations/" + convId + "/messages/" + m.id + "/feedback", { value: -1, reason }));
         }, "fb" + (m.feedback === v ? " on" : ""));
         bar.appendChild(btn);
       };
