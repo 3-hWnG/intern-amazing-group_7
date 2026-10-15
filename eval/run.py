@@ -113,6 +113,9 @@ def fabricated(case, answer, pids):
 
 
 # -------------------------------------------------------------- chấm điểm ---
+from rank_metrics import best_match, mean as _mean
+
+
 def cands_of(t):
     c = list(t.get("candidates") or [])
     if t.get("proc_id") and t["proc_id"] not in c[:1]:
@@ -123,11 +126,11 @@ def cands_of(t):
 def score_case(case, out):
     exp = case["expected"]
     r = dict(id=case["id"], category=case["category"], split=case.get("split", "dev"), behavior_ok=out.get("behavior") == exp["behavior"],
-             top1=None, top3=None, fields_ok=None, fab=None, fab_why=[], nps_ok=None, cite_ok=None,
+             top1=None, top3=None, mrr=None, ndcg5=None, fields_ok=None, fab=None, fab_why=[], nps_ok=None, cite_ok=None,
              latency_ms=out.get("latency_ms"), extra=out.get("extra") or {}, got_behavior=out.get("behavior"))
     scorable = [t for t in exp["tasks"] if t["acceptable_proc_ids"]]
     if exp["behavior"] == "answer" and scorable:
-        used, t1, t3, fo = set(), [], [], []
+        used, t1, t3, fo, rrs, ndcgs = set(), [], [], [], [], []
         outs = out.get("tasks") or []
         for et in scorable:
             acc, hit1, hit3, mj = set(et["acceptable_proc_ids"]), None, None, None
@@ -138,6 +141,8 @@ def score_case(case, out):
                 for j, ot in enumerate(outs):
                     if j not in used and acc & set(cands_of(ot)[:3]):
                         hit3 = j; break
+            _j, _rr, _nd = best_match([cands_of(o) for o in outs], used, acc, 5)
+            rrs.append(_rr); ndcgs.append(_nd)
             mj = hit1 if hit1 is not None else hit3
             if mj is not None:
                 used.add(mj)
@@ -148,6 +153,7 @@ def score_case(case, out):
             else:
                 fo.append(mj is not None and set(outs[mj].get("fields") or []) == set(et["fields"]))
         r["top1"], r["top3"] = all(t1), all(t3)
+        r["mrr"], r["ndcg5"] = _mean(rrs), _mean(ndcgs)
         r["fields_ok"] = None if (out.get("fields_supported") is False or all(x is None for x in fo)) else all(bool(x) for x in fo)
     elif exp["behavior"] == "answer" and not scorable and exp["tasks"] == []:
         pass  # chitchat: chỉ chấm hành vi
@@ -169,6 +175,11 @@ def pct(xs):
     return f"{100 * sum(xs) / len(xs):.0f}% ({sum(xs)}/{len(xs)})" if xs else "-"
 
 
+def avg(xs):
+    xs = [x for x in xs if x is not None]
+    return f"{sum(xs) / len(xs):.3f}" if xs else "-"
+
+
 def pctl(xs, q):
     xs = sorted(x for x in xs if x is not None)
     if not xs:
@@ -180,12 +191,12 @@ def table(results):
     by = defaultdict(list)
     for r in results:
         by[r["category"]].append(r)
-    rows = ["| Hạng mục | n | top-1 | top-3 | đúng fields | đúng hành vi | bịa số | nói 'không công bố' | trích nguồn | is_strong sai | p50 ms | p95 ms |",
-            "|---|---|---|---|---|---|---|---|---|---|---|---|"]
+    rows = ["| Hạng mục | n | top-1 | top-3 | MRR | nDCG@5 | đúng fields | đúng hành vi | bịa số | nói 'không công bố' | trích nguồn | is_strong sai | p50 ms | p95 ms |",
+            "|---|---|---|---|---|---|---|---|---|---|---|---|---|---|"]
 
     def row(name, rs):
         strong = [bool(r["extra"].get("is_strong")) for r in rs if "is_strong" in r["extra"]]
-        return (f"| {name} | {len(rs)} | {pct([r['top1'] for r in rs])} | {pct([r['top3'] for r in rs])} | {pct([r['fields_ok'] for r in rs])} | "
+        return (f"| {name} | {len(rs)} | {pct([r['top1'] for r in rs])} | {pct([r['top3'] for r in rs])} | {avg([r['mrr'] for r in rs])} | {avg([r['ndcg5'] for r in rs])} | {pct([r['fields_ok'] for r in rs])} | "
                 f"{pct([r['behavior_ok'] for r in rs])} | {pct([r['fab'] for r in rs])} | {pct([r['nps_ok'] for r in rs])} | "
                 f"{pct([r['cite_ok'] for r in rs])} | {pct(strong) if strong and name in ('out_of_scope', 'hallucination_unsupported') else '-'} | "
                 f"{pctl([r['latency_ms'] for r in rs], .5)} | {pctl([r['latency_ms'] for r in rs], .95)} |")
@@ -202,7 +213,7 @@ def rate(xs):
 
 def summary(results):
     """Số tổng cho 1 split: top-1, top-3, hành vi, bịa số, và 4 loại chấm luật."""
-    d = {"n": len(results), "top1": rate([r["top1"] for r in results]), "top3": rate([r["top3"] for r in results]),
+    d = {"n": len(results), "top1": rate([r["top1"] for r in results]), "top3": rate([r["top3"] for r in results]), "mrr": rate([r["mrr"] for r in results]), "ndcg5": rate([r["ndcg5"] for r in results]),
          "behavior": rate([r["behavior_ok"] for r in results]), "fab": rate([r["fab"] for r in results])}
     for k in ("condition", "compare", "negation", "order"):
         d[k] = rate([r["rule_ok"] for r in results if r.get("rule_kind") == k])
@@ -213,15 +224,23 @@ def fmt(v):
     return "-" if v is None else f"{100 * v:.1f}%"
 
 
+def fmt_raw(v):
+    """Định dạng thập phân (không nhân 100) — dùng cho MRR/nDCG."""
+    return "-" if v is None else f"{v:.3f}"
+
+
 def split_report(results):
     sm = {sp: summary([r for r in results if r["split"] == sp]) for sp in ("dev", "holdout", "holdout2", "holdout3")}
     hk = next((k for k in ("holdout3", "holdout2") if sm[k]["n"]), "holdout")
     rows = [f"| Số đo | DEV | {hk.upper()} | chênh ({hk.upper()} - DEV, điểm %) |", "|---|---|---|---|"]
     rows.append(f"| n câu | {sm['dev']['n']} | {sm[hk]['n']} | |")
-    for k, lab in (("top1", "top-1"), ("top3", "top-3"), ("behavior", "đúng hành vi"), ("fab", "bịa số (thấp tốt)"),
+    for k, lab in (("top1", "top-1"), ("top3", "top-3"), ("mrr", "MRR"), ("ndcg5", "nDCG@5"), ("behavior", "đúng hành vi"), ("fab", "bịa số (thấp tốt)"),
                    ("condition", "luật: điều kiện"), ("compare", "luật: so sánh"), ("negation", "luật: phủ định"), ("order", "luật: thứ tự")):
         a, b = sm["dev"][k], sm[hk][k]
-        rows.append(f"| {lab} | {fmt(a)} | {fmt(b)} | {'-' if a is None or b is None else f'{100 * (b - a):+.1f}'} |")
+        raw = k in ("mrr", "ndcg5")
+        fa, fb = (fmt_raw(a), fmt_raw(b)) if raw else (fmt(a), fmt(b))
+        diff = "-" if a is None or b is None else (f"{b - a:+.3f}" if raw else f"{100 * (b - a):+.1f}")
+        rows.append(f"| {lab} | {fa} | {fb} | {diff} |")
     return "\n".join(rows), sm
 
 

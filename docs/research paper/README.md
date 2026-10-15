@@ -6,6 +6,18 @@
 
 ---
 
+## Ba cách đánh số bài báo (đọc trước khi trích dẫn)
+
+| Nguồn | Số bài | Dùng ở đâu |
+|---|---|---|
+| Số trong tên thư mục bên dưới (`01_..` đến `32_..`) | 32 | Chỉ để tìm tệp PDF |
+| `RESEARCH_PAPERS.md` | 20 | Tổng hợp cũ cho V10.5 |
+| **`PAPER_LIST_33.md` + `paper_summaries/paper_XX.md`** | 33 | **Đây là cách đánh số duy nhất dùng trong báo cáo và trong `eval/CRITERIA.md`** (chép từ branch `draft` ngày 2026-10-14) |
+
+Ba cách đánh số lệch nhau. Ví dụ: LegalBench-RAG là thư mục `06_...` nhưng là **Paper 08**; CRAG là thư mục `14_...` nhưng là **Paper 18**; CRITIC là thư mục `11_...` nhưng là **Paper 15**. Khi trích dẫn trong báo cáo hoặc slide, ghi tên tác giả kèm số của `PAPER_LIST_33.md` để người đọc không nhầm.
+
+---
+
 ## Cấu trúc thư mục (8 Nhóm Nghiên cứu)
 
 `
