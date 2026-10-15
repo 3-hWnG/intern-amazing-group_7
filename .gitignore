@@ -52,3 +52,6 @@ Documentation/
 document/
 
 
+
+# Claude Code local config (preview launch.json)
+.claude/
