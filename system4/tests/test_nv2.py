@@ -136,6 +136,12 @@ with TestClient(main.app) as c:
     fl = db.run("SELECT value FROM feedback_log WHERE engine='friendly' AND msg_key=?", (str(a2),), many=True)
     assert [x["value"] for x in fl] == [-1], fl
     c.post(f"/s4/conversations/{cid}/messages/{a2}/feedback", json={"value": 1})
+    ctx = json.loads(db.run("SELECT context FROM feedback_log WHERE engine='friendly' AND msg_key=?", (str(a2),), one=True)["context"])
+    assert ctx["model"] and ctx["reason"] == "", ctx
+    db.log_feedback("friendly", "pii-1", 1, 2, cid, "SĐT tôi 0912 345 678, CCCD 012345678901", "ok", 1)   # che PII trước khi ghi
+    fl = db.run("SELECT prompt FROM feedback_log WHERE msg_key='pii-1'", one=True)["prompt"]
+    assert "0912" not in fl and "012345678901" not in fl and "[SDT]" in fl and "[ID]" in fl, fl
+    db.log_feedback("friendly", "pii-1", 1, 2, cid, "", "", 0)
 
     # ---- hỏi lại có nút, tối đa CLARIFY_MAX (2) lần liên tiếp
     q = "Bạn muốn hỏi về việc nào ạ?\n[[CHOICES]]\n- Đăng ký tài khoản\n- Đổi mật khẩu\n- Việc khác"

@@ -32,6 +32,7 @@ class SwitchIn(BaseModel):
 
 class FeedbackIn(BaseModel):
     value: int   # 1 | -1 | 0
+    reason: str = ""   # lý do chọn nhanh khi 👎 (không bắt buộc)
 
 
 class HeaderRowIn(BaseModel):
@@ -197,7 +198,7 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         q = db.get_message(m["parent_id"]) if m.get("parent_id") else None
         conv = db.run("SELECT domain_id FROM conversations WHERE id=?", (cid,), one=True)
         db.log_feedback("friendly", mid, request.state.user["id"], conv and conv["domain_id"], cid,
-                        q["content"] if q else "", m["content"], body.value)
+                        q["content"] if q else "", m["content"], body.value, {"model": m["meta"].get("model") or settings.get("FRIENDLY_MODEL"), "reason": db.clean_reason(body.reason)})
         return {"ok": True}
 
     @r.patch("/conversations/{cid}")

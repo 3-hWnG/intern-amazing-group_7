@@ -1,12 +1,15 @@
 """Trang Quản trị (NV4) — chỉ dev. Ba tab: Dữ liệu Strict (thủ tục của System 3), Dữ liệu người dùng, Người dùng."""
 from __future__ import annotations
 
+import csv
+import io
+import json
 import shutil
 import tempfile
 from pathlib import Path
 
 from fastapi import APIRouter, HTTPException, Request
-from fastapi.responses import FileResponse, RedirectResponse
+from fastapi.responses import FileResponse, RedirectResponse, Response
 from pydantic import BaseModel
 from starlette.background import BackgroundTask
 
@@ -108,6 +111,37 @@ def make_router(s3_store) -> APIRouter:
         rows = db.run(f"SELECT engine,domain_id,conversation_id,prompt,answer,value,created_at FROM feedback_log {where} ORDER BY id DESC LIMIT ?",
                       (*args, max(1, min(limit, 5000))), many=True)
         return {"count": len(rows), "items": rows}
+
+    def feedback_rows(value: int) -> list[dict]:
+        """Các dòng 👍/👎 đã che CCCD/SĐT (cả dòng ghi trước khi có bộ che); context đã parse thành dict."""
+        where, args = ("WHERE value=?", (value,)) if value in (1, -1) else ("", ())
+        rows = db.run(f"SELECT engine,domain_id,prompt,answer,value,context,created_at FROM feedback_log {where} ORDER BY id", args, many=True)
+        return [{**x, "prompt": db.mask_pii(x["prompt"]), "answer": db.mask_pii(x["answer"]), "context": json.loads(x["context"])} for x in rows]
+
+    def download(body: str, media: str, value: int, ext: str) -> Response:
+        name = {1: "up", -1: "down"}.get(value, "all")
+        return Response(body, media_type=media, headers={"Content-Disposition": f'attachment; filename="feedback_{name}.{ext}"'})
+
+    @r.get("/feedback.jsonl")
+    def feedback_jsonl(request: Request, value: int = 0):
+        """Tải file .jsonl, mỗi dòng một cặp {engine, domain_id, prompt, answer, value, context, created_at}."""
+        dev(request)
+        return download("".join(json.dumps(x, ensure_ascii=False) + "\n" for x in feedback_rows(value)), "application/x-ndjson; charset=utf-8", value, "jsonl")
+
+    @r.get("/feedback.csv")
+    def feedback_csv(request: Request, value: int = 0):
+        """Tải file .csv (UTF-8 có BOM nên Excel mở đúng tiếng Việt). Context trải thành cột; ô bắt đầu bằng = + - @ bị đệm dấu ' để Excel không chạy như công thức."""
+        dev(request)
+        safe = lambda v: "'" + v if isinstance(v, str) and v[:1] in tuple("=+-@" + chr(9) + chr(13)) else v
+        out = io.StringIO()
+        w = csv.writer(out)
+        w.writerow(["created_at", "engine", "domain_id", "value", "reason", "behavior", "model", "procs", "candidates", "flags", "prompt", "answer"])
+        for x in feedback_rows(value):
+            c = x["context"]
+            w.writerow([safe(v) for v in (x["created_at"], x["engine"], x["domain_id"], x["value"], c.get("reason", ""), c.get("behavior") or "", c.get("model", ""),
+                                          "; ".join(f'{p.get("id")} {p.get("label")}' for p in c.get("procs", [])), "; ".join(c.get("candidates", [])),
+                                          "; ".join(c.get("flags", [])), x["prompt"], x["answer"])])
+        return download(chr(0xFEFF) + out.getvalue(), "text/csv; charset=utf-8", value, "csv")
 
     @r.get("/users")
     def users(request: Request):

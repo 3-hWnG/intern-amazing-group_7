@@ -105,6 +105,31 @@ with TestClient(main.app) as c:
     assert c.get(f"/s4/strict/{root}/messages").json()["messages"][1]["feedback"] == 1
     fl = db.run("SELECT prompt,answer,value FROM feedback_log WHERE engine='strict' AND msg_key=?", (str(p[1]["node_id"]),), many=True)
     assert len(fl) == 1 and fl[0]["value"] == 1 and fl[0]["prompt"] and fl[0]["answer"], fl
+    c.post(f"/s4/strict/{root}/feedback", json={"node_id": p[1]["node_id"], "value": -1, "reason": "wrong_proc"})
+    ctx = json.loads(db.run("SELECT context FROM feedback_log WHERE engine='strict' AND msg_key=?", (str(p[1]["node_id"]),), one=True)["context"])
+    assert ctx["reason"] == "wrong_proc" and ctx["procs"] and ctx["model"], ctx
+    assert ctx["candidates"] and len(ctx["candidates"]) <= 3 and ctx["procs"][0]["id"] in ctx["candidates"], ctx
+    c.post(f"/s4/strict/{root}/feedback", json={"node_id": p[1]["node_id"], "value": -1, "reason": "bậy bạ"})
+    assert json.loads(db.run("SELECT context FROM feedback_log WHERE engine='strict' AND msg_key=?", (str(p[1]["node_id"]),), one=True)["context"])["reason"] == "other"
+    c.post(f"/s4/strict/{root}/feedback", json={"node_id": p[1]["node_id"], "value": 1})   # trả về 👍 cho phần sau
+    assert c.get("/s4/admin/feedback.jsonl").status_code == 403, "xuất 👍/👎 chỉ cho dev"
+    as_user("boss")
+    ex = c.get("/s4/admin/feedback.jsonl?value=1")
+    rows = [json.loads(x) for x in ex.text.splitlines()]
+    assert ex.status_code == 200 and rows and all(set(x) == {"engine", "domain_id", "prompt", "answer", "value", "context", "created_at"} and x["value"] == 1 for x in rows), (ex.status_code, rows)
+    import csv as _csv, io as _io
+    cs = c.get("/s4/admin/feedback.csv?value=1")
+    assert cs.status_code == 200 and cs.content.startswith(bytes([0xEF, 0xBB, 0xBF])) and "attachment" in cs.headers["content-disposition"], cs.headers
+    crow = list(_csv.DictReader(_io.StringIO(cs.content.decode("utf-8-sig"))))
+    assert crow and set(crow[0]) >= {"reason", "behavior", "model", "procs", "candidates", "prompt", "answer"} and crow[0]["value"] == "1", crow[:1]
+    from system3.system4.server import db as _db
+    _db.log_feedback("strict", "csv-inj", 1, 1, root, "=HYPERLINK(\"http://x\")", "ok", -1, {})
+    inj = next(r for r in _csv.DictReader(_io.StringIO(c.get("/s4/admin/feedback.csv?value=-1").content.decode("utf-8-sig"))) if "HYPERLINK" in r["prompt"])
+    assert inj["prompt"].startswith("'="), inj["prompt"]
+    _db.log_feedback("strict", "csv-inj", 1, 1, root, "", "", 0)
+    st = next(x for x in rows if x["engine"] == "strict")["context"]
+    assert st["model"] and st["behavior"] == "answer" and st["procs"] and st["procs"][0]["id"], st
+    as_user("anna")
     md = c.get(f"/s4/strict/{root}/export?format=md")
     assert md.status_code == 200 and "khai sinh" in md.text.lower()
     # tạo lại sau "chủ đề mới": phát lại cả lệnh chủ đề mới

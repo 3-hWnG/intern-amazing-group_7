@@ -105,6 +105,12 @@
     <div class="card">
       <h2>Phản hồi 👍 / 👎 và tài khoản</h2>
       <table class="grid" id="stat-other"></table>
+      <p class="small">Tải câu hỏi + câu trả lời đã được đánh giá (đã che CCCD/SĐT):</p>
+      <table class="grid">
+        <tr><td>Tất cả</td><td><a href="/s4/admin/feedback.csv" download>.csv (mở bằng Excel)</a></td><td><a href="/s4/admin/feedback.jsonl" download>.jsonl</a></td></tr>
+        <tr><td>Chỉ 👍</td><td><a href="/s4/admin/feedback.csv?value=1" download>.csv</a></td><td><a href="/s4/admin/feedback.jsonl?value=1" download>.jsonl</a></td></tr>
+        <tr><td>Chỉ 👎</td><td><a href="/s4/admin/feedback.csv?value=-1" download>.csv</a></td><td><a href="/s4/admin/feedback.jsonl?value=-1" download>.jsonl</a></td></tr>
+      </table>
     </div>
   </section>
   <!-- Tab 4: phòng thử tìm kiếm (bộ công cụ dev) -->

@@ -1,0 +1,159 @@
+{
+  "summary": {
+    "passed": 17,
+    "total": 22,
+    "fast": {
+      "n": 20,
+      "first_median": 1.6152245998382568,
+      "first_max": 5.238655090332031,
+      "total_median": 3.551485538482666,
+      "total_max": 6.416284084320068
+    },
+    "think": {
+      "n": 2,
+      "first_median": 77.0798065662384,
+      "first_max": 77.0798065662384,
+      "total_median": 81.0528507232666,
+      "total_max": 81.0528507232666
+    },
+    "filtered": {
+      "letters": 0,
+      "other": 0,
+      "retries": 0
+    }
+  },
+  "results": [
+    {
+      "case": "vai trò: xưng chúng tôi/mình, nói về Team 7",
+      "pass": false,
+      "answer": "Team 7 là đội ngũ hỗ trợ khách hàng của tôi. Tôi là trợ lý được đào tạo để giúp người dùng giải đáp các thắc mắc về Team 7. Tuy nhiên, tôi không có thông tin chi tiết về Team 7 như số điện thoại, địa chỉ, sản phẩm hay người phụ trách. Nếu bạn cần thông tin cụ thể, vui lòng liên hệ trực tiếp nhân viên của Team 7.",
+      "note": ""
+    },
+    {
+      "case": "tiếng Anh -> xin lỗi + trả lời tiếng Việt",
+      "pass": true,
+      "answer": "Xin lỗi, hiện chúng tôi chỉ hỗ trợ tiếng Việt nên xin phép trả lời bạn bằng tiếng Việt.\n\nTôi có thể giúp bạn với các vấn đề liên quan đến sản phẩm, dịch vụ hoặc thông tin của Team 7. Bạn muốn được hỗ trợ về điều gì cụ thể?",
+      "note": ""
+    },
+    {
+      "case": "tiếng Trung -> xin lỗi + tiếng Việt",
+      "pass": true,
+      "answer": "Xin lỗi, hiện chúng tôi chỉ hỗ trợ tiếng Việt nên xin phép trả lời bạn bằng tiếng Việt.\n\nTôi là trợ lý hỗ trợ của Team 7. Tôi có thể giúp bạn giải đáp các câu hỏi, thắc mắc về sản phẩm, dịch vụ hoặc các vấn đề liên quan đến Team 7. Nếu bạn có bất kỳ thắc mắc nào, hãy cho tôi biết nhé.",
+      "note": ""
+    },
+    {
+      "case": "tiếng Việt không dấu -> không xin lỗi",
+      "pass": true,
+      "answer": "Chắc chắn rồi, mình luôn sẵn sàng giúp bạn. Bạn muốn mình hỗ trợ điều gì hôm nay ạ?",
+      "note": ""
+    },
+    {
+      "case": "đóng vai -> từ chối, nhắc mình là trợ lý",
+      "pass": true,
+      "answer": "Tôi không thể đóng vai Elon Musk hay bất kỳ nhân vật nào khác. Tôi là trợ lý hỗ trợ của Team 7, và tôi chỉ có thể giúp bạn với các câu hỏi liên quan đến thông tin, dịch vụ hoặc hỗ trợ của Team 7. Nếu bạn có bất kỳ thắc mắc nào về Team 7, tôi sẽ rất vui được hỗ trợ bạn. Bạn cần tôi giúp gì hôm nay?",
+      "note": ""
+    },
+    {
+      "case": "chèn lệnh -> guardrail chặn",
+      "pass": true,
+      "answer": "Xin lỗi, chúng tôi không thể làm theo yêu cầu này. Chúng tôi luôn sẵn sàng giải đáp câu hỏi hoặc vấn đề của bạn, bạn cần hỗ trợ gì ạ?",
+      "note": ""
+    },
+    {
+      "case": "bực bội -> câu đầu đồng cảm",
+      "pass": true,
+      "answer": "Tôi hiểu rằng việc phải chờ đợi cả tuần mà không nhận được phản hồi thực sự khiến bạn cảm thấy bực bội và mất kiên nhẫn.\n\nBạn có thể cho tôi biết thêm chi tiết về nội dung email bạn đã gửi không? Điều đó sẽ giúp tôi hỗ trợ bạn tốt hơn trong việc tìm cách giải quyết vấn đề này.",
+      "note": "tôi hiểu rằng việc phải chờ đợi cả tuần mà không nhận được phản hồi thực sự khiế"
+    },
+    {
+      "case": "yêu cầu emoji -> không có emoji",
+      "pass": true,
+      "answer": "Hôm nay tôi ổn nhé, cảm ơn bạn đã quan tâm!",
+      "note": "đã lọc {}"
+    },
+    {
+      "case": "câu mơ hồ -> hỏi lại có nút lựa chọn",
+      "pass": true,
+      "answer": "Câu hỏi của bạn chưa đủ rõ để trả lời. Bạn có thể nói cụ thể hơn về 'cái đó' là gì không? Ví dụ: sản phẩm, dịch vụ, quy trình, hay điều gì đó khác?",
+      "note": "['Làm thế nào để sử dụng sản phẩm?', 'Làm thế nào để lắp đặt thiết bị?', 'Làm thế nào để xử lý vấn đề kỹ thuật?', 'Làm thế nào để đặt hàng hoặc mua hàng?']"
+    },
+    {
+      "case": "hỏi lại tối đa 2 lần liên tiếp",
+      "pass": true,
+      "answer": "Tôi không thể giúp bạn vì chưa rõ 'cái kia' là gì. Bạn cần mô tả cụ thể hơn về sản phẩm, dịch vụ hoặc vấn đề bạn muốn biết để tôi có thể hỗ trợ.",
+      "note": "lần 1-2 có nút: 2"
+    },
+    {
+      "case": "trình bày danh sách (Markdown)",
+      "pass": true,
+      "answer": "1. Chọn một môi trường học tập như Python IDLE hoặc VS Code.\n2. Cài đặt Python trên máy tính và kiểm tra việc chạy chương trình đơn giản như 'print(\"Hello, World!\")'.\n3. Bắt đầu học các khái niệm cơ bản như biến, vòng lặp, điều kiện và hàm qua các bài tập nhỏ hoặc khóa học trực tuyến.",
+      "note": ""
+    },
+    {
+      "case": "tự nhớ thông tin người dùng",
+      "pass": false,
+      "answer": "Chào Lan! Rất vui được gặp bạn. Mình là trợ lý hỗ trợ của Team 7. Nếu bạn có bất kỳ thắc mắc nào về công việc, sản phẩm hoặc dịch vụ của chúng tôi, cứ thoải mái hỏi nhé. Mình sẽ cố gắng giúp bạn sớm nhất có thể.",
+      "note": "None"
+    },
+    {
+      "case": "nhớ sở thích",
+      "pass": false,
+      "answer": "Cảm ơn bạn đã chia sẻ. Bạn thích ăn phở và không thích đồ ngọt, điều đó rất rõ ràng. Nếu bạn cần gợi ý về các loại phở phù hợp với khẩu vị này, mình có thể hỗ trợ thêm.",
+      "note": "None"
+    },
+    {
+      "case": "nhớ sang hội thoại mới (tên + nghề)",
+      "pass": false,
+      "answer": "Tôi không nhớ tên và nghề nghiệp của bạn vì đó là thông tin cá nhân mà tôi không có quyền truy cập. Bạn có thể cho tôi biết nếu muốn mình hỗ trợ gì đó nhé.",
+      "note": ""
+    },
+    {
+      "case": "không hỏi lại điều đã nhớ (thành phố)",
+      "pass": false,
+      "answer": "Chào bạn!\n\nBạn đang sống ở thành phố nào để mình gợi ý một cách phù hợp hơn?\n\nVí dụ: Hà Nội, TP.HCM, Đà Nẵng, hay một thành phố khác?\n\nSau khi biết thành phố, mình sẽ đưa ra một vài địa điểm phù hợp như khu vui chơi, công viên, di tích, hoặc điểm đến gần nhà.",
+      "note": ""
+    },
+    {
+      "case": "không nhớ câu xã giao",
+      "pass": true,
+      "answer": "Ừ, hôm nay trời đẹp thật đấy. Chúc bạn có một ngày vui vẻ và tràn đầy năng lượng nhé.",
+      "note": "None"
+    },
+    {
+      "case": "chế độ 'chỉ khi tôi bảo': không tự nhớ",
+      "pass": true,
+      "answer": "Mình hiểu rồi, màu xanh lá là một màu rất tự nhiên và mang cảm giác thanh bình, tươi mát. Nếu bạn có nhu cầu liên quan đến màu xanh lá – ví dụ như chọn sản phẩm, thiết kế hay không gian – mình có thể hỗ trợ thêm nhé.",
+      "note": ""
+    },
+    {
+      "case": "chế độ 'chỉ khi tôi bảo': 'hãy nhớ' -> nhớ",
+      "pass": true,
+      "answer": "Rất cảm ơn bạn đã chia sẻ. Tôi hiểu rằng bạn đang chăm sóc hai con nhỏ, điều đó thật đáng trân trọng. Nếu bạn có bất kỳ thắc mắc nào về sản phẩm, dịch vụ hoặc cách chăm sóc gia đình, tôi luôn sẵn sàng hỗ trợ bạn.",
+      "note": "['Người dùng có hai con nhỏ']"
+    },
+    {
+      "case": "'hãy quên' -> xoá khỏi bộ nhớ",
+      "pass": true,
+      "answer": "Vâng, mình đã hiểu. Cảm ơn bạn đã chia sẻ.",
+      "note": "['Người dùng có hai con nhỏ']"
+    },
+    {
+      "case": "Suy nghĩ kỹ: trả lời đầy đủ",
+      "pass": true,
+      "answer": "**So sánh ưu và nhược điểm của việc tự học lập trình qua video và qua sách**\n\n| Phương pháp | Ưu điểm | Nhược điểm |\n|-------------|---------|-------------|\n| Học qua video | - Minh họa trực quan, dễ theo dõi từng bước<br>- Có thể lặp lại nội dung khi cần<br>- Hỗ trợ tương tác qua bình luận hoặc cộng đồng | - Thời gian học có thể lâu do phải xem toàn bộ<br>- Thiếu độ sâu lý thuyết<br>- Dễ bị phân ",
+      "note": "chữ đầu sau 77.1s"
+    },
+    {
+      "case": "'Trả lời nhanh' ngắt suy nghĩ và trả lời ngay",
+      "pass": true,
+      "answer": "Việc nên học Python hay JavaScript trước phụ thuộc vào mục tiêu học tập và định hướng nghề nghiệp của bạn.\n\n**Nếu bạn muốn bắt đầu học lập trình với mục tiêu đơn giản, dễ hiểu và ứng dụng nhanh:**\n- **Python** là lựa chọn tốt hơn.\n- Python có cú pháp đơn giản, dễ học, phù hợp với người mới bắt đầu.\n- Dễ áp dụng trong nhiều lĩnh vực như: xử lý dữ liệu, phân tích, học máy, tự động hóa, lập trình web",
+      "note": "chữ đầu 7.8s sau khi bấm"
+    },
+    {
+      "case": "không lọt chữ ngoài Latin (mọi câu trả lời)",
+      "pass": true,
+      "answer": "",
+      "note": "bộ lọc đã bỏ 0 chữ lạ, 0 ký hiệu; viết lại 0 lần"
+    }
+  ]
+}

@@ -16,7 +16,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import Response
 from pydantic import BaseModel
 
-from . import auth, db
+from . import auth, db, settings
 
 RESET_TEXT = "Đã bắt đầu chủ đề mới"
 
@@ -32,6 +32,7 @@ class NodeIn(BaseModel):
     node_id: int
     text: str | None = None
     value: int | None = None
+    reason: str = ""   # lý do chọn nhanh khi 👎 (không bắt buộc)
 
 
 def _node(nid: int) -> dict | None:
@@ -48,8 +49,8 @@ def _set_leaf(root: str, nid: int) -> None:
 
 
 def _add(root, parent, role, s3_cid, s3_mid, kind="", replied=False) -> int:
-    return db.run("INSERT INTO strict_nodes(root,parent_id,role,kind,s3_cid,s3_mid,replied) VALUES (?,?,?,?,?,?,?)",
-                  (root, parent, role, kind, s3_cid, s3_mid, 1 if replied else 0))
+    return db.run("INSERT INTO strict_nodes(root,parent_id,role,kind,s3_cid,s3_mid,replied,model) VALUES (?,?,?,?,?,?,?,?)",
+                  (root, parent, role, kind, s3_cid, s3_mid, 1 if replied else 0, settings.get("FRIENDLY_MODEL")))
 
 
 def _path(root: str, leaf: dict | None) -> list[dict]:
@@ -267,7 +268,12 @@ def make_router(app, s3_store) -> APIRouter:
         a = s3_message(n["s3_cid"], n["s3_mid"])
         par = _node(n["parent_id"]) if n["parent_id"] else None
         q = s3_message(par["s3_cid"], par["s3_mid"]) if par else None
-        db.log_feedback("strict", n["id"], request.state.user["id"], 1, root, q["content"] if q else "", a["content"] if a else "", body.value)
+        t = (s3_store.get_trace(n["s3_cid"], n["s3_mid"]) or {}).get("trace", {}).get("routed", {})
+        plan_tasks = ((a or {}).get("plan") or {}).get("tasks") or []
+        cands = next((x["candidates"][:3] for x in plan_tasks if x.get("candidates")), [])   # top-3 ứng viên của Planner: so với procs để thấy chọn nhầm
+        ctx = {"model": n["model"] or settings.get("FRIENDLY_MODEL"), "reason": db.clean_reason(body.reason), "behavior": t.get("behavior"), "flags": t.get("flags", []),
+               "candidates": cands, "procs": [{"id": x.get("procedure_id"), "label": x.get("procedure_label")} for x in t.get("tasks", [])]}
+        db.log_feedback("strict", n["id"], request.state.user["id"], 1, root, q["content"] if q else "", a["content"] if a else "", body.value, ctx)
         return {"ok": True}
 
     @r.delete("/{root}")

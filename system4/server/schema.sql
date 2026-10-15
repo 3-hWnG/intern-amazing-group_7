@@ -106,6 +106,7 @@ CREATE TABLE IF NOT EXISTS strict_nodes (
   s3_mid      INTEGER NOT NULL,                  -- id tin trong System 3
   replied     INTEGER NOT NULL DEFAULT 0,        -- tin người dùng trả lời thẻ hỏi lại ngay trước nó
   feedback    INTEGER NOT NULL DEFAULT 0,
+  model       TEXT NOT NULL DEFAULT '',          -- model đang chọn lúc tạo tin (cho feedback_log.context)
   created_at  TEXT NOT NULL DEFAULT (datetime('now'))
 );
 CREATE INDEX IF NOT EXISTS idx_sn_root ON strict_nodes(root);
@@ -155,6 +156,7 @@ CREATE TABLE IF NOT EXISTS feedback_log (
   prompt     TEXT NOT NULL,
   answer     TEXT NOT NULL,
   value      INTEGER NOT NULL,              -- 1 = 👍, -1 = 👎
+  context    TEXT NOT NULL DEFAULT '{}',    -- JSON: model; Strict thêm procs (thủ tục được chọn), behavior, flags
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   UNIQUE(engine, msg_key)
 );
