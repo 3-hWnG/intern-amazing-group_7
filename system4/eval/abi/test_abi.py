@@ -36,6 +36,7 @@ DATA = normalize.build(RAW)
 # ------------------------------------------------------------------ API giả của abi.com.vn
 class FakeAbi:
     def __init__(self, raw):
+        self.requests = []   # (đường dẫn, tham số, User-Agent) — kiểm quy ước của chủ web
         self.raw, self.calls, self.rag = raw, [], {"responseKind": "grounded_answer", "answer": "Trả lời của trợ lý web.",
                                                      "citations": [{"title": "Giới thiệu", "url": "/gioi-thieu", "sourceType": "site_page",
                                                                     "snippet": "x"}]}
@@ -49,6 +50,7 @@ class FakeAbi:
         path = request.url.path.removeprefix("/api/v1")
         q = dict(request.url.params)
         self.calls.append(path)
+        self.requests.append((path, q, request.headers.get("user-agent")))
         r = self.raw
         if request.method == "POST" and path == "/rag/query":
             body = json.loads(request.content)
@@ -139,8 +141,10 @@ assert r["intent"] == "event_detail" and not r["plain"] and "Nguyen Hue" in r["f
 r = router.route("Trưởng phòng Hỗ trợ Công nghệ Vi sinh là ai?", DATA, NOW)
 assert r["intent"] == "department_detail" and "Phòng Hỗ trợ Công nghệ Vi sinh" in r["fact"]["text"] and "Trưởng phòng" in r["fact"]["text"], r
 r = router.route("Cho mình hỏi về cán bộ Nguyễn Văn Cán Bộ 01", DATA, NOW)
-assert r["intent"] == "person_detail" and "canbo01@example.com" not in r["fact"]["text"]       # mặc định không nêu email riêng
-assert "canbo01@example.com" in router.route("Nguyễn Văn Cán Bộ 01 là ai", DATA, NOW, show_contact=True)["fact"]["text"]
+# thoả thuận với chủ web: không bao giờ nêu email / SĐT riêng của cán bộ — chỉ email đơn vị, hotline, email chung
+assert r["intent"] == "person_detail" and "canbo01@example.com" not in r["fact"]["text"]
+assert "Liên hệ:" in r["fact"]["text"] and DATA["center"]["hotline"] in r["fact"]["text"], r["fact"]["text"]
+assert "canbo01@example.com" not in router.route("Trưởng phòng Hỗ trợ Công nghệ Vi sinh là ai?", DATA, NOW)["fact"]["text"]
 # "kế hoạch kinh doanh" (tên khoá tập huấn) không bị nhận nhầm là Phòng Kế hoạch - Tài chính
 assert router.route("Khóa tập huấn xây dựng kế hoạch kinh doanh diễn ra khi nào?", DATA, NOW)["intent"] == "event_detail"
 r = router.route("Phòng Vi sinh có mấy người?", DATA, NOW)
@@ -163,6 +167,14 @@ res = sync.run(client=fake_client(fake), index=False)
 assert res["ok"], res
 assert store.data()["center"]["name"] and len(store.data()["events"]) == 10
 assert all(not p.startswith("/admin") for p in fake.calls)
+# quy ước của chủ web: User-Agent định danh, gọi đúng dạng endpoint chính thức (không thêm compositionContract / type)
+assert all(ua.startswith("AHBI-Assistant-Bot/1.0 (+") for _, _, ua in fake.requests), {ua for _, _, ua in fake.requests}
+assert not any("compositionContract" in q for p, q, _ in fake.requests if p.startswith("/site/pages/"))
+assert not any("type" in q for p, q, _ in fake.requests if p.startswith("/content/posts/"))
+# không lưu email / SĐT riêng của cán bộ (fixture có 1 email riêng)
+assert all(not p["email"] and not p["phone"] for p in store.read_json("raw.json")["organization"]["people"])
+assert res["privacy"] == {"people_contacts_removed": 1, "text_mentions_removed": 0}, res["privacy"]
+assert "canbo01@example.com" not in json.dumps(store.read_json("raw.json")) + json.dumps(store.data())
 n_detail = sum(1 for p in fake.calls if p.startswith("/content/posts/"))
 assert n_detail == sum(1 for p in RAW["posts"] if p["contentType"] in ("news", "resource")), n_detail
 fake.calls.clear()
@@ -174,18 +186,37 @@ broken["organization"]["departments"] = []
 res = sync.run(client=fake_client(FakeAbi(broken)), index=False)   # API hỏng: giữ dữ liệu cũ
 assert not res["ok"] and "Giữ dữ liệu cũ" in res["error"] and len(store.data()["departments"]) == 9, res
 assert store.status()["runs"][0]["ok"] is False and store.status()["runs"][1]["ok"] is True
-# lịch: vừa lỗi -> thử lại sau 30 phút, không chờ đủ ABI_SYNC_HOURS; vừa thành công -> chờ đủ
+# lịch: vừa lỗi -> thử lại sau 1 giờ, không chờ đủ ABI_SYNC_HOURS; vừa thành công -> chờ đủ (tối thiểu 6 giờ theo thoả thuận)
 from system3.system4.abi import scheduler
 st = store.status()
-st["runs"][0]["started"] = datetime.fromtimestamp(time.time() - 3600, normalize.VN).isoformat()
+st["runs"][0]["started"] = datetime.fromtimestamp(time.time() - 3700, normalize.VN).isoformat()
 store.write_json("status.json", st)
-assert scheduler.due()                                                             # lỗi 1 giờ trước: thử lại
+assert scheduler.due()                                                             # lỗi hơn 1 giờ trước: thử lại
 st["runs"][0].update(ok=True, error=None)
 store.write_json("status.json", st)
 assert not scheduler.due()                                                         # thành công 1 giờ trước: chưa tới 6 giờ
+settings.save({"ABI_SYNC_HOURS": 1})
+assert not scheduler.due()                                                         # đặt 1 giờ vẫn tính là 6 giờ
 settings.save({"ABI_SYNC_HOURS": 0})
 assert not scheduler.due()                                                         # 0 = tắt
 settings.save({"ABI_SYNC_HOURS": 6})
+# tối đa 2 request/giây với mạng thật, kể cả khi gọi Client(rps=…) lớn hơn; User-Agent kèm liên hệ của nhóm
+assert abi_client.Client(rps=10)._gap == 0.5 and abi_client.Client(rps=0)._gap == 0.5
+assert abi_client.user_agent() == "AHBI-Assistant-Bot/1.0 (+https://github.com/3-hWnG/intern-amazing-group_7)"
+settings.save({"ABI_BOT_CONTACT": "nhom7@example.com"})
+assert abi_client.user_agent() == "AHBI-Assistant-Bot/1.0 (+nhom7@example.com)"
+settings.save({"ABI_BOT_CONTACT": ""})
+# bỏ email riêng của cán bộ cả khi nó lỡ nằm trong bài / chương trình; email của phòng và trung tâm giữ nguyên
+r2 = json.loads(json.dumps(RAW))
+r2["organization"]["people"][1]["email"] = "rieng.canbo@example.com"
+r2["programs"][0]["body"]["contactEmail"] = "RIENG.CANBO@example.com"
+dep_mail = next(d["email"] for d in r2["organization"]["departments"] if d.get("email"))
+r2["organization"]["people"][2]["email"] = dep_mail                                # cán bộ ghi email của phòng: vẫn là email chung
+r2["posts"][0]["summary"] = f"Liên hệ rieng.canbo@example.com hoặc {dep_mail}"
+out = sync.scrub_personal(r2)
+s = json.dumps(out, ensure_ascii=False)
+assert "rieng.canbo" not in s.lower() and dep_mail in s and out["posts"][0]["summary"].startswith("Liên hệ [đã ẩn]"), out["posts"][0]["summary"]
+assert out["privacy"]["people_contacts_removed"] == 3 and out["privacy"]["text_mentions_removed"] == 2, out["privacy"]
 
 # ------------------------------------------------------------------ 5. trợ lý web: xem responseKind, giới hạn tần suất
 settings.save({"ABI_REMOTE_MAX_PER_5MIN": 2})
@@ -321,6 +352,9 @@ with TestClient(main.app) as c:
         time.sleep(0.05)
     st = c.get("/s4/abi/status").json()
     assert len(st["runs"]) == n_runs + 1 and st["runs"][0]["ok"], st["runs"][:1]
+    r = c.post("/s4/abi/sync", json={}).json()                                           # vừa xong: nghỉ 10 phút (thoả thuận tần suất)
+    assert r["started"] is False and "Vừa đồng bộ" in r["reason"], r.get("reason")
+    assert st["user_agent"].startswith("AHBI-Assistant-Bot/1.0 (+")
     # công tắc "Hỏi thêm trợ lý của web" = cài đặt ABI_REMOTE_RAG (chỉ dev đổi được)
     assert as_("dan").post("/s4/settings", json={"values": {"ABI_REMOTE_RAG": True}}).status_code == 403
     assert as_("boss").post("/s4/settings", json={"values": {"ABI_REMOTE_RAG": True}}).status_code == 200

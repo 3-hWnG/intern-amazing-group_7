@@ -95,7 +95,7 @@ ABI_SYNC_HOURS = 6
 ABI_CODE_ANSWER = True
 ABI_REMOTE_RAG = False
 ABI_REMOTE_MAX_PER_5MIN = 3
-ABI_SHOW_STAFF_CONTACT = False
+ABI_BOT_CONTACT = ''
 # ==== HẾT MẶC ĐỊNH ====
 
 # Danh sách cài đặt hiện trên panel. type: str | text (nhiều dòng) | int | float | bool | choice | rules
@@ -214,8 +214,8 @@ SETTINGS = [
          help="Bật: đặt tên trường JSON a_plan, c_answer… để kế hoạch ẩn luôn được viết TRƯỚC câu trả lời (Ollama 0.40 không giữ thứ tự "
               "trường; khi tắt, model hay viết câu trả lời trước nên kế hoạch không có tác dụng). Chữ đầu hiện chậm hơn khoảng 0,5-0,8 giây."),
     dict(key="ABI_SYNC_HOURS", type="int", group="Lĩnh vực ABI (abi.com.vn)", label="Tự đồng bộ abi.com.vn mỗi (giờ)", min=0, max=168,
-         help="Kéo lại dữ liệu từ các API công khai của abi.com.vn. 0 = tắt (vẫn bấm \"Đồng bộ ngay\" ở Quản trị được). "
-              "Lần đầu khoảng 3 phút, các lần sau chỉ tải phần đổi."),
+         help="Kéo lại dữ liệu từ các API chính thức chủ web đã cho phép. 0 = tắt (vẫn bấm \"Đồng bộ ngay\" được). "
+              "Thoả thuận với chủ web: quét 6 tiếng một lần, nên đặt 1–5 vẫn tính là 6. Lần đầu khoảng 3 phút, các lần sau chỉ tải phần đổi."),
     dict(key="ABI_CODE_ANSWER", type="bool", group="Lĩnh vực ABI (abi.com.vn)", label="Trả lời bằng code khi hiểu trọn câu hỏi",
          help="Bật: câu đếm / liệt kê / theo thời gian (sự kiện sắp diễn ra, số phòng ban, số cán bộ, liên hệ…) do code tính và trả lời, "
               "không gọi AI, không thể bịa. Tắt: code vẫn tính, AI diễn đạt lại."),
@@ -224,6 +224,8 @@ SETTINGS = [
               "khoảng 4 câu / vài phút và có lúc trả lời sai (vd. số phòng ban), nên mặc định tắt."),
     dict(key="ABI_REMOTE_MAX_PER_5MIN", type="int", group="Lĩnh vực ABI (abi.com.vn)", label="Trợ lý của web: tối đa số câu / 5 phút",
          min=1, max=30, help="Vượt thì bỏ qua bước hỏi trợ lý web. Gặp báo \"chạm hạn mức\" thì tự nghỉ 5 phút."),
-    dict(key="ABI_SHOW_STAFF_CONTACT", type="bool", group="Lĩnh vực ABI (abi.com.vn)", label="Cho AI nêu email / điện thoại riêng của cán bộ",
-         help="Web có công khai email một số cán bộ. Tắt: chỉ nêu email của phòng và hotline, email của trung tâm."),
+    dict(key="ABI_BOT_CONTACT", type="str", optional=True, group="Lĩnh vực ABI (abi.com.vn)", label="Liên hệ của nhóm gửi kèm khi gọi API",
+         help="Chủ web yêu cầu User-Agent định danh: \"AHBI-Assistant-Bot/1.0 (+liên hệ)\". Điền email hoặc số điện thoại của nhóm; "
+              "để trống thì dùng link GitHub của dự án. Email / điện thoại riêng của cán bộ trung tâm KHÔNG bao giờ được hiển thị "
+              "(thoả thuận với chủ web; bỏ ngay khi tải về)."),
 ]

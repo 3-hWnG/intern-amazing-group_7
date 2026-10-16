@@ -9,7 +9,9 @@ Chi tiết tin chỉ tải lại khi updatedAt đổi: lần đầu ~300 request
 from __future__ import annotations
 
 import argparse
+import json
 import logging
+import re
 import sys
 import threading
 import time
@@ -56,8 +58,8 @@ def fetch(c: Client, prev: dict | None = None) -> dict:
     _step("Trang giới thiệu…")
     raw["pages"] = {}
     for key in PAGES:
-        try:
-            raw["pages"][key] = c.get(f"/site/pages/{key}", locale=LOCALE, compositionContract="2").get("data") or {}
+        try:   # đúng dạng trong danh sách endpoint chính thức của chủ web: /site/pages/{routeKey}?locale=vi
+            raw["pages"][key] = c.get(f"/site/pages/{key}", locale=LOCALE).get("data") or {}
         except AbiError as e:   # trang bị gỡ / đổi tên: bỏ qua trang đó
             if e.status != 404:
                 raise
@@ -72,9 +74,39 @@ def fetch(c: Client, prev: dict | None = None) -> dict:
             continue
         _step(f"Nội dung tin {i}/{len(todo)}…")
         try:
-            raw["post_details"][slug] = c.get(f"/content/posts/{slug}", locale=LOCALE, type=p["contentType"]).get("data") or {}
+            raw["post_details"][slug] = c.get(f"/content/posts/{slug}", locale=LOCALE).get("data") or {}
         except AbiError as e:   # một tin lỗi không làm hỏng cả lần đồng bộ: dùng tóm tắt trong danh sách
             log.warning("tin %s: %s", slug, e)
+    return scrub_personal(raw)
+
+
+HIDDEN = "[đã ẩn]"
+
+
+def scrub_personal(raw: dict) -> dict:
+    """Thoả thuận với chủ web: không dùng email / số điện thoại RIÊNG của cán bộ (hotline, email chung của trung tâm và
+    các phòng thì được). Bỏ khỏi danh bạ ngay khi tải về — không lưu vào raw.json / data.json — và xoá chỗ chúng lỡ xuất hiện
+    trong bài, trang, chương trình. Kiểm 16/10/2026: 12/66 cán bộ có email riêng, 0 có số điện thoại, không nằm ở chỗ khác."""
+    org = raw.get("organization") or {}
+    people = org.get("people") or []
+    shared = {(d.get("email") or "").strip().lower() for d in org.get("departments") or []}
+    shared.add(((raw.get("settings") or {}).get("publicEmail") or "").strip().lower())
+    emails = {p["email"].strip() for p in people if (p.get("email") or "").strip() and p["email"].strip().lower() not in shared}
+    phones = {re.sub(r"\D", "", p["phone"])[-9:] for p in people if len(re.sub(r"\D", "", p.get("phone") or "")) >= 9}
+    n_people = sum(1 for p in people if (p.get("email") or "").strip() or (p.get("phone") or "").strip())
+    for p in people:
+        p["email"], p["phone"] = "", ""
+    n_text = 0
+    if emails or phones:
+        s = json.dumps(raw, ensure_ascii=False)
+        for e in emails:
+            s, k = re.subn(re.escape(e), HIDDEN, s, flags=re.I)
+            n_text += k
+        for ph in phones:   # 9 số cuối, cho phép dấu cách / chấm / gạch giữa các số (0912 345 678, +84.912.345.678…)
+            s, k = re.subn(r"(?<!\d)" + r"[\s.\-]?".join(ph) + r"(?!\d)", HIDDEN, s)
+            n_text += k
+        raw = json.loads(s)
+    raw["privacy"] = {"people_contacts_removed": n_people, "text_mentions_removed": n_text}
     return raw
 
 
@@ -124,6 +156,7 @@ def run(client: Client | None = None, index: bool = True) -> dict:
         prev_raw, prev_data = store.read_json("raw.json"), store.data()
         raw = fetch(c, prev_raw)
         res["requests"] = c.requests
+        res["privacy"] = raw.get("privacy")   # số email / SĐT riêng của cán bộ đã bỏ (thoả thuận với chủ web)
         bad = validate(raw, prev_data)
         if bad:
             res["error"] = "Giữ dữ liệu cũ: " + "; ".join(bad)

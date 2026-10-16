@@ -136,7 +136,7 @@ def match_people(text: str, data: dict) -> list[dict]:
     return out
 
 
-def route(text: str, data: dict | None, now: datetime, show_contact: bool = False) -> dict | None:
+def route(text: str, data: dict | None, now: datetime) -> dict | None:
     if not data:
         return None
     t = " ".join(words(text))
@@ -150,14 +150,14 @@ def route(text: str, data: dict | None, now: datetime, show_contact: bool = Fals
     #    Tên sự kiện cũng trùng thì chỉ chọn phòng khi có chữ "phòng" ("Phòng Kế hoạch - Tài chính" vs khoá "xây dựng kế hoạch kinh doanh")
     evs, deps = match_events(text, data), match_departments(text, data)
     if deps and (DEPT_CTX.search(t) or ORG.search(t)) and (not evs or re.search(r"\bphong\b", t)):
-        return done(tools.department_detail(data, deps, show_contact), False)
+        return done(tools.department_detail(data, deps), False)
     # 2. sự kiện được nhắc tên -> thẻ chi tiết cho AI
     if evs:
         return done(tools.event_detail(data, evs, now), False)
     # 3. cán bộ được nhắc tên
     ps = match_people(text, data)
     if ps:
-        return done(tools.person_detail(data, ps, show_contact), False)
+        return done(tools.person_detail(data, ps), False)
     # 4. sự kiện theo thời gian / đếm
     if EVENT_NOUN.search(t):
         month = _month(text, now)

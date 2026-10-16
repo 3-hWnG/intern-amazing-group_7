@@ -77,7 +77,7 @@ def records(data: dict) -> list[dict]:
     out += _recs("Thông tin liên hệ Trung tâm", "Liên hệ", c.get("url") or normalize.URL_CONTACT, contact["text"])
     out += _recs("Cơ cấu tổ chức Trung tâm", "Tổ chức", normalize.URL_ORG, tools.org_card(data))
     for x in data.get("departments") or []:
-        card = tools.department_detail(data, [x], settings.get("ABI_SHOW_STAFF_CONTACT"))["text"]
+        card = tools.department_detail(data, [x])["text"]
         out += _recs(x["name"], "Phòng ban", x["url"], card)
     for e in data.get("events") or []:   # thẻ tĩnh: KHÔNG ghi "sắp / đã diễn ra" (đổi theo ngày hỏi, code tính lúc hỏi)
         s, en = normalize.dt(e.get("starts")), normalize.dt(e.get("ends"))

@@ -12,26 +12,38 @@ import time
 from fastapi import APIRouter, HTTPException, Request
 
 from ..server import db, settings
-from . import index, normalize, remote, store, sync
+from . import client, index, normalize, remote, store, sync
 
 log = logging.getLogger("system4.abi.scheduler")
 CHECK_EVERY = 600
 _thread: threading.Thread | None = None
 
+# Thoả thuận với chủ web (16/10/2026): quét định kỳ 6 tiếng, tối đa 2 request/giây (client.MAX_RPS)
+MIN_HOURS = 6              # ⚙ ABI_SYNC_HOURS đặt 1–5 vẫn tính là 6
+RETRY_AFTER_ERROR = 3600   # giây: lần trước lỗi (mất mạng…) thì thử lại sau 1 giờ, không chờ đủ 6 giờ
+MANUAL_GAP = 600           # giây: nút "Đồng bộ ngay" không chạy lại trong 10 phút sau lần đồng bộ trước
 
-RETRY_AFTER_ERROR = 1800   # giây: lần đồng bộ trước lỗi (mất mạng…) thì thử lại sau 30 phút, không chờ đủ ABI_SYNC_HOURS
+
+def _last_run() -> dict | None:
+    return next((r for r in store.status().get("runs", []) if r.get("ok") or r.get("error")), None)
+
+
+def _age(run: dict | None) -> float | None:
+    started = normalize.dt((run or {}).get("started"))
+    return time.time() - started.timestamp() if started else None
 
 
 def due() -> bool:
     hours = settings.get("ABI_SYNC_HOURS")
     if hours <= 0:
         return False
-    last = next((r for r in store.status().get("runs", []) if r.get("ok") or r.get("error")), None)
+    last = _last_run()
     if not last:
         return True
-    started = normalize.dt(last.get("started"))
+    hours = max(hours, MIN_HOURS)
     wait = hours * 3600 if last.get("ok") else min(hours * 3600, RETRY_AFTER_ERROR)
-    return not started or (time.time() - started.timestamp()) >= wait
+    age = _age(last)
+    return age is None or age >= wait
 
 
 def index_missing() -> bool:
@@ -65,15 +77,19 @@ def start() -> None:
         _thread.start()
 
 
-def start_now() -> bool:
+def start_now() -> tuple[bool, str]:
+    """Nút "Đồng bộ ngay". Trả (đã bắt đầu?, lý do nếu không)."""
     if sync.state()["running"]:
-        return False
+        return False, "Đang đồng bộ, đợi lần này xong."
+    age = _age(_last_run())
+    if age is not None and age < MANUAL_GAP:   # giữ đúng thoả thuận tần suất với chủ web
+        return False, f"Vừa đồng bộ {int(age // 60)} phút trước; đợi thêm {int((MANUAL_GAP - age) // 60) + 1} phút rồi bấm lại."
     threading.Thread(target=sync.run, name="s4-abi-sync-now", daemon=True).start()
     for _ in range(40):   # chờ luồng nhận việc (tối đa 2 giây) để trạng thái trả về đã là "đang đồng bộ" -> giao diện theo dõi tiếp
         if sync.state()["running"]:
             break
         time.sleep(0.05)
-    return True
+    return True, ""
 
 
 def summary() -> dict:
@@ -85,7 +101,8 @@ def summary() -> dict:
             "domain": {"id": dom["id"], "name": dom["name"]} if dom else None,
             "datasets": [{k: d[k] for k in ("id", "status", "progress", "n_records", "message", "active")} for d in ds],
             "remote": remote.status(), "settings": {k: settings.get(k) for k in ("ABI_SYNC_HOURS", "ABI_CODE_ANSWER", "ABI_REMOTE_RAG",
-                                                                                  "ABI_SHOW_STAFF_CONTACT", "ABI_REMOTE_MAX_PER_5MIN")}}
+                                                                                  "ABI_BOT_CONTACT", "ABI_REMOTE_MAX_PER_5MIN")},
+            "user_agent": client.user_agent()}
 
 
 def make_router() -> APIRouter:
@@ -104,6 +121,7 @@ def make_router() -> APIRouter:
     @r.post("/sync")
     def sync_now(request: Request):
         dev(request)
-        return {"started": start_now(), **summary()}
+        started, reason = start_now()
+        return {"started": started, "reason": reason, **summary()}
 
     return r
