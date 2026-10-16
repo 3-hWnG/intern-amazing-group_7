@@ -196,6 +196,9 @@ body[data-mode="strict"] #attach,body[data-mode="strict"] #spec-badge{display:no
 .dom-edit{display:grid;gap:6px;padding:8px;border-radius:8px;background:var(--panel-2)}
 .dom-edit input[type=text],.dom-edit textarea,.dom-form input[name=name],.dom-form textarea{width:100%;box-sizing:border-box}
 .dom-check{display:flex;align-items:center;gap:6px;font-size:13px}
+.abi-box{display:grid;gap:6px;padding:8px;border-radius:8px;background:var(--panel-2)}
+.abi-line{font-size:13px;color:var(--ink-2)}
+.abi-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .dom-form{display:grid;gap:8px;margin-top:14px}
 .dom-form h3{margin:0;font-size:14px}
 .dom-x{display:inline-block;margin-left:6px;padding:0 3px;border-radius:50%;font-size:14px;line-height:15px;opacity:.45}

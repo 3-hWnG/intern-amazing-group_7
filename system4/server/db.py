@@ -40,6 +40,8 @@ def _migrate(c: sqlite3.Connection) -> None:
     if c.execute("SELECT COUNT(*) FROM domains").fetchone()[0] == 0:   # hai domain có sẵn, không xoá được
         c.execute("INSERT INTO domains(id,name,kind,engine,sort) VALUES (1,'Thủ tục','hard','strict',0)")
         c.execute("INSERT INTO domains(id,name,kind,engine,user_upload,sort) VALUES (2,'Trò chuyện chung','soft','friendly',1,1)")
+    if not c.execute("SELECT 1 FROM domains WHERE engine='abi'").fetchone():   # lĩnh vực ABI (docs/PLAN_ABI_LINH_VUC.md): tìm theo engine, KHÔNG cố định id
+        c.execute("INSERT INTO domains(name,kind,engine,guardrail,sort) VALUES (?,?,?,?,?)", (ABI_DOMAIN_NAME, "hard", "abi", ABI_GUARDRAIL, 2))
     if "model" not in cols("strict_nodes"):
         c.execute("ALTER TABLE strict_nodes ADD COLUMN model TEXT NOT NULL DEFAULT ''")
     if "context" not in cols("feedback_log"):
@@ -404,7 +406,11 @@ def readable_dataset(user: dict, ds: dict) -> bool:
 
 
 # ------------------------------------------------------------------- domain
-BUILTIN_DOMAINS = (1, 2)   # Thủ tục (System 3) và Trò chuyện chung: không xoá được
+BUILTIN_DOMAINS = (1, 2)   # Thủ tục (System 3) và Trò chuyện chung: không xoá được (lĩnh vực ABI là lĩnh vực cứng nên cũng không xoá được)
+ABI_DOMAIN_NAME = "ABI – Trung tâm Ươm tạo"
+ABI_GUARDRAIL = ("Bạn là trợ lý tra cứu thông tin Trung tâm Ươm tạo Doanh nghiệp Nông nghiệp Công nghệ cao TP.HCM (ABI, web abi.com.vn). "
+                 "Chỉ trả lời từ dữ liệu được cung cấp; không đoán số liệu, ngày giờ, tên người. Câu hỏi ngoài phạm vi trung tâm thì nói rõ "
+                 "bạn chỉ hỗ trợ thông tin về trung tâm.")
 
 
 def get_domain(did: int | None) -> dict | None:

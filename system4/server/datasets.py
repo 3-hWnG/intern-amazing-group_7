@@ -126,9 +126,14 @@ def _work() -> None:
                 db.update_dataset(ds_id, status="error", message=f"Lỗi khi xử lý: {e}")
 
 
+def synced(ds: dict) -> bool:
+    """Bộ dữ liệu do code tự tạo (lĩnh vực ABI, system4/abi/index.py): không có tệp gốc, không xử lý lại như tệp tải lên."""
+    return '"source": "abi_sync"' in (ds.get("mapping") or "")
+
+
 def process(ds_id: int) -> None:
     ds = db.get_dataset(ds_id)
-    if not ds:
+    if not ds or synced(ds):
         return
     path = folder(ds["user_id"], ds_id) / ds["filename"]
     db.update_dataset(ds_id, status="processing", progress=5, message="Đang đọc tệp…")
@@ -169,6 +174,10 @@ def resume_unfinished() -> None:
     """Khởi động server: tệp đang chờ / đang nạp dở (do tắt server) được nạp lại từ đầu; tệp đã đọc bằng cách đọc cũ
     (READER_VERSION nhỏ hơn) được xử lý lại để hưởng bản sửa (vd. nhận đúng dòng tiêu đề cột)."""
     for d in db.run("SELECT id, status, mapping FROM datasets", many=True):
+        if synced(d):   # bộ ABI dựng dở khi tắt server: bỏ (lần đồng bộ sau dựng lại); bộ đã xong giữ nguyên
+            if d["status"] != "ready":
+                delete(db.get_dataset(d["id"]))
+            continue
         if d["status"] in ("queued", "processing"):
             enqueue(d["id"])
         elif d["status"] == "ready":

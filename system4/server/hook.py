@@ -29,6 +29,9 @@ def install(app, s3_store) -> None:
     from core import websearch as s3_web   # khối Tìm web của Strict dùng model riêng (WEBSEARCH_MODEL)
     s3_web.MODEL_PROVIDER = lambda: settings.get("WEBSEARCH_MODEL")
     datasets.resume_unfinished()   # tệp đang nạp dở khi tắt server -> nạp lại
+    from ..abi import scheduler as abi_scheduler
+    if os.environ.get("S4_ABI_SYNC", os.environ.get("S4_WARMUP", "1")) == "1":   # ABI: tự đồng bộ abi.com.vn theo ⚙ ABI_SYNC_HOURS (test tắt)
+        abi_scheduler.start()
     if os.environ.get("S4_WARMUP", "1") == "1":   # test đặt S4_WARMUP=0
         threading.Thread(target=search.warm_up, name="s4-warmup", daemon=True).start()   # nạp sẵn bge-m3 + reranker
         threading.Thread(target=llm.warm_up, name="s4-warmup-llm", daemon=True).start()   # KEEP_MODELS_LOADED: nạp sẵn model trả lời
@@ -50,6 +53,7 @@ def install(app, s3_store) -> None:
     app.include_router(strict.make_router(app, s3_store))
     app.include_router(admin.make_router(s3_store))
     app.include_router(domains.make_router())
+    app.include_router(abi_scheduler.make_router())
     app.mount("/s4/static", StaticFiles(directory=str(config.WEB_DIR / "static")), name="s4_static")
 
     def deny(code: int, detail: str) -> JSONResponse:
