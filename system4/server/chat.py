@@ -25,6 +25,7 @@ import time
 import uuid
 
 from . import ambig, context, db, greet, ground, guard, lang, llm, memory, persona, search, settings, tabletool, websearch
+from ..abi import turn as abi_turn
 
 _background: set = set()   # giữ tham chiếu tới việc nền để không bị dọn mất giữa chừng
 _turns: dict[str, dict] = {}   # lượt đang chạy: turn_id -> {"user": id, "fast": cờ "Trả lời nhanh"}
@@ -361,16 +362,21 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
     try:
         evidence, sinfo, t0 = None, None, time.perf_counter()
         dom = db.get_domain((db.get_conversation(cid) or {}).get("domain_id")) or db.get_domain(2)
+        abi_mode = dom["engine"] == "abi"   # lĩnh vực ABI: dữ liệu abi.com.vn (system4/abi), luôn ở chế độ Chuyên gia
         active = db.active_datasets(user["id"], dom["id"], user["role"])
-        gm = settings.get("GREETING_MODE") if active else "off"
+        gm = settings.get("GREETING_MODE") if active or abi_mode else "off"
         gate = gm in ("code_first", "ai_first") and greet.is_greeting(text, history_path)   # quy tắc code: ngắn + có từ chào
         small_by_code = gm == "code_first" and gate        # code nhận trước: không tra dữ liệu
         ask_small = gm != "off" and not small_by_code       # AI được đánh dấu câu xã giao
-        amb, table = None, None
+        amb, table, abi_res = None, None, None
         squery = search_query(text, history_path)
         if web:   # nút "Tìm web": chỉ DuckDuckGo, bỏ qua bộ dữ liệu và câu xã giao
             gm, gate, small_by_code, ask_small = "off", False, False, False
             evidence, sinfo = await asyncio.to_thread(websearch.search, squery)
+            sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
+        elif abi_mode and not small_by_code:   # ABI: code nhận ý định + tính (đếm, sự kiện theo ngày…) trước, rồi mới tìm
+            abi_res = await asyncio.to_thread(abi_turn.prepare, user["id"], text, squery, [d["id"] for d in active], history_path)
+            evidence, sinfo = abi_res["evidence"], abi_res["info"]
             sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
         elif active and not small_by_code:   # có bộ dữ liệu đang bật -> Chuyên gia: tìm trước khi hỏi AI
             evidence, sinfo = await asyncio.to_thread(search.search, user["id"], squery, [d["id"] for d in active])
@@ -394,6 +400,8 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
         extra0 = [greet.SMALL_TALK_INSTRUCTION] if small_by_code else []
         if dom["guardrail"]:   # guardrail của domain: lời dặn gửi thẳng cho AI ngay trước khi soạn câu trả lời
             extra0.append(f"Quy tắc riêng của lĩnh vực «{dom['name']}»: {dom['guardrail']}")
+        if abi_res:
+            extra0 += abi_res["extra"]   # ngày hôm nay + giờ đồng bộ: AI so "sắp tới / đã qua" đúng
         bm = lambda **k: build_messages(user["id"], cid, history_path, text, **{"evidence": evidence, "extra": extra0,
                                                                                 "small_talk": ask_small and evidence is not None, "web": web, **k})
         msgs, info = bm(fast=mode == "fast")
@@ -420,6 +428,18 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                                                   "checks": {**checks, "ambiguity": amb}, "prompts": [],
                                                   "output": {"final_text": q}, "timing": meta["timing"]}, settings.get("TRACE_KEEP"))
             yield sse({"type": "delta", "text": q})
+            yield sse({"type": "done"})
+            return
+        if abi_res and abi_res["answer"]:   # ABI: code hiểu trọn câu hỏi -> câu trả lời bằng code, không gọi AI
+            ans = abi_res["answer"]
+            meta = {"specialist": True, "mode": mode, "abi": sinfo.get("abi"),
+                    "sources": [{"n": i, "record_id": None, "url": s["url"], "title": s["title"], "dataset": "abi.com.vn", "score": None}
+                                for i, s in enumerate(abi_res["sources"], 1)],
+                    "timing": {"llm_ms": 0, "total_ms": int((time.perf_counter() - t0) * 1000)}}
+            amid = db.add_message(cid, "assistant", ans, "done", user_mid, meta)
+            db.save_trace(amid, cid, user["id"], {"mode": mode, "specialist": True, "query": squery, "retrieval": sinfo, "checks": checks,
+                                                  "prompts": [], "output": {"final_text": ans}, "timing": meta["timing"]}, settings.get("TRACE_KEEP"))
+            yield sse({"type": "delta", "text": ans})
             yield sse({"type": "done"})
             return
         pos = llm.queue_position()
@@ -522,6 +542,8 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                 meta["retrieval"] = {k: sinfo.get(k) for k in ("datasets", "reranked", "candidates_n", "keyword", "vector", "search_ms", "web", "error")}
             if web:
                 meta["web"] = True
+            if abi_res:
+                meta["abi"] = sinfo.get("abi")
             if evidence is not None and not small:   # Chuyên gia: nguồn = các đoạn AI ghi [n] (hoặc liệt kê trong "sources")
                 cited = sorted({int(n) for n in re.findall(r"\[(\d{1,2})\]", content)} | set(state.get("sources") or []))
                 meta["sources"] = [{"n": n, "record_id": evidence[n - 1]["id"], "url": evidence[n - 1].get("url"), "title": evidence[n - 1]["title"],

@@ -54,5 +54,16 @@ nên nhiều chỗ cũ không còn đúng. Khi tài liệu và code khác nhau, 
 | Danh sách lớp trong bộ đo | Là bản **giả** `system4/eval/data/ds_lop_gia.xlsx` (`fake_class.py`). Tệp thật `DS LỚP 1.5.xlsx` (tên trẻ em thật) chỉ ở `system4/runtime/` — không đưa lên GitHub (repo công khai) |
 | Cài đặt: "mặc định trong config.py" | Đúng, nhưng `system4/runtime/settings.json` (nút "Lưu" trong ⚙) **ghi đè** mặc định. Máy này hiện không có ghi đè; máy khác có thể có |
 
+## 6b. Lĩnh vực ABI (abi.com.vn, làm 2026-10-16) — kế hoạch `PLAN_ABI_LINH_VUC.md` vs code
+| Kế hoạch nói | Sự thật (chi tiết: `SYSTEM4_ABI.md`) |
+|---|---|
+| "API chủ web đưa bị hư" (lời kể ban đầu) | Không hư: `/rag/query` chỉ nhận **POST**. Chạm hạn mức thì vẫn trả HTTP 201 với `responseKind = service_error`. Trợ lý đó trả lời sai số phòng ban |
+| §3.1 `store.py`: SQLite `runtime/abi/abi.db` | Dùng **`runtime/abi/data.json`**, đọc vào bộ nhớ: dữ liệu ~1,7 MB, ghi nguyên tử bằng một `os.replace`. Chưa cần SQL vì chưa làm text-to-SQL |
+| §3.2 domain id 3 | Tìm theo **`engine = 'abi'`**: DB dev đã có id 3, 4 do người dùng tạo. Domain được tạo trong `db.init_db` khi chưa có |
+| §5 ngưỡng p90 ≤ 5 s | Câu code trả lời: ~0,1 s. Câu AI trả lời: **p90 7,5 s** (chưa đạt, phần lớn do AI viết dài) |
+| P5 text-to-SQL bảng rộng `abi_items` | **Chưa làm**: bộ đo 46 câu đạt 46/46 không cần |
+| `test_nv4` | Lỗi `n_procs() == 1350` có từ trước ABI (chạy lại trên code gốc cũng lỗi): dữ liệu thủ tục Strict trên máy dev đã khác |
+| Test ABI ở `system4/tests/` (như NV1–NV5) | Theo yêu cầu của leader, **mọi bài kiểm ABI ở `system4/eval/abi/`**: `test_abi.py`, `fixtures/`, `golden.py`, `saved_results/` |
+
 ## 6. Còn mở (chưa ai làm)
 Xem NV5 phần D9: ngữ cảnh model nhỏ hơn cho card 6 GB (phải đổi cả System 3), kiến thức chung sai của model 4B (Úc → "Sydney", "nước rộng nhất → Việt Nam", tiểu sử người bịa), câu trả lời thủ tục dài (5–6 s), câu "Team 7 là ai?" lúc không xưng "chúng tôi/mình" (21/22).

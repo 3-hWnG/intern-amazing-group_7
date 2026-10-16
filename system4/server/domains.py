@@ -33,8 +33,8 @@ def can_edit(user: dict, d: dict) -> bool:
 
 
 def can_upload(user: dict, d: dict) -> bool:
-    if d["engine"] == "strict":
-        return False                         # dữ liệu Strict quản lý ở trang Quản trị
+    if d["engine"] in ("strict", "abi"):
+        return False                         # dữ liệu Strict quản lý ở trang Quản trị; ABI tự đồng bộ từ abi.com.vn
     if user["role"] == "dev":
         return True
     return d["kind"] == "soft" and bool(d["user_upload"])
@@ -125,8 +125,8 @@ def make_router() -> APIRouter:
         if body.kind is not None and body.kind != d["kind"]:
             if body.kind not in ("hard", "soft"):
                 raise HTTPException(422, "kind phải là hard hoặc soft")
-            if did == 1:
-                raise HTTPException(422, "Lĩnh vực Thủ tục luôn là lĩnh vực cứng")
+            if did == 1 or d["engine"] == "abi":
+                raise HTTPException(422, f"Lĩnh vực {d['name']} luôn là lĩnh vực cứng")
             if body.kind == "hard":   # dataset riêng của người dùng sẽ thành dùng chung: không cho (lộ dữ liệu cá nhân)
                 n = db.run("SELECT COUNT(*) n FROM datasets x JOIN users y ON y.id=x.user_id WHERE x.domain_id=? AND y.role<>'dev'", (did,), one=True)["n"]
                 if n:

@@ -91,6 +91,11 @@ SEARCH_FOLLOWUP = True
 RERANK_RESCUE = True
 STRICT_BUSINESS_FACTS = True
 JSON_PLAN_FIRST = True
+ABI_SYNC_HOURS = 6
+ABI_CODE_ANSWER = True
+ABI_REMOTE_RAG = False
+ABI_REMOTE_MAX_PER_5MIN = 3
+ABI_SHOW_STAFF_CONTACT = False
 # ==== HẾT MẶC ĐỊNH ====
 
 # Danh sách cài đặt hiện trên panel. type: str | text (nhiều dòng) | int | float | bool | choice | rules
@@ -208,4 +213,17 @@ SETTINGS = [
     dict(key="JSON_PLAN_FIRST", type="bool", group="Tốc độ & độ chính xác", label="Buộc AI lập kế hoạch trước khi trả lời",
          help="Bật: đặt tên trường JSON a_plan, c_answer… để kế hoạch ẩn luôn được viết TRƯỚC câu trả lời (Ollama 0.40 không giữ thứ tự "
               "trường; khi tắt, model hay viết câu trả lời trước nên kế hoạch không có tác dụng). Chữ đầu hiện chậm hơn khoảng 0,5-0,8 giây."),
+    dict(key="ABI_SYNC_HOURS", type="int", group="Lĩnh vực ABI (abi.com.vn)", label="Tự đồng bộ abi.com.vn mỗi (giờ)", min=0, max=168,
+         help="Kéo lại dữ liệu từ các API công khai của abi.com.vn. 0 = tắt (vẫn bấm \"Đồng bộ ngay\" ở Quản trị được). "
+              "Lần đầu khoảng 3 phút, các lần sau chỉ tải phần đổi."),
+    dict(key="ABI_CODE_ANSWER", type="bool", group="Lĩnh vực ABI (abi.com.vn)", label="Trả lời bằng code khi hiểu trọn câu hỏi",
+         help="Bật: câu đếm / liệt kê / theo thời gian (sự kiện sắp diễn ra, số phòng ban, số cán bộ, liên hệ…) do code tính và trả lời, "
+              "không gọi AI, không thể bịa. Tắt: code vẫn tính, AI diễn đạt lại."),
+    dict(key="ABI_REMOTE_RAG", type="bool", group="Lĩnh vực ABI (abi.com.vn)", label="Hỏi thêm trợ lý của web khi không tìm thấy",
+         help="Bật: dữ liệu đồng bộ không có đoạn nào khớp -> hỏi trợ lý RAG của abi.com.vn (POST /rag/query). Trợ lý đó bị giới hạn "
+              "khoảng 4 câu / vài phút và có lúc trả lời sai (vd. số phòng ban), nên mặc định tắt."),
+    dict(key="ABI_REMOTE_MAX_PER_5MIN", type="int", group="Lĩnh vực ABI (abi.com.vn)", label="Trợ lý của web: tối đa số câu / 5 phút",
+         min=1, max=30, help="Vượt thì bỏ qua bước hỏi trợ lý web. Gặp báo \"chạm hạn mức\" thì tự nghỉ 5 phút."),
+    dict(key="ABI_SHOW_STAFF_CONTACT", type="bool", group="Lĩnh vực ABI (abi.com.vn)", label="Cho AI nêu email / điện thoại riêng của cán bộ",
+         help="Web có công khai email một số cán bộ. Tắt: chỉ nêu email của phòng và hotline, email của trung tâm."),
 ]

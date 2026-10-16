@@ -110,6 +110,7 @@
       const head = el("div", "dom-head");
       head.append(el("b", "", d.name), el("span", "dom-tag " + d.kind, d.kind === "hard" ? "Cứng" : "Mềm"));
       if (d.engine === "strict") head.appendChild(el("span", "dom-tag", "System 3"));
+      else if (d.engine === "abi") head.appendChild(el("span", "dom-tag", "abi.com.vn · tự đồng bộ"));
       const dataBox = el("div"); dataBox.hidden = true;
       const dataBtn = actionBtn("Dữ liệu", "Bộ dữ liệu của lĩnh vực này: tải lên, bật/tắt, xem, xoá", () => showData(dataBox.hidden));
       const showData = (on) => {
@@ -139,6 +140,7 @@
       if (d.builtin && d.kind === "soft") head.appendChild(el("span", "dom-tag", "có sẵn, không xoá được"));
       head.insertBefore(dataBtn, head.querySelector("button"));
       li.appendChild(head); li.appendChild(dataBox);
+      if (d.engine === "abi" && dev) li.appendChild(abiPanel());
       showData(domOpen.has(d.id));
       if (d.can_edit) {
         const ed = el("div", "dom-edit"); ed.hidden = true;
@@ -147,8 +149,8 @@
         ed.append(name, g);
         const flags = {};
         if (dev) {
-          [["hard", "Lĩnh vực cứng (dữ liệu dùng chung, không xoá được)", d.kind === "hard", d.engine === "strict"], ["locked", "Khoá: chỉ dev và cán bộ dùng", d.locked, false],
-           ["upload", "Cho người dùng thường tải dữ liệu riêng (lĩnh vực mềm)", d.user_upload, d.engine === "strict"]].forEach(([k, label, on, off]) => {
+          [["hard", "Lĩnh vực cứng (dữ liệu dùng chung, không xoá được)", d.kind === "hard", d.engine !== "friendly"], ["locked", "Khoá: chỉ dev và cán bộ dùng", d.locked, false],
+           ["upload", "Cho người dùng thường tải dữ liệu riêng (lĩnh vực mềm)", d.user_upload, d.engine !== "friendly"]].forEach(([k, label, on, off]) => {
             const lab = el("label", "dom-check"), cb = el("input"); cb.type = "checkbox"; cb.checked = on; cb.disabled = off; flags[k] = cb;
             lab.append(cb, label); ed.appendChild(lab);
           });
@@ -164,6 +166,50 @@
       }
       ul.appendChild(li);
     });
+  }
+  /* ---- lĩnh vực ABI (dev): đồng bộ abi.com.vn bằng tay + công tắc hỏi trợ lý của web (system4/abi/scheduler.py) ---- */
+  let abiTimer = null;
+  function abiPanel() {
+    const box = el("div", "abi-box"), line = el("div", "abi-line", "Đang xem trạng thái đồng bộ…");
+    const btn = el("button", "primary", "Đồng bộ ngay"); btn.type = "button";
+    btn.title = "Kéo lại dữ liệu từ abi.com.vn: chỉ tải phần đổi (thường dưới 1 phút), lần đầu khoảng 3 phút";
+    const lab = el("label", "dom-check"), cb = el("input"); cb.type = "checkbox";
+    lab.title = "Khi dữ liệu đồng bộ không có đoạn nào khớp, hỏi trợ lý RAG của abi.com.vn. Trợ lý đó giới hạn khoảng 3 câu liên tiếp, có lúc trả lời sai.";
+    lab.append(cb, "Hỏi thêm trợ lý của web khi dữ liệu không có (dự phòng)");
+    const row = el("div", "abi-row"); row.append(btn, lab);
+    box.append(line, row);
+    const when = (s) => { if (!s) return "chưa đồng bộ"; const t = new Date(s); return isNaN(t) ? s : t.toLocaleString("vi-VN"); };
+    const show = (r) => {
+      const st = r.state || {}, ds = (r.datasets || [])[0], last = (r.runs || [])[0], busy = !!st.running || !!(ds && ds.status !== "ready");
+      let txt;
+      if (st.running) txt = "Đang đồng bộ: " + (st.step || "…");
+      else if (busy) txt = "Đang tạo chỉ mục tìm kiếm… " + (ds.progress || 0) + "%";
+      else {
+        txt = "Đồng bộ lần cuối: " + when(r.synced_at);
+        if (last && !last.ok && !last.skipped) txt += " · lần gần nhất lỗi: " + (last.error || "");
+        else if (last && last.diff) {
+          const n = Object.values(last.diff).reduce((a, v) => a + v.added + v.removed + v.changed, 0);
+          txt += n ? " · " + n + " mục thay đổi" : " · không có gì mới";
+        }
+        if (last && last.index_error) txt += " · chỉ mục lỗi: " + last.index_error;
+        else if (!ds) txt += " · chưa có chỉ mục tìm kiếm (cần Ollama)";
+      }
+      line.textContent = txt;
+      btn.disabled = busy;
+      cb.checked = !!(r.settings || {}).ABI_REMOTE_RAG;
+      clearTimeout(abiTimer);
+      if (busy && !$("domain-modal").hidden) abiTimer = setTimeout(load, 2000);   // đóng cửa sổ thì thôi hỏi
+    };
+    const load = async () => { try { show(await api("/s4/abi/status")); } catch (e) { line.textContent = "Lỗi: " + e.message; } };
+    btn.onclick = async () => {
+      btn.disabled = true; line.textContent = "Đang bắt đầu đồng bộ…";
+      try { show(await api("/s4/abi/sync", {})); } catch (e) { line.textContent = "Lỗi: " + e.message; btn.disabled = false; }
+    };
+    cb.onchange = async () => {
+      try { await api("/s4/settings", { values: { ABI_REMOTE_RAG: cb.checked } }); } catch (e) { alert(e.message); cb.checked = !cb.checked; }
+    };
+    load();
+    return box;
   }
   async function afterDomainsChanged() {
     if (!domains.some((d) => d.id === domainId)) { setDomain((domains[0] || {}).id); await loadConv(null); refreshList(); }

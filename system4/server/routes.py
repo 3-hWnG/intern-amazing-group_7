@@ -245,7 +245,7 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
             dom = db.get_domain(db.get_conversation(cid)["domain_id"])
         else:
             dom = db.get_domain(body.domain_id or 2)
-        if not dom or dom["engine"] != "friendly" or not db.can_use_domain(u, dom):
+        if not dom or dom["engine"] not in ("friendly", "abi") or not db.can_use_domain(u, dom):   # abi: pipeline Friendly + nguồn abi.com.vn
             raise HTTPException(403, "Bạn không dùng được lĩnh vực này")
         if body.regenerate_of:
             m = own_message(request, cid, body.regenerate_of)
@@ -367,6 +367,8 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
     @r.post("/datasets/{ds_id}/retry")
     def retry_dataset(ds_id: int, request: Request):
         ds = own_dataset(request, ds_id)
+        if datasets.synced(ds):
+            raise HTTPException(422, "Bộ dữ liệu này tự đồng bộ từ abi.com.vn: dùng Quản trị → Dữ liệu ABI → Đồng bộ ngay")
         db.update_dataset(ds_id, status="queued", progress=0, message="Đang chờ xử lý lại…")
         datasets.enqueue(ds["id"])
         return {"ok": True}
@@ -375,6 +377,8 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
     def set_header_row(ds_id: int, body: HeaderRowIn, request: Request):
         """"Cách đọc": người dùng chọn lại dòng tiêu đề cột cho một bảng (0 = để hệ thống tự đoán) -> xử lý lại tệp."""
         ds = own_dataset(request, ds_id)
+        if datasets.synced(ds):
+            raise HTTPException(422, "Bộ dữ liệu tự đồng bộ từ abi.com.vn không có tệp gốc để đọc lại")
         try:
             mapping = json.loads(ds.get("mapping") or "{}")
         except ValueError:

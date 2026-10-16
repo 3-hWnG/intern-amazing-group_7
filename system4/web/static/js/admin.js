@@ -32,7 +32,7 @@
     t.onclick = () => {
       document.querySelectorAll(".admin-tabs .tab").forEach((x) => x.classList.toggle("active", x === t));
       document.querySelectorAll(".admin-tab").forEach((s) => { s.hidden = s.id !== "tab-" + t.dataset.tab; });
-      ({ strict: loadProcs, datasets: loadDatasets, users: loadUsers, lab: loadLab, stats: loadStats })[t.dataset.tab]();
+      ({ strict: loadProcs, datasets: loadDatasets, abi: loadAbi, users: loadUsers, lab: loadLab, stats: loadStats })[t.dataset.tab]();
     };
   });
   document.querySelectorAll(".s4-modal").forEach((m) => {
@@ -274,6 +274,45 @@
       t.appendChild(tr);
     });
   }
+  /* ================= Tab: Dữ liệu ABI (abi.com.vn) ================= */
+  const ABI_LABEL = { departments: "Phòng ban / đơn vị", people: "Cán bộ", events: "Sự kiện", programs: "Chương trình hỗ trợ",
+    catalog: "Đối tác, sản phẩm, dịch vụ", posts: "Tin tức, tài liệu", pages: "Trang giới thiệu" };
+  const fmtTime = (s) => { if (!s) return "chưa đồng bộ"; const d = new Date(s); return isNaN(d) ? s : d.toLocaleString("vi-VN"); };
+  let abiTimer = null;
+  function renderAbi(r) {
+    $("abi-synced").textContent = r.synced_at ? "đồng bộ lần cuối " + fmtTime(r.synced_at) : "chưa đồng bộ lần nào";
+    const job = $("abi-job"), st = r.state || {};
+    const ds = (r.datasets || [])[0];
+    job.hidden = !st.running && !(ds && ds.status !== "ready");
+    job.className = "job";
+    job.textContent = st.running ? "Đang đồng bộ: " + (st.step || "…") : ds && ds.status !== "ready" ? "Đang tạo chỉ mục tìm kiếm… " + (ds.progress || 0) + "%" : "";
+    $("abi-sync-btn").disabled = !!st.running;
+    const t = $("abi-counts"); head(t, ["Loại", "Số lượng"]);
+    Object.entries(ABI_LABEL).forEach(([k, label]) => t.appendChild(row([label, (r.counts || {})[k] ?? 0])));
+    t.appendChild(row(["Chỉ mục tìm kiếm (câu hỏi tự do)", ds ? ds.n_records + " đoạn · " + ds.message : "chưa có (cần Ollama + tài khoản dev)"]));
+    const rem = r.remote || {};
+    t.appendChild(row(["Trợ lý của web (dự phòng)", (r.settings || {}).ABI_REMOTE_RAG ? "bật · đã hỏi " + rem.calls_in_window + " câu / 5 phút" +
+      (rem.cooldown_s ? " · đang nghỉ " + rem.cooldown_s + " giây" : "") : "tắt"]));
+    const runs = $("abi-runs"); head(runs, ["Bắt đầu", "Kết quả", "Request", "Thời gian", "Thay đổi"]);
+    (r.runs || []).forEach((x) => {
+      const ch = x.diff ? Object.entries(x.diff).filter(([, v]) => v.added || v.removed || v.changed)
+        .map(([k, v]) => `${ABI_LABEL[k] || k}: +${v.added} −${v.removed} ~${v.changed}`).join("; ") || "không đổi" : "";
+      const res = x.ok ? (x.index_error ? "dữ liệu OK · chỉ mục lỗi: " + x.index_error : "OK" + (x.index && x.index.skipped ? " (chỉ mục không đổi)" : ""))
+        : x.skipped ? "bỏ qua: " + x.reason : "lỗi: " + (x.error || "");
+      const tr = row([fmtTime(x.started), res, x.requests ?? "", x.ms ? Math.round(x.ms / 1000) + " s" : "", ch]);
+      if (!x.ok && !x.skipped) tr.children[1].className = "tag bad";
+      runs.appendChild(tr);
+    });
+    clearTimeout(abiTimer);
+    if (st.running || (ds && ds.status !== "ready")) abiTimer = setTimeout(loadAbi, 2000);
+  }
+  async function loadAbi() {
+    try { renderAbi(await api("/s4/abi/status")); } catch (e) { alert(e.message); }
+  }
+  $("abi-sync-btn").onclick = async () => {
+    try { renderAbi(await api("/s4/abi/sync", {})); } catch (e) { alert(e.message); }
+  };
+
   let dsState = null;
   async function loadDs(reset) {
     if (reset) { dsState.offset = 0; $("ds-list").innerHTML = ""; }
