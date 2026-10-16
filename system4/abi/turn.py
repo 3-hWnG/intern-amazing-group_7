@@ -45,8 +45,7 @@ def prepare(user_id: int, text: str, squery: str, dataset_ids: list[int], histor
              f"\"Trung tâm\" trong câu hỏi (không kèm tên khác) là {(data.get('center') or {}).get('name') or 'Trung tâm Ươm tạo'}; "
              "thông tin của đối tác hay trung tâm khác trong dữ liệu không phải của Trung tâm."]
     # câu hiện tại trước; chỉ khi nó không đủ ý (vd. "còn tháng 11 thì sao?") mới dùng câu đã ghép với câu hỏi trước
-    show = settings.get("ABI_SHOW_STAFF_CONTACT")
-    r = router.route(text, data, now, show) or (router.route(squery, data, now, show) if squery != text else None)
+    r = router.route(text, data, now) or (router.route(squery, data, now) if squery != text else None)
     if r:
         info["abi"].update(intent=r["intent"], plain=r["plain"])
     if r and r["plain"] and settings.get("ABI_CODE_ANSWER"):

@@ -3,11 +3,12 @@
 Web abi.com.vn là React SPA: HTML không có nội dung, dữ liệu nằm ở API JSON (tìm bằng cách đọc JS của web, xem
 docs/PLAN_ABI_LINH_VUC.md mục 1.3). Chỉ dùng API công khai (GET, không đăng nhập); không đụng /admin.
 
-Nguyên tắc (giống system4/scraper/client.py):
-  · retry + backoff cho 429/5xx và lỗi mạng
-  · tối đa 2 request/giây, một luồng — web của cơ quan nhà nước, không đập
-  · timeout rõ ràng, TLS verify luôn bật
-  · body luôn là JSON UTF-8 (gõ tiếng Việt thẳng vào curl trên Windows gửi sai byte)
+Chủ web đã cho phép chính thức (16/10/2026, docs/SYSTEM4_ABI.md mục 8) với quy ước:
+  · User-Agent định danh: "AHBI-Assistant-Bot/1.0 (+liên hệ của nhóm)" — liên hệ đặt ở ⚙ ABI_BOT_CONTACT
+  · tối đa 2 request/giây (MAX_RPS, không vượt được kể cả khi gọi Client(rps=…)), quét định kỳ 6 tiếng
+  · không hiển thị email / số điện thoại riêng của cán bộ (sync.py bỏ ngay khi tải về)
+Ngoài ra: retry + backoff cho 429/5xx và lỗi mạng, timeout rõ ràng, TLS verify luôn bật,
+body luôn là JSON UTF-8 (gõ tiếng Việt thẳng vào curl trên Windows gửi sai byte).
 """
 from __future__ import annotations
 
@@ -21,8 +22,18 @@ import httpx
 BASE_URL = "https://api.abi.com.vn/api/v1"
 SITE_URL = "https://abi.com.vn"
 RETRY_STATUS = {429, 500, 502, 503, 504}
-USER_AGENT = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
-              "InstantSpecialist-Team7/1.0 (student project; abi.com.vn public data sync)")
+MAX_RPS = 2.0                                   # thoả thuận với chủ web
+BOT_NAME = "AHBI-Assistant-Bot/1.0"             # tên chủ web đề nghị
+DEFAULT_CONTACT = "https://github.com/3-hWnG/intern-amazing-group_7"   # khi chưa điền ⚙ ABI_BOT_CONTACT
+
+
+def user_agent() -> str:
+    try:
+        from ..server import settings
+        contact = (settings.get("ABI_BOT_CONTACT") or "").strip()
+    except Exception:   # chạy ngoài server, thiếu cài đặt
+        contact = ""
+    return f"{BOT_NAME} (+{contact or DEFAULT_CONTACT})"
 
 log = logging.getLogger("system4.abi.client")
 
@@ -38,13 +49,15 @@ class AbiError(RuntimeError):
 class Client:
     """Dùng như context manager. transport: chỉ để test (httpx.MockTransport)."""
 
-    def __init__(self, rps: float = 2.0, timeout: float = 20.0, max_retries: int = 3, transport=None):
+    def __init__(self, rps: float = MAX_RPS, timeout: float = 20.0, max_retries: int = 3, transport=None):
+        if transport is None:   # mạng thật: không bao giờ quá MAX_RPS (rps <= 0 = không chờ, chỉ cho API giả trong test)
+            rps = min(rps, MAX_RPS) if rps > 0 else MAX_RPS
         self._gap = 1.0 / rps if rps > 0 else 0.0
         self._last = 0.0
         self._lock = threading.Lock()
         self._max_retries = max_retries
         self._http = httpx.Client(base_url=BASE_URL, timeout=timeout, follow_redirects=True, transport=transport,
-                                  headers={"Accept": "application/json", "User-Agent": USER_AGENT})
+                                  headers={"Accept": "application/json", "User-Agent": user_agent()})
         self.requests = 0   # đếm request thật đã gửi (báo cáo đồng bộ)
 
     def __enter__(self) -> "Client":

@@ -310,7 +310,11 @@
     try { renderAbi(await api("/s4/abi/status")); } catch (e) { alert(e.message); }
   }
   $("abi-sync-btn").onclick = async () => {
-    try { renderAbi(await api("/s4/abi/sync", {})); } catch (e) { alert(e.message); }
+    try {
+      const r = await api("/s4/abi/sync", {});
+      renderAbi(r);
+      if (!r.started && r.reason) { const j = $("abi-job"); j.hidden = false; j.className = "job"; j.textContent = r.reason; }
+    } catch (e) { alert(e.message); }
   };
 
   let dsState = null;

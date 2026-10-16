@@ -60,7 +60,13 @@ Số liệu ngày 16/10/2026:
 - 266 tin và tài liệu, 11 trang giới thiệu
 
 **An toàn khi đồng bộ.** Code giữ bản cũ khi API đổi cấu trúc, ví dụ thiếu phòng ban, thiếu `startsAt` hoặc tin rỗng. Bản cũ cũng được giữ khi số mục tụt hơn một nửa so với lần trước.
-Chỉ gọi GET các API công khai, tối đa 2 request/giây. Không đụng các đường `/admin`.
+Chỉ gọi GET các **endpoint chính thức chủ web đã cho phép** (mục 8), đúng dạng họ liệt kê. Không đụng các đường `/admin`.
+Tốc độ tối đa 2 request/giây: khoá trong `client.MAX_RPS`, không vượt được. User-Agent là `AHBI-Assistant-Bot/1.0 (+liên hệ)`.
+
+**Thông tin cá nhân.** Email / số điện thoại riêng của cán bộ bị **bỏ ngay khi tải về** (`sync.scrub_personal`), nên không có trong `raw.json`, `data.json` hay chỉ mục.
+Nếu email riêng đó lỡ xuất hiện trong bài hay chương trình, code thay bằng "[đã ẩn]". Email của phòng và của trung tâm giữ nguyên.
+Câu hỏi về liên hệ của một cán bộ được trả lời bằng email đơn vị và hotline / email trung tâm. Không có công tắc nào bật lại được.
+Số mục đã bỏ được ghi trong mỗi lần đồng bộ (`privacy`). Lần đầu: 12 email riêng, 0 số điện thoại.
 Lần đồng bộ lỗi (mất mạng…) thì thử lại sau 30 phút. Có dữ liệu mà chưa có chỉ mục (lúc đó chưa có tài khoản dev, hoặc Ollama chưa chạy) thì lịch tự dựng chỉ mục ở vòng kiểm sau, 10 phút một lần.
 
 **Bài bị loại** (`normalize.excluded`) không vào chỉ mục và không vào "tin mới". Nếu trợ lý của web dẫn những bài này thì câu trả lời của nó cũng bị bỏ:
@@ -74,7 +80,10 @@ Lần đồng bộ lỗi (mất mạng…) thì thử lại sau 30 phút. Có d�
 | `ABI_CODE_ANSWER` | bật | Code hiểu trọn câu hỏi thì trả lời bằng code. Tắt thì code vẫn tính, AI diễn đạt lại. |
 | `ABI_REMOTE_RAG` | **tắt** | Hỏi trợ lý RAG của web khi dữ liệu đồng bộ không có đoạn nào khớp. Bật / tắt ở ⚙ hoặc bằng công tắc trong Quản lý lĩnh vực. Câu hỏi tiếp được gửi kèm `context` đúng định dạng khung chat của web (mục 8). |
 | `ABI_REMOTE_MAX_PER_5MIN` | 3 | Số câu tối đa hỏi trợ lý web trong 5 phút. Gặp `service_error` thì nghỉ 5 phút. |
-| `ABI_SHOW_STAFF_CONTACT` | **tắt** | Cho AI nêu email / điện thoại riêng của cán bộ. Web công khai email của 12/66 cán bộ. |
+| `ABI_BOT_CONTACT` | trống | Email / SĐT của nhóm, gửi kèm trong User-Agent theo yêu cầu của chủ web. Trống thì dùng link GitHub của dự án. |
+
+`ABI_SYNC_HOURS` đặt 1–5 vẫn tính là 6 (thoả thuận). Lần đồng bộ lỗi thì thử lại sau 1 giờ. Nút "Đồng bộ ngay" không chạy lại trong 10 phút sau lần đồng bộ trước.
+Công tắc cho hiện email riêng của cán bộ (`ABI_SHOW_STAFF_CONTACT`) **đã bỏ** theo yêu cầu của chủ web.
 
 Biến môi trường `S4_ABI_SYNC=0` tắt lịch tự đồng bộ. Khi không đặt, biến này theo `S4_WARMUP`; các test đặt `S4_WARMUP=0`, nên test không gọi mạng.
 
@@ -140,6 +149,31 @@ Bài kiểm: thư mục **`system4/eval/abi/`** ([README](../system4/eval/abi/RE
 - `saved_results/`: tóm tắt các lần đo.
 
 ## 8. Trả lời của chủ web (16/10) và cách xử lý
+
+### 8a. Cho phép chính thức (trả lời thư xin phép, chiều 16/10)
+Chủ web xác nhận nhóm tự xây cơ sở tri thức riêng là hợp lý. Lý do: `/rag/query` có hạn mức theo phiên, và danh bạ cán bộ cùng thông tin liên hệ chưa được vector hoá. Họ cho phép các endpoint sau (gốc `https://api.abi.com.vn/api/v1`):
+
+| Endpoint chính thức | Code dùng |
+|---|---|
+| `GET /site/settings?locale=vi` | ✅ |
+| `GET /organization?locale=vi` | ✅ (bỏ email / SĐT riêng của cán bộ khi tải về) |
+| `GET /site/pages/{routeKey}?locale=vi` | ✅ (đã bỏ tham số `compositionContract` mình tự thêm) |
+| `GET /content/posts?locale=vi&page=…&limit=…` (lọc `type`) | ✅ |
+| `GET /content/posts/{slug}?locale=vi` | ✅ (đã bỏ tham số `type` mình tự thêm) |
+| `GET /events`, `/events/{slug}`, `/programs`, `/programs/{slug}` | ✅ danh sách (đã đủ nội dung, không cần gọi chi tiết) |
+| `GET /catalog?locale=vi`, `/catalog/partner-categories?locale=vi` | ✅ |
+
+Code không gọi endpoint nào ngoài danh sách trên, trừ `/rag/query` là kênh chủ web cấp từ đầu.
+
+Quy ước của chủ web và chỗ thực hiện trong code:
+
+| Quy ước | Thực hiện |
+|---|---|
+| User-Agent định danh `AHBI-Assistant-Bot/1.0 (+email-hoac-sdt)` | `client.user_agent()`; liên hệ ở ⚙ `ABI_BOT_CONTACT` |
+| Không hiển thị SĐT / email riêng của cán bộ | `sync.scrub_personal` bỏ ngay khi tải về; `tools` chỉ đưa email đơn vị + hotline; đã bỏ công tắc `ABI_SHOW_STAFF_CONTACT` |
+| Tối đa 2 request/giây, quét 6 tiếng | `client.MAX_RPS = 2`; `scheduler.MIN_HOURS = 6`; nút "Đồng bộ ngay" nghỉ 10 phút |
+
+### 8b. Trả lời trước đó
 | Câu hỏi | Trả lời / cách xử lý |
 |---|---|
 | Hạn mức của `/rag/query` | Chủ web có chỉnh, nhưng **hạn mức vẫn còn**. Kiểm lúc 11:18: 8 câu liên tiếp thì câu thứ 4 bị chặn ("Trợ lý đã chạm hạn mức", vẫn HTTP 201). Hỏi 90 giây một câu thì không bị chặn. Giữ nguyên `ABI_REMOTE_MAX_PER_5MIN = 3` + nghỉ 5 phút khi bị chặn. |

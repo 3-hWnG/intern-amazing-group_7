@@ -203,7 +203,11 @@
     const load = async () => { try { show(await api("/s4/abi/status")); } catch (e) { line.textContent = "Lỗi: " + e.message; } };
     btn.onclick = async () => {
       btn.disabled = true; line.textContent = "Đang bắt đầu đồng bộ…";
-      try { show(await api("/s4/abi/sync", {})); } catch (e) { line.textContent = "Lỗi: " + e.message; btn.disabled = false; }
+      try {
+        const r = await api("/s4/abi/sync", {});
+        show(r);
+        if (!r.started && r.reason) line.textContent = r.reason;   // vừa đồng bộ (thoả thuận tần suất với chủ web) / đang chạy
+      } catch (e) { line.textContent = "Lỗi: " + e.message; btn.disabled = false; }
     };
     cb.onchange = async () => {
       try { await api("/s4/settings", { values: { ABI_REMOTE_RAG: cb.checked } }); } catch (e) { alert(e.message); cb.checked = !cb.checked; }

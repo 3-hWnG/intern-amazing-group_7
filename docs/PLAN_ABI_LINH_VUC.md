@@ -60,7 +60,7 @@ Riêng các mục ghi rõ *"chưa kiểm"* là chưa xác minh.
 | `/catalog/partner-categories?locale=vi` | "Nội bộ" (4), "Doanh nghiệp tham gia ươm tạo" (73) | 2 |
 | `/site/settings?locale=vi` | tên trung tâm, địa chỉ 2 cơ sở, hotline, email, giờ làm việc, cơ quan chủ quản | 1 |
 | `/site/home?locale=vi` | khối trang chủ, `featuredEvents/Programs/Content` | 1 |
-| `/site/pages/{routeKey}?locale=vi&compositionContract=2` | trang tĩnh dạng `blocks[].config` (title, summary, items…). Có nội dung: `about`, `functions`, `business-incubation`, `technology-incubation`, `quy-trinh-tham-gia-uom-tao`, `dieu-kien-tham-gia-uom-tao`, `doi-tuong-tham-gia-uom-tao`, `cong-nghe-vi-sinh`, `cong-nghe-thuy-san`, `cong-nghe-te-bao`, `cong-nghe-cay-trong` | ~40 routeKey |
+| `/site/pages/{routeKey}?locale=vi` | trang tĩnh dạng `blocks[].config` (title, summary, items…). Có nội dung: `about`, `functions`, `business-incubation`, `technology-incubation`, `quy-trinh-tham-gia-uom-tao`, `dieu-kien-tham-gia-uom-tao`, `doi-tuong-tham-gia-uom-tao`, `cong-nghe-vi-sinh`, `cong-nghe-thuy-san`, `cong-nghe-te-bao`, `cong-nghe-cay-trong` | ~40 routeKey |
 
 Không đụng tới bất kỳ đường dẫn `/admin`, `/rag/admin/*`, `/organization/admin` nào (cũng có trong mã JS nhưng là khu quản trị).
 
@@ -201,6 +201,12 @@ Câu hỏi gửi chủ web:
 > - Hạn mức vẫn còn: kiểm lại thì câu thứ 4 liên tiếp bị chặn.
 >
 > Câu 3, 4, 5 không hỏi chủ web mà tự xử lý ở phía mình: đọc định dạng `context` từ mã JS của web, loại bài cũ và trang mẫu, đồng bộ định kỳ chỉ tải phần đổi. Chi tiết: [SYSTEM4_ABI.md](SYSTEM4_ABI.md) mục 8.
+>
+> **Cho phép chính thức (chiều 16/10).** Leader yêu cầu dữ liệu phải lấy qua kênh chính thống, nên nhóm gửi thư xin phép. Chủ web trả lời với:
+> - danh sách endpoint chính thức (trùng với các endpoint code đang dùng);
+> - 3 quy ước: User-Agent `AHBI-Assistant-Bot/1.0 (+liên hệ)`, không hiển thị email / SĐT riêng của cán bộ, tối đa 2 request/giây và quét 6 tiếng.
+>
+> Code đã làm theo cả ba quy ước: [SYSTEM4_ABI.md](SYSTEM4_ABI.md) mục 8a.
 
 ## Phụ lục — lệnh kiểm nhanh
 ```bash
@@ -212,5 +218,5 @@ curl -sS -X POST https://api.abi.com.vn/api/v1/rag/query -H "Content-Type: appli
 curl -sS "https://api.abi.com.vn/api/v1/organization?locale=vi"
 curl -sS "https://api.abi.com.vn/api/v1/events?locale=vi&page=1&limit=50"
 curl -sS "https://api.abi.com.vn/api/v1/site/settings?locale=vi"
-curl -sS "https://api.abi.com.vn/api/v1/site/pages/quy-trinh-tham-gia-uom-tao?locale=vi&compositionContract=2"
+curl -sS "https://api.abi.com.vn/api/v1/site/pages/quy-trinh-tham-gia-uom-tao?locale=vi"
 ```

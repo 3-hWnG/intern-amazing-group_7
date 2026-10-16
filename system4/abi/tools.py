@@ -248,7 +248,12 @@ def org_leaders(data: dict) -> dict:
     return fact("org_leaders", "Ban Giám đốc", org_card(data), "\n".join(lines), [_src("Cơ cấu tổ chức", normalize.URL_ORG)])
 
 
-def department_detail(data: dict, deps: list[dict], show_contact: bool) -> dict:
+# Thoả thuận với chủ web: KHÔNG nêu email / điện thoại riêng của cán bộ (sync.py đã bỏ khi tải về); chỉ email của đơn vị,
+# hotline và email chung của trung tâm.
+NO_PERSONAL = "Không cung cấp email / điện thoại riêng của cán bộ; liên hệ qua email đơn vị hoặc hotline, email chung của trung tâm."
+
+
+def department_detail(data: dict, deps: list[dict]) -> dict:
     people = data.get("people") or []
     cards = []
     for x in deps:
@@ -256,11 +261,9 @@ def department_detail(data: dict, deps: list[dict], show_contact: bool) -> dict:
         lines = [f"Đơn vị: {x['name']}", f"Số cán bộ: {len(staff)}"]
         if x.get("email"):
             lines.append(f"Email đơn vị: {x['email']}")
+        lines.append(NO_PERSONAL)
         for p in staff:
-            contact = ""
-            if show_contact and (p.get("email") or p.get("phone")):
-                contact = " (" + ", ".join(v for v in (p.get("email"), p.get("phone")) if v) + ")"
-            lines.append(f"- {p['title']}: {_person(p)}{contact}")
+            lines.append(f"- {p['title']}: {_person(p)}")
         if x.get("summary"):
             lines.append("Giới thiệu: " + x["summary"][:800])
         if x.get("introduction") and x["introduction"] != x.get("summary"):
@@ -271,14 +274,16 @@ def department_detail(data: dict, deps: list[dict], show_contact: bool) -> dict:
                 [_src(x["name"], x["url"]) for x in deps])
 
 
-def person_detail(data: dict, ps: list[dict], show_contact: bool) -> dict:
+def person_detail(data: dict, ps: list[dict]) -> dict:
+    dep_email = {x["id"]: x.get("email") for x in data.get("departments") or []}
+    c = data.get("center") or {}
     cards = []
     for p in ps:
-        lines = [f"Cán bộ: {_person(p)}", f"Chức vụ: {p['title']}", f"Đơn vị: {p['department']}"]
-        if show_contact and p.get("email"):
-            lines.append(f"Email: {p['email']}")
-        if show_contact and p.get("phone"):
-            lines.append(f"Điện thoại: {p['phone']}")
+        lines = [f"Cán bộ: {_person(p)}", f"Chức vụ: {p['title']}", f"Đơn vị: {p['department']}", NO_PERSONAL]
+        contact = [v for v in (dep_email.get(p["department_id"]) and f"email đơn vị {dep_email[p['department_id']]}",
+                               c.get("hotline") and f"hotline {c['hotline']}", c.get("email") and f"email trung tâm {c['email']}") if v]
+        if contact:
+            lines.append("Liên hệ: " + ", ".join(contact))
         if p.get("bio"):
             lines.append("Giới thiệu: " + p["bio"][:800])
         lines.append(f"Link: {p['url']}")
