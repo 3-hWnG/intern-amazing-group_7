@@ -98,6 +98,27 @@ def test_no_legacy_imports():
         assert "AXIS_" not in f.read_text(encoding="utf-8").replace("AXIS_*", "") or f.name == "test_data.py"
 
 
+def test_links_rebuilt_from_source_id():
+    # G2.2: link Cổng dùng ID nội bộ (UUID), không dùng mã TTHC (trang trống)
+    bad = Q("SELECT proc_id FROM procedures WHERE portal_url NOT LIKE 'https://dichvucong.gov.vn/thu-tuc-hanh-chinh/%-%-%-%-%'")
+    assert not bad, [r[0] for r in bad[:5]]
+    assert not Q("SELECT 1 FROM procedures WHERE online_url<>'' AND online_url NOT LIKE '%formalityId=%-%-%-%-%'")
+
+
+def test_proc_flat():
+    # G2.2/G4.2: bảng phẳng một dòng / thủ tục, cột phạm vi khớp định nghĩa của fee_query._scope
+    assert Q("SELECT COUNT(*) FROM proc_flat")[0][0] == Q("SELECT COUNT(*) FROM procedures WHERE status='active'")[0][0]
+    n_scope = Q("SELECT COUNT(*) FROM proc_flat WHERE in_scope=1")[0][0]
+    vert = lambda d: any(x.strip() in ("Thuế", "Hải quan") for x in (d or "").split(";"))   # như policy._vertical
+    want = sum(1 for r in Q("SELECT domain FROM procedures WHERE province IS NULL AND agency_levels LIKE '%Xã/Phường%'")
+               if not vert(r[0]))
+    assert n_scope == want, (n_scope, want)
+    r = Q("SELECT fee_min_vnd, fee_currency FROM proc_flat WHERE proc_id='1.000014'")[0]
+    assert r[0] == 20000 and r[1] == "VND", tuple(r)       # "20.000" từng bị đọc thành 20
+    assert Q("SELECT COUNT(*) FROM proc_flat WHERE fee_min_vnd < 1000")[0][0] == 0
+    STATS.update(proc_flat_in_scope=n_scope)
+
+
 if __name__ == "__main__":
     sys.stdout.reconfigure(encoding="utf-8")
     fails = 0

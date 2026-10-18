@@ -1,0 +1,132 @@
+{
+ "2": {
+  "n_procedures": 1509,
+  "fee_small_unconfirmed": {
+   "n": 27,
+   "examples": [
+    "1.003133",
+    "1.006429",
+    "1.006440",
+    "1.006442",
+    "1.007642"
+   ],
+   "note": "số < 1.000 mà chữ không xác nhận: chỉ in nguyên văn chữ của Cổng"
+  },
+  "fee_currency_unknown_id": {
+   "n": 0,
+   "examples": []
+  },
+  "fee_usd": {
+   "n": 4,
+   "examples": [
+    "1.013562",
+    "1.013575",
+    "2.000815",
+    "2.000884"
+   ]
+  },
+  "portal_url_bad": {
+   "n": 0,
+   "examples": []
+  },
+  "duplicate_proc_id": {
+   "n": 0,
+   "examples": []
+  },
+  "empty_fields": {
+   "name": {
+    "n": 0,
+    "examples": []
+   },
+   "domain": {
+    "n": 0,
+    "examples": []
+   },
+   "agency_levels": {
+    "n": 0,
+    "examples": []
+   },
+   "source_id": {
+    "n": 0,
+    "examples": []
+   }
+  },
+  "in_scope": 540,
+  "provinces": 34,
+  "links": {
+   "portal_url_rebuilt": 1509,
+   "online_url_rebuilt": 1143
+  },
+  "vanished_vs_prev": {
+   "vs": 1,
+   "n": 34,
+   "ratio": 0.0252,
+   "new": 193
+  }
+ },
+ "3": {
+  "n_procedures": 1517,
+  "fee_small_unconfirmed": {
+   "n": 27,
+   "examples": [
+    "1.003133",
+    "1.006429",
+    "1.006440",
+    "1.006442",
+    "1.007642"
+   ],
+   "note": "số < 1.000 mà chữ không xác nhận: chỉ in nguyên văn chữ của Cổng"
+  },
+  "fee_currency_unknown_id": {
+   "n": 0,
+   "examples": []
+  },
+  "fee_usd": {
+   "n": 4,
+   "examples": [
+    "1.013562",
+    "1.013575",
+    "2.000815",
+    "2.000884"
+   ]
+  },
+  "portal_url_bad": {
+   "n": 0,
+   "examples": []
+  },
+  "duplicate_proc_id": {
+   "n": 0,
+   "examples": []
+  },
+  "empty_fields": {
+   "name": {
+    "n": 0,
+    "examples": []
+   },
+   "domain": {
+    "n": 0,
+    "examples": []
+   },
+   "agency_levels": {
+    "n": 0,
+    "examples": []
+   },
+   "source_id": {
+    "n": 0,
+    "examples": []
+   }
+  },
+  "in_scope": 542,
+  "provinces": 34,
+  "links": {
+   "portal_url_rebuilt": 0,
+   "online_url_rebuilt": 0
+  },
+  "vanished_vs_prev": {
+   "vs": 2,
+   "n": 1,
+   "ratio": 0.0007,
+   "new": 9
+  }
+ }
+}

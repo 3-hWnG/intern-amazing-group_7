@@ -401,6 +401,10 @@ def ensure_built(vid: int, msg=None) -> Path:
     rep_p = tmp.with_name(tmp.name + ".report.json")   # báo cáo kiểm của bước dựng (G2.2), nếu có
     report = json.loads(rep_p.read_text(encoding="utf-8")) if rep_p.is_file() else {}
     rep_p.unlink(missing_ok=True)
+    cur = active_id()
+    if cur and cur != vid and (VERSIONS / f"{cur}.jsonl").is_file():   # G2.2: tỉ lệ thủ tục biến mất so với bản đang dùng
+        a, b = set(load(cur)[1]), set(load(vid)[1])
+        report["vanished_vs_active"] = {"vs": cur, "n": len(a - b), "ratio": round(len(a - b) / max(len(a), 1), 4), "new": len(b - a)}
     os.replace(tmp, out)
     h = hashlib.sha256()
     with open(out, "rb") as f:

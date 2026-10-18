@@ -43,6 +43,9 @@ def ensure(force: bool = False, quiet: bool = False) -> Path:
     if not quiet:
         print(r.stdout.strip())
     os.replace(tmp, FIXTURE)
+    rep = tmp.with_name(tmp.name + ".report.json")   # báo cáo kiểm của bước dựng (data/checks.py)
+    if rep.is_file():
+        os.replace(rep, FIXTURE.with_name(FIXTURE.name + ".report.json"))
     STAMP.write_text(want)
     if not quiet:
         print(f"đã dựng fixture: {FIXTURE}")

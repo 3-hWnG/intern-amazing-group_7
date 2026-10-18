@@ -1,10 +1,11 @@
 """Dựng system3/data/runtime/system3.db từ snapshot.  Chạy: python -m system3.data.build"""
 from __future__ import annotations
 
+import json
 import re
 import sys
 
-from . import DB_PATH, fees as F, records as R
+from . import DB_PATH, checks, fees as F, records as R
 from .load import connect_new, import_records, load_snapshot
 from .textutil import fold
 from . import team_overlay
@@ -197,15 +198,20 @@ def main() -> int:
     conn = connect_new()
     conn.executescript(EXTRA_SCHEMA)
     n = import_records(conn, load_snapshot())
+    links = checks.normalize_links(conn)   # G2.2: link Cổng theo source_id (UUID), cho mọi phiên bản
     conn.executemany("INSERT INTO synonyms VALUES (?,?)", SEED_SYNONYMS.items())
     build_fees_and_chunks(conn)
     build_conditions_families(conn)
     print(f"team_fee_overlay {team_overlay.build(conn)}")
+    checks.build_flat(conn)                # G2.2/G4.2: bảng phẳng một dòng / thủ tục
     conn.commit()
     for t in ("procedures", "fees_clean", "field_chunks", "condition_index", "families",
-              "synonyms"):
+              "synonyms", "proc_flat"):
         print(f"{t:16s}{conn.execute(f'SELECT COUNT(*) FROM {t}').fetchone()[0]}")
+    rep = {**checks.report(conn), "links": links}
     conn.close()
+    DB_PATH.with_name(DB_PATH.name + ".report.json").write_text(json.dumps(rep, ensure_ascii=False, indent=1), encoding="utf-8")
+    print("báo cáo kiểm: " + ", ".join(f"{k}={v['n']}" for k, v in rep.items() if isinstance(v, dict) and "n" in v))
     print(f"nạp {n} thủ tục -> {DB_PATH}")
     return 0
 
