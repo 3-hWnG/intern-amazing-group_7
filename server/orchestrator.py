@@ -14,6 +14,7 @@ import time
 from dataclasses import dataclass, field
 
 import fee_query
+import listsql
 from answer import answer
 from db import store
 from planner import plan as make_plan
@@ -171,6 +172,12 @@ def handle_turn(turn: Turn) -> dict:
     if fee:   # đếm / liệt kê theo phí: truy vấn SQL thật (không phải liệt kê gần đúng)
         return {"kind": "answer", "clarify": None, "plan": {}, "trace": {"question": mask_pii(turn.text), "intent": "list_fee"},
                 "blocks": [{"title": "Thủ tục theo mức phí", "text": fee, "sources": []}]}
+    if not (answered_clarify or turn.pick_proc) and listsql.wants(text):   # G4.2: liệt kê / đếm bằng text-to-SQL trên proc_flat
+        ls = listsql.answer(text, None if turn.rules_only else _answer_llm())
+        if ls:
+            return {"kind": "answer", "clarify": None, "plan": {},
+                    "trace": {"question": mask_pii(turn.text), "intent": "list_sql", "sql": ls["sql"], "tries": ls["tries"], "rows": ls["count"]},
+                    "blocks": [{"title": "Danh sách thủ tục", "text": ls["text"], "sources": []}]}
     listing = None if (answered_clarify or turn.pick_proc) else _list_request(text)
     if listing:
         return {"kind": "answer", "clarify": None, "plan": {}, "trace": {"question": mask_pii(turn.text), "intent": "list"},

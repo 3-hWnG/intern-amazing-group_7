@@ -1,0 +1,1191 @@
+{
+ "split": "dev",
+ "n": 46,
+ "ok": 45,
+ "by_kind": {
+  "count_kw": [
+   4,
+   4
+  ],
+  "list_domain_online": [
+   7,
+   7
+  ],
+  "list_kw": [
+   10,
+   10
+  ],
+  "count_domain": [
+   8,
+   9
+  ],
+  "list_domain_days": [
+   8,
+   8
+  ],
+  "list_domain": [
+   8,
+   8
+  ]
+ },
+ "rows": [
+  {
+   "id": "ls-000",
+   "split": "dev",
+   "kind": "count_kw",
+   "question": "Có mấy thủ tục kết hôn?",
+   "gold": {
+    "count": 8
+   },
+   "ok": true,
+   "sql": "SELECT COUNT(*) FROM proc_flat WHERE name LIKE '%kết hôn%'}",
+   "tries": 1,
+   "got": 8,
+   "ms": 1420
+  },
+  {
+   "id": "ls-002",
+   "split": "dev",
+   "kind": "list_domain_online",
+   "question": "Những thủ tục nào thuộc lĩnh vực Công chức, viên chức nộp trực tuyến được?",
+   "gold": {
+    "names": [
+     "Thi tuyển công chức",
+     "Xét tuyển công chức"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Công chức, viên chức' AND online = 1 ORDER BY name",
+   "tries": 1,
+   "got": 2,
+   "ms": 565
+  },
+  {
+   "id": "ls-004",
+   "split": "dev",
+   "kind": "list_kw",
+   "question": "Những thủ tục nào có chữ \"trợ cấp\" trong tên?",
+   "gold": {
+    "names": [
+     "Di chuyển hài cốt liệt sĩ đang an táng ngoài nghĩa trang liệt sĩ về an táng tại nghĩa trang liệt sĩ theo nguyện vọng của đại diện thân nhân hoặc người hưởng trợ cấp thờ cúng liệt sĩ",
+     "Di chuyển hài cốt liệt sĩ đang an táng tại nghĩa trang liệt sĩ đi nơi khác theo nguyện vọng của đại diện thân nhân hoặc người hưởng trợ cấp thờ cúng liệt sĩ",
+     "Giải quyết chế độ trợ cấp một lần đối với người được cử làm chuyên gia sang giúp Lào, Căm-pu-chi-a",
+     "Giải quyết chế độ trợ cấp thờ cúng liệt sĩ.",
+     "Giải quyết chế độ trợ cấp ưu đãi đối với thân nhân liệt sĩ",
+     "Giải quyết chế độ đối với người lao động không đủ điều kiện hưởng lương hưu và chưa đủ tuổi hưởng trợ cấp hưu trí xã hội",
+     "Giải quyết hưởng chế độ ốm đau, thai sản, trợ cấp dưỡng sức phục hồi sức khỏe sau ốm đau, thai sản, TNLĐ, BNN",
+     "Giải quyết hưởng lương hưu; trợ cấp hằng tháng đối với cán bộ xã",
+     "Giải quyết hưởng trợ cấp hằng tháng theo Quyết định số 613/QĐ-TTg",
+     "Giải quyết hưởng trợ cấp một lần đối với người đang hưởng lương hưu, trợ cấp BHXH hằng tháng ra nước ngoài để định cư",
+     "Giải quyết hưởng trợ cấp đối với nhà giáo đã nghỉ hưu chưa được hưởng chế độ phụ cấp thâm niên trong lương hưu theo Nghị định số 14/2020/NĐ-CP",
+     "Giải quyết trợ cấp một lần đối với người có thành tích tham gia kháng chiến đã được tặng Bằng khen của Thủ tướng Chính phủ, Bằng khen của Chủ tịch Hội đồng Bộ trưởng hoặc Bằng khen của Bộ trưởng, Thủ trưởng cơ quan ngang bộ, Thủ trưởng cơ quan thuộc Chính phủ, Bằng khen của Chủ tịch Ủy ban nhân dân tỉnh, thành phố trực thuộc Trung ương",
+     "Giải quyết điều chỉnh, tạm dừng, hủy quyết định, chấm dứt hưởng, hưởng tiếp BHXH; thôi hưởng trợ cấp tuất hằng tháng đối với người đang hưởng trợ cấp tuất hằng tháng chết mà thuộc đối tượng được hưởng hỗ trợ chi phí mai táng",
+     "Hưởng trợ cấp khi người có công đang hưởng trợ cấp ưu đãi từ trần",
+     "Hỗ trợ chi phí mai táng đối với đối tượng hưởng trợ cấp hưu trí xã hội",
+     "Hỗ trợ học văn hóa, học nghề, trợ cấp khó khăn ban đầu cho nạn nhân",
+     "Hỗ trợ khám chữa bệnh, trợ cấp tai nạn cho lực lượng xung kích phòng chống thiên tai cấp xã trong trường hợp chưa tham gia bảo hiểm y tế, bảo hiểm xã hội",
+     "Thay đổi hình thức nhận, nơi nhận lương hưu, trợ cấp BHXH hằng tháng",
+     "Thủ Tục giải quyết chế độ trợ cấp một lần đối với quân nhân, người làm công tác cơ yếu hưởng lương như đối với quân nhân, công an nhân dân; công nhân viên chức quốc phòng; dân quân tự vệ trực tiếp tham gia chiến tranh bảo vệ Tổ quốc và làm nhiệm vụ quốc tế sau ngày 30/4/1975, có dưới 15 năm công tác đã phục viên, xuất ngũ, thôi việc (đối tượng còn sống) thuộc thẩm quyền giải quyết của Bộ Quốc phòng",
+     "Thủ tục giải quyết chế độ trợ cấp hàng tháng đối với quân nhân, người làm công tác cơ yếu, nhập ngũ, tuyển dụng sau ngày 30/4/1975, tham gia chiến tranh bảo vệ Tổ quốc và làm nhiệm vụ quốc tế có từ đủ 15 năm đến dưới 20 năm công tác thực tế trong quân đội đã phục viên, xuất ngũ, thôi việc.",
+     "Thủ tục giải quyết chế độ trợ cấp một lần đối với quân nhân, người làm công tác cơ yếu hưởng lương như đối với quân nhân, công an nhân dân nhập ngũ sau ngày 30/4/1975, trực tiếp tham gia chiến tranh bảo vệ Tổ quốc và làm nhiệm vụ quốc tế có từ đủ 20 năm trở lên phục vụ trong quân đội, cơ yếu đã phục viên, xuất ngũ, thôi việc (đối tượng từ trần)",
+     "Thủ tục giải quyết chế độ trợ cấp một lần đối với quân nhân, người làm công tác cơ yếu hưởng lương như đối với quân nhân, công an nhân dân; công nhân viên chức quốc phòng; dân quân tự vệ trực tiếp tham gia chiến tranh bảo vệ Tổ quốc và làm nhiệm vụ quốc tế sau ngày 30/4/1975 đã phục viên, xuất ngũ, thôi việc (đối với đối tượng đã từ trần) do Bộ Quốc phòng giải quyết",
+     "Thủ tục hưởng trợ cấp sinh hoạt hàng tháng đối với Nghệ nhân nhân dân, Nghệ nhân ưu tú",
+     "Thủ tục thôi hưởng trợ cấp sinh hoạt hàng tháng, bảo hiểm y tế đối với Nghệ nhân nhân dân, Nghệ nhân ưu tú",
+     "Thực hiện trợ cấp hưu trí xã hội",
+     "Thực hiện trợ cấp xã hội và nhận chăm sóc, nuôi dưỡng, hỗ trợ kinh phí nhận chăm sóc, nuôi dưỡng hằng tháng",
+     "Trợ cấp tiền tuất, tai nạn (đối với trường hợp tai nạn suy giảm khả năng lao động từ 5% trở lên) cho lực lượng xung kích phòng chống thiên tai cấp xã chưa tham gia bảo hiểm xã hội",
+     "Trợ cấp hàng tháng đối với thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến",
+     "Trợ cấp một lần đối với thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến",
+     "Trợ cấp đối với trẻ em mầm non là con công nhân, người lao động làm việc tại khu công nghiệp",
+     "Xét hưởng chế độ trợ cấp đối với đối tượng hoặc thân nhân đối tượng thuộc Công an nhân dân tham gia chiến tranh bảo vệ Tổ quốc, làm nhiệm vụ quốc tế ở Căm-pu-chi-a, giúp bạn Lào sau ngày 30/4/1975 đã phục viên, xuất ngũ, thôi việc theo quy định tại Quyết định số 62/2011/QĐ-TTg ngày 09/11/2011 của Thủ tướng Chính phủ (ban hành kèm theo Thông tư số 132/2025/TT-BCA ngày 30/12/2025 của Bộ trưởng Bộ Công an quy định chế độ, chính sách đối với các đối tượng thuộc Công an nhân dân tham gia chiến tranh bảo vệ Tổ quốc, làm nhiệm vụ quốc tế ở Căm-pu-chi-a, giúp bạn Lào sau ngày 30/4/1975 đã phục viên, xuất ngũ, thôi việc)"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE name LIKE '%trợ cấp%'}",
+   "tries": 1,
+   "got": 31,
+   "ms": 374
+  },
+  {
+   "id": "ls-006",
+   "split": "dev",
+   "kind": "count_domain",
+   "question": "Lĩnh vực Thực hiện chính sách BHXH có mấy thủ tục?",
+   "gold": {
+    "count": 15
+   },
+   "ok": true,
+   "sql": "SELECT COUNT(*) FROM proc_flat WHERE domain = 'Thực hiện chính sách BHXH'",
+   "tries": 1,
+   "got": 15,
+   "ms": 467
+  },
+  {
+   "id": "ls-008",
+   "split": "dev",
+   "kind": "list_domain_online",
+   "question": "Những thủ tục nào thuộc lĩnh vực Quản lý nhà nước về hội, quỹ nộp trực tuyến được?",
+   "gold": {
+    "names": [
+     "Báo cáo tổ chức đại hội thành lập, đại hội nhiệm kỳ, đại hội bất thường của hội",
+     "Chia, tách; sáp nhập; hợp nhất hội",
+     "Cho phép hội hoạt động trở lại sau khi bị đình chỉ có thời hạn",
+     "Công nhận ban vận động thành lập hội",
+     "Hỗ trợ chi phí y tế và thu nhập thực tế bị mất hoặc giảm sút cho người đang trực tiếp tham gia hoạt động chữ thập đỏ bị tai nạn dẫn đến thiệt hại về sức khỏe",
+     "Hội tự giải thể",
+     "THỦ TỤC CHO PHÉP QUỸ HOẠT ĐỘNG TRỞ LẠI SAU KHI BỊ ĐÌNH CHỈ CÓ THỜI HẠN HOẠT ĐỘNG (Cấp xã)",
+     "THỦ TỤC CÔNG NHẬN QUỸ ĐỦ ĐIỀU KIỆN HOẠT ĐỘNG VÀ CÔNG NHẬN HỘI ĐỒNG QUẢN LÝ QUỸ; CÔNG NHẬN HỘI ĐỒNG QUẢN LÝ QUỸ KHI THAY ĐỔI, BỔ SUNG THÀNH VIÊN HOẶC HẾT NHIỆM KỲ (Cấp xã)",
+     "THỦ TỤC CÔNG NHẬN ĐIỀU LỆ (SỬA ĐỔI, BỔ SUNG) QUỸ; ĐỔI TÊN QUỸ (Cấp xã)",
+     "THỦ TỤC CẤP GIẤY PHÉP THÀNH LẬP VÀ CÔNG NHẬN ĐIỀU LỆ QUỸ (Cấp xã)",
+     "THỦ TỤC HỢP NHẤT, SÁP NHẬP, CHIA, TÁCH QUỸ (Cấp xã)",
+     "THỦ TỤC QUỸ TỰ GIẢI THỂ (Cấp xã)",
+     "Thành lập hội",
+     "Thông báo kết quả đại hội và phê duyệt đổi tên hội, phê duyệt điều lệ hội"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Quản lý nhà nước về hội, quỹ' AND online = 1 ORDER BY name",
+   "tries": 1,
+   "got": 14,
+   "ms": 632
+  },
+  {
+   "id": "ls-010",
+   "split": "dev",
+   "kind": "list_domain_days",
+   "question": "Liệt kê các thủ tục lĩnh vực Hộ tịch giải quyết trong vòng 5 ngày",
+   "gold": {
+    "names": [
+     "Thủ tục đăng ký chấm dứt giám hộ",
+     "Thủ tục đăng ký chấm dứt giám hộ có yếu tố nước ngoài",
+     "Thủ tục đăng ký giám hộ",
+     "Thủ tục đăng ký khai sinh lưu động",
+     "Thủ tục đăng ký khai tử lưu động",
+     "Thủ tục đăng ký kết hôn lưu động"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Hộ tịch' AND days_max <= 5 ORDER BY name",
+   "tries": 1,
+   "got": 6,
+   "ms": 631
+  },
+  {
+   "id": "ls-012",
+   "split": "dev",
+   "kind": "list_kw",
+   "question": "Liệt kê các thủ tục liên quan đến tạm trú",
+   "gold": {
+    "names": [
+     "Khai báo thông tin về cư trú đối với người chưa đủ điều kiện đăng ký thường trú, đăng ký tạm trú",
+     "Khai báo tạm trú cho người nước ngoài tại Việt Nam bằng Phiếu khai báo tạm trú",
+     "Đăng ký tạm trú"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE name LIKE '%tạm trú%' ORDER BY name",
+   "tries": 1,
+   "got": 3,
+   "ms": 528
+  },
+  {
+   "id": "ls-014",
+   "split": "dev",
+   "kind": "list_kw",
+   "question": "Liệt kê các thủ tục liên quan đến khai tử",
+   "gold": {
+    "names": [
+     "Liên thông điện tử: Đăng ký khai tử, xóa đăng ký thường trú, giải quyết mai táng phí, tử tuất",
+     "Thủ tục ghi vào Sổ hộ tịch việc hộ tịch khác của công dân Việt Nam đã được giải quyết tại cơ quan có thẩm quyền của nước ngoài (khai sinh; giám hộ; nhận cha, mẹ, con; xác định cha, mẹ, con; nuôi con nuôi; khai tử; thay đổi hộ tịch)",
+     "Thủ tục đăng ký khai tử",
+     "Thủ tục đăng ký khai tử có yếu tố nước ngoài",
+     "Thủ tục đăng ký khai tử có yếu tố nước ngoài tại khu vực biên giới",
+     "Thủ tục đăng ký khai tử lưu động",
+     "Thủ tục đăng ký lại khai tử có yếu tố nước ngoài",
+     "Đăng ký lại khai tử"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE name LIKE '%khai tử%' ORDER BY name",
+   "tries": 1,
+   "got": 8,
+   "ms": 504
+  },
+  {
+   "id": "ls-016",
+   "split": "dev",
+   "kind": "count_kw",
+   "question": "Có mấy thủ tục giám hộ?",
+   "gold": {
+    "count": 8
+   },
+   "ok": true,
+   "sql": "SELECT COUNT(*) FROM proc_flat WHERE name LIKE '%giám hộ%'}",
+   "tries": 1,
+   "got": 8,
+   "ms": 485
+  },
+  {
+   "id": "ls-018",
+   "split": "dev",
+   "kind": "list_domain_days",
+   "question": "Liệt kê các thủ tục lĩnh vực Thực hiện chính sách BHXH giải quyết trong vòng 8 ngày",
+   "gold": {
+    "names": [
+     "Giải quyết chế độ đối với người lao động không đủ điều kiện hưởng lương hưu và chưa đủ tuổi hưởng trợ cấp hưu trí xã hội",
+     "Giải quyết hưởng BHXH một lần",
+     "Giải quyết hưởng chế độ TNLĐ, BNN do thương tật, bệnh tật tái phát",
+     "Giải quyết hưởng chế độ TNLĐ, BNN đối với trường hợp bị TNLĐ, BNN lần đầu",
+     "Giải quyết hưởng chế độ TNLĐ, BNN đối với trường hợp đã bị TNLĐ, BNN, nay tiếp tục bị TNLĐ hoặc BNN",
+     "Giải quyết hưởng chế độ thai sản",
+     "Giải quyết hưởng chế độ tử tuất và truy lĩnh các chế độ BHXH, BHTN của người hưởng đã chết nhưng còn chế độ chưa nhận",
+     "Giải quyết hưởng chế độ ốm đau, thai sản, trợ cấp dưỡng sức phục hồi sức khỏe sau ốm đau, thai sản, TNLĐ, BNN",
+     "Giải quyết hưởng trợ cấp một lần đối với người đang hưởng lương hưu, trợ cấp BHXH hằng tháng ra nước ngoài để định cư",
+     "Thay đổi hình thức nhận, nơi nhận lương hưu, trợ cấp BHXH hằng tháng"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Thực hiện chính sách BHXH' AND days_max <= 8 ORDER BY name",
+   "tries": 1,
+   "got": 10,
+   "ms": 759
+  },
+  {
+   "id": "ls-020",
+   "split": "dev",
+   "kind": "list_domain_days",
+   "question": "Liệt kê các thủ tục lĩnh vực Đất đai giải quyết trong vòng 25 ngày",
+   "gold": {
+    "names": [
+     "Chuyển hình thức giao đất, cho thuê đất.",
+     "Giao đất, cho thuê đất, chuyển mục đích sử dụng đất đối với trường hợp giao đất, cho thuê đất không đấu giá quyền sử dụng đất, không đấu thầu lựa chọn nhà đầu tư thực hiện dự án có sử dụng đất; trường hợp giao đất, cho thuê đất thông qua đấu thầu lựa chọn nhà đầu tư thực hiện dự án có sử dụng đất; giao đất và giao rừng; cho thuê đất và cho thuê rừng, gia hạn sử dụng đất khi hết thời hạn sử dụng đất",
+     "Giao đất, cho thuê đất, giao khu vực biển để thực hiện hoạt động lấn biển.",
+     "Sử dụng đất kết hợp đa mục đích, gia hạn phương án sử dụng đất kết hợp đa mục đích.",
+     "Tặng cho quyền sử dụng đất cho Nhà nước hoặc cộng đồng dân cư hoặc mở rộng đường giao thông đối với trường hợp thửa đất chưa được cấp Giấy chứng nhận",
+     "Tổ chức kinh tế nhận chuyển nhượng, thuê quyền sử dụng đất, nhận góp vốn bằng quyền sử dụng đất để thực hiện dự án đầu tư.",
+     "Xóa đăng ký thuê, cho thuê lại quyền sử dụng đất trong dự án xây dựng kinh doanh kết cấu hạ tầng",
+     "Điều chỉnh quyết định giao đất, cho thuê đất, cho phép chuyển mục đích sử dụng đất do sai sót về ranh giới, vị trí, diện tích, mục đích sử dụng giữa bản đồ quy hoạch, bản đồ địa chính, quyết định giao đất, cho thuê đất, cho phép chuyển mục đích sử dụng đất và số liệu bàn giao đất trên thực địa",
+     "Điều chỉnh quyết định giao đất, cho thuê đất, cho phép chuyển mục đích sử dụng đất do thay đổi căn cứ quyết định giao đất, cho thuê đất, cho phép chuyển mục đích sử dụng đất; điều chỉnh thời hạn sử dụng đất của dự án đầu tư.",
+     "Đính chính Giấy chứng nhận đã cấp lần đầu có sai sót"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Đất đai' AND days_max <= 25 ORDER BY name",
+   "tries": 1,
+   "got": 10,
+   "ms": 677
+  },
+  {
+   "id": "ls-022",
+   "split": "dev",
+   "kind": "count_kw",
+   "question": "Có bao nhiêu thủ tục liên quan đến mai táng?",
+   "gold": {
+    "count": 7
+   },
+   "ok": true,
+   "sql": "SELECT COUNT(*) FROM proc_flat WHERE name LIKE '%mai táng%'}",
+   "tries": 1,
+   "got": 7,
+   "ms": 482
+  },
+  {
+   "id": "ls-024",
+   "split": "dev",
+   "kind": "list_domain_online",
+   "question": "Những thủ tục nào thuộc lĩnh vực Hộ tịch nộp trực tuyến được?",
+   "gold": {
+    "names": [
+     "Cấp bản sao Trích lục hộ tịch, bản sao Giấy khai sinh",
+     "Thủ tục cấp Giấy xác nhận tình trạng hôn nhân",
+     "Thủ tục ghi vào Sổ hộ tịch việc hộ tịch khác của công dân Việt Nam đã được giải quyết tại cơ quan có thẩm quyền của nước ngoài (khai sinh; giám hộ; nhận cha, mẹ, con; xác định cha, mẹ, con; nuôi con nuôi; khai tử; thay đổi hộ tịch)",
+     "Thủ tục ghi vào Sổ hộ tịch việc kết hôn của công dân Việt Nam đã được giải quyết tại cơ quan có thẩm quyền của nước ngoài",
+     "Thủ tục ghi vào Sổ hộ tịch việc ly hôn, hủy việc kết hôn của công dân Việt Nam đã được giải quyết tại cơ quan có thẩm quyền của nước ngoài",
+     "Thủ tục thay đổi, cải chính, bổ sung thông tin hộ tịch, xác định lại dân tộc",
+     "Thủ tục thay đổi, cải chính, bổ sung thông tin hộ tịch, xác định lại dân tộc có yếu tố nước ngoài",
+     "Thủ tục xác nhận thông tin hộ tịch",
+     "Thủ tục đăng ký chấm dứt giám hộ",
+     "Thủ tục đăng ký chấm dứt giám hộ có yếu tố nước ngoài",
+     "Thủ tục đăng ký giám hộ",
+     "Thủ tục đăng ký giám hộ có yếu tố nước ngoài",
+     "Thủ tục đăng ký khai sinh",
+     "Thủ tục đăng ký khai sinh cho người đã có hồ sơ, giấy tờ cá nhân",
+     "Thủ tục đăng ký khai sinh có yếu tố nước ngoài",
+     "Thủ tục đăng ký khai sinh có yếu tố nước ngoài cho người đã có hồ sơ, giấy tờ cá nhân",
+     "Thủ tục đăng ký khai sinh có yếu tố nước ngoài tại khu vực biên giới",
+     "Thủ tục đăng ký khai sinh kết hợp đăng ký nhận cha, mẹ, con",
+     "Thủ tục đăng ký khai sinh kết hợp đăng ký nhận cha, mẹ, con có yếu tố nước ngoài",
+     "Thủ tục đăng ký khai tử",
+     "Thủ tục đăng ký khai tử có yếu tố nước ngoài",
+     "Thủ tục đăng ký khai tử có yếu tố nước ngoài tại khu vực biên giới",
+     "Thủ tục đăng ký kết hôn",
+     "Thủ tục đăng ký kết hôn có yếu tố nước ngoài",
+     "Thủ tục đăng ký kết hôn có yếu tố nước ngoài tại khu vực biên giới",
+     "Thủ tục đăng ký lại khai sinh",
+     "Thủ tục đăng ký lại khai sinh có yếu tố nước ngoài",
+     "Thủ tục đăng ký lại khai tử có yếu tố nước ngoài",
+     "Thủ tục đăng ký lại kết hôn",
+     "Thủ tục đăng ký lại kết hôn có yếu tố nước ngoài",
+     "Thủ tục đăng ký nhận cha, mẹ, con",
+     "Thủ tục đăng ký nhận cha, mẹ, con có yếu tố nước ngoài",
+     "Thủ tục đăng ký nhận cha, mẹ, con có yếu tố nước ngoài tại khu vực biên giới",
+     "Đăng ký chấm dứt giám sát việc giám hộ",
+     "Đăng ký giám sát việc giám hộ",
+     "Đăng ký lại khai tử"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Hộ tịch' AND online = 1 ORDER BY name",
+   "tries": 1,
+   "got": 36,
+   "ms": 646
+  },
+  {
+   "id": "ls-026",
+   "split": "dev",
+   "kind": "list_domain_online",
+   "question": "Những thủ tục nào thuộc lĩnh vực Đất đai nộp trực tuyến được?",
+   "gold": {
+    "names": [
+     "Chuyển hình thức giao đất, cho thuê đất.",
+     "Giao đất ở có thu tiền sử dụng đất không thông qua đấu giá, không đấu thầu lựa chọn nhà đầu tư thực hiện dự án có sử dụng đất đối với cá nhân là cán bộ, công chức, viên chức, sĩ quan tại ngũ, quân nhân chuyên nghiệp, công chức quốc phòng, công nhân và viên chức quốc phòng, sĩ quan, hạ sĩ quan, công nhân công an, người làm công tác cơ yếu và người làm công tác khác trong tổ chức cơ yếu hưởng lương từ ngân sách nhà nước mà chưa được giao đất ở, nhà ở; giáo viên, nhân viên y tế đang công tác tại các xã biên giới, hải đảo thuộc vùng có điều kiện kinh tế - xã hội khó khăn, vùng có điều kiện kinh tế - xã hội đặc biệt khó khăn nhưng chưa có đất ở, nhà ở tại nơi công tác hoặc chưa được hưởng chính sách hỗ trợ về nhà ở theo quy định của pháp luật về nhà ở; cá nhân thường trú tại xã mà không có đất ở và chưa được Nhà nước giao đất ở hoặc chưa được hưởng chính sách hỗ trợ về nhà ở theo quy định của pháp luật về nhà ở",
+     "Giao đất, cho thuê đất, chuyển mục đích sử dụng đất đối với trường hợp giao đất, cho thuê đất không đấu giá quyền sử dụng đất, không đấu thầu lựa chọn nhà đầu tư thực hiện dự án có sử dụng đất; trường hợp giao đất, cho thuê đất thông qua đấu thầu lựa chọn nhà đầu tư thực hiện dự án có sử dụng đất; giao đất và giao rừng; cho thuê đất và cho thuê rừng, gia hạn sử dụng đất khi hết thời hạn sử dụng đất",
+     "Giao đất, cho thuê đất, giao khu vực biển để thực hiện hoạt động lấn biển.",
+     "Giải quyết tranh chấp đất đai thuộc thẩm quyền của Chủ tịch Ủy ban nhân dân cấp xã",
+     "Sử dụng đất kết hợp đa mục đích, gia hạn phương án sử dụng đất kết hợp đa mục đích.",
+     "Thu hồi Giấy chứng nhận đã cấp lần đầu không đúng quy định của pháp luật đất đai do người sử dụng đất, chủ sở hữu tài sản gắn liền với đất phát hiện và cấp lại Giấy chứng nhận sau khi thu hồi",
+     "Tặng cho quyền sử dụng đất cho Nhà nước hoặc cộng đồng dân cư hoặc mở rộng đường giao thông đối với trường hợp thửa đất chưa được cấp Giấy chứng nhận",
+     "Tổ chức kinh tế nhận chuyển nhượng, thuê quyền sử dụng đất, nhận góp vốn bằng quyền sử dụng đất để thực hiện dự án đầu tư.",
+     "Xác định lại diện tích đất ở của hộ gia đình, cá nhân đã được cấp Giấy chứng nhận trước ngày 01 tháng 7 năm 2004",
+     "Xóa đăng ký thuê, cho thuê lại quyền sử dụng đất trong dự án xây dựng kinh doanh kết cấu hạ tầng",
+     "Điều chỉnh quyết định giao đất, cho thuê đất, cho phép chuyển mục đích sử dụng đất do sai sót về ranh giới, vị trí, diện tích, mục đích sử dụng giữa bản đồ quy hoạch, bản đồ địa chính, quyết định giao đất, cho thuê đất, cho phép chuyển mục đích sử dụng đất và số liệu bàn giao đất trên thực địa",
+     "Điều chỉnh quyết định giao đất, cho thuê đất, cho phép chuyển mục đích sử dụng đất do thay đổi căn cứ quyết định giao đất, cho thuê đất, cho phép chuyển mục đích sử dụng đất; điều chỉnh thời hạn sử dụng đất của dự án đầu tư.",
+     "Đính chính Giấy chứng nhận đã cấp lần đầu có sai sót",
+     "Đăng ký đất đai, tài sản gắn liền với đất, cấp Giấy chứng nhận quyền sử dụng đất, quyền sở hữu tài sản gắn liền với đất lần đầu đối với hộ gia đình, cá nhân, cộng đồng dân cư, người gốc Việt Nam định cư ở nước ngoài",
+     "Đăng ký đất đai, tài sản gắn liền với đất, cấp Giấy chứng nhận quyền sử dụng đất, quyền sở hữu tài sản gắn liền với đất lần đầu đối với tổ chức đang sử dụng đất"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Đất đai' AND online = 1 ORDER BY name",
+   "tries": 1,
+   "got": 16,
+   "ms": 648
+  },
+  {
+   "id": "ls-028",
+   "split": "dev",
+   "kind": "list_domain",
+   "question": "Liệt kê các thủ tục thuộc lĩnh vực Đăng ký, quản lý cư trú.",
+   "gold": {
+    "names": [
+     "Khai báo thông tin về cư trú đối với người chưa đủ điều kiện đăng ký thường trú, đăng ký tạm trú",
+     "Khai báo tạm vắng",
+     "Thông báo lưu trú",
+     "Xác nhận nơi thường xuyên đậu, đỗ; sử dụng phương tiện vào mục đích để ở",
+     "Xác nhận thông tin về cư trú",
+     "Xác nhận về điều kiện diện tích bình quân nhà ở để đăng ký thường trú vào chỗ ở do thuê, mượn, ở nhờ; nhà ở, đất ở không có tranh chấp quyền sở hữu nhà ở, quyền sử dụng đất ở, không thuộc địa điểm không được đăng ký thường trú mới",
+     "Đăng ký thường trú",
+     "Đăng ký tạm trú"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Đăng ký, quản lý cư trú' ORDER BY name",
+   "tries": 1,
+   "got": 8,
+   "ms": 637
+  },
+  {
+   "id": "ls-030",
+   "split": "dev",
+   "kind": "list_kw",
+   "question": "Những thủ tục nào có chữ \"giám hộ\" trong tên?",
+   "gold": {
+    "names": [
+     "Thủ tục ghi vào Sổ hộ tịch việc hộ tịch khác của công dân Việt Nam đã được giải quyết tại cơ quan có thẩm quyền của nước ngoài (khai sinh; giám hộ; nhận cha, mẹ, con; xác định cha, mẹ, con; nuôi con nuôi; khai tử; thay đổi hộ tịch)",
+     "Thủ tục đăng ký chấm dứt giám hộ",
+     "Thủ tục đăng ký chấm dứt giám hộ có yếu tố nước ngoài",
+     "Thủ tục đăng ký giám hộ",
+     "Thủ tục đăng ký giám hộ có yếu tố nước ngoài",
+     "Đăng ký chấm dứt giám sát việc giám hộ",
+     "Đăng ký giám sát việc giám hộ",
+     "Đề nghị miễn, giảm học phí trong cơ sở giáo dục nghề nghiệp, cơ sở giáo dục đại học tư thục và cơ sở giáo dục nghề nghiệp, cơ sở giáo dục đại học thuộc tổ chức kinh tế, doanh nghiệp nhà nước"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE name LIKE '%giám hộ%'}",
+   "tries": 1,
+   "got": 8,
+   "ms": 459
+  },
+  {
+   "id": "ls-032",
+   "split": "dev",
+   "kind": "list_domain_online",
+   "question": "Những thủ tục nào thuộc lĩnh vực Thực hiện chính sách BHXH nộp trực tuyến được?",
+   "gold": {
+    "names": [
+     "Giải quyết hưởng BHXH một lần",
+     "Giải quyết hưởng chế độ TNLĐ, BNN do thương tật, bệnh tật tái phát",
+     "Giải quyết hưởng chế độ TNLĐ, BNN đối với trường hợp bị TNLĐ, BNN lần đầu",
+     "Giải quyết hưởng chế độ TNLĐ, BNN đối với trường hợp đã bị TNLĐ, BNN, nay tiếp tục bị TNLĐ hoặc BNN",
+     "Giải quyết hưởng chế độ thai sản",
+     "Giải quyết hưởng chế độ tử tuất và truy lĩnh các chế độ BHXH, BHTN của người hưởng đã chết nhưng còn chế độ chưa nhận",
+     "Giải quyết hưởng chế độ ốm đau, thai sản, trợ cấp dưỡng sức phục hồi sức khỏe sau ốm đau, thai sản, TNLĐ, BNN",
+     "Giải quyết hưởng lương hưu; trợ cấp hằng tháng đối với cán bộ xã",
+     "Giải quyết hưởng trợ cấp hằng tháng theo Quyết định số 613/QĐ-TTg",
+     "Giải quyết hưởng trợ cấp một lần đối với người đang hưởng lương hưu, trợ cấp BHXH hằng tháng ra nước ngoài để định cư",
+     "Giải quyết hưởng trợ cấp đối với nhà giáo đã nghỉ hưu chưa được hưởng chế độ phụ cấp thâm niên trong lương hưu theo Nghị định số 14/2020/NĐ-CP",
+     "Giải quyết điều chỉnh, tạm dừng, hủy quyết định, chấm dứt hưởng, hưởng tiếp BHXH; thôi hưởng trợ cấp tuất hằng tháng đối với người đang hưởng trợ cấp tuất hằng tháng chết mà thuộc đối tượng được hưởng hỗ trợ chi phí mai táng",
+     "Thay đổi hình thức nhận, nơi nhận lương hưu, trợ cấp BHXH hằng tháng"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Thực hiện chính sách BHXH' AND online = 1 ORDER BY name",
+   "tries": 1,
+   "got": 13,
+   "ms": 729
+  },
+  {
+   "id": "ls-034",
+   "split": "dev",
+   "kind": "list_domain_days",
+   "question": "Liệt kê các thủ tục lĩnh vực Hàng hải và đường thủy nội địa giải quyết trong vòng 4 ngày",
+   "gold": {
+    "names": [
+     "Cho ý kiến về sự phù hợp quy hoạch và thông số kỹ thuật xây dựng bến thủy nội địa",
+     "Chấp thuận phương án bảo đảm an toàn giao thông đường thủy nội địa",
+     "Công bố mở bến thủy nội địa, bến khách ngang sông, kết cấu hạ tầng đường thủy nội địa phục vụ thi công công trình, dự án và bến dân sinh",
+     "Cấp lại Giấy chứng nhận đăng ký phương tiện",
+     "Cấp lại Giấy chứng nhận đăng ký phương tiện hoạt động vui chơi, giải trí dưới nước",
+     "Xác nhận trình báo đường thủy nội địa hoặc trình báo đường thủy nội địa bổ sung",
+     "Xác nhận việc trình kháng nghị hàng hải",
+     "Xóa đăng ký phương tiện",
+     "Xóa đăng ký phương tiện hoạt động vui chơi, giải trí dưới nước",
+     "Đóng, không cho phép hoạt động tại vùng nước khác không thuộc vùng nước trên tuyến đường thủy nội địa, vùng nước cảng biển hoặc khu vực hàng hải, được đánh dấu, xác định vị trí bằng phao hoặc cờ hiệu có màu sắc dễ quan sát",
+     "Đăng ký lại phương tiện hoạt động vui chơi, giải trí dưới nước",
+     "Đăng ký lại phương tiện trong trường hợp chuyển quyền sở hữu phương tiện nhưng không thay đổi cơ quan đăng ký phương tiện",
+     "Đăng ký lại phương tiện trong trường hợp chuyển quyền sở hữu phương tiện đồng thời thay đổi cơ quan đăng ký phương tiện",
+     "Đăng ký lại phương tiện trong trường hợp chuyển từ cơ quan đăng ký khác sang cơ quan đăng ký phương tiện thủy nội địa",
+     "Đăng ký lại phương tiện trong trường hợp chủ phương tiện thay đổi trụ sở hoặc nơi đăng ký hộ khẩu thường trú của chủ phương tiện sang đơn vị hành chính cấp tỉnh khác",
+     "Đăng ký lại phương tiện trong trường hợp phương tiện thay đổi tên, tính năng kỹ thuật",
+     "Đăng ký phương tiện hoạt động vui chơi, giải trí dưới nước lần đầu",
+     "Đăng ký phương tiện lần đầu đối với phương tiện chưa khai thác trên đường thủy nội địa",
+     "Đăng ký phương tiện lần đầu đối với phương tiện đang khai thác trên đường thủy nội địa"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Hàng hải và đường thủy nội địa' AND days_max <= 4 ORDER BY name",
+   "tries": 1,
+   "got": 19,
+   "ms": 761
+  },
+  {
+   "id": "ls-036",
+   "split": "dev",
+   "kind": "list_domain",
+   "question": "Liệt kê các thủ tục thuộc lĩnh vực Thủy lợi.",
+   "gold": {
+    "names": [
+     "Cấp gia hạn, điều chỉnh nội dung giấy phép cho các hoạt động trong phạm vi bảo vệ công trình thủy lợi đối với hoạt động: du lịch, thể thao, nghiên cứu khoa học, kinh doanh, dịch vụ do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp gia hạn, điều chỉnh nội dung giấy phép cho các hoạt động trong phạm vi bảo vệ công trình thủy lợi: Nuôi trồng thủy sản; Nổ mìn và các hoạt động gây nổ khác do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp gia hạn, điều chỉnh nội dung giấy phép cho các hoạt động trong phạm vi bảo vệ công trình thủy lợi: Trồng cây lâu năm; Hoạt động của phương tiện thủy nội địa, phương tiện cơ giới, trừ xe mô tô, xe gắn máy, phương tiện thủy nội địa thô sơ do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp gia hạn, điều chỉnh nội dung giấy phép cho các hoạt động trong phạm vi bảo vệ công trình thủy lợi: Xây dựng công trình mới; Lập bến, bãi tập kết nguyên liệu, nhiên liệu, vật liệu, vật tư, phương tiện; Xây dựng công trình ngầm do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp giấy phép cho các hoạt động trong phạm vi bảo vệ công trình thủy lợi đối với hoạt động du lịch, thể thao, nghiên cứu khoa học, kinh doanh, dịch vụ do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp giấy phép cho các hoạt động trong phạm vi bảo vệ công trình thủy lợi: Xây dựng công trình mới; Lập bến, bãi tập kết nguyên liệu, nhiên liệu, vật tư, phương tiện; Xây dựng công trình ngầm do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp giấy phép cho các hoạt động trồng cây lâu năm trong phạm vi bảo vệ công trình thủy lợi do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp giấy phép hoạt động của phương tiện thủy nội địa, phương tiện cơ giới, trừ xe mô tô, xe gắn máy, phương tiện thủy nội địa thô sơ trong phạm vi bảo vệ công trình thủy lợi do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp giấy phép nuôi trồng thủy sản trong phạm vi bảo vệ công trình thủy lợi do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp giấy phép nổ mìn và các hoạt động gây nổ khác trong phạm vi bảo vệ công trình thủy lợi do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Hỗ trợ đầu tư xây dựng phát triển thủy lợi nhỏ, thuỷ lợi nội đồng và tưới tiên tiến, tiết kiệm nước (Đối với nguồn vốn hỗ trợ trực tiếp, ngân sách địa phương và nguồn vốn hợp pháp khác của địa phương phân bổ dự toán cho UBND cấp xã thực hiện)",
+     "Phê duyệt phương án bảo vệ công trình thủy lợi do Chủ tịch Ủy ban nhân dân cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Phê duyệt đề cương, kết quả kiểm định an toàn đập, hồ chứa thủy lợi thuộc thẩm quyền của Chủ tịch UBND cấp xã",
+     "Phê duyệt, công bố công khai quy trình vận hành hồ chứa thủy lợi thuộc thẩm quyền của Chủ tịch UBND cấp xã",
+     "Thẩm định quy trình vận hành đối với công trình thủy lợi lớn và công trình thủy lợi vừa do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã phê duyệt",
+     "Thẩm định, phê duyệt phương án ứng phó thiên tai cho công trình, vùng hạ du đập trong quá trình thi công thuộc thẩm quyền của UBND cấp xã",
+     "Thẩm định, phê duyệt phương án ứng phó với tình huống khẩn cấp thuộc thẩm quyền của UBND cấp xã"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Thủy lợi' ORDER BY name",
+   "tries": 1,
+   "got": 17,
+   "ms": 505
+  },
+  {
+   "id": "ls-038",
+   "split": "dev",
+   "kind": "count_domain",
+   "question": "Đếm giúp mình số thủ tục lĩnh vực Chứng thực",
+   "gold": {
+    "count": 12
+   },
+   "ok": true,
+   "sql": "SELECT COUNT(*) FROM proc_flat WHERE domain = 'Chứng thực'",
+   "tries": 1,
+   "got": 12,
+   "ms": 459
+  },
+  {
+   "id": "ls-040",
+   "split": "dev",
+   "kind": "list_kw",
+   "question": "Những thủ tục nào có chữ \"thường trú\" trong tên?",
+   "gold": {
+    "names": [
+     "Cấp giấy thông hành biên giới Việt Nam – Lào cho công dân Việt Nam có hộ khẩu thường trú ở tỉnh có chung đường biên giới với Lào (thực hiện tại cấp xã)",
+     "Cấp giấy thông hành xuất, nhập cảnh vùng biên giới Việt Nam – Trung Quốc cho công dân Việt Nam thường trú tại đơn vị hành chính cấp xã tiếp giáp đường biên giới Việt Nam – Trung Quốc",
+     "Cấp giấy xác nhận công dân Việt Nam thường trú ở khu vực biên giới đủ điều kiện nhận trẻ em của nước láng giềng cư trú ở khu vực biên giới làm con nuôi",
+     "Giao đất ở có thu tiền sử dụng đất không thông qua đấu giá, không đấu thầu lựa chọn nhà đầu tư thực hiện dự án có sử dụng đất đối với cá nhân là cán bộ, công chức, viên chức, sĩ quan tại ngũ, quân nhân chuyên nghiệp, công chức quốc phòng, công nhân và viên chức quốc phòng, sĩ quan, hạ sĩ quan, công nhân công an, người làm công tác cơ yếu và người làm công tác khác trong tổ chức cơ yếu hưởng lương từ ngân sách nhà nước mà chưa được giao đất ở, nhà ở; giáo viên, nhân viên y tế đang công tác tại các xã biên giới, hải đảo thuộc vùng có điều kiện kinh tế - xã hội khó khăn, vùng có điều kiện kinh tế - xã hội đặc biệt khó khăn nhưng chưa có đất ở, nhà ở tại nơi công tác hoặc chưa được hưởng chính sách hỗ trợ về nhà ở theo quy định của pháp luật về nhà ở; cá nhân thường trú tại xã mà không có đất ở và chưa được Nhà nước giao đất ở hoặc chưa được hưởng chính sách hỗ trợ về nhà ở theo quy định của pháp luật về nhà ở",
+     "Khai báo thông tin về cư trú đối với người chưa đủ điều kiện đăng ký thường trú, đăng ký tạm trú",
+     "Liên thông điện tử: Đăng ký khai tử, xóa đăng ký thường trú, giải quyết mai táng phí, tử tuất",
+     "Liên thông điện tử: đăng ký khai sinh, đăng ký thường trú, cấp thẻ bảo hiểm y tế, cấp thẻ căn cước cho trẻ em dưới 6 tuổi",
+     "Xác nhận về điều kiện diện tích bình quân nhà ở để đăng ký thường trú vào chỗ ở do thuê, mượn, ở nhờ; nhà ở, đất ở không có tranh chấp quyền sở hữu nhà ở, quyền sử dụng đất ở, không thuộc địa điểm không được đăng ký thường trú mới",
+     "Đăng ký lại phương tiện trong trường hợp chủ phương tiện thay đổi trụ sở hoặc nơi đăng ký hộ khẩu thường trú của chủ phương tiện sang đơn vị hành chính cấp tỉnh khác",
+     "Đăng ký thường trú"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE name LIKE '%thường trú%'}",
+   "tries": 1,
+   "got": 10,
+   "ms": 467
+  },
+  {
+   "id": "ls-042",
+   "split": "dev",
+   "kind": "list_domain_days",
+   "question": "Liệt kê các thủ tục lĩnh vực Quản lý nhà nước về hội, quỹ giải quyết trong vòng 45 ngày",
+   "gold": {
+    "names": [
+     "Báo cáo tổ chức đại hội thành lập, đại hội nhiệm kỳ, đại hội bất thường của hội",
+     "Cho phép hội hoạt động trở lại sau khi bị đình chỉ có thời hạn",
+     "Công nhận ban vận động thành lập hội",
+     "Hỗ trợ chi phí y tế và thu nhập thực tế bị mất hoặc giảm sút cho người đang trực tiếp tham gia hoạt động chữ thập đỏ bị tai nạn dẫn đến thiệt hại về sức khỏe",
+     "Hội tự giải thể",
+     "THỦ TỤC CHO PHÉP QUỸ HOẠT ĐỘNG TRỞ LẠI SAU KHI BỊ ĐÌNH CHỈ CÓ THỜI HẠN HOẠT ĐỘNG (Cấp xã)",
+     "THỦ TỤC CÔNG NHẬN QUỸ ĐỦ ĐIỀU KIỆN HOẠT ĐỘNG VÀ CÔNG NHẬN HỘI ĐỒNG QUẢN LÝ QUỸ; CÔNG NHẬN HỘI ĐỒNG QUẢN LÝ QUỸ KHI THAY ĐỔI, BỔ SUNG THÀNH VIÊN HOẶC HẾT NHIỆM KỲ (Cấp xã)",
+     "THỦ TỤC CÔNG NHẬN ĐIỀU LỆ (SỬA ĐỔI, BỔ SUNG) QUỸ; ĐỔI TÊN QUỸ (Cấp xã)",
+     "THỦ TỤC CẤP GIẤY PHÉP THÀNH LẬP VÀ CÔNG NHẬN ĐIỀU LỆ QUỸ (Cấp xã)",
+     "THỦ TỤC HỢP NHẤT, SÁP NHẬP, CHIA, TÁCH QUỸ (Cấp xã)"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Quản lý nhà nước về hội, quỹ' AND days_max <= 45 ORDER BY name",
+   "tries": 1,
+   "got": 10,
+   "ms": 840
+  },
+  {
+   "id": "ls-044",
+   "split": "dev",
+   "kind": "list_domain_online",
+   "question": "Những thủ tục nào thuộc lĩnh vực Hàng hải và đường thủy nội địa nộp trực tuyến được?",
+   "gold": {
+    "names": [
+     "Cho ý kiến về sự phù hợp quy hoạch và thông số kỹ thuật xây dựng bến thủy nội địa",
+     "Cho ý kiến về thông số kỹ thuật xây dựng bến khách ngang sông, kết cấu hạ tầng đường thủy nội địa phục vụ thi công công trình, dự án và bến dân sinh",
+     "Chấp thuận phương án bảo đảm an toàn giao thông đường thủy nội địa",
+     "Công bố mở bến thủy nội địa, bến khách ngang sông, kết cấu hạ tầng đường thủy nội địa phục vụ thi công công trình, dự án và bến dân sinh",
+     "Công bố mở, cho phép hoạt động tại vùng nước khác không thuộc vùng nước trên tuyến đường thủy nội địa, vùng nước cảng biển hoặc khu vực hàng hải, được đánh dấu, xác định vị trí bằng phao hoặc cờ hiệu có màu sắc dễ quan sát",
+     "Công bố đóng cảng, bến thủy nội địa, khu neo đậu",
+     "Cấp lại Giấy chứng nhận đăng ký phương tiện",
+     "Cấp lại Giấy chứng nhận đăng ký phương tiện hoạt động vui chơi, giải trí dưới nước",
+     "Xóa đăng ký phương tiện",
+     "Xóa đăng ký phương tiện hoạt động vui chơi, giải trí dưới nước",
+     "Đóng, không cho phép hoạt động tại vùng nước khác không thuộc vùng nước trên tuyến đường thủy nội địa, vùng nước cảng biển hoặc khu vực hàng hải, được đánh dấu, xác định vị trí bằng phao hoặc cờ hiệu có màu sắc dễ quan sát",
+     "Đăng ký lại phương tiện hoạt động vui chơi, giải trí dưới nước",
+     "Đăng ký lại phương tiện trong trường hợp chuyển quyền sở hữu phương tiện nhưng không thay đổi cơ quan đăng ký phương tiện",
+     "Đăng ký lại phương tiện trong trường hợp chuyển quyền sở hữu phương tiện đồng thời thay đổi cơ quan đăng ký phương tiện",
+     "Đăng ký lại phương tiện trong trường hợp chuyển từ cơ quan đăng ký khác sang cơ quan đăng ký phương tiện thủy nội địa",
+     "Đăng ký lại phương tiện trong trường hợp chủ phương tiện thay đổi trụ sở hoặc nơi đăng ký hộ khẩu thường trú của chủ phương tiện sang đơn vị hành chính cấp tỉnh khác",
+     "Đăng ký lại phương tiện trong trường hợp phương tiện thay đổi tên, tính năng kỹ thuật",
+     "Đăng ký phương tiện hoạt động vui chơi, giải trí dưới nước lần đầu",
+     "Đăng ký phương tiện lần đầu đối với phương tiện chưa khai thác trên đường thủy nội địa",
+     "Đăng ký phương tiện lần đầu đối với phương tiện đang khai thác trên đường thủy nội địa"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Hàng hải và đường thủy nội địa' AND online = 1 ORDER BY name",
+   "tries": 1,
+   "got": 20,
+   "ms": 739
+  },
+  {
+   "id": "ls-046",
+   "split": "dev",
+   "kind": "list_domain",
+   "question": "Cho mình danh sách thủ tục lĩnh vực Hộ tịch",
+   "gold": {
+    "names": [
+     "Cấp bản sao Trích lục hộ tịch, bản sao Giấy khai sinh",
+     "Thủ tục cấp Giấy xác nhận tình trạng hôn nhân",
+     "Thủ tục ghi vào Sổ hộ tịch việc hộ tịch khác của công dân Việt Nam đã được giải quyết tại cơ quan có thẩm quyền của nước ngoài (khai sinh; giám hộ; nhận cha, mẹ, con; xác định cha, mẹ, con; nuôi con nuôi; khai tử; thay đổi hộ tịch)",
+     "Thủ tục ghi vào Sổ hộ tịch việc kết hôn của công dân Việt Nam đã được giải quyết tại cơ quan có thẩm quyền của nước ngoài",
+     "Thủ tục ghi vào Sổ hộ tịch việc ly hôn, hủy việc kết hôn của công dân Việt Nam đã được giải quyết tại cơ quan có thẩm quyền của nước ngoài",
+     "Thủ tục thay đổi, cải chính, bổ sung thông tin hộ tịch, xác định lại dân tộc",
+     "Thủ tục thay đổi, cải chính, bổ sung thông tin hộ tịch, xác định lại dân tộc có yếu tố nước ngoài",
+     "Thủ tục xác nhận thông tin hộ tịch",
+     "Thủ tục đăng ký chấm dứt giám hộ",
+     "Thủ tục đăng ký chấm dứt giám hộ có yếu tố nước ngoài",
+     "Thủ tục đăng ký giám hộ",
+     "Thủ tục đăng ký giám hộ có yếu tố nước ngoài",
+     "Thủ tục đăng ký khai sinh",
+     "Thủ tục đăng ký khai sinh cho người đã có hồ sơ, giấy tờ cá nhân",
+     "Thủ tục đăng ký khai sinh có yếu tố nước ngoài",
+     "Thủ tục đăng ký khai sinh có yếu tố nước ngoài cho người đã có hồ sơ, giấy tờ cá nhân",
+     "Thủ tục đăng ký khai sinh có yếu tố nước ngoài tại khu vực biên giới",
+     "Thủ tục đăng ký khai sinh kết hợp đăng ký nhận cha, mẹ, con",
+     "Thủ tục đăng ký khai sinh kết hợp đăng ký nhận cha, mẹ, con có yếu tố nước ngoài",
+     "Thủ tục đăng ký khai sinh lưu động",
+     "Thủ tục đăng ký khai tử",
+     "Thủ tục đăng ký khai tử có yếu tố nước ngoài",
+     "Thủ tục đăng ký khai tử có yếu tố nước ngoài tại khu vực biên giới",
+     "Thủ tục đăng ký khai tử lưu động",
+     "Thủ tục đăng ký kết hôn",
+     "Thủ tục đăng ký kết hôn có yếu tố nước ngoài",
+     "Thủ tục đăng ký kết hôn có yếu tố nước ngoài tại khu vực biên giới",
+     "Thủ tục đăng ký kết hôn lưu động",
+     "Thủ tục đăng ký lại khai sinh",
+     "Thủ tục đăng ký lại khai sinh có yếu tố nước ngoài",
+     "Thủ tục đăng ký lại khai tử có yếu tố nước ngoài",
+     "Thủ tục đăng ký lại kết hôn",
+     "Thủ tục đăng ký lại kết hôn có yếu tố nước ngoài",
+     "Thủ tục đăng ký nhận cha, mẹ, con",
+     "Thủ tục đăng ký nhận cha, mẹ, con có yếu tố nước ngoài",
+     "Thủ tục đăng ký nhận cha, mẹ, con có yếu tố nước ngoài tại khu vực biên giới",
+     "Đăng ký chấm dứt giám sát việc giám hộ",
+     "Đăng ký giám sát việc giám hộ",
+     "Đăng ký lại khai tử"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Hộ tịch' ORDER BY name",
+   "tries": 1,
+   "got": 39,
+   "ms": 501
+  },
+  {
+   "id": "ls-048",
+   "split": "dev",
+   "kind": "list_domain_online",
+   "question": "Những thủ tục nào thuộc lĩnh vực Thủy lợi nộp trực tuyến được?",
+   "gold": {
+    "names": [
+     "Cấp gia hạn, điều chỉnh nội dung giấy phép cho các hoạt động trong phạm vi bảo vệ công trình thủy lợi đối với hoạt động: du lịch, thể thao, nghiên cứu khoa học, kinh doanh, dịch vụ do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp gia hạn, điều chỉnh nội dung giấy phép cho các hoạt động trong phạm vi bảo vệ công trình thủy lợi: Nuôi trồng thủy sản; Nổ mìn và các hoạt động gây nổ khác do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp gia hạn, điều chỉnh nội dung giấy phép cho các hoạt động trong phạm vi bảo vệ công trình thủy lợi: Trồng cây lâu năm; Hoạt động của phương tiện thủy nội địa, phương tiện cơ giới, trừ xe mô tô, xe gắn máy, phương tiện thủy nội địa thô sơ do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp gia hạn, điều chỉnh nội dung giấy phép cho các hoạt động trong phạm vi bảo vệ công trình thủy lợi: Xây dựng công trình mới; Lập bến, bãi tập kết nguyên liệu, nhiên liệu, vật liệu, vật tư, phương tiện; Xây dựng công trình ngầm do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp giấy phép cho các hoạt động trong phạm vi bảo vệ công trình thủy lợi đối với hoạt động du lịch, thể thao, nghiên cứu khoa học, kinh doanh, dịch vụ do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp giấy phép cho các hoạt động trong phạm vi bảo vệ công trình thủy lợi: Xây dựng công trình mới; Lập bến, bãi tập kết nguyên liệu, nhiên liệu, vật tư, phương tiện; Xây dựng công trình ngầm do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp giấy phép cho các hoạt động trồng cây lâu năm trong phạm vi bảo vệ công trình thủy lợi do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp giấy phép hoạt động của phương tiện thủy nội địa, phương tiện cơ giới, trừ xe mô tô, xe gắn máy, phương tiện thủy nội địa thô sơ trong phạm vi bảo vệ công trình thủy lợi do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp giấy phép nuôi trồng thủy sản trong phạm vi bảo vệ công trình thủy lợi do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Cấp giấy phép nổ mìn và các hoạt động gây nổ khác trong phạm vi bảo vệ công trình thủy lợi do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Hỗ trợ đầu tư xây dựng phát triển thủy lợi nhỏ, thuỷ lợi nội đồng và tưới tiên tiến, tiết kiệm nước (Đối với nguồn vốn hỗ trợ trực tiếp, ngân sách địa phương và nguồn vốn hợp pháp khác của địa phương phân bổ dự toán cho UBND cấp xã thực hiện)",
+     "Phê duyệt phương án bảo vệ công trình thủy lợi do Chủ tịch Ủy ban nhân dân cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã",
+     "Phê duyệt đề cương, kết quả kiểm định an toàn đập, hồ chứa thủy lợi thuộc thẩm quyền của Chủ tịch UBND cấp xã",
+     "Phê duyệt, công bố công khai quy trình vận hành hồ chứa thủy lợi thuộc thẩm quyền của Chủ tịch UBND cấp xã",
+     "Thẩm định quy trình vận hành đối với công trình thủy lợi lớn và công trình thủy lợi vừa do Chủ tịch UBND cấp tỉnh phân cấp cho Chủ tịch UBND cấp xã phê duyệt",
+     "Thẩm định, phê duyệt phương án ứng phó thiên tai cho công trình, vùng hạ du đập trong quá trình thi công thuộc thẩm quyền của UBND cấp xã",
+     "Thẩm định, phê duyệt phương án ứng phó với tình huống khẩn cấp thuộc thẩm quyền của UBND cấp xã"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Thủy lợi' AND online = 1 ORDER BY name",
+   "tries": 1,
+   "got": 17,
+   "ms": 642
+  },
+  {
+   "id": "ls-050",
+   "split": "dev",
+   "kind": "list_domain",
+   "question": "Lĩnh vực Chứng thực có những thủ tục nào?",
+   "gold": {
+    "names": [
+     "Chứng thực bản sao từ bản chính giấy tờ, văn bản do cơ quan, tổ chức có thẩm quyền của Việt Nam; cơ quan, tổ chức có thẩm quyền của nước ngoài; cơ quan, tổ chức có thẩm quyền của Việt Nam liên kết với cơ quan, tổ chức có thẩm quyền của nước ngoài cấp hoặc chứng nhận",
+     "Chứng thực chữ ký người dịch mà người dịch không phải là cộng tác viên dịch thuật của Ủy ban nhân dân cấp xã, tổ chức hành nghề công chứng",
+     "Chứng thực chữ ký người dịch mà người dịch là cộng tác viên dịch thuật của Ủy ban nhân dân cấp xã, tổ chức hành nghề công chứng",
+     "Chứng thực chữ ký trong các giấy tờ, văn bản (áp dụng cho cả trường hợp chứng thực điểm chỉ và trường hợp người yêu cầu chứng thực không thể ký, không thể điểm chỉ được)",
+     "Chứng thực di chúc",
+     "Chứng thực giao dịch liên quan đến tài sản là động sản, quyền sử dụng đất, nhà ở",
+     "Chứng thực việc sửa đổi, bổ sung, hủy bỏ giao dịch",
+     "Chứng thực văn bản phân chia di sản mà di sản là động sản, quyền sử dụng đất, nhà ở",
+     "Chứng thực văn bản từ chối nhận di sản",
+     "Cấp bản sao có chứng thực từ bản chính giao dịch đã được chứng thực",
+     "Sửa lỗi sai sót trong giao dịch",
+     "Thủ tục cấp bản sao từ sổ gốc"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Chứng thực' ORDER BY name",
+   "tries": 1,
+   "got": 12,
+   "ms": 509
+  },
+  {
+   "id": "ls-052",
+   "split": "dev",
+   "kind": "list_domain",
+   "question": "Liệt kê các thủ tục thuộc lĩnh vực Tín ngưỡng, tôn giáo.",
+   "gold": {
+    "names": [
+     "THỦ TỤC ĐĂNG KÝ BỔ SUNG HOẠT ĐỘNG TÍN NGƯỠNG (CẤP XÃ)",
+     "THỦ TỤC ĐĂNG KÝ HOẠT ĐỘNG TÍN NGƯỠNG (CẤP XÃ)",
+     "THỦ TỤC ĐĂNG KÝ SINH HOẠT TÔN GIÁO TẬP TRUNG (CẤP XÃ)",
+     "THỦ TỤC ĐĂNG KÝ THAY ĐỔI NGƯỜI ĐẠI DIỆN CỦA NHÓM SINH HOẠT TÔN GIÁO TẬP TRUNG (CẤP XÃ)",
+     "THỦ TỤC ĐỀ NGHỊ GIẢNG ĐẠO NGOÀI ĐỊA BÀN PHỤ TRÁCH, CƠ SỞ TÔN GIÁO, ĐỊA ĐIỂM HỢP PHÁP ĐÃ ĐĂNG KÝ CÓ QUY MÔ TỔ CHỨC TRONG MỘT XÃ",
+     "THỦ TỤC ĐỀ NGHỊ THAY ĐỔI ĐỊA ĐIỂM SINH HOẠT TÔN GIÁO TẬP TRUNG TRONG ĐỊA BÀN MỘT XÃ (CẤP XÃ)",
+     "THỦ TỤC ĐỀ NGHỊ THAY ĐỔI ĐỊA ĐIỂM SINH HOẠT TÔN GIÁO TẬP TRUNG ĐẾN ĐỊA BÀN XÃ KHÁC (CẤP XÃ)",
+     "THỦ TỤC ĐỀ NGHỊ TỔ CHỨC CUỘC LỄ NGOÀI CƠ SỞ TÔN GIÁO, ĐỊA ĐIỂM HỢP PHÁP ĐÃ ĐĂNG KÝ CÓ QUY MÔ TỔ CHỨC Ở MỘT XÃ",
+     "THỦ TỤC ĐỀ NGHỊ TỔ CHỨC ĐẠI HỘI CỦA TỔ CHỨC TÔN GIÁO, TỔ CHỨC TÔN GIÁO TRỰC THUỘC, TỔ CHỨC ĐƯỢC CẤP CHỨNG NHẬN ĐĂNG KÝ HOẠT ĐỘNG TÔN GIÁO CÓ ĐỊA BÀN HOẠT ĐỘNG Ở MỘT XÃ"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Tín ngưỡng, tôn giáo' ORDER BY name",
+   "tries": 1,
+   "got": 9,
+   "ms": 635
+  },
+  {
+   "id": "ls-054",
+   "split": "dev",
+   "kind": "list_domain",
+   "question": "Liệt kê các thủ tục thuộc lĩnh vực Thành lập và hoạt động của tổ hợp tác, hợp tác xã, liên hiệp hợp tác xã.",
+   "gold": {
+    "names": [
+     "Chấm dứt hoạt động chi nhánh, văn phòng đại diện, địa điểm kinh doanh của hợp tác xã, liên hiệp hợp tác xã",
+     "Chấm dứt hoạt động tổ hợp tác",
+     "Cấp lại Giấy chứng nhận đăng ký tổ hợp tác/ Giấy chứng nhận đăng ký hợp tác xã/ Giấy chứng nhận đăng ký hoạt động chi nhánh, văn phòng đại diện/ Giấy chứng nhận đăng ký địa điểm kinh doanh của hợp tác xã, liên hiệp hợp tác xã do bị mất, cháy, rách, nát hoặc bị tiêu hủy",
+     "Cấp đổi Giấy chứng nhận đăng ký hợp tác xã, liên hiệp hợp tác xã",
+     "Dừng thực hiện thủ tục đăng ký tổ hợp tác, hợp tác xã, liên hiệp hợp tác xã; Dừng thực hiện thủ tục giải thể hợp tác xã, liên hiệp hợp tác xã",
+     "Hiệu đính, cập nhật, bổ sung thông tin đăng ký tổ hợp tác, hợp tác xã, liên hiệp hợp tác xã, chi nhánh, văn phòng đại diện, địa điểm kinh doanh của hợp tác xã, liên hiệp hợp tác xã",
+     "Thông báo bổ sung, cập nhật thông tin trong hồ sơ đăng ký hợp tác xã, liên hiệp hợp tác xã",
+     "Thông báo thay đổi nội dung đăng ký hợp tác xã, liên hiệp hợp tác xã; Thông báo thay đổi nội dung đăng ký đối với hợp tác xã, liên hiệp hợp tác xã bị tách, nhận sáp nhập; Thông báo thay đổi nội dung đăng ký hợp tác xã, liên hiệp hợp tác xã theo quyết định của Tòa án đã có hiệu lực pháp luật hoặc phán quyết của Trọng tài có hiệu lực",
+     "Thông báo tạm ngừng kinh doanh/ tiếp tục kinh doanh trở lại đối với tổ hợp tác, hợp tác xã, liên hiệp hợp tác xã, chi nhánh, văn phòng đại diện, địa điểm kinh doanh",
+     "Thông báo về việc thành lập doanh nghiệp của hợp tác xã, liên hiệp hợp tác xã",
+     "Thủ tục cấp Giấy chứng nhận đăng ký Quỹ hỗ trợ phát triển hợp tác xã (sau đây gọi tắt là Quỹ hợp tác xã) địa phương hoạt động theo mô hình hợp tác xã",
+     "Đăng ký giải thể hợp tác xã, liên hiệp hợp tác xã",
+     "Đăng ký hoạt động chi nhánh, văn phòng đại diện, thông báo địa điểm kinh doanh; Thông báo lập chi nhánh, văn phòng đại diện ở nước ngoài của hợp tác xã, liên hiệp hợp tác xã",
+     "Đăng ký thay đổi nội dung đăng ký hoạt động của chi nhánh, văn phòng đại diện, địa điểm kinh doanh của hợp tác xã, liên hiệp hợp tác xã",
+     "Đăng ký thay đổi nội dung đăng ký hợp tác xã, liên hiệp hợp tác xã; Đăng ký thay đổi nội dung đối với trường hợp hợp tác xã, liên hiệp hợp tác xã bị tách, nhận sáp nhập; Đăng ký thay đổi nội dung Giấy chứng nhận đăng ký hợp tác xã, liên hiệp hợp tác xã theo quyết định của Tòa án đã có hiệu lực pháp luật hoặc phán quyết của Trọng tài có hiệu lực",
+     "Đăng ký thay đổi nội dung đăng ký tổ hợp tác",
+     "Đăng ký thành lập hợp tác xã, liên hiệp hợp tác xã; đăng ký chuyển đổi tổ hợp tác thành hợp tác xã; đăng ký khi hợp tác xã, liên hiệp hợp tác xã chia, tách, hợp nhất",
+     "Đăng ký thành lập tổ hợp tác; đăng ký tổ hợp tác trong trường hợp đã được thành lập trước ngày Luật Hợp tác xã có hiệu lực thi hành, thuộc đối tượng phải đăng ký theo quy định tại khoản 2 Điều 107 Luật Hợp tác xã 2023",
+     "Đề nghị thay đổi tên tổ hợp tác, hợp tác xã, liên hiệp hợp tác xã, chi nhánh, văn phòng đại diện, địa điểm kinh doanh của hợp tác xã, liên hiệp hợp tác xã do xâm phạm quyền sở hữu công nghiệp.",
+     "Đề nghị thu hồi Giấy chứng nhận đăng ký tổ hợp tác, hợp tác xã, Giấy chứng nhận đăng ký chi nhánh, văn phòng đại diện đối với trường hợp nội dung kê khai trong hồ sơ đăng ký thành lập là giả mạo."
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Thành lập và hoạt động của tổ hợp tác, hợp tác xã, liên hiệp hợp tác xã' ORDER BY name",
+   "tries": 1,
+   "got": 20,
+   "ms": 891
+  },
+  {
+   "id": "ls-056",
+   "split": "dev",
+   "kind": "list_domain_days",
+   "question": "Liệt kê các thủ tục lĩnh vực Quản lý biên giới giải quyết trong vòng 2 ngày",
+   "gold": {
+    "names": [
+     "Thủ tục biên phòng cửa khẩu biên giới đất liền đối với công dân Việt Nam xuất, nhập cảnh",
+     "Thủ tục biên phòng cửa khẩu biên giới đất liền đối với người điều khiển, người đi trên phương tiện, phương tiện xuất cảnh, nhập cảnh",
+     "Thủ tục biên phòng cửa khẩu biên giới đất liền đối với Đoàn khách du lịch, Đoàn khách công vụ xuất cảnh, nhập cảnh",
+     "Thủ tục biên phòng đối với tàu biển Việt Nam hoạt động tuyến nội địa đến, rời cửa khẩu cảng",
+     "Thủ tục biên phòng đối với tàu cá Việt Nam, thuyền viên, hành khách đi trên tàu cá Việt Nam nhập cảnh, xuất cảnh đi khai thác thủy sản ở vùng biển ngoài vùng biển Việt Nam",
+     "Thủ tục biên phòng đối với tàu thuyền Việt Nam, tàu thuyền nước ngoài, thuyền viên, hành khách đi trên tàu thuyền Việt Nam, tàu thuyền nước ngoài nhập cảnh tại cửa khẩu cảng",
+     "Thủ tục biên phòng đối với tàu thuyền có trọng tải từ 200 tấn trở xuống, mang quốc tịch của quốc gia có chung biên giới với Việt Nam nhập cảnh, xuất cảnh tại cửa khẩu cảng thuộc khu vực biên giới của Việt Nam với quốc gia đó",
+     "Thủ tục biên phòng đối với tàu thuyền nhập cảnh, xuất cảnh tại cảng dầu khí ngoài khơi",
+     "Thủ tục biên đối với tàu thuyền buồm, tàu thuyền thể thao, du thuyền, người đi trên tàu thuyền buồm, tàu thuyền thể thao, du thuyền nhập cảnh, xuất cảnh, tại cửa khẩu cảng",
+     "Thủ tục nhập cảnh, xuất cảnh, chuyển cảng đối với tàu quân sự nước ngoài đến lãnh hải, khu vực nội thuỷ ngoài vùng nước cảng biển.",
+     "Thủ tục sửa đổi, bổ sung hồ sơ biên phòng cảng biển đối với tàu biển Việt Nam hoạt động tuyến nội địa đến, rời cửa khẩu cảng",
+     "Thủ tục sửa đổi, bổ sung hồ sơ biên phòng cửa khẩu biên giới đất liền"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Quản lý biên giới' AND days_max <= 2 ORDER BY name",
+   "tries": 1,
+   "got": 12,
+   "ms": 690
+  },
+  {
+   "id": "ls-058",
+   "split": "dev",
+   "kind": "count_domain",
+   "question": "Lĩnh vực Quản lý biên giới có mấy thủ tục?",
+   "gold": {
+    "count": 19
+   },
+   "ok": true,
+   "sql": "SELECT COUNT(*) FROM proc_flat WHERE domain = 'Quản lý biên giới'",
+   "tries": 1,
+   "got": 19,
+   "ms": 509
+  },
+  {
+   "id": "ls-060",
+   "split": "dev",
+   "kind": "count_domain",
+   "question": "Lĩnh vực Công chức, viên chức có mấy thủ tục?",
+   "gold": {
+    "count": 13
+   },
+   "ok": true,
+   "sql": "SELECT COUNT(*) FROM proc_flat WHERE domain = 'Công chức, viên chức'",
+   "tries": 1,
+   "got": 13,
+   "ms": 567
+  },
+  {
+   "id": "ls-062",
+   "split": "dev",
+   "kind": "list_domain_days",
+   "question": "Liệt kê các thủ tục lĩnh vực Người có công giải quyết trong vòng 24 ngày",
+   "gold": {
+    "names": [
+     "Bổ sung tình hình thân nhân trong hồ sơ liệt sĩ.",
+     "Công nhận và giải quyết chế độ người hoạt động cách mạng, kháng chiến, bảo vệ tổ quốc, làm nghĩa vụ quốc tế bị địch bắt tù, đày",
+     "Công nhận và giải quyết chế độ ưu đãi người hoạt động cách mạng",
+     "Công nhận và giải quyết chế độ ưu đãi người hoạt động cách mạng.",
+     "Cấp bổ sung hoặc cấp lại giấy chứng nhận người có công do ngành Lao động - Thương binh và Xã hội quản lý và giấy chứng nhận thân nhân liệt sĩ",
+     "Cấp giấy xác nhận thân nhân của người có công",
+     "Di chuyển hài cốt liệt sĩ đang an táng ngoài nghĩa trang liệt sĩ về an táng tại nghĩa trang liệt sĩ theo nguyện vọng của đại diện thân nhân hoặc người hưởng trợ cấp thờ cúng liệt sĩ",
+     "Di chuyển hài cốt liệt sĩ đang an táng tại nghĩa trang liệt sĩ đi nơi khác theo nguyện vọng của đại diện thân nhân hoặc người hưởng trợ cấp thờ cúng liệt sĩ",
+     "Giải quyết chế độ hỗ trợ để theo học đến trình độ đại học tại các cơ sở giáo dục thuộc hệ thống giáo dục quốc dân",
+     "Giải quyết chế độ mai táng phí đối với dân công hỏa tuyến tham gia kháng chiến chống Pháp, chống Mỹ, chiến tranh bảo vệ Tổ quốc và làm nhiệm vụ quốc tế",
+     "Giải quyết chế độ người có công giúp đỡ cách mạng.",
+     "Giải quyết chế độ người hoạt động kháng chiến giải phóng dân tộc, bảo vệ tổ quốc và làm nghĩa vụ quốc tế",
+     "Giải quyết chế độ trợ cấp một lần đối với người được cử làm chuyên gia sang giúp Lào, Căm-pu-chi-a",
+     "Giải quyết chế độ trợ cấp thờ cúng liệt sĩ.",
+     "Giải quyết chế độ trợ cấp ưu đãi đối với thân nhân liệt sĩ",
+     "Giải quyết chế độ ưu đãi đối với Anh hùng lực lượng vũ trang nhân dân, Anh hùng lao động trong thời kỳ kháng chiến hiện không công tác trong quân đội, công an",
+     "Giải quyết chế độ ưu đãi đối với trường hợp tặng hoặc truy tặng danh hiệu vinh dự nhà nước “Bà mẹ Việt Nam anh hùng\"",
+     "Giải quyết chế độ ưu đãi đối với vợ hoặc chồng liệt sĩ lấy chồng hoặc vợ khác",
+     "Giải quyết trợ cấp một lần đối với người có thành tích tham gia kháng chiến đã được tặng Bằng khen của Thủ tướng Chính phủ, Bằng khen của Chủ tịch Hội đồng Bộ trưởng hoặc Bằng khen của Bộ trưởng, Thủ trưởng cơ quan ngang bộ, Thủ trưởng cơ quan thuộc Chính phủ, Bằng khen của Chủ tịch Ủy ban nhân dân tỉnh, thành phố trực thuộc Trung ương",
+     "Hưởng trợ cấp khi người có công đang hưởng trợ cấp ưu đãi từ trần",
+     "Thăm viếng mộ liệt sĩ.",
+     "Tiếp nhận người có công vào cơ sở nuôi dưỡng, điều dưỡng người có công do Bộ Nội vụ quản lý",
+     "Tiếp nhận người có công vào cơ sở nuôi dưỡng, điều dưỡng người có công do tỉnh quản lý",
+     "Trợ cấp hàng tháng đối với thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến",
+     "Trợ cấp một lần đối với thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Người có công' AND days_max <= 24 ORDER BY name",
+   "tries": 1,
+   "got": 25,
+   "ms": 697
+  },
+  {
+   "id": "ls-064",
+   "split": "dev",
+   "kind": "list_domain",
+   "question": "Liệt kê các thủ tục thuộc lĩnh vực Người có công.",
+   "gold": {
+    "names": [
+     "Bổ sung tình hình thân nhân trong hồ sơ liệt sĩ.",
+     "Công nhận và giải quyết chế độ con đẻ của người hoạt động kháng chiến bị nhiễm chất độc hóa học",
+     "Công nhận và giải quyết chế độ người hoạt động cách mạng, kháng chiến, bảo vệ tổ quốc, làm nghĩa vụ quốc tế bị địch bắt tù, đày",
+     "Công nhận và giải quyết chế độ ưu đãi người hoạt động cách mạng",
+     "Công nhận và giải quyết chế độ ưu đãi người hoạt động cách mạng.",
+     "Công nhận và giải quyết chế độ ưu đãi người hoạt động kháng chiến bị nhiễm chất độc hóa học",
+     "Công nhận đối với người bị thương trong chiến tranh không thuộc quân đội, công an",
+     "Cấp Bằng “Tổ quốc ghi công”",
+     "Cấp Bằng “Tổ quốc ghi công” đối với người hy sinh hoặc mất tích trong chiến tranh",
+     "Cấp Bằng “Tổ quốc ghi công” đối với người hy sinh nhưng chưa được cấp Bằng “Tổ quốc ghi công” mà thân nhân đã được giải quyết chế độ ưu đãi từ ngày 31 tháng 12 năm 1994 trở về trước",
+     "Cấp Bằng “Tổ quốc ghi công” đối với người hy sinh thuộc các trường hợp quy định tại Điều 14 Pháp lệnh nhưng chưa được cấp Bằng “Tổ quốc ghi công” mà thân nhân đã được giải quyết chế độ ưu đãi từ ngày 01 tháng 01 năm 1995 đến ngày 30 tháng 9 năm 2006",
+     "Cấp bổ sung hoặc cấp lại giấy chứng nhận người có công do ngành Lao động - Thương binh và Xã hội quản lý và giấy chứng nhận thân nhân liệt sĩ",
+     "Cấp giấy xác nhận thân nhân của người có công",
+     "Cấp lại Bằng “Tổ quốc ghi công”",
+     "Cấp tiền mua phương tiện trợ giúp, dụng cụ chỉnh hình, phương tiện, thiết bị phục hồi chức năng đối với trường hợp đang sống tại gia đình hoặc đang được nuôi dưỡng tập trung tại các cơ sở nuôi dưỡng, điều dưỡng do địa phương quản lý",
+     "Cấp đổi Bằng “Tổ quốc ghi công”",
+     "Di chuyển hài cốt liệt sĩ đang an táng ngoài nghĩa trang liệt sĩ về an táng tại nghĩa trang liệt sĩ theo nguyện vọng của đại diện thân nhân hoặc người hưởng trợ cấp thờ cúng liệt sĩ",
+     "Di chuyển hài cốt liệt sĩ đang an táng tại nghĩa trang liệt sĩ đi nơi khác theo nguyện vọng của đại diện thân nhân hoặc người hưởng trợ cấp thờ cúng liệt sĩ",
+     "Giải quyết chế độ hỗ trợ để theo học đến trình độ đại học tại các cơ sở giáo dục thuộc hệ thống giáo dục quốc dân",
+     "Giải quyết chế độ mai táng phí đối với cựu chiến binh",
+     "Giải quyết chế độ mai táng phí đối với dân công hỏa tuyến tham gia kháng chiến chống Pháp, chống Mỹ, chiến tranh bảo vệ Tổ quốc và làm nhiệm vụ quốc tế",
+     "Giải quyết chế độ mai táng phí đối với thanh niên xung phong thời kỳ chống Pháp",
+     "Giải quyết chế độ người có công giúp đỡ cách mạng.",
+     "Giải quyết chế độ người hoạt động kháng chiến giải phóng dân tộc, bảo vệ tổ quốc và làm nghĩa vụ quốc tế",
+     "Giải quyết chế độ trợ cấp một lần đối với người được cử làm chuyên gia sang giúp Lào, Căm-pu-chi-a",
+     "Giải quyết chế độ trợ cấp thờ cúng liệt sĩ.",
+     "Giải quyết chế độ trợ cấp ưu đãi đối với thân nhân liệt sĩ",
+     "Giải quyết chế độ đối với quân nhân, cán bộ đi chiến trường B,C,K trong thời kỳ chống Mỹ cứu nước không có thân nhân phải trực tiếp nuôi dưỡng và quân nhân, cán bộ được đảng cử ở lại miền Nam hoạt động sau Hiệp định Giơnevơ năm 1954 đối với cán bộ, sỹ quan thuộc lực lượng vũ trang (công an, quân đội)",
+     "Giải quyết chế độ đối với quân nhân, cán bộ đi chiến trường B,C,K trong thời kỳ chống Mỹ cứu nước không có thân nhân phải trực tiếp nuôi dưỡng và quân nhân, cán bộ được đảng cử ở lại miền nam hoạt động sau hiệp định Giơnevơ năm 1954 đối với cán bộ dân, chính, đảng thuộc diện Trung ương quản lý",
+     "Giải quyết chế độ đối với quân nhân, cán bộ đi chiến trường B,C,K trong thời kỳ chống mỹ cứu nước không có thân nhân phải trực tiếp nuôi dưỡng và quân nhân, cán bộ được đảng cử ở lại miền nam hoạt động sau hiệp định Giơnevơ năm 1954 đối với cán bộ dân, chính, đảng",
+     "Giải quyết chế độ ưu đãi đối với Anh hùng lực lượng vũ trang nhân dân, Anh hùng lao động trong thời kỳ kháng chiến hiện không công tác trong quân đội, công an",
+     "Giải quyết chế độ ưu đãi đối với trường hợp tặng hoặc truy tặng danh hiệu vinh dự nhà nước “Bà mẹ Việt Nam anh hùng\"",
+     "Giải quyết chế độ ưu đãi đối với vợ hoặc chồng liệt sĩ lấy chồng hoặc vợ khác",
+     "Giải quyết trợ cấp một lần đối với người có thành tích tham gia kháng chiến đã được tặng Bằng khen của Thủ tướng Chính phủ, Bằng khen của Chủ tịch Hội đồng Bộ trưởng hoặc Bằng khen của Bộ trưởng, Thủ trưởng cơ quan ngang bộ, Thủ trưởng cơ quan thuộc Chính phủ, Bằng khen của Chủ tịch Ủy ban nhân dân tỉnh, thành phố trực thuộc Trung ương",
+     "Hưởng trợ cấp khi người có công đang hưởng trợ cấp ưu đãi từ trần",
+     "Thăm viếng mộ liệt sĩ.",
+     "Tiếp nhận người có công vào cơ sở nuôi dưỡng, điều dưỡng người có công do Bộ Nội vụ quản lý",
+     "Tiếp nhận người có công vào cơ sở nuôi dưỡng, điều dưỡng người có công do tỉnh quản lý",
+     "Trợ cấp hàng tháng đối với thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến",
+     "Trợ cấp một lần đối với thanh niên xung phong đã hoàn thành nhiệm vụ trong kháng chiến",
+     "Xác nhận và giải quyết chế độ ưu đãi người có công với cách mạng và thân nhân"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Người có công' ORDER BY name",
+   "tries": 1,
+   "got": 41,
+   "ms": 534
+  },
+  {
+   "id": "ls-066",
+   "split": "dev",
+   "kind": "list_kw",
+   "question": "Những thủ tục nào có chữ \"kết hôn\" trong tên?",
+   "gold": {
+    "names": [
+     "Thủ tục ghi vào Sổ hộ tịch việc kết hôn của công dân Việt Nam đã được giải quyết tại cơ quan có thẩm quyền của nước ngoài",
+     "Thủ tục ghi vào Sổ hộ tịch việc ly hôn, hủy việc kết hôn của công dân Việt Nam đã được giải quyết tại cơ quan có thẩm quyền của nước ngoài",
+     "Thủ tục đăng ký kết hôn",
+     "Thủ tục đăng ký kết hôn có yếu tố nước ngoài",
+     "Thủ tục đăng ký kết hôn có yếu tố nước ngoài tại khu vực biên giới",
+     "Thủ tục đăng ký kết hôn lưu động",
+     "Thủ tục đăng ký lại kết hôn",
+     "Thủ tục đăng ký lại kết hôn có yếu tố nước ngoài"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE name LIKE '%kết hôn%'",
+   "tries": 1,
+   "got": 8,
+   "ms": 446
+  },
+  {
+   "id": "ls-068",
+   "split": "dev",
+   "kind": "list_domain_days",
+   "question": "Liệt kê các thủ tục lĩnh vực Giáo dục và Đào tạo thuộc hệ thống giáo dục quốc dân giải quyết trong vòng 12 ngày",
+   "gold": {
+    "names": [
+     "Thay đổi địa điểm hoạt động giáo dục của trường mầm non, trường tiểu học, trường trung học cơ sở, trường phổ thông có nhiều cấp học trong đó có cấp học cao nhất là trung học cơ sở",
+     "Xét duyệt học sinh bán trú, học viên bán trú hỗ trợ kinh phí, hỗ trợ gạo",
+     "Xét duyệt trẻ em nhà trẻ bán trú hỗ trợ kinh phí",
+     "Xét, cấp học bổng chính sách đối với học viên cơ sở giáo dục nghề nghiệp tư thục dành cho thương binh, người khuyết tật",
+     "Đề nghị hỗ trợ chi phí học tập trong cơ sở giáo dục mầm non công lập, cơ sở giáo dục phổ thông công lập, cơ sở giáo dục công lập thực hiện chương trình giáo dục phổ thông",
+     "Đề nghị hỗ trợ chi phí học tập trong cơ sở giáo dục mầm non dân lập, tư thục; trường tiểu học tư thục, trường trung học cơ sở tư thục, cơ sở giáo dục thường xuyên tư thục; cơ sở giáo dục mầm non, trường tiểu học, trung học cơ sở trong các trường đại học, cao đẳng, viện nghiên cứu",
+     "Đề nghị miễn, giảm học phí trong cơ sở giáo dục nghề nghiệp, cơ sở giáo dục đại học tư thục và cơ sở giáo dục nghề nghiệp, cơ sở giáo dục đại học thuộc tổ chức kinh tế, doanh nghiệp nhà nước",
+     "Đổi tên trường mầm non, trường tiểu học, trường trung học cơ sở, trường phổ thông có nhiều cấp học trong đó có cấp học cao nhất là trung học cơ sở"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Giáo dục và Đào tạo thuộc hệ thống giáo dục quốc dân' AND days_max <= 12 ORDER BY name",
+   "tries": 1,
+   "got": 8,
+   "ms": 918
+  },
+  {
+   "id": "ls-070",
+   "split": "dev",
+   "kind": "count_domain",
+   "question": "Có bao nhiêu thủ tục về Tín ngưỡng, tôn giáo?",
+   "gold": {
+    "count": 9
+   },
+   "ok": true,
+   "sql": "SELECT COUNT(*) FROM proc_flat WHERE domain = 'Tín ngưỡng, tôn giáo'",
+   "tries": 1,
+   "got": 9,
+   "ms": 549
+  },
+  {
+   "id": "ls-072",
+   "split": "dev",
+   "kind": "list_kw",
+   "question": "Những thủ tục nào có chữ \"thương binh\" trong tên?",
+   "gold": {
+    "names": [
+     "Cấp bổ sung hoặc cấp lại giấy chứng nhận người có công do ngành Lao động - Thương binh và Xã hội quản lý và giấy chứng nhận thân nhân liệt sĩ",
+     "Lập danh sách đối tượng tham gia bảo hiểm y tế do Bộ Lao động – Thương binh và Xã hội quản lý",
+     "Xét, cấp học bổng chính sách đối với học viên cơ sở giáo dục nghề nghiệp tư thục dành cho thương binh, người khuyết tật"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE name LIKE '%thương binh%'}",
+   "tries": 1,
+   "got": 3,
+   "ms": 519
+  },
+  {
+   "id": "ls-074",
+   "split": "dev",
+   "kind": "count_domain",
+   "question": "Đếm giúp mình số thủ tục lĩnh vực Cấp, quản lý căn cước",
+   "gold": {
+    "count": 9
+   },
+   "ok": true,
+   "sql": "SELECT COUNT(*) FROM proc_flat WHERE domain = 'Cấp, quản lý căn cước'",
+   "tries": 1,
+   "got": 9,
+   "ms": 624
+  },
+  {
+   "id": "ls-076",
+   "split": "dev",
+   "kind": "count_kw",
+   "question": "Có mấy thủ tục đăng ký?",
+   "gold": {
+    "count": 113
+   },
+   "ok": true,
+   "sql": "SELECT COUNT(*) FROM proc_flat WHERE name LIKE '%đăng ký%'}",
+   "tries": 1,
+   "got": 113,
+   "ms": 481
+  },
+  {
+   "id": "ls-078",
+   "split": "dev",
+   "kind": "list_domain",
+   "question": "Lĩnh vực Hàng hải và đường thủy nội địa có những thủ tục nào?",
+   "gold": {
+    "names": [
+     "Cho ý kiến về sự phù hợp quy hoạch và thông số kỹ thuật xây dựng bến thủy nội địa",
+     "Cho ý kiến về thông số kỹ thuật xây dựng bến khách ngang sông, kết cấu hạ tầng đường thủy nội địa phục vụ thi công công trình, dự án và bến dân sinh",
+     "Chấp thuận phương án bảo đảm an toàn giao thông đường thủy nội địa",
+     "Công bố mở bến thủy nội địa, bến khách ngang sông, kết cấu hạ tầng đường thủy nội địa phục vụ thi công công trình, dự án và bến dân sinh",
+     "Công bố mở, cho phép hoạt động tại vùng nước khác không thuộc vùng nước trên tuyến đường thủy nội địa, vùng nước cảng biển hoặc khu vực hàng hải, được đánh dấu, xác định vị trí bằng phao hoặc cờ hiệu có màu sắc dễ quan sát",
+     "Công bố đóng cảng, bến thủy nội địa, khu neo đậu",
+     "Cấp lại Giấy chứng nhận đăng ký phương tiện",
+     "Cấp lại Giấy chứng nhận đăng ký phương tiện hoạt động vui chơi, giải trí dưới nước",
+     "Xác nhận trình báo đường thủy nội địa hoặc trình báo đường thủy nội địa bổ sung",
+     "Xác nhận việc trình kháng nghị hàng hải",
+     "Xóa đăng ký phương tiện",
+     "Xóa đăng ký phương tiện hoạt động vui chơi, giải trí dưới nước",
+     "Đóng, không cho phép hoạt động tại vùng nước khác không thuộc vùng nước trên tuyến đường thủy nội địa, vùng nước cảng biển hoặc khu vực hàng hải, được đánh dấu, xác định vị trí bằng phao hoặc cờ hiệu có màu sắc dễ quan sát",
+     "Đăng ký lại phương tiện hoạt động vui chơi, giải trí dưới nước",
+     "Đăng ký lại phương tiện trong trường hợp chuyển quyền sở hữu phương tiện nhưng không thay đổi cơ quan đăng ký phương tiện",
+     "Đăng ký lại phương tiện trong trường hợp chuyển quyền sở hữu phương tiện đồng thời thay đổi cơ quan đăng ký phương tiện",
+     "Đăng ký lại phương tiện trong trường hợp chuyển từ cơ quan đăng ký khác sang cơ quan đăng ký phương tiện thủy nội địa",
+     "Đăng ký lại phương tiện trong trường hợp chủ phương tiện thay đổi trụ sở hoặc nơi đăng ký hộ khẩu thường trú của chủ phương tiện sang đơn vị hành chính cấp tỉnh khác",
+     "Đăng ký lại phương tiện trong trường hợp phương tiện thay đổi tên, tính năng kỹ thuật",
+     "Đăng ký phương tiện hoạt động vui chơi, giải trí dưới nước lần đầu",
+     "Đăng ký phương tiện lần đầu đối với phương tiện chưa khai thác trên đường thủy nội địa",
+     "Đăng ký phương tiện lần đầu đối với phương tiện đang khai thác trên đường thủy nội địa"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE domain = 'Hàng hải và đường thủy nội địa' ORDER BY name",
+   "tries": 1,
+   "got": 22,
+   "ms": 627
+  },
+  {
+   "id": "ls-080",
+   "split": "dev",
+   "kind": "list_kw",
+   "question": "Liệt kê các thủ tục liên quan đến mai táng",
+   "gold": {
+    "names": [
+     "Giải quyết chế độ mai táng phí đối với cựu chiến binh",
+     "Giải quyết chế độ mai táng phí đối với dân công hỏa tuyến tham gia kháng chiến chống Pháp, chống Mỹ, chiến tranh bảo vệ Tổ quốc và làm nhiệm vụ quốc tế",
+     "Giải quyết chế độ mai táng phí đối với thanh niên xung phong thời kỳ chống Pháp",
+     "Giải quyết điều chỉnh, tạm dừng, hủy quyết định, chấm dứt hưởng, hưởng tiếp BHXH; thôi hưởng trợ cấp tuất hằng tháng đối với người đang hưởng trợ cấp tuất hằng tháng chết mà thuộc đối tượng được hưởng hỗ trợ chi phí mai táng",
+     "Hỗ trợ chi phí mai táng cho đối tượng bảo trợ xã hội",
+     "Hỗ trợ chi phí mai táng đối với đối tượng hưởng trợ cấp hưu trí xã hội",
+     "Liên thông điện tử: Đăng ký khai tử, xóa đăng ký thường trú, giải quyết mai táng phí, tử tuất"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE name LIKE '%mai táng%' ORDER BY name",
+   "tries": 1,
+   "got": 7,
+   "ms": 510
+  },
+  {
+   "id": "ls-082",
+   "split": "dev",
+   "kind": "list_kw",
+   "question": "Những thủ tục nào có chữ \"hộ kinh doanh\" trong tên?",
+   "gold": {
+    "names": [
+     "Chấm dứt hoạt động hộ kinh doanh",
+     "Cấp lại Giấy chứng nhận đăng ký hộ kinh doanh, Cấp đổi sang Giấy chứng nhận đăng ký hộ kinh doanh",
+     "Dừng thực hiện thủ tục đăng ký hộ kinh doanh",
+     "Tạm ngừng kinh doanh, tiếp tục kinh doanh trước thời hạn đã đăng ký của hộ kinh doanh",
+     "Đăng ký cập nhật, bổ sung thông tin trong hồ sơ đăng ký hộ kinh doanh, hiệu đính thông tin đăng ký hộ kinh doanh",
+     "Đăng ký thay đổi nội dung đăng ký hộ kinh doanh",
+     "Đăng ký thành lập hộ kinh doanh"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE name LIKE '%hộ kinh doanh%'}",
+   "tries": 1,
+   "got": 7,
+   "ms": 533
+  },
+  {
+   "id": "ls-084",
+   "split": "dev",
+   "kind": "count_domain",
+   "question": "Đếm giúp mình số thủ tục lĩnh vực Quản lý nhà nước về hội, quỹ",
+   "gold": {
+    "count": 14
+   },
+   "ok": true,
+   "sql": "SELECT COUNT(*) FROM proc_flat WHERE domain = 'Quản lý nhà nước về hội, quỹ'",
+   "tries": 1,
+   "got": 14,
+   "ms": 625
+  },
+  {
+   "id": "ls-086",
+   "split": "dev",
+   "kind": "count_domain",
+   "question": "Có bao nhiêu thủ tục về Đăng ký, quản lý cư trú?",
+   "gold": {
+    "count": 8
+   },
+   "ok": false,
+   "sql": "SELECT COUNT(*) FROM proc_flat WHERE name LIKE '%Đăng ký, quản lý cư trú%'}",
+   "tries": 1,
+   "got": 0,
+   "ms": 592
+  },
+  {
+   "id": "ls-088",
+   "split": "dev",
+   "kind": "count_domain",
+   "question": "Lĩnh vực Hộ tịch có mấy thủ tục?",
+   "gold": {
+    "count": 39
+   },
+   "ok": true,
+   "sql": "SELECT COUNT(*) FROM proc_flat WHERE domain = 'Hộ tịch'",
+   "tries": 1,
+   "got": 39,
+   "ms": 479
+  },
+  {
+   "id": "ls-090",
+   "split": "dev",
+   "kind": "list_kw",
+   "question": "Những thủ tục nào có chữ \"căn cước\" trong tên?",
+   "gold": {
+    "names": [
+     "Cấp tài khoản định danh điện tử mức độ 02, căn cước điện tử cho công dân Việt Nam (cấp xã)",
+     "Cấp, cấp đổi, cấp lại thẻ căn cước",
+     "Khai thác thông tin của công dân, người gốc Việt Nam chưa xác định được quốc tịch trong Cơ sở dữ liệu căn cước",
+     "Khóa căn cước điện tử (thực hiện tại cấp xã)",
+     "Liên thông điện tử: đăng ký khai sinh, đăng ký thường trú, cấp thẻ bảo hiểm y tế, cấp thẻ căn cước cho trẻ em dưới 6 tuổi",
+     "Mở khóa căn cước điện tử (thực hiện tại cấp xã)",
+     "Thu thập, cập nhật thông tin sinh trắc học về ADN, giọng nói vào Cơ sở dữ liệu căn cước",
+     "Thu thập, cập nhật, điều chỉnh thông tin của người gốc Việt Nam chưa xác định được quốc tịch vào Cơ sở dữ liệu quốc gia về dân cư, Cơ sở dữ liệu căn cước và cấp, cấp đổi, cấp lại giấy chứng nhận căn cước",
+     "Tích hợp, cập nhật, điều chỉnh thông tin trên thẻ căn cước",
+     "Điều chỉnh thông tin trong Cơ sở dữ liệu quốc gia về dân cư, Cơ sở dữ liệu căn cước theo đề nghị của người gốc Việt Nam chưa xác định được quốc tịch (thực hiện tại cấp xã)"
+    ]
+   },
+   "ok": true,
+   "sql": "SELECT name FROM proc_flat WHERE name LIKE '%căn cước%'}",
+   "tries": 1,
+   "got": 10,
+   "ms": 494
+  }
+ ]
+}

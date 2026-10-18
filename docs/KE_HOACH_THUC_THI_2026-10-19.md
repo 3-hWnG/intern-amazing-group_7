@@ -115,6 +115,15 @@ Trên bộ chọn ngưỡng (dev + p30-tune) cả hai đều **lỗ ròng**: A t
 trong khi bộ mù 47% — các ca hỏi lại của bộ mù khác hẳn dữ liệu chọn ngưỡng. Muốn tiến tiếp cần bộ chọn ngưỡng mới giống bộ mù (việc cần trưởng nhóm quyết, ghi ở KET_QUA).
 Ca bỏ lỡ còn lại trên p30: chữ đệm lọt vào cụm chính ("đang tìm hiểu", "về"), cụm không có trong tên thủ tục cấp xã ("học bổng", "quân nhân"), cụm hẹp nhưng nhiều dạng ("đăng ký xe").
 
+**Kết quả 4.2 (18/10) — đạt.** `server/listsql.py`: LLM viết một câu SELECT trên `proc_flat` (bản sao trong bộ nhớ, chỉ thủ tục trong phạm vi;
+`query_only` + `set_authorizer` + `LIMIT 200` + `progress_handler`), code viết câu trả lời; LLM hỏng 2 lần / không có LLM -> đường cũ.
+Bộ đo riêng `eval/cases_listsql.jsonl` (91 câu, đáp án do code tính; chỉnh lời dặn chỉ trên split dev): **test 42/45 (93%)** (dev 45/46);
+3 ca sai đều do hiểu "liên quan đến chứng thực/đất/căn cước" là lĩnh vực thay vì chữ trong tên. Bộ khuôn "list" (40 câu): **đúng lĩnh vực 98%** (đường cũ 15%).
+14 kiểu SQL xấu bị chặn (`server/tests/listsql_test.py`). Lệnh: `python run_server.py eval/run_listsql.py --split test --template` (cần Ollama);
+kết quả lưu ở `eval/saved_results/2026-10-18_listsql/`.
+**Eval đầy đủ #2 hoãn** tới sau 4.4–4.8: 4.1 không đưa luật nào vào, 4.2 chỉ chạy khi bật LLM nên bảng chính thức (LLM tắt) chưa đổi
+(mẫu so khớp 150 ca: 0 khác).
+
 **Kết thúc tuần:** **eval đầy đủ lần #3** trên bản 3 (số cuối).
 
 ## 4. Kết quả cuối phải nộp

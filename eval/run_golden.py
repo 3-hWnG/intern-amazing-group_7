@@ -32,8 +32,11 @@ if any(c["expected"].get("list_domain") for c in cases):
 
 
 def list_row(c):
-    txt = _list_request(c["question"])
-    names = [l.split(". ", 1)[1] for l in (txt or "").splitlines() if l[:1].isdigit() and ". " in l]
+    import listsql   # G4.2: text-to-SQL khi bật LLM (S3_USE_LLM=1); tắt LLM -> liệt kê gần đúng như cũ
+    from orchestrator import _answer_llm
+    ls = listsql.answer(c["question"], _answer_llm())
+    txt = ls["text"] if ls else _list_request(c["question"])
+    names = ls["names"] if ls else [l.split(". ", 1)[1] for l in (txt or "").splitlines() if l[:1].isdigit() and ". " in l]
     ok = [bool(_conn.execute("select 1 from procedures where name=? and domain like ?", (n, "%" + c["expected"]["list_domain"] + "%")).fetchone()) for n in names]
     return dict(id=c["id"], status=c["status"], source=c["source"], type=c["type"], beh="answer", got="answer" if txt else "none", beh_ok=bool(names),
                 scored=False, multi=False, all_ok=False, fields_chk=False, fields_ok=False, top1=False, top3=False, ms=None,
