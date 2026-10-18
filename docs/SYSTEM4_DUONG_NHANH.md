@@ -104,3 +104,35 @@ gốc, không do thay đổi này.
 Phát hiện phụ: `system4/eval/bench.py` trước đây dùng `../pyroot`, mà trên máy dev junction đó trỏ sang repo **system3 khác** → server của bench import
 `system3.*` của repo kia. Đã sửa (`_pyroot()` chọn junction trỏ đúng repo này; `BENCH_PYROOT`, `BENCH_RUNTIME` ghi đè được). Các số bench NV5 cũ
 (`saved_results/2026-10-15`) có thể đã đo lẫn code của repo kia — nên coi là chưa chắc.
+
+## F. Sửa lỗi + đo nghiệm thu trên bộ mù thứ hai (18/10/2026, theo quyết định "sửa 5 lỗi + bộ mù mới")
+Trình tự (lịch sử git chứng minh): bộ mù mới `shop` (cửa hàng điện máy giả, `make_shop.py`, 32 câu) commit `ea555d9` **trước** khi sửa → sửa engine chỉ nhìn
+dữ liệu dev (NV5 + bộ du lịch đã thấy) bằng `system4/eval/fastpath_dev.py` (từ chối chạy `shop` khi chưa có `--allow-blind`) → commit `3e0d419` → 2 lượt đo
+model thật trên runtime sạch: `inst02+old2` (`FASTPATH_ENABLED=false`) và `inst02+new2`. Kết quả: `system4/eval/saved_results/2026-10-18/inst02+old2.json`, `inst02+new2.json`.
+
+| | cũ | mới |
+|---|---|---|
+| **Bộ MÙ cửa hàng** (32, chưa từng chạy) | **27/32** | **25/32** |
+| Bộ du lịch (32, ĐÃ thấy, dùng khi sửa) | 25/32 | 29/32 |
+| NV5 accuracy dev / exam (44) | 44/44 | 44/44 |
+| NV5 halluc (15, không bật dữ liệu → đường nhanh không chạy) | 14/15 | 12/15 (dao động của AI sinh chữ; lượt đầu cả hai 13/15) |
+| Chào hỏi / hành vi | 100% / 17/22 | 100% / 17/22 |
+| Câu do đường nhanh trả lời | 0 / 141 | 69 / 141 (64 đúng) |
+| Trung vị cả câu / chữ đầu (mọi câu) | 3,97 s / 1,74 s | **1,13 s / 0,65 s** |
+| p90 cả câu | 6,91 s | 5,68 s |
+| Riêng 69 câu đường nhanh trả lời | 4,01 s | 0,09 s |
+
+Trên bộ mù cửa hàng, theo loại câu đường nhanh tự trả lời: **tra trường 14/14 đúng**, hỏi lại trùng tên 1/1, **đếm / liệt kê 1/6**.
+Lật so với đường cũ: +2 (câu nối tiếp "Còn số điện thoại thì sao?", hỏi lại "Điện thoại Lotus" có 2 bản) và −4 (đều là đếm / liệt kê).
+
+Kết luận trung thực:
+- **Tra cứu một dòng: đã hơn đường cũ trên dữ liệu lạ** (đúng hết, ~0,09 s thay vì 3–7 s, câu nối tiếp và hỏi lại tốt hơn).
+- **Đếm / liệt kê trên dữ liệu lạ: chưa dùng được** (1/6). Cả 5 câu sai cùng một lỗi còn sót: câu về "sản phẩm" bị tính trên bảng **Khuyến mãi** vì cột
+  "Áp dụng cho" có giá trị "Mọi **sản phẩm**", "Laptop", "Phụ kiện" — danh từ của bảng khác bị dùng làm điều kiện lọc, và khi bảng được nhắc tên không trả lời được
+  (tự kiểm tắt phép đếm của bảng Sản phẩm) thì engine trả lời bằng bảng khác thay vì nhường. Bài tự kiểm không bắt được vì câu tự sinh chỉ hỏi trong một bảng.
+- Tổng trên bộ mù: 25/32 so với 27/32 — **chưa hơn**. Ước tính nếu tắt riêng loại câu đếm / liệt kê (6 câu đó đi đường cũ, lấy đúng kết quả đường cũ của chính
+  lượt đo này): 29/32 — đây là phép **suy ra, chưa đo**.
+
+Lỗi còn lại, chưa sửa (bộ mù `shop` đã thấy kết quả, sửa rồi phải đo trên bộ mù thứ ba): (1) danh từ / tên của MỌI bảng không được làm điều kiện lọc giá trị;
+(2) câu nhắc tên một bảng mà bảng đó không trả lời được thì nhường, không trả lời bằng bảng khác; (3) bài tự kiểm sinh thêm câu "bao nhiêu <danh từ bảng A>"
+khi dữ liệu có nhiều bảng.
