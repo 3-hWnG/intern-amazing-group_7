@@ -123,8 +123,10 @@ Thông tin thêm:
 
 **Quyền:** dev xem được hội thoại của người khác nhưng không gửi / sửa / tạo lại được trong đó; người dùng thường không xem được của người khác (test NV1, NV3, NV4).
 
-**Kiểm tra:** test NV1–NV4 + toàn bộ test System 3 qua. Chạy thật (model thật + Edge): câu "Ngày sinh của bạn Hiếu" ở chế độ Suy nghĩ kỹ → 🔍 cho thấy 15 ứng viên, "Danh Minh Hiếu" reranker +0,3 được gửi, 14 bản ghi khác dưới ngưỡng; tab "AI nghĩ gì" có 2.724 ký tự suy nghĩ ẩn; "Cách đọc" và "Thử tìm kiếm" chạy, không lỗi trình duyệt.
+**Kiểm tra:** test NV1–NV4 + toàn bộ test System 3 qua. Chạy thật (model thật + Edge): câu "Ngày sinh của bạn Hiếu" ở chế độ Suy nghĩ kỹ → 🔍 cho thấy 15 ứng viên, "Tô Đức Hiếu" reranker +0,3 được gửi, 14 bản ghi khác dưới ngưỡng; tab "AI nghĩ gì" có 2.724 ký tự suy nghĩ ẩn; "Cách đọc" và "Thử tìm kiếm" chạy, không lỗi trình duyệt.
 
-**Phát hiện nhờ công cụ:** với "Mẹ của bé An tên gì?", Thử tìm kiếm cho thấy cả 3 bản ghi liên quan (Nguyễn Bình An, Đỗ Thị Bảo An, Nguyễn An Lành) đều được gửi cho AI → lần trả lời bỏ sót trước đó là lỗi của AI, không phải của tìm kiếm (ghi ở NV3 phần D2).
+*(Tên học sinh ở hai đoạn này đã thay bằng tên giả của `system4/eval/fake_class.py`, G1.6.)*
+
+**Phát hiện nhờ công cụ:** với "Mẹ của bé An tên gì?", Thử tìm kiếm cho thấy cả 3 bản ghi liên quan (Lê Bình An, Trần Thị Bảo An, Phạm An Khang) đều được gửi cho AI → lần trả lời bỏ sót trước đó là lỗi của AI, không phải của tìm kiếm (ghi ở NV3 phần D2).
 
 **Lưu ý:** câu trả lời có trước khi có bộ công cụ không có chi tiết (🔍 chỉ hiện phần "Vì sao?"); bộ dữ liệu xử lý trước khi có thông tin dòng tiêu đề hiện "chưa ghi lại — bấm Xử lý lại".

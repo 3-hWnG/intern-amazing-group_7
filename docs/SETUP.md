@@ -86,6 +86,7 @@ python tests/cap_test.py  # giới hạn bộ nhớ Strict: thủ tục nhớ <=
 python tests/list_intent_test.py  # ý "liệt kê": danh sách tạm, nói rõ chưa đầy đủ; câu thường không bị bắt nhầm
 python tests/compare_cue_test.py  # tách câu so sánh: "A khác gì so với B" và các dạng cũ
 python tests/fee_query_test.py  # đếm / liệt kê theo phí: "bao nhiêu thủ tục giá 20k", "thủ tục nào miễn phí"
+python tests/fee_display_test.py  # lệ phí in đúng đơn vị (USD không thành "đồng", "20.000" đọc thành 20 được sửa)
 python tests/p30_clarify_test.py  # Phase 30: hỏi lại khi câu là cụm gốc chung, không hỏi thừa khi đã gọi tên; điều kiện phải thêm thông tin ngoài tên thủ tục
 python smoke_test.py             # server tạm (DB tạm, cổng 8391, S3_USE_LLM=0): health, trả lời có nguồn, hỏi lại + bấm nút, messages/trace
 set S3_USE_LLM=0 && python e2e_test.py   # chạy server tạm 5 lượt hội thoại (cổng 8392)

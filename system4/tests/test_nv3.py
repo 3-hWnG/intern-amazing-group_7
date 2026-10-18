@@ -249,12 +249,12 @@ wb = openpyxl.Workbook(); ws = wb.active
 ws.append([None, None, "DANH SÁCH HỌC SINH LỚP MỘT/ 5 NĂM HỌC: 2025 - 2026", None, None, None, " HỌC 2026", -2027])
 ws.append([None] * 8)
 ws.append(["STT", None, "Tên", "Nữ\n", "Ngày sinh", "Địa chỉ", "Họ tên cha", "Họ tên mẹ"])
-ws.append([1, "Đỗ Thị Bảo", "An", "x", "29/7/2020", "Ấp Mỹ Phát", None, "Đỗ Thị Anh Thư"])
-ws.append([8, "Danh Minh", "Hiếu", None, "17/9/2020", "Ấp Mỹ Phát", "Danh Minh Thành", "Nguyễn Thị Bé Chín"])
+ws.append([1, "Trần Thị Bảo", "An", "x", "14/3/2020", "Ấp Tân Hòa", None, "Trần Thị Mỹ Hạnh"])
+ws.append([8, "Tô Đức", "Hiếu", None, "3/1/2020", "Ấp Tân Hòa", "Tô Văn Bình", "Huỳnh Thị Yến"])
 wb.save(px)
 recs, mp = ingest.to_records(Path(px), "ds_lop.xlsx", use_ai=False)
-assert [r["title"] for r in recs] == ["Đỗ Thị Bảo An", "Danh Minh Hiếu"], [r["title"] for r in recs]
-assert recs[1]["fields"]["Ngày sinh"] == "17/9/2020" and recs[1]["fields"]["Tên"] == "Hiếu", recs[1]["fields"]
+assert [r["title"] for r in recs] == ["Trần Thị Bảo An", "Tô Đức Hiếu"], [r["title"] for r in recs]
+assert recs[1]["fields"]["Ngày sinh"] == "3/1/2020" and recs[1]["fields"]["Tên"] == "Hiếu", recs[1]["fields"]
 assert mp["parts"][0]["title_column"] == "Họ và tên đệm + Tên" and mp["reader"] == ingest.READER_VERSION
 
 # ---- đọc các định dạng (không qua web)
