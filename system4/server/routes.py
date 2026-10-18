@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Resp
 from pydantic import BaseModel
 
 from core import aihealth
-from . import account, auth, chat as chat_turn, config, datasets, db, domains, export, memory, search, settings
+from . import account, answer_cache, auth, chat as chat_turn, config, datasets, db, domains, export, memory, search, settings
 
 
 class Credentials(BaseModel):
@@ -206,8 +206,11 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         db.set_feedback(mid, body.value)
         q = db.get_message(m["parent_id"]) if m.get("parent_id") else None
         conv = db.run("SELECT domain_id FROM conversations WHERE id=?", (cid,), one=True)
+        reuse = answer_cache.like_context(m["meta"])   # câu trả lời dùng lại được cho người khác hỏi y chang
         db.log_feedback("friendly", mid, request.state.user["id"], conv and conv["domain_id"], cid,
-                        q["content"] if q else "", m["content"], body.value, {"model": m["meta"].get("model") or settings.get("FRIENDLY_MODEL"), "reason": db.clean_reason(body.reason)})
+                        q["content"] if q else "", m["content"], body.value,
+                        {"model": m["meta"].get("model") or settings.get("FRIENDLY_MODEL"), "reason": db.clean_reason(body.reason), **reuse},
+                        qkey=answer_cache.qkey(q["content"]) if reuse and q else "")
         return {"ok": True}
 
     @r.patch("/conversations/{cid}")
@@ -281,7 +284,8 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
             user_mid = db.add_message(cid, "user", text, "done", parent)
             db.set_title_if_new(cid, text)
         history = db.get_path(cid)[:-1]   # nhánh tới trước tin người dùng
-        return StreamingResponse(chat_turn.run(u, cid, user_mid, text, history, body.websearch), media_type="text/event-stream",
+        return StreamingResponse(chat_turn.run(u, cid, user_mid, text, history, body.websearch, allow_cache=not body.regenerate_of),
+                                 media_type="text/event-stream",
                                  headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
 
     # ------------------------------------------------ dữ liệu người dùng (NV3)

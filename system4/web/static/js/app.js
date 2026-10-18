@@ -580,6 +580,7 @@
       w.appendChild(row);
     }
     if (m.status === "stopped") w.appendChild(el("div", "stopped-note", "(đã dừng)"));
+    if (m.meta && m.meta.cached) w.appendChild(el("div", "stopped-note", "Câu trả lời có sẵn (đã được đánh giá hữu ích). Bấm ↻ để AI trả lời lại."));
     const choices = (m.meta && m.meta.choices) || [];
     if (choices.length) w.appendChild(clarifyCard({ question: "Chọn nhanh:", options: choices, allow_free_text: true }, null, !isLast));
     const bar = el("div", "msg-actions");

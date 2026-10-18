@@ -48,6 +48,9 @@ def _migrate(c: sqlite3.Connection) -> None:
         c.execute("ALTER TABLE user_prefs ADD COLUMN rules_only INTEGER NOT NULL DEFAULT 0")
     if "context" not in cols("feedback_log"):
         c.execute("ALTER TABLE feedback_log ADD COLUMN context TEXT NOT NULL DEFAULT '{}'")
+    if "qkey" not in cols("feedback_log"):   # dùng lại câu đã 👍 (answer_cache.py): câu hỏi chuẩn hoá, rỗng = không dùng lại được
+        c.execute("ALTER TABLE feedback_log ADD COLUMN qkey TEXT NOT NULL DEFAULT ''")
+    c.execute("CREATE INDEX IF NOT EXISTS feedback_qkey ON feedback_log(engine, qkey)")
     added = False
     for col, ddl in (("parent_id", "INTEGER"), ("meta", "TEXT NOT NULL DEFAULT '{}'"),
                      ("feedback", "INTEGER NOT NULL DEFAULT 0")):
@@ -325,17 +328,18 @@ def _scrub(obj, pii_from: str):
     return scrub(obj, pii_tokens(pii_from))
 
 
-def log_feedback(engine: str, msg_key, user_id: int, domain_id, cid: str, prompt: str, answer: str, value: int, context: dict | None = None) -> None:
+def log_feedback(engine: str, msg_key, user_id: int, domain_id, cid: str, prompt: str, answer: str, value: int, context: dict | None = None,
+                 qkey: str = "") -> None:
     """Chụp (câu hỏi, câu trả lời, 👍/👎) vào feedback_log; value 0 thì xoá dòng. Đổi ý thì ghi đè, không tạo trùng.
     Câu hỏi và câu trả lời được che CCCD/SĐT trước khi ghi."""
     if value == 0:
         run("DELETE FROM feedback_log WHERE engine=? AND msg_key=?", (engine, str(msg_key)))
         return
     prompt, answer = mask_pii(prompt), mask_pii(answer)
-    run("INSERT INTO feedback_log(engine,msg_key,user_id,domain_id,conversation_id,prompt,answer,value,context) VALUES (?,?,?,?,?,?,?,?,?) "
+    run("INSERT INTO feedback_log(engine,msg_key,user_id,domain_id,conversation_id,prompt,answer,value,context,qkey) VALUES (?,?,?,?,?,?,?,?,?,?) "
         "ON CONFLICT(engine,msg_key) DO UPDATE SET value=excluded.value, prompt=excluded.prompt, answer=excluded.answer, "
-        "context=excluded.context, created_at=datetime('now')",
-        (engine, str(msg_key), user_id, domain_id, cid, prompt, answer, value, json.dumps(context or {}, ensure_ascii=False)))
+        "context=excluded.context, qkey=excluded.qkey, created_at=datetime('now')",
+        (engine, str(msg_key), user_id, domain_id, cid, prompt, answer, value, json.dumps(context or {}, ensure_ascii=False), qkey))
 
 
 def get_summary(cid: str) -> tuple[str, int]:

@@ -23,7 +23,7 @@ import time
 import uuid
 
 from core import gpu, websearch as core_web
-from . import ambig, context, db, greet, ground, guard, lang, llm, memory, persona, search, settings, tabletool, websearch
+from . import ambig, answer_cache, context, db, greet, ground, guard, lang, llm, memory, persona, search, settings, tabletool, websearch
 from ..abi import turn as abi_turn
 
 RULES_ONLY_MESSAGE = ("Bạn đang ở chế độ **chỉ trả lời bằng luật** nên lĩnh vực này (cần AI viết câu trả lời) tạm không trả lời. "
@@ -304,8 +304,9 @@ async def _answerable(choices: list[str], dataset_ids: list[int]) -> list[str]:
     return [c for c, good in zip(choices, ok) if good]
 
 
-async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list[dict], web: bool = False):
-    """Async generator SSE cho một lượt. user_mid = tin người dùng mà câu trả lời nối vào."""
+async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list[dict], web: bool = False, allow_cache: bool = True):
+    """Async generator SSE cho một lượt. user_mid = tin người dùng mà câu trả lời nối vào.
+    allow_cache=False (bấm ↻ tạo lại): không dùng lại câu đã 👍, AI viết mới."""
     mode = "fast"
     turn_id = uuid.uuid4().hex
     _turns[turn_id] = {"user": user["id"]}
@@ -390,6 +391,20 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             db.save_trace(amid, cid, user["id"], {"mode": mode, "specialist": True, "query": squery, "retrieval": sinfo, "checks": checks,
                                                   "prompts": [], "output": {"final_text": ans}, "timing": meta["timing"]}, settings.get("TRACE_KEEP"))
             yield sse({"type": "delta", "text": ans})
+            yield sse({"type": "done"})
+            return
+        cacheable = answer_cache.eligible(text, history_path, evidence, web, abi_mode, info)
+        hit = answer_cache.lookup(text, dom) if cacheable and allow_cache else None
+        if hit:   # câu y chang đã được 👍: trả ngay, không xếp hàng GPU, không gọi model
+            meta = {"mode": mode, "model": settings.get("FRIENDLY_MODEL"), "cached": {"from": hit["from"]}, "cacheable": True,
+                    "cache_fp": answer_cache.fingerprint(dom), "timing": {"llm_ms": 0, "total_ms": int((time.perf_counter() - t0) * 1000)}}
+            if hit["choices"]:
+                meta["choices"] = hit["choices"]
+            hmid = db.add_message(cid, "assistant", hit["answer"], "done", user_mid, meta, pii_from=text)
+            db.save_trace(hmid, cid, user["id"], {"mode": mode, "query": text, "cached_from": hit["from"], "checks": checks, "prompts": [],
+                                                  "output": {"final_text": hit["answer"]}, "timing": meta["timing"]}, settings.get("TRACE_KEEP"))
+            yield sse({"type": "cached", "from": hit["from"]})
+            yield sse({"type": "delta", "text": hit["answer"]})
             yield sse({"type": "done"})
             return
         if db.get_rules_only(user["id"]):   # G3.3: tài khoản bật "Chỉ trả lời bằng luật": lĩnh vực cần AI thì báo, không gọi AI
@@ -504,6 +519,8 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                 if not meta["sources"]:
                     meta["consulted"] = [{"record_id": e["id"], "url": e.get("url"), "title": e["title"], "dataset": e["dataset"], "score": e.get("score")}
                                          for e in evidence[:3]]
+            if cacheable and status == "done" and not err and not state.get("replaced") and not meta.get("leak_retry"):
+                meta["cacheable"], meta["cache_fp"] = True, answer_cache.fingerprint(dom)   # 👍 thì người khác hỏi y chang được trả ngay
             if choices and not info["exhausted"]:
                 meta["choices"] = choices
             elif choices:   # đã hết lượt hỏi lại mà AI vẫn đưa lựa chọn: hiện như văn bản

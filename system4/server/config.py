@@ -87,6 +87,8 @@ AMBIGUITY_CHECK = True
 CHOICE_CHECK = True
 AMBIGUITY_MAX = 5
 TABLE_TOOL = True
+ANSWER_CACHE = True
+ANSWER_CACHE_DAYS = 30
 SEARCH_FOLLOWUP = True
 RERANK_RESCUE = True
 STRICT_BUSINESS_FACTS = True
@@ -198,6 +200,11 @@ SETTINGS = [
          help="Bật: nút lựa chọn do AI nghĩ ra chỉ hiện nếu bộ dữ liệu đang bật có đoạn khớp (mỗi nút tốn thêm một lần tìm, khoảng 0,5-2 giây tuỳ máy). Tắt: hiện mọi nút AI đưa."),
     dict(key="AMBIGUITY_MAX", type="int", group="Tốc độ & độ chính xác", label="Trùng tên: tối đa N bản ghi", min=2, max=10,
          help="Khớp nhiều hơn số này thì coi là từ chung (vd. \"giấy phép\"), không hỏi lại."),
+    dict(key="ANSWER_CACHE", type="bool", group="Tốc độ & độ chính xác", label="Dùng lại câu trả lời đã được 👍",
+         help="Bật: ai đó hỏi Y CHANG một câu đã được 👍 thì trả ngay câu trả lời đó, không chờ AI. Chỉ áp cho câu đầu hội thoại, "
+              "AI chung (không bộ dữ liệu riêng, không tìm web), không có điều nhớ của người dùng, không chứa CCCD/SĐT. "
+              "Có người 👎 bản dùng lại thì thôi dùng; đổi model / tên doanh nghiệp / guardrail thì câu cũ không được dùng."),
+    dict(key="ANSWER_CACHE_DAYS", type="int", group="Tốc độ & độ chính xác", label="Dùng lại câu đã 👍 trong bao nhiêu ngày", min=1, max=365),
     dict(key="TABLE_TOOL", type="bool", group="Tốc độ & độ chính xác", label="Công cụ bảng (đếm / tổng / liệt kê)",
          help="Bật: câu hỏi kiểu \"bao nhiêu bạn nữ\", \"liệt kê tất cả\", \"tổng\" -> AI đổi câu hỏi thành phép lọc, code tính trên TOÀN BỘ bảng. "
               "Thêm khoảng 1-2 giây cho các câu này."),

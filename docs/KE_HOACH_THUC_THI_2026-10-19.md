@@ -33,6 +33,8 @@
 | D14 | Mức nghiêm ngặt các lĩnh vực cứng khác (ABI…) | **Mỗi lĩnh vực tự chọn**; mặc định **có căn cứ + bắt buộc trích dẫn** (G4.3) |
 | D15 | Xử lý song song | **Phần luật chạy song song, phần GPU tuần tự** (card 6 GB). Card lớn hơn bật công tắc là song song (G3.1) |
 | D16 | Git | ABI đã commit riêng; tài liệu audit commit riêng. Làm trên nhánh mới, commit nhỏ, không push |
+| D17 (18/10, sau G3.4) | Chờ hàng Friendly khi 10 người | **Chấp nhận mục tiêu ~15 s cho thí điểm** (đo: p95 13,6 s). Được dùng thêm lượt đo GPU khi cần |
+| D18 (18/10) | Câu được hỏi nhiều | **Dùng lại câu trả lời đã 👍** khi người khác hỏi y chang: trả ngay, không gọi model (`system4/server/answer_cache.py`, công tắc `ANSWER_CACHE`) |
 
 ## 2. Quy tắc cứng khi làm
 - **Không bao giờ gọi `/rag` của abi.com.vn** hay bất kỳ thứ gì tốn token của chủ web. Mọi test/eval chạy với `S4_ABI_SYNC=0`, không đặt `ABI_API_KEY`.
