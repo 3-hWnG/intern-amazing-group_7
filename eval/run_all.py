@@ -1,5 +1,7 @@
 """Phase 28: một lệnh dựng DB + chạy mọi gate GPU-free + in bảng số kèm ngưỡng.
-    python run_server.py eval/run_all.py [--quick] [--skip-build] [--only tên,tên] [--with-blind]
+    python run_server.py eval/run_all.py [--quick] [--skip-build] [--only tên,tên] [--with-blind] [--use-live]
+G0.4: bước dựng ghi vào eval/runtime/run_all.db (S3_DATA_DB), KHÔNG BAO GIỜ dựng đè data/runtime/system3.db (DB đang chạy).
+--use-live: đo trên DB đang chạy (chỉ đọc, tự bỏ bước dựng). Hội thoại/bộ nhớ của test ghi vào eval/runtime/, không vào server/runtime/.
 (chạy ở thư mục gốc system3; thư mục tên gì cũng được, không cần PYTHONPATH). Ép S3_USE_LLM=0 S3_PLANNER_MODE=rules S3_NO_WARMUP=1: không GPU, không Ollama.
 --quick bỏ synth + perturb (phần chậm). --with-blind CHỈ cho người điều phối: chạy thêm run_pseudo.py/run_team.py (bộ mù/team), mặc định TẮT;
 script này không mở file ca hay kết quả của các bộ đó. Exit 0 = mọi gate đạt."""
@@ -8,7 +10,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 EVAL, RES = ROOT / "eval", ROOT / "eval" / "results"
-ENV = dict(os.environ, PYTHONIOENCODING="utf-8", S3_USE_LLM="0", S3_PLANNER_MODE="rules", S3_NO_WARMUP="1")
+RUN_DB = ROOT / "eval" / "runtime" / "run_all.db"          # DB thủ tục dựng ra để đo (thư mục đã ignore)
+LIVE_DB = ROOT / "data" / "runtime" / "system3.db"
+ENV = dict(os.environ, PYTHONIOENCODING="utf-8", S3_USE_LLM="0", S3_PLANNER_MODE="rules", S3_NO_WARMUP="1",
+           S3_DATA_DB=str(RUN_DB), S3_DB_PATH=str(ROOT / "eval" / "runtime" / "run_all_conv.db"),
+           S4_RUNTIME_DIR=str(ROOT / "eval" / "runtime" / "run_all_s4"), S4_WARMUP="0", S4_ABI_SYNC="0")
+ENV.pop("ABI_API_KEY", None)
 OLD_EXCL = re.compile(r"p(16|18|19|23)")
 rows, fails = [], []          # rows: (nhóm, số đo, kết quả, ngưỡng, đạt?)
 
@@ -54,10 +61,18 @@ def main():
     ap.add_argument("--quick", action="store_true", help="bỏ synth + perturb")
     ap.add_argument("--skip-build", action="store_true", help="không dựng lại DB (dùng DB có sẵn)")
     ap.add_argument("--with-blind", action="store_true", help="CHỈ người điều phối: chạy thêm bộ mù/team (mặc định tắt)")
+    ap.add_argument("--use-live", action="store_true", help="đo trên DB đang chạy (data/runtime/system3.db), không dựng")
     ap.add_argument("--only", default="", help="chỉ chạy các nhóm: build,tests,dev,ctx,concise,p26,synth,perturb,baseline,docs")
     a = ap.parse_args()
     only = set(filter(None, a.only.split(",")))
     want = lambda k: not only or k in only
+    if a.use_live:
+        ENV["S3_DATA_DB"] = str(LIVE_DB)
+        a.skip_build = True
+    elif a.skip_build and not RUN_DB.is_file():
+        sys.exit(f"--skip-build nhưng chưa có {RUN_DB}: chạy không có --skip-build trước, hoặc dùng --use-live")
+    RUN_DB.parent.mkdir(parents=True, exist_ok=True)
+    print(f"DB thủ tục để đo: {ENV['S3_DATA_DB']}", file=sys.stderr)
     t00 = time.time()
     sys.stdout.reconfigure(encoding="utf-8")   # bảng có tiếng Việt, console Windows mặc định cp1252
 
