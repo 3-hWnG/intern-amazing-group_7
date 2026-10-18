@@ -15,7 +15,12 @@ REPO = os.path.dirname(SERVER)
 sys.path.insert(0, SERVER)
 TMP = tempfile.mkdtemp()
 DATA_COPY = os.path.join(TMP, "system3_data.db")
-shutil.copy(os.path.join(REPO, "data", "runtime", "system3.db"), DATA_COPY)
+# Bản sao lấy từ DB cố định cho test (eval/fixture_db.py), không phải DB đang chạy; số thủ tục đọc từ tệp nguồn.
+sys.path.insert(0, os.path.join(REPO, "eval"))
+import fixture_db
+shutil.copy(os.environ.get("S3_DATA_DB") or str(fixture_db.ensure(quiet=True)), DATA_COPY)
+with open(os.path.join(REPO, "data", "snapshot", "procedures.jsonl"), encoding="utf-8") as _f:
+    N_SRC = sum(1 for line in _f if line.strip())
 os.environ.update(S3_DB_PATH=os.path.join(TMP, "s3.db"), S3_USE_LLM="0", S4_ENABLED="1", S4_WARMUP="0",
                   S4_RUNTIME_DIR=os.path.join(TMP, "s4"), S3_DATA_DB=DATA_COPY)
 
@@ -175,7 +180,7 @@ with TestClient(main.app) as c:
     # ---------------- Dữ liệu Strict: phiên bản, nháp, chuẩn dữ liệu, so sánh
     as_user("boss")
     st = c.get("/s4/admin/procs").json()
-    assert len(st["versions"]) == 1 and st["versions"][0]["label"] == "Gốc" and st["versions"][0]["n_records"] == 1350
+    assert len(st["versions"]) == 1 and st["versions"][0]["label"] == "Gốc" and st["versions"][0]["n_records"] == N_SRC
     v0 = st["active_id"]
     r = c.get("/s4/admin/procs/records?version=draft&q=khai sinh").json()
     assert r["total"] >= 1
@@ -231,15 +236,15 @@ with TestClient(main.app) as c:
     assert r.status_code == 200, r.text[:300]
     assert f"_v{v1}_" in r.headers["content-disposition"]
     xb = openpyxl.load_workbook(io.BytesIO(r.content))
-    assert xb["Procedures"].max_row - 1 == 1349, "phiên bản v1 = Gốc bớt 1 thủ tục"
+    assert xb["Procedures"].max_row - 1 == N_SRC - 1, "phiên bản v1 = Gốc bớt 1 thủ tục"
     assert any("NOT the version Strict mode uses now" in str(x.value) for x in xb["README"]["A"])
     assert [x.value or "" for x in xb["Versions"]["H"]][1:] == ["yes" if v["id"] == v1 else "" for v in sorted(procs.versions(), key=lambda x: x["id"])]
     assert n_procs() == n_before and procs.active_id() == v0, "xuất không đổi DB / bản đang dùng"
 
     # ---------------- Áp dụng (dựng DB thật bằng system3.data.build, trên bản sao)
-    assert n_procs() == 1350
+    assert n_procs() == N_SRC
     procs.apply(v1, wait=True)
-    assert n_procs() == 1349 and procs.active_id() == v1, procs.job()
+    assert n_procs() == N_SRC - 1 and procs.active_id() == v1, procs.job()
     c2 = sqlite3.connect(DATA_COPY)
     assert c2.execute("SELECT name FROM procedures WHERE proc_id=?", (pid,)).fetchone()[0].endswith("(ĐÃ SỬA THỬ)")
     c2.close()
@@ -252,7 +257,7 @@ with TestClient(main.app) as c:
     as_user("boss")
     assert c.delete(f"/s4/admin/procs/versions/{v1}").status_code == 422, "không xoá bản đang dùng"
     procs.apply(v0, wait=True)   # quay lại bản Gốc
-    assert n_procs() == 1350 and procs.active_id() == v0
+    assert n_procs() == N_SRC and procs.active_id() == v0
 
     # ---------------- Cào (giả lập tiến trình cào: không dùng mạng)
     import subprocess as _sp

@@ -262,22 +262,10 @@ def _env() -> dict:
 
 
 def build_db(src: Path, out: Path) -> int:
-    """Dựng DB System 3 từ một tệp procedures.jsonl bằng chính system3.data.build (không sửa), ra tệp `out`."""
-    out.unlink(missing_ok=True)
-    code = ("import sys, pathlib, system3.data.load as L, system3.data.build as B; p = pathlib.Path(sys.argv[1]); "
-            "B.load_snapshot = lambda path=None: L.load_snapshot(p); raise SystemExit(B.main())")
-    env = _env()
-    env["S3_DATA_DB"] = str(out)
-    r = subprocess.run([sys.executable, "-c", code, str(src)], env=env, capture_output=True, text=True,
-                       encoding="utf-8", errors="replace", timeout=1800)
-    if r.returncode != 0 or not out.is_file():
-        raise RuntimeError("Dựng DB thất bại: " + (r.stderr or r.stdout)[-800:])
-    import sqlite3
-    c = sqlite3.connect(str(out))
-    try:
-        return c.execute("SELECT COUNT(*) FROM procedures").fetchone()[0]
-    finally:
-        c.close()
+    """Dựng DB System 3 từ một tệp procedures.jsonl bằng chính system3.data.build (không sửa), ra tệp `out`.
+    Tiến trình con tự đăng ký gói system3 (run_server.register_package) nên không cần junction/PYTHONPATH."""
+    from . import procs_xlsx
+    return procs_xlsx.db_from_jsonl(src, out)
 
 
 def _swap(new: Path, target: Path) -> None:
@@ -364,7 +352,7 @@ def scrape(limit: int = 0, rps: float = 2.0) -> None:
         status.unlink(missing_ok=True)
         env = _env()
         env["S4_SCRAPE_DIR"] = str(SCRAPE_DIR)
-        args = [sys.executable, "-m", "system3.system4.scraper.run", "--status", str(status), "--rps", str(rps)]
+        args = [sys.executable, str(Path(_s3_data().__file__).parents[1] / "run_server.py"), "-m", "system3.system4.scraper.run", "--status", str(status), "--rps", str(rps)]
         if limit:
             args += ["--limit", str(limit)]
         _job["message"] = "Đang cào (cần internet)…"
