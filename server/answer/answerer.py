@@ -9,6 +9,7 @@ from __future__ import annotations
 import re
 
 from system3.data import api as data_api
+from system3.data import fees as fee_norm
 from system3.data.textutil import fold
 
 from .llm_answer import budgeted, compose, render
@@ -89,15 +90,14 @@ def _jacc(a: str, b: str) -> float:
 
 def _fees_text(conn, pid: str) -> tuple[str, str]:
     """-> (text, status). status: present | absent_confirmed. KHÔNG suy ra miễn phí khi nguồn rỗng."""
-    rows = [dict(r) for r in conn.execute(
-        "SELECT kind, amount_value, amount_text, fee_type, submission_method FROM fees_clean WHERE proc_id=?", (pid,))]
+    rows = [dict(r) for r in conn.execute("SELECT * FROM fees_clean WHERE proc_id=?", (pid,))]
     seen, lines = set(), []
     for r in rows:
         if r["kind"] == "none":
             continue
-        txt = (r["amount_text"] or "").strip()
-        if r["kind"] == "numeric" and r["amount_value"]:
-            txt = f"{int(r['amount_value']):,}".replace(",", ".") + " đồng" + (f" — {txt}" if txt else "")
+        if "amount_ok" not in r:      # DB dựng trước G1.1: chuẩn hoá tại chỗ (không có currency_id -> xét chữ)
+            r.update(fee_norm.normalize(r["amount_value"], r["amount_text"], None))
+        txt = fee_norm.display(r) if r["kind"] == "numeric" else (r["amount_text"] or "").strip()
         if txt and txt not in seen:
             seen.add(txt)
             lines.append(f"- {txt}" + (f" ({r['submission_method']})" if r["submission_method"] else ""))

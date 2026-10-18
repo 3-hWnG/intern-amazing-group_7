@@ -198,6 +198,7 @@ def clean_fees(record: dict) -> list[dict]:
         out.append({"fee_type": f.get("fee_type") or "",
                     "amount_value": value,
                     "amount_text": text,
+                    "currency_id": (f.get("currency_id") or "").strip(),
                     "submission_method": (f.get("submission_method") or "").strip()})
 
     # Mọi dòng đều 0 đồng và KHÔNG ghi chú -> KHÔNG được suy ra "miễn phí".

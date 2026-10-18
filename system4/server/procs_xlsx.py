@@ -71,8 +71,8 @@ CHILD = [
      "Form/attachment metadata on the portal (files not downloaded)"),
 ]
 DERIVED = [
-    ("Fees (clean)", "fees_clean", ["kind", "amount_value", "amount_text", "fee_type", "submission_method"],
-     "Fees normalised by data/build.py: kind = numeric / text_only / none"),
+    ("Fees (clean)", "fees_clean", ["kind", "amount_value", "amount_text", "fee_type", "submission_method", "currency", "amount_vnd", "amount_ok"],
+     "Fees normalised by data/build.py: kind = numeric / text_only / none; currency VND/USD/'' (unknown); amount_vnd = amount fixed against the text (\"20.000\" read as 20); amount_ok = 0 means only the portal text is shown"),
     ("Field chunks", "field_chunks", ["field", "case_ordinal", "text", "status"],
      "The 12 answer fields per procedure the bot quotes from, with present / absent_confirmed / unknown status"),
     ("Conditions", "condition_index", ["type", "text", "source"], "Who / situation / status / place conditions extracted for matching"),
@@ -207,6 +207,8 @@ def _build(con, out: Path, versions: list[dict], version: int | None, active: in
 
     # ---- sheet System 3 tự dựng, nối bằng proc_id
     for title, tbl, cols, _ in DERIVED:
+        have = {r[1] for r in con.execute(f"PRAGMA table_info({tbl})")}
+        cols = [c for c in cols if c in have]      # DB dựng trước G1.1 chưa có currency/amount_vnd/amount_ok
         ws = wb.create_sheet(title)
         all_cols = ["proc_id", "procedure name (via proc_id)"] + cols
         header(ws, all_cols, {"proc_id": FILL_KEY, "procedure name (via proc_id)": FILL_LOOK},

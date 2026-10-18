@@ -4,7 +4,7 @@ Truy vấn SQL thật trên `fees_clean`, không nhờ tìm kiếm gần đúng.
 
 Quy tắc dữ liệu (DATA_NOTES.md): nguồn không ghi phí thì KHÔNG suy ra miễn phí. "Miễn phí" chỉ tính khi nguồn viết rõ
 ("Không thu lệ phí…", "Miễn phí"); câu "Miễn lệ phí cho người có công…" là miễn theo đối tượng, đếm riêng.
-Số tiền: cột `amount_value` đôi khi đọc sai "20.000" thành 20 (dấu chấm hàng nghìn) -> đối chiếu lại với `amount_text`.
+Số tiền: dùng `amount_vnd` (đã sửa "20.000" đọc thành 20, bỏ dòng USD và số không đối chiếu được — chuẩn hoá lúc dựng, data/fees.py).
 ponytail: một thủ tục có nhiều mức tính là khớp nếu ÍT NHẤT một mức thoả; chưa lọc theo hình thức nộp hay loại phí."""
 from __future__ import annotations
 
@@ -56,16 +56,15 @@ def parse(text: str) -> dict | None:
 
 
 def _levels(rows: list[dict]) -> set[int]:
-    """Các mức phí (đồng) của một thủ tục, đã sửa lỗi "20.000" đọc thành 20."""
+    """Các mức phí (đồng) của một thủ tục: amount_vnd đã chuẩn hoá lúc dựng (data/fees.py). DB cũ chưa có cột thì chuẩn hoá tại chỗ."""
+    from system3.data import fees as F
     out = set()
     for r in rows:
-        v = r["amount_value"]
-        if r["kind"] != "numeric" or not v:
+        if r["kind"] != "numeric" or not r["amount_value"]:
             continue
-        thousands = {int(x.replace(".", "")) for x in re.findall(r"\d{1,3}(?:\.\d{3})+", r["amount_text"] or "")}
-        v = int(v * 1000) if v < 1000 and int(v * 1000) in thousands else int(v)
-        if v >= 1000:   # dưới 1.000đ mà không đối chiếu được với chữ là số đọc hỏng (vd. 5, 20): bỏ, không đoán
-            out.add(v)
+        n = r if "amount_ok" in r else F.normalize(r["amount_value"], r["amount_text"], None)
+        if n["amount_ok"] and n["amount_vnd"]:
+            out.add(int(n["amount_vnd"]))
     return out
 
 
@@ -105,7 +104,7 @@ def _money(v: int) -> str:
 def run(conn, q: dict, show: int = 10) -> str:
     procs = _scope(conn)
     rows: dict[str, list[dict]] = {p: [] for p, _ in procs}
-    for r in conn.execute("SELECT proc_id, kind, amount_value, amount_text FROM fees_clean"):
+    for r in conn.execute("SELECT * FROM fees_clean"):
         if r["proc_id"] in rows:
             rows[r["proc_id"]].append(dict(r))
     names = dict(procs)

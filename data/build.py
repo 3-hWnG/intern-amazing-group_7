@@ -4,7 +4,7 @@ from __future__ import annotations
 import re
 import sys
 
-from . import DB_PATH, records as R
+from . import DB_PATH, fees as F, records as R
 from .load import connect_new, import_records, load_snapshot
 from .textutil import fold
 from . import team_overlay
@@ -13,7 +13,8 @@ EXTRA_SCHEMA = """
 CREATE TABLE fees_clean (
     proc_id TEXT NOT NULL, kind TEXT NOT NULL CHECK (kind IN ('numeric','text_only','none')),
     amount_value REAL, amount_text TEXT NOT NULL DEFAULT '',
-    fee_type TEXT NOT NULL DEFAULT '', submission_method TEXT NOT NULL DEFAULT '');
+    fee_type TEXT NOT NULL DEFAULT '', submission_method TEXT NOT NULL DEFAULT '',
+    currency TEXT NOT NULL DEFAULT '', amount_vnd INTEGER, amount_ok INTEGER NOT NULL DEFAULT 0);
 CREATE INDEX idx_fc_proc ON fees_clean(proc_id);
 CREATE TABLE field_chunks (
     proc_id TEXT NOT NULL, field TEXT NOT NULL, case_ordinal INTEGER NOT NULL DEFAULT -1,
@@ -74,9 +75,9 @@ def _fee_kind(f: dict) -> str:
 
 
 def _fee_line(f: dict) -> str:
-    amt = f"{f['amount_value']:,.0f} đồng".replace(",", ".") if f["amount_value"] else ""
-    return " - ".join(x for x in (f["fee_type"], amt, f["amount_text"],
-                                  f["submission_method"]) if x)
+    """Dòng phí trong field_chunks: cùng cách in với answerer (data/fees.py: đúng đơn vị, số không chắc thì in nguyên văn)."""
+    amt = F.display({**f, **F.normalize(f["amount_value"], f["amount_text"], f.get("currency_id"))})
+    return " - ".join(x for x in (f["fee_type"], amt, f["submission_method"]) if x)
 
 
 def _bullet(name: str, qty: str = "") -> str:
@@ -99,9 +100,10 @@ def build_fees_and_chunks(conn):
             # Có dòng rỗng/0 hoặc không có dòng: kind=none. KHÔNG suy ra miễn phí.
             conn.execute("INSERT INTO fees_clean (proc_id, kind) VALUES (?, 'none')", (pid,))
         for f in rec["fees_clean"]:
-            conn.execute("INSERT INTO fees_clean VALUES (?,?,?,?,?,?)",
+            n = F.normalize(f["amount_value"], f["amount_text"], f.get("currency_id"))
+            conn.execute("INSERT INTO fees_clean VALUES (?,?,?,?,?,?,?,?,?)",
                          (pid, _fee_kind(f), f["amount_value"], f["amount_text"],
-                          f["fee_type"], f["submission_method"]))
+                          f["fee_type"], f["submission_method"], n["currency"], n["amount_vnd"], n["amount_ok"]))
 
         # ── field_chunks ──
         st = {k: rec[v] or "unknown" for k, v in FIELD_STATUS.items()}
