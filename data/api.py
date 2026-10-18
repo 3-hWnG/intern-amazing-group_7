@@ -85,6 +85,19 @@ def province_versions(conn, proc_id: str) -> dict[str, str]:
     return {p: pid for p, (_, pid) in best.items()}
 
 
+def forms(conn, proc_id: str) -> list[dict]:
+    """G4.7 (D7): biểu mẫu Cổng liệt kê cho thủ tục: [{"file": tên tệp, "desc": mẫu thuộc giấy tờ nào}].
+    Tệp tải từ Cổng thường 0 byte (file_available=0) nên hệ thống không giữ bản lưu: người dùng tải ở trang thủ tục trên Cổng."""
+    out, seen = [], set()
+    for r in conn.execute("SELECT f.file_name, f.belongs_to FROM procedure_files f JOIN procedures p ON p.row_id=f.row_id"
+                          " WHERE p.proc_id=? AND p.status='active' ORDER BY f.id", (proc_id,)):
+        name, desc = (r[0] or "").strip(), " ".join((r[1] or "").split()).lstrip("-+• ").strip()
+        if name and (name, desc) not in seen:
+            seen.add((name, desc))
+            out.append({"file": name, "desc": desc})
+    return out
+
+
 def provinces(conn) -> list[str]:
     """Tỉnh/thành có trong dữ liệu đang dùng (bản 3: 34 tỉnh sau sáp nhập), nhiều thủ tục riêng trước."""
     return [r[0] for r in conn.execute("SELECT province, COUNT(*) n FROM procedures WHERE province IS NOT NULL AND status='active'"

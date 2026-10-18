@@ -138,11 +138,45 @@ def _case_pick(chunks: list[dict], conds: list[str], label: str) -> list[dict]:
     return [c for c, sc in zip(chunks, scored) if best >= 0.6 and sc >= best - 0.01]
 
 
+FORMS_SHOW = 8
+_FORM_CUE = re.compile(r"theo mau|mau so|to khai|bieu mau|mau don")
+
+
+def _line(x: str, n: int = 160) -> str:
+    return x if len(x) <= n else x[:n - 1].rsplit(" ", 1)[0] + "…"
+
+
+def _forms_text(conn, pid: str) -> str:
+    """G4.7 (D7): tên các mẫu Cổng liệt kê + link trang thủ tục trên Cổng (nơi tải mẫu; Cổng không cho tải tệp trực tiếp nên không có bản lưu)."""
+    fs = data_api.forms(conn, pid)
+    r = conn.execute("SELECT portal_url FROM procedures WHERE proc_id=? AND status='active'", (pid,)).fetchone()
+    url = r[0] if r and r[0] else ""
+    if fs:
+        lines = [f"- {_line(x['desc']) if x['desc'] else x['file']}" + (f" (tệp: {x['file']})" if x["desc"] else "") for x in fs[:FORMS_SHOW]]
+        if len(fs) > FORMS_SHOW:
+            lines.append(f"- … và {len(fs) - FORMS_SHOW} mẫu khác")
+        return "\n".join(lines) + (f"\nTải mẫu tại trang thủ tục trên Cổng Dịch vụ công: {url}" if url else "")
+    # Cổng không đính kèm tệp mẫu: tên mẫu nằm trong thành phần hồ sơ ("Tờ khai ... theo mẫu")
+    named = []
+    for c in data_api.fields(conn, pid, ["components"]):
+        for line in c["text"].split("\n"):
+            if _FORM_CUE.search(fold(line)) and line.strip() not in named:
+                named.append(line.strip().lstrip("-+• "))
+    if not named or not url:
+        return ""
+    return ("Cổng Dịch vụ công không đính kèm tệp mẫu cho thủ tục này. Các giấy tờ phải làm theo mẫu (theo thành phần hồ sơ):\n"
+            + "\n".join(f"- {_line(x)}" for x in named[:FORMS_SHOW]) + f"\nXem mẫu và nộp hồ sơ tại trang thủ tục trên Cổng Dịch vụ công: {url}")
+
+
 def _field_text(conn, pid: str, f: str, status: str, conds: list[str] | None = None, label: str = "") -> tuple[str, str]:
     """-> (nội dung, trạng thái thực). Trạng thái 'unknown' không đồng nghĩa với 'không có'."""
     if f == "fees":
         txt, st = _fees_text(conn, pid)
         return txt, st
+    if f == "files":
+        txt = _forms_text(conn, pid)
+        if txt:
+            return txt, "present"
     chunks = [c for c in data_api.fields(conn, pid, [f]) if c["text"].strip()]
     if not chunks:
         return "", ("unknown" if status == "unknown" else "absent_confirmed")
@@ -295,6 +329,8 @@ def procedure_table(conn, pid: str) -> dict | None:
     for f in TABLE_FIELDS:
         if f == "fees":
             txt, st = _fees_text(conn, pid)
+        elif f == "files" and _forms_text(conn, pid):
+            txt, st = _forms_text(conn, pid), "present"
         else:
             ch = [c for c in data_api.fields(conn, pid, [f]) if c["text"].strip()]
             txt, st = "\n".join(c["text"].strip() for c in ch), "present"
