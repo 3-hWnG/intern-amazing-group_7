@@ -24,6 +24,8 @@ def init_db() -> None:
         c.execute("ALTER TABLE session_facts ADD COLUMN proc_id TEXT NOT NULL DEFAULT ''")
     if "pinned" not in [r[1] for r in c.execute("PRAGMA table_info(conversations)")]:   # DB cũ thiếu cột ghim
         c.execute("ALTER TABLE conversations ADD COLUMN pinned INTEGER NOT NULL DEFAULT 0")
+    if "title_src" not in [r[1] for r in c.execute("PRAGMA table_info(conversations)")]:   # G4.5: hội thoại cũ giữ nguyên tên (legacy)
+        c.execute("ALTER TABLE conversations ADD COLUMN title_src TEXT NOT NULL DEFAULT 'legacy'")
     c.commit()
     c.close()
 
@@ -52,7 +54,7 @@ def ensure_conversation(cid: str | None) -> str:
     if cid and conversation_exists(cid):
         return cid
     cid = uuid.uuid4().hex
-    _run("INSERT INTO conversations(id) VALUES (?)", (cid,))
+    _run("INSERT INTO conversations(id, title_src) VALUES (?, 'new')", (cid,))
     return cid
 
 
@@ -63,7 +65,7 @@ def list_conversations() -> list[dict]:
 
 
 def rename_conversation(cid: str, title: str) -> None:
-    _run("UPDATE conversations SET title=? WHERE id=?", (mask_pii(title).strip()[:60] or "Cuộc trò chuyện mới", cid))
+    _run("UPDATE conversations SET title=?, title_src='user' WHERE id=?", (mask_pii(title).strip()[:60] or "Cuộc trò chuyện mới", cid))
 
 
 def set_pinned(cid: str, pinned: bool) -> None:
@@ -80,8 +82,18 @@ def delete_conversation(cid: str | None = None) -> None:
 
 
 def set_title_if_new(cid: str, text: str) -> None:
-    _run("UPDATE conversations SET title=? WHERE id=? AND title='Cuộc trò chuyện mới'",
-         (mask_pii(text).strip()[:60] or "Cuộc trò chuyện mới", cid))
+    """Tên tạm = câu đầu đã che CCCD/SĐT (G4.5: đến khi có lượt trả lời trực tiếp đầu tiên thì đổi sang tên thủ tục)."""
+    _run("UPDATE conversations SET title=?, title_src=CASE WHEN title_src='new' THEN 'question' ELSE title_src END "
+         "WHERE id=? AND title='Cuộc trò chuyện mới'", (mask_pii(text).strip()[:60] or "Cuộc trò chuyện mới", cid))
+
+
+def set_title_procedure(cid: str, label: str) -> None:
+    """G4.5 (D6): tên hội thoại = tên thủ tục của lượt trả lời trực tiếp ĐẦU TIÊN. Không đổi tên người dùng tự đặt / hội thoại cũ."""
+    name = (label or "").strip()
+    if len(name) > 60:
+        name = name[:59].rsplit(" ", 1)[0] + "…"
+    if name:
+        _run("UPDATE conversations SET title=?, title_src='procedure' WHERE id=? AND title_src IN ('new','question')", (name, cid))
 
 
 def add_message(cid: str, role: str, content: str, kind: str = "",

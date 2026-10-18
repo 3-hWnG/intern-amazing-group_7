@@ -4,7 +4,8 @@ CREATE TABLE IF NOT EXISTS conversations (
   id          TEXT PRIMARY KEY,
   created_at  TEXT NOT NULL DEFAULT (datetime('now')),
   title       TEXT NOT NULL DEFAULT 'Cuộc trò chuyện mới',
-  pinned      INTEGER NOT NULL DEFAULT 0
+  pinned      INTEGER NOT NULL DEFAULT 0,
+  title_src   TEXT NOT NULL DEFAULT 'new'   -- G4.5 (D6): new | question (tạm: câu đầu đã che số) | procedure (tên thủ tục trả lời đầu tiên) | user (tự đổi) | legacy
 );
 CREATE TABLE IF NOT EXISTS messages (
   id              INTEGER PRIMARY KEY AUTOINCREMENT,

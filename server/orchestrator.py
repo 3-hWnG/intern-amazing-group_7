@@ -302,6 +302,8 @@ def handle_turn(turn: Turn) -> dict:
                  llm_ms=plan.llm_ms)
     res = {"kind": ans["kind"] if not clarify else "clarify", "blocks": ans["blocks"], "clarify": clarify,
            "plan": plan.to_dict(), "trace": trace}
+    if direct:
+        res["first_proc"] = direct[0].procedure_label   # G4.5: tên hội thoại
     if picked and picked != NATIONWIDE and picked != turn.profile_province:   # G4.4: gợi ý "Nhớ tỉnh/thành ... cho tài khoản?"
         res["memory_suggest"] = {"axis": "province", "value": picked}
     elif answered_clarify and forced_pid and cl_meta.get("kind") != "province":    # Phase 26: gợi ý "Nhớ đối tượng ...?" (UI hỏi, người dùng bấm mới lưu)

@@ -359,6 +359,8 @@ async def chat(body: ChatIn, request: Request, cid_mem: str = Depends(_cid)):
                             {"blocks": blocks, "clarify": clar}, pii_from=text)
     if r.get("trace") is not None:
         store.add_trace(cid, mid, r["trace"], box["ms"])
+    if r.get("first_proc"):
+        store.set_title_procedure(cid, r["first_proc"])   # G4.5 (D6): chỉ đổi khi tên còn tạm
     out = {"conversation_id": cid, "message_id": mid, "blocks": blocks, "clarify": clar, "kind": kind}
     if r.get("memory_suggest"):            # Phase 26: UI hỏi "Nhớ đối tượng ...?"
         out["memory_suggest"] = r["memory_suggest"]
