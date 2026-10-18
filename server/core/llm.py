@@ -11,6 +11,7 @@ import re
 
 import ollama
 
+from . import gpu
 from config import (LLM_KEEP_ALIVE, LLM_MODEL, LLM_NUM_CTX, LLM_THINK,
                     LLM_TIMEOUT, OLLAMA_HOST)
 
@@ -39,17 +40,23 @@ def client(timeout: float | None = None) -> ollama.Client:
 
 def chat(system: str, user: str, history: list[dict] | None = None, *,
          schema: dict | str | None = None, think: bool | None = None,
-         model: str | None = None, timeout: float | None = None, **options) -> str:
-    """Gọi chat. schema (dict JSON schema, hoặc "json") -> ràng buộc đầu ra. timeout (giây) cứng, httpx."""
+         model: str | None = None, timeout: float | None = None, priority: int = gpu.P0,
+         wait: float | None = None, **options) -> str:
+    """Gọi chat. schema (dict JSON schema, hoặc "json") -> ràng buộc đầu ra. timeout (giây) cứng, httpx.
+    G3.1: xin chỗ GPU chung (core/gpu.py) trước khi gọi; chờ quá `wait` giây (mặc định = timeout) -> LLMError
+    (bên gọi rơi về câu trả lời bằng code). Phần luật không đi qua đây nên không phải chờ."""
     msgs = [{"role": "system", "content": system}]
     msgs += [{"role": m["role"], "content": m["content"]} for m in history or []]
     msgs.append({"role": "user", "content": user})
     opts = {"num_ctx": LLM_NUM_CTX, "temperature": 0.0 if schema else 0.3, **options}
     name = model or model_name()
     try:
-        res = client(timeout).chat(model=name, messages=msgs, format=schema,
-                            keep_alive=LLM_KEEP_ALIVE, options=opts,
-                            think=LLM_THINK if think is None else think)
+        with gpu.slot(priority, timeout=wait if wait is not None else (timeout or LLM_TIMEOUT)):
+            res = client(timeout).chat(model=name, messages=msgs, format=schema,
+                                       keep_alive=LLM_KEEP_ALIVE, options=opts,
+                                       think=LLM_THINK if think is None else think)
+    except gpu.Busy as exc:
+        raise LLMError(f"GPU đang bận (đang trả lời người khác), bỏ qua bước AI: {exc}") from exc
     except Exception as exc:
         raise LLMError(f"Không gọi được mô hình {name} tại {OLLAMA_HOST}: {exc}") from exc
     return (res["message"]["content"] or "").strip()

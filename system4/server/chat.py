@@ -24,7 +24,7 @@ import re
 import time
 import uuid
 
-from core import websearch as core_web
+from core import gpu, websearch as core_web
 from . import ambig, context, db, greet, ground, guard, lang, llm, memory, persona, search, settings, tabletool, websearch
 from ..abi import turn as abi_turn
 
@@ -314,9 +314,9 @@ async def _fast_text(msgs: list[dict], prefix: str, state: dict):
 
 
 async def _after_turn(user_id: int, cid: str, text: str, mid: int | None = None) -> dict:
-    """Việc nền sau câu trả lời: bộ nhớ (chỉ khi đáng) + tóm tắt. Chờ GPU như mọi lượt khác."""
+    """Việc nền sau câu trả lời: bộ nhớ (chỉ khi đáng) + tóm tắt. Chờ GPU ở mức ưu tiên thấp (P2): câu hỏi mới đi trước."""
     try:
-        async with llm.Turn():
+        async with llm.Turn(gpu.P2):
             mem = await asyncio.to_thread(memory.update, user_id, text)
             summarized = await asyncio.to_thread(context.maybe_summarize, cid)
         if mid:
@@ -388,7 +388,7 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
             if settings.get("TABLE_TOOL") and tabletool.triggered(text):
                 t1 = time.perf_counter()
-                async with llm.Turn():
+                async with llm.Turn(gpu.P1):
                     table = await asyncio.to_thread(tabletool.run, squery, ids)
                 if table:
                     table["info"]["ms"] = int((time.perf_counter() - t1) * 1000)

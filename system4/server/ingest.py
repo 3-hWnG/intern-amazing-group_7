@@ -278,13 +278,25 @@ def _title_score(header: str, values: list[str]) -> float:
 def _ai_title(headers: list[str], data: list[list[str]], guess: str | None) -> str | None:
     """AI kiểm lại lựa chọn cột tiêu đề (chế độ JSON, ~1 giây). Lỗi/không hợp lệ -> None."""
     sample = "\n".join(" | ".join(r) for r in data[:4])
-    out = llm.chat_json([
+    from core import gpu
+    try:
+        gpu.scheduler.acquire(gpu.P3, timeout=120)   # nạp tệp: ưu tiên thấp nhất (G3.1)
+    except gpu.Busy:
+        return None
+    try:
+        out = _ai_title_call(headers, sample, guess)
+    finally:
+        gpu.scheduler.release()
+    t = str(out.get("title_column", "")).strip()
+    return t if t in headers else None
+
+
+def _ai_title_call(headers: list[str], sample: str, guess: str | None) -> dict:
+    return llm.chat_json([
         {"role": "system", "content": "Bạn chọn cột TIÊU ĐỀ cho một bảng dữ liệu: cột mô tả mỗi dòng là cái gì (tên sản phẩm, tên thủ tục, câu hỏi...). "
                                       "Chỉ chọn một tên cột có trong danh sách. Không có cột nào phù hợp thì để chuỗi rỗng."},
         {"role": "user", "content": f"Các cột: {headers}\nGợi ý của code: {guess or '(không có)'}\nVài dòng mẫu:\n{sample}"}],
         {"type": "object", "properties": {"title_column": {"type": "string"}}, "required": ["title_column"]}, timeout=30)
-    t = str(out.get("title_column", "")).strip()
-    return t if t in headers else None
 
 
 def _consistency(lines: list[list[str]]) -> list[float]:

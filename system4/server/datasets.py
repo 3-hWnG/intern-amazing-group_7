@@ -159,7 +159,9 @@ def process(ds_id: int) -> None:
         if not db.get_dataset(ds_id):
             return   # người dùng xoá giữa chừng
         batch = recs[i:i + EMBED_BATCH]
-        vecs = search.embed([r["text"] for r in batch])
+        from core import gpu
+        with gpu.slot(gpu.P3):   # G3.1: tạo vector khi nạp tệp nhường câu hỏi đang chờ
+            vecs = search.embed([r["text"] for r in batch])
         search.add_vectors(ids[i:i + EMBED_BATCH], vecs, ds_id, ds["user_id"])
         db.update_dataset(ds_id, progress=30 + int(68 * min(len(recs), i + EMBED_BATCH) / len(recs)),
                           message=f"Đang tạo chỉ mục tìm theo nghĩa {min(len(recs), i + EMBED_BATCH)}/{len(recs)}…")

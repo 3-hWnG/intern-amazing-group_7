@@ -265,7 +265,8 @@ def make_router(s3_store) -> APIRouter:
         system = persona.build([], "", instructions, fast=True, evidence=out, upset=persona.negative(body.query))
         msgs = [{"role": "system", "content": system}, {"role": "user", "content": body.query}]
         ans, raw = chat.AnswerStream(), []
-        async with llm.Turn():
+        from core import gpu
+        async with llm.Turn(gpu.P1):   # phòng thử của dev: sau câu hỏi của người dùng
             async for t in llm.stream_json(msgs, persona.FAST_SCHEMA_KB):
                 if isinstance(t, llm.Thought):
                     continue

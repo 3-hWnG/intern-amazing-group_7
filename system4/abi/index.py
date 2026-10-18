@@ -213,7 +213,12 @@ def _build(vid: int, data: dict, label: str) -> dict:
         for i in range(0, len(recs), datasets.EMBED_BATCH):
             batch, bids = recs[i:i + datasets.EMBED_BATCH], ids[i:i + datasets.EMBED_BATCH]
             todo = [k for k, r in enumerate(batch) if r["text"] not in cache]
-            new = search.embed([batch[k]["text"] for k in todo]) if todo else []
+            if todo:
+                from core import gpu
+                with gpu.slot(gpu.P3):   # G3.1: dựng chỉ mục ABI nhường câu hỏi đang chờ
+                    new = search.embed([batch[k]["text"] for k in todo])
+            else:
+                new = []
             vecs, it = [], iter(new)
             for k, r in enumerate(batch):
                 vecs.append(cache[r["text"]] if r["text"] in cache else next(it))

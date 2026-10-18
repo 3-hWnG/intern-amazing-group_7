@@ -65,8 +65,10 @@ LLM_THINK = _bool("LLM_THINK", False)      # qwen3: False = tắt thinking
 SHOWN_MAX = _int("S3_SHOWN_MAX", 2)                # số thủ tục đã hiển thị còn nhớ (trước: không giới hạn, tới 8)
 HISTORY_MESSAGES = _int("S3_HISTORY_MESSAGES", 3)  # số tin gần nhất đưa vào ngữ cảnh lượt sau (trước: 10)
 TRACE_KEEP = _int("S3_TRACE_KEEP", 300)            # chi tiết (turn_traces) giữ bao nhiêu lượt gần nhất toàn hệ thống
-# Hàng đợi: mặc định 1 worker (GPU 6 GB). Chạy song song: đặt S3_QUEUE_CONCURRENCY=N VÀ OLLAMA_NUM_PARALLEL=N cho Ollama (xem eval/measure_parallel.py)
+# G3.1 (D15): phần LUẬT chạy song song (RULE_WORKERS luồng), chỉ lời gọi LLM xếp hàng GPU chung (server/core/gpu.py).
+# Số chỗ GPU: S3_QUEUE_CONCURRENCY / S4_CONCURRENCY (mặc định 1, card 6 GB). Card lớn: đặt N VÀ OLLAMA_NUM_PARALLEL=N cho Ollama.
 QUEUE_CONCURRENCY = _int("S3_QUEUE_CONCURRENCY", 1)
+RULE_WORKERS = _int("S3_RULE_WORKERS", 4)
 QUEUE_MAX_DEPTH = _int("QUEUE_MAX_DEPTH", 20)
 QUEUE_JOB_TIMEOUT = _int("QUEUE_JOB_TIMEOUT", 180)
 

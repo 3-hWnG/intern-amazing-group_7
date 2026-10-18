@@ -5,7 +5,8 @@ LLM, nhưng đẩy từng mẩu chữ về cho request qua một hàng đợi ri
 vẫn thấy chữ hiện dần, chỉ là phải chờ tới lượt. Kèm vị trí trong hàng đợi để
 người dùng biết còn bao lâu thay vì nhìn màn hình trắng.
 
-Đổi QUEUE_CONCURRENCY trong config để chạy song song.
+G3.1: worker chạy cả lượt (phần luật, tìm web) với RULE_WORKERS luồng song song; lời gọi LLM bên trong lượt xin chỗ ở
+bộ lập lịch GPU chung (core/gpu.py) nên một lượt LLM / tìm web không chặn lượt chỉ-luật của người khác.
 """
 
 from __future__ import annotations
@@ -15,7 +16,7 @@ import time
 from dataclasses import dataclass, field
 from typing import Callable
 
-from config import QUEUE_CONCURRENCY, QUEUE_JOB_TIMEOUT, QUEUE_MAX_DEPTH
+from config import QUEUE_JOB_TIMEOUT, QUEUE_MAX_DEPTH, RULE_WORKERS
 
 _DONE = object()      # sentinel báo hết luồng chữ
 
@@ -36,7 +37,7 @@ class Job:
 
 
 class QueueManager:
-    def __init__(self, concurrency: int = QUEUE_CONCURRENCY,
+    def __init__(self, concurrency: int = RULE_WORKERS,
                  max_depth: int = QUEUE_MAX_DEPTH,
                  job_timeout: int = QUEUE_JOB_TIMEOUT):
         self.concurrency = max(1, int(concurrency))

@@ -12,6 +12,7 @@ from config import WEBSEARCH_MODEL
 
 MODEL_PROVIDER = None   # System 4 gán hàm trả model chọn ở ⚙ (WEBSEARCH_MODEL); không có thì dùng biến môi trường S3_WEBSEARCH_MODEL
 
+SEARCH_BUDGET = 15   # giây: tìm web (mạng) chạy NGOÀI hàng GPU, nhưng không giữ lượt quá lâu (G3.1)
 _cache: dict[tuple, tuple[float, list[dict]]] = {}   # (truy vấn, n) -> (lúc lưu, kết quả); tránh gọi lại khi sinh lại câu trả lời
 
 
@@ -31,7 +32,9 @@ def search(query: str, n: int = 5, timeout: int = 8) -> tuple[list[dict], dict]:
     if hit and time.time() - hit[0] < 600:
         return hit[1], {**info, "cached": True, "ms": 0}
     rows, err = [], ""
-    for _ in (1, 2):   # thử lại 1 lần (DuckDuckGo hay từ chối lẻ tẻ)
+    for attempt in (1, 2):   # thử lại 1 lần (DuckDuckGo hay từ chối lẻ tẻ); G3.1: cả bước tìm tối đa SEARCH_BUDGET giây
+        if attempt == 2 and time.perf_counter() - t0 + timeout > SEARCH_BUDGET:
+            break
         try:
             from ddgs import DDGS
             rows = DDGS(timeout=timeout).text(query, region="vn-vi", max_results=n) or []
