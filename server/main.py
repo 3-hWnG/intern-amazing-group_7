@@ -16,7 +16,7 @@ import time
 from contextlib import asynccontextmanager
 
 import uvicorn
-from fastapi import Depends, FastAPI, Header, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
@@ -99,9 +99,19 @@ def set_config(body: ConfigIn):
     return get_config()
 
 
-# ---- Phase 26: bộ nhớ người dùng (hồ sơ + nhớ lựa chọn MCQ), khoá theo header X-Client-Id (thiếu = 'default')
-# FINAL-PRODUCT: [B4][MEM] client_id tự khai, không xác thực: mọi endpoint /memory* tin id này. Bản cuối: lấy user từ đăng nhập (mục 6)
-def _cid(x_client_id: str | None = Header(None)) -> str:
+# ---- Phase 26: bộ nhớ người dùng (hồ sơ + nhớ lựa chọn MCQ).
+# G1.2 (P02/F2): bật System 4 -> khoá theo TÀI KHOẢN đăng nhập ("u<id>", do middleware s4_gate gắn request.state.user), bỏ qua
+# header X-Client-Id và 'default'; cầu nối Strict gửi kèm cookie nên không cần truyền gì thêm.
+# Chỉ chạy System 3 một mình (S4_ENABLED=0, không đăng nhập): vẫn theo header X-Client-Id (thiếu = 'default') như trước.
+_S4 = os.environ.get("S4_ENABLED", "0") == "1"
+
+
+def _cid(request: Request, x_client_id: str | None = Header(None)) -> str:
+    user = getattr(request.state, "user", None)
+    if user:
+        return f"u{int(user['id'])}"
+    if _S4:
+        raise HTTPException(401, "Cần đăng nhập")
     try:
         return user_memory.client_id(x_client_id)
     except ValueError as e:
