@@ -143,7 +143,8 @@ def _engine(ds_ids: list[int]) -> tuple[Engine | None, list[int]]:
     ready = [r for r in rows if r and r["status"] == "ready"]
     if not ready:
         return None, []
-    key = tuple(sorted((r["dataset_id"], r["updated_at"]) for r in ready))
+    agg = bool(settings.get("FASTPATH_AGGREGATE"))
+    key = (agg, tuple(sorted((r["dataset_id"], r["updated_at"]) for r in ready)))
     with _lock:
         if key in _cache:
             return _cache[key], [r["dataset_id"] for r in ready]
@@ -152,7 +153,7 @@ def _engine(ds_ids: list[int]) -> tuple[Engine | None, list[int]]:
         t, x = _materialize(r["spec"])
         tables += t; texts += x
         enabled.update(r["report"].get("enabled", {}))
-    eng = Engine(tables, texts, enabled)
+    eng = Engine(tables, texts, enabled, aggregate=agg)
     with _lock:
         if len(_cache) > 16:
             _cache.clear()
@@ -209,7 +210,8 @@ def summary(ds_id: int) -> dict:
     text = (rep.get("tables") or {}).get(f"text:{ds_id}")
     return {"status": r["status"], "message": r["message"], "updated_at": r["updated_at"], "tables": tables,
             "texts": len(spec.get("text_ids", [])), "text_test": (text or {}).get("text"),
-            "compile_ms": rep.get("compile_ms"), "selftest_ms": rep.get("selftest_ms"), "llm_tables": rep.get("llm_tables")}
+            "compile_ms": rep.get("compile_ms"), "selftest_ms": rep.get("selftest_ms"), "llm_tables": rep.get("llm_tables"),
+            "aggregate_on": bool(settings.get("FASTPATH_AGGREGATE"))}
 
 
 def make_router() -> APIRouter:

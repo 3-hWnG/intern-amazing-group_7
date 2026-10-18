@@ -100,6 +100,7 @@ ABI_BOT_CONTACT = ''
 FASTPATH_ENABLED = True
 FASTPATH_LLM_CUES = True
 FASTPATH_MIN_PASS = 0.9
+FASTPATH_AGGREGATE = False
 # ==== HẾT MẶC ĐỊNH ====
 
 # Danh sách cài đặt hiện trên panel. type: str | text (nhiều dòng) | int | float | bool | choice | rules
@@ -229,6 +230,10 @@ SETTINGS = [
     dict(key="FASTPATH_LLM_CUES", type="bool", group="Tốc độ & độ chính xác", label="Đường nhanh: nhờ AI đặt tên trường lúc nạp",
          help="Bật: lúc nạp, AI được gọi MỘT lần mỗi bảng để dịch tên cột (vd. executing_agency -> cơ quan thực hiện) và gợi ý cách người dùng hỏi; "
               "code lọc lại gợi ý (bỏ giá trị trong ô, chữ chung, gợi ý trùng nhiều trường). Tắt: chỉ dùng tên cột."),
+    dict(key="FASTPATH_AGGREGATE", type="bool", group="Tốc độ & độ chính xác", label="Đường nhanh: cả câu đếm / liệt kê",
+         help="Tắt (mặc định, leader chọn 18/10): code chỉ trả lời câu tra một dòng, câu nối tiếp, hỏi lại khi trùng tên, trích văn bản; câu đếm / "
+              "liệt kê đi đường cũ (tìm kiếm + AI + công cụ bảng). Lý do: trên bộ mù cửa hàng, tra một dòng đúng 14/14 nhưng đếm / liệt kê chỉ 1/6 "
+              "(docs/SYSTEM4_DUONG_NHANH.md mục F). Bật: code tính cả đếm / liệt kê (nhanh hơn, có thể sai trên dữ liệu nhiều bảng)."),
     dict(key="FASTPATH_MIN_PASS", type="float", group="Tốc độ & độ chính xác", label="Đường nhanh: ngưỡng bài tự kiểm", min=0.5, max=1.0,
          help="Lúc nạp, code tự sinh câu hỏi + đáp án từ chính dữ liệu và chạy thử. Bảng nào đạt dưới ngưỡng này ở một loại câu (tra trường / "
               "đếm-liệt kê / văn bản) thì loại câu đó tắt cho bảng ấy, câu hỏi đi đường cũ."),

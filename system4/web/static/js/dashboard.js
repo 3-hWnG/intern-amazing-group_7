@@ -234,7 +234,12 @@
     (r.tables || []).filter((x) => !x.parent).forEach((tb) => {
       const line = el("div", "row");
       line.append(el("b", "", tb.name), span(`${tb.rows} dòng · mỗi dòng là một «${tb.entity_noun || tb.title_label}»`, "muted small"));
-      ["field", "aggregate"].forEach((k) => { if (tb.test[k]) line.appendChild(badge(tb.enabled[k] !== false, ROUTE[k], tb.test[k])); });
+      ["field", "aggregate"].forEach((k) => {
+        if (!tb.test[k]) return;
+        const b = badge(tb.enabled[k] !== false && (k !== "aggregate" || r.aggregate_on), ROUTE[k], tb.test[k]);
+        if (k === "aggregate" && !r.aggregate_on) { b.textContent += " · tắt ở ⚙"; b.title = "⚙ FASTPATH_AGGREGATE đang tắt (mặc định): câu đếm / liệt kê đi đường cũ. " + b.title; }
+        line.appendChild(b);
+      });
       const ft = table(["Cột", "Tên trường", "Kiểu", "Cách hỏi (gợi ý)"]);
       tb.fields.forEach((f) => ft.appendChild(row([f.name, f.label, (TYPE[f.type] || f.type) + (f.long ? " (dài)" : ""), [...f.cues, ...f.absent.map((a) => "≠ " + a)].join(" · ")])));
       const extra = [];

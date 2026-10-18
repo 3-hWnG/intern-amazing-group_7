@@ -136,3 +136,10 @@ Kết luận trung thực:
 Lỗi còn lại, chưa sửa (bộ mù `shop` đã thấy kết quả, sửa rồi phải đo trên bộ mù thứ ba): (1) danh từ / tên của MỌI bảng không được làm điều kiện lọc giá trị;
 (2) câu nhắc tên một bảng mà bảng đó không trả lời được thì nhường, không trả lời bằng bảng khác; (3) bài tự kiểm sinh thêm câu "bao nhiêu <danh từ bảng A>"
 khi dữ liệu có nhiều bảng.
+
+## G. Quyết định mặc định (leader, 18/10/2026): tắt riêng đếm / liệt kê
+⚙ `FASTPATH_AGGREGATE` mới, **mặc định tắt**: code chỉ trả lời câu tra một dòng, câu nối tiếp, hỏi lại khi trùng tên, trích văn bản; câu đếm / liệt kê
+đi đường cũ (tìm kiếm + AI + công cụ bảng). Bài tự kiểm vẫn chấm loại câu đếm / liệt kê để báo cáo; bảng điều khiển ghi "tắt ở ⚙".
+Kiểm ở mức code sau khi tắt (không phải lượt đo mới; bộ `shop` đã bị xem): trên bộ cửa hàng code tự trả lời 15/32 câu, đúng 15, các câu còn lại đi đường cũ;
+dev (NV5 + du lịch) 0 câu sai. Tổng trên bộ mù với cấu hình này **chưa đo bằng model thật** — ước tính 29/32 ở mục F là suy ra.
+Bật lại đếm / liệt kê chỉ nên sau khi sửa lỗi ở mục F và đo trên bộ mù thứ ba.

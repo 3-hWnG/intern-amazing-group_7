@@ -110,11 +110,16 @@ with TestClient(main.app) as c:
     # ---- trường trống: nói rõ dữ liệu không ghi (không bịa)
     m, _ = chat("Họ tên cha của bạn Lạc Hoàng Long?")
     assert m["meta"]["fast_path"]["route"] == "field-empty" and "không ghi" in m["content"], m["content"]
-    # ---- đếm trên cả bảng
+    # ---- đếm trên cả bảng: mặc định (⚙ FASTPATH_AGGREGATE tắt, leader chọn 18/10) đi đường cũ; bật thì code tính
+    n0 = len(llm_calls)
+    m, _ = chat("Lớp có bao nhiêu bạn nữ?")
+    assert "fast_path" not in m["meta"] and len(llm_calls) == n0 + 1, m["meta"]
+    settings.save({"FASTPATH_AGGREGATE": True})
     m, _ = chat("Lớp có bao nhiêu bạn nữ?")
     assert m["meta"]["fast_path"]["route"] == "aggregate" and "**16**" in m["content"], m["content"]
     m, _ = chat("Có mấy bạn sinh năm 2019?")
     assert "**5**" in m["content"], m["content"]
+    settings.save({"FASTPATH_AGGREGATE": False})
     # ---- trùng tên: hỏi lại bằng nút, chọn xong thì trả lời đúng trường đã hỏi
     m, cid = chat("Mẹ của bé An tên gì?")
     assert m["meta"]["fast_path"]["kind"] == "ask" and {"Trần Thị Bảo An", "Lê Bình An"} <= set(m["meta"]["choices"]), m["meta"]

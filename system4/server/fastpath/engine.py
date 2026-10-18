@@ -89,10 +89,11 @@ def _cap_words(text: str) -> list[list[str]]:
 
 
 class Engine:
-    def __init__(self, tables: list[dict], texts: list[dict], enabled: dict):
+    def __init__(self, tables: list[dict], texts: list[dict], enabled: dict, aggregate: bool = True):
         self.ents = [t for t in tables if t["parent"] is None and len(t["rows"]) >= 1]
         self.texts = texts
         self.enabled = enabled
+        self.aggregate = aggregate   # ⚙ FASTPATH_AGGREGATE: tắt thì câu đếm / liệt kê nhường đường cũ (bài tự kiểm vẫn chấm để báo cáo)
         self.bykey = {t["key"]: t for t in tables}
         self.byrow = {}
         docs = []
@@ -124,6 +125,8 @@ class Engine:
         return [n for n in out if n]
 
     def on(self, t: dict, route: str) -> bool:
+        if route == "aggregate" and not self.aggregate:
+            return False
         return self.enabled.get(t["key"], {}).get(route, True)
 
     def idf(self, w: str) -> float:
