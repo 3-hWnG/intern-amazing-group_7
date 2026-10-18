@@ -161,3 +161,14 @@ CREATE TABLE IF NOT EXISTS feedback_log (
   created_at TEXT NOT NULL DEFAULT (datetime('now')),
   UNIQUE(engine, msg_key)
 );
+
+-- Đường nhanh (fast path): đặc tả biên dịch từ bản ghi của một bộ dữ liệu (kiểu cột, tên trường, cách hỏi, bảng con)
+-- + kết quả bài tự kiểm (loại câu nào được bật cho bảng nào). Xem server/fastpath/. Dựng lại khi bộ dữ liệu được nạp / xử lý lại.
+CREATE TABLE IF NOT EXISTS fastpath (
+  dataset_id  INTEGER PRIMARY KEY REFERENCES datasets(id) ON DELETE CASCADE,
+  status      TEXT NOT NULL DEFAULT 'queued',    -- queued | building | ready | error | skipped
+  message     TEXT NOT NULL DEFAULT '',
+  spec        TEXT NOT NULL DEFAULT '{}',
+  report      TEXT NOT NULL DEFAULT '{}',
+  updated_at  TEXT NOT NULL DEFAULT (datetime('now'))
+);

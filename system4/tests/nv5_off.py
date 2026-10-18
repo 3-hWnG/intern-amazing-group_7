@@ -2,7 +2,8 @@
 Từ NV5 mặc định đã BẬT (cấu hình thắng bộ đo); tính năng NV5 được kiểm riêng ở test_nv5.py."""
 OFF = {"PROMPT_CACHE_ORDER": False, "JSON_PLAN_FIRST": False, "GREETING_MODE": "off", "GROUNDING_CHECK": "off",
        "AMBIGUITY_CHECK": False, "TABLE_TOOL": False, "STRICT_BUSINESS_FACTS": False, "SEARCH_FOLLOWUP": False,
-       "RERANK_RESCUE": False, "KEEP_MODELS_LOADED": False}
+       "RERANK_RESCUE": False, "KEEP_MODELS_LOADED": False,
+       "FASTPATH_ENABLED": False}   # đường nhanh (fastpath/) kiểm riêng ở test_fastpath.py
 
 
 def apply():

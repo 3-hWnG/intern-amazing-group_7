@@ -23,7 +23,7 @@ import time
 import uuid
 
 from core import gpu, websearch as core_web
-from . import ambig, answer_cache, context, db, greet, profile, ground, guard, lang, llm, memory, persona, search, settings, tabletool, websearch
+from . import ambig, answer_cache, context, db, fastpath, greet, profile, ground, guard, lang, llm, memory, persona, search, settings, tabletool, websearch
 from ..abi import turn as abi_turn
 
 RULES_ONLY_MESSAGE = ("Bạn đang ở chế độ **chỉ trả lời bằng luật** nên lĩnh vực này (cần AI viết câu trả lời) tạm không trả lời. "
@@ -328,7 +328,7 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
         gate = gm in ("code_first", "ai_first") and greet.is_greeting(text, history_path)   # quy tắc code: ngắn + có từ chào
         small_by_code = gm == "code_first" and gate        # code nhận trước: không tra dữ liệu
         ask_small = gm != "off" and not small_by_code       # AI được đánh dấu câu xã giao
-        amb, table, abi_res = None, None, None
+        amb, table, abi_res, fp = None, None, None, None
         squery = search_query(text, history_path)
         if web:   # nút "Tìm web": chỉ DuckDuckGo, bỏ qua bộ dữ liệu và câu xã giao
             gm, gate, small_by_code, ask_small = "off", False, False, False
@@ -340,7 +340,16 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             evidence, sinfo = abi_res["evidence"], abi_res["info"]
             sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
         elif active and not small_by_code:   # có bộ dữ liệu đang bật -> Chuyên gia: tìm trước khi hỏi AI
+            if settings.get("FASTPATH_ENABLED") and prof.get("fast_path", True):   # đường nhanh: code trả lời câu tra cứu rõ ràng, không tìm, không AI
+                limit = settings.get("CLARIFY_MAX")
+                can_ask = bool(prof["clarify"]) and limit > 0 and clarify_streak(history_path) < limit
+                fp = await asyncio.to_thread(fastpath.answer, [d["id"] for d in active], text, history_path, prof["answer_mode"] != "free", can_ask)
+        if fp and fp["use"]:
+            evidence, sinfo = [], {"datasets": len(active), "fast_path": fp["trace"], "search_ms": int((time.perf_counter() - t0) * 1000)}
+        elif active and not small_by_code and not web and not abi_mode:
             evidence, sinfo = await asyncio.to_thread(search.search, user["id"], squery, [d["id"] for d in active], profile.search_overrides(prof))
+            if fp:
+                sinfo["fast_path"] = fp["trace"]   # đường nhanh đã nhường: lý do hiện trong 🔍
             ids = [d["id"] for d in active]
             if not evidence and search.is_overview(text):   # "tóm tắt file": không có đoạn nào khớp thì đưa các đoạn đầu của tệp văn bản
                 evidence = await asyncio.to_thread(search.overview, ids)
@@ -387,6 +396,22 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             db.save_trace(bmid, cid, user["id"], {"mode": mode, "query": text, "blocked_by": b["name"], "checks": checks},
                           settings.get("TRACE_KEEP"))
             yield sse({"type": "delta", "text": b["message"]})
+            yield sse({"type": "done"})
+            return
+        if fp and fp["use"]:   # đường nhanh: code trả lời (nguyên văn ô dữ liệu + nguồn) / hỏi lại bằng nút, không gọi AI
+            r = fp["result"]
+            ans = (settings.get("LANG_FALLBACK_APOLOGY") + "\n\n" if info["foreign"] else "") + r["content"]
+            meta = {"specialist": True, "mode": mode,
+                    "fast_path": {"kind": r["kind"], "route": r.get("route"), "ms": r["ms"], "state": fp["trace"]["state_out"]},
+                    "sources": [{"n": i, "record_id": x["record_id"], "url": None, "title": x["title"], "dataset": x["dataset"], "score": None}
+                                for i, x in enumerate(r.get("sources") or [], 1)],
+                    "timing": {"llm_ms": 0, "total_ms": int((time.perf_counter() - t0) * 1000)}}
+            if r["kind"] == "ask":
+                meta["choices"] = r["choices"]
+            fmid = db.add_message(cid, "assistant", ans, "done", user_mid, meta, pii_from=text)
+            db.save_trace(fmid, cid, user["id"], {"mode": mode, "specialist": True, "query": text, "retrieval": sinfo, "checks": checks,
+                                                  "prompts": [], "output": {"final_text": ans}, "timing": meta["timing"]}, settings.get("TRACE_KEEP"))
+            yield sse({"type": "delta", "text": ans})
             yield sse({"type": "done"})
             return
         if amb and not info["exhausted"]:   # trùng tên: hỏi lại bằng code, không gọi AI

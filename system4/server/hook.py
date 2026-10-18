@@ -16,7 +16,7 @@ import threading
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from . import account, admin, auth, config, datasets, db, domains, llm, procs, procs_gate, routes, search, settings, strict  # noqa: F401 (procs_gate gán cổng kiểm)
+from . import account, admin, auth, config, datasets, db, domains, fastpath, llm, procs, procs_gate, routes, search, settings, strict  # noqa: F401 (procs_gate gán cổng kiểm)
 
 PUBLIC = {"/s4/login", "/s4/auth/login", "/s4/auth/signup", "/s4/auth/logout", "/s4/public", "/health", "/favicon.ico"}
 _CONV = re.compile(r"^/conversations/([^/]+)")
@@ -39,6 +39,7 @@ def install(app, s3_store) -> None:
     from core import websearch as s3_web   # khối Tìm web của Strict dùng model riêng (WEBSEARCH_MODEL)
     s3_web.MODEL_PROVIDER = lambda: settings.get("WEBSEARCH_MODEL")
     datasets.resume_unfinished()   # tệp đang nạp dở khi tắt server -> nạp lại
+    fastpath.ensure_all()          # đường nhanh: bộ dữ liệu sẵn sàng mà chưa biên dịch -> biên dịch nền
     from ..abi import scheduler as abi_scheduler
     if os.environ.get("S4_ABI_SYNC", os.environ.get("S4_WARMUP", "1")) == "1":   # ABI: tự đồng bộ abi.com.vn theo ⚙ ABI_SYNC_HOURS (test tắt)
         abi_scheduler.start()
@@ -64,6 +65,7 @@ def install(app, s3_store) -> None:
     app.include_router(admin.make_router(s3_store))
     app.include_router(account.make_router(s3_store))
     app.include_router(domains.make_router())
+    app.include_router(fastpath.make_router())
     app.include_router(abi_scheduler.make_router())
     app.mount("/s4/static", StaticFiles(directory=str(config.WEB_DIR / "static")), name="s4_static")
 

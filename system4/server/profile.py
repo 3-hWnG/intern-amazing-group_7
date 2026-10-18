@@ -10,6 +10,7 @@ giá trị mặc định tính theo loại lĩnh vực. Model vẫn là cấu h�
   tools            ["table"]: công cụ bảng (vẫn cần ⚙ TABLE_TOOL bật)
   persona          vai trò riêng của lĩnh vực, thêm vào lời dặn
   web_allowed      cho dùng nút "Tìm web" trong lĩnh vực này
+  fast_path        đường nhanh: câu tra cứu rõ ràng trên bảng đã biên dịch do code trả lời (cần ⚙ FASTPATH_ENABLED bật); mặc định bật
   code_answer      (chỉ ABI) trả lời bằng code khi hiểu trọn câu hỏi; mặc định lấy ⚙ ABI_CODE_ANSWER (giữ hành vi cũ)
 Guardrail của lĩnh vực vẫn ở cột `domains.guardrail` (sửa ở ô Guardrail như trước)."""
 from __future__ import annotations
@@ -19,13 +20,13 @@ import json
 from . import settings
 
 MODES = ("free", "grounded", "verbatim")
-KEYS = ("answer_mode", "require_citation", "clarify", "retrieval", "tools", "persona", "web_allowed", "code_answer")
+KEYS = ("answer_mode", "require_citation", "clarify", "retrieval", "tools", "persona", "web_allowed", "fast_path", "code_answer")
 
 
 def defaults(d: dict) -> dict:
     hard = d.get("kind") == "hard"
     p = {"answer_mode": "grounded" if hard else "free", "require_citation": hard, "clarify": True, "retrieval": {},
-         "tools": ["table"], "persona": "", "web_allowed": True}
+         "tools": ["table"], "persona": "", "web_allowed": True, "fast_path": True}
     if d.get("engine") == "abi":
         p["code_answer"] = bool(settings.get("ABI_CODE_ANSWER"))
     return p
@@ -55,7 +56,7 @@ def validate(p: dict, d: dict) -> dict:
         if k == "answer_mode":
             if v not in MODES:
                 raise ValueError(f"answer_mode phải là một trong {', '.join(MODES)}")
-        elif k in ("require_citation", "clarify", "web_allowed", "code_answer"):
+        elif k in ("require_citation", "clarify", "web_allowed", "fast_path", "code_answer"):
             if not isinstance(v, bool):
                 raise ValueError(f"{k} phải là true/false")
             if k == "code_answer" and d.get("engine") != "abi":

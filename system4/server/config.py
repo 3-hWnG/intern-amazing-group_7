@@ -97,6 +97,9 @@ ABI_SYNC_HOURS = 6
 ABI_CODE_ANSWER = True
 ABI_API_KEY = ''
 ABI_BOT_CONTACT = ''
+FASTPATH_ENABLED = True
+FASTPATH_LLM_CUES = True
+FASTPATH_MIN_PASS = 0.9
 # ==== HẾT MẶC ĐỊNH ====
 
 # Danh sách cài đặt hiện trên panel. type: str | text (nhiều dòng) | int | float | bool | choice | rules
@@ -219,6 +222,16 @@ SETTINGS = [
     dict(key="JSON_PLAN_FIRST", type="bool", group="Tốc độ & độ chính xác", label="Buộc AI lập kế hoạch trước khi trả lời",
          help="Bật: đặt tên trường JSON a_plan, c_answer… để kế hoạch ẩn luôn được viết TRƯỚC câu trả lời (Ollama 0.40 không giữ thứ tự "
               "trường; khi tắt, model hay viết câu trả lời trước nên kế hoạch không có tác dụng). Chữ đầu hiện chậm hơn khoảng 0,5-0,8 giây."),
+    dict(key="FASTPATH_ENABLED", type="bool", group="Tốc độ & độ chính xác", label="Đường nhanh: trả lời bằng code từ dữ liệu đã biên dịch",
+         help="Bật: lúc nạp tệp, hệ thống biên dịch bảng (kiểu cột, tên trường, cách hỏi) và tự kiểm; câu tra cứu rõ ràng (trường của một dòng, "
+              "đếm / liệt kê có điều kiện, câu nối tiếp) được code trả lời trong vài mili giây, không gọi AI. Câu không chắc vẫn đi đường cũ "
+              "(tìm kiếm + AI). Mỗi lĩnh vực tắt riêng được bằng \"fast_path\": false trong hồ sơ lĩnh vực."),
+    dict(key="FASTPATH_LLM_CUES", type="bool", group="Tốc độ & độ chính xác", label="Đường nhanh: nhờ AI đặt tên trường lúc nạp",
+         help="Bật: lúc nạp, AI được gọi MỘT lần mỗi bảng để dịch tên cột (vd. executing_agency -> cơ quan thực hiện) và gợi ý cách người dùng hỏi; "
+              "code lọc lại gợi ý (bỏ giá trị trong ô, chữ chung, gợi ý trùng nhiều trường). Tắt: chỉ dùng tên cột."),
+    dict(key="FASTPATH_MIN_PASS", type="float", group="Tốc độ & độ chính xác", label="Đường nhanh: ngưỡng bài tự kiểm", min=0.5, max=1.0,
+         help="Lúc nạp, code tự sinh câu hỏi + đáp án từ chính dữ liệu và chạy thử. Bảng nào đạt dưới ngưỡng này ở một loại câu (tra trường / "
+              "đếm-liệt kê / văn bản) thì loại câu đó tắt cho bảng ấy, câu hỏi đi đường cũ."),
     dict(key="ABI_SYNC_HOURS", type="int", group="Lĩnh vực ABI (abi.com.vn)", label="Tự đồng bộ abi.com.vn mỗi (giờ)", min=0, max=168,
          help="Kéo lại dữ liệu của abi.com.vn (bản thật) từ các API chính thức chủ web đã cho phép; staging chỉ đồng bộ khi bấm nút. "
               "0 = tắt (vẫn bấm \"Đồng bộ\" được). Thoả thuận với chủ web: quét 6 tiếng một lần, nên đặt 1–5 vẫn tính là 6. "

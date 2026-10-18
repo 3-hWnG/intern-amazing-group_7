@@ -278,6 +278,16 @@ with TestClient(main.app) as c:
     # mặc định từ NV5 (cấu hình thắng bộ đo): mọi tính năng bật cùng lúc
     settings.reset(list(nv5_off.OFF))
     assert settings.get("JSON_PLAN_FIRST") and settings.get("GREETING_MODE") == "code_first"
+    # từ 18/10 đường nhanh (fastpath/) cũng bật mặc định: câu tra trường rõ ràng do code trả lời, không gọi AI (đợi biên dịch xong)
+    from system3.system4.server import fastpath
+    t0 = time.time()
+    while (fastpath.get(d["id"]) or {}).get("status") not in ("ready", "error"):
+        assert time.time() - t0 < 60
+        time.sleep(0.2)
+    n_prompts = len(prompts)
+    m = last(chat("Ngày sinh của bạn Tô Đức Hiếu?"))
+    assert "3/1/2020" in m["content"] and m["meta"]["sources"] and m["meta"].get("fast_path") and len(prompts) == n_prompts, m
+    settings.save({"FASTPATH_ENABLED": False})   # phần còn lại: lời dặn của đường cũ khi mọi tính năng NV5 bật
     answers.append({"plan": "tra ngày sinh", "answer": "Bạn Tô Đức Hiếu sinh ngày 3/1/2020 [1].", "ask_back": False, "choices": [], "sources": [1]})
     m = last(chat("Ngày sinh của bạn Tô Đức Hiếu?"))
     assert "3/1/2020" in m["content"] and m["meta"]["sources"] and not m["meta"].get("grounding"), m

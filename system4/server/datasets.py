@@ -99,6 +99,8 @@ def delete(ds: dict) -> None:
     except Exception as e:
         log.warning("xoá vector: %s", e)
     db.delete_records(ds["id"])
+    from . import fastpath
+    fastpath.delete(ds["id"])
     db.run("DELETE FROM datasets WHERE id=?", (ds["id"],))
     shutil.rmtree(folder(ds["user_id"], ds["id"]), ignore_errors=True)
 
@@ -142,6 +144,8 @@ def process(ds_id: int) -> None:
     except Exception:
         pass
     db.delete_records(ds_id)
+    from . import fastpath
+    fastpath.delete(ds_id)   # đặc tả cũ trỏ tới bản ghi cũ: bỏ, dựng lại khi nạp xong
     try:
         overrides = json.loads(ds.get("mapping") or "{}").get("overrides") or {}   # dòng tiêu đề người dùng tự chọn ("Cách đọc")
     except ValueError:
@@ -170,6 +174,8 @@ def process(ds_id: int) -> None:
         active = 0   # vượt giới hạn cứng: vẫn sẵn sàng nhưng để tắt
     db.update_dataset(ds_id, status="ready", progress=100, n_records=len(recs), kind=mapping["kind"], active=active,
                       message=ingest.describe(mapping, len(recs)) + ("" if active else " · Đang TẮT vì vượt giới hạn bật"))
+    from . import fastpath
+    fastpath.enqueue(ds_id)   # đường nhanh: biên dịch + tự kiểm ở luồng riêng (bộ dữ liệu đã dùng được ngay bằng đường cũ)
 
 
 def resume_unfinished() -> None:
