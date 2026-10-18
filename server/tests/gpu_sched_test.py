@@ -34,6 +34,19 @@ s.release()
 for t in ths:
     t.join(5)
 assert order == ["user", "bg1", "ingest"], order
+# P_SHORT (bước sinh chữ của Strict) đi trước câu Friendly (P0) đang chờ
+order.clear()
+s.acquire(gpu.P0)
+ths = [threading.Thread(target=take, args=(gpu.P0, "friendly"))]
+ths[0].start()
+time.sleep(0.1)
+ths.append(threading.Thread(target=take, args=(gpu.P_SHORT, "strict")))
+ths[1].start()
+time.sleep(0.1)
+s.release()
+for t in ths:
+    t.join(5)
+assert order == ["strict", "friendly"], order
 # quá hạn -> Busy, rồi người sau vẫn được phục vụ
 s.acquire(gpu.P0)
 t0 = time.time()

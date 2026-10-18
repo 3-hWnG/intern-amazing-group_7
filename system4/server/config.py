@@ -45,6 +45,7 @@ BUSINESS_DESCRIPTION = ''
 FRIENDLY_MODEL = 'qwen3:4b-instruct-2507-q4_K_M'
 FRIENDLY_TEMPERATURE = 0.2
 FRIENDLY_NUM_CTX = 8192
+FRIENDLY_NUM_PREDICT = 1500
 FRIENDLY_HISTORY_MESSAGES = 20
 FRIENDLY_TIMEOUT = 120
 FRIENDLY_QUEUE_MAX = 20
@@ -161,6 +162,9 @@ SETTINGS = [
          min=0.0, max=1.5, help="Thấp = ổn định, cao = đa dạng hơn."),
     dict(key="FRIENDLY_NUM_CTX", type="int", group="AI (Friendly)", label="Độ dài ngữ cảnh (token)", min=2048, max=32768,
          help="Nên giữ 8192 như System 3: khác nhau thì Ollama phải nạp lại model (~13 giây) mỗi khi đổi Strict/Friendly."),
+    dict(key="FRIENDLY_NUM_PREDICT", type="int", group="AI (Friendly)", label="Số token tối đa mỗi câu trả lời", min=200, max=8000,
+         help="Trần độ dài câu trả lời (khoảng 1 token ~ 3–4 ký tự). Test hợp đồng Ollama thấy model đôi khi lặp chữ không dừng: "
+              "có trần thì câu trả lời dừng thay vì chạy tới hết hạn."),
     dict(key="FRIENDLY_HISTORY_MESSAGES", type="int", group="AI (Friendly)", label="Số tin nhắn cũ gửi kèm",
          min=0, max=200, help="Bao nhiêu tin gần nhất của hội thoại được gửi cho AI để giữ ngữ cảnh."),
     dict(key="FRIENDLY_TIMEOUT", type="int", group="AI (Friendly)", label="Thời gian chờ tối đa (giây)", min=10, max=600),

@@ -4,7 +4,9 @@ Card 6 GB chỉ chạy một lời gọi model tại một thời điểm, nên 
 (tìm thủ tục, ghép câu trả lời bằng code, tìm web qua mạng) KHÔNG xin chỗ nên chạy song song, không phải chờ lượt LLM của người khác.
 
 Ưu tiên (số nhỏ được phục vụ trước; cùng mức thì đến trước phục vụ trước):
-  P0 câu trả lời người dùng đang chờ (Friendly, bước sinh chữ / tìm web của Strict)
+  P_SHORT lời gọi NGẮN người dùng đang chờ: bước sinh chữ của Strict (~1–2,4 s, trần 200 token). Đi trước câu Friendly dài
+          (5–14 s) — đo tải 10 người (G3.4): xếp cùng mức thì 13/20 lượt Strict chờ hết 7 s rồi mới trả bản code
+  P0 câu trả lời người dùng đang chờ (Friendly, tìm web của Strict)
   P1 việc phụ trợ khi đang tương tác (công cụ bảng, phòng thử của dev)
   P2 việc nền: bộ nhớ, tóm tắt hội thoại
   P3 nạp tệp dữ liệu (kiểm tiêu đề bằng LLM, tạo vector)
@@ -23,7 +25,7 @@ import threading
 import time
 from contextlib import asynccontextmanager, contextmanager
 
-P0, P1, P2, P3 = 0, 1, 2, 3
+P_SHORT, P0, P1, P2, P3 = -1, 0, 1, 2, 3
 
 
 class Busy(TimeoutError):
@@ -42,7 +44,7 @@ class Scheduler:
         self._busy = 0
         self._heap: list = []          # (prio, seq, ticket)
         self._seq = itertools.count()
-        self.served = {P0: 0, P1: 0, P2: 0, P3: 0}
+        self.served = {P_SHORT: 0, P0: 0, P1: 0, P2: 0, P3: 0}
 
     # ------------------------------------------------------------ thông tin
     def position(self, prio: int = P0) -> int:

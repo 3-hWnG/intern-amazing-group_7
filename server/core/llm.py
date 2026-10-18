@@ -8,6 +8,8 @@ from __future__ import annotations
 import os
 import json
 import re
+import threading
+import time
 
 import ollama
 
@@ -26,6 +28,24 @@ def model_name() -> str:
 
 class LLMError(RuntimeError):
     pass
+
+
+# G3.4 (P16): số đo từng lời gọi trong lượt hiện tại (luồng hiện tại): chờ GPU / nạp model / đọc lời dặn / sinh chữ (giây).
+_turn = threading.local()
+
+
+def turn_stats_reset() -> None:
+    _turn.stats = []
+
+
+def turn_stats() -> list[dict]:
+    return list(getattr(_turn, "stats", []) or [])
+
+
+def _record(**kw) -> None:
+    if not hasattr(_turn, "stats"):
+        _turn.stats = []
+    _turn.stats.append(kw)
 
 
 _clients: dict[float, ollama.Client] = {}
@@ -52,17 +72,27 @@ def chat(system: str, user: str, history: list[dict] | None = None, *,
     name = model or model_name()
     if not aihealth.breaker.allow():   # G3.3: Ollama lỗi liên tiếp -> bỏ qua AI một lúc, không chờ hết hạn từng lần
         raise LLMError("Ollama lỗi liên tiếp, tạm bỏ qua bước AI")
+    t0 = time.perf_counter()
+    t_got = None
     try:
         with gpu.slot(priority, timeout=wait if wait is not None else (timeout or LLM_TIMEOUT)):
+            t_got = time.perf_counter()
             res = client(timeout).chat(model=name, messages=msgs, format=schema,
                                        keep_alive=LLM_KEEP_ALIVE, options=opts,
                                        think=LLM_THINK if think is None else think)
     except gpu.Busy as exc:
+        _record(wait_s=round(time.perf_counter() - t0, 3), error="gpu_busy")
         raise LLMError(f"GPU đang bận (đang trả lời người khác), bỏ qua bước AI: {exc}") from exc
     except Exception as exc:
         aihealth.breaker.fail()
+        _record(wait_s=round((t_got or time.perf_counter()) - t0, 3), call_s=round(time.perf_counter() - (t_got or t0), 3),
+                error=type(exc).__name__)
         raise LLMError(f"Không gọi được mô hình {name} tại {OLLAMA_HOST}: {exc}") from exc
     aihealth.breaker.ok()
+    g = lambda k: (res.get(k) if isinstance(res, dict) else getattr(res, k, None)) or 0
+    _record(wait_s=round(t_got - t0, 3), call_s=round(time.perf_counter() - t_got, 3), load_s=round(g("load_duration") / 1e9, 3),
+            prompt_s=round(g("prompt_eval_duration") / 1e9, 3), gen_s=round(g("eval_duration") / 1e9, 3),
+            prompt_tokens=g("prompt_eval_count"), output_tokens=g("eval_count"))
     return (res["message"]["content"] or "").strip()
 
 

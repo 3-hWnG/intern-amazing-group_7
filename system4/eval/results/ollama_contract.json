@@ -1,0 +1,43 @@
+{
+ "at": "2026-10-18 15:06:01",
+ "model": "qwen3:4b-instruct-2507-q4_K_M",
+ "host": "http://127.0.0.1:11434",
+ "ollama_version": "0.40.6",
+ "rows": [
+  {
+   "check": "model đã tải",
+   "ok": true,
+   "detail": "qwen3:4b-instruct-2507-q4_K_M"
+  },
+  {
+   "check": "format JSON schema: model tự dừng thì JSON hợp lệ, đủ trường",
+   "ok": true,
+   "detail": "3/3"
+  },
+  {
+   "check": "CẢNH BÁO: sinh lặp tới trần num_predict (không tự dừng)",
+   "ok": null,
+   "detail": "0/3"
+  },
+  {
+   "check": "thứ tự trường có tiền tố: a_plan trước c_answer (3 lần)",
+   "ok": true,
+   "detail": "3/3"
+  },
+  {
+   "check": "tham khảo: không tiền tố, plan trước answer",
+   "ok": null,
+   "detail": "0/3"
+  },
+  {
+   "check": "cùng num_ctx: lần gọi sau không nạp lại model",
+   "ok": true,
+   "detail": "load_duration: 8.94s, 0.01s, 0.01s"
+  },
+  {
+   "check": "model nằm trên GPU (size_vram > 0)",
+   "ok": true,
+   "detail": "size_vram=3.61 GB / size=3.61 GB"
+  }
+ ]
+}

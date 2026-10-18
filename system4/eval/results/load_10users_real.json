@@ -1,0 +1,892 @@
+{
+ "at": "2026-10-18 15:27:09",
+ "users": 10,
+ "turns_per_user": 6,
+ "pause_s": "20,40",
+ "wall_s": 250.0,
+ "errors": [],
+ "strict_rules_s": {
+  "n": 20,
+  "p50": 0.31,
+  "p95": 1.18,
+  "max": 1.65
+ },
+ "strict_llm_s": {
+  "n": 20,
+  "p50": 2.88,
+  "p95": 4.01,
+  "max": 5.31
+ },
+ "strict_llm_parts_s": {
+  "wait_s": {
+   "n": 20,
+   "p50": 0.0,
+   "p95": 3.01,
+   "max": 3.01
+  },
+  "load_s": {
+   "n": 20,
+   "p50": 0.01,
+   "p95": 0.01,
+   "max": 0.04
+  },
+  "prompt_s": {
+   "n": 20,
+   "p50": 0.03,
+   "p95": 0.29,
+   "max": 0.34
+  },
+  "gen_s": {
+   "n": 20,
+   "p50": 0.64,
+   "p95": 1.78,
+   "max": 1.82
+  },
+  "call_s": {
+   "n": 20,
+   "p50": 1.03,
+   "p95": 2.06,
+   "max": 2.25
+  }
+ },
+ "strict_llm_gave_up": 7,
+ "friendly_first_s": {
+  "n": 20,
+  "p50": 6.16,
+  "p95": 15.19,
+  "max": 20.34
+ },
+ "friendly_done_s": {
+  "n": 20,
+  "p50": 11.2,
+  "p95": 21.33,
+  "max": 26.59
+ },
+ "friendly_queue_s": {
+  "n": 20,
+  "p50": 5.26,
+  "p95": 13.62,
+  "max": 19.45
+ },
+ "turns": [
+  {
+   "kind": "strict_rules",
+   "s": 1.652,
+   "llm_calls": [],
+   "verify": [],
+   "user": 8,
+   "asked": "rules",
+   "q": "Đăng ký tạm trú mất bao lâu?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 1.179,
+   "llm_calls": [],
+   "verify": [],
+   "user": 5,
+   "asked": "rules",
+   "q": "Khai tử cần giấy tờ gì?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 4.014,
+   "llm_calls": [
+    {
+     "wait_s": 3.007,
+     "error": "gpu_busy"
+    }
+   ],
+   "verify": [
+    "llm lỗi, dùng bản bằng code: LLMError"
+   ],
+   "user": 4,
+   "asked": "llm",
+   "q": "Hộ gia đình tách hộ vì ly hôn thì cần giấy tờ gì?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 3.721,
+   "llm_calls": [
+    {
+     "wait_s": 3.005,
+     "error": "gpu_busy"
+    }
+   ],
+   "verify": [
+    "llm lỗi, dùng bản bằng code: LLMError"
+   ],
+   "user": 0,
+   "asked": "llm",
+   "q": "Tôi ở nhà thuê thì đăng ký thường trú cần giấy tờ gì?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 3.813,
+   "llm_calls": [
+    {
+     "wait_s": 3.006,
+     "error": "gpu_busy"
+    }
+   ],
+   "verify": [
+    "llm lỗi, dùng bản bằng code: LLMError"
+   ],
+   "user": 1,
+   "asked": "llm",
+   "q": "Cho mình hỏi các bước tách hộ và các bước xóa đăng ký thường trú"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 3.32,
+   "llm_calls": [
+    {
+     "wait_s": 3.006,
+     "error": "gpu_busy"
+    }
+   ],
+   "verify": [
+    "llm lỗi, dùng bản bằng code: LLMError"
+   ],
+   "user": 6,
+   "asked": "llm",
+   "q": "Hộ gia đình tách hộ vì ly hôn thì cần giấy tờ gì?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 3.561,
+   "llm_calls": [
+    {
+     "wait_s": 3.008,
+     "error": "gpu_busy"
+    }
+   ],
+   "verify": [
+    "llm lỗi, dùng bản bằng code: LLMError"
+   ],
+   "user": 5,
+   "asked": "llm",
+   "q": "Cho mình hỏi các bước tách hộ và các bước xóa đăng ký thường trú"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 3.255,
+   "llm_calls": [
+    {
+     "wait_s": 3.009,
+     "error": "gpu_busy"
+    }
+   ],
+   "verify": [
+    "llm lỗi, dùng bản bằng code: LLMError"
+   ],
+   "user": 4,
+   "asked": "llm",
+   "q": "Hộ gia đình tách hộ vì ly hôn thì cần giấy tờ gì?"
+  },
+  {
+   "kind": "friendly",
+   "first": 2.179,
+   "done": 8.157,
+   "stream_closed": 36.211,
+   "queue_ms": 0,
+   "timing": {
+    "llm_ms": 7448,
+    "total_ms": 7531
+   },
+   "user": 2,
+   "asked": "friendly",
+   "q": "Giải thích lãi suất kép bằng ví dụ đơn giản"
+  },
+  {
+   "kind": "friendly",
+   "first": 8.747,
+   "done": 14.743,
+   "stream_closed": 36.213,
+   "queue_ms": 7149,
+   "timing": {
+    "llm_ms": 6256,
+    "total_ms": 13831
+   },
+   "user": 3,
+   "asked": "friendly",
+   "q": "Giải thích lãi suất kép bằng ví dụ đơn giản"
+  },
+  {
+   "kind": "friendly",
+   "first": 15.193,
+   "done": 21.333,
+   "stream_closed": 36.113,
+   "queue_ms": 13624,
+   "timing": {
+    "llm_ms": 6739,
+    "total_ms": 20762
+   },
+   "user": 7,
+   "asked": "friendly",
+   "q": "Giải thích lãi suất kép bằng ví dụ đơn giản"
+  },
+  {
+   "kind": "friendly",
+   "first": 20.344,
+   "done": 26.595,
+   "stream_closed": 34.576,
+   "queue_ms": 19445,
+   "timing": {
+    "llm_ms": 6781,
+    "total_ms": 26240
+   },
+   "user": 9,
+   "asked": "friendly",
+   "q": "Cho mình vài mẹo học tiếng Anh mỗi ngày"
+  },
+  {
+   "kind": "friendly",
+   "first": 5.323,
+   "done": 11.198,
+   "stream_closed": 12.685,
+   "queue_ms": 4387,
+   "timing": {
+    "llm_ms": 6487,
+    "total_ms": 10885
+   },
+   "user": 8,
+   "asked": "friendly",
+   "q": "Mình nên chuẩn bị gì cho buổi phỏng vấn xin việc?"
+  },
+  {
+   "kind": "friendly",
+   "first": 9.835,
+   "done": 10.58,
+   "stream_closed": 10.756,
+   "queue_ms": 8912,
+   "timing": {
+    "llm_ms": 1490,
+    "total_ms": 10416
+   },
+   "user": 1,
+   "asked": "friendly",
+   "q": "Viết giúp mình lời chúc sinh nhật ngắn cho mẹ"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.275,
+   "llm_calls": [],
+   "verify": [],
+   "user": 0,
+   "asked": "rules",
+   "q": "Đăng ký khai sinh cần giấy tờ gì?"
+  },
+  {
+   "kind": "friendly",
+   "first": 1.468,
+   "done": 4.167,
+   "stream_closed": 4.185,
+   "queue_ms": 0,
+   "timing": {
+    "llm_ms": 3985,
+    "total_ms": 4000
+   },
+   "user": 6,
+   "asked": "friendly",
+   "q": "Gợi ý 3 món ăn sáng nhanh gọn"
+  },
+  {
+   "kind": "friendly",
+   "first": 1.246,
+   "done": 1.986,
+   "stream_closed": 2.065,
+   "queue_ms": 0,
+   "timing": {
+    "llm_ms": 1813,
+    "total_ms": 1828
+   },
+   "user": 1,
+   "asked": "friendly",
+   "q": "Viết giúp mình lời chúc sinh nhật ngắn cho mẹ"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.255,
+   "llm_calls": [],
+   "verify": [],
+   "user": 7,
+   "asked": "rules",
+   "q": "Lệ phí cấp hộ chiếu là bao nhiêu?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 1.352,
+   "llm_calls": [
+    {
+     "wait_s": 0.0,
+     "call_s": 0.736,
+     "load_s": 0.007,
+     "prompt_s": 0.02,
+     "gen_s": 0.612,
+     "prompt_tokens": 604,
+     "output_tokens": 33
+    }
+   ],
+   "verify": [],
+   "user": 5,
+   "asked": "llm",
+   "q": "Tôi ở nhà thuê thì đăng ký thường trú cần giấy tờ gì?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.261,
+   "llm_calls": [],
+   "verify": [],
+   "user": 3,
+   "asked": "rules",
+   "q": "Lệ phí cấp hộ chiếu là bao nhiêu?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 2.879,
+   "llm_calls": [
+    {
+     "wait_s": 0.0,
+     "call_s": 2.247,
+     "load_s": 0.01,
+     "prompt_s": 0.288,
+     "gen_s": 1.783,
+     "prompt_tokens": 450,
+     "output_tokens": 99
+    }
+   ],
+   "verify": [],
+   "user": 8,
+   "asked": "llm",
+   "q": "Tạm trú với thường trú khác nhau chỗ nào?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.222,
+   "llm_calls": [],
+   "verify": [],
+   "user": 2,
+   "asked": "rules",
+   "q": "Chứng thực bản sao lệ phí bao nhiêu?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.435,
+   "llm_calls": [],
+   "verify": [],
+   "user": 9,
+   "asked": "rules",
+   "q": "Chứng thực bản sao lệ phí bao nhiêu?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.24,
+   "llm_calls": [],
+   "verify": [],
+   "user": 7,
+   "asked": "rules",
+   "q": "Đăng ký tạm trú mất bao lâu?"
+  },
+  {
+   "kind": "friendly",
+   "first": 1.12,
+   "done": 7.443,
+   "stream_closed": 13.864,
+   "queue_ms": 0,
+   "timing": {
+    "llm_ms": 7068,
+    "total_ms": 7086
+   },
+   "user": 4,
+   "asked": "friendly",
+   "q": "Giải thích lãi suất kép bằng ví dụ đơn giản"
+  },
+  {
+   "kind": "friendly",
+   "first": 6.158,
+   "done": 11.96,
+   "stream_closed": 12.004,
+   "queue_ms": 5257,
+   "timing": {
+    "llm_ms": 6569,
+    "total_ms": 11841
+   },
+   "user": 0,
+   "asked": "friendly",
+   "q": "Cho mình vài mẹo học tiếng Anh mỗi ngày"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.251,
+   "llm_calls": [],
+   "verify": [],
+   "user": 8,
+   "asked": "rules",
+   "q": "Đăng ký kết hôn nộp ở đâu?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 3.375,
+   "llm_calls": [
+    {
+     "wait_s": 3.001,
+     "error": "gpu_busy"
+    }
+   ],
+   "verify": [
+    "llm lỗi, dùng bản bằng code: LLMError"
+   ],
+   "user": 1,
+   "asked": "llm",
+   "q": "Tạm trú với thường trú khác nhau chỗ nào?"
+  },
+  {
+   "kind": "friendly",
+   "first": 1.294,
+   "done": 6.154,
+   "stream_closed": 6.168,
+   "queue_ms": 0,
+   "timing": {
+    "llm_ms": 5991,
+    "total_ms": 6006
+   },
+   "user": 6,
+   "asked": "friendly",
+   "q": "Làm sao để ngủ ngon hơn?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.638,
+   "llm_calls": [],
+   "verify": [],
+   "user": 5,
+   "asked": "rules",
+   "q": "Đăng ký kết hôn nộp ở đâu?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.282,
+   "llm_calls": [],
+   "verify": [],
+   "user": 2,
+   "asked": "rules",
+   "q": "Đăng ký kết hôn nộp ở đâu?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.245,
+   "llm_calls": [],
+   "verify": [],
+   "user": 3,
+   "asked": "rules",
+   "q": "Lệ phí cấp hộ chiếu là bao nhiêu?"
+  },
+  {
+   "kind": "friendly",
+   "first": 1.364,
+   "done": 9.382,
+   "stream_closed": 9.397,
+   "queue_ms": 0,
+   "timing": {
+    "llm_ms": 9190,
+    "total_ms": 9205
+   },
+   "user": 9,
+   "asked": "friendly",
+   "q": "Mình nên chuẩn bị gì cho buổi phỏng vấn xin việc?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 1.225,
+   "llm_calls": [
+    {
+     "wait_s": 0.0,
+     "call_s": 0.963,
+     "load_s": 0.008,
+     "prompt_s": 0.022,
+     "gen_s": 0.77,
+     "prompt_tokens": 473,
+     "output_tokens": 41
+    }
+   ],
+   "verify": [],
+   "user": 7,
+   "asked": "llm",
+   "q": "Hộ gia đình tách hộ vì ly hôn thì cần giấy tờ gì?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.307,
+   "llm_calls": [],
+   "verify": [],
+   "user": 4,
+   "asked": "rules",
+   "q": "Đăng ký khai sinh cần giấy tờ gì?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.342,
+   "llm_calls": [],
+   "verify": [],
+   "user": 0,
+   "asked": "rules",
+   "q": "Đăng ký kết hôn nộp ở đâu?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 1.481,
+   "llm_calls": [
+    {
+     "wait_s": 0.0,
+     "call_s": 1.107,
+     "load_s": 0.008,
+     "prompt_s": 0.288,
+     "gen_s": 0.642,
+     "prompt_tokens": 604,
+     "output_tokens": 33
+    }
+   ],
+   "verify": [],
+   "user": 8,
+   "asked": "llm",
+   "q": "Tôi ở nhà thuê thì đăng ký thường trú cần giấy tờ gì?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.3,
+   "llm_calls": [],
+   "verify": [],
+   "user": 1,
+   "asked": "rules",
+   "q": "Chứng thực bản sao lệ phí bao nhiêu?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 2.744,
+   "llm_calls": [
+    {
+     "wait_s": 0.0,
+     "call_s": 2.06,
+     "load_s": 0.012,
+     "prompt_s": 0.165,
+     "gen_s": 1.747,
+     "prompt_tokens": 482,
+     "output_tokens": 85
+    }
+   ],
+   "verify": [],
+   "user": 2,
+   "asked": "llm",
+   "q": "Cho mình hỏi các bước tách hộ và các bước xóa đăng ký thường trú"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 1.584,
+   "llm_calls": [
+    {
+     "wait_s": 0.271,
+     "call_s": 1.037,
+     "load_s": 0.008,
+     "prompt_s": 0.026,
+     "gen_s": 0.911,
+     "prompt_tokens": 473,
+     "output_tokens": 41
+    }
+   ],
+   "verify": [],
+   "user": 6,
+   "asked": "llm",
+   "q": "Hộ gia đình tách hộ vì ly hôn thì cần giấy tờ gì?"
+  },
+  {
+   "kind": "friendly",
+   "first": 1.046,
+   "done": 1.851,
+   "stream_closed": 1.877,
+   "queue_ms": 0,
+   "timing": {
+    "llm_ms": 1666,
+    "total_ms": 1681
+   },
+   "user": 5,
+   "asked": "friendly",
+   "q": "Viết giúp mình lời chúc sinh nhật ngắn cho mẹ"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 1.263,
+   "llm_calls": [
+    {
+     "wait_s": 0.0,
+     "call_s": 0.949,
+     "load_s": 0.009,
+     "prompt_s": 0.125,
+     "gen_s": 0.64,
+     "prompt_tokens": 604,
+     "output_tokens": 33
+    }
+   ],
+   "verify": [],
+   "user": 3,
+   "asked": "llm",
+   "q": "Tôi ở nhà thuê thì đăng ký thường trú cần giấy tờ gì?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.451,
+   "llm_calls": [],
+   "verify": [],
+   "user": 9,
+   "asked": "rules",
+   "q": "Lệ phí cấp hộ chiếu là bao nhiêu?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 2.241,
+   "llm_calls": [
+    {
+     "wait_s": 0.0,
+     "call_s": 1.944,
+     "load_s": 0.007,
+     "prompt_s": 0.249,
+     "gen_s": 1.526,
+     "prompt_tokens": 482,
+     "output_tokens": 85
+    }
+   ],
+   "verify": [],
+   "user": 0,
+   "asked": "llm",
+   "q": "Cho mình hỏi các bước tách hộ và các bước xóa đăng ký thường trú"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.574,
+   "llm_calls": [],
+   "verify": [],
+   "user": 1,
+   "asked": "rules",
+   "q": "Khai tử cần giấy tờ gì?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.447,
+   "llm_calls": [],
+   "verify": [],
+   "user": 6,
+   "asked": "rules",
+   "q": "Đăng ký tạm trú mất bao lâu?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 5.309,
+   "llm_calls": [
+    {
+     "wait_s": 2.898,
+     "call_s": 1.949,
+     "load_s": 0.006,
+     "prompt_s": 0.024,
+     "gen_s": 1.824,
+     "prompt_tokens": 482,
+     "output_tokens": 85
+    }
+   ],
+   "verify": [],
+   "user": 9,
+   "asked": "llm",
+   "q": "Cho mình hỏi các bước tách hộ và các bước xóa đăng ký thường trú"
+  },
+  {
+   "kind": "friendly",
+   "first": 3.606,
+   "done": 10.088,
+   "stream_closed": 30.566,
+   "queue_ms": 2611,
+   "timing": {
+    "llm_ms": 7112,
+    "total_ms": 9738
+   },
+   "user": 7,
+   "asked": "friendly",
+   "q": "Mình nên chuẩn bị gì cho buổi phỏng vấn xin việc?"
+  },
+  {
+   "kind": "friendly",
+   "first": 1.185,
+   "done": 8.429,
+   "stream_closed": 36.059,
+   "queue_ms": 0,
+   "timing": {
+    "llm_ms": 8058,
+    "total_ms": 8073
+   },
+   "user": 8,
+   "asked": "friendly",
+   "q": "Cho mình vài mẹo học tiếng Anh mỗi ngày"
+  },
+  {
+   "kind": "friendly",
+   "first": 8.663,
+   "done": 13.852,
+   "stream_closed": 28.502,
+   "queue_ms": 7696,
+   "timing": {
+    "llm_ms": 5811,
+    "total_ms": 13519
+   },
+   "user": 4,
+   "asked": "friendly",
+   "q": "Làm sao để ngủ ngon hơn?"
+  },
+  {
+   "kind": "friendly",
+   "first": 14.344,
+   "done": 16.868,
+   "stream_closed": 21.783,
+   "queue_ms": 13234,
+   "timing": {
+    "llm_ms": 3274,
+    "total_ms": 16521
+   },
+   "user": 2,
+   "asked": "friendly",
+   "q": "Gợi ý 3 món ăn sáng nhanh gọn"
+  },
+  {
+   "kind": "friendly",
+   "first": 11.154,
+   "done": 14.757,
+   "stream_closed": 25.051,
+   "queue_ms": 10036,
+   "timing": {
+    "llm_ms": 4510,
+    "total_ms": 14561
+   },
+   "user": 3,
+   "asked": "friendly",
+   "q": "Gợi ý 3 món ăn sáng nhanh gọn"
+  },
+  {
+   "kind": "friendly",
+   "first": 10.753,
+   "done": 11.491,
+   "stream_closed": 11.674,
+   "queue_ms": 9850,
+   "timing": {
+    "llm_ms": 1476,
+    "total_ms": 11337
+   },
+   "user": 0,
+   "asked": "friendly",
+   "q": "Viết giúp mình lời chúc sinh nhật ngắn cho mẹ"
+  },
+  {
+   "kind": "friendly",
+   "first": 14.674,
+   "done": 17.531,
+   "stream_closed": 19.038,
+   "queue_ms": 13608,
+   "timing": {
+    "llm_ms": 3416,
+    "total_ms": 17037
+   },
+   "user": 5,
+   "asked": "friendly",
+   "q": "Gợi ý 3 món ăn sáng nhanh gọn"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 2.905,
+   "llm_calls": [
+    {
+     "wait_s": 0.0,
+     "call_s": 1.859,
+     "load_s": 0.007,
+     "prompt_s": 0.123,
+     "gen_s": 1.575,
+     "prompt_tokens": 482,
+     "output_tokens": 85
+    }
+   ],
+   "verify": [],
+   "user": 9,
+   "asked": "llm",
+   "q": "Cho mình hỏi các bước tách hộ và các bước xóa đăng ký thường trú"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.353,
+   "llm_calls": [],
+   "verify": [],
+   "user": 6,
+   "asked": "rules",
+   "q": "Đăng ký kết hôn nộp ở đâu?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 1.573,
+   "llm_calls": [
+    {
+     "wait_s": 0.0,
+     "call_s": 1.262,
+     "load_s": 0.007,
+     "prompt_s": 0.344,
+     "gen_s": 0.764,
+     "prompt_tokens": 473,
+     "output_tokens": 41
+    }
+   ],
+   "verify": [],
+   "user": 3,
+   "asked": "llm",
+   "q": "Hộ gia đình tách hộ vì ly hôn thì cần giấy tờ gì?"
+  },
+  {
+   "kind": "strict_rules",
+   "s": 0.283,
+   "llm_calls": [],
+   "verify": [],
+   "user": 4,
+   "asked": "rules",
+   "q": "Khai tử cần giấy tờ gì?"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 2.304,
+   "llm_calls": [
+    {
+     "wait_s": 0.0,
+     "call_s": 1.978,
+     "load_s": 0.04,
+     "prompt_s": 0.269,
+     "gen_s": 1.514,
+     "prompt_tokens": 482,
+     "output_tokens": 85
+    }
+   ],
+   "verify": [],
+   "user": 2,
+   "asked": "llm",
+   "q": "Cho mình hỏi các bước tách hộ và các bước xóa đăng ký thường trú"
+  },
+  {
+   "kind": "strict_llm",
+   "s": 1.334,
+   "llm_calls": [
+    {
+     "wait_s": 0.0,
+     "call_s": 1.03,
+     "load_s": 0.008,
+     "prompt_s": 0.245,
+     "gen_s": 0.618,
+     "prompt_tokens": 604,
+     "output_tokens": 33
+    }
+   ],
+   "verify": [],
+   "user": 7,
+   "asked": "llm",
+   "q": "Tôi ở nhà thuê thì đăng ký thường trú cần giấy tờ gì?"
+  }
+ ]
+}

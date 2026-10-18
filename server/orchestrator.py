@@ -149,6 +149,8 @@ def _facts_for(conn, session_facts: list[dict], pids: list[str]) -> list[str]:
 
 def handle_turn(turn: Turn) -> dict:
     t0 = time.perf_counter()
+    from core.llm import turn_stats_reset
+    turn_stats_reset()   # G3.4: số đo từng lời gọi LLM của lượt này (chờ GPU / nạp / sinh chữ) -> trace["llm_calls"]
     text, forced_pid = turn.text, None
     answered_clarify = bool(turn.reply_to_clarify)
     if answered_clarify:
@@ -229,6 +231,9 @@ def handle_turn(turn: Turn) -> dict:
                     rt.conditions.append(f)
 
     ans = answer(routed, conn=conn, question=turn.text, llm=None if turn.rules_only else _answer_llm())
+    from core.llm import turn_stats
+    if turn_stats():
+        trace["llm_calls"] = turn_stats()
     if assumed and ans["blocks"]:
         ans["blocks"].insert(0, {"title": "", "sources": [],
                                  "text": f"Mình hiểu bạn đang hỏi về «{assumed}». Nếu chưa đúng, bạn gõ lại tên thủ tục nhé."})
@@ -285,8 +290,17 @@ def _answer_llm():
     ponytail: S3_USE_LLM=0 tắt hẳn (đo/độ trễ); câu trả lời chỉ gửi SAU khi verify xong (answer() chạy đồng bộ)."""
     if os.environ.get("S3_USE_LLM", "1") != "1":
         return None
+    from config import STRICT_GPU_WAIT
+    from core import gpu
     from core.llm import chat_json
-    return chat_json
+
+    def call(system, user, **kw):
+        # G3.4: lời gọi ngắn -> ưu tiên trên câu Friendly dài; GPU bận quá STRICT_GPU_WAIT giây thì trả bản code ngay
+        kw.setdefault("priority", gpu.P_SHORT)
+        kw.setdefault("wait", STRICT_GPU_WAIT)
+        return chat_json(system, user, **kw)
+    call.__module__ = "core.llm"   # llm_answer._ready vẫn nhận ra client thật (kiểm model đã nạp)
+    return call
 
 
 def _ov(a: str, b: str) -> float:

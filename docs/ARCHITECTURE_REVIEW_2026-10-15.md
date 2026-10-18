@@ -541,14 +541,16 @@ flowchart LR
 | DevOps (Docker, CI/CD) | không | CI trước; Docker khi lên Linux |
 
 ### 5.4 Mục tiêu hiệu năng (SLO) đề xuất cho thí điểm (GPU)
-| Đường đi | Mục tiêu | Hiện đo được |
-|---|---|---|
-| Strict, chỉ luật (thời gian server) | p95 ≤ 0,5 s, **không xếp hàng GPU** | p95 ~0,19 s |
-| Strict, có bước LLM | p50 ≤ 2 s, p95 ≤ 8 s | p50 1,5 s; p95 7,4 s — lượt này là hết giờ 7 s, không phải sinh chữ; cần đo lại (3.3) |
-| Friendly, chữ đầu tiên | p50 ≤ 2 s, p95 ≤ 4 s | 1,25–1,7 s (dev/bài thi) |
-| Friendly, cả câu | p95 ≤ 8 s | p90 4,9 s |
-| Chờ hàng khi có 10 người hoạt động | p95 ≤ 10 s | **chưa đo** — cần test tải |
-| Hồ sơ CPU | Friendly không cung cấp; Strict chỉ luật, p95 ≤ 0,5 s | chữ đầu tiên của Friendly 7,6–39 s |
+| Đường đi | Mục tiêu | Hiện đo được (15/10) | Đo tải 18/10 (G3.4), 10 người, model thật nóng, RTX 4050 6 GB — **thực tế** (nghỉ 20–40 s) / **dồn dập** (nghỉ 1–3 s) |
+|---|---|---|---|
+| Strict, chỉ luật (người dùng chờ) | p95 ≤ 0,5 s, **không xếp hàng GPU** | p95 ~0,19 s (1 người) | p50 0,31 / p95 1,18 s · dồn dập p50 0,95 / p95 1,47 s — không chờ GPU nữa (G3.1), nhưng **chưa đạt 0,5 s khi 10 người**: CPU dùng chung với Ollama + reranker |
+| Strict, có bước LLM | p50 ≤ 2 s, p95 ≤ 8 s | p50 1,5 s; p95 7,4 s (là hết giờ 7 s) | p50 2,88 / p95 4,01 s · dồn dập p50 3,61 / p95 4,33 s ✔. Tách: chờ GPU p95 3,0 s (trần `S3_STRICT_GPU_WAIT`), nạp 0,01 s, đọc lời dặn ≤ 0,3 s, sinh chữ p95 1,8 s. 7/20 lượt hết 3 s chờ -> bản code |
+| Friendly, chữ đầu tiên | p50 ≤ 2 s, p95 ≤ 4 s | 1,25–1,7 s (1 người) | p50 6,2 / p95 15,2 s · dồn dập p50 26,7 / p95 41,6 s — gần hết là **chờ hàng** |
+| Friendly, cả câu (sự kiện done) | p95 ≤ 8 s | p90 4,9 s (1 người) | p50 11,2 / p95 21,3 s · dồn dập p50 31,7 / p95 45,5 s |
+| Chờ hàng khi có 10 người hoạt động | p95 ≤ 10 s | chưa đo | p50 5,3 / p95 **13,6 s ✘** · dồn dập p95 40,7 s ✘ |
+| Hồ sơ CPU | Friendly không cung cấp; Strict chỉ luật, p95 ≤ 0,5 s | chữ đầu tiên của Friendly 7,6–39 s | G3.3: Strict bỏ bước LLM, trả bản code (test: < 0,5 s); Friendly có cảnh báo + công tắc "Chỉ trả lời bằng luật" |
+
+Kết luận đo tải (G3.4): một GPU 6 GB, một chỗ, **không đạt** mục tiêu chờ hàng của Friendly với 10 người cùng hoạt động — mỗi câu Friendly giữ GPU 1,4–14 s (câu dài). Việc cần trưởng nhóm quyết: (a) `OLLAMA_NUM_PARALLEL=2` + `S4_CONCURRENCY=2` với num_ctx nhỏ hơn (phải đo VRAM), (b) trần câu trả lời ngắn hơn (`FRIENDLY_NUM_PREDICT`, hiện 1500), (c) chấp nhận mục tiêu ~15 s cho thí điểm. Lệnh: `python run_server.py system4/eval/load_test.py --db <DB bản 3> --pause 20,40 --name real`; kết quả: `system4/eval/results/load_10users_{real,stress}.json`. Test hợp đồng Ollama: `system4/eval/ollama_contract.py` (đạt 18/10; thấy model đôi khi lặp chữ không dừng -> thêm trần `FRIENDLY_NUM_PREDICT`).
 
 ---
 

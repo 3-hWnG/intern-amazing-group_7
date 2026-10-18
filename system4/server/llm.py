@@ -140,7 +140,9 @@ def _stream(call: dict, model: str):
 
 
 def _opts() -> dict:
-    return {"temperature": settings.get("FRIENDLY_TEMPERATURE"), "num_ctx": settings.get("FRIENDLY_NUM_CTX")}
+    # num_predict (G3.4, P23): test hợp đồng thấy model đôi khi lặp chữ trong "answer" không dừng -> có trần để không chạy tới hết hạn
+    return {"temperature": settings.get("FRIENDLY_TEMPERATURE"), "num_ctx": settings.get("FRIENDLY_NUM_CTX"),
+            "num_predict": settings.get("FRIENDLY_NUM_PREDICT")}
 
 
 def stream_json(messages: list[dict], schema: dict):

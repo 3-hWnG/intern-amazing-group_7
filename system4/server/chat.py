@@ -410,8 +410,10 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             async for ev in _fast(m, prefix, state):
                 yield ev
         try:
+            t_wait = time.perf_counter()
             async with llm.Turn():
                 t_llm = time.perf_counter()
+                meta["queue_ms"] = int((t_llm - t_wait) * 1000)   # G3.4: chờ tới lượt dùng GPU
                 yield sse({"type": "start"})
                 async for ev in _fast(msgs, prefix, state):
                     yield ev

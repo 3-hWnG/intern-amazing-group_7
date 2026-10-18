@@ -68,7 +68,8 @@ TRACE_KEEP = _int("S3_TRACE_KEEP", 300)            # chi tiết (turn_traces) gi
 # G3.1 (D15): phần LUẬT chạy song song (RULE_WORKERS luồng), chỉ lời gọi LLM xếp hàng GPU chung (server/core/gpu.py).
 # Số chỗ GPU: S3_QUEUE_CONCURRENCY / S4_CONCURRENCY (mặc định 1, card 6 GB). Card lớn: đặt N VÀ OLLAMA_NUM_PARALLEL=N cho Ollama.
 QUEUE_CONCURRENCY = _int("S3_QUEUE_CONCURRENCY", 1)
-RULE_WORKERS = _int("S3_RULE_WORKERS", 4)
+RULE_WORKERS = _int("S3_RULE_WORKERS", 8)   # G3.4: 4 -> 8 (đo tải 10 người: lượt chỉ-luật phải chờ worker đang giữ lượt chờ GPU)
+STRICT_GPU_WAIT = float(_str("S3_STRICT_GPU_WAIT", "3.0"))   # giây: bước sinh chữ của Strict chờ GPU tối đa chừng này rồi trả bản code
 QUEUE_MAX_DEPTH = _int("QUEUE_MAX_DEPTH", 20)
 QUEUE_JOB_TIMEOUT = _int("QUEUE_JOB_TIMEOUT", 180)
 

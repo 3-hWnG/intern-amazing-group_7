@@ -45,6 +45,8 @@ Trạng thái: **xong NV1 (nền tảng), NV2 (AI trò chuyện kiểu ChatGPT),
 | `scraper/` | trình cào chép từ V10.3 (`Database/pipeline`): client, danh mục, chi tiết, chuẩn hoá; `run.py` chạy nền |
 | `eval/abi/` | **mọi bài kiểm lĩnh vực ABI** (xem `eval/abi/README.md`): `test_abi.py` (test tự động, model giả) + `fixtures/`, `golden.py` (46 câu hỏi vàng sinh từ phiên bản đang dùng; `--target router` / `web`), `saved_results/` |
 | `eval/nv2_behavior.py`, `nv3_specialist.py` | đo trên model thật: hành vi Friendly; độ đúng + nguồn của Chuyên gia |
+| `eval/ollama_contract.py` | test hợp đồng với Ollama (JSON schema, thứ tự trường a_plan/c_answer, model trên GPU, không nạp lại) — chạy trước mỗi lần nâng Ollama / đổi model |
+| `eval/load_test.py` | 10 người giả trên model thật: độ trễ Strict (luật / có LLM, tách chờ GPU / nạp / sinh chữ) và Friendly (chữ đầu, cả câu, chờ hàng) |
 | `web/` | `templates/index.html` + `static/js/app.js` = bản sao giao diện System 3 + phần thêm; `login.html`; `admin.html` + `admin.js` (Quản trị); `static/vendor/` = marked 18.1.0 + DOMPurify 3.4.16 (lưu sẵn, chạy offline) |
 | `tests/test_nv1.py` … `test_nv4.py` | test NV1–NV4 (model giả, DB tạm; NV4 dùng bản sao DB thủ tục) |
 | `setup_models.py` | tải reranker, kiểm GPU (Set up first time.bat gọi) |
