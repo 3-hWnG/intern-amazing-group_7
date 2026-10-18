@@ -16,7 +16,7 @@ import threading
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from . import account, admin, auth, config, datasets, db, domains, llm, routes, search, settings, strict
+from . import account, admin, auth, config, datasets, db, domains, llm, procs, routes, search, settings, strict
 
 PUBLIC = {"/s4/login", "/s4/auth/login", "/s4/auth/signup", "/s4/auth/logout", "/s4/public", "/health", "/favicon.ico"}
 _CONV = re.compile(r"^/conversations/([^/]+)")
@@ -24,6 +24,14 @@ _CONV = re.compile(r"^/conversations/([^/]+)")
 
 def install(app, s3_store) -> None:
     db.init_db()
+    # G2.1: Strict đọc DB bất biến của phiên bản đang dùng (con trỏ system4.db meta.proc_active); lần đầu thì dựng (chặn tới khi xong)
+    import system3.data as s3_data
+    try:
+        procs.ensure_active()
+    except Exception as e:   # không dựng được: Strict dùng DB mặc định (data/runtime/system3.db), báo trong log
+        import logging
+        logging.getLogger("uvicorn.error").error("Không dựng được DB của phiên bản đang dùng: %s", e)
+    s3_data.set_active_provider(procs.active_db)
     from core import llm as s3_llm   # Strict dùng chung model với Friendly: model chọn ở ⚙ Cài đặt (FRIENDLY_MODEL)
     s3_llm.MODEL_PROVIDER = lambda: settings.get("FRIENDLY_MODEL")
     from core import websearch as s3_web   # khối Tìm web của Strict dùng model riêng (WEBSEARCH_MODEL)

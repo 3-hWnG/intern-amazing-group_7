@@ -57,7 +57,8 @@ set "PYTHONIOENCODING=utf-8"
 cd /d "%PYROOT%"
 "%REPO%\.venv\Scripts\python.exe" -m system3.data.build || goto :fail
 "%REPO%\.venv\Scripts\python.exe" -m system3.data.tests.test_data || goto :fail
-rem System 4: if the admin page applied another version of the procedures data, rebuild from that version again.
+rem System 4: build the database of the procedures version in use (data\runtime\knowledge\VERSION-BUILD.db, one file
+rem per version: switching or rolling back versions in the admin page is instant and never overwrites the running file).
 "%REPO%\.venv\Scripts\python.exe" -m system3.system4.server.procs reapply || goto :fail
 
 echo [9/10] System 4: downloading abi.com.vn data for the ABI domain (about 3 minutes the first time, seconds later)...

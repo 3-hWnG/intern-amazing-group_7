@@ -29,8 +29,14 @@ import main
 from system3.system4.server import auth, db, procs
 
 
+def active_db():
+    """G2.1: DB thủ tục Strict đang đọc = DB bất biến của phiên bản đang dùng (không còn ghi đè vào S3_DATA_DB)."""
+    import system3.data as s3_data
+    return str(s3_data.active_db_path())
+
+
 def n_procs():
-    c = sqlite3.connect(DATA_COPY)
+    c = sqlite3.connect(active_db())
     try:
         return c.execute("SELECT COUNT(*) FROM procedures").fetchone()[0]
     finally:
@@ -227,7 +233,7 @@ with TestClient(main.app) as c:
     assert xp.max_row - 1 == n_procs() and xp["D2"].value.startswith("https://dichvucong.gov.vn/"), xp["D2"].value
     assert xp["E2"].value.startswith("=COUNTIF('Documents'!$B$2"), xp["E2"].value
     assert xb["Documents"]["C2"].value.startswith("=INDEX(Procedures!$B$2"), "proc_id lấy qua row_id bằng công thức"
-    assert xb["Documents"].max_row - 1 == sqlite3.connect(DATA_COPY).execute("SELECT COUNT(*) FROM checklist_items").fetchone()[0]
+    assert xb["Documents"].max_row - 1 == sqlite3.connect(active_db()).execute("SELECT COUNT(*) FROM checklist_items").fetchone()[0]
     # phiên bản đã lưu (không phải bản đang dùng): dựng DB tạm từ .jsonl của nó, DB đang dùng không đổi
     assert c.get("/s4/admin/procs/export.xlsx?version=abc").status_code == 422
     assert c.get("/s4/admin/procs/export.xlsx?version=999").status_code == 404
@@ -241,11 +247,18 @@ with TestClient(main.app) as c:
     assert [x.value or "" for x in xb["Versions"]["H"]][1:] == ["yes" if v["id"] == v1 else "" for v in sorted(procs.versions(), key=lambda x: x["id"])]
     assert n_procs() == n_before and procs.active_id() == v0, "xuất không đổi DB / bản đang dùng"
 
-    # ---------------- Áp dụng (dựng DB thật bằng system3.data.build, trên bản sao)
+    # ---------------- Áp dụng (G2.1: dựng DB bất biến của phiên bản bằng system3.data.build, rồi đổi con trỏ)
     assert n_procs() == N_SRC
-    procs.apply(v1, wait=True)
+    db_v0 = active_db()
+    copy_sha = __import__("hashlib").sha256(open(DATA_COPY, "rb").read()).hexdigest()
+    procs.apply(v1, wait=True, gate=False)
     assert n_procs() == N_SRC - 1 and procs.active_id() == v1, procs.job()
-    c2 = sqlite3.connect(DATA_COPY)
+    assert active_db() != db_v0 and os.path.isfile(db_v0), "bản cũ không bị ghi đè (quay lui được)"
+    assert __import__("hashlib").sha256(open(DATA_COPY, "rb").read()).hexdigest() == copy_sha, "không ghi vào DB mặc định"
+    man = procs.manifest()["versions"]
+    assert man[str(v1)]["n"] == N_SRC - 1 and man[str(v1)]["sha256"] and man[str(v0)]["n"] == N_SRC, man
+    assert procs.previous_id() == v0
+    c2 = sqlite3.connect(active_db())
     assert c2.execute("SELECT name FROM procedures WHERE proc_id=?", (pid,)).fetchone()[0].endswith("(ĐÃ SỬA THỬ)")
     c2.close()
     as_user("anna")
@@ -256,8 +269,10 @@ with TestClient(main.app) as c:
     assert gone not in names and names[pid].endswith("(ĐÃ SỬA THỬ)"), "Planner System 3 dùng dữ liệu mới (chỉ mục được dựng lại)"
     as_user("boss")
     assert c.delete(f"/s4/admin/procs/versions/{v1}").status_code == 422, "không xoá bản đang dùng"
-    procs.apply(v0, wait=True)   # quay lại bản Gốc
-    assert n_procs() == N_SRC and procs.active_id() == v0
+    procs.apply(v0, wait=True, gate=False)   # quay lui: tệp của bản Gốc còn đó, đổi con trỏ tức thì (không dựng lại)
+    assert n_procs() == N_SRC and procs.active_id() == v0 and active_db() == db_v0
+    names = {p["proc_id"]: p["name"] for p in _pl._index().procs}
+    assert gone in names and not names[pid].endswith("(ĐÃ SỬA THỬ)"), "chỉ mục Planner theo phiên bản đang dùng"
 
     # ---------------- Cào (giả lập tiến trình cào: không dùng mạng)
     import subprocess as _sp

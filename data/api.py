@@ -3,14 +3,14 @@ from __future__ import annotations
 
 import sqlite3
 
-from . import DB_PATH, records as _R, search as _S
+from . import active_db_path, records as _R, search as _S
 
 parse_query = _S.parse_query
 
 
 def connect(db_path=None) -> sqlite3.Connection:
-    """Mở system3.db (read-only về mặt nghiệp vụ). Phải chạy build trước."""
-    conn = sqlite3.connect(str(db_path or DB_PATH))
+    """Mở DB thủ tục của phiên bản đang dùng (read-only về mặt nghiệp vụ). Phải chạy build trước."""
+    conn = sqlite3.connect(str(db_path or active_db_path()))
     conn.row_factory = sqlite3.Row
     return conn
 

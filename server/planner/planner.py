@@ -7,6 +7,7 @@ from __future__ import annotations
 import os
 import re
 import sqlite3
+import threading
 import time
 from dataclasses import dataclass, field, asdict
 
@@ -59,15 +60,24 @@ class Plan:
 
 _idx: Index | None = None
 _conn = None
+_idx_path: str | None = None
+_idx_lock = threading.Lock()
 
 
 def _index():
-    global _idx, _conn
-    if _idx is None:
-        # asyncio.to_thread có thể chạy lượt sau trên thread khác; hàng đợi 1 worker nên không có truy cập song song
-        _conn = sqlite3.connect(str(data_api.DB_PATH), check_same_thread=False)
-        _conn.row_factory = sqlite3.Row
-        _idx = Index(_conn)
+    """Chỉ mục tên thủ tục của DB đang dùng. G2.1: khoá theo đường dẫn DB của phiên bản — đổi phiên bản (System 4 đổi con trỏ)
+    thì lượt sau tự dựng lại chỉ mục, không cần khởi động lại. Kết nối cũ không đóng ngay (lượt đang chạy có thể còn dùng)."""
+    global _idx, _conn, _idx_path
+    path = str(data_api.active_db_path())
+    if _idx is None or _idx_path != path:
+        with _idx_lock:
+            if _idx is None or _idx_path != path:
+                conn = sqlite3.connect(path, check_same_thread=False)
+                conn.row_factory = sqlite3.Row
+                from system3.retrieval import query as _q
+                _q._known_cache = (None, set())   # từ vựng tách chữ dính tính lại theo kho mới
+                idx = Index(conn)
+                _conn, _idx, _idx_path = conn, idx, path
     return _idx
 
 

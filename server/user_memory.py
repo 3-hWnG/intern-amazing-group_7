@@ -47,10 +47,14 @@ def client_id(raw: str | None) -> str:
     return raw.strip()
 
 
-@lru_cache(maxsize=1)
 def subject_catalog() -> tuple[tuple[str, int], ...]:
-    """Danh mục đối tượng hợp lệ [(tên, số thủ tục)] đọc từ procedure_subjects (dữ liệu tĩnh, đọc một lần)."""
-    return tuple((r["name"], r["n"]) for r in data_api.subject_names(data_api.connect()))
+    """Danh mục đối tượng hợp lệ [(tên, số thủ tục)] đọc từ procedure_subjects; đệm theo phiên bản dữ liệu (G2.1)."""
+    return _subject_catalog(str(data_api.active_db_path()))
+
+
+@lru_cache(maxsize=4)
+def _subject_catalog(path: str) -> tuple[tuple[str, int], ...]:
+    return tuple((r["name"], r["n"]) for r in data_api.subject_names(data_api.connect(path)))
 
 
 def subject_names() -> set[str]:

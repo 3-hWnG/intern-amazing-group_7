@@ -4,12 +4,17 @@
   Phiên bản đầu tiên = bản chép của data/snapshot/procedures.jsonl ("Gốc"), không bao giờ bị sửa hay xoá.
 - Bản nháp: sửa / xoá thủ tục gom vào nháp (bảng proc_draft) dựa trên một phiên bản; "Lưu thành phiên bản" mới tạo tệp mới.
 - Chuẩn dữ liệu: bản ghi sửa phải có ĐÚNG các trường và kiểu dữ liệu như dữ liệu gốc (hồ sơ kiểu lấy từ phiên bản Gốc).
-- Áp dụng: chạy CHÍNH lệnh dựng DB của System 3 (`system3.data.build`, không sửa) với tệp của phiên bản, ra DB tạm,
-  kiểm số thủ tục, rồi thay DB đang dùng (data/runtime/system3.db). System 3 mở kết nối mới mỗi câu hỏi nên dùng ngay.
+- G2.1 DB bất biến theo phiên bản: mỗi phiên bản được dựng (CHÍNH lệnh `system3.data.build`) thành một tệp riêng
+  data/runtime/knowledge/<vid>-<mã bản dựng>.db, ghi vào knowledge/manifest.json (số thủ tục, sha256, thời gian, báo cáo kiểm).
+  Con trỏ DUY NHẤT tới bản đang dùng: system4.db meta.proc_active. System 3 hỏi đường dẫn qua system3.data.active_db_path()
+  (hook đăng ký active_db), mọi đệm khoá theo đường dẫn -> đổi bản / quay lui tức thì, không khởi động lại, không ghi đè tệp đang mở.
+  Tên tệp kèm mã bản dựng (hash mã nguồn data/*.py): sửa mã dựng thì phiên bản được dựng lại ra tệp mới.
+- Giữ bản Gốc + 2 bản cào mới nhất (+ bản đang dùng, bản trước đó để quay lui, gốc của nháp); bản cũ hơn tự dọn sau mỗi lần cào.
 - Cào: chạy system4/scraper (code V10.3) ở tiến trình riêng; xong thì tạo phiên bản mới + so sánh với bản đang dùng.
 """
 from __future__ import annotations
 import datetime
+import hashlib
 import json
 import os
 import shutil
@@ -198,6 +203,7 @@ def delete_version(vid: int) -> None:
         raise ValueError("Bản nháp đang dựa trên phiên bản này")
     db.run("DELETE FROM proc_versions WHERE id=?", (vid,))
     (VERSIONS / f"{vid}.jsonl").unlink(missing_ok=True)
+    _drop_build(vid)
     _cache.pop(vid, None)
 
 
@@ -268,60 +274,223 @@ def build_db(src: Path, out: Path) -> int:
     return procs_xlsx.db_from_jsonl(src, out)
 
 
-def _swap(new: Path, target: Path) -> None:
-    """Đưa DB mới vào CHÍNH tệp DB System 3 đang dùng bằng SQLite backup (chép từng trang), không thay tệp:
-    Planner của System 3 giữ một kết nối mở suốt đời tiến trình (planner.py, _conn) nên thay tệp sẽ bị Windows khoá,
-    còn trên Linux thì kết nối cũ vẫn đọc tệp cũ. Backup ghi vào tệp đang mở -> mọi kết nối thấy dữ liệu mới."""
-    import sqlite3
-    last = None
-    for _ in range(20):
-        src = sqlite3.connect(str(new))
-        dst = sqlite3.connect(str(target), timeout=30)
+# ------------------------------------------------------- DB theo phiên bản (G2.1)
+_man_lock = threading.Lock()
+_man_cache: dict = {"mtime": None, "data": None}
+
+
+def knowledge_dir() -> Path:
+    """data/runtime/knowledge; S3_KNOWLEDGE_DIR đổi được; runtime System 4 đặt chỗ khác (test, bộ đo) thì nằm cạnh system4.db."""
+    if os.environ.get("S3_KNOWLEDGE_DIR"):
+        return Path(os.environ["S3_KNOWLEDGE_DIR"])
+    if os.environ.get("S4_RUNTIME_DIR"):
+        return config.RUNTIME_DIR / "knowledge"
+    return Path(_s3_data().ROOT) / "runtime" / "knowledge"
+
+
+def build_hash() -> str:
+    """Mã của bộ dựng (mã nguồn data/*.py + schema): đổi mã dựng -> tệp DB mới cho cùng phiên bản."""
+    root = Path(_s3_data().ROOT)
+    h = hashlib.sha256()
+    for f in sorted(root.glob("*.py")) + [root / "snapshot" / "schema_procedures.sql", root / "snapshot" / "team_corpus.json"]:
+        h.update(f.name.encode())
+        h.update(f.read_bytes())
+    return h.hexdigest()[:10]
+
+
+def manifest() -> dict:
+    p = knowledge_dir() / "manifest.json"
+    try:
+        mt = p.stat().st_mtime_ns
+    except OSError:
+        return {"versions": {}}
+    if _man_cache["mtime"] != mt:
         try:
-            src.backup(dst)
-            break
-        except sqlite3.OperationalError as e:   # đang có lượt đọc giữ khoá: chờ rồi thử lại
-            last = e
-            time.sleep(0.5)
-        finally:
-            src.close()
-            dst.close()
+            _man_cache.update(mtime=mt, data=json.loads(p.read_text(encoding="utf-8")))
+        except (OSError, ValueError):
+            return {"versions": {}}
+    return _man_cache["data"]
+
+
+def _manifest_put(vid: int, info: dict | None) -> None:
+    with _man_lock:
+        m = json.loads(json.dumps(manifest()))
+        m.setdefault("versions", {})
+        if info is None:
+            m["versions"].pop(str(vid), None)
+        else:
+            m["versions"][str(vid)] = info
+        m["active"] = active_id()   # chỉ để đọc; con trỏ thật ở system4.db meta.proc_active
+        p = knowledge_dir() / "manifest.json"
+        p.parent.mkdir(parents=True, exist_ok=True)
+        tmp = p.with_suffix(".tmp")
+        tmp.write_text(json.dumps(m, ensure_ascii=False, indent=1), encoding="utf-8")
+        tmp.replace(p)
+        _man_cache["mtime"] = None
+
+
+def db_path_of(vid: int) -> Path | None:
+    """Tệp DB đã dựng của phiên bản, None nếu chưa dựng."""
+    info = manifest().get("versions", {}).get(str(vid))
+    if not info:
+        return None
+    p = knowledge_dir() / info["file"]
+    return p if p.is_file() else None
+
+
+def active_db() -> Path | None:
+    """Đăng ký cho system3.data.set_active_provider: DB của phiên bản đang dùng."""
+    try:
+        return db_path_of(active_id())
+    except Exception:   # system4.db chưa sẵn sàng: System 3 dùng DB mặc định
+        return None
+
+
+def _content_sha(rows) -> str:
+    return hashlib.sha256("\n".join(f"{a}\t{b}" for a, b in sorted(rows)).encode()).hexdigest()
+
+
+def _ro(path: Path):
+    import sqlite3
+    return sqlite3.connect(Path(path).resolve().as_uri() + "?mode=ro", uri=True)
+
+
+def _db_content(path: Path) -> tuple[int, str]:
+    c = _ro(path)
+    try:
+        rows = c.execute("SELECT proc_id, content_hash FROM procedures WHERE status='active'").fetchall()
+        return len(rows), _content_sha(rows)
+    finally:
+        c.close()
+
+
+def _has_current_schema(path: Path) -> bool:
+    c = _ro(path)
+    try:
+        return "amount_ok" in {r[1] for r in c.execute("PRAGMA table_info(fees_clean)")}
+    finally:
+        c.close()
+
+
+def ensure_built(vid: int, msg=None) -> Path:
+    """Dựng DB của phiên bản nếu chưa có bản dựng ứng với mã dựng hiện tại. Trả đường dẫn tệp."""
+    bh = build_hash()
+    info = manifest().get("versions", {}).get(str(vid))
+    if info and info.get("build") == bh and db_path_of(vid):
+        return db_path_of(vid)
+    src = VERSIONS / f"{vid}.jsonl"
+    if not src.is_file():
+        raise FileNotFoundError(f"không có tệp của phiên bản {vid}")
+    kd = knowledge_dir()
+    kd.mkdir(parents=True, exist_ok=True)
+    out = kd / f"{vid}-{bh}.db"
+    tmp = kd / f"{vid}-{bh}.building.db"
+    recs, _ = load(vid)
+    want = _content_sha([(r["proc_id"], r.get("content_hash") or "") for r in recs])
+    seed = os.environ.get("S3_DATA_DB")   # test / bộ đo: DB cố định dựng bằng đúng mã này và đúng dữ liệu -> chép thay vì dựng lại
+    if seed and Path(seed).is_file() and _has_current_schema(Path(seed)) and _db_content(Path(seed)) == (len(recs), want):
+        shutil.copy2(seed, tmp)
+        n = len(recs)
     else:
-        raise RuntimeError(f"Không ghi được vào DB đang dùng: {last}")
-    new.unlink(missing_ok=True)
+        if msg:
+            msg(f"Đang dựng DB thủ tục của phiên bản {vid} (khoảng 1 phút)…")
+        n = build_db(src, tmp)
+    if n != len(recs):
+        tmp.unlink(missing_ok=True)
+        raise RuntimeError(f"DB dựng ra có {n} thủ tục, phiên bản có {len(recs)}: không dùng")
+    rep_p = tmp.with_name(tmp.name + ".report.json")   # báo cáo kiểm của bước dựng (G2.2), nếu có
+    report = json.loads(rep_p.read_text(encoding="utf-8")) if rep_p.is_file() else {}
+    rep_p.unlink(missing_ok=True)
+    os.replace(tmp, out)
+    h = hashlib.sha256()
+    with open(out, "rb") as f:
+        for chunk in iter(lambda: f.read(1 << 20), b""):
+            h.update(chunk)
+    old = info.get("file") if info else None
+    label = db.run("SELECT label FROM proc_versions WHERE id=?", (vid,), one=True)
+    _manifest_put(vid, {"file": out.name, "build": bh, "n": n, "sha256": h.hexdigest(), "content_sha256": want,
+                        "built_at": datetime.datetime.now().isoformat(timespec="seconds"),
+                        "label": label["label"] if label else "", "report": report})
+    if old and old != out.name:
+        try:
+            (kd / old).unlink(missing_ok=True)   # bản dựng cũ của chính phiên bản này (đang mở trên Windows thì để lại)
+        except OSError:
+            pass
+    return out
 
 
-def _reset_s3_caches() -> None:
-    """Planner System 3 dựng chỉ mục tên thủ tục trong bộ nhớ một lần (planner.py, _idx). Bỏ chỉ mục đó để lượt hỏi sau
-    dựng lại từ DB mới — chỉ đặt lại biến đệm từ bên ngoài, không sửa code System 3."""
-    m = sys.modules.get("planner.planner")
-    if m is not None and getattr(m, "_idx", None) is not None:
-        m._idx = None
+def ensure_active(msg=None) -> Path:
+    """Khởi động: DB của phiên bản đang dùng phải có (lần đầu sau khi nâng cấp: dựng, chặn tới khi xong)."""
+    init()
+    return ensure_built(active_id(), msg or (lambda m: print("  [procs] " + m, flush=True)))
 
 
-def apply(vid: int, wait: bool = False) -> None:
-    """Strict mode chuyển sang phiên bản vid."""
+def previous_id() -> int:
+    return int(_meta_get("proc_prev", "0") or 0)
+
+
+gate_fn = None   # G2.4: (db đang dùng, db mới) -> {"ok": bool, "reason": str, ...}; procs_gate.py gán khi nạp
+
+
+def apply(vid: int, wait: bool = False, gate: bool = True) -> None:
+    """Strict mode chuyển sang phiên bản vid: dựng DB bất biến của bản đó (nếu chưa có), chạy cổng kiểm (G2.4), rồi đổi con trỏ.
+    Không ghi đè tệp đang mở; quay lui = apply(bản trước), tức thì vì tệp còn đó."""
     load(vid)   # kiểm tồn tại
 
     def work():
         _job["message"] = "Đang dựng DB thủ tục từ phiên bản đã chọn (khoảng 1 phút)…"
-        target = Path(_s3_data().DB_PATH)
-        tmp = target.with_name(target.stem + ".next.db")
-        n = build_db(VERSIONS / f"{vid}.jsonl", tmp)
-        expected = db.run("SELECT n_records FROM proc_versions WHERE id=?", (vid,), one=True)["n_records"]
-        if n != expected:
-            tmp.unlink(missing_ok=True)
-            raise RuntimeError(f"DB dựng ra có {n} thủ tục, phiên bản có {expected}: không áp dụng")
-        _job["message"] = "Đang thay DB đang dùng…"
-        _swap(tmp, target)
-        _reset_s3_caches()
+        path = ensure_built(vid, lambda m: _job.update(message=m))
+        cur = active_id()
+        report = None
+        if gate and vid != cur and gate_fn is not None:
+            _job["message"] = "Đang chạy cổng kiểm (mẫu so khớp + mẫu golden trên DB mới)…"
+            report = gate_fn(db_path_of(cur) or ensure_built(cur), path)
+            _manifest_put(vid, {**manifest()["versions"][str(vid)], "gate": report})
+            if not report.get("ok"):
+                raise RuntimeError("Cổng kiểm chặn, không áp dụng: " + report.get("reason", "chỉ số tụt quá ngưỡng"))
+        if vid != cur:
+            _meta_set("proc_prev", str(cur))
         _meta_set("proc_active", str(vid))
-        _job.update(state="done", message=f"Strict mode đang dùng phiên bản {vid} ({n} thủ tục).", result={"version": vid, "n": n})
+        info = manifest()["versions"][str(vid)]
+        _manifest_put(vid, info)
+        _job.update(state="done", message=f"Strict mode đang dùng phiên bản {vid} ({info['n']} thủ tục).",
+                    result={"version": vid, "n": info["n"], "gate": report})
 
     if wait:
         work()
     else:
         _start("apply", work)
+
+
+def cleanup(keep_per_source: int = 2) -> list[int]:
+    """Giữ bản Gốc + `keep_per_source` bản mới nhất của mỗi nguồn (cào / sửa), bản đang dùng, bản trước đó, gốc của nháp.
+    Xoá tệp .jsonl và DB đã dựng của các bản còn lại. Trả danh sách id đã xoá."""
+    keep = {original_id(), active_id(), previous_id(), draft_base()}
+    by_src: dict[str, list[int]] = {}
+    for v in versions():
+        by_src.setdefault(v["source"], []).append(v["id"])
+    for ids in by_src.values():
+        keep |= set(sorted(ids, reverse=True)[:keep_per_source])
+    gone = []
+    for v in versions():
+        if v["id"] in keep:
+            continue
+        db.run("DELETE FROM proc_versions WHERE id=?", (v["id"],))
+        (VERSIONS / f"{v['id']}.jsonl").unlink(missing_ok=True)
+        _drop_build(v["id"])
+        _cache.pop(v["id"], None)
+        gone.append(v["id"])
+    return gone
+
+
+def _drop_build(vid: int) -> None:
+    info = manifest().get("versions", {}).get(str(vid))
+    if info:
+        try:
+            (knowledge_dir() / info["file"]).unlink(missing_ok=True)
+        except OSError:
+            pass
+        _manifest_put(vid, None)
 
 
 def _scrape_progress() -> dict:
@@ -366,6 +535,7 @@ def scrape(limit: int = 0, rps: float = 2.0) -> None:
             raise RuntimeError("Cào xong nhưng không có thủ tục nào")
         label = "Cào " + datetime.datetime.now().strftime("%d/%m/%Y %H:%M") + (f" (thử {limit})" if limit else "")
         vid = _new_version(recs, label, "scrape", active_id(), f"{len(recs)} thủ tục từ dichvucong.gov.vn")
+        cleanup()   # giữ Gốc + 2 bản cào mới nhất (+ bản đang dùng / bản trước đó)
         d = diff(str(active_id()), str(vid))
         c = d["counts"]
         _job.update(state="done", result={"version": vid, "diff": c},
@@ -376,14 +546,10 @@ def scrape(limit: int = 0, rps: float = 2.0) -> None:
 
 
 def reapply_active() -> str:
-    """Dùng sau khi `Set up first time.bat` dựng lại DB từ snapshot: nếu đang dùng phiên bản khác Gốc thì dựng lại theo nó."""
+    """`Set up first time.bat`: dựng sẵn DB của phiên bản đang dùng (data/runtime/knowledge) để web khởi động nhanh."""
     db.init_db()
-    init()
-    vid = active_id()
-    if vid == original_id():
-        return "Đang dùng phiên bản Gốc, không cần làm gì."
-    apply(vid, wait=True)
-    return _job["message"]
+    p = ensure_active()
+    return f"Phiên bản đang dùng: {active_id()} -> {p}"
 
 
 if __name__ == "__main__":   # python -m system3.system4.server.procs reapply   (Set up first time.bat gọi)

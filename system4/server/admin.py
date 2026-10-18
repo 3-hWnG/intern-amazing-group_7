@@ -386,7 +386,8 @@ def make_router(s3_store) -> APIRouter:
         if not v:
             raise HTTPException(404, f"không có phiên bản {vid}")
         if vid == active:
-            src, where = Path(procs._s3_data().DB_PATH), "data/runtime/system3.db (the database Strict mode answers from right now)"
+            src = procs.db_path_of(vid) or Path(procs._s3_data().active_db_path())
+            where = f"{src.name} in data/runtime/knowledge (the database Strict mode answers from right now)"
         else:
             src, where = procs.VERSIONS / f"{vid}.jsonl", (f"saved version {vid} (system4/runtime/procs/versions/{vid}.jsonl), "
                                                           "built into a temporary database with system3.data.build")
