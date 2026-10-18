@@ -6,6 +6,7 @@ Mã thoát 0 khi mọi test đạt, trừ các hồi quy đã biết trong KNOWN
 from __future__ import annotations
 
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -32,6 +33,7 @@ TIMEOUT = 900
 def isolated_env(data_db: str, tmp: str) -> dict:
     env = dict(os.environ)
     env.pop("ABI_API_KEY", None)
+    env.update(TEMP=tmp, TMP=tmp, TMPDIR=tmp)   # mọi tempfile của test nằm trong tmp, xoá sau khi chạy (mỗi test S4 chép DB ~60 MB)
     env.update(PYTHONIOENCODING="utf-8", S3_DATA_DB=data_db, S3_DB_PATH=os.path.join(tmp, "s3.db"),
                S4_RUNTIME_DIR=os.path.join(tmp, "s4"), OLLAMA_HOST="http://127.0.0.1:1", S3_USE_LLM="0",
                S3_NO_WARMUP="1", S4_WARMUP="0", S4_ABI_SYNC="0")
@@ -49,6 +51,8 @@ def run_one(path: str, how: str, data_db: str) -> tuple[bool, float, str]:
         out, code = (r.stdout or "") + (r.stderr or ""), r.returncode
     except subprocess.TimeoutExpired as e:
         out, code = f"HẾT GIỜ {TIMEOUT}s\n{e.stdout or ''}", -1
+    finally:
+        shutil.rmtree(tmp, ignore_errors=True)
     ok = code == 0
     if not ok and path in CRASH_ON_EXIT_OK and code not in (0, 1, -1) and "Traceback" not in out:
         ok = True
