@@ -269,9 +269,11 @@ def _env() -> dict:
 
 def build_db(src: Path, out: Path) -> int:
     """Dựng DB System 3 từ một tệp procedures.jsonl bằng chính system3.data.build (không sửa), ra tệp `out`.
-    Tiến trình con tự đăng ký gói system3 (run_server.register_package) nên không cần junction/PYTHONPATH."""
+    Tiến trình con tự đăng ký gói system3 (run_server.register_package) nên không cần junction/PYTHONPATH.
+    G2.3: các phiên bản đang giữ làm nguồn mã cũ cho bảng proc_lineage (S3_LINEAGE_REFS)."""
     from . import procs_xlsx
-    return procs_xlsx.db_from_jsonl(src, out)
+    refs = [str(p) for p in sorted(VERSIONS.glob("*.jsonl")) if p.resolve() != Path(src).resolve()]
+    return procs_xlsx.db_from_jsonl(src, out, env_extra={"S3_LINEAGE_REFS": os.pathsep.join(refs)})
 
 
 # ------------------------------------------------------- DB theo phiên bản (G2.1)
@@ -292,7 +294,8 @@ def build_hash() -> str:
     """Mã của bộ dựng (mã nguồn data/*.py + schema): đổi mã dựng -> tệp DB mới cho cùng phiên bản."""
     root = Path(_s3_data().ROOT)
     h = hashlib.sha256()
-    for f in sorted(root.glob("*.py")) + [root / "snapshot" / "schema_procedures.sql", root / "snapshot" / "team_corpus.json"]:
+    for f in sorted(root.glob("*.py")) + [root / "snapshot" / n for n in ("schema_procedures.sql", "team_corpus.json", "lineage_manual.json")
+                                          if (root / "snapshot" / n).is_file()]:
         h.update(f.name.encode())
         h.update(f.read_bytes())
     return h.hexdigest()[:10]

@@ -94,12 +94,32 @@ def make_router(s3_store) -> APIRouter:
     def other_active_devs(uid: int) -> int:
         return db.run("SELECT COUNT(*) n FROM users WHERE role='dev' AND disabled=0 AND id<>?", (uid,), one=True)["n"]
 
+    def _merged_top(limit: int) -> list[dict]:
+        """G2.3: proc_stats gộp theo mã chuẩn của phiên bản đang dùng (mã cũ Cổng đã cấp lại -> mã mới)."""
+        from system3.data import api as data_api
+        conn = data_api.connect()
+        try:
+            out: dict[str, dict] = {}
+            for r in s3_store.top_procs(100000):
+                pid = data_api.canonical(conn, r["proc_id"])
+                cur = out.get(pid)
+                if cur is None:
+                    out[pid] = {**r, "proc_id": pid}
+                else:
+                    cur["n"] += r["n"]
+                    cur["last_at"] = max(cur["last_at"] or "", r["last_at"] or "")
+                    if pid == r["proc_id"]:
+                        cur["label"] = r["label"]
+        finally:
+            conn.close()
+        return sorted(out.values(), key=lambda x: (x["n"], x["last_at"] or ""), reverse=True)[:limit]
+
     @r.get("/stats")
     def stats(request: Request, limit: int = 20):
         """Thống kê: thủ tục Strict được trả lời nhiều nhất, số 👍/👎, số tài khoản theo loại."""
         dev(request)
         fb = lambda t: {k: db.run(f"SELECT COUNT(*) n FROM {t} WHERE feedback=?", (v,), one=True)["n"] for k, v in (("up", 1), ("down", -1))}
-        return {"procedures": s3_store.top_procs(max(1, min(limit, 200))),
+        return {"procedures": _merged_top(max(1, min(limit, 200))),
                 "feedback": {"friendly": fb("messages"), "strict": fb("strict_nodes")},
                 "roles": {x["role"]: x["n"] for x in db.run("SELECT role, COUNT(*) n FROM users GROUP BY role", many=True)}}
 

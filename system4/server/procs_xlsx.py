@@ -90,7 +90,7 @@ def filename(version: int | None) -> str:
     return f"du_lieu_strict_v{version or 0}_{datetime.date.today().isoformat()}.xlsx"
 
 
-def db_from_jsonl(src: Path, out: Path, timeout: int = 1800) -> int:
+def db_from_jsonl(src: Path, out: Path, timeout: int = 1800, env_extra: dict | None = None) -> int:
     """Dựng DB thủ tục từ một procedures.jsonl bằng chính system3.data.build (không sửa), ra tệp `out`; trả số thủ tục.
     Chạy tiến trình con qua run_server.register_package nên không phụ thuộc tên thư mục / PYTHONPATH."""
     out.unlink(missing_ok=True)
@@ -98,7 +98,7 @@ def db_from_jsonl(src: Path, out: Path, timeout: int = 1800) -> int:
             "import run_server; run_server.register_package(root); "
             "import system3.data.load as L, system3.data.build as B; p = pathlib.Path(sys.argv[1]); "
             "B.load_snapshot = lambda path=None: L.load_snapshot(p); raise SystemExit(B.main())")
-    env = dict(os.environ, S3_DATA_DB=str(out), PYTHONIOENCODING="utf-8")
+    env = dict(os.environ, S3_DATA_DB=str(out), PYTHONIOENCODING="utf-8", **(env_extra or {}))
     r = subprocess.run([sys.executable, "-c", code, str(src), str(REPO)], env=env, capture_output=True, text=True,
                        encoding="utf-8", errors="replace", timeout=timeout)
     if r.returncode != 0 or not out.is_file():

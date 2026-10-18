@@ -118,6 +118,21 @@ def _list_request(text: str) -> str | None:
     head = ("Mình chưa đếm được số lượng thủ tục" if _COUNT.search(f) else "Mình chưa liệt kê đầy đủ được")
     return f"{head} (chưa có công cụ truy vấn danh sách). Đây là {len(hits)} thủ tục gần nhất với yêu cầu của bạn:\n{names}\nBạn hỏi tên một thủ tục để xem chi tiết."
 
+def _remap_ids(conn, state: dict | None, shown: list[dict]) -> tuple[dict | None, list[dict]]:
+    """G2.3: hội thoại bắt đầu ở phiên bản dữ liệu cũ có thể giữ mã thủ tục mà Cổng đã cấp lại -> đổi sang mã tương đương
+    của phiên bản đang dùng (proc_lineage). Mã không ghép được giữ nguyên (lượt sau sẽ không tìm thấy, như trước)."""
+    lin = data_api.lineage(conn)
+    if not lin:
+        return state, shown
+    m = lambda p: lin.get(p, p) if isinstance(p, str) else p
+    if state:
+        state = {**state, "topic": m(state.get("topic")),
+                 "history": list(dict.fromkeys(m(p) for p in state.get("history") or [])),
+                 "order": list(dict.fromkeys(m(p) for p in state.get("order") or []))}
+    shown = [{**s, "proc_id": m(s.get("proc_id"))} for s in shown or []]
+    return state, shown
+
+
 def _head(conn, pid: str | None) -> str | None:
     fam = data_api.family_of(conn, pid) if pid else None
     return fam["head"] if fam else None
@@ -160,8 +175,9 @@ def handle_turn(turn: Turn) -> dict:
 
     pc = pre_check(text)
     state = turn.state if turn.state is not None else store.get_state(turn.conversation_id)
-    last_proc = (state or {}).get("topic") or (turn.shown_procedures[-1]["proc_id"] if turn.shown_procedures else None)
     conn = data_api.connect()
+    state, turn.shown_procedures = _remap_ids(conn, state, turn.shown_procedures)
+    last_proc = (state or {}).get("topic") or (turn.shown_procedures[-1]["proc_id"] if turn.shown_procedures else None)
     facts = _facts_for(conn, turn.session_facts, [last_proc])
     # FINAL-PRODUCT: [B3] trace đã che PII; messages/plan_json thì chưa (mục 2)
     trace = {"question": mask_pii(turn.text), "flags": pc["flags"]}

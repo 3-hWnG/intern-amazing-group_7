@@ -18,7 +18,8 @@ STAMP = FIXTURE.with_suffix(".sha256")
 def source_hash() -> str:
     """sha256 của mọi thứ quyết định nội dung DB: snapshot + mã dựng."""
     h = hashlib.sha256()
-    files = [ROOT / "data" / "snapshot" / n for n in ("procedures.jsonl", "schema_procedures.sql", "team_corpus.json")]
+    files = [ROOT / "data" / "snapshot" / n for n in ("procedures.jsonl", "schema_procedures.sql", "team_corpus.json", "lineage_manual.json")
+             if (ROOT / "data" / "snapshot" / n).is_file()]
     files += sorted((ROOT / "data").glob("*.py"))
     for f in files:
         h.update(f.name.encode())

@@ -5,7 +5,7 @@ import json
 import re
 import sys
 
-from . import DB_PATH, checks, fees as F, records as R
+from . import DB_PATH, checks, fees as F, lineage, records as R
 from .load import connect_new, import_records, load_snapshot
 from .textutil import fold
 from . import team_overlay
@@ -199,6 +199,7 @@ def main() -> int:
     conn.executescript(EXTRA_SCHEMA)
     n = import_records(conn, load_snapshot())
     links = checks.normalize_links(conn)   # G2.2: link Cổng theo source_id (UUID), cho mọi phiên bản
+    lin = lineage.build(conn)              # G2.3: mã cũ (bản Gốc + các bản System 4 truyền vào) -> mã trong bản này
     conn.executemany("INSERT INTO synonyms VALUES (?,?)", SEED_SYNONYMS.items())
     build_fees_and_chunks(conn)
     build_conditions_families(conn)
@@ -208,7 +209,9 @@ def main() -> int:
     for t in ("procedures", "fees_clean", "field_chunks", "condition_index", "families",
               "synonyms", "proc_flat"):
         print(f"{t:16s}{conn.execute(f'SELECT COUNT(*) FROM {t}').fetchone()[0]}")
-    rep = {**checks.report(conn), "links": links}
+    unmatched = [dict(old_id=r[0], name=r[1]) for r in conn.execute(
+        "SELECT old_id, old_name FROM proc_lineage WHERE new_id IS NULL ORDER BY old_id")]
+    rep = {**checks.report(conn), "links": links, "lineage": {**lin, "unmatched_list": unmatched}}
     conn.close()
     DB_PATH.with_name(DB_PATH.name + ".report.json").write_text(json.dumps(rep, ensure_ascii=False, indent=1), encoding="utf-8")
     print("báo cáo kiểm: " + ", ".join(f"{k}={v['n']}" for k, v in rep.items() if isinstance(v, dict) and "n" in v))

@@ -15,6 +15,23 @@ def connect(db_path=None) -> sqlite3.Connection:
     return conn
 
 
+_lineage: dict[str, dict[str, str]] = {}
+
+
+def lineage(conn) -> dict[str, str]:
+    """G2.3: {mã cũ: mã trong DB này}; đệm theo tệp DB (mỗi phiên bản một tệp bất biến)."""
+    from . import lineage as _L
+    key = conn.execute("PRAGMA database_list").fetchone()[2]
+    if key not in _lineage:
+        _lineage[key] = _L.mapping(conn)
+    return _lineage[key]
+
+
+def canonical(conn, proc_id: str | None) -> str | None:
+    """Mã tương đương trong DB đang đọc (mã cũ bị Cổng cấp lại -> mã mới); không biết thì giữ nguyên."""
+    return lineage(conn).get(proc_id, proc_id) if proc_id else proc_id
+
+
 def search(conn, query: str, limit: int = 5) -> list[dict]:
     """Câu tự do -> top-k thủ tục (match_tier, term_overlap, confident, score).
     Đi qua parse_query (bung từ đồng nghĩa, bỏ lời đệm/tên tỉnh); nếu rỗng thì dùng nguyên câu."""
