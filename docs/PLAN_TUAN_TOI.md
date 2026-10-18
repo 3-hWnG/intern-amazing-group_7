@@ -232,6 +232,20 @@ Kết luận bước 5:
 - Muốn có RAGAS đáng tin: cần giám khảo mạnh hơn (model lớn hơn hoặc API) và câu trả lời mẫu thật. Chưa làm vì ngoài phạm vi máy hiện tại.
 - Điểm chưa tối ưu của tôi: tách ý và tách "tham chiếu" dùng model 4B nên chính bước tách cũng có thể sai; không kiểm riêng.
 
+### Eval đầy đủ lần #1 — mốc bản 3 (18/10/2026, kế hoạch thực thi G2.4; lần 1/3 của tuần)
+Dữ liệu chính thức theo quyết định D4: **thủ tục phiên bản 3** (cào 13/10, 1.517 thủ tục, 34 tỉnh, link Cổng dạng UUID), đã áp dụng qua cổng kiểm (bản 2 → bản 3: 137 ca chung, hành vi 94,9% → 94,9%, top-1 92,9% → 92,9%).
+Lệnh: `S3_DATA_DB=data/runtime/knowledge/3-1a9c2d36a7.db S3_USE_LLM=0 S3_PLANNER_MODE=rules python run_server.py eval/run_golden.py thu-tuc --by status` (và `--by source`). Kết quả đầy đủ: `eval/saved_results/2026-10-18_eval1/`.
+Dấu phiên bản: git `e291ad2`, data_version `v3 Cào 13/10/2026 15:45`, 1.517 thủ tục, data_sha256 `70c42af1…36bd`, model: tắt (chỉ luật), settings_hash `120a36e41ab80523`.
+Chấm theo mã tương đương (`proc_lineage`, G2.3): đáp án mang mã của bản Gốc được đổi sang mã của bản 3; ca có mã không ghép được bị **loại**: bộ mù 35, dev 80, holdout-used 21 (tổng 136; danh sách mã cho người duyệt: `docs/LINEAGE_CAN_DUYET.md`).
+
+| status | số ca | hành vi đúng | top-1 | top-3 | MRR | đúng trường | hỏi lại đúng | từ chối đúng |
+|---|---|---|---|---|---|---|---|---|
+| **blind** | 518 | 407/518 (79%) | **274/381 (72%)** | 302/381 (79%) | 0,752 | 184/363 (51%) | 36/76 (47%) | 52/58 (90%) |
+| dev | 561 | 549/561 (98%) | 478/488 (98%) | 485/488 (99%) | 0,986 | 309/316 (98%) | 22/25 (88%) | 42/46 (91%) |
+| holdout-used | 137 | 115/137 (84%) | 91/104 (88%) | 93/104 (89%) | 0,881 | 66/86 (77%) | 3/10 (30%) | 16/20 (80%) |
+
+So với số ngày 15/10 (AUDIT F3, cùng bộ mù): snapshot 1.350 top-1 73%; dữ liệu đang chạy lúc đó (bản 2, không ghép mã) 63%; bản 2 ghép mã theo tên 68%. Bản 3 + lineage + loại ca không ghép được: **72%**. Hỏi lại vẫn 47% (việc G4.1).
+
 ### Nghiệm thu mục 3 (rút ra từ các bảng A–D)
 
 **Trạng thái theo từng bước của mục 3**
