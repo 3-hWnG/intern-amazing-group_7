@@ -66,6 +66,7 @@ Biến môi trường (xem `server/config.py`):
 | `S3_QUEUE_CONCURRENCY` / `S4_CONCURRENCY` | 1 | số chỗ GPU (card lớn: đặt N cùng `OLLAMA_NUM_PARALLEL=N`) |
 | `S3_STRICT_GPU_WAIT` | 3.0 | giây bước sinh chữ của Strict chờ GPU trước khi trả bản code |
 | `S3_PROVINCE_CLARIFY` | 1 | 0 = tắt thẻ hỏi tỉnh (G4.4) |
+| `S3_CLARIFY_FILLER` / `S3_CLARIFY_NOPROC` | 1 | 0 = tắt bỏ chữ đệm (M1) / hỏi lại khi không nêu thủ tục (M2) — research/clarify/RESULTS.md |
 | `S4_FORCE_CPU` | — | 1 = coi như máy không có card đồ hoạ (thử G3.3) |
 | `OLLAMA_HOST` | http://127.0.0.1:11434 | địa chỉ Ollama |
 | `LLM_KEEP_ALIVE` | 30m | giữ model trong VRAM |
@@ -98,6 +99,7 @@ python tests/listsql_test.py      # liệt kê / đếm bằng text-to-SQL: hộ
 python tests/province_test.py     # thủ tục có bản riêng tỉnh: hỏi tỉnh, nhớ cho cả hội thoại
 python tests/title_test.py        # tên hội thoại Strict = tên thủ tục của lượt trả lời trực tiếp đầu tiên
 python tests/forms_test.py        # biểu mẫu: tên mẫu + link trang thủ tục trên Cổng
+python tests/clarify_vague_test.py # hỏi lại khi mơ hồ: chữ đệm hội thoại, câu không nêu thủ tục nào
 python tests/p30_clarify_test.py  # Phase 30: hỏi lại khi câu là cụm gốc chung, không hỏi thừa khi đã gọi tên; điều kiện phải thêm thông tin ngoài tên thủ tục
 python smoke_test.py             # server tạm (DB tạm, cổng 8391, S3_USE_LLM=0): health, trả lời có nguồn, hỏi lại + bấm nút, messages/trace
 set S3_USE_LLM=0 && python e2e_test.py   # chạy server tạm 5 lượt hội thoại (cổng 8392)

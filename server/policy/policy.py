@@ -25,6 +25,9 @@ MAX_TASKS = 3
 PROVINCE_OPTS = 6                  # G4.4: thẻ hỏi tỉnh hiện tối đa 6 tỉnh có bản riêng + "Áp dụng chung toàn quốc"
 NATIONWIDE = "*"                   # tỉnh của hội thoại = dùng bản chung toàn quốc
 NATIONWIDE_LABEL = "Áp dụng chung toàn quốc"
+# M2: dấu hiệu "đang hỏi về một thủ tục" (chữ đã bỏ dấu) và các thủ tục gợi ý khi câu không nêu thủ tục nào
+_ASKS_PROC = re.compile(r"(?<![a-z])(thu tuc|giay to|ho so|lam giay|xin giay|le phi|bao lau|o dau|nop|can gi|can nhung gi|lam the nao|lam sao|tim hieu|thac mac|tu van)(?![a-z])")
+COMMON_PROCS = ("Thủ tục đăng ký khai sinh", "Đăng ký thường trú", "Thủ tục đăng ký kết hôn", "Thủ tục đăng ký khai tử")
 MAX_CHARS = 2000
 VERTICAL = {"Thuế": "cơ quan Thuế", "Hải quan": "cơ quan Hải quan"}
 
@@ -519,6 +522,22 @@ def check(plan, *, user_text: str, conn=None, facts: list[str] | None = None,
                 out.behavior = "clarify"
                 out.memory_note = note
                 return out
+
+    # --- M2 (hỏi lại khi mơ hồ, 18/10): hỏi về thủ tục mà KHÔNG nêu thủ tục nào ("cần giấy tờ gì", "thủ tục bao gồm những giấy tờ nào",
+    # "tôi muốn làm giấy tờ cho con") ở đầu hội thoại -> hỏi lại thay vì xin lỗi. Có chủ đề trước đó thì Planner đã kế thừa, không tới đây.
+    if (os.environ.get("S3_CLARIFY_NOPROC", "1") == "1" and not no_clarify and not known_procs and len(raw) == 1 and len(out.tasks) == 1
+            and out.tasks[0].route == "apologize" and out.tasks[0].reason in ("off_topic", "not_found")
+            and not (getattr(raw[0], "procedure_query", "") or "").strip() and _ASKS_PROC.search(fold(user_text))):
+        opts = []
+        for nm in COMMON_PROCS:
+            r = conn.execute("SELECT proc_id, name FROM procedures WHERE name=? AND status='active' AND province IS NULL", (nm,)).fetchone()
+            if r:
+                opts.append({"label": r[1][:110], "proc_id": r[0]})
+        if opts:
+            out.clarify = {"question": "Bạn muốn hỏi về thủ tục nào? Bạn gõ tên thủ tục (ví dụ: đăng ký khai sinh, đăng ký thường trú) hoặc chọn bên dưới.",
+                           "options": opts, "allow_free_text": True, "kind": "no_procedure"}
+            out.behavior = "clarify"
+            return out
 
     # --- G4.4 (D5): thủ tục có bản riêng của tỉnh mà chưa biết người dùng ở tỉnh nào -> hỏi tỉnh; đã biết -> dùng bản của tỉnh đó.
     # province: tỉnh của hội thoại / câu này ('*' = chung toàn quốc; None = chưa biết). Tắt bằng S3_PROVINCE_CLARIFY=0.

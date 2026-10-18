@@ -5,6 +5,7 @@ hỏng truy vấn FTS/AND. Ở đây mọi cụm chỉ-field bị TÁCH RA thàn
 """
 from __future__ import annotations
 
+import os
 import re
 from dataclasses import dataclass, field
 
@@ -49,6 +50,10 @@ PRE_SYN = {"hso": "ho so", "onl": "online", "ow": "o", "bn": "bao nhieu", "j": "
 # Một số chữ trên là nghiệp vụ nếu đứng trong cụm đặc thù; giữ nguyên cụm trước khi bỏ stop.
 KEEP_PHRASES = ["con nho", "cho thue", "cap lai", "lam lai"]
 
+# M1 (18/10): cụm đệm hội thoại xét trên chữ CÓ DẤU (bỏ dấu thì "đang" trùng "đăng" của "đăng ký"); không bỏ "đang" đứng một mình
+# vì tên thủ tục có "đang sử dụng đất". Đo: research/clarify/ (RESULTS.md).
+_FILLER_RE = re.compile(r"(?<!\w)(?:đang\s+(?:tìm hiểu|muốn|cần|định|thắc mắc|có nhu cầu)|bao gồm(?=\s+(?:những\s+)?(?:giấy tờ|hồ sơ|gì|thành phần))|liên quan (?:đến|tới)|"
+                        r"(?<=hỏi )về|(?<=biết )về|(?<=hiểu )về|(?<=mắc )về|(?<=vấn )về|(?<=tin )về)(?!\w)", re.IGNORECASE)
 _DROP_PHRASES = ("nho tu van", "xin tu van", "tim hieu", "tu van", "can biet", "muon biet", "huong dan", "linh vuc", "thong tin ve thu tuc", "cho minh hoi", "cho toi hoi", "cho hoi", "vui long", "lam on", "thu tuc", "ho so thu tuc",
                  "binh thuong", "thuong thoi", "phai lam sao", "phai lam gi", "phai lam nhung gi", "lam giay to", "lam giay")
 _SEG_SPLIT = re.compile(r"\s*(?:[?;,.]|(?<!\w)(?:còn|với lại|và|sau đó|ngoài ra)(?!\w))\s*")
@@ -337,6 +342,8 @@ def understand(conn, text: str, syn: dict | None = None) -> Query:
     q = Query(raw=text)
     _ensure_bigrams(conn)
     clean_text = _LABEL_PREFIX_RE.sub("", text or "").strip()
+    if os.environ.get("S3_CLARIFY_FILLER", "1") == "1":   # M1 (hỏi lại khi mơ hồ, 18/10): chữ đệm hội thoại lọt vào cụm tên thủ tục
+        clean_text = _FILLER_RE.sub(" ", clean_text).strip()
     text = _squash(clean_text)                  # kéo dài chữ ("khôngggg", "đăngggg ký"): bỏ lặp từ 3 lần trở lên (trừ viết tắt thật như "cccd")
     folded = f" {_fold(_SPOKEN.sub('không', _colloquial(unglue_text((text or '').lower()))))} "     # 'hổng/hông' (không) khác 'hỏng' (hư): xử lý TRƯỚC khi bỏ dấu
     for pat, name in _PROVINCE_PATTERNS:

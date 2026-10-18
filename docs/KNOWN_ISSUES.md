@@ -7,7 +7,8 @@ Mỗi mục có người chịu trách nhiệm quyết định. Cập nhật khi
 |---|---|---|
 | Friendly chờ hàng GPU khi 10 người cùng dùng: p95 13,6 s (mục tiêu 10 s) | chấp nhận cho thí điểm (D17); câu đã 👍 hỏi y chang thì trả ngay (D18) | trưởng nhóm, 18/10 |
 | Lượt chỉ-luật khi 10 người dùng: p95 1,2 s (mục tiêu 0,5 s) — CPU dùng chung với Ollama + reranker | mở | trưởng nhóm |
-| Hỏi lại khi mơ hồ (G4.1): bộ mù 50%, chưa đạt 60%; tín hiệu reranker / độ rộng cụm lỗ ròng trên dữ liệu chọn ngưỡng | mở: cần bộ chọn ngưỡng giống bộ mù | trưởng nhóm quyết |
+| Hỏi lại khi mơ hồ: bộ mù 38/76 (50%), chưa đạt 60%. Đã thử 8 cách (research/clarify/RESULTS.md); giữ M1+M2 (không gây hại) nhưng bộ mù không đổi — luật hỏi lại hỏi sai câu (thiếu 38, thừa 31) | mở | trưởng nhóm chọn hướng: tách bộ mù / rà nhãn / từ đồng nghĩa |
+| Câu thật ngoài phạm vi bị trả lời nhầm bằng một thủ tục không liên quan: 53/238 câu thật (research/clarify) | mở | — |
 | Thẻ hỏi tỉnh (D5) làm 9 ca bộ mù nhãn "trả lời" thành hỏi lại (nhãn viết trước D5) | có chủ ý; tắt bằng `S3_PROVINCE_CLARIFY=0` | trưởng nhóm: có sửa nhãn golden không |
 | Liệt kê / đếm text-to-SQL chỉ chạy khi có LLM; "liên quan đến X" có khi được hiểu là lĩnh vực thay vì chữ trong tên (3/45 ca bộ đo riêng) | mở, nhỏ | — |
 | Tệp biểu mẫu Cổng trả 0 byte nên không có bản lưu: trả tên mẫu + link trang thủ tục (D7) | có chủ ý | — |

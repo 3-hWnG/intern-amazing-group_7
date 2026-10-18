@@ -164,7 +164,7 @@ def exists(tok, doc):
     while tok.startswith(("./", "../")):
         tok = tok.split("/", 1)[1]
     if _names is None:
-        _names = [p.relative_to(ROOT).as_posix() for p in ROOT.rglob("*") if not {".git", ".venv", "__pycache__"} & set(p.parts)]
+        _names = [p.relative_to(ROOT).as_posix() for p in ROOT.rglob("*") if not {".git", ".venv", "__pycache__", "node_modules"} & set(p.parts)]
     if (ROOT / tok).exists() or (ROOT.parent / tok).exists() or (ROOT / Path(doc).parent / tok).exists():
         return True
     return any(n == tok or n.endswith("/" + tok) for n in _names)
@@ -262,7 +262,8 @@ def check_code():
     # thẻ FINAL-PRODUCT
     chk = text("docs/FINAL_PRODUCT_CHECKLIST.md")
     tagged = sorted({p.relative_to(ROOT).as_posix() for ext in ("py", "js", "sql") for p in ROOT.rglob("*." + ext)
-                     if "eval/" not in p.relative_to(ROOT).as_posix() and "FINAL-PRODUCT:" in p.read_text(encoding="utf-8", errors="replace")})
+                     if "eval/" not in p.relative_to(ROOT).as_posix() and not {".venv", "node_modules", ".git"} & set(p.parts)
+                     and "FINAL-PRODUCT:" in p.read_text(encoding="utf-8", errors="replace")})
     for f in tagged:
         (ok if f in chk else err).append(f"FINAL_PRODUCT_CHECKLIST.md: file có thẻ {f} {'được nêu' if f in chk else 'KHÔNG được nêu'}")
     if not tagged:

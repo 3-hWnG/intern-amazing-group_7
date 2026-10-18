@@ -85,6 +85,17 @@ Sau: **12 ✅, 6 🟡, 1 ❌** (3 bộ kiểm, 14 tìm theo nghĩa, 16 từ đ�
 - **Vượt ngân sách đo GPU ở G3.4** (kế hoạch cho ≤ 2 lần chạy ngắn): đã chạy 3 lượt test tải + khoảng 3 lượt test hợp đồng, một lượt treo GPU khoảng 10 phút trước khi có trần độ dài. Trưởng nhóm đã cho phép dùng thêm sau đó.
 - Gợi ý "Nhớ tỉnh/thành cho tài khoản" mới hiện ở web System 3, chưa hiện ở Strict trong System 4. Tên tỉnh cũ trước sáp nhập (Bình Dương…) chưa đổi sang tỉnh mới.
 
+## 5b. Bổ sung sau quyết định của trưởng nhóm (18/10, tối)
+- **Nhãn golden với thẻ hỏi tỉnh:** giữ nguyên, báo kèm giải thích (mục 2).
+- **Dữ liệu trẻ em thật "DS LỚP 1.5":** đã xoá khỏi dữ liệu đang chạy (bộ dữ liệu, 33 bản ghi, chỉ mục, vector, tệp .xlsx gốc, 5 trace gỡ lỗi; `VACUUM`,
+  kiểm thô tệp DB không còn chuỗi nào). **Lịch sử git chưa viết lại:** 5 commit chứa dữ liệu đã nằm trên remote (`origin/main`, `origin/Code`,
+  `upstream-g7/System_4`, `upstream-g7/merge_sys_3_4`, `upstream-g7/draft`); viết lại trên máy không xoá được bản trên GitHub, phải force-push cả hai remote
+  (trưởng nhóm dặn không push) — chờ quyết định.
+- **Hỏi lại khi mơ hồ — làm lại có dữ liệu thật:** [research/clarify/RESULTS.md](../research/clarify/RESULTS.md). Thử 8 cách trên dev, `cases_p30` và
+  390 câu hỏi thật của người dân (Cổng dịch vụ công Bình Định, Bộ Công an, Zalo; gán nhãn tay). Giữ M1 (bỏ chữ đệm hội thoại) + M2 (câu không nêu thủ tục nào
+  thì hỏi lại) — không làm sai ca nào trên mọi bộ không mù. Đo bộ mù một lần (eval #4, ngoài giới hạn 3 lần): hỏi lại đúng **vẫn 38/76**; luật hỏi lại hỏi
+  **sai câu** so với nhãn bộ mù (thiếu 38, thừa 31) chứ không phải hỏi quá ít. Hướng tiếp cần trưởng nhóm chọn: RESULTS.md mục 6.
+
 ## 6. Việc cần trưởng nhóm quyết
 1. **Nhãn golden và thẻ hỏi tỉnh:** 9 ca bộ mù (6 ca dev) nhãn "trả lời" nay hỏi tỉnh theo D5. Sửa nhãn (bộ mù không còn "mù" với các ca này) hay giữ và báo kèm giải thích?
 2. **Hỏi lại khi mơ hồ:** cần bộ chọn ngưỡng mới giống câu hỏi thật (ví dụ câu thật từ nhật ký thí điểm) mới tiến tiếp được.

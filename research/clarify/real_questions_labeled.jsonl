@@ -1,0 +1,390 @@
+{"n": 0, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 1, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 2, "src": "dvc", "split": "test", "label": "O", "q": "Cấp lại giấy phép lái xe máy bị mất"}
+{"n": 3, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 4, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 5, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 6, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 7, "src": "dvc", "split": "test", "label": "O", "q": "Làm sao có thể xem điểm thi tốt nghiệp thpt 2020"}
+{"n": 8, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 9, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 10, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 11, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 12, "src": "dvc", "split": "test", "label": "O", "q": "Tôi muốn xác nhận lại và năm 1967 tại tỉnh Bình Định có đơn vị chiến đấu C123 , tỉnh đội Binh Định không ạ?"}
+{"n": 13, "src": "dvc", "split": "tune", "label": "O", "q": "Khi nào thì các trường thpt trong tỉnh sẽ phát hanh hồ sơ tuyển sinh?"}
+{"n": 14, "src": "dvc", "split": "test", "label": "O", "q": "Nuôi chuồn huong can giấy tờ gi"}
+{"n": 15, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 16, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 17, "src": "dvc", "split": "tune", "label": "O", "q": "Xin hỏi hồ sơ còn thiếu gì không mà chưa thấy giải quyết?"}
+{"n": 18, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 19, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 20, "src": "dvc", "split": "tune", "label": "O", "q": "Cho e hỏi sở y tế đã có thủ tục hành chình mới về cấp chứng chỉ hành nghề chưa ạ"}
+{"n": 21, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 22, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 23, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 24, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 25, "src": "dvc", "split": "test", "label": "O", "q": "Cho e hỏi.khi làm hồ sơ để làm chứng chỉ hành nghề là phải cần những giấy tờ gì ạ"}
+{"n": 26, "src": "dvc", "split": "test", "label": "O", "q": "Muốn làm lại bằng THPT"}
+{"n": 27, "src": "dvc", "split": "tune", "label": "O", "q": "Tôi đã đăng ký xin lí lịch tư pháp trực tuyến toàn trình và thanh toán , mã hồ sơ là 000.00.13.H[ID]"}
+{"n": 28, "src": "dvc", "split": "test", "label": "O", "q": "Co dong thuế ma khi ko co giấy phép kinh doanh"}
+{"n": 29, "src": "dvc", "split": "tune", "label": "O", "q": "Tôi muốn xem kết quả lý lịch tư pháp onilne"}
+{"n": 30, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 31, "src": "dvc", "split": "tune", "label": "A", "q": "Thủ tục và điều kiện chuyển mục đích sử dụng đất đối với hộ gia đình, cá nhân."}
+{"n": 32, "src": "dvc", "split": "test", "label": "O", "q": "Giấy lý lịch tư pháp có thời hạn không ạ? Nếu có thì thời hạn là bao lâu ạ?"}
+{"n": 33, "src": "dvc", "split": "test", "label": "O", "q": "trong giấy phép đkkd, có mã ngành 4669 là buôn bán chuyên doanh khác chưa phân vào đâu."}
+{"n": 34, "src": "dvc", "split": "test", "label": "O", "q": "Chị ơi cho em xin cái bản mẫu về Đơn xin cấp lại bản sao bằng THPT với ạ?"}
+{"n": 35, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 36, "src": "dvc", "split": "tune", "label": "O", "q": "vừa rồi tôi có nộp hồ sơ tách thửa, theo số hồ sơ 000.00.39.H[ID], diện tích trong quyền sử dụng đất như sau:"}
+{"n": 37, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 38, "src": "dvc", "split": "tune", "label": "O", "q": "Em tên [TÊN], em có làm lý lịch tư pháp đầu tháng 12/2020. Em muốn hỏi em đã có kết quả chưa ạ?"}
+{"n": 39, "src": "dvc", "split": "tune", "label": "O", "q": "tôi xin muốn hỏi dự tính quy hoạch của tỉnh tại Phù Mỹ năm 2021 là như thế nào vậy ạ."}
+{"n": 40, "src": "dvc", "split": "tune", "label": "A", "q": "Yêu cầu được cấp phép xây dựng ODV04-13 pk2 khu đô thị Nhơn hội"}
+{"n": 41, "src": "dvc", "split": "tune", "label": "O", "q": "Ngày 17 tháng 5 năm 2020 gia đình tôi tổ chức đám cưới cho con được hay không ?"}
+{"n": 42, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 43, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 44, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 45, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 46, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 47, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 48, "src": "dvc", "split": "tune", "label": "A", "q": "cho tôi hỏi thủ tục và thành phần hồ sơ đăng kí quyền sử dụng đất"}
+{"n": 49, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 50, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 51, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 52, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 53, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 54, "src": "dvc", "split": "test", "label": "O", "q": "Cho em xin lịch làm lại chứng minh nhân dân của huyện được không ạ ?"}
+{"n": 55, "src": "dvc", "split": "tune", "label": "O", "q": "Cho em hỏi ở tỉnh mình còn cấp chứng chỉ hành nghề cho y sĩ răng hàm mặt không ạ.em cảm ơn nhiều."}
+{"n": 56, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 57, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 58, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 59, "src": "dvc", "split": "tune", "label": "O", "q": "đề nghị hướng dẫn thủ tục Cấp thẻ nhân viên bán hàng (tại các nhà thuốc, đại lý, quầy"}
+{"n": 60, "src": "dvc", "split": "test", "label": "A", "q": "sao em không thấy hồ sơ Cấp bản sao văn bằng, chứng chỉ từ sổ gốc trực tuyến ạ"}
+{"n": 61, "src": "dvc", "split": "tune", "label": "O", "q": "Đơn đề nghị cấp bản sao em có cần đem lên trường cấp 3 để xác nhận không ạ"}
+{"n": 62, "src": "dvc", "split": "tune", "label": "O", "q": "Tôi muốn xin địa chỉ cổng thông tin bán đất đấu giá các khu qui hoạch dân cư mới"}
+{"n": 63, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 64, "src": "dvc", "split": "tune", "label": "A", "q": "Toi Muốn Đăng Ký Thủ Tục Làm Lại Giấy Chứng Minh thư Do Dãy Số Đã Bị Nhoè"}
+{"n": 65, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 66, "src": "dvc", "split": "test", "label": "A", "q": "E mất giấy kết hôn muốn làm lại giấy kết hôn qua online được k ạ. Dịch ko đi được"}
+{"n": 67, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 68, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 69, "src": "dvc", "split": "tune", "label": "O", "q": "Cho mình hỏi,khi nào mình được cấp căn cước công dân ạ"}
+{"n": 70, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 71, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 72, "src": "dvc", "split": "tune", "label": "O", "q": "Mình có được đăng kí xin cấp lại bản sao bằng tốt nghiệp thpt lần 2 không ạ?"}
+{"n": 73, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 74, "src": "dvc", "split": "test", "label": "A", "q": "thủ tục hỗ trợ dự án liên kết này có quyết định ban hành không? (em vào mục văn bản tìm không có)"}
+{"n": 75, "src": "dvc", "split": "test", "label": "O", "q": "Em bị mất bằng tốt nghiệp THPT giờ e muốn làm lại thủ tục như thế nào ạ!"}
+{"n": 76, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 77, "src": "dvc", "split": "tune", "label": "O", "q": "Cho em hỏi em thấy hồ sơ của em trên web đã hoàn tất vào ngày 31.08.2021."}
+{"n": 78, "src": "dvc", "split": "tune", "label": "A", "q": "Dạ cho e hỏi: giấy khai sinh bản chính của e bị mất giờ e xin làm lại bản mới có được ko ạ?"}
+{"n": 79, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 80, "src": "dvc", "split": "test", "label": "A", "q": "E vị mất cavet ce giờ e muồn làm lại nhờ cán bộ hướng dẫn giúp e"}
+{"n": 81, "src": "dvc", "split": "tune", "label": "A", "q": "em muốn làm giấy xác nhân độc thân nhưng hiện tại em không có ở quê để ra cơ quan xác nhận đuoc"}
+{"n": 82, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 83, "src": "dvc", "split": "tune", "label": "O", "q": "Cho em hỏi: Hồ sơ lý lịch tư pháp em nộp"}
+{"n": 84, "src": "dvc", "split": "tune", "label": "O", "q": "Khai báo lý lịch tư pháp trực tuyến thì cần những thủ tục gì vậy, phải làm như thế nào để đầy đủ thông tin"}
+{"n": 85, "src": "dvc", "split": "test", "label": "A", "q": "Kính gửi: Tôi muốn cấp bản sao giấy đăng ký khai sinh"}
+{"n": 86, "src": "dvc", "split": "test", "label": "O", "q": "Sao tinh ko ho tro khi em dong cua quan gần 3 thang"}
+{"n": 87, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 88, "src": "dvc", "split": "test", "label": "O", "q": "Ngày 3/11/2020 vừa rồi em thi lại sát hạch GPLX hạng C. Cho em hỏi khi nào có bằng lái để em đến nhận ạ."}
+{"n": 89, "src": "dvc", "split": "tune", "label": "O", "q": "Nhờ Anh/Chị hướng dẫn giúp em thủ tục để treo băng rôn, banner quảng cáo ở thành phố Quy Nhơn ạ. Em xin cảm ơn."}
+{"n": 90, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 91, "src": "dvc", "split": "tune", "label": "O", "q": "Cho e hỏi là bằng lái hạn C em đã hết hạn 2 tháng còn đổi lại được không ạ."}
+{"n": 92, "src": "dvc", "split": "test", "label": "O", "q": "Dạ cho em hỏi bộ hồ sơ giấy làm tư pháp lí lịch để gửi về sở tư pháp mình lấy ở đâu ạ"}
+{"n": 93, "src": "dvc", "split": "tune", "label": "O", "q": "Khi xin phiếu lý lịch tư pháp số 1 bằng phương pháp online thì thủ tục như thế nào ạ."}
+{"n": 94, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 95, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 96, "src": "dvc", "split": "test", "label": "A", "q": "Thay đổi tên khai sinh cho trẻ dưới 6 tuổi mất bao, lâu, thủ tục như thế nào ạ"}
+{"n": 97, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 98, "src": "dvc", "split": "tune", "label": "A", "q": "Dạ cho e hỏi: e muốn trích lục giấy khai sinh thì e phải làm như thế nào ạ?"}
+{"n": 99, "src": "dvc", "split": "tune", "label": "O", "q": "Cho mình hỏi tại sao mình tra lhoof sơ lý lịch tư pháp theo số của trung tâm hành chính công nhưng không dc"}
+{"n": 100, "src": "dvc", "split": "test", "label": "O", "q": "Thủ tục giấy tờ để mở phòng khám chuyên khoa y học cổ truyền và phục hồi chức năng"}
+{"n": 101, "src": "dvc", "split": "tune", "label": "A", "q": "Thủ tục tra cứu Thông tin Quy Hoạch ở huyện Tuy Phước như thế nào, Tra ở đâu?"}
+{"n": 102, "src": "dvc", "split": "tune", "label": "O", "q": "Cho hỏi thời gian mà phường Nhơn Hòa mới được chuyển mục đích đất ở."}
+{"n": 103, "src": "dvc", "split": "tune", "label": "O", "q": "Làm sao để có được xác nhận lý lịch tư pháp"}
+{"n": 104, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 105, "src": "dvc", "split": "tune", "label": "O", "q": "Em có 2 thắc mắc về Cấp Phiếu lý lịch tư pháp nộp online:"}
+{"n": 106, "src": "dvc", "split": "tune", "label": "O", "q": "Xin cấp lại chứng chỉ hành nghề"}
+{"n": 107, "src": "dvc", "split": "test", "label": "O", "q": "Dạ.Cho cháu hỏi cháu làm thẻ căn cước ở huyện vào ngày 6/2 sao đến nay chưa có vậy ạ"}
+{"n": 108, "src": "dvc", "split": "test", "label": "O", "q": "nộp thủ tục đề nghị hỗ trợ giống lúa do thiên tai tại đây có đúng danh mục kg"}
+{"n": 109, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 110, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 111, "src": "dvc", "split": "tune", "label": "O", "q": "Hồ sơ xác nhận thâm niên hành nghề Dược của em có trên Sở chưa ạ? E cảm ơn!"}
+{"n": 112, "src": "dvc", "split": "test", "label": "O", "q": "Lệ phí phải nộp khi làm lại giấy chứng nhận an toàn tàu cá là bao nhiêu"}
+{"n": 113, "src": "dvc", "split": "tune", "label": "O", "q": "Cho em hỏi tình hình giải quyết hố sơ 000.00.13.H[ID] như thế nào rồi ạ"}
+{"n": 114, "src": "dvc", "split": "tune", "label": "O", "q": "Tại sao các hộ dân ven quốc lộ 1A , thôn Gia An Đông, xã Hoài Châu Bắc không được cấp sổ đỏ ."}
+{"n": 115, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 116, "src": "dvc", "split": "tune", "label": "C", "q": "Tô có sổ đỏ đã hết hạn gia hạn sử dụng đất nông nghiệp nên đến cơ quan nào để gia hạn sổ"}
+{"n": 117, "src": "dvc", "split": "test", "label": "O", "q": "sao em đăng nhập r mà em chọn loại dịch vụ không được ạ"}
+{"n": 118, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 119, "src": "dvc", "split": "test", "label": "O", "q": "Dạ cho em hỏi lý lịch trong hồ sơ làm cchn Y là mẫu nào ạ?"}
+{"n": 120, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 121, "src": "dvc", "split": "tune", "label": "O", "q": "Tôi muốn mua bảo hiểm y tế"}
+{"n": 122, "src": "dvc", "split": "test", "label": "O", "q": "Dạ cho e hỏi bây giờ e xin cấp lại bản sao bằng cấp ba thì bao giờ mới nhận được ạ?"}
+{"n": 123, "src": "dvc", "split": "tune", "label": "A", "q": "Hồ sơ nhận nuôi con nuôi làm tại nơi nào ?"}
+{"n": 124, "src": "dvc", "split": "tune", "label": "O", "q": "Mình có con 1 tháng tuổi không biết tiêm dịch vụ vecxin 6 trong 1 ở đâu!"}
+{"n": 125, "src": "dvc", "split": "tune", "label": "O", "q": "CHÀO ANH CHỊ TÌNH HÌNH GIẢI QUYẾT HỒ SƠ 000.00.13.H[ID] NHƯ THẾ NÀO RỒI?"}
+{"n": 126, "src": "dvc", "split": "test", "label": "O", "q": "Tôi đã đăng ký xin lí lịch tư pháp trực tuyến toàn trình và thanh toán ngày 16.05.2023, mã hồ sơ là 000.00.13.H[ID]"}
+{"n": 127, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 128, "src": "dvc", "split": "test", "label": "O", "q": "Tôi bị mất giấy phép lái xe máy hạng A1."}
+{"n": 129, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 130, "src": "dvc", "split": "tune", "label": "O", "q": "Các bước tiếp theo để được CCN QSD đất lần đầu theo hồ sơ số 000.00.39.H[ID]"}
+{"n": 131, "src": "dvc", "split": "tune", "label": "O", "q": "Sao em điền đầy đủ thông tin rồi mà bấm nộp hồ sơ trực tuyến không được vậy ạ.giúp em với"}
+{"n": 132, "src": "dvc", "split": "tune", "label": "O", "q": "Cho em hỏi là thủ tục cấp lại bản sao bằng tốt nghiệp THPT như thế nào ạ."}
+{"n": 133, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 134, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 135, "src": "dvc", "split": "tune", "label": "O", "q": "Xin hỏi !! Mình vào trang WEB nào để kiểm tra phù hiệu xe kinh doanh vận tải"}
+{"n": 136, "src": "dvc", "split": "tune", "label": "O", "q": "Hồ sơ em nộp vào ngày 09/09/2024 thì khoảng bao lâu em sẽ nhận được lý lịch tư pháp ạ. Mã hồ sơ: H08.13-240909-0074"}
+{"n": 137, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 138, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 139, "src": "dvc", "split": "tune", "label": "O", "q": "Dạ cho e xin đơn giá xây dựng công trình xây dựng dân dụng tỉnh Bình Định mới nhất được không ạ."}
+{"n": 140, "src": "dvc", "split": "test", "label": "O", "q": "Đổi Giấy phép lái xe hạng FC có phải bị giữ lại bản gốc không? Hay là chỉ cần bản photo?"}
+{"n": 141, "src": "dvc", "split": "test", "label": "O", "q": "Mình có 1 bằng lái giấy thi năm 2011 đến nay chưa đổi sang thẻ cứng"}
+{"n": 142, "src": "dvc", "split": "tune", "label": "O", "q": "Khi nào được nhận cccd ạ.vì tôi bị mất cmnd nên tôi rất cần biết thời gian nhận cccd"}
+{"n": 143, "src": "dvc", "split": "test", "label": "O", "q": "Tôi có làm đơn xin lý lịch tư pháp nhưng bị từ chối"}
+{"n": 144, "src": "dvc", "split": "tune", "label": "O", "q": "Hướng dẫn em làm lý lịch tư pháp"}
+{"n": 145, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 146, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 147, "src": "dvc", "split": "test", "label": "O", "q": "Cho mình hỏi muốn thay đổi vốn điều lệ và giám đốc công ty tnhh 1 thành viên cần những thủ tục gì"}
+{"n": 148, "src": "dvc", "split": "tune", "label": "O", "q": "Tôi muốn đăng ký xuất khẩu lao động sang Hàn Quốc thì thủ tục như thế nào vậy?"}
+{"n": 149, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 150, "src": "dvc", "split": "tune", "label": "A", "q": "Bà ngoại có bị mất giấy khai sinh, bây giờ có thể làm lại được không ạ?"}
+{"n": 151, "src": "dvc", "split": "tune", "label": "O", "q": "Tôi đã đi đổi bằng lái, khi nào bằng gửi về vậy?"}
+{"n": 152, "src": "dvc", "split": "tune", "label": "O", "q": "Cho e hỏi trọng tải xe ô tô tải 1,5 tấn có gắn Phù hiệu xe không. E cảm ơn."}
+{"n": 153, "src": "dvc", "split": "tune", "label": "O", "q": "Lý lịch tư pháp số 1 có thời hạn là bao lâu ạ"}
+{"n": 154, "src": "dvc", "split": "tune", "label": "O", "q": "Làm sao để biết được lịch sử chính trị của ông bà mình?"}
+{"n": 155, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 156, "src": "dvc", "split": "tune", "label": "O", "q": "em muốn đăng ký treo băng rôn làm quảng cáo nhãn hàng trần thạch cao phải nộp hồ sơ như thế nào ạ"}
+{"n": 157, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 158, "src": "dvc", "split": "test", "label": "O", "q": "Hồ sơ 000.00.40.H[ID] đã trả lại dân do không đủ điều kiện, điều kiện đó là gì? Để mình còn bổ sung"}
+{"n": 159, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 160, "src": "dvc", "split": "tune", "label": "O", "q": "Hiện nay có quy định về việc bỏ chứng chỉ ngoại ngữ, tin học đối với việc bổ nhiệm chức danh nghề nghiệp viên chức?"}
+{"n": 161, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 162, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 163, "src": "dvc", "split": "tune", "label": "C", "q": "Cho Tôi được hỏi về việc đăng ký cấp Giấy chứng nhận quyền sử dụng đất:"}
+{"n": 164, "src": "dvc", "split": "tune", "label": "O", "q": "dạ e đăng ký lý lịch thư pháp phần thuê bao để bị lỗi ko gửi mã otpp về được ạ ."}
+{"n": 165, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 166, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 167, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 168, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 169, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 170, "src": "dvc", "split": "test", "label": "O", "q": "Dạ chị ơi cho em hỏi làm sao để cấp lại chứng chỉ cấp ba ạ? Vì em lỡ làm mất bằng cấp ba"}
+{"n": 171, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 172, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 173, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 174, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 175, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 176, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 177, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 178, "src": "dvc", "split": "test", "label": "O", "q": "Thủ tục nộp hồ sơ trực tuyến xin cấp đổi giấy phép lái xe B2 sắp hết hạn"}
+{"n": 179, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 180, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 181, "src": "dvc", "split": "tune", "label": "O", "q": "cách đăng ký lý lịch tư pháp trực tuyến"}
+{"n": 182, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 183, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 184, "src": "dvc", "split": "tune", "label": "O", "q": "Tôi đã nộp hồ sơ qua cổng thông tin dịch vụ công tỉnh Bình Định xin cấp bản sao đăng ký giấy khai sinh"}
+{"n": 185, "src": "dvc", "split": "tune", "label": "A", "q": "Tôi muốn thay đổi họ cho con từ họ cha sang họ mẹ. Thủ tục như thế nào?"}
+{"n": 186, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 187, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 188, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 189, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 190, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 191, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 192, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 193, "src": "dvc", "split": "test", "label": "O", "q": "Quý cấp cho tôi hỏi về chế dộ chống dịch cho nhân viên trạm y tế."}
+{"n": 194, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 195, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 196, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 197, "src": "dvc", "split": "test", "label": "O", "q": "Muốn làm nghĩa địa nhân dân thì tỉnh,huyện,xã có phải thông báo với nhân dân hay không?"}
+{"n": 198, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 199, "src": "dvc", "split": "tune", "label": "O", "q": "Tôi muốn làm thủ tục cấp bản sao bằng tốt nghiệp THPT thì cần làm thủ tục gì ạ"}
+{"n": 200, "src": "dvc", "split": "test", "label": "A", "q": "Xin cấp lại bản gốc giấy xác nhận tình trạng hôn nhân do thất lạc để làm thủ tục đăng ký kết hôn"}
+{"n": 201, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 202, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 203, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 204, "src": "dvc", "split": "tune", "label": "O", "q": "Cách làm online cấp lý lịch tư pháp số 2."}
+{"n": 205, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 206, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 207, "src": "dvc", "split": "test", "label": "O", "q": "cho mình xin sđt để liên hệ làm căn cước công dân đối với người ngoài tỉnh ạ"}
+{"n": 208, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 209, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 210, "src": "dvc", "split": "tune", "label": "O", "q": "Bà con ngư dân đang mong chờ tiền hỗ trợ nhien liệu dot 1 năm 2023"}
+{"n": 211, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 212, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 213, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 214, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 215, "src": "dvc", "split": "tune", "label": "O", "q": "Cho con hồ sơ làm chứng chỉ chưa đủ điều kiện bị trả về thì sau này con làm lại có được không ạ?"}
+{"n": 216, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 217, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 218, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 219, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 220, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 221, "src": "dvc", "split": "test", "label": "A", "q": "thủ tục xin chuyển đổi đất vườn sang đất làm nhà ở. gồm những gì?"}
+{"n": 222, "src": "dvc", "split": "test", "label": "C", "q": "Sổ đỏ không có toạ độ giờ gia đình muốn đổi sổ hồng thì làm như thế nào"}
+{"n": 223, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 224, "src": "dvc", "split": "test", "label": "O", "q": "000.00.39.H[ID] nộp hồ sơ nhận chuyển nhượng tại Bộ phận 1 cửa Tuy Phước 10/8/2020 (chỉnh lý biến động chứ không phải in sổ mới)"}
+{"n": 225, "src": "dvc", "split": "test", "label": "O", "q": "Đã nộp hồ sơ vào ngày 21/07/2020, nhưng đến nay vẫn chưa có kết quả, đề nghị quý cơ quan xem xét"}
+{"n": 226, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 227, "src": "dvc", "split": "test", "label": "O", "q": "Qui định chiều dài của tàu để được gắng máy chính 2"}
+{"n": 228, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 229, "src": "dvc", "split": "tune", "label": "O", "q": "Hồ sơ đã giải quyết mà chưa nhận được file kết quả ạ"}
+{"n": 230, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 231, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 232, "src": "dvc", "split": "tune", "label": "O", "q": "Em điều duỡng trung cấp muốn làm tại nhà thì cần những thủ tục gì để đuợc hoạt động ạ"}
+{"n": 233, "src": "dvc", "split": "tune", "label": "O", "q": "EM MUỖN XIN LẠI FILE GIẤY PHÉP CỦA HỒ SƠ SỐ: 000.00.02.H[ID]"}
+{"n": 234, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 235, "src": "dvc", "split": "tune", "label": "O", "q": "Khiếu nại dự án Nhơn Hội New City ( PK2Nhơn Hội -Quy Nhơn"}
+{"n": 236, "src": "dvc", "split": "tune", "label": "O", "q": "Đổi Gplx A1 thủ tục như thế nào, đổi trực tiếp được không, đổi ở đâu"}
+{"n": 237, "src": "dvc", "split": "tune", "label": "O", "q": "Đăng ký treo băng rôn tuyên truyền cho Bảo hiểm xã hội tỉnh chon loại dịch vụ nào, cấp độ mấy."}
+{"n": 238, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 239, "src": "dvc", "split": "tune", "label": "O", "q": "Giấy phép lái xe moto (bìa giấy) tôi thi ở tỉnh khác,giờ bị mất,không còn hồ sơ gốc."}
+{"n": 240, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 241, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 242, "src": "dvc", "split": "tune", "label": "O", "q": "Em muốn hỏi là lý lịch tư pháp e bị cấp nhầm và thiếu phiếu số 1 sang số 2 thì nên làm thế nào"}
+{"n": 243, "src": "dvc", "split": "tune", "label": "A", "q": "Tôi làm mất giấy khai sinh xin lại mục lục giấy khai sinh"}
+{"n": 244, "src": "dvc", "split": "tune", "label": "O", "q": "Mình xin hỏi thêm về cấp bản sao chứng chỉ THPT:"}
+{"n": 245, "src": "dvc", "split": "test", "label": "O", "q": "Cho e hỏi về hồ sơ cấp chúng chỉ hành nghề:"}
+{"n": 246, "src": "dvc", "split": "tune", "label": "X", "q": ""}
+{"n": 247, "src": "dvc", "split": "test", "label": "C", "q": "Thủ tục bao gồm những giấy tờ nào"}
+{"n": 248, "src": "dvc", "split": "test", "label": "O", "q": "tôi đã nộp hồ sơ trực tuyến ngày 11/5/2021 nhưng đến nay chưa được xem xét ạ?"}
+{"n": 249, "src": "dvc", "split": "test", "label": "X", "q": ""}
+{"n": 250, "src": "zalo", "split": "tune", "label": "O", "q": "Không thực hiện các quy định về phát bưu gửi bị phạt bao nhiêu?"}
+{"n": 251, "src": "zalo", "split": "test", "label": "O", "q": "Điều khiển xe máy đi không đúng làn đường gây tai nạn giao thông sẽ bị xử phạt bao nhiêu?"}
+{"n": 252, "src": "zalo", "split": "tune", "label": "O", "q": "Có được thi vào trường công an khi tốt nghiệp bổ túc văn hóa?"}
+{"n": 253, "src": "zalo", "split": "tune", "label": "O", "q": "Không báo cáo kết quả quan trắc, giám sát tài nguyên nước cho cơ quan có thẩm quyền bị phạt thế nào?"}
+{"n": 254, "src": "zalo", "split": "test", "label": "O", "q": "Hạn mức giao dịch thu - chi tiền mặt và hạn mức tồn quỹ trong ngày đối với giao dịch viên tại tổ chức tín dụng được quy định như thế nào?"}
+{"n": 255, "src": "zalo", "split": "tune", "label": "O", "q": "Thành phần chuyển giao quyền đại diện chủ sở hữu nhà nước tại Tổng công ty Đầu tư và Kinh doanh vốn nhà nước được quy định như thế nào?"}
+{"n": 256, "src": "zalo", "split": "test", "label": "O", "q": "Sai phạm về công khai, minh bạch trong tham nhũng sẽ xử lý như thế nào?"}
+{"n": 257, "src": "zalo", "split": "test", "label": "O", "q": "Con của bệnh binh đã mất thì có còn được ưu tiên trong thi tuyển viên chức không?"}
+{"n": 258, "src": "zalo", "split": "tune", "label": "O", "q": "Mức phạt nhân viên phục vụ trên xe buýt đe dọa, xúc phạm, tranh giành, lôi kéo hành khách là bao nhiêu?"}
+{"n": 259, "src": "zalo", "split": "test", "label": "O", "q": "Tổ sát hạch cấp giấy phép lái tàu hỏa có bao nhiêu thành viên?"}
+{"n": 260, "src": "zalo", "split": "tune", "label": "O", "q": "Đi bộ vào đường cao tốc bị phạt 300 nghìn đồng có đúng không?"}
+{"n": 261, "src": "zalo", "split": "tune", "label": "O", "q": "Ứng dụng công nghệ thông tin trong công tác thi đua, khen thưởng ngành y tế được quy định như thế nào?"}
+{"n": 262, "src": "zalo", "split": "tune", "label": "O", "q": "Cơ sở dữ liệu về vụ việc, vướng mắc pháp lý dùng để tư vấn cho DN nhỏ và vừa bao gồm những gì?"}
+{"n": 263, "src": "zalo", "split": "test", "label": "O", "q": "Họp kỹ thuật để xác định chi phí đánh giá tiềm năng khoáng sản, chi phí thăm dò khoáng sản phải hoàn trả được quy định như thế nào?"}
+{"n": 264, "src": "zalo", "split": "tune", "label": "O", "q": "Kiểm tra chất lượng sản phẩm đo đạc và bản đồ là gì?"}
+{"n": 265, "src": "zalo", "split": "test", "label": "O", "q": "Sản xuất, kinh doanh và nhập khẩu thiết bị phát tín hiệu của xe được quyền ưu tiên được quy định như thế nào?"}
+{"n": 266, "src": "zalo", "split": "test", "label": "O", "q": "Nhiệm vụ, quyền hạn của Bộ Xây dựng trong hoạt động khắc phục hậu quả bom mìn vật nổ sau chiến tranh được quy định như thế nào?"}
+{"n": 267, "src": "zalo", "split": "test", "label": "O", "q": "Việc lập hồ sơ và lưu trữ hồ sơ khiếu nại thực hiện như thế nào theo quy định mới?"}
+{"n": 268, "src": "zalo", "split": "tune", "label": "O", "q": "Cờ hiệu ưu tiên của xe Cảnh sát giao thông dẫn đường được quy định như thế nào?"}
+{"n": 269, "src": "zalo", "split": "tune", "label": "O", "q": "Xe đi làm nhiệm vụ trong tình trạng khẩn cấp là gì?"}
+{"n": 270, "src": "zalo", "split": "tune", "label": "O", "q": "Yêu cầu chức năng của Hệ thống lưu trữ điện tử đối với an ninh thông tin theo quy định hiện hành"}
+{"n": 271, "src": "zalo", "split": "test", "label": "O", "q": "Quỹ tiền lương kế hoạch đối với một số trường hợp đặc thù tại công ty nhà nước được quy định như thế nào?"}
+{"n": 272, "src": "zalo", "split": "tune", "label": "O", "q": "Các trường hợp công chức bị kỷ luật hạ bậc lương trong xử lý VPHC được quy định như thế nào?"}
+{"n": 273, "src": "zalo", "split": "tune", "label": "O", "q": "Mức phạt khi dắt súc vật chạy theo khi đang điều khiển hoặc ngồi trên phương tiện giao thông đường bộ"}
+{"n": 274, "src": "zalo", "split": "test", "label": "O", "q": "Nhiệm vụ của trực ban chạy tàu ga được quy định như thế nào?"}
+{"n": 275, "src": "zalo", "split": "test", "label": "O", "q": "Hồ sơ cấp lại Giấy chứng nhận đủ điều kiện hoạt động dịch vụ đánh giá công nghệ bao gồm những giấy tờ gì?"}
+{"n": 276, "src": "zalo", "split": "tune", "label": "O", "q": "Điều khiển xe vệ sinh môi trường không chạy đúng tuyến, phạm vi, thời gian quy định bị phạt bao nhiêu tiền?"}
+{"n": 277, "src": "zalo", "split": "test", "label": "O", "q": "Hồ sơ lãnh sự được quy định như thế nào?"}
+{"n": 278, "src": "zalo", "split": "test", "label": "O", "q": "Rừng giống chuyển hóa là gì?"}
+{"n": 279, "src": "zalo", "split": "tune", "label": "O", "q": "Sau bao lâu doanh nghiệp trúng đấu giá lô cổ phần kèm nợ phải thu phải thanh toán đủ số tiền trúng đấu giá?"}
+{"n": 280, "src": "zalo", "split": "tune", "label": "O", "q": "Kết quả giải quyết TTHC chuyển đổi từ bản giấy sang điện tử phải đáp ứng các yêu cầu nào?"}
+{"n": 281, "src": "zalo", "split": "test", "label": "O", "q": "Rà soát, cập nhật, bổ sung nhu cầu đào tạo nghề cho lao động nông thôn được quy định như thế nào?"}
+{"n": 282, "src": "zalo", "split": "test", "label": "O", "q": "Cơ sở bị tạm đình chỉ hoạt động do Covid-19 nhưng vẫn kinh doanh bị phạt bao nhiêu tiền?"}
+{"n": 283, "src": "zalo", "split": "tune", "label": "O", "q": "Xử lý vi phạm quy định về xuất khẩu giống thủy sản được quy định như thế nào?"}
+{"n": 284, "src": "zalo", "split": "tune", "label": "A", "q": "Di chúc của người không biết chữ có bắt buộc phải công chứng hay chứng thực không?"}
+{"n": 285, "src": "zalo", "split": "test", "label": "O", "q": "Phạm vi thống kê ngành tư pháp được quy định như thế nào?"}
+{"n": 286, "src": "zalo", "split": "tune", "label": "O", "q": "Hóa đơn điện tử của hóa đơn giá trị gia tăng là gì?"}
+{"n": 287, "src": "zalo", "split": "tune", "label": "O", "q": "Mức phạt tiền khi không mua sắm tài sản công tập trung được quy định như thế nào?"}
+{"n": 288, "src": "zalo", "split": "test", "label": "O", "q": "Các hình thức xử lý kỷ luật khi quân nhân chấp hành không nghiêm quy định về tuần tra, canh gác được quy định như thế nào?"}
+{"n": 289, "src": "zalo", "split": "tune", "label": "O", "q": "Người đã xóa án tích thì có được cấp chứng chỉ hành nghề đấu giá không?"}
+{"n": 290, "src": "zalo", "split": "test", "label": "O", "q": "Việc lựa chọn biện pháp quản lý dịch hại được quy định như thế nào?"}
+{"n": 291, "src": "zalo", "split": "tune", "label": "O", "q": "Các bước thực hiện việc mở và đánh giá hồ sơ đề xuất về tài chính - thương mại của nhà đầu tư dự án đầu tư có sử dụng đất được quy định như thế nào?"}
+{"n": 292, "src": "zalo", "split": "tune", "label": "O", "q": "Mức phạt khi điều khiển xe ô tô vượt xe trong những trường hợp không được vượt"}
+{"n": 293, "src": "zalo", "split": "tune", "label": "O", "q": "Trình tự, thủ tục cấp Giấy chứng nhận thành viên bù trừ chứng khoán được quy định như thế nào?"}
+{"n": 294, "src": "zalo", "split": "test", "label": "O", "q": "Tự ý xây dựng trạm thu phí đường bộ bị xử phạt như thế nào?"}
+{"n": 295, "src": "zalo", "split": "test", "label": "O", "q": "Mức phạt khi dựng cổng ra vào, tường rào các loại, công trình khác trái phép trong phạm vi đất dành cho đường bộ"}
+{"n": 296, "src": "zalo", "split": "test", "label": "O", "q": "Những quy định chung về công ty chứng khoán, công ty quản lý quỹ đầu tư chứng khoán Việt Nam gồm những gì?"}
+{"n": 297, "src": "zalo", "split": "tune", "label": "O", "q": "Trộm điện thì xử phạt bao nhiêu?"}
+{"n": 298, "src": "zalo", "split": "tune", "label": "O", "q": "Bên vay có quyền đòi lại tiền trước thời hạn trả không?"}
+{"n": 299, "src": "zalo", "split": "tune", "label": "O", "q": "Gà, vịt nếu đi lạc vào nhà ai thì của nhà người đó được quy định như thế nào?"}
+{"n": 300, "src": "zalo", "split": "tune", "label": "O", "q": "Nguyên tắc đánh giá, xếp loại Đơn vị học tập được quy định như thế nào?"}
+{"n": 301, "src": "zalo", "split": "tune", "label": "O", "q": "Việc cắm mốc giới để xác định ranh giới hành lang bảo vệ công trình hạ tầng thu nhận dữ liệu ảnh viễn thám thực hiện như thế nào?"}
+{"n": 302, "src": "zalo", "split": "tune", "label": "O", "q": "Thông tin LRIT là gì?"}
+{"n": 303, "src": "zalo", "split": "test", "label": "O", "q": "Gây mất trật tự ở rạp chiếu phim sẽ bị xử phạt bao nhiêu?"}
+{"n": 304, "src": "zalo", "split": "tune", "label": "O", "q": "Mức phạt khi thi công công trình trong phạm vi đất dành cho đường bộ khi đã hết thời hạn thi công"}
+{"n": 305, "src": "zalo", "split": "tune", "label": "O", "q": "Bao lâu thì trại giam thông báo cho gia đình biết tình hình phạm nhân?"}
+{"n": 306, "src": "zalo", "split": "test", "label": "O", "q": "Việc đình chỉ tạm thời hiệu lực Mã số kinh doanh tạm nhập, tái xuất được quy định như thế nào?"}
+{"n": 307, "src": "zalo", "split": "tune", "label": "O", "q": "Đơn vị báo cáo và đơn vị nhận báo cáo thống kê ngành tài chính được quy định như thế nào?"}
+{"n": 308, "src": "zalo", "split": "tune", "label": "O", "q": "Hồ sơ thành lập quán karaoke bao gồm những gì?"}
+{"n": 309, "src": "zalo", "split": "tune", "label": "O", "q": "Quy định về điều kiện cấp Giấy chứng nhận khả năng chuyên môn thợ máy trực ca Oiler được quy định như thế nào?"}
+{"n": 310, "src": "zalo", "split": "test", "label": "O", "q": "Chức năng của Hội đồng tư vấn chuyên môn đánh giá nguyên nhân tai biến nặng trong quá trình sử dụng vắc xin cấp Bộ được quy định như thế nào?"}
+{"n": 311, "src": "zalo", "split": "test", "label": "O", "q": "Được xem là doanh nghiệp nhà nước khi nhà nước nắm giữ 51% vốn điều lệ trong doanh nghiệp không?"}
+{"n": 312, "src": "zalo", "split": "tune", "label": "O", "q": "Ai chịu trách nhiệm về sách giáo khoa trong giáo dục phổ thông?"}
+{"n": 313, "src": "zalo", "split": "tune", "label": "O", "q": "Đánh giá hồ sơ đề xuất về kỹ thuật của nhà đầu tư thực hiện dự án đầu tư có sử dụng đất gồm những bước nào?"}
+{"n": 314, "src": "zalo", "split": "tune", "label": "O", "q": "Điểm khoáng sản là gì?"}
+{"n": 315, "src": "zalo", "split": "tune", "label": "O", "q": "Trách nhiệm thực hiện xác định tư cách nhà đầu tư chứng khoán chuyên nghiệp được quy định như thế nào?"}
+{"n": 316, "src": "zalo", "split": "tune", "label": "O", "q": "Hồ sơ dự án khuyến nông được tiếp nhận ra sao?"}
+{"n": 317, "src": "zalo", "split": "tune", "label": "O", "q": "Nhân viên phục vụ xe khách không hỗ trợ, giúp đỡ hành khách là người cao tuổi, trẻ em bị phạt bao nhiêu?"}
+{"n": 318, "src": "zalo", "split": "tune", "label": "O", "q": "Mức phạt hành vi để vật liệu, đất đá, phương tiện thi công ngoài phạm vi thi công gây cản trở giao thông"}
+{"n": 319, "src": "zalo", "split": "test", "label": "O", "q": "Mức xử phạt khi điều khiển xe máy chở người ngồi sau đội mũ bảo hiểm không cài quai đúng quy cách được quy định như thế nào?"}
+{"n": 320, "src": "zalo", "split": "test", "label": "O", "q": "Chính quyền địa phương tổ chức vay lại từ nguồn vốn ODA, vay ưu đãi nước ngoài được quy định như thế nào?"}
+{"n": 321, "src": "zalo", "split": "tune", "label": "O", "q": "Thời hạn của văn bản thỏa thuận thông số kỹ thuật xây dựng bến khách ngang sông, bến thủy nội địa phục vụ thi công công trình chính là bao lâu?"}
+{"n": 322, "src": "zalo", "split": "tune", "label": "O", "q": "Mức phạt hành vi rải, đổ hóa chất gây hư hỏng công trình đường bộ"}
+{"n": 323, "src": "zalo", "split": "tune", "label": "O", "q": "Viết thêm chữ lên biển báo \"vùng cấm\" bị xử phạt như thế nào?"}
+{"n": 324, "src": "zalo", "split": "test", "label": "O", "q": "Đe dọa dùng gạch, đá để chống lại CSGT phạt bao nhiêu?"}
+{"n": 325, "src": "zalo", "split": "tune", "label": "O", "q": "Chức năng cung cấp thông tin của lãnh dự danh dự được quy định như thế nào?"}
+{"n": 326, "src": "zalo", "split": "test", "label": "O", "q": "Mức phạt khi điều khiển xe ô tô lạng lách"}
+{"n": 327, "src": "zalo", "split": "tune", "label": "O", "q": "Được tặng cho phần vốn góp công ty TNHH thì người được tặng cho có trở thành thành viên công ty không?"}
+{"n": 328, "src": "zalo", "split": "test", "label": "O", "q": "Đấu thầu hạn chế trong lựa chọn nhà cung cấp thuốc được quy định như thế nào?"}
+{"n": 329, "src": "zalo", "split": "test", "label": "O", "q": "Hạ tầng kỹ thuật, công nghệ của cơ quan hành chính nhà nước phải đảm bảo các yêu cầu nào?"}
+{"n": 330, "src": "mps", "split": "tune", "label": "O", "q": "Tôi công tác trong lực lượng Công an nhân dân được 15 năm và đã đóng bảo hiểm xã hội bắt buộc được 15 năm. Nay tôi muốn xin nghỉ hưu thì có được hưởng chế độ gì không?"}
+{"n": 331, "src": "mps", "split": "tune", "label": "O", "q": "Tôi muốn hỏi, công dân phục vụ có thời hạn trong CAND có được nghỉ phép giống sĩ quan, hạ sĩ quan không? Thời gian nghỉ tối đa là bao nhiêu ngày và quy định tại văn bản nào?"}
+{"n": 332, "src": "mps", "split": "test", "label": "O", "q": "Hiện nay, bạo lực trong học đường vẫn tiếp diễn ngày càng nhiều, thậm chí có tổ chức, lập thành các nhóm, hội trên mạng xã hội,nhiều vụ việc đặc biệt nghiêm trọng. Cử tri kiến nghị có giải pháp hiệu quả khắc phục tình trạng trên."}
+{"n": 333, "src": "mps", "split": "tune", "label": "O", "q": "Bộ Công an cho tôi hỏi, tôi là người đồng bào dân tộc thiểu số, tôi đang tham gia nghĩa vụ trong lực lượng Công an nhân dân. Tôi muốn được xét biên chế và chuyển sang chế độ chuyên nghiệp thì tôi được những ưu tiên nào?"}
+{"n": 334, "src": "mps", "split": "test", "label": "O", "q": "Qua thông tin trên báo, đài được biết, Nhà nước dự kiến cho phép kinh doanh casino, cá cược bóng đá, cử tri còn nhiều băn khoăn vì hành vi cá cược, đánh bạc sẽ gây nhiều hệ lụy trong xã hội, mất ổn định về an ninh, trật tự."}
+{"n": 335, "src": "mpsfaq", "split": "test", "label": "O", "q": "Có mấy hình thức thực hiện thủ tục hành chính qua dịch vụ bưu chính công ích? Là những hình thức nào?"}
+{"n": 336, "src": "mps", "split": "test", "label": "O", "q": "Đề nghị phân cấp cho Công an cấp huyện được chỉnh sửa giấy Chứng minh nhân dân tạo điều kiện thuận lợi cho người dân."}
+{"n": 337, "src": "mpsfaq", "split": "tune", "label": "O", "q": "Các phương tiện phòng cháy chữa cháy nào phải dán tem kiểm định và dán theo mẫu nào?"}
+{"n": 338, "src": "mps", "split": "test", "label": "O", "q": "Thời gian qua, việc sử dụng VNeID đã mang lại nhiều lợi ích cho xã hội, xin Bộ Công an cho biết muốn tố giác tội phạm qua VNeID thì phải thực hiện như thế nào?"}
+{"n": 339, "src": "mps", "split": "tune", "label": "O", "q": "Tôi muốn hỏi Bộ Công an, hoạt động tín ngưỡng, tôn giáo như thế nào thì bịcoi là cản trở việc thực hiện quyền và nghĩa vụ công dân?"}
+{"n": 340, "src": "mps", "split": "test", "label": "O", "q": "Tôi hiện đang là Cảnh sát giao thông và mắc bệnh hiểm nghèo, tôi đang điều trị tại Bệnh viện 19-8. Bộ Công an cho tôi hỏi, tôi sẽ được hưởng chế độ, chính sách như thế nào và quy định cụ thể trong văn bản nào?"}
+{"n": 341, "src": "mps", "split": "tune", "label": "O", "q": "Tôi nhận được một món quà là thực phẩm chức năng, tôi nghi ngờ món quà này bị tẩm ma túy. Bộ Công an cho tôi hỏi, tôi muốn giám định món quà có bị tẩm ma túy thật hay không thì trình tự, thủ tục như thế nào?"}
+{"n": 342, "src": "mps", "split": "tune", "label": "O", "q": "Đề nghị cơ quan chức năng xem xét lại vấn đề tuyển sinh vào các trường Công an nhân dân, điểm chuẩn đối với thí sinh nữ cao hơn thí sinh nam là thiếu công bằng."}
+{"n": 343, "src": "mps", "split": "test", "label": "O", "q": "Đề nghị có biện pháp xử lý nghiêm các đối tượng chống người thi hành công vụ, nhất là đối tượng chống đối lại lực lượng Cảnh sát giao thông."}
+{"n": 344, "src": "mpsfaq", "split": "tune", "label": "O", "q": "Các trường hợp thu hồi giấy phép về vũ khí thô sơ?"}
+{"n": 345, "src": "mps", "split": "test", "label": "A", "q": "Bạn [TÊN] địa chỉ email: [EMAIL] hỏi về quy trình thực hiện, yêu cầu điều kiện để được cấp giấy chứng nhận đủ điều kiện về an ninh, trật tự để kinh doanh một số ngành, nghề kinh doanh có điều kiện?"}
+{"n": 346, "src": "mps", "split": "test", "label": "O", "q": "Bộ Công an cho tôi hỏi đối tượng nào thì được cấp hộ chiếu phổ thông tại nhà hoặc bệnh viện và điều kiện để được cấp hộ chiếu phổ thông là như thế nào?"}
+{"n": 347, "src": "mps", "split": "tune", "label": "O", "q": "Đề nghị Ủy ban thường vụ Quốc hội, các bộ, ngành chức năng sớm có hướng dẫn thực hiện việc quản lý tin tố giác, tin báo về tội phạm."}
+{"n": 348, "src": "mps", "split": "tune", "label": "O", "q": "Bộ Công an cho tôi hỏi, trường hợp đã tích hợp Giấy phép lái xe vào tài khoản VNeID thì lái xe có bắt buộc phải xuất trình Giấy phép lái xe trong các trường hợp kiểm soát giao thông nữa hay không?"}
+{"n": 349, "src": "mps", "split": "tune", "label": "O", "q": "Bộ Công an mong nhận được phản ánh, kiến nghị của cá nhân, tổ chức về quy định hành chính thuộc phạm vi chức năng quản lý của Bộ Công an."}
+{"n": 350, "src": "mpsfaq", "split": "tune", "label": "O", "q": "Mẫu thẻ Căn cước công dân theo dự thảo Luật Căn cước công dân (sửa đổi) có điểm gì mới so với mẫu cũ?"}
+{"n": 351, "src": "mps", "split": "tune", "label": "O", "q": "Chồng tôi bị Công an bắt khi đánh bạc cùng hai người nữa, số tiền thu giữ được là 1.300.000 đồng. Xin hỏi chồng tôi sẽ bị xử lý như thế nào và đánh bạc bao nhiêu tiền thì bị phạt tù?"}
+{"n": 352, "src": "mps", "split": "tune", "label": "O", "q": "Để răn đe thanh thiếu niên sử dụng rượu bia làm mất trật tự xã hội ngày càng tăng, đề nghị tăng thêm thời gian tạm giữ hành chính, hiện nay chỉ được giữ 24 giờ là quá nhẹ."}
+{"n": 353, "src": "mps", "split": "tune", "label": "O", "q": "Tôi xin hỏi: Chếđộ nghỉ phép đối với cán bộ CAND được tính như thế nào? Nếu không nghỉ hoặc nghỉ không hết phép cóđược thanh toán không? Cách thức thanh toán như thế nào?"}
+{"n": 354, "src": "mps", "split": "tune", "label": "O", "q": "Đề nghị Bộ Công an xem xét về việc cho tổ chức Đoàn Thanh niên Công an cấp tỉnh có tài khoản riêng và được làm chủ tài khoản về kinh phí."}
+{"n": 355, "src": "mps", "split": "tune", "label": "O", "q": "Tôi muốn hỏi, Công an viên khi đi làm nhiệm vụ mà bị thương hoặc hi sinh có được công nhận là thương binh hoặc liệt sĩ không?"}
+{"n": 356, "src": "mps", "split": "tune", "label": "O", "q": "Cử tri đề nghị Bộ Công an có văn bản hướng dẫn thành lập Đội Cảnh sát thi hành án hình sự và hỗ trợ tư pháp."}
+{"n": 357, "src": "mps", "split": "tune", "label": "O", "q": "Tôi tham gia nghĩa vụ CAND vào đợt tháng 2/2016, trước khi tham gia tôi đã tốt nghiệp đại học hệ chính quy ngành tài chính ngân hàng. Tôi muốn hỏi, sau khi hoàn thành 3 năm phục vụ thì tôi có được ưu tiên gì không?"}
+{"n": 358, "src": "mps", "split": "test", "label": "O", "q": "Luật Tạm giữ, tạm giam đề nghị có quy định chế độ đối với người bị tạm giam, tạm giữ là phụ nữ có thai phải sinh con trong trại hoặc mang con nhỏ dưới 36 tháng tuổi theo mẹ ở trong trại."}
+{"n": 359, "src": "mps", "split": "test", "label": "O", "q": "Tôi nhập ngũ vào tháng 2 năm 2015, được biết theo quy định mới, tôi không được phụ cấp 200% nữa. Tôi muốn hỏi, thông tin trên có chính xác hay không? Nếu không được hưởng phụ cấp nữa thì quy định ở văn bản pháp luật nào?"}
+{"n": 360, "src": "mps", "split": "test", "label": "O", "q": "Để khuyến khích và bảo vệ tính mạng khi làm nhiệm vụ cho Công an viên, đề nghị Bộ Công an có chế độ, chính sách và trang bị đầy đủ dụng cụ, bảo hộ cho Công an viên cấp xã."}
+{"n": 361, "src": "mps", "split": "tune", "label": "O", "q": "Đề nghị Chính phủ tăng biên chế cho lực lượng Cảnh sát giao thông để tăng cường công tác kiểm tra, đảm bảo an toàn giao thông."}
+{"n": 362, "src": "mps", "split": "test", "label": "O", "q": "Cần trang bị cho lực lượng bảo vệ và bố trí lực lượng an ninh tại các ngân hàng để bảo vệ tài sản của người dân."}
+{"n": 363, "src": "mps", "split": "tune", "label": "O", "q": "Bộ Công an cho tôi hỏi, những chất ma túy nào được sử dụng trong nghiên cứu, giám định, điều tra tội phạm? Và Bộ Công an có thẩm quyền như thế nào trong các hoạt động nghiên cứu, giám định, sản xuất, vận chuyển chất ma túy?"}
+{"n": 364, "src": "mps", "split": "tune", "label": "O", "q": "Bạn [TÊN] và bạn [TÊN] hỏi về khối xét tuyển vào các trường CAND năm 2016."}
+{"n": 365, "src": "mps", "split": "tune", "label": "O", "q": "Công ty tôi muốn trả lại con dấu do Bộ Công an cấp và thay đổi con dấu mới thông qua Sở kế hoạch và đầu tư. Tôi rất mong Bộ Công an hướng dẫn quy trình trả lại con dấu cho Bộ Công an như thế nào?"}
+{"n": 366, "src": "mps", "split": "tune", "label": "O", "q": "Đề nghị các Bộ, ngành Trung ương sớm ban hành văn bản hướng dẫn thực hiện Nghị định số 72/2009/NĐ- CP ngày 03/9/2009 của Chính phủ quy định điều kiện về an ninh trật tự đối với một số ngành, nghề kinh doanh có điều kiện."}
+{"n": 367, "src": "mps", "split": "test", "label": "O", "q": "Đề nghị sớm có văn bản hướng dẫn việc thực hiện Luật Phòng, chống ma túy."}
+{"n": 368, "src": "mpsfaq", "split": "tune", "label": "A", "q": "Có thể đăng ký chuyển thẻ Căn cước công dân qua đường bưu điện đến địa chỉ theo yêu cầu của công dân được không?"}
+{"n": 369, "src": "mps", "split": "tune", "label": "O", "q": "Gia đình tôi chuẩn bị xây nhà, Bộ Công an cho tôi hỏi cách thiết kế ngôi nhà như thế nào để có thể phòng cháy và dễ dàng thoát nạn khi có đám cháy xảy ra?"}
+{"n": 370, "src": "mps", "split": "tune", "label": "O", "q": "Tôi muốn hỏi thời gian theo quy định để giải quyết 1 vụ tai nạn giao thông (trường hợp không khởi tố vụ án, 2 bên đã thỏa thuận giải quyết dân sự) là bao nhiêu ngày và được quy định cụ thể tại văn bản nào?"}
+{"n": 371, "src": "mps", "split": "tune", "label": "O", "q": "Các cơ quan tư pháp cần có biện pháp xử lý nghiêm tội phạm để mang tính răn đe và không tái phạm. Đồng thời, đề nghị tăng cường xử lý nghiêm đối với các đối tượng chống người thi hành công vụ."}
+{"n": 372, "src": "mps", "split": "tune", "label": "O", "q": "Tôi muốn hỏi về thời gian theo quy định để giải quyết một vụ tai nạn giao thông (trường hợp không khởi tố vụ án, hai bên đã giải quyết dân sự) là bao nhiêu ngày và được quy định cụ thể trong văn bản nào?"}
+{"n": 373, "src": "mps", "split": "test", "label": "O", "q": "Nhiều bạn đọc gửi đến Cổng Thông tin điện tử Bộ Công an hỏi về số lượng chỉ tiêu và phân luồng xét tuyển vào các trường cao đẳng, trung cấp Công an nhân dân (CAND) năm 2016 như thế nào?"}
+{"n": 374, "src": "mps", "split": "test", "label": "O", "q": "Để đảm bảo sự bình đẳng trong việc thực hiện chính sách, cử tri kiến nghị Chính phủ điều chỉnh chế độ lương đối với lực lượng Công an xã ngang bằng với mức lương của lực lượng vũ trang xã."}
+{"n": 375, "src": "mps", "split": "tune", "label": "O", "q": "Đề nghị có biện pháp giải quyết hiện tượng “cò” đã gây mất lòng tin của người dân về sự công bằng, chẳng hạn “cò” trong các bệnh viện, đăng ký xe, làm các thủ tục hành chính khác."}
+{"n": 376, "src": "mps", "split": "tune", "label": "O", "q": "Cử tri đề nghị bảo mật tốt thông tin cá nhân của người dân trong quá trình triển khai đăng ký định danh điện tử"}
+{"n": 377, "src": "mps", "split": "tune", "label": "O", "q": "Gia đình tôi chuẩn bị sửa lại nhà, trong quá trình sửa nhàsẽ phải sử dụng nhiều thiết bị, máy móc có nguy cơ cháy cao. Bộ Công an cho tôi hỏi làm thế nào để phòng cháy, chữa cháy trong quá trình sửa chữa, cải tạo nhà?"}
+{"n": 378, "src": "mps", "split": "tune", "label": "O", "q": "Cử tri lo lắng trước tình trạng mất an ninh, trật tự xã hội do việc quản lý vũ khí (vũ khí tự tạo) còn lỏng lẻo. Đề nghị Chính phủ chỉ đạo các bộ, ngành liên quan có biện pháp giải quyết triệt để những vấn đề này."}
+{"n": 379, "src": "mps", "split": "tune", "label": "O", "q": "Tôi đang làm việc trong một công ty sản xuất phần mềm máy tính, được biết Luật An ninh mạng vừa được Quốc hội thông qua, Bộ Công an cho tôi hỏi nội dung cơ bản của Luật An ninh mạng là gì?"}
+{"n": 380, "src": "mps", "split": "tune", "label": "O", "q": "Bộ Công an cho tôi hỏi, lộ trình xây dựng Công an xã, thị trấn chính quy sẽ được thực hiện cụ thể như thế nào? Và chế độ, chính sách đối với lực lượng Công an xã chính quy được quy định như thế nào?"}
+{"n": 381, "src": "mps", "split": "tune", "label": "O", "q": "Đề nghị sớm có hướng dẫn về chế độ Bảo hiểm xã hội, bảo hiểm y tế đối với Công an xã theo Pháp lệnh Công an xã và Nghị định số 73/2009/NĐ-CP ngày 7/9/2009 quy định chi tiết thi hành một số điều của Pháp lệnh Công an xã."}
+{"n": 382, "src": "mps", "split": "tune", "label": "O", "q": "Bộ Công an cho tôi hỏi, mức xử phạt hiện nay đối với người điều khiển phương tiện giao thông mà trong máu hoặc hơi thở có nồng độ cồn được quy định cụ thể như thế nào, tại văn bản nào?"}
+{"n": 383, "src": "mps", "split": "tune", "label": "O", "q": "Tôi được bổ nhiệm chức danh Trưởng Công an xã từ năm 2015, tôi có bằng đại học, chuyên ngành Chính trị học. Bộ Công an cho tôi hỏi, tôi có được áp dụng lương theo bằng đại học trên hay không?"}
+{"n": 384, "src": "mps", "split": "tune", "label": "O", "q": "Hiện nay, vấn nạn mua bán, sử dụng “Bóng cười” hết sức nguy hiểm, có thể gây chết người, lực lượng chức năng chỉ phạt hành chính thì chưa đủ răn đe. Cử tri kiến nghị cần có chế tài thật mạnh để xử lý vấn nạn này."}
+{"n": 385, "src": "mps", "split": "test", "label": "O", "q": "Tôi muốn hỏi Bộ Công an,hành vi lợi dụng hoạt động tín ngưỡng, tôn giáo để xâm hại đạo đức xã hội; xâm phạm thân thể, sức khỏe, tính mạng, tài sản; xúc phạm danh dự, nhân phẩm của người khác bao gồm những hành vi như thế nào?"}
+{"n": 386, "src": "mps", "split": "tune", "label": "A", "q": "Tôi muốn xin visa, gia hạn visa cho người nước ngoài ở Việt Nam thì có cần phải làm thủ tục đăng ký tạm trú cho người nước ngoài hay không? Nếu đăng ký tạm trú thì đăng ký ở đâu và thủ tục cụ thể như thế nào?"}
+{"n": 387, "src": "mps", "split": "tune", "label": "O", "q": "Cử tri đề nghị không xét giảm án phạt tù cho các tội danh liên quan đến tham nhũng; trong thời gian thi hành án phạt tù, cấm phạm nhân tuyệt đối không được phép sử dụng các phương tiện thông tin liên lạc ra bên ngoài."}
+{"n": 388, "src": "mps", "split": "test", "label": "O", "q": "Bộ Công an cho tôi hỏi về chế độ, chính sách cho cán bộ, chiến sĩ trực đêm 24/24 (cụ thể đơn vị trực ban Công an tỉnh, thành phố) thực hiện theo quy định nào? Chế độ, chính sách về thời gian như thế nào?"}
+{"n": 389, "src": "mpsfaq", "split": "test", "label": "O", "q": "Các trường hợp thu hồi giấy phép, giấy xác nhận về công cụ hỗ trợ?"}

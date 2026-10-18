@@ -1,0 +1,11 @@
+# dữ liệu tải về (giấy phép một số bộ chưa rõ) và tệp trung gian dựng lại được bằng các script
+raw/
+pool.jsonl
+pool_run.jsonl
+sample.jsonl
+labels.json
+features.jsonl
+features_apologize_rr.json
+cache_names_v3.json
+results_*.json
+llm_judge*.json
