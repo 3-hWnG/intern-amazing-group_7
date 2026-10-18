@@ -24,7 +24,7 @@ TESTS += [(f"system4/tests/{p.name}", "path") for p in sorted((ROOT / "system4" 
 TESTS += [("system4/eval/abi/test_abi.py", "path"), ("eval/safety/test_pii_injection.py", "path")]
 
 # Hồi quy đã biết, có việc sửa riêng trong kế hoạch: tên test -> việc sửa.
-KNOWN_FAIL: dict[str, str] = {"server/tests/p23_input_test.py": "câu khai tử bị tách >1 ý (sửa ở G4.8)"}
+KNOWN_FAIL: dict[str, str] = {}   # G4.8: p23_input_test đã sửa
 # test in "OK" rồi crash lúc tắt (torch/qdrant atexit, P31): coi là đạt nếu đã in dòng kết thúc.
 CRASH_ON_EXIT_OK = {"system4/tests/test_nv3.py"}
 TIMEOUT = 900
