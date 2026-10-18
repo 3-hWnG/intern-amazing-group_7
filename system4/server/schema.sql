@@ -130,6 +130,7 @@ CREATE TABLE IF NOT EXISTS domains (
   kind        TEXT NOT NULL DEFAULT 'soft',
   engine      TEXT NOT NULL DEFAULT 'friendly',
   guardrail   TEXT NOT NULL DEFAULT '',            -- lời dặn gửi thẳng cho AI ngay trước khi soạn câu trả lời trong domain này
+  profile     TEXT NOT NULL DEFAULT '{}',          -- G4.3: hồ sơ lĩnh vực (chỉ các mục đã đổi so với mặc định; xem server/profile.py)
   locked      INTEGER NOT NULL DEFAULT 0,
   user_upload INTEGER NOT NULL DEFAULT 0,
   owner_id    INTEGER REFERENCES users(id) ON DELETE CASCADE,

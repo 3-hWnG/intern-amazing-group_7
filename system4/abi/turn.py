@@ -31,8 +31,10 @@ def search_text(squery: str, data: dict) -> str:
     return f"{squery} {name}"
 
 
-def prepare(user_id: int, text: str, squery: str, dataset_ids: list[int], history: list[dict] | None = None) -> dict:
-    """Trả {"answer": câu trả lời bằng code hoặc None, "sources", "evidence", "info", "extra": lời dặn thêm cho AI}."""
+def prepare(user_id: int, text: str, squery: str, dataset_ids: list[int], history: list[dict] | None = None,
+            code_answer: bool | None = None) -> dict:
+    """Trả {"answer": câu trả lời bằng code hoặc None, "sources", "evidence", "info", "extra": lời dặn thêm cho AI}.
+    code_answer: từ hồ sơ lĩnh vực ABI (G4.3); None = theo ⚙ ABI_CODE_ANSWER."""
     t0 = time.perf_counter()
     data, now = store.data(), tools.now_vn()
     info: dict = {"abi": {"synced_at": (data or {}).get("synced_at"), "version": store.active_id(), "source": (data or {}).get("source")}}
@@ -49,7 +51,7 @@ def prepare(user_id: int, text: str, squery: str, dataset_ids: list[int], histor
     r = router.route(text, data, now) or (router.route(squery, data, now) if squery != text else None)
     if r:
         info["abi"].update(intent=r["intent"], plain=r["plain"])
-    if r and r["plain"] and settings.get("ABI_CODE_ANSWER"):
+    if r and r["plain"] and (settings.get("ABI_CODE_ANSWER") if code_answer is None else code_answer):
         info["abi"]["code_answer"] = True
         info["abi"]["ms"] = int((time.perf_counter() - t0) * 1000)
         return {"answer": r["fact"]["answer"], "sources": r["fact"]["sources"], "evidence": [], "info": info, "extra": extra}

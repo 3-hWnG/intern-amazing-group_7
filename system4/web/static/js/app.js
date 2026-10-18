@@ -146,6 +146,12 @@
         const name = el("input"); name.type = "text"; name.value = d.name; name.maxLength = 40; name.disabled = d.engine === "strict";
         const g = el("textarea"); g.rows = 3; g.maxLength = 1000; g.value = d.guardrail; g.placeholder = "Guardrail: lời dặn gửi thẳng cho AI trước khi trả lời trong lĩnh vực này";
         ed.append(name, g);
+        let prof = null;   // G4.3: hồ sơ lĩnh vực (JSON); chỉ gửi các mục khác mặc định
+        if (d.profile) {
+          prof = el("textarea", "dom-profile"); prof.rows = 6; prof.spellcheck = false; prof.value = JSON.stringify(d.profile, null, 1);
+          prof.title = "answer_mode: free | grounded | verbatim · require_citation · clarify · retrieval {top_k, rerank} · tools [\"table\"] · persona · web_allowed" + (d.engine === "abi" ? " · code_answer" : "");
+          ed.append(el("div", "muted", "Hồ sơ lĩnh vực (JSON) — cách trả lời, trích dẫn, hỏi lại, tìm kiếm, công cụ, vai trò, tìm web:"), prof);
+        }
         const flags = {};
         if (dev) {
           [["hard", "Lĩnh vực cứng (dữ liệu dùng chung, không xoá được)", d.kind === "hard", d.engine !== "friendly"], ["locked", "Khoá: chỉ dev và cán bộ dùng", d.locked, false],
@@ -157,6 +163,11 @@
         const save = el("button", "primary", "Lưu"); save.type = "button";
         save.onclick = async () => {
           const body = { guardrail: g.value };
+          if (prof) {
+            let p; try { p = JSON.parse(prof.value || "{}"); } catch (e) { alert("Hồ sơ lĩnh vực không phải JSON hợp lệ: " + e.message); return; }
+            const def = d.profile_defaults || {};
+            body.profile = Object.fromEntries(Object.entries(p).filter(([k, v]) => JSON.stringify(v) !== JSON.stringify(def[k])));
+          }
           if (d.engine !== "strict") body.name = name.value;
           if (dev) { body.locked = flags.locked.checked; if (d.engine !== "strict") { body.kind = flags.hard.checked ? "hard" : "soft"; body.user_upload = flags.upload.checked; } }
           try { domains = (await api("/s4/domains/" + d.id, body, "PATCH")).domains; await afterDomainsChanged(); } catch (e) { alert(e.message); }

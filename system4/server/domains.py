@@ -8,10 +8,12 @@
 """
 from __future__ import annotations
 
+import json
+
 from fastapi import APIRouter, HTTPException, Request
 from pydantic import BaseModel
 
-from . import datasets, db
+from . import datasets, db, profile
 
 MAX_SOFT_PER_USER = 10
 
@@ -22,6 +24,7 @@ class DomainIn(BaseModel):
     guardrail: str | None = None
     locked: bool | None = None       # chỉ dev
     user_upload: bool | None = None  # chỉ dev
+    profile: dict | None = None      # G4.3: hồ sơ lĩnh vực (người sửa được lĩnh vực); thay cả phần đã lưu
 
 
 class PinIn(BaseModel):
@@ -45,7 +48,8 @@ def view(user: dict, d: dict) -> dict:
     return {"id": d["id"], "name": d["name"], "kind": d["kind"], "engine": d["engine"], "locked": bool(d["locked"]),
             "user_upload": bool(d["user_upload"]), "pinned": d.get("pinned", False), "mine": d["owner_id"] == user["id"],
             "builtin": d["id"] in db.BUILTIN_DOMAINS, "can_edit": ed, "can_delete": ed and d["kind"] == "soft" and d["id"] not in db.BUILTIN_DOMAINS,
-            "can_upload": can_upload(user, d), "guardrail": d["guardrail"] if ed else ""}
+            "can_upload": can_upload(user, d), "guardrail": d["guardrail"] if ed else "",
+            **({"profile": profile.get(d), "profile_defaults": profile.defaults(d)} if ed and d["engine"] != "strict" else {})}
 
 
 def make_router() -> APIRouter:
@@ -118,6 +122,13 @@ def make_router() -> APIRouter:
             sets["name"] = clean_name(u, body.name, did)
         if body.guardrail is not None:
             sets["guardrail"] = clean_guardrail(body.guardrail)
+        if body.profile is not None:
+            if d["engine"] == "strict":
+                raise HTTPException(422, "Lĩnh vực Thủ tục trả lời bằng luật, không dùng hồ sơ này")
+            try:
+                sets["profile"] = json.dumps(profile.validate(body.profile, d), ensure_ascii=False)
+            except ValueError as e:
+                raise HTTPException(422, f"Hồ sơ lĩnh vực: {e}")
         if body.locked is not None:
             sets["locked"] = int(body.locked)
         if body.user_upload is not None:

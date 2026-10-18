@@ -34,7 +34,7 @@ def _migrate(c: sqlite3.Connection) -> None:
         if col not in cols("conversations"):
             c.execute(f"ALTER TABLE conversations ADD COLUMN {col} {ddl}")
     for t, col, ddl in (("conversations", "domain_id", "INTEGER NOT NULL DEFAULT 2"), ("datasets", "domain_id", "INTEGER NOT NULL DEFAULT 2"),
-                        ("datasets", "locked", "INTEGER NOT NULL DEFAULT 0")):
+                        ("datasets", "locked", "INTEGER NOT NULL DEFAULT 0"), ("domains", "profile", "TEXT NOT NULL DEFAULT '{}'")):
         if col not in cols(t):
             c.execute(f"ALTER TABLE {t} ADD COLUMN {col} {ddl}")
     if c.execute("SELECT COUNT(*) FROM domains").fetchone()[0] == 0:   # hai domain có sẵn, không xoá được

@@ -23,7 +23,7 @@ import time
 import uuid
 
 from core import gpu, websearch as core_web
-from . import ambig, answer_cache, context, db, greet, ground, guard, lang, llm, memory, persona, search, settings, tabletool, websearch
+from . import ambig, answer_cache, context, db, greet, profile, ground, guard, lang, llm, memory, persona, search, settings, tabletool, websearch
 from ..abi import turn as abi_turn
 
 RULES_ONLY_MESSAGE = ("Bạn đang ở chế độ **chỉ trả lời bằng luật** nên lĩnh vực này (cần AI viết câu trả lời) tạm không trả lời. "
@@ -289,6 +289,12 @@ def _allowed_text(text: str, history_path: list[dict], evidence: list[dict] | No
     return "\n".join(parts)
 
 
+def _cited(state: dict) -> bool:
+    """Câu trả lời từ dữ liệu có ghi số đoạn [n] (trong chữ hoặc mục "sources" của JSON) không; câu "không có trong dữ liệu" coi như đạt."""
+    txt = _answer_text(state)
+    return bool(re.search(r"\[\d{1,2}\]", txt) or state.get("sources")) or _refusal(txt)
+
+
 def _answer_text(state: dict) -> str:
     raw = "".join(state.get("parts") or [])
     return raw if state.get("mode") == "fast" and state.get("fmt") == "json" else persona.split_choices(raw)[0]
@@ -313,6 +319,9 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
     try:
         evidence, sinfo, t0 = None, None, time.perf_counter()
         dom = db.get_domain((db.get_conversation(cid) or {}).get("domain_id")) or db.get_domain(2)
+        prof = profile.get(dom)   # G4.3: hồ sơ lĩnh vực (cách trả lời, trích dẫn, hỏi lại, tìm kiếm, công cụ, vai trò, tìm web)
+        web_blocked = web and not prof["web_allowed"]
+        web = web and not web_blocked
         abi_mode = dom["engine"] == "abi"   # lĩnh vực ABI: dữ liệu abi.com.vn (system4/abi), luôn ở chế độ Chuyên gia
         active = db.active_datasets(user["id"], dom["id"], user["role"])
         gm = settings.get("GREETING_MODE") if active or abi_mode else "off"
@@ -326,17 +335,18 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             evidence, sinfo = await asyncio.to_thread(websearch.search, squery)
             sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
         elif abi_mode and not small_by_code:   # ABI: code nhận ý định + tính (đếm, sự kiện theo ngày…) trước, rồi mới tìm
-            abi_res = await asyncio.to_thread(abi_turn.prepare, user["id"], text, squery, [d["id"] for d in active], history_path)
+            abi_res = await asyncio.to_thread(abi_turn.prepare, user["id"], text, squery, [d["id"] for d in active], history_path,
+                                              prof.get("code_answer"))
             evidence, sinfo = abi_res["evidence"], abi_res["info"]
             sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
         elif active and not small_by_code:   # có bộ dữ liệu đang bật -> Chuyên gia: tìm trước khi hỏi AI
-            evidence, sinfo = await asyncio.to_thread(search.search, user["id"], squery, [d["id"] for d in active])
+            evidence, sinfo = await asyncio.to_thread(search.search, user["id"], squery, [d["id"] for d in active], profile.search_overrides(prof))
             ids = [d["id"] for d in active]
             if not evidence and search.is_overview(text):   # "tóm tắt file": không có đoạn nào khớp thì đưa các đoạn đầu của tệp văn bản
                 evidence = await asyncio.to_thread(search.overview, ids)
                 sinfo["overview"] = len(evidence)
             sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
-            if settings.get("TABLE_TOOL") and tabletool.triggered(text):
+            if settings.get("TABLE_TOOL") and "table" in prof["tools"] and tabletool.triggered(text):
                 t1 = time.perf_counter()
                 async with llm.Turn(gpu.P1):
                     table = await asyncio.to_thread(tabletool.run, squery, ids)
@@ -349,6 +359,14 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                 amb = await asyncio.to_thread(ambig.check, squery, ids, {c["id"] for c in sinfo.get("candidates", [])})
                 sinfo["ambiguity"] = amb
         extra0 = [greet.SMALL_TALK_INSTRUCTION] if small_by_code else []
+        if evidence is None and prof["answer_mode"] != "free" and not small_by_code:   # grounded / verbatim: không có dữ liệu thì không dùng kiến thức chung
+            evidence, sinfo = [], {"datasets": len(active), "no_data": True, "search_ms": 0}
+        if prof["persona"]:
+            extra0.append(f"Vai trò riêng trong lĩnh vực «{dom['name']}»: {prof['persona']}")
+        if not prof["clarify"]:
+            extra0.append(profile.NO_CLARIFY)
+        if prof["require_citation"] and evidence:
+            extra0.append(profile.CITE)
         if dom["guardrail"]:   # guardrail của domain: lời dặn gửi thẳng cho AI ngay trước khi soạn câu trả lời
             extra0.append(f"Quy tắc riêng của lĩnh vực «{dom['name']}»: {dom['guardrail']}")
         if abi_res:
@@ -356,6 +374,8 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
         bm = lambda **k: build_messages(user["id"], cid, history_path, text, **{"evidence": evidence, "extra": extra0,
                                                                                 "small_talk": ask_small and evidence is not None, "web": web, **k})
         msgs, info = bm(fast=True)
+        if not prof["clarify"]:
+            info["exhausted"] = True   # lĩnh vực không hỏi lại: lựa chọn (nếu AI vẫn đưa) thành văn bản, bỏ thẻ hỏi lại trùng tên
         prompts = [{"why": "lần gửi đầu", "messages": msgs}]
         yield sse({"type": "meta", "conversation_id": cid, "user_message_id": user_mid, "turn_id": turn_id, "mode": mode,
                    "specialist": evidence is not None})
@@ -389,6 +409,18 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                     "timing": {"llm_ms": 0, "total_ms": int((time.perf_counter() - t0) * 1000)}}
             amid = db.add_message(cid, "assistant", ans, "done", user_mid, meta, pii_from=text)
             db.save_trace(amid, cid, user["id"], {"mode": mode, "specialist": True, "query": squery, "retrieval": sinfo, "checks": checks,
+                                                  "prompts": [], "output": {"final_text": ans}, "timing": meta["timing"]}, settings.get("TRACE_KEEP"))
+            yield sse({"type": "delta", "text": ans})
+            yield sse({"type": "done"})
+            return
+        if prof["answer_mode"] == "verbatim" and evidence is not None and not small_by_code:   # trích nguyên văn bằng code, không gọi AI
+            ans = profile.verbatim(evidence, settings.get("EVIDENCE_CHARS"))
+            meta = {"specialist": True, "mode": mode, "verbatim": True,
+                    "sources": [{"n": i, "record_id": e.get("id"), "url": e.get("url"), "title": e["title"], "dataset": e["dataset"],
+                                 "score": e.get("score")} for i, e in enumerate(evidence, 1)],
+                    "timing": {"llm_ms": 0, "total_ms": int((time.perf_counter() - t0) * 1000)}}
+            vmid = db.add_message(cid, "assistant", ans, "done", user_mid, meta, pii_from=text)
+            db.save_trace(vmid, cid, user["id"], {"mode": mode, "specialist": True, "query": squery, "retrieval": sinfo, "checks": checks,
                                                   "prompts": [], "output": {"final_text": ans}, "timing": meta["timing"]}, settings.get("TRACE_KEEP"))
             yield sse({"type": "delta", "text": ans})
             yield sse({"type": "done"})
@@ -467,6 +499,15 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                             yield ev
                         if not state.get("replaced"):
                             meta["grounding"]["after"] = ground.ungrounded(_answer_text(state), allowed, kb, settings.get("BUSINESS_NAME"))
+                if prof["require_citation"] and evidence and not small and not state.get("replaced") and not _cited(state):
+                    meta["cite_retry"] = True   # G4.3: lĩnh vực bắt buộc trích dẫn mà AI không ghi [n]: viết lại một lần
+                    yield sse({"type": "restart"})
+                    msgs, _ = bm(fast=True, extra=extra0 + [profile.CITE_RETRY])
+                    prompts.append({"why": "thiếu số đoạn nguồn: viết lại", "messages": msgs})
+                    async for ev in gen(msgs):
+                        yield ev
+                    if not state.get("replaced") and not _cited(state):
+                        meta["uncited"] = True
                 if not state.get("replaced") and state["filter"].heavy_leak():   # lọt nhiều chữ lạ: viết lại một lần
                     meta["leak_retry"] = True
                     yield sse({"type": "restart"})
@@ -474,6 +515,11 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                     prompts.append({"why": "lọt nhiều chữ lạ: viết lại", "messages": msgs})
                     async for ev in gen(msgs):
                         yield ev
+            if web_blocked:
+                meta["web_blocked"] = True
+                note = "\n\n_Lĩnh vực này không dùng Tìm web: câu trả lời trên không lấy từ web._"
+                state.setdefault("parts", []).append(note)
+                yield sse({"type": "delta", "text": note})
             if web and (sinfo or {}).get("pii_masked") and not state.get("replaced"):   # G1.3 (D10): báo đã che số trước khi tìm web
                 note = "\n\n_" + core_web.PII_NOTE + "_"
                 state.setdefault("parts", []).append(note)
