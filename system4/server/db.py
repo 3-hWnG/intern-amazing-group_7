@@ -432,7 +432,7 @@ def visible_datasets(user: dict, domain_id: int) -> list[dict]:
 
 def readable_dataset(user: dict, ds: dict) -> bool:
     """Xem được nội dung dataset: chủ, dev, hoặc dataset dùng chung của domain cứng mà mình được dùng."""
-    if ds["user_id"] == user["id"] or user["role"] == "dev":
+    if ds["user_id"] == user["id"] or user["role"] in _ELEVATED:   # dev + cán bộ quản lý dữ liệu ở bảng điều khiển
         return True
     d = get_domain(ds["domain_id"])
     return bool(d and d["kind"] == "hard" and can_use_domain(user, d) and (not ds["locked"] or user["role"] in _ELEVATED))

@@ -31,14 +31,19 @@ class PinIn(BaseModel):
     pinned: bool
 
 
+def staff(user: dict) -> bool:
+    """Dev và cán bộ quản lý lĩnh vực + dữ liệu như nhau ở bảng điều khiển (⚙ Cài đặt và tài khoản vẫn chỉ dev)."""
+    return user["role"] in db._ELEVATED
+
+
 def can_edit(user: dict, d: dict) -> bool:
-    return user["role"] == "dev" or (d["kind"] == "soft" and d["owner_id"] == user["id"])
+    return staff(user) or (d["kind"] == "soft" and d["owner_id"] == user["id"])
 
 
 def can_upload(user: dict, d: dict) -> bool:
     if d["engine"] in ("strict", "abi"):
         return False                         # dữ liệu Strict quản lý ở trang Quản trị; ABI tự đồng bộ từ abi.com.vn
-    if user["role"] == "dev":
+    if staff(user):
         return True
     return d["kind"] == "soft" and bool(d["user_upload"])
 
@@ -89,17 +94,17 @@ def make_router() -> APIRouter:
     @r.post("")
     def create(body: DomainIn, request: Request):
         u = user_of(request)
-        dev = u["role"] == "dev"
+        dev = staff(u)
         kind = body.kind or "soft"
         if kind not in ("hard", "soft"):
             raise HTTPException(422, "kind phải là hard hoặc soft")
         if kind == "hard" and not dev:
-            raise HTTPException(403, "Chỉ dev thêm được lĩnh vực cứng")
+            raise HTTPException(403, "Chỉ dev và cán bộ thêm được lĩnh vực cứng")
         if not dev:
             if db.run("SELECT COUNT(*) n FROM domains WHERE owner_id=?", (u["id"],), one=True)["n"] >= MAX_SOFT_PER_USER:
                 raise HTTPException(422, f"Mỗi người tối đa {MAX_SOFT_PER_USER} lĩnh vực riêng")
             if body.locked or body.user_upload:
-                raise HTTPException(403, "Chỉ dev đổi được khoá / quyền tải dữ liệu")
+                raise HTTPException(403, "Chỉ dev và cán bộ đổi được khoá / quyền tải dữ liệu")
         name = clean_name(u, body.name or "")
         did = db.run("INSERT INTO domains(name,kind,engine,guardrail,locked,user_upload,owner_id) VALUES (?,?,?,?,?,?,?)",
                      (name, kind, "friendly", clean_guardrail(body.guardrail or ""), int(bool(body.locked)), int(bool(body.user_upload)),
@@ -112,9 +117,9 @@ def make_router() -> APIRouter:
         d = get_usable(u, did)
         if not can_edit(u, d):
             raise HTTPException(403, "Bạn không sửa được lĩnh vực này")
-        dev = u["role"] == "dev"
+        dev = staff(u)
         if (body.kind is not None or body.locked is not None or body.user_upload is not None) and not dev:
-            raise HTTPException(403, "Chỉ dev đổi loại / khoá / quyền tải dữ liệu")
+            raise HTTPException(403, "Chỉ dev và cán bộ đổi loại / khoá / quyền tải dữ liệu")
         sets = {}
         if body.name is not None:
             if did == 1:

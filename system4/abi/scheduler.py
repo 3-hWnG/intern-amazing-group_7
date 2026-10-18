@@ -134,9 +134,10 @@ def make_router() -> APIRouter:
     r = APIRouter(prefix="/s4/abi")
 
     def dev(request: Request) -> None:
+        """Bảng điều khiển lĩnh vực: dev + cán bộ (khoá API vẫn chỉ dev, ở ⚙)."""
         u = getattr(request.state, "user", None)
-        if not u or u["role"] != "dev":
-            raise HTTPException(403, "Chỉ tài khoản dev")
+        if not u or u["role"] not in ("dev", "can_bo"):
+            raise HTTPException(403, "Chỉ dev và cán bộ")
 
     @r.get("/status")
     def status(request: Request):

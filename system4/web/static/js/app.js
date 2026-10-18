@@ -98,165 +98,16 @@
     renderDomainBar();
   }
 
-  /* ---- quản lý domain: xem, ghim, sửa guardrail; dev: loại, khoá, quyền tải ---- */
-  const domOpen = new Set();   // lĩnh vực đang mở bảng dữ liệu (giữ khi vẽ lại danh sách)
-  function renderDomainList() {
-    const ul = $("domain-list"); ul.innerHTML = "";
-    const dev = me && me.role === "dev";
-    $("domain-new-hard").hidden = !dev;
-    domains.forEach((d) => {
-      const li = el("li", "dom-row");
-      const head = el("div", "dom-head");
-      head.append(el("b", "", d.name), el("span", "dom-tag " + d.kind, d.kind === "hard" ? "Cứng" : "Mềm"));
-      if (d.engine === "strict") head.appendChild(el("span", "dom-tag", "System 3"));
-      else if (d.engine === "abi") head.appendChild(el("span", "dom-tag", "abi.com.vn · tự đồng bộ"));
-      const dataBox = el("div"); dataBox.hidden = true;
-      const dataBtn = actionBtn("Dữ liệu", "Bộ dữ liệu của lĩnh vực này: tải lên, bật/tắt, xem, xoá", () => showData(dataBox.hidden));
-      const showData = (on) => {
-        if (on) domOpen.add(d.id); else domOpen.delete(d.id);
-        dataBox.hidden = !on;
-        if (on && !dataBox.firstChild) dataBox.appendChild(dataPanel(d));
-        dataBtn.textContent = on ? "Ẩn dữ liệu" : "Dữ liệu";
-      };
-      if (d.locked) head.appendChild(el("span", "dom-tag lock", "Chỉ cán bộ"));
-      if (d.mine) head.appendChild(el("span", "dom-tag", "Của tôi"));
-      head.appendChild(actionBtn(d.pinned ? "Bỏ ghim" : "Ghim", "Hiện / ẩn trên thanh chọn", async () => {
-        try { domains = (await api("/s4/domains/" + d.id + "/pin", { pinned: !d.pinned })).domains; renderDomainBar(); renderDomainList(); } catch (e) { alert(e.message); }
-      }));
-      if (d.can_edit) head.appendChild(actionBtn("Sửa", "Tên, guardrail" + (dev ? ", loại, khoá" : ""), () => { li.querySelector(".dom-edit").hidden = !li.querySelector(".dom-edit").hidden; }));
-      if (d.can_delete) {   // bấm 2 lần để xoá (không dùng confirm(): một số trình duyệt chặn hộp thoại làm nút như không chạy)
-        const del = actionBtn("Xoá", "Xoá lĩnh vực mềm cùng dữ liệu của nó và đưa hội thoại cũ về \"Trò chuyện chung\"", async () => {
-          if (!del.dataset.sure) {
-            del.dataset.sure = "1"; del.textContent = "Bấm lần nữa để xoá";
-            setTimeout(() => { delete del.dataset.sure; del.textContent = "Xoá"; }, 4000);
-            return;
-          }
-          try { domains = (await api("/s4/domains/" + d.id, null, "DELETE")).domains; await afterDomainsChanged(); }
-          catch (e) { del.textContent = "Lỗi: " + e.message; }
-        });
-        head.appendChild(del);
-      }
-      if (d.builtin && d.kind === "soft") head.appendChild(el("span", "dom-tag", "có sẵn, không xoá được"));
-      head.insertBefore(dataBtn, head.querySelector("button"));
-      li.appendChild(head); li.appendChild(dataBox);
-      if (d.engine === "abi" && dev) li.appendChild(abiPanel());
-      showData(domOpen.has(d.id));
-      if (d.can_edit) {
-        const ed = el("div", "dom-edit"); ed.hidden = true;
-        const name = el("input"); name.type = "text"; name.value = d.name; name.maxLength = 40; name.disabled = d.engine === "strict";
-        const g = el("textarea"); g.rows = 3; g.maxLength = 1000; g.value = d.guardrail; g.placeholder = "Guardrail: lời dặn gửi thẳng cho AI trước khi trả lời trong lĩnh vực này";
-        ed.append(name, g);
-        let prof = null;   // G4.3: hồ sơ lĩnh vực (JSON); chỉ gửi các mục khác mặc định
-        if (d.profile) {
-          prof = el("textarea", "dom-profile"); prof.rows = 6; prof.spellcheck = false; prof.value = JSON.stringify(d.profile, null, 1);
-          prof.title = "answer_mode: free | grounded | verbatim · require_citation · clarify · retrieval {top_k, rerank} · tools [\"table\"] · persona · web_allowed" + (d.engine === "abi" ? " · code_answer" : "");
-          ed.append(el("div", "muted", "Hồ sơ lĩnh vực (JSON) — cách trả lời, trích dẫn, hỏi lại, tìm kiếm, công cụ, vai trò, tìm web:"), prof);
-        }
-        const flags = {};
-        if (dev) {
-          [["hard", "Lĩnh vực cứng (dữ liệu dùng chung, không xoá được)", d.kind === "hard", d.engine !== "friendly"], ["locked", "Khoá: chỉ dev và cán bộ dùng", d.locked, false],
-           ["upload", "Cho người dùng thường tải dữ liệu riêng (lĩnh vực mềm)", d.user_upload, d.engine !== "friendly"]].forEach(([k, label, on, off]) => {
-            const lab = el("label", "dom-check"), cb = el("input"); cb.type = "checkbox"; cb.checked = on; cb.disabled = off; flags[k] = cb;
-            lab.append(cb, label); ed.appendChild(lab);
-          });
-        }
-        const save = el("button", "primary", "Lưu"); save.type = "button";
-        save.onclick = async () => {
-          const body = { guardrail: g.value };
-          if (prof) {
-            let p; try { p = JSON.parse(prof.value || "{}"); } catch (e) { alert("Hồ sơ lĩnh vực không phải JSON hợp lệ: " + e.message); return; }
-            const def = d.profile_defaults || {};
-            body.profile = Object.fromEntries(Object.entries(p).filter(([k, v]) => JSON.stringify(v) !== JSON.stringify(def[k])));
-          }
-          if (d.engine !== "strict") body.name = name.value;
-          if (dev) { body.locked = flags.locked.checked; if (d.engine !== "strict") { body.kind = flags.hard.checked ? "hard" : "soft"; body.user_upload = flags.upload.checked; } }
-          try { domains = (await api("/s4/domains/" + d.id, body, "PATCH")).domains; await afterDomainsChanged(); } catch (e) { alert(e.message); }
-        };
-        ed.appendChild(save); li.appendChild(ed);
-      }
-      ul.appendChild(li);
-    });
-  }
-  /* ---- lĩnh vực ABI (dev): phiên bản dữ liệu abi.com.vn / staging — chọn bản đang dùng (tức thì), đồng bộ bằng tay
-     (system4/abi/versions.py, scheduler.py). Mỗi nguồn giữ 2 phiên bản mới nhất, cũ hơn tự xoá. ---- */
-  let abiTimer = null;
-  const abiWhen = (s) => { if (!s) return "?"; const t = new Date(s); return isNaN(t) ? s : t.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }); };
-  function abiPanel() {
-    const box = el("div", "abi-box"), line = el("div", "abi-line", "Đang xem phiên bản dữ liệu…");
-    const pick = el("select", "abi-pick"); pick.title = "Phiên bản dữ liệu lĩnh vực ABI đang dùng (đổi là dùng ngay)";
-    const row = el("div", "abi-row"), btns = {};
-    const lab = el("label", "abi-pick-lab"); lab.append("Dữ liệu đang dùng: ", pick);
-    row.appendChild(lab);
-    box.append(row, line);
-    const brow = el("div", "abi-row"); box.appendChild(brow);
-    const show = (r) => {
-      const st = r.state || {}, vs = r.versions || [];
-      const building = vs.find((v) => v.dataset && v.dataset.status !== "ready");
-      const busy = !!st.running || !!building;
-      pick.innerHTML = "";
-      if (!vs.length) { const o = el("option", "", "chưa có phiên bản nào"); o.value = ""; pick.appendChild(o); }
-      vs.forEach((v) => {
-        const o = el("option", "", `${v.label} · phiên bản ${v.id} · ${abiWhen(v.synced_at)}` + (v.newest ? " (mới nhất)" : "") + (v.dataset ? "" : " · chưa có chỉ mục"));
-        o.value = String(v.id); o.selected = v.active; pick.appendChild(o);
-      });
-      pick.disabled = busy || vs.length < 2;
-      if (!brow.firstChild) (r.sources || []).forEach((src) => {
-        const b = el("button", src.auto ? "primary" : "btn-ghost", "Đồng bộ " + src.label); b.type = "button";
-        b.title = (src.auto ? "Tự đồng bộ theo lịch; bấm để " : "Staging chỉ đồng bộ khi bấm; bấm để ") + "tải lại ngay (chỉ tải phần đổi). Dữ liệu đổi thì thành phiên bản mới, mỗi nguồn giữ 2 bản mới nhất.";
-        b.onclick = async () => {
-          Object.values(btns).forEach((x) => { x.disabled = true; }); line.textContent = "Đang bắt đầu đồng bộ " + src.label + "…";
-          try {
-            const res = await api("/s4/abi/sync", { source: src.id });
-            show(res);
-            if (!res.started && res.reason) line.textContent = res.reason;   // vừa đồng bộ (thoả thuận tần suất) / chưa có khoá / đang chạy
-          } catch (e) { line.textContent = "Lỗi: " + e.message; Object.values(btns).forEach((x) => { x.disabled = false; }); }
-        };
-        btns[src.id] = b; brow.appendChild(b);
-      });
-      Object.values(btns).forEach((x) => { x.disabled = busy; });
-      const act = vs.find((v) => v.active), last = (r.runs || [])[0];
-      let txt;
-      if (st.running) txt = "Đang đồng bộ " + ((r.sources || []).find((x) => x.id === st.source) || {}).label + ": " + (st.step || "…");
-      else if (building) txt = "Đang tạo chỉ mục tìm kiếm cho phiên bản " + building.id + "… " + (building.dataset.progress || 0) + "%";
-      else {
-        txt = act ? `Đang dùng phiên bản ${act.id} (${act.label}, đồng bộ ${abiWhen(act.synced_at)}).` : "Chưa có dữ liệu: bấm Đồng bộ.";
-        if (last) txt += last.ok ? (last.result === "unchanged" ? " Lần đồng bộ cuối: không có gì mới." : " Lần đồng bộ cuối: có phiên bản mới.")
-          : last.error ? " Lần đồng bộ cuối lỗi: " + last.error : "";
-        if (r.api_key === "chưa có") txt += " Chưa có khoá API: điền ở ⚙ → Lĩnh vực ABI.";
-      }
-      line.textContent = txt;
-      clearTimeout(abiTimer);
-      if (busy && !$("domain-modal").hidden) abiTimer = setTimeout(load, 2000);   // đóng cửa sổ thì thôi hỏi
-    };
-    const load = async () => { try { show(await api("/s4/abi/status")); } catch (e) { line.textContent = "Lỗi: " + e.message; } };
-    pick.onchange = async () => {
-      if (!pick.value) return;
-      pick.disabled = true;
-      try { show(await api("/s4/abi/versions/" + pick.value + "/activate", {})); } catch (e) { line.textContent = "Lỗi: " + e.message; load(); }
-    };
-    load();
-    return box;
-  }
+  /* ---- bảng điều khiển lĩnh vực (hộp "Lĩnh vực"): dashboard.js — một chỗ cho lĩnh vực, dữ liệu, đường nhanh, thống kê.
+     app.js chỉ đưa cho nó các hàm dùng chung (S4Dash.init trong init()). ---- */
+  let viewUser = false;   // dev / cán bộ bật "Xem như người dùng" trong bảng điều khiển
+  const isStaff = () => !viewUser && !!me && (me.role === "dev" || me.role === "can_bo");
   async function afterDomainsChanged() {
     if (!domains.some((d) => d.id === domainId)) { setDomain((domains[0] || {}).id); await loadConv(null); refreshList(); }
     else { renderDomainBar(); setDomain(domainId); }
-    renderDomainList();
   }
-  async function openDomainManager(openId) {
-    await loadDomains(); if (openId) domOpen.add(openId);
-    renderDomainList(); $("domain-modal").hidden = false;
-  }
+  const openDomainManager = (openId, openTab) => S4Dash.open(openId, openTab);
   $("open-domains").onclick = () => openDomainManager();
-  $("domain-close").onclick = () => { $("domain-modal").hidden = true; };
-  $("domain-modal").addEventListener("click", (e) => { if (e.target === $("domain-modal")) $("domain-modal").hidden = true; });
-  $("domain-new").addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const f = e.target;
-    try {
-      const r = await api("/s4/domains", { name: f.name.value, guardrail: f.guardrail.value, kind: f.hard.checked ? "hard" : "soft" });
-      domains = r.domains; f.reset(); renderDomainBar(); renderDomainList();
-    } catch (err) { alert(err.message); }
-  });
 
   function modelName() {
     $("model-name").textContent = mode === "friendly" ? (pub.friendly_model || "") : (cfg.model ? cfg.model + " · luật" : "");
@@ -1159,7 +1010,7 @@
   function dsItem(d, refresh) {
     const li = el("li");
     const sw = el("label", "switch"), cb = el("input"), knob = el("span");
-    const mineDs = d.user_id === me.id || me.role === "dev";
+    const mineDs = d.user_id === me.id || isStaff();
     cb.type = "checkbox"; cb.checked = d.active; cb.disabled = d.status !== "ready" || !mineDs;
     cb.title = d.status === "ready" ? (d.active ? "Đang bật: AI dùng bộ này" : "Đang tắt") : "Chờ xử lý xong";
     cb.onchange = async () => {
@@ -1177,7 +1028,7 @@
     const act = el("div", "ds-actions");
     if (d.status === "ready") act.appendChild(actionBtn("Xem", "Xem các bản ghi", () => openRecords(d)));
     if (d.status === "ready") act.appendChild(actionBtn("Cách đọc", "Xem hệ thống đã đọc tệp thế nào: dòng tiêu đề, cột tiêu đề, bản ghi đầu", () => S4Inspect.reading(d.id)));
-    if (me.role === "dev") act.appendChild(actionBtn(d.locked ? "Mở khoá" : "Khoá", "Khoá: chỉ dev và cán bộ dùng bộ dữ liệu này", async () => {
+    if (isStaff()) act.appendChild(actionBtn(d.locked ? "Mở khoá" : "Khoá", "Khoá: chỉ dev và cán bộ dùng bộ dữ liệu này", async () => {
       try { await api("/s4/datasets/" + d.id, { locked: !d.locked }, "PATCH"); } catch (e) { alert(e.message); }
       refresh();
     }));
@@ -1371,6 +1222,9 @@
     $("open-admin").hidden = me.role !== "dev";
     $("cpu-banner").hidden = !pub.cpu_mode;   // G3.3: máy không có card đồ hoạ
     $("rules-only-banner").checked = !!pub.rules_only;
+    S4Dash.init({ api, el, me: () => me, domains: () => domains, setDomains: (d) => { domains = d; }, loadDomains, renderDomainBar,
+                  afterDomainsChanged, switchDomain, domainId: () => domainId, dataPanel, openRecords,
+                  setViewUser: (v) => { viewUser = v; refreshPanels(); } });
     let saved = null;
     try { saved = JSON.parse(ls.get("s4_conv") || "null"); } catch (_) {}
     await loadDomains();
@@ -1381,5 +1235,6 @@
     loadCfg();
     await loadConv(saved ? saved.id : null, saved ? saved.mode : null);
     refreshList();
+    if (new URLSearchParams(location.search).get("dash") === "1") openDomainManager();   // liên kết từ trang Quản trị
   })();
 })();

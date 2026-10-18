@@ -293,7 +293,7 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         """Chủ dataset, hoặc dev (2B: dev được mở nội dung)."""
         u = _user(request)
         ds = db.get_dataset(ds_id)
-        if not ds or (ds["user_id"] != u["id"] and u["role"] != "dev"):
+        if not ds or (ds["user_id"] != u["id"] and u["role"] not in db._ELEVATED):   # dev + cán bộ (bảng điều khiển)
             raise HTTPException(404, "không có bộ dữ liệu này")
         return ds
 

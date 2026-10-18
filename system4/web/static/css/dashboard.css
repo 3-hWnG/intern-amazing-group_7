@@ -1,0 +1,100 @@
+/* Bảng điều khiển lĩnh vực (hộp "Lĩnh vực", dashboard.js). Mọi lớp nằm dưới .dash để không đụng giao diện chat. Màu: biến của styles.css. */
+.dash .dash-dialog{width:min(1240px,100%);height:min(860px,calc(100vh - 32px));overflow:hidden}
+.dash button:disabled{opacity:.45;cursor:default}
+.dash .dash-dialog>header{gap:12px}
+.dash-head-tools{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:flex-end}
+.dash-userview{font-size:13px;color:var(--ink-2);display:flex;align-items:center;gap:6px;cursor:pointer}
+.dash-body{flex:1;min-height:0;display:grid;grid-template-columns:250px minmax(0,1fr);grid-template-rows:minmax(0,1fr)}
+.dash-side{border-right:1px solid var(--line);overflow-y:auto;padding:8px 6px}
+.dash-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:2px}
+.dash-item{display:flex;flex-wrap:wrap;align-items:center;gap:4px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:14px}
+.dash-item:hover{background:var(--panel-2)}
+.dash-item.on{background:color-mix(in srgb,var(--accent) 16%,transparent);outline:1px solid color-mix(in srgb,var(--accent) 45%,transparent)}
+.dash-item:focus-visible{outline:2px solid var(--accent)}
+.dash-name{flex:1 1 100%;font-weight:600;overflow-wrap:anywhere}
+.dash-item .dom-tag{font-size:10.5px}
+.dash-sep{margin:12px 10px 2px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;color:var(--ink-3)}
+.dash-main{min-width:0;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.dash-tabs{display:flex;gap:6px;padding:10px 16px 0;flex-wrap:wrap}
+.dash-tabs:empty{display:none}
+.dash-tabs .tab{flex:none;padding:7px 14px;font-size:13.5px;cursor:pointer}
+.dash-pane{flex:1;min-height:0;overflow-y:auto;padding:10px 16px 24px}
+.dash-title{margin:6px 0 8px;font-size:17px}
+.dash-lab{display:block;font-size:12.5px;font-weight:600;color:var(--ink-2);margin:8px 0 3px}
+.dash .dom-edit{display:grid;gap:4px}
+.dash .dom-edit input,.dash .dom-edit textarea,.dash .dom-form input,.dash .dom-form textarea{width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink)}
+.dash .dom-profile{font:12.5px/1.4 Consolas,monospace}
+.dash .dom-edit .primary{justify-self:start;margin-top:8px}
+.dash .dom-form{display:grid;gap:8px;max-width:560px}
+.dash .dom-form .primary{justify-self:start}
+.dash-fold{border:1px solid var(--line);border-radius:12px;margin-bottom:14px;background:var(--panel)}
+.dash-fold>summary{cursor:pointer;padding:11px 16px;font-weight:600;font-size:14.5px}
+.dash-fold[open]>summary{border-bottom:1px solid var(--line)}
+.dash-fold>*:not(summary){margin-left:16px;margin-right:16px}
+.dash-fold>*:last-child{margin-bottom:14px}
+.dash-fold .dash-fold{margin-top:10px}
+.dash-scroll{overflow-x:auto;max-width:100%}
+/* bảng, nhãn, thẻ, việc nền, thủ tục, so sánh: chép từ admin.css (trang Quản trị cũ), giới hạn trong .dash */
+.dash .card{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:14px}
+.dash .card>h3{margin:0 0 10px;font-size:15px}
+.dash .row{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:6px 0}
+.dash .row-between{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px}
+.dash .row input,.dash .row select,.dash .search,.dash .num{padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink)}
+.dash .num{width:80px}
+.dash .search{width:280px;max-width:100%}
+.dash .btn-ghost{text-decoration:none;display:inline-block}
+.dash .grid{width:100%;border-collapse:collapse;font-size:13.5px}
+.dash .grid th,.dash .grid td{border-bottom:1px solid var(--line);padding:7px 8px;text-align:left;vertical-align:top}
+.dash .grid th{color:var(--ink-3);font-weight:600;font-size:12.5px;background:var(--panel-2)}
+.dash .grid tr.clickable{cursor:pointer}
+.dash .grid tr.clickable:hover td{background:var(--panel-2)}
+.dash .grid td.actions{white-space:nowrap}
+.dash .grid td.actions button{margin:1px 2px}
+.dash .grid .name{max-width:520px;overflow-wrap:anywhere}
+.dash .tag{display:inline-block;font-size:11px;font-weight:600;padding:1px 7px;border-radius:6px;margin-left:4px;border:1px solid var(--line);color:var(--ink-2)}
+.dash .tag.on{color:#fff;background:var(--good);border-color:transparent}
+.dash .tag.warn{color:var(--warn);border-color:var(--warn)}
+.dash .tag.bad{color:var(--danger);border-color:var(--danger)}
+.dash .job{margin-top:10px;padding:9px 12px;border-radius:8px;font-size:13.5px;background:var(--panel-2);border:1px solid var(--line)}
+.dash .job.done{background:color-mix(in srgb,var(--good) 14%,transparent)}
+.dash .job.error{background:color-mix(in srgb,var(--danger) 14%,transparent)}
+.dash .job pre{margin:8px 0 0;max-height:160px;overflow:auto;font:12px/1.4 Consolas,monospace;white-space:pre-wrap}
+.dash .job .bar{height:6px;border-radius:4px;background:var(--line);overflow:hidden;margin-top:6px}
+.dash .job .bar i{display:block;height:100%;background:var(--accent)}
+.dash .field{margin:10px 0}
+.dash .field label{display:flex;justify-content:space-between;font-size:13px;font-weight:600;margin-bottom:4px}
+.dash .field label small{font-weight:400;color:var(--ink-3)}
+.dash .field textarea{width:100%;min-height:42px;padding:7px 9px;font:13px/1.45 Consolas,monospace;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink);resize:vertical}
+.dash .field textarea[readonly]{opacity:.85}
+.dash .diff-counts{display:flex;gap:14px;margin:6px 0 12px;font-size:14px}
+.dash .diff-list{list-style:none;padding:0;margin:0 0 12px}
+.dash .diff-list li{padding:5px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.dash .diff-field{margin:10px 0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.dash .diff-field b{display:block;padding:5px 9px;background:var(--panel-2);font-size:13px}
+.dash .diff-field pre{margin:0;padding:6px 9px;font:12px/1.4 Consolas,monospace;white-space:pre-wrap;max-height:200px;overflow:auto}
+.dash .diff-field pre.old{background:color-mix(in srgb,var(--danger) 8%,transparent)}
+.dash .diff-field pre.new{background:color-mix(in srgb,var(--good) 10%,transparent)}
+.dash .insp-pre{white-space:pre-wrap;font:12px/1.45 Consolas,monospace;max-height:260px;overflow:auto;background:var(--panel-2);border:1px solid var(--line);border-radius:8px;padding:8px}
+.dash .small{font-size:12.5px}
+.dash .error{color:var(--danger)}
+/* điện thoại: danh sách lĩnh vực thành thanh trượt ngang phía trên */
+@media (max-width:760px){
+  .dash .dash-dialog{height:calc(100vh - 16px)}
+  .dash-body{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr)}
+  .dash-side{border-right:0;border-bottom:1px solid var(--line);overflow-x:auto;overflow-y:hidden;padding:6px}
+  .dash-list{flex-direction:row;gap:6px}
+  .dash-item{flex:none;max-width:220px}
+  .dash-name{flex:none}
+  .dash-item .dom-tag{display:none}
+  .dash-sep{display:none}
+  .dash-tabs,.dash-pane{padding-left:10px;padding-right:10px}
+  .dash .grid{font-size:12.5px}
+}
+.dash .dom-check{display:flex;align-items:center;gap:8px;font-size:13.5px;margin:4px 0}
+.dash .dom-edit input[type=checkbox],.dash .dom-form input[type=checkbox]{width:auto;flex:none}
+@media (max-width:760px){
+  .dash-side{min-height:52px;flex:none}
+  .dash-item{white-space:nowrap;padding:8px 12px;border:1px solid var(--line)}
+  .dash .dash-dialog>header{flex-wrap:wrap}
+}
+.dash-fold>.row,.dash-fold>.job{margin-left:16px;margin-right:16px}

@@ -16,96 +16,18 @@
   <span id="me" class="muted small"></span>
 </header>
 <nav class="admin-tabs" role="tablist">
-  <button type="button" class="tab active" data-tab="strict" role="tab">Dữ liệu Strict (thủ tục)</button>
-  <button type="button" class="tab" data-tab="datasets" role="tab">Dữ liệu người dùng</button>
-  <button type="button" class="tab" data-tab="abi" role="tab">Dữ liệu ABI</button>
-  <button type="button" class="tab" data-tab="users" role="tab">Người dùng</button>
-  <button type="button" class="tab" data-tab="stats" role="tab">Thống kê</button>
+  <button type="button" class="tab active" data-tab="users" role="tab">Người dùng</button>
   <button type="button" class="tab" data-tab="lab" role="tab">Thử tìm kiếm</button>
 </nav>
+<p class="admin-note">Dữ liệu (Thủ tục, ABI, bộ dữ liệu của mọi người dùng), đường nhanh và thống kê đã chuyển sang <b>bảng điều khiển lĩnh vực</b>:
+  <a href="/?dash=1" class="link">trang chat → nút «Lĩnh vực»</a>. Trang này chỉ còn tài khoản và Thử tìm kiếm (chỉ dev).</p>
 
 <main class="admin-main">
-  <!-- Tab 1: dữ liệu thủ tục của Strict mode (System 3) -->
-  <section id="tab-strict" class="admin-tab">
-    <div class="card">
-      <div class="row-between">
-        <div>
-          <b>Strict mode đang dùng:</b> <span id="active-label">…</span>
-          <div class="muted small">Dữ liệu chuẩn của System 3. Sửa / xoá vào bản nháp → lưu thành phiên bản → áp dụng. Bản Gốc luôn được giữ.</div>
-        </div>
-        <div class="row">
-          <label class="small">Giới hạn <input id="scrape-limit" type="number" min="0" value="0" class="num"> (0 = tất cả)</label>
-          <button id="export-btn" class="btn-ghost" type="button" title="Tải DB thủ tục Strict đang dùng thành tệp Excel: mọi bảng, liên kết row_id / proc_id, link cổng dichvucong.gov.vn. Phiên bản khác: nút Xuất Excel trong bảng Phiên bản">Xuất Excel</button>
-          <button id="scrape-btn" class="primary" type="button" title="Cào lại từ dichvucong.gov.vn (cần internet, có thể mất hàng chục phút)">Cào dữ liệu mới</button>
-        </div>
-      </div>
-      <div id="job" class="job" hidden></div>
-    </div>
 
-    <div class="card">
-      <h2>Phiên bản</h2>
-      <table class="grid" id="versions"></table>
-    </div>
 
-    <div class="card" id="draft-card">
-      <div class="row-between">
-        <div><b>Bản nháp</b> <span id="draft-info" class="muted"></span></div>
-        <div class="row">
-          <button id="draft-diff" class="btn-ghost" type="button">Xem thay đổi</button>
-          <button id="draft-save" class="primary" type="button">Lưu thành phiên bản</button>
-          <button id="draft-discard" class="btn-ghost" type="button">Bỏ nháp</button>
-        </div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="row-between">
-        <h2>Thủ tục</h2>
-        <div class="row">
-          <select id="proc-version" title="Xem phiên bản"></select>
-          <input id="proc-q" type="search" placeholder="Tìm theo tên, mã, lĩnh vực…" class="search">
-        </div>
-      </div>
-      <div id="proc-count" class="muted small"></div>
-      <table class="grid" id="procs"></table>
-      <button id="proc-more" class="btn-ghost" type="button" hidden>Xem thêm</button>
-    </div>
-  </section>
-
-  <!-- Tab 2: dữ liệu người dùng tải lên (Friendly) -->
-  <section id="tab-datasets" class="admin-tab" hidden>
-    <div class="card">
-      <h2>Bộ dữ liệu của mọi người dùng</h2>
-      <table class="grid" id="all-datasets"></table>
-    </div>
-  </section>
-
-  <!-- Tab: lĩnh vực ABI — phiên bản dữ liệu abi.com.vn / staging (system4/abi/versions.py) -->
-  <section id="tab-abi" class="admin-tab" hidden>
-    <div class="card">
-      <div class="row-between">
-        <div>
-          <b>Lĩnh vực ABI đang dùng:</b> <span id="abi-synced">…</span>
-          <div class="muted small">Dữ liệu lấy từ các API chính thức chủ web cho phép (cần khoá API ở ⚙). Mỗi lần đồng bộ mà dữ liệu đổi
-            thì thành một phiên bản mới; mỗi nguồn (abi.com.vn, staging) chỉ giữ 2 phiên bản mới nhất, cũ hơn tự xoá. abi.com.vn tự đồng bộ
-            theo lịch, staging chỉ khi bấm. Chuyển phiên bản dùng ngay (mỗi phiên bản có chỉ mục tìm kiếm riêng).</div>
-        </div>
-        <div class="row" id="abi-sync-btns"></div>
-      </div>
-      <div id="abi-job" class="job" hidden></div>
-    </div>
-    <div class="card">
-      <h2>Phiên bản</h2>
-      <table class="grid" id="abi-versions"></table>
-    </div>
-    <div class="card">
-      <h2>Các lần đồng bộ gần đây</h2>
-      <table class="grid" id="abi-runs"></table>
-    </div>
-  </section>
 
   <!-- Tab 3: người dùng -->
-  <section id="tab-users" class="admin-tab" hidden>
+  <section id="tab-users" class="admin-tab">
     <div class="card">
       <h2>Tạo tài khoản</h2>
       <form id="new-user" class="row">
@@ -118,24 +40,6 @@
     <div class="card">
       <h2>Người dùng</h2>
       <table class="grid" id="users"></table>
-    </div>
-  </section>
-  <!-- Tab: thống kê -->
-  <section id="tab-stats" class="admin-tab" hidden>
-    <div class="card">
-      <h2>Thủ tục được hỏi nhiều nhất (Strict)</h2>
-      <p class="muted small">Đếm mỗi lần một thủ tục được trả lời trực tiếp. Không lưu nội dung câu hỏi.</p>
-      <table class="grid" id="stat-procs"></table>
-    </div>
-    <div class="card">
-      <h2>Phản hồi 👍 / 👎 và tài khoản</h2>
-      <table class="grid" id="stat-other"></table>
-      <p class="small">Tải câu hỏi + câu trả lời đã được đánh giá (đã che CCCD/SĐT):</p>
-      <table class="grid">
-        <tr><td>Tất cả</td><td><a href="/s4/admin/feedback.csv" download>.csv (mở bằng Excel)</a></td><td><a href="/s4/admin/feedback.jsonl" download>.jsonl</a></td></tr>
-        <tr><td>Chỉ 👍</td><td><a href="/s4/admin/feedback.csv?value=1" download>.csv</a></td><td><a href="/s4/admin/feedback.jsonl?value=1" download>.jsonl</a></td></tr>
-        <tr><td>Chỉ 👎</td><td><a href="/s4/admin/feedback.csv?value=-1" download>.csv</a></td><td><a href="/s4/admin/feedback.jsonl?value=-1" download>.jsonl</a></td></tr>
-      </table>
     </div>
   </section>
   <!-- Tab 4: phòng thử tìm kiếm (bộ công cụ dev) -->
@@ -170,35 +74,7 @@
   </div>
 </div>
 
-<!-- cửa sổ: sửa / xem thủ tục -->
-<div id="rec-modal" class="s4-modal" hidden>
-  <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="rec-title">
-    <header><h2 id="rec-title">Thủ tục</h2><button class="icon close" type="button" aria-label="Đóng">✕</button></header>
-    <div class="body" id="rec-body"></div>
-    <div class="set-note bad" id="rec-err" hidden></div>
-    <footer id="rec-foot"></footer>
-  </div>
-</div>
-<!-- cửa sổ: so sánh -->
-<div id="diff-modal" class="s4-modal" hidden>
-  <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="diff-title">
-    <header><h2 id="diff-title">So sánh</h2><button class="icon close" type="button" aria-label="Đóng">✕</button></header>
-    <div class="body" id="diff-body"></div>
-  </div>
-</div>
-<!-- cửa sổ: bản ghi của bộ dữ liệu người dùng -->
-<div id="ds-modal" class="s4-modal" hidden>
-  <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="ds-title">
-    <header><h2 id="ds-title">Bản ghi</h2><button class="icon close" type="button" aria-label="Đóng">✕</button></header>
-    <div class="body">
-      <input id="ds-q" class="records-q" type="search" placeholder="Tìm trong bộ dữ liệu…">
-      <div id="ds-count" class="muted small"></div>
-      <div id="ds-list" class="records-list"></div>
-      <button id="ds-more" class="btn-ghost" type="button" hidden>Xem thêm</button>
-    </div>
-  </div>
-</div>
 <script src="/s4/static/js/inspector.js?v=dev1"></script>
-<script src="/s4/static/js/admin.js?v=dev3"></script>
+<script src="/s4/static/js/admin.js?v=dev4"></script>
 </body>
 </html>

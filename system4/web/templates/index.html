@@ -8,6 +8,7 @@
 <!-- Giao diện = bản sao trang System 3 (web/templates/index.html) + công tắc Strict/Friendly, đăng nhập, cài đặt -->
 <link rel="stylesheet" href="/static/css/styles.css?v=20261006g">
 <link rel="stylesheet" href="/s4/static/css/s4.css?v=dev6">
+<link rel="stylesheet" href="/s4/static/css/dashboard.css?v=dev3">
 <style>
 .block-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px}
 .block-card h4{margin:0 0 6px;font-size:14px;color:var(--accent)}
@@ -39,12 +40,12 @@
       <h1 id="conv-title">Instant Specialist</h1>
       <div class="mode-switch domain-bar" id="domain-bar" role="group" aria-label="Lĩnh vực"></div>
       <select id="domain-more" class="domain-more" aria-label="Lĩnh vực khác" hidden></select>
-      <button id="open-domains" class="link" type="button" title="Xem, thêm, ghim, sửa lĩnh vực">Lĩnh vực</button>
+      <button id="open-domains" class="link" type="button" title="Bảng điều khiển: lĩnh vực, dữ liệu, đường nhanh, thống kê">Lĩnh vực</button>
       <button id="spec-badge" class="spec-badge" type="button" title="Dữ liệu của lĩnh vực này (mở trình quản lý lĩnh vực)">AI chung</button>
       <span id="model-name" class="model-name"></span>
       <button id="ai-badge" class="ai-badge" type="button" title="Cấu hình AI (Strict)">AI: …</button>
       <button id="reset-topic" type="button" title="Quên các thông tin đã kể, hỏi việc khác">Chủ đề mới</button>
-      <a id="open-admin" class="admin-link" href="/s4/admin" title="Quản trị: dữ liệu Strict, dữ liệu người dùng, người dùng (dev)" hidden>Quản trị</a>
+      <a id="open-admin" class="admin-link" href="/s4/admin" title="Quản trị (dev): tài khoản người dùng, Thử tìm kiếm. Dữ liệu và thống kê ở nút Lĩnh vực" hidden>Quản trị</a>
       <button id="open-settings" class="icon" type="button" title="Cài đặt (dev)" aria-label="Cài đặt" hidden>⚙</button>
       <div id="cfg-panel" class="cfg-panel" hidden></div>
     </header>
@@ -82,23 +83,37 @@
     </footer>
   </div>
 </div>
-<div id="domain-modal" class="s4-modal" hidden>
-  <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="domain-title">
+<div id="domain-modal" class="s4-modal dash" hidden>
+  <div class="s4-dialog dash-dialog" role="dialog" aria-modal="true" aria-labelledby="domain-title">
     <header>
-      <h2 id="domain-title">Lĩnh vực</h2>
-      <button id="domain-close" class="icon" type="button" aria-label="Đóng">✕</button>
+      <h2 id="domain-title">Lĩnh vực &amp; dữ liệu</h2>
+      <div class="dash-head-tools">
+        <label id="dash-userview-lab" class="dash-userview" hidden title="Vẽ lại bảng điều khiển đúng như người dùng thường thấy (chỉ để xem; quyền thật vẫn do máy chủ kiểm)"><input type="checkbox" id="dash-userview"> Xem như người dùng</label>
+        <a id="dash-admin-link" class="link" href="/s4/admin" hidden title="Tài khoản người dùng và Thử tìm kiếm (chỉ dev)">Tài khoản &amp; Thử tìm kiếm ↗</a>
+        <button id="domain-close" class="icon" type="button" aria-label="Đóng">✕</button>
+      </div>
     </header>
-    <div class="body">
-      <p class="mem-help">Mỗi lĩnh vực có luật riêng. <b>Cứng</b>: không xoá được, dữ liệu dùng chung do dev tải. <b>Mềm</b>: kiểu Friendly, bạn thêm được. Guardrail là lời dặn gửi thẳng cho AI trước khi trả lời trong domain đó. Mỗi lĩnh vực có bộ dữ liệu riêng: bấm "Dữ liệu" ở dòng lĩnh vực để tải lên, bật/tắt, xem hoặc xoá; dữ liệu không hiện ở lĩnh vực khác.</p>
-      <ul id="domain-list" class="data-list"></ul>
-      <form id="domain-new" class="dom-form">
-        <h3>Thêm lĩnh vực</h3>
-        <input name="name" placeholder="Tên lĩnh vực (ví dụ: Du lịch)" maxlength="40" required>
-        <textarea name="guardrail" rows="2" maxlength="1000" placeholder="Guardrail (không bắt buộc): lời dặn cho AI trong lĩnh vực này"></textarea>
-        <label id="domain-new-hard" class="dom-check" hidden><input type="checkbox" name="hard"> Lĩnh vực cứng (chỉ dev)</label>
-        <button class="primary" type="submit">Thêm</button>
-      </form>
+    <div class="dash-body">
+      <nav class="dash-side" aria-label="Lĩnh vực"><ul id="domain-list" class="dash-list"></ul></nav>
+      <section class="dash-main">
+        <div class="dash-tabs" id="dash-tabs" role="tablist"></div>
+        <div id="dash-pane" class="dash-pane"></div>
+      </section>
     </div>
+  </div>
+</div>
+<div id="dash-rec-modal" class="s4-modal dash" hidden>
+  <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="dash-rec-title">
+    <header><h2 id="dash-rec-title">Thủ tục</h2><button class="icon close" type="button" aria-label="Đóng">✕</button></header>
+    <div class="body" id="dash-rec-body"></div>
+    <div class="set-note bad" id="dash-rec-err" hidden></div>
+    <footer id="dash-rec-foot"></footer>
+  </div>
+</div>
+<div id="dash-diff-modal" class="s4-modal dash" hidden>
+  <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="dash-diff-title">
+    <header><h2 id="dash-diff-title">So sánh</h2><button class="icon close" type="button" aria-label="Đóng">✕</button></header>
+    <div class="body" id="dash-diff-body"></div>
   </div>
 </div>
 <div id="memory" class="s4-modal" hidden>
@@ -182,6 +197,7 @@
 <script src="/s4/static/vendor/marked.umd.js?v=18.1.0"></script>
 <script src="/s4/static/vendor/purify.min.js?v=3.4.16"></script>
 <script src="/s4/static/js/inspector.js?v=dev2"></script>
-<script src="/s4/static/js/app.js?v=dev16"></script>
+<script src="/s4/static/js/dashboard.js?v=dev1"></script>
+<script src="/s4/static/js/app.js?v=dev17"></script>
 </body>
 </html>
