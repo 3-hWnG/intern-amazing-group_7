@@ -58,7 +58,8 @@ nên nhiều chỗ cũ không còn đúng. Khi tài liệu và code khác nhau, 
 | Kế hoạch nói | Sự thật (chi tiết: `SYSTEM4_ABI.md`) |
 |---|---|
 | "API chủ web đưa bị hư" (lời kể ban đầu) | Không hư: `/rag/query` chỉ nhận **POST**. Chạm hạn mức thì vẫn trả HTTP 201 với `responseKind = service_error`. Trợ lý đó trả lời sai số phòng ban |
-| §3.1 `store.py`: SQLite `runtime/abi/abi.db` | Dùng **`runtime/abi/data.json`**, đọc vào bộ nhớ: dữ liệu ~1,7 MB, ghi nguyên tử bằng một `os.replace`. Chưa cần SQL vì chưa làm text-to-SQL |
+| §3.1 `store.py`: SQLite `runtime/abi/abi.db` | Dùng tệp JSON đọc vào bộ nhớ (~1,7 MB, ghi nguyên tử). Từ 17/10 lưu **theo phiên bản**: `runtime/abi/versions/<id>/{raw,data}.json` + `versions.json`. Hai nguồn abi.com.vn + staging, mỗi nguồn giữ 2 bản mới nhất, cũ hơn tự xoá (`abi/versions.py`). Chưa cần SQL vì chưa làm text-to-SQL |
+| §3.1 `remote.py` (trợ lý RAG của web làm dự phòng), §3 "API công khai không cần khoá" | **Đã xoá `remote.py`** (17/10): leader cấm gọi AI của web vì tốn token của chủ web; `client.py` chặn cứng `/rag` và chỉ gọi GET. Từ 17/10 API dữ liệu **đòi khoá** (`Authorization: Bearer`, ⚙ `ABI_API_KEY`, chỉ lưu `runtime/settings.json`) |
 | §3.2 domain id 3 | Tìm theo **`engine = 'abi'`**: DB dev đã có id 3, 4 do người dùng tạo. Domain được tạo trong `db.init_db` khi chưa có |
 | §5 ngưỡng p90 ≤ 5 s | Câu code trả lời: ~0,1 s. Câu AI trả lời: **p90 7,5 s** (chưa đạt, phần lớn do AI viết dài) |
 | P5 text-to-SQL bảng rộng `abi_items` | **Chưa làm**: bộ đo 46 câu đạt 46/46 không cần |

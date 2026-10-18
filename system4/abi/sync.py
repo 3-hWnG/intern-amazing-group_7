@@ -1,10 +1,12 @@
-"""Đồng bộ dữ liệu web abi.com.vn về máy (lĩnh vực ABI).
+"""Đồng bộ dữ liệu abi.com.vn / staging.abi.com.vn về máy thành PHIÊN BẢN (lĩnh vực ABI).
 
-    python -m system3.system4.abi.sync [--no-index]
+    python -m system3.system4.abi.sync [--source prod|staging] [--no-index]
 
-Các bước: ① kéo mọi API công khai (docs/PLAN_ABI_LINH_VUC.md mục 1.3) -> ② kiểm cấu trúc (hỏng thì GIỮ bản cũ)
--> ③ chuẩn hoá (normalize.py) -> ④ ghi raw.json + data.json -> ⑤ dựng lại bộ dữ liệu tìm kiếm (index.py, cần Ollama).
-Chi tiết tin chỉ tải lại khi updatedAt đổi: lần đầu ~300 request (~2,5 phút ở 2 request/giây), các lần sau ~25 request.
+Các bước: ① kéo các endpoint chính thức (docs/SYSTEM4_ABI.md mục 8a; cần khoá API) -> ② kiểm cấu trúc (hỏng thì không tạo
+phiên bản) -> ③ chuẩn hoá -> ④ dữ liệu ĐỔI so với bản mới nhất của nguồn thì thành phiên bản mới, không đổi thì chỉ ghi "kiểm lúc"
+-> ⑤ dựng chỉ mục tìm kiếm cho phiên bản mới (dùng lại vector của đoạn không đổi; cần Ollama) -> ⑥ mỗi nguồn giữ 2 phiên bản
+mới nhất (versions.prune). Chi tiết tin chỉ tải lại khi updatedAt đổi: lần đầu ~300 request (~2,5 phút ở 2 request/giây),
+các lần sau ~28 request. Không gọi trợ lý AI của web.
 """
 from __future__ import annotations
 
@@ -18,8 +20,10 @@ import time
 import traceback
 from datetime import datetime
 
-from . import normalize, store
-from .client import AbiError, Client
+import hashlib
+
+from . import normalize, store, versions
+from .client import SOURCES, AbiError, Client
 
 log = logging.getLogger("system4.abi.sync")
 
@@ -29,7 +33,7 @@ PAGES = ("about", "functions", "business-incubation", "technology-incubation", "
          "cong-nghe-te-bao", "cong-nghe-cay-trong", "chuyen-doi-so", "doi-tac", "contact", "services", "products", "cooperation")
 LOCALE = "vi"
 
-_state = {"running": False, "step": "", "started": None}
+_state = {"running": False, "step": "", "started": None, "source": None}
 _run_lock = threading.Lock()
 
 
@@ -45,7 +49,8 @@ def _step(msg: str) -> None:
 def fetch(c: Client, prev: dict | None = None) -> dict:
     prev_details = (prev or {}).get("post_details") or {}
     prev_updated = {p.get("slug"): p.get("updatedAt") for p in (prev or {}).get("posts") or []}
-    raw: dict = {"fetched_at": datetime.now(normalize.VN).isoformat(timespec="seconds"), "locale": LOCALE}
+    raw: dict = {"fetched_at": datetime.now(normalize.VN).isoformat(timespec="seconds"), "locale": LOCALE,
+                 "source": c.source, "site_url": SOURCES[c.source]["site"]}
     _step("Thông tin trung tâm, cơ cấu tổ chức…")
     raw["settings"] = c.get("/site/settings", locale=LOCALE).get("data") or {}
     raw["organization"] = c.get("/organization", locale=LOCALE).get("data") or {}
@@ -143,38 +148,62 @@ def diff(old: dict | None, new: dict) -> dict:
     return out
 
 
-def run(client: Client | None = None, index: bool = True) -> dict:
-    """Một lần đồng bộ. Đang chạy rồi -> trả {"skipped": True}. Không ném lỗi: lỗi ghi vào kết quả + status.json."""
+def content_hash(data: dict) -> str:
+    """Mã băm nội dung (bỏ giờ đồng bộ): giống nhau = dữ liệu web không đổi -> không tạo phiên bản mới."""
+    body = {k: v for k, v in data.items() if k != "synced_at"}
+    return hashlib.sha256(json.dumps(body, ensure_ascii=False, sort_keys=True).encode()).hexdigest()[:16]
+
+
+def run(source: str = "prod", client: Client | None = None, index: bool = True) -> dict:
+    """Một lần đồng bộ một nguồn. Đang chạy rồi -> trả {"skipped": True}. Không ném lỗi: lỗi ghi vào kết quả + status.json."""
+    if source not in SOURCES:
+        return {"ok": False, "error": f"nguồn lạ: {source}"}
     if not _run_lock.acquire(blocking=False):
-        return {"skipped": True, "reason": "đang đồng bộ"}
+        return {"skipped": True, "reason": "đang đồng bộ", "source": source}
     t0 = time.perf_counter()
-    _state.update(running=True, started=datetime.now(normalize.VN).isoformat(timespec="seconds"), step="Bắt đầu…")
-    res: dict = {"started": _state["started"], "ok": False}
+    _state.update(running=True, started=datetime.now(normalize.VN).isoformat(timespec="seconds"), step="Bắt đầu…", source=source)
+    res: dict = {"started": _state["started"], "source": source, "ok": False}
     own = client is None
-    c = client or Client()
+    c = None
     try:
-        prev_raw, prev_data = store.read_json("raw.json"), store.data()
+        c = client or Client(source)
+        versions.ensure()
+        prev_v = (store.versions(source) or [None])[0]   # bản mới nhất của chính nguồn này
+        prev_raw = store.raw(prev_v["id"]) if prev_v else None
+        prev_data = store.version_data(prev_v["id"]) if prev_v else None
         raw = fetch(c, prev_raw)
         res["requests"] = c.requests
         res["privacy"] = raw.get("privacy")   # số email / SĐT riêng của cán bộ đã bỏ (thoả thuận với chủ web)
         bad = validate(raw, prev_data)
         if bad:
-            res["error"] = "Giữ dữ liệu cũ: " + "; ".join(bad)
+            res["error"] = "Không tạo phiên bản: " + "; ".join(bad)
             return res
         _step("Chuẩn hoá…")
         data = normalize.build(raw)
+        h = content_hash(data)
         res["diff"] = diff(prev_data, data)
-        store.write_json("raw.json", raw)
-        store.write_json("data.json", data)
         res.update(ok=True, synced_at=data["synced_at"])
-        if index:
-            _step("Dựng lại chỉ mục tìm kiếm…")
+        follow = False
+        if prev_v and prev_v.get("hash") == h:   # không đổi: giữ phiên bản cũ, chỉ ghi giờ kiểm
+            store.update_version(prev_v["id"], checked_at=data["synced_at"])
+            res.update(result="unchanged", version_id=prev_v["id"])
+            vid = prev_v["id"]
+        else:
+            follow = versions.follows_latest(source)   # xét TRƯỚC khi thêm bản mới
+            vid = store.add_version(source, raw, data, hash=h, requests=c.requests, privacy=raw.get("privacy"))
+            res.update(result="new", version_id=vid)
+        if index:   # dựng chỉ mục TRƯỚC khi chuyển sang bản mới: trong lúc dựng, câu tự do vẫn tìm trên bản đang dùng
+            _step("Tạo chỉ mục tìm kiếm…")
             from . import index as idx
             try:
-                res["index"] = idx.rebuild(data)
-            except Exception as e:   # thiếu Ollama…: dữ liệu cho code vẫn dùng được, câu tự do dùng chỉ mục cũ
+                res["index"] = idx.build(vid, store.version_data(vid), versions.label(source))
+            except Exception as e:   # thiếu Ollama / chưa có dev: câu do code trả lời vẫn dùng được; lịch nền dựng lại sau
                 log.exception("dựng chỉ mục ABI lỗi")
                 res["index_error"] = str(e)
+        if follow:
+            versions.activate(vid)
+        res["deleted_versions"] = versions.prune(source)   # mỗi nguồn giữ 2 phiên bản mới nhất
+        res["active"] = store.active_id()
         return res
     except Exception as e:
         log.exception("đồng bộ ABI lỗi")
@@ -183,11 +212,11 @@ def run(client: Client | None = None, index: bool = True) -> dict:
         return res
     finally:
         res["ms"] = int((time.perf_counter() - t0) * 1000)
-        res.setdefault("requests", c.requests)
-        if own:
+        res.setdefault("requests", c.requests if c else 0)
+        if own and c:
             c.close()
         store.add_run({k: v for k, v in res.items() if k != "trace"})
-        _state.update(running=False, step="")
+        _state.update(running=False, step="", source=None)
         _run_lock.release()
 
 
@@ -197,14 +226,19 @@ def main(argv: list[str] | None = None) -> int:
             s.reconfigure(encoding="utf-8")
         except Exception:
             pass
-    ap = argparse.ArgumentParser(description="Đồng bộ dữ liệu abi.com.vn")
-    ap.add_argument("--no-index", action="store_true", help="không dựng chỉ mục tìm kiếm (không cần Ollama)")
+    ap = argparse.ArgumentParser(description="Đồng bộ dữ liệu abi.com.vn / staging thành phiên bản")
+    ap.add_argument("--source", choices=sorted(SOURCES), default="prod", help="prod = abi.com.vn (mặc định), staging = staging.abi.com.vn")
+    ap.add_argument("--no-index", action="store_true", help="không dựng chỉ mục tìm kiếm (không cần Ollama; web tự dựng sau)")
     a = ap.parse_args(argv)
     logging.basicConfig(level=logging.INFO, format="%(asctime)s %(message)s")
-    if not a.no_index:
-        from ..server import db
-        db.init_db()
-    r = run(index=not a.no_index)
+    from ..server import db
+    db.init_db()   # versions.ensure / prune cần bảng datasets (chỉ mục cũ)
+    from .client import api_key
+    if not api_key():   # cài đặt lần đầu chưa có khoá: không phải lỗi, chỉ nhắc
+        print("NOTE: chưa có khoá API của abi.com.vn (biến môi trường ABI_API_KEY hoặc ⚙ Cài đặt → Lĩnh vực ABI → Khoá API). "
+              "Bỏ qua bước tải dữ liệu; điền khoá rồi bấm \"Đồng bộ abi.com.vn\" trong web.")
+        return 0
+    r = run(a.source, index=not a.no_index)
     print({k: v for k, v in r.items() if k != "trace"})
     return 0 if r.get("ok") else 1
 

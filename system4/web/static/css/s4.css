@@ -199,6 +199,8 @@ body[data-mode="strict"] #attach,body[data-mode="strict"] #spec-badge{display:no
 .abi-box{display:grid;gap:6px;padding:8px;border-radius:8px;background:var(--panel-2)}
 .abi-line{font-size:13px;color:var(--ink-2)}
 .abi-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.abi-pick-lab{display:flex;align-items:center;gap:8px;font-size:13px;flex-wrap:wrap}
+.abi-pick{max-width:100%}
 .dom-form{display:grid;gap:8px;margin-top:14px}
 .dom-form h3{margin:0;font-size:14px}
 .dom-x{display:inline-block;margin-left:6px;padding:0 3px;border-radius:50%;font-size:14px;line-height:15px;opacity:.45}

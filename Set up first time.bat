@@ -60,11 +60,13 @@ cd /d "%PYROOT%"
 rem System 4: if the admin page applied another version of the procedures data, rebuild from that version again.
 "%REPO%\.venv\Scripts\python.exe" -m system3.system4.server.procs reapply || goto :fail
 
-echo [9/10] System 4: downloading a snapshot of abi.com.vn for the ABI domain (about 3 minutes the first time, seconds later)...
-rem Only public read-only APIs of abi.com.vn, 2 requests/second. Re-running setup only downloads what changed.
-rem The search index is built by the web itself after the first dev account exists (or press "Dong bo ngay" in the domain manager).
-rem No internet / site down: setup continues; the web can download the data later with that button.
-"%REPO%\.venv\Scripts\python.exe" -m system3.system4.abi.sync --no-index || echo WARNING: could not download abi.com.vn data now. Use "Dong bo ngay" in the web later.
+echo [9/10] System 4: downloading abi.com.vn data for the ABI domain (about 3 minutes the first time, seconds later)...
+rem Official read-only APIs approved by the site owner, 2 requests/second, never their AI assistant. Saved as version 1;
+rem re-running setup only downloads what changed (a new version only if the data changed; 2 newest versions kept).
+rem Needs the site's API key: either "set ABI_API_KEY=<key>" before this script, or the key already saved in the web settings
+rem (Settings - Linh vuc ABI - Khoa API). No key: this step only prints a note; enter the key later and press "Dong bo abi.com.vn"
+rem in the domain manager. The key is never stored in git. The search index is built by the web after the first dev account exists.
+"%REPO%\.venv\Scripts\python.exe" -m system3.system4.abi.sync --source prod --no-index || echo WARNING: could not download abi.com.vn data now. Use "Dong bo abi.com.vn" in the web later.
 
 echo [10/10] System 4: checking that the GPU is usable for the reranker...
 "%REPO%\.venv\Scripts\python.exe" "%REPO%\system4\setup_models.py" check-gpu

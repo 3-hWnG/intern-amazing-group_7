@@ -15,7 +15,6 @@ from datetime import datetime
 
 from ..server.ground import fold
 from . import normalize
-from .client import SITE_URL
 
 VN = normalize.VN
 WEEKDAYS = ("Thứ Hai", "Thứ Ba", "Thứ Tư", "Thứ Năm", "Thứ Sáu", "Thứ Bảy", "Chủ Nhật")
@@ -27,8 +26,9 @@ def now_vn() -> datetime:
 
 
 # Thẻ dữ kiện gửi cho AI (khi code không trả lời trọn): tên + link của CẢ thẻ (thẻ sự kiện liệt kê mọi sự kiện -> trang danh sách)
-CARD = {"events": ("Danh sách sự kiện trên abi.com.vn (trạng thái tính theo hôm nay)", SITE_URL + "/su-kien"),
-        "org": ("Cơ cấu tổ chức Trung tâm", normalize.URL_ORG)}
+# card_url là đường dẫn "/..." — turn.py ghép với địa chỉ web của nguồn dữ liệu đang dùng (bản thật / staging)
+CARD = {"events": ("Danh sách sự kiện trên web (trạng thái tính theo hôm nay)", "/su-kien"),
+        "org": ("Cơ cấu tổ chức Trung tâm", normalize.P_ORG)}
 
 
 def fact(intent: str, title: str, text: str, answer: str | None, sources: list[dict], **extra) -> dict:
@@ -151,7 +151,7 @@ def events_overview(data: dict, now: datetime, which: str = "upcoming", month: t
         title = f"Sự kiện trong tháng {m}/{y}{at}"
         if not sel:
             ans = f"Trên abi.com.vn không có sự kiện nào diễn ra trong tháng {m}/{y}{at}.\n\n{foot}"
-            return fact("events_month", title, text, ans, [_src("Sự kiện", SITE_URL + "/su-kien")])
+            return fact("events_month", title, text, ans, [_src("Sự kiện", normalize.link(data, "/su-kien"))])
         ans = "\n".join([f"**{title}**: {len(sel)} sự kiện", *_event_lines(sel, 1, now, with_status=True), "", foot])
         return fact("events_month", title, text, ans, [_src(e["title"], e["url"]) for e in sel])
     if which == "past":
@@ -167,7 +167,7 @@ def events_overview(data: dict, now: datetime, which: str = "upcoming", month: t
         title = "Số sự kiện" + at
         ans = (f"Trên abi.com.vn hiện có **{len(evs)} sự kiện{at}** [1]: {len(by['upcoming'])} sắp diễn ra, {len(by['ongoing'])} đang diễn ra, "
                f"{len(by['past'])} đã diễn ra (tính đến {fmt_day(now)}).\n\n{foot}")
-        return fact("events_count", title, text, ans, [_src("Sự kiện", SITE_URL + "/su-kien")])
+        return fact("events_count", title, text, ans, [_src("Sự kiện", normalize.link(data, "/su-kien"))])
     # sắp diễn ra (kèm đang diễn ra)
     title = "Sự kiện sắp diễn ra" + at
     parts, sources, n = [], [], 1
@@ -228,7 +228,7 @@ def org_departments(data: dict) -> dict:
     lines += [f"{i}. {x['name']} — {x['n_people']} cán bộ" for i, x in enumerate(rooms, 1)]
     lines += [f"- {x['name']}: {x['n_people']} người" for x in lead]
     lines += ["", updated_line(data)]
-    return fact("org_departments", "Cơ cấu tổ chức", org_card(data), "\n".join(lines), [_src("Cơ cấu tổ chức", normalize.URL_ORG)])
+    return fact("org_departments", "Cơ cấu tổ chức", org_card(data), "\n".join(lines), [_src("Cơ cấu tổ chức", normalize.link(data, normalize.P_ORG))])
 
 
 def org_people(data: dict) -> dict:
@@ -236,16 +236,16 @@ def org_people(data: dict) -> dict:
     people = data.get("people") or []
     parts = ", ".join(f"{x['name']} {x['n_people']}" for x in lead + rooms)
     ans = f"Trung tâm có **{len(people)} cán bộ** [1], gồm: {parts}.\n\n{updated_line(data)}"
-    return fact("org_people", "Số cán bộ", org_card(data), ans, [_src("Cơ cấu tổ chức", normalize.URL_ORG)])
+    return fact("org_people", "Số cán bộ", org_card(data), ans, [_src("Cơ cấu tổ chức", normalize.link(data, normalize.P_ORG))])
 
 
 def org_leaders(data: dict) -> dict:
     people = [p for p in data.get("people") or [] if p.get("leadership")]
     people.sort(key=lambda p: p["title_order"])
     if not people:
-        return fact("org_leaders", "Ban Giám đốc", org_card(data), None, [_src("Cơ cấu tổ chức", normalize.URL_ORG)])
+        return fact("org_leaders", "Ban Giám đốc", org_card(data), None, [_src("Cơ cấu tổ chức", normalize.link(data, normalize.P_ORG))])
     lines = ["**Ban Giám đốc** Trung tâm [1]:"] + [f"- {p['title']}: {_person(p)}" for p in people] + ["", updated_line(data)]
-    return fact("org_leaders", "Ban Giám đốc", org_card(data), "\n".join(lines), [_src("Cơ cấu tổ chức", normalize.URL_ORG)])
+    return fact("org_leaders", "Ban Giám đốc", org_card(data), "\n".join(lines), [_src("Cơ cấu tổ chức", normalize.link(data, normalize.P_ORG))])
 
 
 # Thoả thuận với chủ web: KHÔNG nêu email / điện thoại riêng của cán bộ (sync.py đã bỏ khi tải về); chỉ email của đơn vị,
@@ -301,7 +301,7 @@ def contact(data: dict) -> dict:
     rows = [(k, v) for k, v in rows if v]
     text = "\n".join([f"Tên: {c.get('name')}"] + [f"{k}: {v}" for k, v in rows])
     ans = "\n".join([f"**{c.get('name') or 'Trung tâm'}** [1]"] + [f"- {k}: {v}" for k, v in rows] + ["", updated_line(data)])
-    return fact("contact", "Thông tin liên hệ", text, ans, [_src("Liên hệ", c.get("url") or normalize.URL_CONTACT)])
+    return fact("contact", "Thông tin liên hệ", text, ans, [_src("Liên hệ", c.get("url") or normalize.link(data, normalize.P_CONTACT))])
 
 
 # ------------------------------------------------------------- chương trình, đối tác, tin
@@ -319,7 +319,7 @@ def programs(data: dict) -> dict:
         lines.append(f"\n…và {len(progs) - len(shown)} chương trình khác, xem đầy đủ tại trang Chương trình ươm tạo [1].")
     lines += ["", updated_line(data)]
     return fact("programs", "Chương trình hỗ trợ", text, "\n".join(lines),
-                [_src("Chương trình ươm tạo", SITE_URL + "/chuong-trinh-uom-tao")] + [_src(p["title"], p["url"]) for p in shown])
+                [_src("Chương trình ươm tạo", normalize.link(data, "/chuong-trinh-uom-tao"))] + [_src(p["title"], p["url"]) for p in shown])
 
 
 INCUBATED = "Doanh nghiệp tham gia ươm tạo"
@@ -345,7 +345,7 @@ def catalog(data: dict, kind: str) -> dict:
     if len(sel) > len(shown):
         lines.append(f"…và {len(sel) - len(shown)} {label} khác (xem đầy đủ tại abi.com.vn{page} [1]).")
     lines += ["", updated_line(data)]
-    return fact("catalog_" + kind, label.capitalize(), text, "\n".join(lines), [_src(label.capitalize(), SITE_URL + page)])
+    return fact("catalog_" + kind, label.capitalize(), text, "\n".join(lines), [_src(label.capitalize(), normalize.link(data, page))])
 
 
 def news_latest(data: dict, n: int = 6) -> dict:

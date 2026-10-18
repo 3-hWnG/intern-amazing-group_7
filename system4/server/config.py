@@ -93,8 +93,7 @@ STRICT_BUSINESS_FACTS = True
 JSON_PLAN_FIRST = True
 ABI_SYNC_HOURS = 6
 ABI_CODE_ANSWER = True
-ABI_REMOTE_RAG = False
-ABI_REMOTE_MAX_PER_5MIN = 3
+ABI_API_KEY = ''
 ABI_BOT_CONTACT = ''
 # ==== HẾT MẶC ĐỊNH ====
 
@@ -214,16 +213,15 @@ SETTINGS = [
          help="Bật: đặt tên trường JSON a_plan, c_answer… để kế hoạch ẩn luôn được viết TRƯỚC câu trả lời (Ollama 0.40 không giữ thứ tự "
               "trường; khi tắt, model hay viết câu trả lời trước nên kế hoạch không có tác dụng). Chữ đầu hiện chậm hơn khoảng 0,5-0,8 giây."),
     dict(key="ABI_SYNC_HOURS", type="int", group="Lĩnh vực ABI (abi.com.vn)", label="Tự đồng bộ abi.com.vn mỗi (giờ)", min=0, max=168,
-         help="Kéo lại dữ liệu từ các API chính thức chủ web đã cho phép. 0 = tắt (vẫn bấm \"Đồng bộ ngay\" được). "
-              "Thoả thuận với chủ web: quét 6 tiếng một lần, nên đặt 1–5 vẫn tính là 6. Lần đầu khoảng 3 phút, các lần sau chỉ tải phần đổi."),
+         help="Kéo lại dữ liệu của abi.com.vn (bản thật) từ các API chính thức chủ web đã cho phép; staging chỉ đồng bộ khi bấm nút. "
+              "0 = tắt (vẫn bấm \"Đồng bộ\" được). Thoả thuận với chủ web: quét 6 tiếng một lần, nên đặt 1–5 vẫn tính là 6. "
+              "Dữ liệu đổi thì thành phiên bản mới; mỗi nguồn giữ 2 phiên bản mới nhất."),
     dict(key="ABI_CODE_ANSWER", type="bool", group="Lĩnh vực ABI (abi.com.vn)", label="Trả lời bằng code khi hiểu trọn câu hỏi",
          help="Bật: câu đếm / liệt kê / theo thời gian (sự kiện sắp diễn ra, số phòng ban, số cán bộ, liên hệ…) do code tính và trả lời, "
               "không gọi AI, không thể bịa. Tắt: code vẫn tính, AI diễn đạt lại."),
-    dict(key="ABI_REMOTE_RAG", type="bool", group="Lĩnh vực ABI (abi.com.vn)", label="Hỏi thêm trợ lý của web khi không tìm thấy",
-         help="Bật: dữ liệu đồng bộ không có đoạn nào khớp -> hỏi trợ lý RAG của abi.com.vn (POST /rag/query). Trợ lý đó bị giới hạn "
-              "khoảng 4 câu / vài phút và có lúc trả lời sai (vd. số phòng ban), nên mặc định tắt."),
-    dict(key="ABI_REMOTE_MAX_PER_5MIN", type="int", group="Lĩnh vực ABI (abi.com.vn)", label="Trợ lý của web: tối đa số câu / 5 phút",
-         min=1, max=30, help="Vượt thì bỏ qua bước hỏi trợ lý web. Gặp báo \"chạm hạn mức\" thì tự nghỉ 5 phút."),
+    dict(key="ABI_API_KEY", type="str", optional=True, secret=True, group="Lĩnh vực ABI (abi.com.vn)", label="Khoá API của abi.com.vn",
+         help="Chủ web cấp (gửi bằng header Authorization: Bearer, dùng cho cả abi.com.vn và staging). Chỉ lưu ở runtime/settings.json "
+              "trên máy này, không bao giờ ghi vào config.py / git; biến môi trường ABI_API_KEY (nếu có) được ưu tiên."),
     dict(key="ABI_BOT_CONTACT", type="str", optional=True, group="Lĩnh vực ABI (abi.com.vn)", label="Liên hệ của nhóm gửi kèm khi gọi API",
          help="Chủ web yêu cầu User-Agent định danh: \"AHBI-Assistant-Bot/1.0 (+liên hệ)\". Điền email hoặc số điện thoại của nhóm; "
               "để trống thì dùng link GitHub của dự án. Email / điện thoại riêng của cán bộ trung tâm KHÔNG bao giờ được hiển thị "

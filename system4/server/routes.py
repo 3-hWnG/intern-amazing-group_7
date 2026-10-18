@@ -350,6 +350,8 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
             db.update_dataset(ds_id, locked=1 if body.locked else 0)
         if body.name is not None and body.name.strip():
             db.update_dataset(ds_id, name=body.name.strip()[:120])
+        if body.active is not None and datasets.synced(ds):   # lĩnh vực ABI: bật đúng phiên bản bằng nút chọn phiên bản
+            raise HTTPException(422, "Bộ dữ liệu ABI bật / tắt theo phiên bản: chọn phiên bản ở Quản lý lĩnh vực hoặc Quản trị → Dữ liệu ABI")
         if body.active is not None:
             if body.active and not ds["active"]:
                 err = datasets.can_activate(ds["user_id"], ds)
@@ -361,6 +363,8 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
     @r.delete("/datasets/{ds_id}")
     def delete_dataset(ds_id: int, request: Request):
         ds = own_dataset(request, ds_id)
+        if datasets.synced(ds):
+            raise HTTPException(422, "Bộ dữ liệu này thuộc một phiên bản ABI: xoá phiên bản ở Quản trị → Dữ liệu ABI")
         datasets.delete(ds)
         return {"ok": True, "active": datasets.active_summary(ds["user_id"], ds["domain_id"], "dev")}
 

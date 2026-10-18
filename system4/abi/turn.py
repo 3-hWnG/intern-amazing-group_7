@@ -1,20 +1,21 @@
 """Một lượt hỏi trong lĩnh vực ABI — server/chat.py gọi prepare() thay cho bước "tìm trong bộ dữ liệu" của Friendly.
 
+Dữ liệu = phiên bản ĐANG DÙNG (abi.com.vn hoặc staging, chọn trong Quản lý lĩnh vực / Quản trị → Dữ liệu ABI).
 Thứ tự:
   1. router nhận ý định bằng code. Hiểu trọn câu hỏi (plain) + ⚙ ABI_CODE_ANSWER -> trả lời bằng code, không gọi AI.
-  2. còn lại: thẻ dữ kiện của ý định (nếu có) là đoạn [1], cộng các đoạn tìm được trong bộ dữ liệu ABI -> AI trả lời (Chuyên gia).
-  3. không tìm được gì và ⚙ ABI_REMOTE_RAG bật -> hỏi trợ lý RAG của chủ web (có giới hạn tần suất), đưa kết quả cho AI diễn đạt.
+  2. còn lại: thẻ dữ kiện của ý định (nếu có) là đoạn [1], cộng các đoạn tìm được trong chỉ mục của phiên bản đang dùng
+     -> AI (model trên máy) trả lời (Chuyên gia). KHÔNG gọi trợ lý AI của web (tốn token của chủ web; leader cấm 17/10/2026).
 """
 from __future__ import annotations
 
 import time
 
 from ..server import search, settings
-from . import remote, router, store, tools
+from . import normalize, router, store, tools
 
 CARD_MAX = 6000   # ký tự (~2.000 token): thẻ dữ kiện + vài đoạn tìm được + lịch sử vẫn vừa ngữ cảnh 8192 token
-NOT_SYNCED = ("Dữ liệu abi.com.vn chưa được đồng bộ về máy nên chưa trả lời được. Dev bấm \"Đồng bộ ngay\" ở dòng lĩnh vực ABI "
-              "trong Quản lý lĩnh vực (mất khoảng 3 phút), rồi hỏi lại.")
+NOT_SYNCED = ("Dữ liệu abi.com.vn chưa được đồng bộ về máy nên chưa trả lời được. Dev bấm \"Đồng bộ abi.com.vn\" ở dòng lĩnh vực ABI "
+              "trong Quản lý lĩnh vực (cần khoá API ở ⚙; lần đầu khoảng 3 phút), rồi hỏi lại.")
 
 
 def search_text(squery: str, data: dict) -> str:
@@ -34,7 +35,7 @@ def prepare(user_id: int, text: str, squery: str, dataset_ids: list[int], histor
     """Trả {"answer": câu trả lời bằng code hoặc None, "sources", "evidence", "info", "extra": lời dặn thêm cho AI}."""
     t0 = time.perf_counter()
     data, now = store.data(), tools.now_vn()
-    info: dict = {"abi": {"synced_at": (data or {}).get("synced_at")}}
+    info: dict = {"abi": {"synced_at": (data or {}).get("synced_at"), "version": store.active_id(), "source": (data or {}).get("source")}}
     if not data:
         info["abi"]["error"] = "chưa đồng bộ"
         return {"answer": NOT_SYNCED, "sources": [], "evidence": [], "info": info, "extra": []}
@@ -55,8 +56,11 @@ def prepare(user_id: int, text: str, squery: str, dataset_ids: list[int], histor
     evidence = []
     if r:
         f = r["fact"]
-        evidence.append({"id": None, "title": f["card_title"], "dataset": "abi.com.vn", "text": f["text"][:CARD_MAX], "score": None,
-                         "full": True, "url": f["card_url"]})
+        url = f["card_url"]
+        if url and url.startswith("/"):   # đường dẫn trang danh sách -> link trên đúng nguồn (bản thật / staging)
+            url = normalize.link(data, url)
+        evidence.append({"id": None, "title": f["card_title"], "dataset": data.get("site_url", "abi.com.vn").split("//")[-1],
+                         "text": f["text"][:CARD_MAX], "score": None, "full": True, "url": url})
     if dataset_ids:
         found, sinfo = search.search(user_id, search_text(squery, data), dataset_ids)
         for e in found:
@@ -65,11 +69,5 @@ def prepare(user_id: int, text: str, squery: str, dataset_ids: list[int], histor
         info.update(sinfo)
     else:
         info["abi"]["index"] = "chưa có chỉ mục tìm kiếm (đồng bộ chưa dựng xong hoặc thiếu Ollama)"
-    if not evidence and settings.get("ABI_REMOTE_RAG"):
-        blocked = {p["url"] for p in data.get("posts") or [] if p.get("excluded")}
-        rem = remote.ask(text, history=history, blocked_urls=blocked)
-        info["abi"]["remote"] = {k: v for k, v in rem.items() if k != "answer"}
-        if rem.get("ok"):
-            evidence.append(remote.evidence(rem))
     info["abi"]["ms"] = int((time.perf_counter() - t0) * 1000)
     return {"answer": None, "sources": [], "evidence": evidence, "info": info, "extra": extra}

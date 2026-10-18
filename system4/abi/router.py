@@ -98,7 +98,10 @@ def match_events(text: str, data: dict) -> list[dict]:
     grams: dict[str, set[str]] = {}
     for e in evs:
         ws = words(e["title"])
-        g = {w for w in ws if w not in EV_COMMON and len(w) >= 4 and not w.isdigit()}
+        # một từ đơn chỉ là "tên riêng" khi KHÔNG có dấu tiếng Việt (greco, agroviet, foodtech…): âm tiết tiếng Việt như "diễn"
+        # (trong "Trình diễn…", sự kiện staging 17/10) trùng "sắp diễn ra" trong câu hỏi; cặp từ thì vẫn nhận như cũ
+        plain = {w for w in re.findall(r"[a-z0-9]+", (e["title"] or "").lower())}
+        g = {w for w in ws if w in plain and w not in EV_COMMON and len(w) >= 4 and not w.isdigit()}
         g |= {f"{a} {b}" for a, b in zip(ws, ws[1:]) if not (a in EV_COMMON and b in EV_COMMON) and not (a.isdigit() or b.isdigit())}
         grams[e["id"]] = g
     count: dict[str, int] = {}

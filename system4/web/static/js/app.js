@@ -167,50 +167,62 @@
       ul.appendChild(li);
     });
   }
-  /* ---- lĩnh vực ABI (dev): đồng bộ abi.com.vn bằng tay + công tắc hỏi trợ lý của web (system4/abi/scheduler.py) ---- */
+  /* ---- lĩnh vực ABI (dev): phiên bản dữ liệu abi.com.vn / staging — chọn bản đang dùng (tức thì), đồng bộ bằng tay
+     (system4/abi/versions.py, scheduler.py). Mỗi nguồn giữ 2 phiên bản mới nhất, cũ hơn tự xoá. ---- */
   let abiTimer = null;
+  const abiWhen = (s) => { if (!s) return "?"; const t = new Date(s); return isNaN(t) ? s : t.toLocaleString("vi-VN", { hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit" }); };
   function abiPanel() {
-    const box = el("div", "abi-box"), line = el("div", "abi-line", "Đang xem trạng thái đồng bộ…");
-    const btn = el("button", "primary", "Đồng bộ ngay"); btn.type = "button";
-    btn.title = "Kéo lại dữ liệu từ abi.com.vn: chỉ tải phần đổi (thường dưới 1 phút), lần đầu khoảng 3 phút";
-    const lab = el("label", "dom-check"), cb = el("input"); cb.type = "checkbox";
-    lab.title = "Khi dữ liệu đồng bộ không có đoạn nào khớp, hỏi trợ lý RAG của abi.com.vn. Trợ lý đó giới hạn khoảng 3 câu liên tiếp, có lúc trả lời sai.";
-    lab.append(cb, "Hỏi thêm trợ lý của web khi dữ liệu không có (dự phòng)");
-    const row = el("div", "abi-row"); row.append(btn, lab);
-    box.append(line, row);
-    const when = (s) => { if (!s) return "chưa đồng bộ"; const t = new Date(s); return isNaN(t) ? s : t.toLocaleString("vi-VN"); };
+    const box = el("div", "abi-box"), line = el("div", "abi-line", "Đang xem phiên bản dữ liệu…");
+    const pick = el("select", "abi-pick"); pick.title = "Phiên bản dữ liệu lĩnh vực ABI đang dùng (đổi là dùng ngay)";
+    const row = el("div", "abi-row"), btns = {};
+    const lab = el("label", "abi-pick-lab"); lab.append("Dữ liệu đang dùng: ", pick);
+    row.appendChild(lab);
+    box.append(row, line);
+    const brow = el("div", "abi-row"); box.appendChild(brow);
     const show = (r) => {
-      const st = r.state || {}, ds = (r.datasets || [])[0], last = (r.runs || [])[0], busy = !!st.running || !!(ds && ds.status !== "ready");
+      const st = r.state || {}, vs = r.versions || [];
+      const building = vs.find((v) => v.dataset && v.dataset.status !== "ready");
+      const busy = !!st.running || !!building;
+      pick.innerHTML = "";
+      if (!vs.length) { const o = el("option", "", "chưa có phiên bản nào"); o.value = ""; pick.appendChild(o); }
+      vs.forEach((v) => {
+        const o = el("option", "", `${v.label} · phiên bản ${v.id} · ${abiWhen(v.synced_at)}` + (v.newest ? " (mới nhất)" : "") + (v.dataset ? "" : " · chưa có chỉ mục"));
+        o.value = String(v.id); o.selected = v.active; pick.appendChild(o);
+      });
+      pick.disabled = busy || vs.length < 2;
+      if (!brow.firstChild) (r.sources || []).forEach((src) => {
+        const b = el("button", src.auto ? "primary" : "btn-ghost", "Đồng bộ " + src.label); b.type = "button";
+        b.title = (src.auto ? "Tự đồng bộ theo lịch; bấm để " : "Staging chỉ đồng bộ khi bấm; bấm để ") + "tải lại ngay (chỉ tải phần đổi). Dữ liệu đổi thì thành phiên bản mới, mỗi nguồn giữ 2 bản mới nhất.";
+        b.onclick = async () => {
+          Object.values(btns).forEach((x) => { x.disabled = true; }); line.textContent = "Đang bắt đầu đồng bộ " + src.label + "…";
+          try {
+            const res = await api("/s4/abi/sync", { source: src.id });
+            show(res);
+            if (!res.started && res.reason) line.textContent = res.reason;   // vừa đồng bộ (thoả thuận tần suất) / chưa có khoá / đang chạy
+          } catch (e) { line.textContent = "Lỗi: " + e.message; Object.values(btns).forEach((x) => { x.disabled = false; }); }
+        };
+        btns[src.id] = b; brow.appendChild(b);
+      });
+      Object.values(btns).forEach((x) => { x.disabled = busy; });
+      const act = vs.find((v) => v.active), last = (r.runs || [])[0];
       let txt;
-      if (st.running) txt = "Đang đồng bộ: " + (st.step || "…");
-      else if (busy) txt = "Đang tạo chỉ mục tìm kiếm… " + (ds.progress || 0) + "%";
+      if (st.running) txt = "Đang đồng bộ " + ((r.sources || []).find((x) => x.id === st.source) || {}).label + ": " + (st.step || "…");
+      else if (building) txt = "Đang tạo chỉ mục tìm kiếm cho phiên bản " + building.id + "… " + (building.dataset.progress || 0) + "%";
       else {
-        txt = "Đồng bộ lần cuối: " + when(r.synced_at);
-        if (last && !last.ok && !last.skipped) txt += " · lần gần nhất lỗi: " + (last.error || "");
-        else if (last && last.diff) {
-          const n = Object.values(last.diff).reduce((a, v) => a + v.added + v.removed + v.changed, 0);
-          txt += n ? " · " + n + " mục thay đổi" : " · không có gì mới";
-        }
-        if (last && last.index_error) txt += " · chỉ mục lỗi: " + last.index_error;
-        else if (!ds) txt += " · chưa có chỉ mục tìm kiếm (cần Ollama)";
+        txt = act ? `Đang dùng phiên bản ${act.id} (${act.label}, đồng bộ ${abiWhen(act.synced_at)}).` : "Chưa có dữ liệu: bấm Đồng bộ.";
+        if (last) txt += last.ok ? (last.result === "unchanged" ? " Lần đồng bộ cuối: không có gì mới." : " Lần đồng bộ cuối: có phiên bản mới.")
+          : last.error ? " Lần đồng bộ cuối lỗi: " + last.error : "";
+        if (r.api_key === "chưa có") txt += " Chưa có khoá API: điền ở ⚙ → Lĩnh vực ABI.";
       }
       line.textContent = txt;
-      btn.disabled = busy;
-      cb.checked = !!(r.settings || {}).ABI_REMOTE_RAG;
       clearTimeout(abiTimer);
       if (busy && !$("domain-modal").hidden) abiTimer = setTimeout(load, 2000);   // đóng cửa sổ thì thôi hỏi
     };
     const load = async () => { try { show(await api("/s4/abi/status")); } catch (e) { line.textContent = "Lỗi: " + e.message; } };
-    btn.onclick = async () => {
-      btn.disabled = true; line.textContent = "Đang bắt đầu đồng bộ…";
-      try {
-        const r = await api("/s4/abi/sync", {});
-        show(r);
-        if (!r.started && r.reason) line.textContent = r.reason;   // vừa đồng bộ (thoả thuận tần suất với chủ web) / đang chạy
-      } catch (e) { line.textContent = "Lỗi: " + e.message; btn.disabled = false; }
-    };
-    cb.onchange = async () => {
-      try { await api("/s4/settings", { values: { ABI_REMOTE_RAG: cb.checked } }); } catch (e) { alert(e.message); cb.checked = !cb.checked; }
+    pick.onchange = async () => {
+      if (!pick.value) return;
+      pick.disabled = true;
+      try { show(await api("/s4/abi/versions/" + pick.value + "/activate", {})); } catch (e) { line.textContent = "Lỗi: " + e.message; load(); }
     };
     load();
     return box;
@@ -996,6 +1008,9 @@
       s.choices.forEach((c) => { const o = el("option", "", c); o.value = c; o.selected = c === s.value; inp.appendChild(o); });
     } else if (s.type === "text") {
       inp = el("textarea"); inp.value = s.value;
+    } else if (s.secret) {   // khoá bí mật: server không gửi giá trị; để trống = giữ nguyên khoá đã lưu
+      inp = el("input"); inp.type = "password"; inp.value = ""; inp.autocomplete = "new-password";
+      inp.placeholder = s.is_set ? "đã lưu — để trống để giữ nguyên" : "chưa có";
     } else {
       inp = el("input"); inp.type = s.type === "int" || s.type === "float" ? "number" : "text"; inp.value = s.value;
       if (s.type === "int") inp.step = "1";
@@ -1035,6 +1050,7 @@
     const out = {};
     setBody.querySelectorAll("input[data-key],select[data-key],textarea[data-key]").forEach((i) => {
       const s = specs.find((x) => x.key === i.dataset.key);
+      if (s.secret && !i.value) return;   // khoá bí mật để trống: không gửi (giữ khoá đã lưu)
       let v = s.type === "bool" ? i.checked : i.value;
       if (s.type === "int" || s.type === "float") v = i.value === "" ? NaN : Number(i.value);
       out[s.key] = v;
@@ -1064,13 +1080,13 @@
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") { setModal.hidden = true; memModal.hidden = true; } });
   $("settings-save").onclick = () => {
     const vals = formValues(), changed = {};
-    specs.forEach((s) => { if (!same(vals[s.key], s.value)) changed[s.key] = vals[s.key]; });
+    specs.forEach((s) => { if (vals[s.key] !== undefined && !same(vals[s.key], s.value)) changed[s.key] = vals[s.key]; });   // undefined = khoá bí mật để trống
     if (!Object.keys(changed).length) { note("Không có thay đổi nào.", true); return; }
     settingsCall("/s4/settings", { values: changed }, "Đã lưu. Tải lại trang để áp dụng.");
   };
   $("settings-default").onclick = () => {
     const vals = formValues(), nd = {};
-    specs.forEach((s) => { if (!same(vals[s.key], s.default)) nd[s.key] = vals[s.key]; });
+    specs.forEach((s) => { if (vals[s.key] !== undefined && !s.secret && !same(vals[s.key], s.default)) nd[s.key] = vals[s.key]; });   // khoá bí mật không vào config.py
     if (!Object.keys(nd).length) { note("Các giá trị đang hiện đã là mặc định.", true); return; }
     if (!confirm(`Ghi ${Object.keys(nd).length} giá trị đang hiện vào config.py làm mặc định mới? (config.py cũ được giữ ở config.py.bak)`)) return;
     settingsCall("/s4/settings/default", { values: nd }, "Đã ghi vào config.py. Tải lại trang để áp dụng.");

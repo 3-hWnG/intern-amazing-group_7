@@ -274,48 +274,70 @@
       t.appendChild(tr);
     });
   }
-  /* ================= Tab: Dữ liệu ABI (abi.com.vn) ================= */
+  /* ================= Tab: Dữ liệu ABI — phiên bản abi.com.vn / staging ================= */
   const ABI_LABEL = { departments: "Phòng ban / đơn vị", people: "Cán bộ", events: "Sự kiện", programs: "Chương trình hỗ trợ",
     catalog: "Đối tác, sản phẩm, dịch vụ", posts: "Tin tức, tài liệu", pages: "Trang giới thiệu" };
-  const fmtTime = (s) => { if (!s) return "chưa đồng bộ"; const d = new Date(s); return isNaN(d) ? s : d.toLocaleString("vi-VN"); };
-  let abiTimer = null;
+  const fmtTime = (s) => { if (!s) return "—"; const d = new Date(s); return isNaN(d) ? s : d.toLocaleString("vi-VN"); };
+  let abiTimer = null, abiLast = null;
   function renderAbi(r) {
-    $("abi-synced").textContent = r.synced_at ? "đồng bộ lần cuối " + fmtTime(r.synced_at) : "chưa đồng bộ lần nào";
-    const job = $("abi-job"), st = r.state || {};
-    const ds = (r.datasets || [])[0];
-    job.hidden = !st.running && !(ds && ds.status !== "ready");
-    job.className = "job";
-    job.textContent = st.running ? "Đang đồng bộ: " + (st.step || "…") : ds && ds.status !== "ready" ? "Đang tạo chỉ mục tìm kiếm… " + (ds.progress || 0) + "%" : "";
-    $("abi-sync-btn").disabled = !!st.running;
-    const t = $("abi-counts"); head(t, ["Loại", "Số lượng"]);
-    Object.entries(ABI_LABEL).forEach(([k, label]) => t.appendChild(row([label, (r.counts || {})[k] ?? 0])));
-    t.appendChild(row(["Chỉ mục tìm kiếm (câu hỏi tự do)", ds ? ds.n_records + " đoạn · " + ds.message : "chưa có (cần Ollama + tài khoản dev)"]));
-    const rem = r.remote || {};
-    t.appendChild(row(["Trợ lý của web (dự phòng)", (r.settings || {}).ABI_REMOTE_RAG ? "bật · đã hỏi " + rem.calls_in_window + " câu / 5 phút" +
-      (rem.cooldown_s ? " · đang nghỉ " + rem.cooldown_s + " giây" : "") : "tắt"]));
-    const runs = $("abi-runs"); head(runs, ["Bắt đầu", "Kết quả", "Request", "Thời gian", "Thay đổi"]);
+    abiLast = r;
+    const act = r.active, st = r.state || {}, vs = r.versions || [];
+    $("abi-synced").textContent = act ? `phiên bản ${act.id} · ${act.label} · đồng bộ ${fmtTime(act.synced_at)}` : "chưa có dữ liệu";
+    const building = vs.find((v) => v.dataset && v.dataset.status !== "ready"), busy = !!st.running || !!building;
+    const box = $("abi-sync-btns");
+    if (!box.firstChild) (r.sources || []).forEach((src) => {
+      box.appendChild(btn("Đồng bộ " + src.label, async () => {
+        try {
+          const res = await api("/s4/abi/sync", { source: src.id });
+          renderAbi(res);
+          if (!res.started && res.reason) { const j = $("abi-job"); j.hidden = false; j.className = "job"; j.textContent = res.reason; }
+        } catch (e) { alert(e.message); }
+      }, src.auto ? "primary" : "btn-ghost", src.auto ? "Tự đồng bộ theo lịch; bấm để tải lại ngay" : "Staging chỉ đồng bộ khi bấm"));
+    });
+    box.querySelectorAll("button").forEach((b) => { b.disabled = busy; });
+    const job = $("abi-job");
+    job.hidden = !busy; job.className = "job";
+    job.textContent = st.running ? "Đang đồng bộ " + st.source + ": " + (st.step || "…") : building ? `Đang tạo chỉ mục cho phiên bản ${building.id}… ${building.dataset.progress || 0}%` : "";
+    if (r.api_key === "chưa có") { job.hidden = false; job.textContent = "Chưa có khoá API của abi.com.vn: điền ở ⚙ Cài đặt → Lĩnh vực ABI → Khoá API."; }
+    const t = $("abi-versions");
+    head(t, ["#", "Nguồn", "Đồng bộ lúc", "Kiểm lần cuối", ...Object.values(ABI_LABEL), "Chỉ mục", ""]);
+    if (!vs.length) t.appendChild(row(["Chưa có phiên bản nào: bấm Đồng bộ.", "", "", "", "", "", "", "", "", "", "", "", ""]));
+    vs.forEach((v) => {
+      const name = el("span", "", v.label);
+      if (v.active) name.appendChild(span("đang dùng", "tag on"));
+      if (v.newest) name.appendChild(span("mới nhất", "tag"));
+      const act2 = el("div");
+      if (!v.active) {
+        act2.appendChild(btn("Dùng bản này", async () => {
+          try { renderAbi(await api(`/s4/abi/versions/${v.id}/activate`, {})); } catch (e) { alert(e.message); }
+        }, "primary", "Lĩnh vực ABI chuyển sang phiên bản này ngay"));
+        act2.appendChild(btn("Xoá", async () => {
+          if (!confirm(`Xoá phiên bản ${v.id} (${v.label}, ${fmtTime(v.synced_at)})?`)) return;
+          try { renderAbi(await api(`/s4/abi/versions/${v.id}`, null, "DELETE")); } catch (e) { alert(e.message); }
+        }));
+      }
+      const ds = v.dataset ? (v.dataset.status === "ready" ? v.dataset.n_records + " đoạn" : v.dataset.status + " " + (v.dataset.progress || 0) + "%") : "chưa có";
+      const tr = row([v.id, name, fmtTime(v.synced_at), fmtTime(v.checked_at), ...Object.keys(ABI_LABEL).map((k) => (v.counts || {})[k] ?? ""), ds, act2]);
+      tr.lastChild.className = "actions";
+      t.appendChild(tr);
+    });
+    const runs = $("abi-runs"); head(runs, ["Bắt đầu", "Nguồn", "Kết quả", "Request", "Thời gian", "Thay đổi"]);
     (r.runs || []).forEach((x) => {
       const ch = x.diff ? Object.entries(x.diff).filter(([, v]) => v.added || v.removed || v.changed)
         .map(([k, v]) => `${ABI_LABEL[k] || k}: +${v.added} −${v.removed} ~${v.changed}`).join("; ") || "không đổi" : "";
-      const res = x.ok ? (x.index_error ? "dữ liệu OK · chỉ mục lỗi: " + x.index_error : "OK" + (x.index && x.index.skipped ? " (chỉ mục không đổi)" : ""))
+      const res = x.ok ? (x.result === "unchanged" ? "không có gì mới" : `phiên bản mới ${x.version_id}`) +
+        (x.deleted_versions && x.deleted_versions.length ? ` · tự xoá ${x.deleted_versions.join(", ")}` : "") + (x.index_error ? " · chỉ mục lỗi: " + x.index_error : "")
         : x.skipped ? "bỏ qua: " + x.reason : "lỗi: " + (x.error || "");
-      const tr = row([fmtTime(x.started), res, x.requests ?? "", x.ms ? Math.round(x.ms / 1000) + " s" : "", ch]);
-      if (!x.ok && !x.skipped) tr.children[1].className = "tag bad";
+      const tr = row([fmtTime(x.started), x.source || "prod", res, x.requests ?? "", x.ms ? Math.round(x.ms / 1000) + " s" : "", ch]);
+      if (!x.ok && !x.skipped) tr.children[2].className = "tag bad";
       runs.appendChild(tr);
     });
     clearTimeout(abiTimer);
-    if (st.running || (ds && ds.status !== "ready")) abiTimer = setTimeout(loadAbi, 2000);
+    if (busy) abiTimer = setTimeout(loadAbi, 2000);
   }
   async function loadAbi() {
     try { renderAbi(await api("/s4/abi/status")); } catch (e) { alert(e.message); }
   }
-  $("abi-sync-btn").onclick = async () => {
-    try {
-      const r = await api("/s4/abi/sync", {});
-      renderAbi(r);
-      if (!r.started && r.reason) { const j = $("abi-job"); j.hidden = false; j.className = "job"; j.textContent = r.reason; }
-    } catch (e) { alert(e.message); }
-  };
 
   let dsState = null;
   async function loadDs(reset) {

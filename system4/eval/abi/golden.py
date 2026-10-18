@@ -1,15 +1,14 @@
 """Bộ đánh giá lĩnh vực ABI (abi.com.vn) — docs/PLAN_ABI_LINH_VUC.md mục 5.
 
-Câu hỏi vàng do CODE sinh từ dữ liệu đã đồng bộ (runtime/abi/data.json), nên đáp án tự đúng theo web (sự kiện đổi, cán bộ đổi…).
+Câu hỏi vàng do CODE sinh từ PHIÊN BẢN dữ liệu đang dùng (runtime/abi/versions/<id>/data.json), nên đáp án tự đúng theo web.
 Mỗi câu có "expect": các chuỗi phải có trong câu trả lời (so không dấu, không phân biệt hoa thường; số so nguyên con số).
 
     python run_server.py -m system3.system4.eval.abi.golden --target router               # chỉ code (router + tools), vài giây
     python run_server.py -m system3.system4.eval.abi.golden --target web --base http://127.0.0.1:8300 --user leader --password ...
-    python run_server.py -m system3.system4.eval.abi.golden --target remote --gap 90       # trợ lý RAG của chủ web (mốc so sánh)
     python run_server.py -m system3.system4.eval.abi.golden --dump                         # chỉ ghi bộ câu hỏi + đáp án ra tệp
 
 Kết quả: system4/eval/abi/results/<target>_<giờ>.json (không đưa lên git: có tên cán bộ thật) + bảng tóm tắt theo nhóm.
---target remote: hỏi chậm (mặc định 90 giây / câu) để không chạm hạn mức của web; gặp service_error thì chờ 5 phút rồi hỏi lại.
+Không còn chế độ hỏi trợ lý AI của web (--target remote, dùng ngày 16/10): tốn token của chủ web, leader cấm từ 17/10/2026.
 """
 from __future__ import annotations
 
@@ -170,18 +169,6 @@ class Web:
                 "sources": [s.get("url") for s in meta.get("sources") or []], "llm_ms": (meta.get("timing") or {}).get("llm_ms"), "done_ms": done_ms}
 
 
-def ask_remote(q: str) -> dict:
-    from ...abi.client import Client
-    with Client(rps=1, timeout=60, max_retries=0) as c:
-        for attempt in range(3):
-            d = c.post("/rag/query", {"query": q, "locale": "vi"}).get("data") or {}
-            if d.get("responseKind") != "service_error":
-                break
-            print("  trợ lý web chạm hạn mức, chờ 5 phút…", flush=True)
-            time.sleep(300)
-    return {"answer": d.get("answer") or "", "kind": d.get("responseKind"), "sources": [x.get("url") for x in d.get("citations") or []]}
-
-
 def main(argv: list[str] | None = None) -> int:
     for s in (sys.stdout, sys.stderr):
         try:
@@ -189,11 +176,10 @@ def main(argv: list[str] | None = None) -> int:
         except Exception:
             pass
     ap = argparse.ArgumentParser()
-    ap.add_argument("--target", choices=["router", "web", "remote"], default="router")
+    ap.add_argument("--target", choices=["router", "web"], default="router")
     ap.add_argument("--base", default="http://127.0.0.1:8300")
     ap.add_argument("--user", default="")
     ap.add_argument("--password", default="")
-    ap.add_argument("--gap", type=float, default=90, help="remote: giây giữa hai câu")
     ap.add_argument("--only", default="", help="chỉ chạy các nhóm này (cách nhau bởi dấu phẩy)")
     ap.add_argument("--dump", action="store_true", help="chỉ ghi bộ câu hỏi + đáp án (sinh từ dữ liệu hiện tại) ra results/, không hỏi")
     a = ap.parse_args(argv)
@@ -212,12 +198,9 @@ def main(argv: list[str] | None = None) -> int:
                                    ensure_ascii=False, indent=1), encoding="utf-8")
         print(f"{len(qs)} câu -> {path}")
         return 0
-    ask = {"router": lambda q: ask_router(q, data, now), "web": Web(a.base, a.user, a.password) if a.target == "web" else None,
-           "remote": ask_remote}[a.target]
+    ask = {"router": lambda q: ask_router(q, data, now), "web": Web(a.base, a.user, a.password) if a.target == "web" else None}[a.target]
     rows = []
     for i, x in enumerate(qs):
-        if a.target == "remote" and i:
-            time.sleep(a.gap)
         t0 = time.perf_counter()
         try:
             r = ask(x["q"])

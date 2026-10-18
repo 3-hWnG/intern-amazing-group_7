@@ -1,5 +1,6 @@
-"""Lĩnh vực ABI (abi.com.vn): chuẩn hoá, router + code tính, đồng bộ (API giả), trợ lý web (giới hạn tần suất), nối vào chat.
-Dữ liệu: fixtures/abi_raw.json = bản rút gọn của API thật ngày 16/10/2026 (tên cán bộ là tên giả). Không gọi mạng, không cần Ollama.
+"""Lĩnh vực ABI (abi.com.vn): chuẩn hoá, router + code tính, đồng bộ + PHIÊN BẢN (abi.com.vn / staging, giữ 2 bản mới nhất mỗi nguồn),
+khoá API, chặn trợ lý AI của web, nối vào chat. Dữ liệu: fixtures/abi_raw.json = bản rút gọn của API thật ngày 16/10/2026 (tên cán bộ
+là tên giả). API giả trên máy: không gọi mạng, không cần Ollama, KHÔNG BAO GIỜ gọi /rag.
 Chạy: python run_server.py system4/eval/abi/test_abi.py"""
 import hashlib
 import json
@@ -24,7 +25,7 @@ import httpx
 from fastapi.testclient import TestClient
 import main
 from system3.system4.server import auth, llm, search, settings
-from system3.system4.abi import client as abi_client, index, normalize, remote, router, store, sync, tools
+from system3.system4.abi import client as abi_client, index, normalize, router, store, sync, tools, versions
 import nv5_off
 nv5_off.apply()
 
@@ -33,13 +34,14 @@ NOW = datetime(2026, 10, 16, 10, 30, tzinfo=normalize.VN)
 DATA = normalize.build(RAW)
 
 
-# ------------------------------------------------------------------ API giả của abi.com.vn
+# ------------------------------------------------------------------ API giả của abi.com.vn (đòi khoá như API thật từ 17/10)
+KEY = "test_key_123"   # khoá GIẢ cho API giả; khoá thật chỉ nằm ở runtime/settings.json trên máy, không bao giờ vào git
+
+
 class FakeAbi:
-    def __init__(self, raw):
-        self.requests = []   # (đường dẫn, tham số, User-Agent) — kiểm quy ước của chủ web
-        self.raw, self.calls, self.rag = raw, [], {"responseKind": "grounded_answer", "answer": "Trả lời của trợ lý web.",
-                                                     "citations": [{"title": "Giới thiệu", "url": "/gioi-thieu", "sourceType": "site_page",
-                                                                    "snippet": "x"}]}
+    def __init__(self, raw, key=KEY):
+        self.requests = []   # (đường dẫn, tham số, User-Agent, Authorization) — kiểm quy ước của chủ web
+        self.raw, self.calls, self.key = raw, [], key
 
     def page(self, items, q):
         page, limit = int(q.get("page", 1)), int(q.get("limit", 10))
@@ -49,13 +51,12 @@ class FakeAbi:
     def __call__(self, request: httpx.Request) -> httpx.Response:
         path = request.url.path.removeprefix("/api/v1")
         q = dict(request.url.params)
+        assert not path.startswith("/rag"), "KHÔNG được gọi trợ lý AI của web"
         self.calls.append(path)
-        self.requests.append((path, q, request.headers.get("user-agent")))
+        self.requests.append((path, q, request.headers.get("user-agent"), request.headers.get("authorization")))
+        if request.headers.get("authorization") != f"Bearer {self.key}":
+            return httpx.Response(401, json={"error": {"code": "API_KEY_UNAUTHORIZED", "message": "API Key hợp lệ là bắt buộc"}})
         r = self.raw
-        if request.method == "POST" and path == "/rag/query":
-            body = json.loads(request.content)
-            assert body["locale"] == "vi" and body["query"]
-            return httpx.Response(201, json={"data": {**self.rag, "query": body["query"]}})
         if request.method != "GET":
             return httpx.Response(404, json={"error": {"code": "RESOURCE_NOT_FOUND"}})
         routes = {"/site/settings": lambda: {"data": r["settings"]}, "/organization": lambda: {"data": r["organization"]},
@@ -74,8 +75,22 @@ class FakeAbi:
         return httpx.Response(404, json={"error": {"code": "RESOURCE_NOT_FOUND"}})
 
 
-def fake_client(fake):
-    return abi_client.Client(rps=0, transport=httpx.MockTransport(fake))
+def fake_client(fake, source="prod"):
+    return abi_client.Client(source, rps=0, transport=httpx.MockTransport(fake))
+
+
+def variant(raw, n):
+    """Bản dữ liệu "đã đổi" thứ n (đổi tóm tắt một đối tác) -> đồng bộ ra phiên bản mới."""
+    r = json.loads(json.dumps(raw))
+    r["catalog"][0]["summary"] = f"Bản đổi số {n}"
+    return r
+
+
+# staging: dữ liệu thử nghiệm của đội làm web (giống thật: "Trung tâm AAAA", test@gmail.com), bớt một phòng
+STAGING = json.loads(json.dumps(RAW))
+STAGING["settings"].update(centerName="Trung tâm AAAA (staging)", publicEmail="test@gmail.com")
+_gone = STAGING["organization"]["departments"].pop()
+STAGING["organization"]["people"] = [x for x in STAGING["organization"]["people"] if x["departmentId"] != _gone["id"]]
 
 
 # ------------------------------------------------------------------ 1. chuẩn hoá
@@ -134,7 +149,7 @@ assert r["plain"] and "chưa có sự kiện nào đã diễn ra ở Hà Nội" 
 # còn điều kiện code chưa hiểu -> thẻ dữ kiện cho AI, không trả lời bằng code
 r = router.route("Sự kiện nào có hình thức trực tuyến?", DATA, NOW)
 assert r["intent"] == "events_upcoming" and not r["plain"] and "489 Hoàng Quốc Việt" in r["fact"]["text"] and "Hôm nay là" in r["fact"]["text"]
-assert r["fact"]["card_url"] == "https://abi.com.vn/su-kien"   # thẻ cả danh sách -> link trang danh sách
+assert r["fact"]["card_url"] == "/su-kien"   # thẻ cả danh sách -> trang danh sách (turn.py ghép với nguồn đang dùng)
 # nhắc tên một sự kiện / một phòng / một cán bộ -> thẻ chi tiết cho AI
 r = router.route("GRECO 2026 tổ chức ở đâu?", DATA, NOW)
 assert r["intent"] == "event_detail" and not r["plain"] and "Nguyen Hue" in r["fact"]["text"] and "sắp diễn ra" in r["fact"]["text"], r
@@ -145,6 +160,12 @@ r = router.route("Cho mình hỏi về cán bộ Nguyễn Văn Cán Bộ 01", DA
 assert r["intent"] == "person_detail" and "canbo01@example.com" not in r["fact"]["text"]
 assert "Liên hệ:" in r["fact"]["text"] and DATA["center"]["hotline"] in r["fact"]["text"], r["fact"]["text"]
 assert "canbo01@example.com" not in router.route("Trưởng phòng Hỗ trợ Công nghệ Vi sinh là ai?", DATA, NOW)["fact"]["text"]
+# âm tiết tiếng Việt trong tên sự kiện không làm nhầm câu hỏi chung: "Trình diễn…" (sự kiện staging) vs "sắp diễn ra"
+dx = json.loads(json.dumps(DATA))
+dx["events"].append({**dx["events"][0], "id": "x", "slug": "trinh-dien", "title": "Trình diễn giải pháp xanh cho chuỗi nông nghiệp"})
+r = router.route("Các sự kiện sắp diễn ra", dx, NOW)
+assert r["intent"] == "events_upcoming" and r["plain"], r["intent"]
+assert router.route("Buổi trình diễn giải pháp xanh ở đâu?", dx, NOW)["intent"] == "event_detail"   # cặp từ vẫn nhận ra
 # "kế hoạch kinh doanh" (tên khoá tập huấn) không bị nhận nhầm là Phòng Kế hoạch - Tài chính
 assert router.route("Khóa tập huấn xây dựng kế hoạch kinh doanh diễn ra khi nào?", DATA, NOW)["intent"] == "event_detail"
 r = router.route("Phòng Vi sinh có mấy người?", DATA, NOW)
@@ -161,44 +182,108 @@ assert router.route("Quy trình tham gia ươm tạo gồm những bước nào?
 a = router.route("Các sự kiện sắp diễn ra", DATA, datetime(2026, 12, 1, tzinfo=normalize.VN))["fact"]["answer"]
 assert "chưa có sự kiện sắp diễn ra" in a and "AGROVIET" in a, a
 
-# ------------------------------------------------------------------ 4. đồng bộ với API giả
+# ------------------------------------------------------------------ 4. đồng bộ (API giả) + phiên bản
+from system3.system4.abi import scheduler
+# 4a. không gọi trợ lý AI của web: client chặn cứng /rag, chỉ có GET
+try:
+    abi_client.Client("prod").get("/rag/query")
+    raise AssertionError("phải chặn /rag")
+except abi_client.AbiError as e:
+    assert e.code == "FORBIDDEN_BY_TEAM", e
+assert not hasattr(abi_client.Client, "post")
+# 4b. chưa có khoá: API báo 401, không tạo phiên bản, lỗi chỉ chỗ điền khoá
+assert abi_client.key_hint() == "chưa có"
+res = sync.run("prod", client=fake_client(FakeAbi(RAW)), index=False)
+assert not res["ok"] and "401" in res["error"] and "ABI_API_KEY" in res["error"] and store.versions() == [], res
+settings.save({"ABI_API_KEY": KEY})
+assert abi_client.key_hint() == "đã có (…_123)" and KEY not in json.dumps(settings.describe(), ensure_ascii=False)   # khoá không ra giao diện
+d_key = next(x for x in settings.describe() if x["key"] == "ABI_API_KEY")
+assert d_key["value"] == "" and d_key["is_set"] is True and d_key["secret"] is True
+cfg_before = settings.CONFIG_FILE.read_text(encoding="utf-8")
+settings.set_default({"ABI_API_KEY": KEY})                                          # "Đặt làm mặc định" không bao giờ ghi khoá vào config.py
+assert settings.CONFIG_FILE.read_text(encoding="utf-8") == cfg_before and settings.get("ABI_API_KEY") == KEY
+# 4c. lần đầu: phiên bản 1 (abi.com.vn), đang dùng
 fake = FakeAbi(RAW)
-res = sync.run(client=fake_client(fake), index=False)
-assert res["ok"], res
-assert store.data()["center"]["name"] and len(store.data()["events"]) == 10
+res = sync.run("prod", client=fake_client(fake), index=False)
+assert res["ok"] and res["result"] == "new" and res["version_id"] == 1 and store.active_id() == 1, res
+assert store.data()["center"]["name"] and len(store.data()["events"]) == 10 and store.data()["site_url"] == "https://abi.com.vn"
 assert all(not p.startswith("/admin") for p in fake.calls)
-# quy ước của chủ web: User-Agent định danh, gọi đúng dạng endpoint chính thức (không thêm compositionContract / type)
-assert all(ua.startswith("AHBI-Assistant-Bot/1.0 (+") for _, _, ua in fake.requests), {ua for _, _, ua in fake.requests}
-assert not any("compositionContract" in q for p, q, _ in fake.requests if p.startswith("/site/pages/"))
-assert not any("type" in q for p, q, _ in fake.requests if p.startswith("/content/posts/"))
+# quy ước của chủ web: khoá (Bearer), User-Agent định danh, đúng dạng endpoint chính thức (không thêm compositionContract / type)
+assert all(a == f"Bearer {KEY}" for *_, a in fake.requests)
+assert all(ua.startswith("AHBI-Assistant-Bot/1.0 (+") for _, _, ua, _ in fake.requests), {ua for _, _, ua, _ in fake.requests}
+assert not any("compositionContract" in q for p, q, *_ in fake.requests if p.startswith("/site/pages/"))
+assert not any("type" in q for p, q, *_ in fake.requests if p.startswith("/content/posts/"))
 # không lưu email / SĐT riêng của cán bộ (fixture có 1 email riêng)
-assert all(not p["email"] and not p["phone"] for p in store.read_json("raw.json")["organization"]["people"])
+assert all(not p["email"] and not p["phone"] for p in store.raw(1)["organization"]["people"])
 assert res["privacy"] == {"people_contacts_removed": 1, "text_mentions_removed": 0}, res["privacy"]
-assert "canbo01@example.com" not in json.dumps(store.read_json("raw.json")) + json.dumps(store.data())
+assert "canbo01@example.com" not in json.dumps(store.raw(1)) + json.dumps(store.data())
 n_detail = sum(1 for p in fake.calls if p.startswith("/content/posts/"))
 assert n_detail == sum(1 for p in RAW["posts"] if p["contentType"] in ("news", "resource")), n_detail
+# 4d. dữ liệu không đổi: KHÔNG tạo phiên bản (khỏi đẩy bản cũ ra), chỉ ghi giờ kiểm; tin không đổi thì không tải lại chi tiết
 fake.calls.clear()
-res = sync.run(client=fake_client(fake), index=False)   # lần 2: tin không đổi thì không tải lại chi tiết
-assert res["ok"] and not any(p.startswith("/content/posts/") for p in fake.calls), fake.calls
-assert all(v["added"] == 0 and v["removed"] == 0 for v in res["diff"].values()), res["diff"]
+res = sync.run("prod", client=fake_client(fake), index=False)
+assert res["ok"] and res["result"] == "unchanged" and res["version_id"] == 1 and len(store.versions()) == 1, res
+assert not any(p.startswith("/content/posts/") for p in fake.calls), fake.calls
+# 4e. dữ liệu đổi: phiên bản mới; bản đang dùng là bản mới nhất -> tự chuyển sang bản mới
+res = sync.run("prod", client=fake_client(FakeAbi(variant(RAW, 2))), index=False)
+assert res["result"] == "new" and res["version_id"] == 2 and store.active_id() == 2 and res["deleted_versions"] == [], res
+res = sync.run("prod", client=fake_client(FakeAbi(variant(RAW, 3))), index=False)   # bản thứ 3: tự xoá bản cũ nhất (giữ 2)
+assert res["version_id"] == 3 and res["deleted_versions"] == [1] and [v["id"] for v in store.versions("prod")] == [3, 2], res
+assert not (store.folder() / "versions" / "1").exists() and store.active_id() == 3
+# 4f. staging: nguồn riêng, giữ bản đang dùng của abi.com.vn; link về staging.abi.com.vn
+res = sync.run("staging", client=fake_client(FakeAbi(STAGING), "staging"), index=False)
+assert res["ok"] and res["version_id"] == 4 and store.active_id() == 3, res
+sd = store.version_data(4)
+assert sd["source"] == "staging" and sd["site_url"] == "https://staging.abi.com.vn" and sd["center"]["name"] == "Trung tâm AAAA (staging)"
+assert all(e["url"].startswith("https://staging.abi.com.vn/") for e in sd["events"]) and sd["center"]["url"] == "https://staging.abi.com.vn/lien-he"
+versions.activate(4)                                                                # chuyển tức thì
+assert store.data()["center"]["name"] == "Trung tâm AAAA (staging)" and len(store.data()["departments"]) == 8
+assert router.route("Có bao nhiêu phòng ban", store.data(), NOW)["fact"]["sources"][0]["url"].startswith("https://staging.abi.com.vn/")
+# 4g. đang theo bản mới nhất của staging -> bản staging mới tự thành đang dùng; quá 2 bản thì tự xoá bản cũ nhất
+sync.run("staging", client=fake_client(FakeAbi(variant(STAGING, 5)), "staging"), index=False)
+assert store.active_id() == 5
+res = sync.run("staging", client=fake_client(FakeAbi(variant(STAGING, 6)), "staging"), index=False)
+assert res["deleted_versions"] == [4] and [v["id"] for v in store.versions("staging")] == [6, 5] and store.active_id() == 6, res
+# 4h. dev chọn bản cũ hơn -> bản mới KHÔNG tự thay; nhưng bản đang dùng bị xoá (quá 2 bản) thì chuyển sang bản mới nhất cùng nguồn
+versions.activate(5)
+res = sync.run("staging", client=fake_client(FakeAbi(variant(STAGING, 7)), "staging"), index=False)
+assert res["version_id"] == 7 and res["deleted_versions"] == [5] and store.active_id() == 7, res
+assert [v["id"] for v in store.versions("prod")] == [3, 2]                            # tự xoá chỉ trong cùng nguồn
+# 4i. xoá tay: không xoá được bản đang dùng
+try:
+    versions.delete(7)
+    raise AssertionError("phải từ chối xoá bản đang dùng")
+except ValueError:
+    pass
+versions.delete(6)
+assert [v["id"] for v in store.versions("staging")] == [7]
+# 4j. API hỏng: không tạo phiên bản
 broken = json.loads(json.dumps(RAW))
 broken["organization"]["departments"] = []
-res = sync.run(client=fake_client(FakeAbi(broken)), index=False)   # API hỏng: giữ dữ liệu cũ
-assert not res["ok"] and "Giữ dữ liệu cũ" in res["error"] and len(store.data()["departments"]) == 9, res
-assert store.status()["runs"][0]["ok"] is False and store.status()["runs"][1]["ok"] is True
-# lịch: vừa lỗi -> thử lại sau 1 giờ, không chờ đủ ABI_SYNC_HOURS; vừa thành công -> chờ đủ (tối thiểu 6 giờ theo thoả thuận)
-from system3.system4.abi import scheduler
+res = sync.run("prod", client=fake_client(FakeAbi(broken)), index=False)
+assert not res["ok"] and "Không tạo phiên bản" in res["error"] and [v["id"] for v in store.versions("prod")] == [3, 2], res
+# 4k. bố cục cũ (raw.json + data.json ngay trong runtime/abi, trước 17/10) -> phiên bản 1 đang dùng
+legacy = Path(TMP) / "legacy_abi"
+legacy.mkdir()
+(legacy / "raw.json").write_text(json.dumps(RAW), encoding="utf-8")
+(legacy / "data.json").write_text(json.dumps(DATA), encoding="utf-8")
+_real_folder, store.folder = store.folder, lambda: legacy
+assert store.active_id() == 1 and store.versions()[0]["source"] == "prod" and (legacy / "versions" / "1" / "data.json").exists()
+assert not (legacy / "raw.json").exists() and store.data()["center"]["name"] == DATA["center"]["name"]
+store.folder = _real_folder
+store._cache.update(key=None, data=None)
+# 4l. lịch: chỉ abi.com.vn tự đồng bộ; vừa lỗi -> thử lại sau 1 giờ; thành công -> chờ đủ (tối thiểu 6 giờ theo thoả thuận)
 st = store.status()
-st["runs"][0]["started"] = datetime.fromtimestamp(time.time() - 3700, normalize.VN).isoformat()
+st["runs"][0]["started"] = datetime.fromtimestamp(time.time() - 3700, normalize.VN).isoformat()   # lần prod lỗi (4j) hơn 1 giờ trước
 store.write_json("status.json", st)
-assert scheduler.due()                                                             # lỗi hơn 1 giờ trước: thử lại
+assert scheduler.due("prod")
 st["runs"][0].update(ok=True, error=None)
 store.write_json("status.json", st)
-assert not scheduler.due()                                                         # thành công 1 giờ trước: chưa tới 6 giờ
+assert not scheduler.due("prod")                                                    # thành công 1 giờ trước: chưa tới 6 giờ
 settings.save({"ABI_SYNC_HOURS": 1})
-assert not scheduler.due()                                                         # đặt 1 giờ vẫn tính là 6 giờ
+assert not scheduler.due("prod")                                                    # đặt 1 giờ vẫn tính là 6 giờ
 settings.save({"ABI_SYNC_HOURS": 0})
-assert not scheduler.due()                                                         # 0 = tắt
+assert not scheduler.due("prod")                                                    # 0 = tắt
 settings.save({"ABI_SYNC_HOURS": 6})
 # tối đa 2 request/giây với mạng thật, kể cả khi gọi Client(rps=…) lớn hơn; User-Agent kèm liên hệ của nhóm
 assert abi_client.Client(rps=10)._gap == 0.5 and abi_client.Client(rps=0)._gap == 0.5
@@ -217,43 +302,6 @@ out = sync.scrub_personal(r2)
 s = json.dumps(out, ensure_ascii=False)
 assert "rieng.canbo" not in s.lower() and dep_mail in s and out["posts"][0]["summary"].startswith("Liên hệ [đã ẩn]"), out["posts"][0]["summary"]
 assert out["privacy"]["people_contacts_removed"] == 3 and out["privacy"]["text_mentions_removed"] == 2, out["privacy"]
-
-# ------------------------------------------------------------------ 5. trợ lý web: xem responseKind, giới hạn tần suất
-settings.save({"ABI_REMOTE_MAX_PER_5MIN": 2})
-fr = FakeAbi(RAW)
-out = remote.ask("Trung tâm thành lập năm nào?", client=fake_client(fr))
-assert out["ok"] and out["citations"][0]["url"] == "https://abi.com.vn/gioi-thieu", out
-assert remote.ask("Trung tâm thành lập năm nào?", client=fake_client(fr)).get("cached")   # hỏi lại: lấy bộ nhớ đệm, không tốn lượt
-fr.rag = {"responseKind": "service_error", "answer": "Trợ lý đã chạm hạn mức xử lý yêu cầu.", "citations": []}
-out = remote.ask("Câu khác", client=fake_client(fr))
-assert not out["ok"] and "hạn mức" in out["why"] and remote.status()["cooldown_s"] > 0, out   # HTTP 201 nhưng là lỗi
-assert remote.ask("Câu thứ ba", client=fake_client(fr)) == {"ok": False, "why": "đang nghỉ sau khi chạm hạn mức"}
-remote._state["cooldown_until"] = 0
-assert remote.ask("Câu thứ tư", client=fake_client(fr))["why"] == "đã dùng hết lượt trong 5 phút"
-remote._calls.clear()
-# "context" đúng như khung chat của web: cặp user/assistant, tối đa 3 lượt, bỏ câu chào / lỗi
-hist = [{"role": "user", "content": "xin chào"}, {"role": "assistant", "content": "Chào bạn", "status": "done", "meta": {"small_talk": "code"}},
-        {"role": "user", "content": "Giám đốc là ai?"}, {"role": "assistant", "content": "Giám đốc là X [1].", "status": "done", "meta": {}},
-        {"role": "user", "content": "Lỗi?"}, {"role": "assistant", "content": "timeout", "status": "error", "meta": {}}]
-for i in range(4):
-    hist += [{"role": "user", "content": f"câu {i}"}, {"role": "assistant", "content": f"đáp {i}", "status": "done", "meta": {}}]
-ctx = remote.context(hist)
-assert len(ctx) == 6 and ctx[0] == {"role": "user", "content": "câu 1"} and ctx[-1] == {"role": "assistant", "content": "đáp 3"}, ctx
-assert remote.context(hist[:4]) == [{"role": "user", "content": "Giám đốc là ai?"}, {"role": "assistant", "content": "Giám đốc là X [1]."}]
-sent = []
-fr = FakeAbi(RAW)
-orig_call = fr.__call__
-fr_handler = lambda req: (sent.append(json.loads(req.content)) if req.method == "POST" else None) or orig_call(req)
-out = remote.ask("Còn phó giám đốc?", client=abi_client.Client(rps=0, transport=httpx.MockTransport(fr_handler)), history=hist[:4])
-assert out["ok"] and sent[-1]["context"][0]["content"] == "Giám đốc là ai?" and out["context_turns"] == 1, (out, sent)
-remote._calls.clear()
-# trợ lý web dẫn bài bị loại (bài cũ / trang mẫu) -> không dùng
-fr.rag = {"responseKind": "grounded_answer", "answer": "Có 10 phòng.", "citations": [
-    {"title": "Cơ Cấu Tổ Chức", "url": "/tin-tuc/co-cau-to-chuc", "sourceType": "content_post", "snippet": "x"}]}
-out = remote.ask("Có bao nhiêu phòng?", client=fake_client(fr), blocked_urls={"https://abi.com.vn/tin-tuc/co-cau-to-chuc"})
-assert not out["ok"] and "bài cũ" in out["why"], out
-remote._calls.clear()
-remote._cache.clear()
 # bài bị loại khỏi chỉ mục: bài cũ đã có dữ liệu chính thức thay, trang mẫu chưa sửa
 assert normalize.excluded("Cơ Cấu Tổ Chức", "Ban Giám đốc ...")
 assert normalize.excluded("Thông Tin Liên", "Điện thoại:\nyahoo: myYahoo\nskype: mySkype2")
@@ -339,40 +387,60 @@ with TestClient(main.app) as c:
     assert c.patch(f"/s4/domains/{abi['id']}", json={"name": "ABI"}).status_code == 200          # đổi tên được
     assert as_("dan").get("/s4/abi/status").status_code == 403
     assert as_("dan").post("/s4/abi/sync", json={}).status_code == 403
-    # nút "Đồng bộ ngay" (Quản lý lĩnh vực / Quản trị): trả về khi đồng bộ ĐÃ bắt đầu, xong thì có lần chạy mới
-    sync.Client = lambda: fake_client(FakeAbi(RAW))
+    # dùng bản abi.com.vn mới nhất cho phần hỏi đáp; chỉ mục cho phiên bản đang dùng
+    versions.activate(3)
+    def slow(fake):   # API giả chậm lại chút để kịp kiểm "đang đồng bộ thì không chạy chồng"
+        return lambda req: (time.sleep(0.02), fake(req))[1]
+    sync.Client = lambda source: fake_client(slow(FakeAbi(variant(RAW, 3) if source == "prod" else variant(STAGING, 7))), source)
     assert scheduler.index_missing()                                                    # có dữ liệu + có dev, chưa có chỉ mục
+    embedded = []
+    search.embed = lambda texts: (embedded.append(len(texts)), fake_embed(texts))[1]
+    out = scheduler.build_active_index()
+    assert out["records"] > 20 and not scheduler.index_missing(), out
+    n_first = sum(embedded)
+    # phiên bản 2 chỉ khác 1 đoạn -> dùng lại vector, gần như không gọi bge-m3
+    embedded.clear()
+    out2 = index.build(2, store.version_data(2), "abi.com.vn")
+    assert out2["reused_vectors"] >= out2["records"] - 2 and sum(embedded) <= 2, (out2, embedded)
+    assert n_first >= out["records"] - 1
+    # nút "Đồng bộ" (Quản lý lĩnh vực / Quản trị): trả về khi đồng bộ ĐÃ bắt đầu; vừa đồng bộ thì nghỉ 10 phút
+    st = store.status()
+    for x in st["runs"]:
+        x["started"] = datetime.fromtimestamp(time.time() - 3700, normalize.VN).isoformat()
+    store.write_json("status.json", st)
     n_runs = len(store.status()["runs"])
-    r = as_("boss").post("/s4/abi/sync", json={}).json()
-    assert r["started"] and r["state"]["running"], r["state"]
-    assert c.post("/s4/abi/sync", json={}).json()["started"] is False                      # đang chạy: không chạy chồng
+    r = as_("boss").post("/s4/abi/sync", json={"source": "prod"}).json()
+    assert r["started"] and r["state"]["running"], (r["state"], r.get("reason"))
+    assert c.post("/s4/abi/sync", json={"source": "staging"}).json()["started"] is False   # đang chạy: không chạy chồng
     for _ in range(200):
         if not c.get("/s4/abi/status").json()["state"]["running"]:
             break
         time.sleep(0.05)
     st = c.get("/s4/abi/status").json()
-    assert len(st["runs"]) == n_runs + 1 and st["runs"][0]["ok"], st["runs"][:1]
-    r = c.post("/s4/abi/sync", json={}).json()                                           # vừa xong: nghỉ 10 phút (thoả thuận tần suất)
+    assert len(store.status()["runs"]) == n_runs + 1 and st["runs"][0]["ok"] and st["runs"][0]["result"] == "unchanged", st["runs"][:1]
+    r = c.post("/s4/abi/sync", json={"source": "prod"}).json()
     assert r["started"] is False and "Vừa đồng bộ" in r["reason"], r.get("reason")
-    assert st["user_agent"].startswith("AHBI-Assistant-Bot/1.0 (+")
-    # công tắc "Hỏi thêm trợ lý của web" = cài đặt ABI_REMOTE_RAG (chỉ dev đổi được)
-    assert as_("dan").post("/s4/settings", json={"values": {"ABI_REMOTE_RAG": True}}).status_code == 403
-    assert as_("boss").post("/s4/settings", json={"values": {"ABI_REMOTE_RAG": True}}).status_code == 200
-    assert c.get("/s4/abi/status").json()["settings"]["ABI_REMOTE_RAG"] is True and settings.get("ABI_REMOTE_RAG")
-    c.post("/s4/settings", json={"values": {"ABI_REMOTE_RAG": False}})
-    st = as_("boss").get("/s4/abi/status").json()
-    assert st["counts"]["events"] == 10 and st["domain"]["id"] == abi["id"], st
-    # chỉ mục tìm kiếm: bộ dữ liệu dùng chung của lĩnh vực ABI, có link về trang gốc
-    out = index.rebuild(store.data())                                                   # nút đồng bộ ở trên đã dựng: không đổi
-    assert not scheduler.index_missing()
-    assert out["records"] > 20, out
-    assert index.rebuild(store.data())["skipped"]                                              # không đổi: không dựng lại
+    assert st["user_agent"].startswith("AHBI-Assistant-Bot/1.0 (+") and st["api_key"] == "đã có (…_123)" and KEY not in json.dumps(st)
+    assert st["counts"]["events"] == 10 and st["domain"]["id"] == abi["id"] and st["active"]["id"] == 3, st["active"]
+    # danh sách phiên bản: 2 bản abi.com.vn + 1 bản staging, đánh dấu đang dùng / mới nhất
+    vs = {v["id"]: v for v in st["versions"]}
+    assert sorted(vs) == [2, 3, 7] and vs[3]["active"] and vs[3]["newest"] and vs[7]["label"] == "staging.abi.com.vn", vs
+    assert vs[3]["dataset"]["status"] == "ready" and vs[2]["dataset"]["status"] == "ready" and vs[7]["dataset"] is None
+    # bộ dữ liệu ABI: chỉ bộ của phiên bản đang dùng được bật; không bật / xoá thẳng được (phải qua phiên bản)
     lst = as_("dan").get(f"/s4/datasets?domain_id={abi['id']}").json()
-    assert len(lst["datasets"]) == 1 and lst["datasets"][0]["status"] == "ready" and not lst["can_upload"], lst
-    ds_id = lst["datasets"][0]["id"]
+    on = [d for d in lst["datasets"] if d["active"]]
+    assert len(lst["datasets"]) == 2 and len(on) == 1 and not lst["can_upload"], lst
+    ds_id = on[0]["id"]
     recs = c.get(f"/s4/datasets/{ds_id}/records?q=GRECO").json()["records"]
     assert recs and recs[0]["fields"]["Link"] == "https://abi.com.vn/su-kien/greco-2026", recs[:1]
-    assert as_("boss").post(f"/s4/datasets/{ds_id}/retry").status_code == 422                     # không có tệp gốc để xử lý lại
+    as_("boss")
+    assert c.post(f"/s4/datasets/{ds_id}/retry").status_code == 422                     # không có tệp gốc để xử lý lại
+    other = next(d["id"] for d in lst["datasets"] if not d["active"])
+    assert c.patch(f"/s4/datasets/{other}", json={"active": True}).status_code == 422
+    assert c.delete(f"/s4/datasets/{ds_id}").status_code == 422
+    # API phiên bản: chỉ dev; không xoá được bản đang dùng
+    assert as_("dan").post("/s4/abi/versions/2/activate", json={}).status_code == 403
+    assert as_("boss").delete("/s4/abi/versions/3").status_code == 422
 
     # câu mẫu 1 + 2: trả lời bằng code, không gọi AI, có nguồn
     prompts.clear()
@@ -409,4 +477,20 @@ with TestClient(main.app) as c:
     prompts.clear()
     c.post("/s4/chat", json={"text": "Các sự kiện sắp diễn ra", "domain_id": 2})
     assert prompts and "GRECO" not in prompts[-1]
+    # chuyển sang staging (tức thì): câu trả lời theo dữ liệu staging, link về staging.abi.com.vn; chuyển lại bản thật
+    as_("boss")
+    st = c.post("/s4/abi/versions/7/activate", json={}).json()
+    assert st["active"]["id"] == 7 and st["active"]["label"] == "staging.abi.com.vn", st["active"]
+    r = as_("dan").post("/s4/chat", json={"text": "Có bao nhiêu phòng ban", "domain_id": abi["id"]})
+    text, evs = sse_text(r)
+    assert "**7 phòng**" in text, text
+    cid2 = next(e["conversation_id"] for e in evs if e["type"] == "meta")
+    meta = c.get(f"/s4/conversations/{cid2}/messages").json()["messages"][-1]["meta"]
+    assert meta["sources"][0]["url"].startswith("https://staging.abi.com.vn/") and meta["abi"]["source"] == "staging", meta
+    as_("boss").post("/s4/abi/versions/3/activate", json={})
+    r = as_("dan").post("/s4/chat", json={"text": "Có bao nhiêu phòng ban", "domain_id": abi["id"]})
+    assert "**8 phòng**" in sse_text(r)[0]
+    # khoá API trong ⚙: giao diện chỉ biết "đã lưu", không thấy giá trị
+    sets = {x["key"]: x for x in as_("boss").get("/s4/settings").json()["settings"]}
+    assert sets["ABI_API_KEY"]["value"] == "" and sets["ABI_API_KEY"]["is_set"] and "ABI_REMOTE_RAG" not in sets
 print("OK test_abi")

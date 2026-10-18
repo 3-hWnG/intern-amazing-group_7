@@ -3,6 +3,10 @@
 Ngày khảo sát: **2026-10-16**. Mọi số liệu bên dưới đều lấy từ API thật của abi.com.vn trong ngày hôm đó, không phải ước đoán.
 Riêng các mục ghi rõ *"chưa kiểm"* là chưa xác minh.
 
+> ⛔ **Từ 17/10/2026: KHÔNG gọi trợ lý AI của web (`/rag/...`) dưới bất kỳ hình thức nào**, kể cả để thử hay để so sánh, vì tốn token (tiền) của chủ web.
+> Các mục bên dưới nhắc tới `/rag/query` (1.1, 1.2, `remote.py`, P4) là lịch sử khảo sát ngày 16/10. Phần đó **đã bỏ khỏi code**.
+> API dữ liệu giờ cần khoá, và dữ liệu lưu theo phiên bản (abi.com.vn + staging, mỗi nguồn 2 bản): xem [SYSTEM4_ABI.md](SYSTEM4_ABI.md).
+>
 > **Trạng thái 16/10/2026: đã triển khai P1–P4 và P6, đã đo P5 (46/46). Text-to-SQL chưa làm.**
 > Cách dùng, số đo và giới hạn: [SYSTEM4_ABI.md](SYSTEM4_ABI.md). Chỗ code khác kế hoạch (data.json thay SQLite, tìm domain theo engine, p90):
 > [SYSTEM4_SU_THAT.md](SYSTEM4_SU_THAT.md) mục 6b.
@@ -210,13 +214,11 @@ Câu hỏi gửi chủ web:
 
 ## Phụ lục — lệnh kiểm nhanh
 ```bash
-# Câu hỏi qua API RAG (body UTF-8 trong tệp, KHÔNG gõ thẳng tiếng Việt trên terminal Windows)
-printf '%s' '{"query":"Có bao nhiêu phòng ban?","locale":"vi"}' > q.json
-curl -sS -X POST https://api.abi.com.vn/api/v1/rag/query -H "Content-Type: application/json; charset=utf-8" --data-binary @q.json
-
-# Dữ liệu cấu trúc
-curl -sS "https://api.abi.com.vn/api/v1/organization?locale=vi"
-curl -sS "https://api.abi.com.vn/api/v1/events?locale=vi&page=1&limit=50"
-curl -sS "https://api.abi.com.vn/api/v1/site/settings?locale=vi"
-curl -sS "https://api.abi.com.vn/api/v1/site/pages/quy-trinh-tham-gia-uom-tao?locale=vi"
+# KHÔNG gọi /rag/query (trợ lý AI của web, tốn token của chủ web) — đã bỏ lệnh thử ở đây từ 17/10/2026.
+# Dữ liệu cấu trúc: cần khoá API (từ 17/10); đặt khoá vào biến môi trường, không dán khoá vào tài liệu / git
+H="Authorization: Bearer $ABI_API_KEY"; UA="User-Agent: AHBI-Assistant-Bot/1.0 (+lien-he-cua-nhom)"
+curl -sS -H "$H" -H "$UA" "https://api.abi.com.vn/api/v1/organization?locale=vi"
+curl -sS -H "$H" -H "$UA" "https://api.abi.com.vn/api/v1/events?locale=vi&page=1&limit=50"
+curl -sS -H "$H" -H "$UA" "https://api.abi.com.vn/api/v1/site/settings?locale=vi"
+curl -sS -H "$H" -H "$UA" "https://api.abi.com.vn/api/v1/site/pages/quy-trinh-tham-gia-uom-tao?locale=vi"
 ```

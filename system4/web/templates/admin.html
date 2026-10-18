@@ -80,24 +80,23 @@
     </div>
   </section>
 
-  <!-- Tab: lĩnh vực ABI — dữ liệu tự đồng bộ từ abi.com.vn (system4/abi) -->
+  <!-- Tab: lĩnh vực ABI — phiên bản dữ liệu abi.com.vn / staging (system4/abi/versions.py) -->
   <section id="tab-abi" class="admin-tab" hidden>
     <div class="card">
       <div class="row-between">
         <div>
-          <b>abi.com.vn:</b> <span id="abi-synced">…</span>
-          <div class="muted small">Lĩnh vực «ABI» lấy dữ liệu từ các API công khai của abi.com.vn (cơ cấu tổ chức, sự kiện, chương trình,
-            đối tác, tin tức, trang giới thiệu). Tự đồng bộ theo ⚙ "Tự đồng bộ abi.com.vn mỗi (giờ)". Không cần tải tệp lên.</div>
+          <b>Lĩnh vực ABI đang dùng:</b> <span id="abi-synced">…</span>
+          <div class="muted small">Dữ liệu lấy từ các API chính thức chủ web cho phép (cần khoá API ở ⚙). Mỗi lần đồng bộ mà dữ liệu đổi
+            thì thành một phiên bản mới; mỗi nguồn (abi.com.vn, staging) chỉ giữ 2 phiên bản mới nhất, cũ hơn tự xoá. abi.com.vn tự đồng bộ
+            theo lịch, staging chỉ khi bấm. Chuyển phiên bản dùng ngay (mỗi phiên bản có chỉ mục tìm kiếm riêng).</div>
         </div>
-        <div class="row">
-          <button id="abi-sync-btn" class="primary" type="button" title="Kéo lại dữ liệu từ abi.com.vn (lần đầu khoảng 3 phút, các lần sau nhanh hơn)">Đồng bộ ngay</button>
-        </div>
+        <div class="row" id="abi-sync-btns"></div>
       </div>
       <div id="abi-job" class="job" hidden></div>
     </div>
     <div class="card">
-      <h2>Dữ liệu hiện có</h2>
-      <table class="grid" id="abi-counts"></table>
+      <h2>Phiên bản</h2>
+      <table class="grid" id="abi-versions"></table>
     </div>
     <div class="card">
       <h2>Các lần đồng bộ gần đây</h2>
