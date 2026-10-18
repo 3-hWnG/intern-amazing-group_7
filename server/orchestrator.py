@@ -36,6 +36,7 @@ class Turn:
     state: dict | None = None              # ConvState dạng dict; None = đọc từ DB (rồi None nữa = dựng lại từ history)
     memory: dict | None = None             # Phase 26: {subjects:set, label} từ user_memory.for_policy; None = không có hồ sơ (hành vi cũ)
     pick_proc: str | None = None           # Phase 31: nút "dạng khác" gửi kèm proc_id đã chọn (không phải câu hỏi mới nên không được hỏi lại)
+    rules_only: bool = False               # G3.3: bỏ bước LLM (máy không GPU, hoặc người dùng bật "Chỉ trả lời bằng luật")
 
 
 def flat_text(r: dict) -> str:
@@ -227,7 +228,7 @@ def handle_turn(turn: Turn) -> dict:
                 if f not in rt.conditions and any(_ov(f, c) >= 0.6 for c in cond_texts):
                     rt.conditions.append(f)
 
-    ans = answer(routed, conn=conn, question=turn.text, llm=_answer_llm())
+    ans = answer(routed, conn=conn, question=turn.text, llm=None if turn.rules_only else _answer_llm())
     if assumed and ans["blocks"]:
         ans["blocks"].insert(0, {"title": "", "sources": [],
                                  "text": f"Mình hiểu bạn đang hỏi về «{assumed}». Nếu chưa đúng, bạn gõ lại tên thủ tục nhé."})

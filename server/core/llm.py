@@ -11,7 +11,7 @@ import re
 
 import ollama
 
-from . import gpu
+from . import aihealth, gpu
 from config import (LLM_KEEP_ALIVE, LLM_MODEL, LLM_NUM_CTX, LLM_THINK,
                     LLM_TIMEOUT, OLLAMA_HOST)
 
@@ -50,6 +50,8 @@ def chat(system: str, user: str, history: list[dict] | None = None, *,
     msgs.append({"role": "user", "content": user})
     opts = {"num_ctx": LLM_NUM_CTX, "temperature": 0.0 if schema else 0.3, **options}
     name = model or model_name()
+    if not aihealth.breaker.allow():   # G3.3: Ollama lỗi liên tiếp -> bỏ qua AI một lúc, không chờ hết hạn từng lần
+        raise LLMError("Ollama lỗi liên tiếp, tạm bỏ qua bước AI")
     try:
         with gpu.slot(priority, timeout=wait if wait is not None else (timeout or LLM_TIMEOUT)):
             res = client(timeout).chat(model=name, messages=msgs, format=schema,
@@ -58,7 +60,9 @@ def chat(system: str, user: str, history: list[dict] | None = None, *,
     except gpu.Busy as exc:
         raise LLMError(f"GPU đang bận (đang trả lời người khác), bỏ qua bước AI: {exc}") from exc
     except Exception as exc:
+        aihealth.breaker.fail()
         raise LLMError(f"Không gọi được mô hình {name} tại {OLLAMA_HOST}: {exc}") from exc
+    aihealth.breaker.ok()
     return (res["message"]["content"] or "").strip()
 
 

@@ -26,6 +26,9 @@ from core import gpu, websearch as core_web
 from . import ambig, context, db, greet, ground, guard, lang, llm, memory, persona, search, settings, tabletool, websearch
 from ..abi import turn as abi_turn
 
+RULES_ONLY_MESSAGE = ("Bạn đang ở chế độ **chỉ trả lời bằng luật** nên lĩnh vực này (cần AI viết câu trả lời) tạm không trả lời. "
+                      "Lĩnh vực Thủ tục vẫn trả lời bằng dữ liệu. Tắt chế độ này trong ô Tài khoản nếu muốn dùng AI (máy không có card đồ hoạ "
+                      "thì AI trả lời chậm, khoảng 7–40 giây).")
 _background: set = set()   # giữ tham chiếu tới việc nền để không bị dọn mất giữa chừng
 _turns: dict[str, dict] = {}   # lượt đang chạy: turn_id -> {"user": id}
 
@@ -387,6 +390,13 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             db.save_trace(amid, cid, user["id"], {"mode": mode, "specialist": True, "query": squery, "retrieval": sinfo, "checks": checks,
                                                   "prompts": [], "output": {"final_text": ans}, "timing": meta["timing"]}, settings.get("TRACE_KEEP"))
             yield sse({"type": "delta", "text": ans})
+            yield sse({"type": "done"})
+            return
+        if db.get_rules_only(user["id"]):   # G3.3: tài khoản bật "Chỉ trả lời bằng luật": lĩnh vực cần AI thì báo, không gọi AI
+            msg = RULES_ONLY_MESSAGE
+            rmid = db.add_message(cid, "assistant", msg, "done", user_mid, {"rules_only": True})
+            db.save_trace(rmid, cid, user["id"], {"mode": mode, "query": text, "rules_only": True, "checks": checks}, settings.get("TRACE_KEEP"))
+            yield sse({"type": "delta", "text": msg})
             yield sse({"type": "done"})
             return
         pos = llm.queue_position()

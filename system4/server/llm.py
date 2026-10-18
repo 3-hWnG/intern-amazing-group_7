@@ -10,7 +10,7 @@ import os
 import threading
 
 import ollama
-from core import gpu   # G3.1: bộ lập lịch GPU dùng chung với System 3
+from core import aihealth, gpu   # G3.1: bộ lập lịch GPU dùng chung với System 3; G3.3: ngắt mạch Ollama
 
 from . import config, settings
 
@@ -71,13 +71,22 @@ class Turn:
 def chat_json(messages: list[dict], schema: dict, timeout: float = 60) -> dict:
     """Gọi một lần, ép đầu ra theo JSON schema (bộ nhớ, tóm tắt). Ép JSON làm model bỏ qua phần suy nghĩ nên nhanh.
     Lỗi -> {} (việc phụ, không làm hỏng câu trả lời chính). BÊN GỌI phải đang giữ chỗ GPU (Turn / gpu.slot)."""
+    if not aihealth.breaker.allow():
+        return {}
     try:
         res = ollama.Client(host=config.OLLAMA_HOST, timeout=timeout).chat(
             model=settings.get("FRIENDLY_MODEL"), messages=messages, format=schema, think=False, keep_alive=keep_alive(),
             options={"temperature": 0, "num_ctx": settings.get("FRIENDLY_NUM_CTX")})
+        aihealth.breaker.ok()
         v = json.loads(res["message"]["content"] or "{}")
         return v if isinstance(v, dict) else {}
+    except ollama.ResponseError:
+        aihealth.breaker.fail()
+        return {}
+    except (ValueError, TypeError):
+        return {}
     except Exception:
+        aihealth.breaker.fail()
         return {}
 
 
@@ -91,6 +100,9 @@ def _stream(call: dict, model: str):
         client = ollama.Client(host=config.OLLAMA_HOST, timeout=settings.get("FRIENDLY_TIMEOUT"))
 
         def work():
+            if not aihealth.breaker.allow():   # G3.3: Ollama lỗi liên tiếp -> báo ngay, không chờ hết hạn
+                loop.call_soon_threadsafe(q.put_nowait, ("error", "AI tạm thời không phản hồi (lỗi liên tiếp), vui lòng thử lại sau ít phút."))
+                return
             try:
                 for part in client.chat(model=model, stream=True, keep_alive=keep_alive(), **call):
                     if stop.is_set():
@@ -102,8 +114,10 @@ def _stream(call: dict, model: str):
                     text = part["message"]["content"]
                     if text:
                         loop.call_soon_threadsafe(q.put_nowait, ("delta", text))
+                aihealth.breaker.ok()
                 loop.call_soon_threadsafe(q.put_nowait, ("end", None))
             except Exception as exc:   # Ollama tắt, model chưa tải, quá thời gian...
+                aihealth.breaker.fail()
                 loop.call_soon_threadsafe(q.put_nowait, ("error", f"Không gọi được model {model}: {exc}"))
 
         threading.Thread(target=work, daemon=True).start()

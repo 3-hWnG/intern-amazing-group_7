@@ -44,6 +44,8 @@ def _migrate(c: sqlite3.Connection) -> None:
         c.execute("INSERT INTO domains(name,kind,engine,guardrail,sort) VALUES (?,?,?,?,?)", (ABI_DOMAIN_NAME, "hard", "abi", ABI_GUARDRAIL, 2))
     if "model" not in cols("strict_nodes"):
         c.execute("ALTER TABLE strict_nodes ADD COLUMN model TEXT NOT NULL DEFAULT ''")
+    if "rules_only" not in cols("user_prefs"):   # G3.3: "Chỉ trả lời bằng luật" theo tài khoản
+        c.execute("ALTER TABLE user_prefs ADD COLUMN rules_only INTEGER NOT NULL DEFAULT 0")
     if "context" not in cols("feedback_log"):
         c.execute("ALTER TABLE feedback_log ADD COLUMN context TEXT NOT NULL DEFAULT '{}'")
     added = False
@@ -372,6 +374,16 @@ def get_memory_mode(user_id: int) -> str:
 def set_memory_mode(user_id: int, mode: str) -> None:
     run("INSERT INTO user_prefs(user_id,memory_mode) VALUES (?,?) "
         "ON CONFLICT(user_id) DO UPDATE SET memory_mode=excluded.memory_mode", (user_id, mode))
+
+
+def get_rules_only(user_id: int) -> bool:
+    r = run("SELECT rules_only FROM user_prefs WHERE user_id=?", (user_id,), one=True)
+    return bool(r and r["rules_only"])
+
+
+def set_rules_only(user_id: int, on: bool) -> None:
+    run("INSERT INTO user_prefs(user_id,memory_mode,rules_only) VALUES (?,'',?) "
+        "ON CONFLICT(user_id) DO UPDATE SET rules_only=excluded.rules_only", (user_id, 1 if on else 0))
 
 
 # ------------------------------------------------------- dữ liệu người dùng (NV3)

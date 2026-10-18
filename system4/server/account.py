@@ -85,6 +85,10 @@ class ConfirmIn(BaseModel):
     password: str
 
 
+class PrefsIn(BaseModel):
+    rules_only: bool
+
+
 def make_router(s3_store) -> APIRouter:
     r = APIRouter(prefix="/s4/account")
 
@@ -101,8 +105,16 @@ def make_router(s3_store) -> APIRouter:
     @r.get("")
     def info(request: Request):
         u = me(request)
+        from core import aihealth
         return {"user": {"id": u["id"], "username": u["username"], "role": u["role"]}, "usage": usage(s3_store, u["id"]),
-                "feedback_note": FEEDBACK_NOTE}
+                "feedback_note": FEEDBACK_NOTE, "rules_only": db.get_rules_only(u["id"]), "ai": aihealth.status()}
+
+    @r.post("/prefs")
+    def prefs(body: PrefsIn, request: Request):
+        """G3.3: "Chỉ trả lời bằng luật" theo tài khoản (không đổi biến môi trường của tiến trình)."""
+        u = me(request)
+        db.set_rules_only(u["id"], body.rules_only)
+        return {"rules_only": db.get_rules_only(u["id"])}
 
     @r.post("/password")
     def change_password(body: PasswordIn, request: Request):

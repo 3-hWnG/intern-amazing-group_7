@@ -7,6 +7,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response, StreamingResponse
 from pydantic import BaseModel
 
+from core import aihealth
 from . import account, auth, chat as chat_turn, config, datasets, db, domains, export, memory, search, settings
 
 
@@ -104,6 +105,7 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
                 "signup_open": auth.signup_open(), "first_account": db.count_users() == 0,
                 "min_password_length": settings.get("MIN_PASSWORD_LENGTH"),
                 "friendly_model": settings.get("FRIENDLY_MODEL"),
+                "cpu_mode": aihealth.cpu_only() if u else False, "rules_only": bool(u) and db.get_rules_only(u["id"]),
                 "user": u}
 
     # ------------------------------------------------------- đăng nhập

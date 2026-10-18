@@ -29,7 +29,7 @@ import threading
 
 from config import (DEV_MODE, HOST, LLM_MODEL, PORT, TABLE_BUTTON, WEB_DIR, WEBSEARCH_MODE, WEBSEARCH_RESULTS,
                     WEBSEARCH_TIMEOUT)
-from core import queue, websearch
+from core import aihealth, queue, websearch
 from core.llm import loaded_models, model_name, warm_up
 from planner import hybrid
 from policy import mask_pii
@@ -306,7 +306,7 @@ def dev_variants_page():
 
 
 @app.post("/chat")
-async def chat(body: ChatIn, cid_mem: str = Depends(_cid)):
+async def chat(body: ChatIn, request: Request, cid_mem: str = Depends(_cid)):
     text = body.text.strip()
     if not text:
         raise HTTPException(422, "text rỗng")
@@ -318,7 +318,8 @@ async def chat(body: ChatIn, cid_mem: str = Depends(_cid)):
         clarify = prev["clarify"] if prev else None
     turn = orchestrator.Turn(cid, text, body.reply_to, store.recent_history(cid),
                              store.session_facts(cid), store.shown_procedures(cid), clarify,
-                             pick_proc=body.proc_id, memory=user_memory.for_policy(cid_mem))
+                             pick_proc=body.proc_id, memory=user_memory.for_policy(cid_mem),
+                             rules_only=aihealth.rules_only(request))
     # G1.3: store che CCCD/SĐT khi ghi (lượt này vẫn xử lý bằng câu gốc trong bộ nhớ)
     store.add_message(cid, "user", text)
     store.set_title_if_new(cid, text)

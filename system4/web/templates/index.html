@@ -48,6 +48,10 @@
       <button id="open-settings" class="icon" type="button" title="Cài đặt (dev)" aria-label="Cài đặt" hidden>⚙</button>
       <div id="cfg-panel" class="cfg-panel" hidden></div>
     </header>
+    <div id="cpu-banner" class="cpu-banner" role="status" hidden>
+      <span>Máy không có card đồ hoạ: trả lời bằng AI sẽ chậm (7–40 giây). Lĩnh vực Thủ tục trả lời bằng dữ liệu, không chờ AI.</span>
+      <label><input type="checkbox" id="rules-only-banner"> Chỉ trả lời bằng luật</label>
+    </div>
     <div id="messages" class="messages"></div>
     <form id="composer" class="composer">
       <div id="upload-status" class="attachments" hidden></div>
@@ -127,6 +131,10 @@
       <p id="account-usage" class="mem-help"></p>
       <p class="mem-help">Hội thoại và dữ liệu bạn tải lên tính chung một hạn mức. Đầy thì cần xoá bớt hội thoại hoặc dữ liệu mới hỏi tiếp được.
         Số CCCD/số điện thoại bạn gõ được che trước khi lưu.</p>
+      <h3>Chế độ trả lời</h3>
+      <p class="mem-help"><label><input type="checkbox" id="rules-only"> Chỉ trả lời bằng luật</label> — không dùng AI: Thủ tục trả lời
+        bằng dữ liệu (nhanh), lĩnh vực cần AI sẽ báo đang ở chế độ này. Hợp với máy không có card đồ hoạ.</p>
+      <p id="account-ai" class="mem-help"></p>
       <h3>Đổi mật khẩu</h3>
       <form id="account-password" class="dom-form">
         <input name="old_password" type="password" placeholder="Mật khẩu hiện tại" autocomplete="current-password" required>
@@ -174,6 +182,6 @@
 <script src="/s4/static/vendor/marked.umd.js?v=18.1.0"></script>
 <script src="/s4/static/vendor/purify.min.js?v=3.4.16"></script>
 <script src="/s4/static/js/inspector.js?v=dev2"></script>
-<script src="/s4/static/js/app.js?v=dev13"></script>
+<script src="/s4/static/js/app.js?v=dev14"></script>
 </body>
 </html>

@@ -32,6 +32,8 @@ def install(app, s3_store) -> None:
         import logging
         logging.getLogger("uvicorn.error").error("Không dựng được DB của phiên bản đang dùng: %s", e)
     s3_data.set_active_provider(procs.active_db)
+    from core import aihealth   # G3.3: "Chỉ trả lời bằng luật" của tài khoản -> lượt Strict bỏ bước LLM
+    aihealth.RULES_ONLY_PROVIDER = lambda req: bool(getattr(req.state, "user", None)) and db.get_rules_only(req.state.user["id"])
     from core import llm as s3_llm   # Strict dùng chung model với Friendly: model chọn ở ⚙ Cài đặt (FRIENDLY_MODEL)
     s3_llm.MODEL_PROVIDER = lambda: settings.get("FRIENDLY_MODEL")
     from core import websearch as s3_web   # khối Tìm web của Strict dùng model riêng (WEBSEARCH_MODEL)

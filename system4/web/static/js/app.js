@@ -1308,12 +1308,20 @@
   async function openAccount() {
     try {
       const d = await api("/s4/account"), u = d.usage;
+      $("rules-only").checked = !!d.rules_only;
+      $("account-ai").textContent = d.ai && d.ai.cpu_only ? "Máy đang chạy AI bằng CPU (" + (d.ai.why || "không có card đồ hoạ") + "): AI trả lời chậm." : "";
       $("account-usage").textContent = `Đã dùng ${mb(u.used)}` + (u.quota ? ` / ${mb(u.quota)}` : " (dev: không giới hạn)") +
         ` — dữ liệu tải lên ${mb(u.datasets)}, hội thoại Strict ${mb(u.strict)}, hội thoại Friendly ${mb(u.friendly)}.`;
       accModal.hidden = false;
     } catch (e) { alert("Lỗi: " + e.message); }
   }
   $("open-account").onclick = openAccount;
+  async function setRulesOnly(on) {   // G3.3: theo tài khoản, lưu ở server
+    try { const d = await api("/s4/account/prefs", { rules_only: on }); $("rules-only").checked = $("rules-only-banner").checked = d.rules_only; }
+    catch (e) { alert("Lỗi: " + e.message); }
+  }
+  $("rules-only").onchange = (e) => setRulesOnly(e.target.checked);
+  $("rules-only-banner").onchange = (e) => setRulesOnly(e.target.checked);
   $("account-close").onclick = () => { accModal.hidden = true; };
   accModal.addEventListener("click", (e) => { if (e.target === accModal) accModal.hidden = true; });
   $("account-password").onsubmit = async (e) => {
@@ -1349,6 +1357,8 @@
     nameEl.appendChild(el("span", "role-tag", "· " + ({ dev: "dev", can_bo: "cán bộ" }[me.role] || "người dân")));
     $("open-settings").hidden = me.role !== "dev";
     $("open-admin").hidden = me.role !== "dev";
+    $("cpu-banner").hidden = !pub.cpu_mode;   // G3.3: máy không có card đồ hoạ
+    $("rules-only-banner").checked = !!pub.rules_only;
     let saved = null;
     try { saved = JSON.parse(ls.get("s4_conv") || "null"); } catch (_) {}
     await loadDomains();
