@@ -246,6 +246,21 @@ Chấm theo mã tương đương (`proc_lineage`, G2.3): đáp án mang mã củ
 
 So với số ngày 15/10 (AUDIT F3, cùng bộ mù): snapshot 1.350 top-1 73%; dữ liệu đang chạy lúc đó (bản 2, không ghép mã) 63%; bản 2 ghép mã theo tên 68%. Bản 3 + lineage + loại ca không ghép được: **72%**. Hỏi lại vẫn 47% (việc G4.1).
 
+### Eval đầy đủ lần #2 — sau G4.1–G4.8 (18/10/2026; lần 2/3 của tuần)
+Cùng lệnh, cùng DB bản 3 với lần #1. Dấu phiên bản: git `905e4ff`, data_version `v3 Cào 13/10/2026 15:45`, 1.517 thủ tục, data_sha256 `70c42af1…36bd`,
+model: tắt (chỉ luật), settings_hash `120a36e41ab80523`. Kết quả: `eval/saved_results/2026-10-18_eval2/`. Ca bị loại như lần #1 (136).
+
+| status | hành vi đúng | top-1 | top-3 | MRR | đúng trường | hỏi lại đúng | từ chối đúng |
+|---|---|---|---|---|---|---|---|
+| **blind** | 400/518 (77%) — #1: 407 | 274/381 (72%) — như #1 | 302/381 (79%) | 0,752 | 184/363 (51%) | **38/76 (50%)** — #1: 36 | 52/58 (90%) |
+| dev | 543/561 (97%) — #1: 549 | 478/488 (98%) | 485/488 (99%) | 0,986 | 309/316 (98%) | 22/25 (88%) | 42/46 (91%) |
+| holdout-used | 115/137 (84%) — như #1 | 91/104 (88%) | 93/104 (89%) | 0,881 | 66/86 (77%) | 3/10 (30%) | 16/20 (80%) |
+
+Mọi ca đổi so với #1 (18 ca) đều do **hỏi tỉnh (G4.4, quyết định D5)** — tắt riêng `S3_PROVINCE_CLARIFY=0` thì cả 18 ca trở lại như #1:
+bộ mù 9 ca nhãn "trả lời" giờ hỏi tỉnh (−9), 2 ca nhãn "hỏi lại" giờ hỏi lại đúng (+2), 1 ca nhãn "từ chối" vẫn sai; dev 6 ca nhãn "trả lời" giờ hỏi tỉnh.
+Nhãn golden viết trước D5. Các việc khác của G4 không đổi bảng này (4.1 không đưa luật, 4.2 chỉ chạy khi bật LLM, 4.3/4.5/4.6 ở System 4 / tên hội thoại,
+4.7 chỉ đổi mục biểu mẫu, 4.8 không đổi ca nào của bộ golden).
+
 ### Nghiệm thu mục 3 (rút ra từ các bảng A–D)
 
 **Trạng thái theo từng bước của mục 3**
