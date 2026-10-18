@@ -4,7 +4,7 @@ Tóm tắt gắn với nhánh: chỉ dùng khi tin cuối được tóm tắt (s
 """
 from __future__ import annotations
 
-from . import db, llm, settings
+from . import db, lang, llm, settings
 
 KEEP_RECENT = 6   # số tin gần nhất không bao giờ bị tóm tắt
 SCHEMA = {"type": "object", "properties": {"summary": {"type": "string"}}, "required": ["summary"]}
@@ -42,6 +42,27 @@ def history(cid: str, path: list[dict], system_len: int) -> tuple[str, list[dict
     return summary, msgs
 
 
+# G4.6: tóm tắt phải giữ ĐÚNG tên chủ đề / thủ tục đang hỏi (bản cũ hay viết "thủ tục đó", lượt sau mất ngữ cảnh)
+TOPIC_PROMPT = ("Tóm tắt cuộc trò chuyện giữa người dùng và trợ lý bằng tiếng Việt, gọn trong khoảng 10 câu. "
+                "Câu ĐẦU TIÊN nêu đúng tên các chủ đề / thủ tục / sản phẩm đang được hỏi, chép nguyên tên như trong cuộc trò chuyện; "
+                "không thay bằng \"thủ tục đó\", \"vấn đề trên\". "
+                "Giữ lại: thông tin người dùng đã cung cấp, câu hỏi chính, kết luận và việc còn dang dở. "
+                "Nếu có tóm tắt cũ, gộp nó vào bản mới.")
+
+
+def keep_topics(summary: str, old: list[dict], last: int = 3) -> str:
+    """Tên nguồn mà các câu trả lời gần nhất trong phần bị tóm tắt đã dẫn (tên thủ tục / bản ghi) mà bản tóm tắt làm rơi -> code ghép vào đầu."""
+    seen = []
+    for m in [x for x in old if x["role"] == "assistant"][-last:]:
+        for s in (m.get("meta") or {}).get("sources") or []:
+            t = (s.get("title") or "").strip()
+            if t and t not in seen:
+                seen.append(t)
+    n = lang.normalize(summary)
+    miss = [t for t in seen if lang.normalize(t) not in n][:3]
+    return (f"Đang nói về: {'; '.join(miss)}. " + summary) if miss else summary
+
+
 def maybe_summarize(cid: str) -> bool:
     """Chạy sau mỗi lượt: phần chưa tóm tắt quá dài (hoặc quá số tin gửi kèm) thì gộp phần cũ vào tóm tắt."""
     path = db.get_path(cid)
@@ -58,12 +79,11 @@ def maybe_summarize(cid: str) -> bool:
     old = rest[:-KEEP_RECENT]
     convo = "\n".join(f"{'Người dùng' if m['role'] == 'user' else 'Trợ lý'}: {as_prompt(m)['content']}" for m in _usable(old))
     out = llm.chat_json([
-        {"role": "system", "content": "Tóm tắt cuộc trò chuyện giữa người dùng và trợ lý bằng tiếng Việt, gọn trong khoảng 10 câu. "
-                                      "Giữ lại: thông tin người dùng đã cung cấp, câu hỏi chính, kết luận và việc còn dang dở. "
-                                      "Nếu có tóm tắt cũ, gộp nó vào bản mới."},
+        {"role": "system", "content": TOPIC_PROMPT},
         {"role": "user", "content": (f"Tóm tắt cũ:\n{summary}\n\n" if summary else "") + f"Đoạn hội thoại:\n{convo}"}], SCHEMA, timeout=120)
     text = " ".join(str(out.get("summary", "")).split())
     if not text:
         return False
+    text = keep_topics(text, old)
     db.set_summary(cid, text, old[-1]["id"])
     return True
