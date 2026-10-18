@@ -76,7 +76,7 @@ Khác: `LLM_TIMEOUT` (120 s) là trần HTTP của client Ollama khi nơi gọi 
 Trạng thái gồm chủ đề, lịch sử thủ tục đã nói (theo thứ tự), mục đang hỏi, lời kể chưa gắn thủ tục. Mỗi câu được phân vào một loại, lý do ghi vào `trace["ctx"]`:
 `follow_up` (cùng thủ tục) · `new_related` (thủ tục mới cùng lĩnh vực) · `return` (quay lại thủ tục đã nói) · `independent`/`new` (không kế thừa) · `correction` (sửa ý) · `story` (lời kể hoàn cảnh).
 Fact người dùng kể gắn với thủ tục lúc ghi; đổi sang thủ tục khác họ thì không rò sang. Nút "Bắt đầu chủ đề mới" hoặc câu "hỏi việc khác" xoá fact và danh sách đã hiển thị.
-Bảng sự kiện đời sống (`context.EVENTS`, kể chuyện -> gợi ý tên thủ tục) có **11 sự kiện** viết tay.
+Bảng sự kiện đời sống (`context.EVENTS`, kể chuyện -> gợi ý tên thủ tục) có **12 sự kiện** viết tay.
 
 ## Bộ nhớ người dùng (Phase 26, `server/user_memory.py`)
 Chuyển theo tinh thần hệ cũ V10.6 (memory.js, /api/profile, /api/mcq-memory). Lưu theo **thiết bị** (`client_id` UUID ở `localStorage`, header `X-Client-Id`, thiếu thì 'default'); chưa có tài khoản (thẻ `FINAL-PRODUCT: [MEM]`, mục 6 checklist). Bảng `user_memory(client_id, key, value, updated_at)`; tạo bằng `CREATE TABLE IF NOT EXISTS` nên DB cũ mở lại không cần di chuyển.

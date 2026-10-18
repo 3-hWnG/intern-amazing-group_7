@@ -23,7 +23,7 @@ Tắt nhanh: `python run_server.py eval/run_all.py` chạy mọi gate dưới đ
 Xem "Giới hạn đã biết" và "Việc nên làm tiếp" trong [../README.md](../README.md), và [KNOWN_ISSUES.md](KNOWN_ISSUES.md). Nổi bật:
 - hỏi lại khi mơ hồ (HOLDOUT-4 đúng 8/16, pseudo_real 2 đúng 0/3); chọn nhầm bản anh em;
 - bộ câu hỏi thật từ người dân (chưa có);
-- người chấm 20 ca của bước LLM sinh chữ (`eval/results/composer_sample20.md`; bộ chấm luật đã có: `eval/score_composer.py`, Phase 27); bảng sự kiện đời sống dựng từ `condition_index`;
+- người chấm 20 ca của bước LLM sinh chữ (mẫu 20 ca cho người chấm (tạo lại bằng `python score_composer.py --name x --sample`; tệp kết quả không commit); bộ chấm luật đã có: `eval/score_composer.py`, Phase 27); bảng sự kiện đời sống dựng từ `condition_index`;
 - RAG/import tài liệu theo `knowledge/README.md`.
 
 Phase 26 (bộ nhớ người dùng) thêm: `python eval/run_p26.py` (bộ ca `cases_p26.jsonl`, dựng bằng `build_p26.py`): bất biến tắt-hồ-sơ = như cũ phải 100% (nhóm d), hồ sơ sai đối tượng không đổi thủ tục khi câu nêu rõ (nhóm c), số lần hỏi lại giảm so với không hồ sơ (nhóm a, b).

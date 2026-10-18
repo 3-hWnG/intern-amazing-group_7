@@ -35,9 +35,22 @@ def expect(doc, needle, why):
     (ok if needle in text(doc) else err).append(f"{doc}: {'khớp' if needle in text(doc) else 'THIẾU'} {needle!r} ({why})")
 
 
+_tracked = None
+
+
+def tracked(f: Path) -> bool:
+    """Chỉ tệp kết quả ĐÃ COMMIT (G0.5): số trong tài liệu phải tái kiểm được trên máy khác; kết quả chạy tạm (đã ignore) không tính."""
+    global _tracked
+    if _tracked is None:
+        import subprocess
+        out = subprocess.run(["git", "ls-files", "eval/results"], cwd=ROOT, capture_output=True, text=True).stdout
+        _tracked = {Path(l).name for l in out.splitlines() if l.strip()}
+    return f.name in _tracked
+
+
 def newest(pred, pattern="*.json"):
-    """File kết quả không-mù mới nhất thoả pred(data)."""
-    fs = sorted((f for f in RES.glob(pattern) if not BLIND_RE.search(f.name) and not f.name.startswith("v106")), key=lambda f: f.stat().st_mtime, reverse=True)
+    """File kết quả không-mù, đã commit, mới nhất (theo thời điểm sửa) thoả pred(data)."""
+    fs = sorted((f for f in RES.glob(pattern) if tracked(f) and not BLIND_RE.search(f.name) and not f.name.startswith("v106")), key=lambda f: f.stat().st_mtime, reverse=True)
     for f in fs:
         try:
             d = json.loads(f.read_text(encoding="utf-8"))
@@ -151,7 +164,7 @@ def exists(tok, doc):
     while tok.startswith(("./", "../")):
         tok = tok.split("/", 1)[1]
     if _names is None:
-        _names = [p.relative_to(ROOT).as_posix() for p in ROOT.rglob("*") if ".git" not in p.parts and "__pycache__" not in p.parts]
+        _names = [p.relative_to(ROOT).as_posix() for p in ROOT.rglob("*") if not {".git", ".venv", "__pycache__"} & set(p.parts)]
     if (ROOT / tok).exists() or (ROOT.parent / tok).exists() or (ROOT / Path(doc).parent / tok).exists():
         return True
     return any(n == tok or n.endswith("/" + tok) for n in _names)

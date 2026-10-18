@@ -66,12 +66,12 @@ top-1/top-3 (đúng thủ tục), đúng fields, **đúng hành vi**, **bịa s�
 
 ## Đo bước sinh chữ (Answer Composer, Phase 27)
 `eval/build_composer_set.py` chọn các ca có bước LLM (task có `conditions` hoặc >= 2 task `compare`; dò bằng LLM giả, không gọi Ollama) từ DEV cũ + p16/p18/p19/p23 (trong DEV) + ctx + `cases_p26.jsonl`, không đụng bộ mù/team, rồi thêm ca tự soạn `eval/composer_own.py` (split `composer`): ra `cases_composer.jsonl` = **63 ca** (46 DEV, 4 ctx, 13 tự soạn; p26 không kích hoạt ca nào). Ca tự soạn **dễ hơn câu thật** (nêu điều kiện/so sánh rõ ràng, vài ca dựng từ chính chữ của `condition_index`). Kích hoạt: 46/523 ca DEV (25/209 DEV cũ), 4/144 ca ctx.
-`eval/score_composer.py` chạy mỗi ca hai lần (TẮT = bản code, BẬT = Ollama qwen3:4b) và chấm bằng LUẬT: (a) đủ ý (nêu cụm khoá của mục `condition_index` liên quan; so sánh: nêu cả hai thủ tục; chỉ chấm 23 ca có điều kiện do người dùng nêu, 40 ca còn lại là điều kiện Planner tự gán nên "n/a"), (b) mọi số trong câu có trong nguồn thủ tục/câu hỏi, (c) không đảo cặp có/không, được/không được... so với câu nguồn gần nhất, (d) không có cơ quan/văn bản/số hiệu lạ, (e) phần sinh chữ <= 1000 ký tự, mỗi ý <= 300. Ghi `results/composer_<tên>.json`; `--sample` ghi `results/composer_sample20.md` (20 ca, seed 27, **chưa có điểm**, để người chấm). `p27_e2e.py` đo độ trễ qua `/chat` với cấu hình mặc định.
+`eval/score_composer.py` chạy mỗi ca hai lần (TẮT = bản code, BẬT = Ollama qwen3:4b) và chấm bằng LUẬT: (a) đủ ý (nêu cụm khoá của mục `condition_index` liên quan; so sánh: nêu cả hai thủ tục; chỉ chấm 23 ca có điều kiện do người dùng nêu, 40 ca còn lại là điều kiện Planner tự gán nên "n/a"), (b) mọi số trong câu có trong nguồn thủ tục/câu hỏi, (c) không đảo cặp có/không, được/không được... so với câu nguồn gần nhất, (d) không có cơ quan/văn bản/số hiệu lạ, (e) phần sinh chữ <= 1000 ký tự, mỗi ý <= 300. Ghi `results/composer_<tên>.json`; `--sample` ghi mẫu 20 ca cho người chấm (seed 27, **chưa có điểm**; tệp kết quả không commit). `p27_e2e.py` đo độ trễ qua `/chat` với cấu hình mặc định.
 ```bash
 cd eval && PYTHONPATH=<ROOT> S3_PLANNER_MODE=rules python score_composer.py --name x --sample     # cần Ollama + qwen3:4b, ~3 phút
 python p27_e2e.py --name x                                                                          # server tạm cổng 8393, ~2 phút
 ```
-Số đo (`results/composer_final3.json`, timeout 7 s, 63 ca; `results/p27_e2e_run3.json`):
+Số đo (lần chạy `composer_final3` và `p27_e2e_run3` của Phase 27, timeout 7 s, 63 ca; tệp kết quả không commit, chi tiết trong [../eval/P27_REPORT.md](../eval/P27_REPORT.md)):
 
 | tiêu chí | TẮT (code) | BẬT |
 |---|---|---|
@@ -90,14 +90,14 @@ Một bảng duy nhất, dùng chung với [CONTRIBUTING.md](CONTRIBUTING.md) (g
 | Cổng | Ngưỡng | Số hiện tại |
 |---|---|---|
 | DEV cũ 209: top-1 | ≥ 95% | 97,0% (159/164) |
-| DEV cũ 209: đúng hành vi | ≥ 96% | 98,1% (205/209) |
+| DEV cũ 209: đúng hành vi | ≥ 96% | 97,6% (204/209) |
 | DEV cũ 209: bịa số | ≤ 3% | 0,0% |
 | ngoài phạm vi (DEV) | 30/30 | 30/30 |
-| ctx 91 ca, top-1 lượt cuối | ≥ 89/91 | 89/91 (ctx-p23 26/26) |
+| ctx 91 ca, top-1 lượt cuối | ≥ 89/91 | 88/91 — **chưa đạt** (ctx-p23 26/26) |
 | synth TEST-seed top-1 | ≥ 94% (`glued` ≥ 90%) | 96,4% (`glued` 96,1%) |
 | DEV focus (`run_concise.py`) | **≥ 95%** | 99% (312/316) |
 | task thừa (`run_concise.py`) | ≤ 2% | 0/449 |
-| `perturb.py` bất biến | ≥ 98% | 99,53% |
+| `perturb.py` bất biến | ≥ 98% | 99,44% |
 | `check_docs.py` | sạch (0 lỗi) | sạch |
 
 ## Số đo hiện tại
@@ -108,7 +108,7 @@ Lệnh chạy bộ mù mới: `python run_pseudo.py cases_h4.json h4_rules` (đ�
 ```bash
 python eval/check_docs.py          # exit 0 = sạch; in từng lỗi và từng mục bỏ qua
 ```
-Kiểm: (1) số trong README so với file kết quả mới nhất trong `eval/results/` (DEV 523 và DEV cũ 209, ctx, ctx-p23, concise, perturb, synth) — chỉ các bộ không-mù; (2) số bộ mù/bộ team trong README khớp bảng của script và khớp giữa README/EVAL/KNOWN_ISSUES; (3) đường dẫn file trong liên kết và trong `code` có tồn tại; lệnh `python ...` trong khối mã trỏ tới file/module có thật; (4) mọi file `server/tests/*_test.py` có trong SETUP và CONTRIBUTING; (5) `_EVENTS`, timeout trong `config.py` khớp tài liệu, không còn "DEV focus ≥ 90%"; (6) file có thẻ `FINAL-PRODUCT:` được nêu trong `FINAL_PRODUCT_CHECKLIST.md`. Chạy trong cổng trước khi mở PR.
+Kiểm: (1) số trong README so với file kết quả ĐÃ COMMIT mới nhất trong `eval/results/` (DEV 523 và DEV cũ 209, ctx, ctx-p23, concise, perturb, synth) — chỉ các bộ không-mù; (2) số bộ mù/bộ team trong README khớp bảng của script và khớp giữa README/EVAL/KNOWN_ISSUES; (3) đường dẫn file trong liên kết và trong `code` có tồn tại; lệnh `python ...` trong khối mã trỏ tới file/module có thật; (4) mọi file `server/tests/*_test.py` có trong SETUP và CONTRIBUTING; (5) `_EVENTS`, timeout trong `config.py` khớp tài liệu, không còn "DEV focus ≥ 90%"; (6) file có thẻ `FINAL-PRODUCT:` được nêu trong `FINAL_PRODUCT_CHECKLIST.md`. Chạy trong cổng trước khi mở PR.
 
 ## Cải thiện đáng làm tiếp
 Bộ câu hỏi thật từ log người dân (20–30 câu) làm bộ kiểm cuối; bộ chấm riêng cho chất lượng bước LLM sinh chữ; bộ mù mới sau mỗi vòng sửa.
