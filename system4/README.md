@@ -12,7 +12,9 @@ Trạng thái: **xong NV1 (nền tảng), NV2 (AI trò chuyện kiểu ChatGPT),
 | Dữ liệu → Chuyên gia (NV3) | Nút **+** (hoặc kéo thả) tải CSV / Excel / JSON / TXT / Word / PDF. Bật bộ dữ liệu nào thì AI chỉ trả lời từ đó, có **nguồn [n]** bấm xem bản ghi gốc; không có thì nói không có. Cửa sổ **Dữ liệu**: bật/tắt, xem, xoá, dung lượng 1 GB (dev không giới hạn), cảnh báo khi bật quá nhiều. |
 | Bộ nhớ (mọi người dùng) | Nút **Bộ nhớ** ở góc dưới thanh bên: chọn **Tự động ghi nhớ** hoặc **Chỉ nhớ khi tôi bảo "hãy nhớ…"**, xem / xoá từng điều. Điều đã nhớ dùng ở mọi hội thoại Friendly. Sau câu trả lời có dòng "Đã cập nhật bộ nhớ". |
 | Danh sách hội thoại | Một danh sách chung, mỗi dòng có nhãn Strict/Friendly. Bấm một dòng thì tự chuyển sang chế độ của nó. Mỗi người chỉ thấy hội thoại của mình. |
-| Quản trị (chỉ dev, NV4) | Trang `/s4/admin`: **Dữ liệu Strict** (phiên bản, nháp, chuẩn dữ liệu, so sánh, áp dụng, cào dichvucong.gov.vn, **Xuất Excel** DB thủ tục đang dùng kèm liên kết row_id / proc_id / link cổng), **Dữ liệu người dùng**, **Người dùng** (tạo, vai trò, khoá, đặt lại mật khẩu, xoá). |
+| Bảng điều khiển lĩnh vực (18/10) | Nút **Lĩnh vực** mở MỘT chỗ quản lý mọi thứ về lĩnh vực và dữ liệu: trái là danh sách lĩnh vực, phải là các tab **Tổng quan** (ghim, sửa, hồ sơ lĩnh vực) · **Dữ liệu** (Thủ tục: phiên bản, nháp, sửa / so sánh / áp dụng, **Xuất Excel**, cào dichvucong.gov.vn thu gọn được; ABI: phiên bản, đồng bộ thu gọn được; lĩnh vực khác: bộ dữ liệu) · **Đường nhanh** (kết quả biên dịch + tự kiểm) · **Thống kê** (thủ tục hỏi nhiều nhất). Dev và **cán bộ** thấy như nhau, thêm mục chung *Dữ liệu mọi người dùng* và *Thống kê chung* (👍/👎, tài khoản, tải phản hồi); người dùng thường chỉ thấy lĩnh vực của mình. Ô **Xem như người dùng** vẽ lại đúng như người dùng thường thấy. Mã: `web/static/js/dashboard.js`, `web/static/css/dashboard.css`. |
+| Quản trị (chỉ dev) | Trang `/s4/admin` chỉ còn **Người dùng** (tạo, vai trò, khoá, đặt lại mật khẩu, xoá, xem hội thoại) và **Thử tìm kiếm**. |
+| Đường nhanh (18/10) | Lúc nạp tệp, hệ thống **biên dịch** từng bảng (kiểu cột, tên trường tiếng Việt, cách hỏi; AI được gọi một lần mỗi bảng, code lọc lại) rồi **tự kiểm** bằng câu hỏi sinh từ chính dữ liệu. Câu tra cứu rõ ràng (một trường của một dòng, câu nối tiếp, đếm / liệt kê có điều kiện, trích đoạn văn bản) được **code trả lời trong vài mili giây**, kèm nguồn, không gọi AI (dùng được cả khi bật "Chỉ trả lời bằng luật"); trùng tên thì hỏi lại bằng nút. Câu không chắc vẫn đi đường cũ (tìm kiếm + AI). Công tắc: ⚙ `FASTPATH_ENABLED`, `FASTPATH_LLM_CUES`, `FASTPATH_MIN_PASS`; từng lĩnh vực: `"fast_path": false` trong hồ sơ. Không áp cho Thủ tục (System 3) và ABI. Chi tiết, số đo: [docs/SYSTEM4_DUONG_NHANH.md](../docs/SYSTEM4_DUONG_NHANH.md). |
 | Lĩnh vực **ABI – Trung tâm Ươm tạo** | Lĩnh vực cứng hỏi đáp thông tin web abi.com.vn (sự kiện, cơ cấu tổ chức, liên hệ, chương trình, đối tác, tin tức). Dữ liệu lấy từ API chính thức chủ web cho phép (cần **khoá API** ở ⚙), lưu theo **phiên bản**: abi.com.vn + staging, mỗi nguồn giữ 2 bản mới nhất, cũ hơn tự xoá. Chọn bản đang dùng ngay trong Quản lý lĩnh vực hoặc Quản trị → **Dữ liệu ABI**. Câu đếm / liệt kê / theo thời gian do code trả lời; câu khác do AI trên máy trả lời từ dữ liệu. **Không bao giờ gọi trợ lý AI của web.** Chi tiết: [docs/SYSTEM4_ABI.md](../docs/SYSTEM4_ABI.md). |
 | Bộ công cụ dev | Nút **🔍** dưới mỗi câu trả lời (tìm kiếm & xếp hạng, lời dặn, suy nghĩ ẩn, kiểm soát, thời gian); Quản trị → **Thử tìm kiếm**, **Hội thoại** của từng người dùng; **Cách đọc tệp**. Người dùng thường có **Vì sao?** (nguồn + độ liên quan). Chi tiết: docs/SYSTEM4_NV4_QUAN_TRI.md phần D; giới hạn Chuyên gia: docs/SYSTEM4_NV3_DATASET.md phần D. |
 | ⚙ Cài đặt (chỉ dev) | Có thêm: tên/mô tả doanh nghiệp, lời dặn thêm, **guardrail** (Chặn / Lời dặn / Thay câu trả lời, bật/tắt từng luật), câu xin lỗi ngôn ngữ, số lần hỏi lại, bộ nhớ, ngưỡng tóm tắt. **Lưu** (ghi `runtime/settings.json`) · **Đặt làm mặc định** (ghi vào `server/config.py`, bản cũ ở `config.py.bak`) · **Về mặc định**. Tải lại trang để áp dụng. |
@@ -38,6 +40,7 @@ Trạng thái: **xong NV1 (nền tảng), NV2 (AI trò chuyện kiểu ChatGPT),
 | `server/lang.py` | nhận biết tiếng Việt (cả không dấu), bộ lọc chữ ngoài Latin + emoji |
 | `server/memory.py`, `context.py` | bộ nhớ dài hạn từng người; tóm tắt hội thoại dài theo nhánh |
 | `server/ingest.py`, `datasets.py`, `search.py` | NV3: đọc tệp → cấu trúc định sẵn; tải lên, dung lượng, nạp nền; tìm từ khoá (FTS5) + nghĩa (bge-m3, Qdrant local) + reranker |
+| `server/fastpath/` | đường nhanh: `compile.py` (bản ghi → đặc tả: kiểu cột, bảng con, tên trường, cách hỏi + lọc gợi ý của AI), `selftest.py` (câu hỏi sinh từ dữ liệu → bật / tắt từng loại câu cho từng bảng), `engine.py` (trả lời bằng code: IDF, tên nằm trọn trong câu, so dấu, hỏi lại, câu nối tiếp, đếm / liệt kê / theo ngày), `__init__.py` (bảng `fastpath`, hàng đợi nền, API `/s4/fastpath/*`, hàm `answer` mà `chat.py` gọi trước bước tìm kiếm) |
 | `web/static/js/inspector.js` | bộ công cụ dev dùng chung (🔍 Soi, Vì sao?, Cách đọc tệp, bảng xếp hạng) |
 | `server/procs.py`, `admin.py`, `strict.py` | NV4: phiên bản dữ liệu Strict + áp dụng (dựng bằng `system3.data.build`); API trang Quản trị; phiên bản / phát lại cho Strict |
 | `server/procs_xlsx.py` | **Xuất Excel** DB thủ tục, chạy độc lập được (chỉ cần sqlite3 + openpyxl): mọi bảng, sheet README ghi cách các bảng nối nhau (row_id / proc_id) + kiểm số dòng không khớp, link cổng dichvucong.gov.vn để đối chiếu. Web (chỉ dev): Quản trị → Dữ liệu Strict → nút "Xuất Excel" (bản đang dùng) hoặc nút "Xuất Excel" ở từng phiên bản đã lưu (`GET /s4/admin/procs/export.xlsx?version=active|<id>`). Dòng lệnh: `python run_server.py -m system3.system4.server.procs_xlsx <tệp .db hoặc procedures.jsonl> [-o ra.xlsx]` (snapshot, phiên bản trong `runtime/procs/versions/`, kết quả cào `runtime/scrape/staging/procedures.jsonl`) |
@@ -49,6 +52,8 @@ Trạng thái: **xong NV1 (nền tảng), NV2 (AI trò chuyện kiểu ChatGPT),
 | `eval/load_test.py` | 10 người giả trên model thật: độ trễ Strict (luật / có LLM, tách chờ GPU / nạp / sinh chữ) và Friendly (chữ đầu, cả câu, chờ hàng) |
 | `web/` | `templates/index.html` + `static/js/app.js` = bản sao giao diện System 3 + phần thêm; `login.html`; `admin.html` + `admin.js` (Quản trị); `static/vendor/` = marked 18.1.0 + DOMPurify 3.4.16 (lưu sẵn, chạy offline) |
 | `tests/test_nv1.py` … `test_nv4.py` | test NV1–NV4 (model giả, DB tạm; NV4 dùng bản sao DB thủ tục) |
+| `tests/test_fastpath.py`, `tests/test_dashboard.py` | đường nhanh (biên dịch, tự kiểm, trả lời, nhường đường cũ, quyền); quyền của bảng điều khiển theo vai trò (dev / cán bộ / người dùng) |
+| `eval/make_tourism.py` | sinh `eval/data/du_lich_gia.xlsx` (du lịch GIẢ, 3 sheet, ngắn; tải lên web được) — dữ liệu của bộ câu MÙ `tourism` trong `eval/bench_cases.py` |
 | `setup_models.py` | tải reranker, kiểm GPU (Set up first time.bat gọi) |
 | `runtime/` | DB, settings.json, `datasets/` (tệp người dùng), `qdrant/` (vector), `procs/` (phiên bản dữ liệu Strict), `scrape/` (không đưa lên Git) |
 | `models/` | model tải về (không đưa lên Git) |
@@ -61,6 +66,9 @@ python ..\system4\tests\test_nv1.py
 python ..\system4\tests\test_nv2.py
 python ..\system4\tests\test_nv3.py
 python ..\system4\tests\test_nv4.py
+python ..\system4\tests\test_nv5.py
+python ..\system4\tests\test_fastpath.py
+python ..\system4\tests\test_dashboard.py
 python ..\system4\eval\abi\test_abi.py
 ```
 

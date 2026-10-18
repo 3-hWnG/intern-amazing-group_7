@@ -21,6 +21,10 @@ Xem [system4/README.md](system4/README.md), nhiệm vụ [docs/SYSTEM4_NV1_NEN_T
 - Friendly: hồ sơ lĩnh vực (cách trả lời, trích dẫn, hỏi lại, tìm web…), dùng lại câu đã 👍 khi người khác hỏi y chang, tóm tắt giữ tên chủ đề.
 - Số đo: eval đầy đủ #1, #2 ở [docs/PLAN_TUAN_TOI.md](docs/PLAN_TUAN_TOI.md); độ trễ / tải 10 người ở [ARCHITECTURE_REVIEW §5.4](docs/ARCHITECTURE_REVIEW_2026-10-15.md).
 
+## Đường nhanh + bảng điều khiển lĩnh vực ([docs/SYSTEM4_DUONG_NHANH.md](docs/SYSTEM4_DUONG_NHANH.md))
+- Friendly / Chuyên gia: lúc nạp tệp, bảng được biên dịch (kiểu cột, tên trường, cách hỏi) và tự kiểm; câu tra cứu rõ ràng do code trả lời trong vài mili giây, câu không chắc vẫn đi tìm kiếm + AI. Thủ tục (System 3) và ABI không đổi.
+- Nút **Lĩnh vực** = một chỗ quản lý lĩnh vực, dữ liệu (cả dữ liệu Strict, ABI), đường nhanh, thống kê; dev và cán bộ như nhau. `/s4/admin` chỉ còn tài khoản và Thử tìm kiếm.
+
 ## Kiến trúc đang chạy
 User → Orchestrator → **Planner (luật; Qwen3-4B hybrid là tuỳ chọn, TẮT mặc định)** → Policy/Router (luật) → Answerer (code, nguyên văn + nguồn) → [LLM chỉ sinh chữ giải thích điều kiện/so sánh, mọi ý qua verifier, lỗi/timeout 7 s thì giữ bản bằng code] → câu trả lời. Timeout cả hai bước LLM (Planner hybrid, Answer Composer) là 7 giây, cấu hình được: bảng ở [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Map với kiến trúc G7 của nhóm: cùng file. Box 1–4, 5A, 6A, 10 đã có; 3 (LLM Planner) làm hybrid nhưng không bật; 5B/6B (RAG, import) mới chỉ có thiết kế giao diện trong `knowledge/`.
 
