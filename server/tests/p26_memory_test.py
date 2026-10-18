@@ -41,7 +41,7 @@ with TestClient(main.app) as c:
     g = c.get("/memory", headers=A).json()
     assert g["profile"] == {"province": "", "commune": "", "user_type": "", "note": ""} and g["mcq"] == {} and g["effective"]["subjects"] == [], g
     cat = g["catalog"]
-    assert len(cat["provinces"]) == 63 and cat["axes"] == ["subject"] and set(cat["user_types"]) == {"citizen", "business", "other"}
+    assert cat["provinces"] == sorted(data_api.provinces(data_api.connect())) and cat["axes"] == ["subject"] and set(cat["user_types"]) == {"citizen", "business", "other"}
     names = {x["name"] for x in cat["subjects"]}
     assert names == {r[0] for r in conn.execute("SELECT DISTINCT TRIM(subject_name) FROM procedure_subjects WHERE TRIM(subject_name)<>''")} - {n for n in () }, names ^ set()
     assert "Công dân Việt Nam" in names and DN in names

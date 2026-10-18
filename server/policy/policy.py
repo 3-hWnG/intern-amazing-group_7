@@ -22,6 +22,9 @@ from system3.retrieval.context import strip_labels
 from system3.retrieval.query import EXTRA_SYN, FIELD_CUES, PRE_SYN, STOP, _DROP_PHRASES
 
 MAX_TASKS = 3
+PROVINCE_OPTS = 6                  # G4.4: thẻ hỏi tỉnh hiện tối đa 6 tỉnh có bản riêng + "Áp dụng chung toàn quốc"
+NATIONWIDE = "*"                   # tỉnh của hội thoại = dùng bản chung toàn quốc
+NATIONWIDE_LABEL = "Áp dụng chung toàn quốc"
 MAX_CHARS = 2000
 VERTICAL = {"Thuế": "cơ quan Thuế", "Hải quan": "cơ quan Hải quan"}
 
@@ -70,6 +73,7 @@ class Routed:
     clarify: dict | None = None        # {question, options[{label, proc_id}], allow_free_text}
     flags: list = field(default_factory=list)   # injection | overflow | truncated | plan_fallback
     behavior: str = "answer"           # answer | apologize | clarify | chitchat
+    province_note: dict | None = None  # G4.4: đã dùng bản của tỉnh nào / tỉnh đã nêu không có bản riêng
     memory_note: dict | None = None    # Phase 26: hồ sơ đã ảnh hưởng quyết định này {kind: pick|shrink|variant, subject, proc_id, procedure}
 
     def to_dict(self):
@@ -376,7 +380,7 @@ def _user_words_keep(user_text: str) -> list:
 
 def check(plan, *, user_text: str, conn=None, facts: list[str] | None = None,
           known_procs: list[str] | None = None, flags: list[str] | None = None, no_clarify: bool = False,
-          memory: dict | None = None) -> Routed:
+          memory: dict | None = None, province: str | None = None) -> Routed:
     """plan: planner.Plan (hoặc đối tượng có .tasks/.needs_clarification/.source).
     memory (Phase 26): {subjects:set[str], label} từ hồ sơ người dùng; None = hành vi y hệt trước Phase 26."""
     conn = conn or data_api.connect()
@@ -515,6 +519,32 @@ def check(plan, *, user_text: str, conn=None, facts: list[str] | None = None,
                 out.behavior = "clarify"
                 out.memory_note = note
                 return out
+
+    # --- G4.4 (D5): thủ tục có bản riêng của tỉnh mà chưa biết người dùng ở tỉnh nào -> hỏi tỉnh; đã biết -> dùng bản của tỉnh đó.
+    # province: tỉnh của hội thoại / câu này ('*' = chung toàn quốc; None = chưa biết). Tắt bằng S3_PROVINCE_CLARIFY=0.
+    if len(out.tasks) == 1 and out.tasks[0].route == "direct" and os.environ.get("S3_PROVINCE_CLARIFY", "1") == "1":
+        rt = out.tasks[0]
+        pv = data_api.province_versions(conn, rt.procedure_id)
+        province = province or next(iter(data_api.provinces_in(user_text)), None)   # tỉnh nêu trong câu (bộ chấm gọi thẳng Policy)
+        if pv and province and province != NATIONWIDE:
+            if province in pv:
+                nm = conn.execute("SELECT name FROM procedures WHERE proc_id=?", (pv[province],)).fetchone()[0]
+                out.province_note = {"province": province, "from": rt.procedure_id, "proc_id": pv[province]}
+                rt.procedure_id, rt.procedure_label = pv[province], nm
+                rt.variants = {}
+                have = {r["field"]: r["status"] for r in data_api.fields(conn, rt.procedure_id, list(rt.field_status))}
+                rt.field_status = {f: have.get(f, "unknown") for f in rt.field_status}
+            else:
+                out.province_note = {"province": province, "none": True}
+        elif pv and not province and not no_clarify:
+            order = data_api.provinces(conn)
+            provs = sorted(pv, key=lambda p: order.index(p) if p in order else 999)[:PROVINCE_OPTS]
+            opts = [{"label": p, "proc_id": pv[p]} for p in provs] + [{"label": NATIONWIDE_LABEL, "proc_id": rt.procedure_id}]
+            more = f" (có {len(pv)} tỉnh/thành có bản riêng; tỉnh khác bạn gõ tên)" if len(pv) > PROVINCE_OPTS else " (tỉnh khác bạn gõ tên)"
+            out.clarify = {"question": f"Thủ tục «{rt.procedure_label[:90]}» có bản riêng của một số tỉnh/thành. Bạn làm thủ tục ở tỉnh/thành nào?{more}",
+                           "options": opts, "allow_free_text": True, "kind": "province"}
+            out.behavior = "clarify"
+            return out
 
     # --- clarify: tối đa 1 thẻ/lượt; chỉ khi LLM xin VÀ chưa có thủ tục nào chắc (guardrail 4, 6)
     chosen = [t for t in out.tasks if t.route == "direct"]

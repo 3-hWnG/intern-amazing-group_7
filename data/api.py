@@ -68,6 +68,40 @@ def variants(conn, head: str) -> list[dict]:
         " WHERE f.head=? ORDER BY f.default_variant DESC, length(p.name)", (head,))]
 
 
+def province_versions(conn, proc_id: str) -> dict[str, str]:
+    """G4.4 (D5): bản riêng của tỉnh trong cùng họ với `proc_id` (khi proc_id là bản toàn quốc): {tỉnh: proc_id}.
+    Chỉ bản cấp xã còn hiệu lực; một tỉnh có nhiều bản thì lấy bản có tên gần tên proc_id nhất. proc_id là bản tỉnh / không có họ -> {}."""
+    from difflib import SequenceMatcher
+    me = conn.execute("SELECT name, province FROM procedures WHERE proc_id=? AND status='active'", (proc_id,)).fetchone()
+    fam = family_of(conn, proc_id)
+    if not me or me["province"] or not fam or fam["n_members"] < 2:
+        return {}
+    best: dict[str, tuple[float, str]] = {}
+    for v in conn.execute("SELECT p.proc_id, p.name, p.province FROM families f JOIN procedures p ON p.proc_id=f.proc_id AND p.status='active'"
+                          " WHERE f.head=? AND p.province IS NOT NULL AND p.agency_levels LIKE '%Xã/Phường%'", (fam["head"],)):
+        sim = SequenceMatcher(None, _S._fold(me["name"]), _S._fold(v["name"])).ratio()
+        if v["province"] not in best or sim > best[v["province"]][0]:
+            best[v["province"]] = (sim, v["proc_id"])
+    return {p: pid for p, (_, pid) in best.items()}
+
+
+def provinces(conn) -> list[str]:
+    """Tỉnh/thành có trong dữ liệu đang dùng (bản 3: 34 tỉnh sau sáp nhập), nhiều thủ tục riêng trước."""
+    return [r[0] for r in conn.execute("SELECT province, COUNT(*) n FROM procedures WHERE province IS NOT NULL AND status='active'"
+                                       " GROUP BY province ORDER BY n DESC, province")]
+
+
+def provinces_in(text: str) -> list[str]:
+    """Tỉnh/thành được nhắc trong câu (cùng mẫu nhận diện với bộ tìm kiếm, có cách gọi khác: tphcm, sài gòn…)."""
+    f, out = f" {_S._fold(text)} ", []
+    for pat, name in _S._PROVINCE_PATTERNS:
+        if f" {pat} " in f:
+            f = f.replace(f" {pat} ", " ")
+            if name not in out:
+                out.append(name)
+    return out
+
+
 def default_variant(conn, head: str) -> str | None:
     """proc_id của bản mặc định trong nhóm."""
     r = conn.execute("SELECT proc_id FROM families WHERE head=? AND default_variant=1",

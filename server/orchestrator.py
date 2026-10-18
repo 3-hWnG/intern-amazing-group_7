@@ -19,6 +19,7 @@ from answer import answer
 from db import store
 from planner import plan as make_plan
 from policy import check, mask_pii, pre_check
+from policy.policy import NATIONWIDE, NATIONWIDE_LABEL
 from system3.data import api as data_api
 from system3.data.textutil import fold
 from system3.retrieval.context import ConvState
@@ -38,6 +39,7 @@ class Turn:
     memory: dict | None = None             # Phase 26: {subjects:set, label} từ user_memory.for_policy; None = không có hồ sơ (hành vi cũ)
     pick_proc: str | None = None           # Phase 31: nút "dạng khác" gửi kèm proc_id đã chọn (không phải câu hỏi mới nên không được hỏi lại)
     rules_only: bool = False               # G3.3: bỏ bước LLM (máy không GPU, hoặc người dùng bật "Chỉ trả lời bằng luật")
+    profile_province: str | None = None    # G4.4: tỉnh/thành trong hồ sơ người dùng (đã đối chiếu với dữ liệu)
 
 
 def flat_text(r: dict) -> str:
@@ -214,9 +216,18 @@ def handle_turn(turn: Turn) -> dict:
     pids = [t.procedure_id for t in plan.tasks if t.procedure_id]
     if pids:                               # đổi thủ tục khác family: fact cũ không được rò sang
         facts = _facts_for(conn, turn.session_facts, pids)
+    # G4.4 (D5): tỉnh của lượt này = nút vừa bấm ở thẻ hỏi tỉnh > tỉnh nhắc trong câu > tỉnh đã chọn trong hội thoại > hồ sơ
+    cl_meta = (turn.reply_to_clarify or {}).get("meta") or {}
+    picked = None
+    if cl_meta.get("kind") == "province" and forced_pid:
+        lab = next((k for k, v in (cl_meta.get("option_ids") or {}).items() if v == forced_pid), None)
+        picked = NATIONWIDE if lab == NATIONWIDE_LABEL else lab
+    said = picked or next(iter(data_api.provinces_in(turn.text if answered_clarify else text)), None)
+    province = said or (state or {}).get("province") or turn.profile_province
+    trace["province"] = {"used": province, "said": said}
     routed = check(plan, user_text=pc["text"], conn=conn, facts=facts, flags=pc["flags"],
                    known_procs=[last_proc] if (last_proc and answered_clarify) else None, no_clarify=answered_clarify,
-                   memory=None if answered_clarify else turn.memory)
+                   memory=None if answered_clarify else turn.memory, province=province)
 
     # Không hỏi lần 2: đã trả lời thẻ hỏi lại mà Planner vẫn xin hỏi -> lấy ứng viên đầu, nói rõ giả định.
     assumed = ""
@@ -225,7 +236,7 @@ def handle_turn(turn: Turn) -> dict:
         plan.needs_clarification = False
         plan.tasks[0].procedure_id = pid
         plan.tasks[0].action = "ask_field" if plan.tasks[0].fields else "find_procedure"
-        routed = check(plan, user_text=pc["text"], conn=conn, facts=facts, flags=pc["flags"], no_clarify=True)
+        routed = check(plan, user_text=pc["text"], conn=conn, facts=facts, flags=pc["flags"], no_clarify=True, province=province)
         assumed = routed.tasks[0].procedure_label if routed.tasks else ""
 
     # Đưa tình huống đã kể ở lượt trước vào điều kiện khi dữ liệu thủ tục có nhắc (không bịa liên quan)
@@ -252,13 +263,19 @@ def handle_turn(turn: Turn) -> dict:
                                  "text": f"Theo hồ sơ của bạn (đối tượng: {mn['subject']}) mình {what} «{mn['procedure']}». Nếu chưa đúng, bạn nói lại nhé."})
     if mn:
         trace["memory"] = mn
+    pn = routed.province_note
+    if pn and ans["blocks"]:
+        msg = (f"{pn['province']} không có bản riêng cho thủ tục này: dưới đây là bản áp dụng chung toàn quốc." if pn.get("none") else
+               f"Mình dùng bản riêng của {pn['province']} cho thủ tục này. Bạn làm ở tỉnh khác thì nói tên tỉnh nhé.")
+        ans["blocks"].insert(0, {"title": "", "sources": [], "text": msg})
+        trace["province"]["note"] = pn
 
     clarify = ans.get("clarify")
     if clarify:                            # UI nhận options là chuỗi; mã thủ tục để trong meta
         clarify = {"question": clarify["question"], "allow_free_text": True,
                    "options": [o["label"] for o in clarify["options"]],
                    "meta": {"option_ids": {o["label"]: o["proc_id"] for o in clarify["options"]},
-                            "original_question": text,
+                            "original_question": text, **({"kind": clarify["kind"]} if clarify.get("kind") else {}),
                             "fields": sorted({f for t in plan.tasks for f in t.fields})}}
 
     # ---- bộ nhớ: trạng thái hội thoại theo thủ tục THỰC SỰ đã trả lời (không theo đề xuất của resolve: biến thể mặc định, nút chọn, giả định)
@@ -269,6 +286,8 @@ def handle_turn(turn: Turn) -> dict:
     new_state.loose = bool((plan.state or {}).get("loose")) if direct else new_state.loose
     if not direct:
         new_state.story = list((plan.state or {}).get("story", new_state.story))
+    if said:
+        new_state.province = said   # cả hội thoại dùng tỉnh này (người dùng nói tỉnh khác thì đổi)
     store.set_state(turn.conversation_id, new_state.to_dict())
     trace["state"] = new_state.to_dict()
     # ---- bộ nhớ
@@ -283,7 +302,9 @@ def handle_turn(turn: Turn) -> dict:
                  llm_ms=plan.llm_ms)
     res = {"kind": ans["kind"] if not clarify else "clarify", "blocks": ans["blocks"], "clarify": clarify,
            "plan": plan.to_dict(), "trace": trace}
-    if answered_clarify and forced_pid:    # Phase 26: gợi ý "Nhớ đối tượng ...?" (UI hỏi, người dùng bấm mới lưu)
+    if picked and picked != NATIONWIDE and picked != turn.profile_province:   # G4.4: gợi ý "Nhớ tỉnh/thành ... cho tài khoản?"
+        res["memory_suggest"] = {"axis": "province", "value": picked}
+    elif answered_clarify and forced_pid and cl_meta.get("kind") != "province":    # Phase 26: gợi ý "Nhớ đối tượng ...?" (UI hỏi, người dùng bấm mới lưu)
         from user_memory import suggest_after_pick
         sg = suggest_after_pick(forced_pid, list(((turn.reply_to_clarify or {}).get("meta") or {}).get("option_ids", {}).values()), turn.memory)
         if sg:

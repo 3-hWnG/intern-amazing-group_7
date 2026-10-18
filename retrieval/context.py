@@ -147,6 +147,7 @@ class ConvState:
     fields: list = field(default_factory=list)
     story: list = field(default_factory=list)
     loose: bool = False                           # thủ tục đang nói do SUY RA từ lời kể (chưa được người dùng gọi tên): lượt sau nới lỏng cổng "chữ lạ"
+    province: str | None = None                   # G4.4 (D5): tỉnh/thành người dùng làm thủ tục ('*' = áp dụng chung toàn quốc), giữ cho cả hội thoại
 
     def note(self, pid: str, fields: list | None = None) -> None:
         if pid in self.history:
@@ -161,13 +162,14 @@ class ConvState:
         self.story = (self.story + [text])[-STORY_MAX:]
 
     def to_dict(self) -> dict:
-        return {"topic": self.topic, "history": list(self.history), "order": list(self.order), "fields": list(self.fields), "story": list(self.story), "loose": self.loose}
+        return {"topic": self.topic, "history": list(self.history), "order": list(self.order), "fields": list(self.fields), "story": list(self.story), "loose": self.loose,
+                **({"province": self.province} if self.province else {})}
 
     @classmethod
     def from_dict(cls, d: dict | None) -> "ConvState":
         d = d or {}
         return cls(d.get("topic"), list(d.get("history") or []), list(d.get("order") or d.get("history") or []),
-                   list(d.get("fields") or []), list(d.get("story") or []), bool(d.get("loose")))
+                   list(d.get("fields") or []), list(d.get("story") or []), bool(d.get("loose")), d.get("province"))
 
 
 # SỰ KIỆN ĐỜI SỐNG -> họ thủ tục. Người dân kể hoàn cảnh bằng từ KHÔNG nằm trong tên thủ tục ("vừa mất" ~ khai tử, "vào lớp 6" ~ tuyển sinh THCS).

@@ -25,17 +25,21 @@ _EQUIV = [frozenset({"Doanh nghiệp", "Doanh nghiệp Việt Nam"})]   # hai t�
 LIMITS = {"province": 60, "commune": 80, "note": 200}
 _LABELS = {"province": "Tỉnh/thành", "commune": "Xã/phường", "note": "Ghi chú"}
 
-# Nguồn: danh mục 63 đơn vị hành chính cấp tỉnh trước 01/07/2025 (cùng danh sách hệ cũ V10.6 memory.js). Server KHÔNG kiểm chặt (chỉ UI gợi ý) vì sau sáp nhập còn 34.
-# FINAL-PRODUCT: [MEM] đổi sang danh mục 34 tỉnh/thành mới (và xã/phường) khi nhóm chốt; hiện chỉ để hiển thị, không dùng để lọc
-PROVINCES = [
-    "An Giang", "Bà Rịa - Vũng Tàu", "Bắc Giang", "Bắc Kạn", "Bạc Liêu", "Bắc Ninh", "Bến Tre", "Bình Định", "Bình Dương",
-    "Bình Phước", "Bình Thuận", "Cà Mau", "Cần Thơ", "Cao Bằng", "Đà Nẵng", "Đắk Lắk", "Đắk Nông", "Điện Biên", "Đồng Nai",
-    "Đồng Tháp", "Gia Lai", "Hà Giang", "Hà Nam", "Hà Nội", "Hà Tĩnh", "Hải Dương", "Hải Phòng", "Hậu Giang", "Hòa Bình",
-    "Hưng Yên", "Khánh Hòa", "Kiên Giang", "Kon Tum", "Lai Châu", "Lâm Đồng", "Lạng Sơn", "Lào Cai", "Long An", "Nam Định",
-    "Nghệ An", "Ninh Bình", "Ninh Thuận", "Phú Thọ", "Phú Yên", "Quảng Bình", "Quảng Nam", "Quảng Ngãi", "Quảng Ninh",
-    "Quảng Trị", "Sóc Trăng", "Sơn La", "Tây Ninh", "Thái Bình", "Thái Nguyên", "Thanh Hóa", "Thừa Thiên Huế", "Tiền Giang",
-    "TP. Hồ Chí Minh", "Trà Vinh", "Tuyên Quang", "Vĩnh Long", "Vĩnh Phúc", "Yên Bái"]
-assert len(PROVINCES) == 63
+# G4.4: danh sách tỉnh/thành lấy TỪ DỮ LIỆU đang dùng (bản 3: 34 tỉnh sau sáp nhập), không còn danh sách 63 tỉnh viết cứng.
+def provinces() -> list[str]:
+    return list(_provinces(str(data_api.active_db_path())))
+
+
+@lru_cache(maxsize=4)
+def _provinces(path: str) -> tuple[str, ...]:
+    return tuple(sorted(data_api.provinces(data_api.connect(path))))
+
+
+def profile_province(cid: str) -> str | None:
+    """Tỉnh trong hồ sơ, đối chiếu với dữ liệu (gõ 'tphcm', 'Sài Gòn' cũng nhận). Không khớp tỉnh nào trong dữ liệu -> None."""
+    raw = store.mem_all(cid).get("profile.province", "")
+    hit = [p for p in data_api.provinces_in(raw) if p in provinces()] if raw else []
+    return hit[0] if hit else None
 
 
 def client_id(raw: str | None) -> str:
@@ -124,7 +128,7 @@ def snapshot(cid: str) -> dict:
     return {"client_id": cid, "profile": prof, "mcq": mcq,
             "effective": {"subjects": sorted(subs), "source": src},
             "catalog": {"subjects": [{"name": n, "n": c} for n, c in subject_catalog()],
-                        "user_types": USER_TYPES, "axes": list(AXES), "provinces": PROVINCES,
+                        "user_types": USER_TYPES, "axes": list(AXES), "provinces": provinces(),
                         "user_type_subjects": {t: [s for s in ss if s in subject_names()] for t, ss in TYPE_SUBJECTS.items()}}}
 
 

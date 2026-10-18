@@ -90,6 +90,7 @@ python tests/fee_display_test.py  # lệ phí in đúng đơn vị (USD không t
 python tests/lineage_test.py      # mã thủ tục Cổng cấp lại: proc_lineage ghép mã cũ -> mới (dựng DB ~10 s)
 python tests/gpu_sched_test.py    # hàng GPU chung: lượt chỉ-luật không phải chờ lượt tìm web / LLM của người khác
 python tests/listsql_test.py      # liệt kê / đếm bằng text-to-SQL: hộp cát chặn mọi câu SQL ghi / đọc ngoài proc_flat
+python tests/province_test.py     # thủ tục có bản riêng tỉnh: hỏi tỉnh, nhớ cho cả hội thoại
 python tests/p30_clarify_test.py  # Phase 30: hỏi lại khi câu là cụm gốc chung, không hỏi thừa khi đã gọi tên; điều kiện phải thêm thông tin ngoài tên thủ tục
 python smoke_test.py             # server tạm (DB tạm, cổng 8391, S3_USE_LLM=0): health, trả lời có nguồn, hỏi lại + bấm nút, messages/trace
 set S3_USE_LLM=0 && python e2e_test.py   # chạy server tạm 5 lượt hội thoại (cổng 8392)

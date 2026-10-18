@@ -422,10 +422,12 @@
   /* sau khi bấm một nút thẻ hỏi lại: gợi ý nhớ đối tượng, người dùng bấm mới lưu */
   function memSuggest(sg) {
     const bar = el("div", "mem-suggest");
-    bar.appendChild(el("span", "", "Nhớ đối tượng: " + sg.value + " cho các câu sau?"));
+    const prov = sg.axis === "province";   // G4.4: tỉnh/thành lưu vào hồ sơ, không phải lựa chọn MCQ
+    bar.appendChild(el("span", "", (prov ? "Nhớ tỉnh/thành: " : "Nhớ đối tượng: ") + sg.value + " cho các câu sau?"));
     const yes = el("button", "", "Nhớ"); yes.type = "button";
     yes.onclick = async () => {
-      try { mem = await api("/memory/mcq", { axis: sg.axis, value: sg.value }); bar.textContent = "Đã ghi nhận: " + (AXIS_LABEL[sg.axis] || sg.axis) + " = " + sg.value + '. Xem hoặc quên trong "Hồ sơ của bạn".'; }
+      try { mem = prov ? await api("/memory/profile", { province: sg.value }) : await api("/memory/mcq", { axis: sg.axis, value: sg.value });
+            bar.textContent = "Đã ghi nhận: " + (prov ? "Tỉnh/thành" : (AXIS_LABEL[sg.axis] || sg.axis)) + " = " + sg.value + '. Xem hoặc quên trong "Hồ sơ của bạn".'; }
       catch (e) { bar.textContent = "Lỗi: " + e.message; }
     };
     const no = el("button", "", "Không"); no.type = "button"; no.onclick = () => bar.remove();

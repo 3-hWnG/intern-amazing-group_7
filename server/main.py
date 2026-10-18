@@ -318,7 +318,7 @@ async def chat(body: ChatIn, request: Request, cid_mem: str = Depends(_cid)):
         clarify = prev["clarify"] if prev else None
     turn = orchestrator.Turn(cid, text, body.reply_to, store.recent_history(cid),
                              store.session_facts(cid), store.shown_procedures(cid), clarify,
-                             pick_proc=body.proc_id, memory=user_memory.for_policy(cid_mem),
+                             pick_proc=body.proc_id, memory=user_memory.for_policy(cid_mem), profile_province=user_memory.profile_province(cid_mem),
                              rules_only=aihealth.rules_only(request))
     # G1.3: store che CCCD/SĐT khi ghi (lượt này vẫn xử lý bằng câu gốc trong bộ nhớ)
     store.add_message(cid, "user", text)
