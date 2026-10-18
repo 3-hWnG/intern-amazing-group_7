@@ -1,10 +1,8 @@
 """Một lượt trò chuyện Friendly (NV2).
 
-Hai chế độ trả lời:
-  - fast  (mặc định): ép đầu ra JSON {plan, answer, ask_back, choices} -> model không suy nghĩ, ~1-3 giây.
-                       Chữ trong "answer" được tách dần và hiện ngay khi model đang viết.
-  - think (Suy nghĩ kỹ): model suy nghĩ (ẩn) rồi trả lời, ~30 giây. Người dùng bấm "Trả lời nhanh" -> dừng suy nghĩ,
-                       trả lời ngay bằng chế độ fast trong cùng lượt.
+Một chế độ trả lời (D9, 18/10: bỏ hẳn chế độ suy nghĩ ~30 giây và nút ngắt của nó):
+  - fast: ép đầu ra JSON {plan, answer, ask_back, choices} -> model không suy nghĩ, ~1-3 giây.
+          Chữ trong "answer" được tách dần và hiện ngay khi model đang viết.
 Thứ tự trong một lượt:
   1. guardrail "block"  -> trả lời cố định, không gọi AI
   2. ngôn ngữ (code)    -> không phải tiếng Việt: hiện câu xin lỗi trước, AI trả lời tiếng Việt
@@ -15,7 +13,7 @@ Thứ tự trong một lượt:
 NV5 (mỗi bước bật/tắt trong ⚙, mặc định tắt = như trước): câu chào khi bật dữ liệu (GREETING_MODE), công cụ bảng (TABLE_TOOL),
 hỏi lại khi trùng tên (AMBIGUITY_CHECK, trả lời bằng code), kiểm chi tiết bịa rồi viết lại (GROUNDING_CHECK), thứ tự lời dặn
 để Ollama dùng lại phần đã đọc (PROMPT_CACHE_ORDER), chế độ Nhanh dạng chữ (FAST_FORMAT=text).
-Sự kiện SSE: meta, queue, start, thinking, switch, delta, restart, replace, done | error, memory.
+Sự kiện SSE: meta, queue, start, delta, restart, replace, done | error, memory.
 """
 from __future__ import annotations
 import asyncio
@@ -29,20 +27,11 @@ from . import ambig, context, db, greet, ground, guard, lang, llm, memory, perso
 from ..abi import turn as abi_turn
 
 _background: set = set()   # giữ tham chiếu tới việc nền để không bị dọn mất giữa chừng
-_turns: dict[str, dict] = {}   # lượt đang chạy: turn_id -> {"user": id, "fast": cờ "Trả lời nhanh"}
+_turns: dict[str, dict] = {}   # lượt đang chạy: turn_id -> {"user": id}
 
 
 def sse(obj: dict) -> str:
     return f"data: {json.dumps(obj, ensure_ascii=False)}\n\n"
-
-
-def interrupt(turn_id: str, user_id: int) -> bool:
-    """Nút "Trả lời nhanh": bật cờ cho lượt đang suy nghĩ. Trả False nếu lượt không tồn tại / không phải của người này."""
-    t = _turns.get(turn_id)
-    if not t or t["user"] != user_id:
-        return False
-    t["fast"] = True
-    return True
 
 
 class AnswerStream:
@@ -194,49 +183,6 @@ def _stat(t, state: dict) -> bool:
     return False
 
 
-async def _think(msgs: list[dict], prefix: str, state: dict, flag: dict):
-    """Chế độ Suy nghĩ kỹ. Cờ "Trả lời nhanh" bật -> dừng ngay (state["interrupted"]).
-    state["ask_small"]: AI có thể mở đầu bằng [XÃ GIAO] -> code bỏ dấu này đi trước khi hiện chữ."""
-    filt, body = lang.LatinFilter(), []
-    state.update(parts=body, filter=filt, replaced=None, mode="think", choices=None, small_talk=False)
-    if prefix:
-        yield sse({"type": "delta", "text": prefix + "\n\n"})
-    told, head = False, "" if state.get("ask_small") else None
-    mark = persona.SMALL_TALK_MARK
-    async for t in llm.stream_chat(msgs):
-        if _stat(t, state):
-            continue
-        if flag["fast"] and not body:   # chỉ ngắt khi chưa có chữ trả lời (đang suy nghĩ)
-            state["interrupted"] = True
-            return   # thoát -> stream dừng gọi model
-        if isinstance(t, llm.Thought):
-            state.setdefault("thinking", []).append(str(t))
-            if not told:
-                told = True
-                yield sse({"type": "thinking"})
-            continue
-        if head is not None:   # giữ lại vài chữ đầu để xem có dấu [XÃ GIAO] không
-            head += t
-            if len(head.lstrip()) < len(mark) and mark.startswith(head.lstrip()):
-                continue
-            if head.lstrip().startswith(mark):
-                state["small_talk"] = True
-                t = head.lstrip()[len(mark):].lstrip()
-            else:
-                t = head
-            head = None
-            if not t:
-                continue
-        clean = filt.feed(t)
-        if not clean:
-            continue
-        rep = _check(body, clean, state)
-        if rep:
-            yield rep
-            return
-        yield sse({"type": "delta", "text": clean})
-
-
 async def _fast(msgs: list[dict], prefix: str, state: dict):
     """Chế độ Nhanh. FAST_FORMAT=json: JSON có cấu trúc, hiện dần phần "answer". text: dòng kế hoạch ẩn rồi chữ tự do."""
     if settings.get("FAST_FORMAT") == "text":
@@ -273,7 +219,7 @@ _SEP = re.compile(r"^[ \t]*" + re.escape(persona.TEXT_SEP) + r"[ \t]*\r?\n", re.
 
 async def _fast_text(msgs: list[dict], prefix: str, state: dict):
     """FAST_FORMAT=text: model viết "KẾ HOẠCH: …" / "===" / câu trả lời. Phần trước "===" giữ lại (ẩn), phần sau hiện dần.
-    Lựa chọn hỏi lại theo mẫu [[CHOICES]] như Suy nghĩ kỹ (tách khi lưu)."""
+    Lựa chọn hỏi lại theo mẫu [[CHOICES]] (tách khi lưu)."""
     filt, body, raw = lang.LatinFilter(), [], []
     state.update(parts=body, filter=filt, replaced=None, mode="fast", fmt="text", choices=None, sources=[], ans=None,
                  raw_text=raw, small_talk=False)
@@ -355,11 +301,11 @@ async def _answerable(choices: list[str], dataset_ids: list[int]) -> list[str]:
     return [c for c, good in zip(choices, ok) if good]
 
 
-async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list[dict], mode: str = "fast", web: bool = False):
+async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list[dict], web: bool = False):
     """Async generator SSE cho một lượt. user_mid = tin người dùng mà câu trả lời nối vào."""
-    mode = "think" if mode == "think" else "fast"
+    mode = "fast"
     turn_id = uuid.uuid4().hex
-    flag = _turns[turn_id] = {"user": user["id"], "fast": False}
+    _turns[turn_id] = {"user": user["id"]}
     try:
         evidence, sinfo, t0 = None, None, time.perf_counter()
         dom = db.get_domain((db.get_conversation(cid) or {}).get("domain_id")) or db.get_domain(2)
@@ -405,7 +351,7 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             extra0 += abi_res["extra"]   # ngày hôm nay + giờ đồng bộ: AI so "sắp tới / đã qua" đúng
         bm = lambda **k: build_messages(user["id"], cid, history_path, text, **{"evidence": evidence, "extra": extra0,
                                                                                 "small_talk": ask_small and evidence is not None, "web": web, **k})
-        msgs, info = bm(fast=mode == "fast")
+        msgs, info = bm(fast=True)
         prompts = [{"why": "lần gửi đầu", "messages": msgs}]
         yield sse({"type": "meta", "conversation_id": cid, "user_message_id": user_mid, "turn_id": turn_id, "mode": mode,
                    "specialist": evidence is not None})
@@ -450,26 +396,15 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
         state = {"kb": evidence is not None, "ask_small": ask_small and evidence is not None}
         meta, status, err, small = {}, "done", None, small_by_code
 
-        async def gen(m):   # chạy lại đúng chế độ hiện tại (viết lại sau khi kiểm)
-            g = _fast(m, prefix, state) if state["mode"] == "fast" else _think(m, prefix, state, flag)
-            async for ev in g:
+        async def gen(m):   # chạy lại (viết lại sau khi kiểm)
+            async for ev in _fast(m, prefix, state):
                 yield ev
         try:
             async with llm.Turn():
                 t_llm = time.perf_counter()
                 yield sse({"type": "start"})
-                if mode == "think" and not flag["fast"]:
-                    async for ev in _think(msgs, prefix, state, flag):
-                        yield ev
-                interrupted = state.get("interrupted") or (mode == "think" and flag["fast"] and not state.get("parts"))
-                if mode == "fast" or interrupted:
-                    if mode == "think":
-                        meta["interrupted"] = True
-                        yield sse({"type": "switch", "mode": "fast"})
-                        msgs, _ = bm(fast=True)
-                        prompts.append({"why": "bấm Trả lời nhanh: gửi lại ở chế độ Nhanh", "messages": msgs})
-                    async for ev in _fast(msgs, prefix, state):
-                        yield ev
+                async for ev in _fast(msgs, prefix, state):
+                    yield ev
                 # ---- câu xã giao (NV5): AI tự đánh dấu; ai_first: code kiểm lại
                 ai_small = bool(state.get("small_talk")) and state["ask_small"]
                 if ai_small:
@@ -527,7 +462,7 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             raise
         finally:
             meta["mode"] = state.get("mode", mode)
-            meta["model"] = llm.think_model() if meta["mode"] == "think" else settings.get("FRIENDLY_MODEL")   # model lúc trả lời, cho feedback_log
+            meta["model"] = settings.get("FRIENDLY_MODEL")   # model lúc trả lời, cho feedback_log
             if "t_llm" in locals():
                 meta["timing"] = {"llm_ms": int((time.perf_counter() - t_llm) * 1000), "total_ms": int((time.perf_counter() - t0) * 1000)}
             f = state.get("filter")
@@ -576,7 +511,7 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                                "clarify_exhausted": info["exhausted"], "instructions": info["instructions"],
                                "guard_replaced": meta.get("guard"), "kb_guard": meta.get("guard") == "Chỉ trả lời từ dữ liệu",
                                "filtered": meta.get("filtered"), "leak_retry": meta.get("leak_retry", False),
-                               "interrupted": meta.get("interrupted", False), "memories_in_prompt": info["memories"],
+                               "memories_in_prompt": info["memories"],
                                "summary_in_prompt": info["summary"], "history_messages": info["history"],
                                "small_talk": meta.get("small_talk"), "small_talk_override": meta.get("small_talk_override"),
                                "grounding": meta.get("grounding")},
@@ -584,7 +519,7 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                     "output": {"raw_json": a.raw if a else None,
                                "raw_text": "".join(state.get("raw_text") or []) or None,
                                "plan": (a.final().get("plan") if a else state.get("plan")),
-                               "thinking": "".join(state.get("thinking") or [])[:30000], "final_text": content},
+                               "final_text": content},
                     "timing": {**meta.get("timing", {}), "search_ms": (sinfo or {}).get("search_ms"),
                                "search_parts": (sinfo or {}).get("timing"), "llm_stats": state.get("llm_stats"),
                                "table_ms": ((table or {}).get("info") or {}).get("ms")},

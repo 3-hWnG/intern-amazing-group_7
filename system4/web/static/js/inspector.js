@@ -86,8 +86,7 @@
   /* ---------- "Vì sao?" cho người dùng ---------- */
   function why(w) {
     const box = el("div");
-    box.appendChild(el("p", "", (w.mode === "think" ? "Chế độ Suy nghĩ kỹ" : "Chế độ Nhanh") + (w.interrupted ? " (đã bấm Trả lời nhanh)" : "") +
-      (w.specialist ? ` · Chuyên gia: đã tìm trong ${w.datasets_searched} bộ dữ liệu đang bật` : " · AI chung (không có bộ dữ liệu đang bật)")));
+    box.appendChild(el("p", "", (w.specialist ? ` · Chuyên gia: đã tìm trong ${w.datasets_searched} bộ dữ liệu đang bật` : " · AI chung (không có bộ dữ liệu đang bật)")));
     const src = w.sources.length ? w.sources : w.consulted;
     if (w.specialist) {
       box.appendChild(el("p", "", w.sources.length ? "Câu trả lời dựa trên:" : src.length ? "AI không ghi nguồn cụ thể; các đoạn đã tra cứu:" : "Không tìm thấy đoạn dữ liệu nào liên quan."));
@@ -121,24 +120,22 @@
       "AI nghĩ gì": () => {
         const w = el("div");
         if (out.plan) { w.appendChild(el("h3", "", "Kế hoạch ẩn (chế độ Nhanh)")); w.appendChild(pre(out.plan)); }
-        if (out.thinking) { w.appendChild(el("h3", "", "Suy nghĩ ẩn (chế độ Suy nghĩ kỹ)")); w.appendChild(pre(out.thinking)); }
         if (out.raw_json) { w.appendChild(el("h3", "", "JSON thô model trả về")); w.appendChild(pre(out.raw_json)); }
         w.appendChild(el("h3", "", "Câu trả lời cuối (sau lọc / guardrail)")); w.appendChild(pre(out.final_text || d.content || ""));
-        if (!out.plan && !out.thinking && !out.raw_json) w.prepend(el("p", "muted", "Không có phần suy nghĩ / kế hoạch cho câu này."));
+        if (!out.plan && !out.raw_json) w.prepend(el("p", "muted", "Không có phần suy nghĩ / kế hoạch cho câu này."));
         return w;
       },
       "Kiểm soát": () => {
         const w = el("div");
         const a = t.after || {}, mem = a.memory || {};
         w.appendChild(kv([
-          ["Chế độ", (t.mode === "think" ? "Suy nghĩ kỹ" : "Nhanh") + (t.final_mode !== t.mode ? ` → ${t.final_mode}` : "")],
           ["Chuyên gia", yes(t.specialist)], ["Trạng thái", t.status + (t.error ? ` · ${t.error}` : "")],
           ["Không phải tiếng Việt (xin lỗi trước)", yes(ch.foreign)], ["Người dùng bực bội (thêm câu đồng cảm)", yes(ch.upset)],
           ["Số lần hỏi lại liên tiếp trước đó", ch.clarify_streak], ["Hết lượt hỏi lại", yes(ch.clarify_exhausted)],
           ["Lời dặn từ guardrail", (ch.instructions || []).join(" | ") || "—"],
           ["Guardrail thay câu trả lời", ch.guard_replaced || "—"], ["Chốt 'chỉ trả lời từ dữ liệu'", yes(ch.kb_guard)],
           ["Bộ lọc chữ lạ / emoji", ch.filtered ? `${ch.filtered.letters} chữ lạ, ${ch.filtered.other} ký hiệu` : "không phải lọc"],
-          ["Viết lại do lọt chữ lạ", yes(ch.leak_retry)], ["Bấm Trả lời nhanh", yes(ch.interrupted)],
+          ["Viết lại do lọt chữ lạ", yes(ch.leak_retry)],
           ["Điều nhớ đưa vào lời dặn", ch.memories_in_prompt], ["Có tóm tắt hội thoại", yes(ch.summary_in_prompt)], ["Số tin lịch sử gửi kèm", ch.history_messages],
           ["Bước ghi nhớ", a.memory ? (mem.checked ? `đã chạy · thêm ${(mem.added || []).length}, xoá ${(mem.removed || []).length}` : `bỏ qua (${mem.why || ""})`) : "chưa xong / không có"],
           ["AI đề xuất ghi nhớ", mem.proposed ? JSON.stringify(mem.proposed) : undefined], ["Tóm tắt hội thoại sau lượt này", a.summarized !== undefined ? yes(a.summarized) : undefined],

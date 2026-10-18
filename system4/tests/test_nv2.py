@@ -27,14 +27,6 @@ script = []         # câu trả lời giả lần lượt; rỗng -> "Dạ, ch�
 memory_reply = {"add": [], "remove": []}
 
 
-async def fake_stream(messages):
-    prompts.append(messages)
-    text = script.pop(0) if script else "Dạ, chúng tôi hiểu rồi."
-    yield llm.THINKING
-    for i in range(0, len(text), 7):
-        yield text[i:i + 7]
-
-
 def fake_json(messages, schema, timeout=60):
     json_calls.append(messages)
     if "summary" in schema["properties"]:
@@ -42,28 +34,31 @@ def fake_json(messages, schema, timeout=60):
     return json.loads(json.dumps(memory_reply))
 
 
-fast_script = []    # câu trả lời JSON giả cho chế độ Nhanh
+fast_script = []    # câu trả lời JSON giả (dict) — đi trước `script`
 fast_prompts = []
 
 
+def _as_json(text: str) -> dict:
+    """Câu kịch bản dạng chữ -> JSON của chế độ trả lời (D9: chỉ còn một chế độ). "[[CHOICES]]" + "- x" -> ask_back + choices."""
+    if "[[CHOICES]]" in text:
+        q, rest = text.split("[[CHOICES]]", 1)
+        return {"plan": "hỏi lại", "answer": q.strip(), "ask_back": True,
+                "choices": [l[2:].strip() for l in rest.splitlines() if l.startswith("- ")]}
+    return {"plan": "trả lời", "answer": text, "ask_back": False, "choices": []}
+
+
 async def fake_fast(messages, schema):
+    prompts.append(messages)
     fast_prompts.append(messages)
-    d = fast_script.pop(0) if fast_script else {"plan": "trả lời", "answer": "Dạ, đây là câu trả lời nhanh.", "ask_back": False, "choices": []}
+    if fast_script:
+        d = fast_script.pop(0)
+    else:
+        d = _as_json(script.pop(0) if script else "Dạ, chúng tôi hiểu rồi.")
     raw = json.dumps(d)   # ensure_ascii=True: có \uXXXX, \" và \n để kiểm bộ tách dần
     for i in range(0, len(raw), 5):
         yield raw[i:i + 5]
 
 
-async def think_then_interrupted(messages):
-    prompts.append(messages)
-    for t in chat_mod._turns.values():   # giả lập người dùng bấm "Trả lời nhanh" khi model đang suy nghĩ
-        t["fast"] = True
-    for _ in range(50):
-        yield llm.THINKING
-    yield "Câu trả lời suy nghĩ (không được dùng)."
-
-
-llm.stream_chat = fake_stream
 llm.stream_json = fake_fast
 llm.chat_json = fake_json
 
@@ -93,15 +88,13 @@ with TestClient(main.app) as c:
         return c.get(f"/s4/conversations/{cid}/messages").json()["messages"]
 
     as_user(a)
-    # các mục dưới đây kiểm chế độ Suy nghĩ kỹ; chế độ Nhanh (mặc định thật) kiểm ở cuối
-    assert c.post("/s4/settings", json={"values": {"DEFAULT_ANSWER_MODE": "think"}}).status_code == 200
 
     # ---- vai trò: Team 7, ngôi thứ nhất, không emoji, chỉ tiếng Việt
     ev = chat("Team 7 là ai vậy?")
     cid = ev[0]["conversation_id"]
     sp = system_of()
     assert "trợ lý hỗ trợ khách hàng của Team 7" in sp and "xưng" not in sp and "Không dùng emoji" in sp, sp
-    assert "chỉ dùng chữ cái Latin" in sp and "[[CHOICES]]" in sp
+    assert "chỉ dùng chữ cái Latin" in sp and '"ask_back"' in sp and "[[CHOICES]]" not in sp
 
     # ---- phiên bản: tạo lại -> 2 phiên bản câu trả lời
     p = path(cid)
@@ -269,15 +262,12 @@ with TestClient(main.app) as c:
     chat("Tin số 0 (sửa)", conversation_id=cid3, edit_of=first)
     assert "TÓM TẮT GIẢ" not in system_of()
 
-    # ================= chế độ Nhanh (mặc định thật) =================
-    assert c.post("/s4/settings", json={"values": {"DEFAULT_ANSWER_MODE": "fast"}}).status_code == 200
-    assert c.get("/s4/public").json()["default_answer_mode"] == "fast"
+    # ================= định dạng JSON, tách dần, lựa chọn =================
+    assert "default_answer_mode" not in c.get("/s4/public").json(), "D9: không còn chọn chế độ trả lời"
     ans = '1. **Cài Python** "bản mới" từ python.org\n2. Học cú pháp cơ bản\n3. Làm dự án nhỏ, ví dụ: tự động hoá việc kế toán'
     fast_script.append({"plan": "liệt kê 3 bước ngắn gọn", "answer": ans, "ask_back": False, "choices": ["không được hiện"]})
-    n_think = len(prompts)
-    ev = chat("Liệt kê 3 bước để học Python")
-    assert len(prompts) == n_think, "chế độ Nhanh không gọi luồng suy nghĩ"
-    assert ev[0]["mode"] == "fast" and "turn_id" in ev[0]
+    ev = chat("Liệt kê 3 bước để học Python", mode="think")   # client cũ gửi mode=think: bị bỏ qua
+    assert ev[0]["mode"] == "fast" and "turn_id" in ev[0] and not any(e["type"] in ("thinking", "switch") for e in ev)
     shown = "".join(e["text"] for e in ev if e["type"] == "delta")
     assert shown == ans, repr(shown)
     fcid = ev[0]["conversation_id"]
@@ -295,24 +285,15 @@ with TestClient(main.app) as c:
     ev = chat("Xin chào bạn")
     m = path(ev[0]["conversation_id"])[-1]
     assert "你" not in m["content"] and "😀" not in m["content"] and m["meta"]["choices"] == ["Một", "Hai"], m
-    # "Kỹ hơn": tạo lại câu trả lời Nhanh bằng chế độ Suy nghĩ kỹ -> phiên bản 2
+    # tạo lại -> phiên bản 2 (cùng một chế độ trả lời)
     first_fast = path(fcid)[-1]["id"]
-    script.append("Trả lời kỹ: ba bước chi tiết.")
-    ev = chat(conversation_id=fcid, regenerate_of=first_fast, mode="think")
-    assert ev[0]["mode"] == "think"
+    script.append("Trả lời lại: ba bước chi tiết.")
+    ev = chat(conversation_id=fcid, regenerate_of=first_fast)
     m = path(fcid)[-1]
-    assert m["content"] == "Trả lời kỹ: ba bước chi tiết." and m["meta"]["mode"] == "think" and len(m["versions"]) == 2, m
-    # bấm "Trả lời nhanh" khi đang suy nghĩ -> dừng suy nghĩ, trả lời bằng chế độ Nhanh trong cùng lượt
-    llm.stream_chat = think_then_interrupted
-    fast_script.append({"plan": "nhanh", "answer": "Câu trả lời nhanh sau khi ngắt.", "ask_back": False, "choices": []})
-    ev = chat("Phân tích kỹ giúp mình", mode="think")
-    types = [e["type"] for e in ev]
-    assert "switch" in types and types.index("switch") < types.index("delta"), types
-    m = path(ev[0]["conversation_id"])[-1]
-    assert m["content"] == "Câu trả lời nhanh sau khi ngắt." and m["meta"]["interrupted"] and m["meta"]["mode"] == "fast", m
-    llm.stream_chat = fake_stream
-    assert c.post("/s4/turns/khong-co/fast").status_code == 404
-    assert chat_mod.interrupt("khong-co", 1) is False
+    assert m["content"] == "Trả lời lại: ba bước chi tiết." and m["meta"]["mode"] == "fast" and len(m["versions"]) == 2, m
+    # D9: nút "Trả lời nhanh" / chế độ suy nghĩ đã gỡ hẳn
+    assert c.post("/s4/turns/khong-co/fast").status_code in (404, 405)
+    assert not hasattr(chat_mod, "interrupt") and not hasattr(llm, "stream_chat") and not hasattr(llm, "think_model")
     # bộ nhớ: chỉ gọi AI khi tin nhắn có thông tin đáng nhớ
     k = len(json_calls)
     chat("Thủ tục này mất bao lâu?")

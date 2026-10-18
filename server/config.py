@@ -42,7 +42,7 @@ DB_PATH = Path(_str("S3_DB_PATH", str(SERVER_DIR / "runtime" / "system3.db")))
 SCHEMA_PATH = SERVER_DIR / "db" / "schema.sql"
 
 OLLAMA_HOST = _str("OLLAMA_HOST", "http://127.0.0.1:11434")
-LLM_MODEL = _str("LLM_MODEL", "qwen3:4b")
+LLM_MODEL = _str("LLM_MODEL", "qwen3:4b-instruct-2507-q4_K_M")   # D9: một model không suy nghĩ cho cả hai hệ (Launch web.bat đặt giống)
 LLM_NUM_CTX = _int("LLM_NUM_CTX", 8192)
 LLM_KEEP_ALIVE = _str("LLM_KEEP_ALIVE", "30m")
 LLM_TIMEOUT = _int("LLM_TIMEOUT", 120)

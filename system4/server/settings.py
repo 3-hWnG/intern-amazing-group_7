@@ -184,7 +184,7 @@ def describe() -> list[dict]:
     o = _load_overrides()
     return [{**s, "value": "" if s.get("secret") else get(k), "default": "" if s.get("secret") else _defaults[k], "overridden": k in o,
              **({"is_set": bool(get(k))} if s.get("secret") else {}),   # khoá bí mật: không gửi giá trị ra trình duyệt
-             **({"options": ollama_models()} if k in ("FRIENDLY_MODEL", "THINK_MODEL", "WEBSEARCH_MODEL") else {})} for k, s in SPECS.items()]
+             **({"options": ollama_models()} if k in ("FRIENDLY_MODEL", "WEBSEARCH_MODEL") else {})} for k, s in SPECS.items()]
 
 
 def ollama_models() -> list[str]:

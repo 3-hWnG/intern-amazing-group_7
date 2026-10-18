@@ -43,7 +43,6 @@ MIN_PASSWORD_LENGTH = 6
 BUSINESS_NAME = 'Team 7'
 BUSINESS_DESCRIPTION = ''
 FRIENDLY_MODEL = 'qwen3:4b-instruct-2507-q4_K_M'
-DEFAULT_ANSWER_MODE = 'fast'
 FRIENDLY_TEMPERATURE = 0.2
 FRIENDLY_NUM_CTX = 8192
 FRIENDLY_HISTORY_MESSAGES = 20
@@ -75,7 +74,6 @@ WEBSEARCH_MODEL = 'qwen3:4b-instruct-2507-q4_K_M'
 KB_NOT_FOUND_MESSAGE = 'Thông tin này không có trong các bộ dữ liệu đang bật nên chúng tôi không thể trả lời. Bạn có thể hỏi cụ thể hơn về nội dung trong dữ liệu, hoặc tắt bộ dữ liệu để trò chuyện chung.'
 EMBED_MODEL = 'bge-m3'
 TRACE_KEEP = 1000
-THINK_MODEL = 'qwen3:4b'
 KEEP_MODELS_LOADED = True
 PROMPT_CACHE_ORDER = True
 FAST_FORMAT = 'json'
@@ -159,12 +157,6 @@ SETTINGS = [
          help="Chi tiết (tìm kiếm, lời dặn, suy nghĩ ẩn…) cho nút 🔍 Soi; mỗi câu khoảng 10-20 KB. Câu cũ hơn tự xoá."),
     dict(key="FRIENDLY_MODEL", type="str", group="AI (Friendly)", label="Model dùng chung (Strict + Friendly)",
          help="Chọn trong danh sách model đã có trong Ollama. Dùng cho Friendly (trả lời nhanh, bộ nhớ, tóm tắt) VÀ bước LLM của Strict, nên đổi qua lại hai chế độ không phải nạp lại model. Gợi ý: qwen3:4b-instruct-2507-q4_K_M (không suy nghĩ)."),
-    dict(key="THINK_MODEL", type="str", optional=True, group="AI (Friendly)", label="Model Suy nghĩ kỹ (cho Friendly mode)",
-         help="Model cho \"Suy nghĩ kỹ\" (phải biết suy nghĩ, vd. qwen3:4b). Để trống = dùng model trả lời nhanh. Khác model trả lời thì card 6 GB chỉ chứa được một, mỗi lần đổi qua lại Ollama nạp lại khoảng 7 giây (đo: eval/measure_ollama_reload.py)."),
-    dict(key="DEFAULT_ANSWER_MODE", type="choice", choices=["fast", "think"], group="AI (Friendly)",
-         label="Chế độ trả lời mặc định",
-         help="fast = trả lời nhanh (~1-3 giây, không suy nghĩ). think = suy nghĩ kỹ (~30 giây). Người dùng vẫn bật/tắt "
-              "\"Suy nghĩ kỹ\" cạnh ô nhập và bấm \"Trả lời nhanh\" để ngắt khi đang suy nghĩ."),
     dict(key="FRIENDLY_TEMPERATURE", type="float", group="AI (Friendly)", label="Độ sáng tạo (temperature)",
          min=0.0, max=1.5, help="Thấp = ổn định, cao = đa dạng hơn."),
     dict(key="FRIENDLY_NUM_CTX", type="int", group="AI (Friendly)", label="Độ dài ngữ cảnh (token)", min=2048, max=32768,

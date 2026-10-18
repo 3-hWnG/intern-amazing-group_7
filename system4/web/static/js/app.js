@@ -12,7 +12,6 @@
   let convId = null;
   let sending = false, abortCtl = null;
   let webOn = false;   // nút "Tìm web" (chỉ DuckDuckGo, không qua bộ dữ liệu); chỉ giữ trong phiên trang
-  let thinkOn = false;   // công tắc "Suy nghĩ kỹ" (mặc định tắt = trả lời nhanh)
   let convs = [];
 
   const el = (tag, cls, text) => {
@@ -589,8 +588,6 @@
     bar.appendChild(actionBtn("↻", "Tạo lại câu trả lời", () => regenerate(w, m)));
     if (me && me.role === "dev") bar.appendChild(actionBtn("🔍", "Soi: AI đã tìm gì, nhận lời dặn gì, nghĩ gì, kiểm soát nào đã chạy", () => S4Inspect.friendly(m.id, true), "inspect"));
     else if (m.meta && m.meta.specialist) bar.appendChild(actionBtn("Vì sao?", "Vì sao có câu trả lời này: nguồn và độ liên quan", () => S4Inspect.friendly(m.id, false), "deeper"));
-    if (!err && (m.meta || {}).mode !== "think")
-      bar.appendChild(actionBtn("Kỹ hơn", "Trả lời kỹ hơn: AI suy nghĩ rồi trả lời lại (khoảng 30 giây)", () => regenerate(w, m, "think"), "deeper"));
     if (!err) {
       const fb = (v, label, title) => {
         const btn = actionBtn(label, title, async (x) => {
@@ -613,18 +610,17 @@
       if (m.meta.filtered) notes.push("đã lọc " + m.meta.filtered.letters + " chữ lạ, " + m.meta.filtered.other + " ký hiệu");
       if (m.meta.leak_retry) notes.push("đã viết lại do lọt chữ lạ");
       if (m.meta.retrieval) notes.push("tìm: " + m.meta.retrieval.candidates_n + " ứng viên" + (m.meta.retrieval.reranked ? ", đã xếp hạng lại" : ", không xếp hạng lại"));
-      if (m.meta.mode) notes.push("chế độ: " + (m.meta.mode === "think" ? "suy nghĩ kỹ" : "nhanh") + (m.meta.interrupted ? " (đã bấm Trả lời nhanh)" : ""));
       if (notes.length) w.appendChild(el("div", "dev-note", notes.join(" · ")));
     }
     box.appendChild(w);
     return w;
   }
 
-  function regenerate(w, m, mode) {
+  function regenerate(w, m) {
     if (sending) return;
     while (w.nextSibling) w.nextSibling.remove();
     w.remove();
-    send("", null, mode ? { regenerate_of: m.id, mode } : { regenerate_of: m.id });
+    send("", null, { regenerate_of: m.id });
   }
 
   function renderFriendly(msgs) {
@@ -736,17 +732,6 @@
     const t = el("span", "", text);
     s.append(el("span", "spinner"), t);
     s.setText = (x) => { t.textContent = x; };
-    s.fastButton = (turnId) => {   // đang suy nghĩ kỹ: cho phép ngắt và trả lời nhanh
-      if (s.querySelector(".fast-btn")) return;
-      const b = el("button", "fast-btn", "Trả lời nhanh"); b.type = "button";
-      b.title = "Dừng suy nghĩ, trả lời ngay";
-      b.onclick = async () => {
-        b.disabled = true; s.setText("Đang chuyển sang trả lời nhanh…");
-        try { await api("/s4/turns/" + turnId + "/fast", {}); } catch (_) { b.disabled = false; }
-      };
-      s.appendChild(b);
-    };
-    s.noFast = () => { const b = s.querySelector(".fast-btn"); if (b) b.remove(); };
     return s;
   }
 
@@ -817,7 +802,7 @@
           if (!res.ok) { const d = await res.json().catch(() => ({})); throw new Error(typeof d.detail === "string" ? d.detail : res.statusText); }
           const reader = res.body.getReader();
           const dec = new TextDecoder();
-          let buf = "", myConv = null, turnMode = payload.mode;
+          let buf = "", myConv = null;
           for (;;) {
             const { value, done } = await reader.read();
             if (done) break;
@@ -828,21 +813,12 @@
               if (!line.startsWith("data: ")) continue;
               const ev = JSON.parse(line.slice(6));
               if (ev.type === "meta") {
-                turnMode = ev.mode;
-                if (turnMode === "think") { status.setText("Đang suy nghĩ kỹ…"); status.fastButton(ev.turn_id); }
                 myConv = ev.conversation_id;
                 const isNew = convId !== myConv;
                 convId = myConv; ls.set("s4_conv", JSON.stringify({ id: convId, mode: "friendly" }));
                 if (isNew) refreshList();
               } else if (ev.type === "queue") status.setText("Đang chờ tới lượt (còn " + ev.position + " lượt trước bạn)…");
-              else if (ev.type === "start") status.setText(turnMode === "think" ? "Đang suy nghĩ kỹ…" : "AI đang trả lời…");
-              else if (ev.type === "thinking") status.setText("Đang suy nghĩ kỹ…");
-              else if (ev.type === "switch") {
-                turnMode = "fast"; status.noFast();
-                raw = ""; if (wrap) wrap.remove(); wrap = bubble = null;
-                if (!status.isConnected) box.appendChild(status);
-                status.setText("Đang trả lời nhanh…");
-              }
+              else if (ev.type === "start") status.setText("AI đang trả lời…");
               else if (ev.type === "delta") { ensureBubble(); raw += ev.text; if (!raf) raf = requestAnimationFrame(paint); }
               else if (ev.type === "restart") {
                 raw = ""; if (wrap) wrap.remove(); wrap = bubble = null;
@@ -881,7 +857,7 @@
     box.querySelectorAll(".choice-item,.choice-custom-btn,.choice-custom-input").forEach((x) => (x.disabled = true));
     if (!regen) userMsg(text);
     try {
-      if (mode === "friendly") await sendFriendly({ text, conversation_id: convId, mode: thinkOn ? "think" : "fast", websearch: webOn, domain_id: domainId, ...(extra || {}) });
+      if (mode === "friendly") await sendFriendly({ text, conversation_id: convId, websearch: webOn, domain_id: domainId, ...(extra || {}) });
       else await sendStrict(text, replyTo);
     } finally {
       setBusy(false); scroll(); refreshList();
@@ -912,13 +888,7 @@
   };
   if (innerWidth <= 760) $("sidebar").classList.add("hidden");
   $("toggle-sidebar").onclick = () => $("sidebar").classList.toggle("hidden");
-  function renderThink() {
-    const b = $("think-toggle");
-    b.setAttribute("aria-pressed", String(thinkOn));
-    b.classList.toggle("on", thinkOn);
-  }
   $("web-toggle").onclick = () => { webOn = !webOn; const b = $("web-toggle"); b.setAttribute("aria-pressed", String(webOn)); b.classList.toggle("on", webOn); $("input").focus(); };
-  $("think-toggle").onclick = () => { thinkOn = !thinkOn; ls.set("s4_think", thinkOn ? "1" : "0"); renderThink(); $("input").focus(); };
   $("logout").onclick = async () => { try { await api("/s4/auth/logout", {}); } catch (_) {} toLogin(); };
 
   /* ---- cấu hình AI của Strict (System 3: GET/POST /config), chỉ hiện ở chế độ Strict ---- */
@@ -1379,9 +1349,6 @@
     nameEl.appendChild(el("span", "role-tag", "· " + ({ dev: "dev", can_bo: "cán bộ" }[me.role] || "người dân")));
     $("open-settings").hidden = me.role !== "dev";
     $("open-admin").hidden = me.role !== "dev";
-    const savedThink = ls.get("s4_think");
-    thinkOn = savedThink === null ? pub.default_answer_mode === "think" : savedThink === "1";
-    renderThink();
     let saved = null;
     try { saved = JSON.parse(ls.get("s4_conv") || "null"); } catch (_) {}
     await loadDomains();

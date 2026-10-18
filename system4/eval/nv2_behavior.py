@@ -141,14 +141,11 @@ check("chế độ 'chỉ khi tôi bảo': 'hãy nhớ' -> nhớ", mem and any("
 _, m, mem = chat("Hãy quên chuyện mình có hai con đi")
 check("'hãy quên' -> xoá khỏi bộ nhớ", mem and any("con" in r for r in mem["removed"]), m, str(mem and mem["removed"]))
 
-# chế độ Suy nghĩ kỹ và nút "Trả lời nhanh"
-_, m, _ = chat("So sánh ưu và nhược điểm của việc tự học lập trình qua video và qua sách", mode="think")
-check("Suy nghĩ kỹ: trả lời đầy đủ", m["meta"].get("mode") == "think" and len(m["content"]) > 150 and "[[" not in m["content"], m,
-      f"chữ đầu sau {timings[-1][1]:.1f}s")
-_, m, _ = chat("Phân tích giúp mình nên học Python hay JavaScript trước", mode="think", interrupt_after=3)
-fa = m["_pressed"].get("first_after")
-check("'Trả lời nhanh' ngắt suy nghĩ và trả lời ngay", m["meta"].get("interrupted") and m["content"] and fa is not None and fa < 10, m,
-      f"chữ đầu {fa:.1f}s sau khi bấm" if fa is not None else "không có chữ sau khi bấm")
+# câu cần trả lời dài (D9, 18/10: bỏ chế độ suy nghĩ ~30 giây; chỉ còn chế độ trả lời nhanh)
+_, m, _ = chat("So sánh ưu và nhược điểm của việc tự học lập trình qua video và qua sách")
+check("câu so sánh: trả lời đầy đủ", len(m["content"]) > 150 and "[[" not in m["content"], m, f"chữ đầu sau {timings[-1][1]:.1f}s")
+_, m, _ = chat("Phân tích giúp mình nên học Python hay JavaScript trước")
+check("câu phân tích: chữ đầu dưới 10 giây", m["content"] and timings[-1][1] < 10, m, f"chữ đầu sau {timings[-1][1]:.1f}s")
 
 # chữ lạ trên toàn bộ câu trả lời
 all_msgs = []

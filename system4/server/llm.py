@@ -38,10 +38,6 @@ def keep_alive():
     return -1 if settings.get("KEEP_MODELS_LOADED") else "30m"
 
 
-def think_model() -> str:
-    return settings.get("THINK_MODEL") or settings.get("FRIENDLY_MODEL")
-
-
 class LLMError(RuntimeError):
     pass
 
@@ -87,7 +83,7 @@ def chat_json(messages: list[dict], schema: dict, timeout: float = 60) -> dict:
 
 def _stream(call: dict, model: str):
     """Chạy client.chat(stream=True) ở luồng riêng, trả async generator các mẩu: chữ (str), Thought, và Stats ở cuối.
-    Lỗi Ollama -> LLMError. Ngắt giữa chừng (người dùng rời trang / bấm Trả lời nhanh) -> dừng gọi model."""
+    Lỗi Ollama -> LLMError. Ngắt giữa chừng (người dùng rời trang / bấm Dừng) -> dừng gọi model."""
     async def gen():
         loop = asyncio.get_running_loop()
         q: asyncio.Queue = asyncio.Queue()
@@ -119,7 +115,7 @@ def _stream(call: dict, model: str):
                 elif kind == "stats":
                     yield val
                 elif kind == "thinking":
-                    yield Thought(val)   # mỗi mẩu suy nghĩ một lần: để bên gọi kiểm "Trả lời nhanh" kịp thời + lưu cho dev
+                    yield Thought(val)   # model dùng chung có thể vẫn trả mẩu "thinking": bên gọi bỏ qua
                 elif kind == "end":
                     return
                 else:
@@ -131,11 +127,6 @@ def _stream(call: dict, model: str):
 
 def _opts() -> dict:
     return {"temperature": settings.get("FRIENDLY_TEMPERATURE"), "num_ctx": settings.get("FRIENDLY_NUM_CTX")}
-
-
-def stream_chat(messages: list[dict]):
-    """Chế độ Suy nghĩ kỹ: model suy nghĩ (ẩn) rồi trả lời. Sinh chữ và THINKING."""
-    return _stream({"messages": messages, "think": True, "options": _opts()}, think_model())
 
 
 def stream_json(messages: list[dict], schema: dict):

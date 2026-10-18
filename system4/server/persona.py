@@ -78,7 +78,8 @@ def fast_schema(kb: bool, small_talk: bool = False) -> dict:
 def build(memories: list[str], summary: str, instructions: list[str], *, clarify_exhausted: int = 0,
           upset: bool = False, foreign: bool = False, fast: bool = False, evidence: list[dict] | None = None,
           cache_order: bool = False, text_format: bool = False, small_talk: bool = False, web: bool = False):
-    """fast=True: chế độ Nhanh (JSON theo fast_schema, hoặc text_format = dòng kế hoạch + chữ tự do); False: Suy nghĩ kỹ.
+    """fast=True: chế độ Nhanh (JSON theo fast_schema, hoặc text_format = dòng kế hoạch + chữ tự do) — chat chỉ còn dùng chế độ này (D9);
+    fast=False: lời dặn dạng chữ tự do kèm mẫu [[CHOICES]] (đường cũ, không còn gọi từ chat).
     evidence=None: AI chung; danh sách (có thể rỗng): Chuyên gia, chỉ được trả lời từ các đoạn dữ liệu này.
     small_talk=True: AI tự đánh dấu câu xã giao (GREETING_MODE ai_* / phần còn lại của code_first).
     cache_order=False: trả một chuỗi (thứ tự như trước NV5). True: trả (lời dặn hệ thống không đổi, phần riêng của câu này) —

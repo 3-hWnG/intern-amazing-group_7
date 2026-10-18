@@ -2,7 +2,7 @@
 setlocal
 rem One-time setup for System 3 + System 4: Python env, packages, "system3" package link, AI models, database.
 rem Needs internet here. After setup everything runs offline, except the ABI domain refreshing its abi.com.vn data (it keeps answering from the last snapshot without internet).
-rem Total download the first time: about 11.5 GB (packages ~3 GB incl. GPU torch, models ~8.5 GB).
+rem Total download the first time: about 9 GB (packages ~3 GB incl. GPU torch, models ~6 GB).
 set "REPO=%~dp0"
 set "REPO=%REPO:~0,-1%"
 for %%I in ("%REPO%\..") do set "PYROOT=%%~fI\pyroot_merge"
@@ -29,8 +29,9 @@ if not exist "%PYROOT%\system3\server\main.py" (
     mklink /J "%PYROOT%\system3" "%REPO%" >nul || goto :fail
 )
 
-if not defined LLM_MODEL set "LLM_MODEL=qwen3:4b"
-echo [4/10] Downloading LLM model %LLM_MODEL% (about 2.5 GB, first time only)...
+rem One answer model for Strict and Friendly (no "thinking" model any more, D9 18/10/2026).
+if not defined LLM_MODEL set "LLM_MODEL=qwen3:4b-instruct-2507-q4_K_M"
+echo [4/10] Downloading the answer model %LLM_MODEL% (about 2.5 GB, first time only)...
 where ollama >nul 2>nul || (
     echo ERROR: Ollama is not installed. Install it from https://ollama.com and try again.
     goto :fail
@@ -44,9 +45,7 @@ ollama pull %LLM_MODEL% || goto :fail
 echo [5/10] System 4: downloading search model bge-m3 (about 1.2 GB, first time only)...
 ollama pull bge-m3 || goto :fail
 
-echo [6/10] System 4: downloading fast-answer model qwen3:4b-instruct-2507-q4_K_M (about 2.5 GB, first time only)...
-rem The "no-thinking" twin of qwen3:4b, tested for fast answers (docs/SYSTEM4_NV5_TOC_DO_CHINH_XAC.md).
-ollama pull qwen3:4b-instruct-2507-q4_K_M || goto :fail
+echo [6/10] System 4: Friendly uses the same answer model as step 4 (nothing more to download).
 
 echo [7/10] System 4: downloading reranker BAAI/bge-reranker-v2-m3 (about 2.3 GB, first time only)...
 "%REPO%\.venv\Scripts\python.exe" "%REPO%\system4\setup_models.py" reranker || goto :fail

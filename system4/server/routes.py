@@ -21,7 +21,7 @@ class ChatIn(BaseModel):
     conversation_id: str | None = None
     edit_of: int | None = None          # sửa tin người dùng này -> phiên bản mới
     regenerate_of: int | None = None    # tạo lại câu trả lời này -> phiên bản mới
-    mode: str | None = None             # fast | think; trống = DEFAULT_ANSWER_MODE
+    mode: str | None = None             # bỏ qua (D9: chỉ còn một chế độ trả lời); giữ để client cũ không lỗi
     websearch: bool = False             # nút "Tìm web": chỉ DuckDuckGo, không qua bộ dữ liệu
     domain_id: int | None = None        # domain của hội thoại MỚI (hội thoại có sẵn giữ domain của nó); trống = Trò chuyện chung
 
@@ -103,7 +103,7 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         return {"app_title": settings.get("APP_TITLE"), "default_mode": settings.get("DEFAULT_MODE"),
                 "signup_open": auth.signup_open(), "first_account": db.count_users() == 0,
                 "min_password_length": settings.get("MIN_PASSWORD_LENGTH"),
-                "friendly_model": settings.get("FRIENDLY_MODEL"), "default_answer_mode": settings.get("DEFAULT_ANSWER_MODE"),
+                "friendly_model": settings.get("FRIENDLY_MODEL"),
                 "user": u}
 
     # ------------------------------------------------------- đăng nhập
@@ -279,16 +279,8 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
             user_mid = db.add_message(cid, "user", text, "done", parent)
             db.set_title_if_new(cid, text)
         history = db.get_path(cid)[:-1]   # nhánh tới trước tin người dùng
-        mode = body.mode if body.mode in ("fast", "think") else settings.get("DEFAULT_ANSWER_MODE")
-        return StreamingResponse(chat_turn.run(u, cid, user_mid, text, history, mode, body.websearch), media_type="text/event-stream",
+        return StreamingResponse(chat_turn.run(u, cid, user_mid, text, history, body.websearch), media_type="text/event-stream",
                                  headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
-
-    @r.post("/turns/{turn_id}/fast")
-    def answer_fast(turn_id: str, request: Request):
-        """Nút "Trả lời nhanh": dừng suy nghĩ của lượt đang chạy, trả lời ngay bằng chế độ Nhanh."""
-        if not chat_turn.interrupt(turn_id, _user(request)["id"]):
-            raise HTTPException(404, "lượt trả lời không còn chạy")
-        return {"ok": True}
 
     # ------------------------------------------------ dữ liệu người dùng (NV3)
     def own_dataset(request: Request, ds_id: int) -> dict:

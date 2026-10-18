@@ -39,8 +39,8 @@ INSTRUCT = "qwen3:4b-instruct-2507-q4_K_M"
 # Cấu hình đặt tên sẵn (ghi đè cài đặt mặc định của config.py). --set thêm / sửa từng khoá.
 PRESETS = {
     "today": {},
-    "inst07": {"FRIENDLY_MODEL": INSTRUCT, "THINK_MODEL": "qwen3:4b", "FRIENDLY_TEMPERATURE": 0.7},
-    "inst02": {"FRIENDLY_MODEL": INSTRUCT, "THINK_MODEL": "qwen3:4b", "FRIENDLY_TEMPERATURE": 0.2},
+    "inst07": {"FRIENDLY_MODEL": INSTRUCT, "FRIENDLY_TEMPERATURE": 0.7},
+    "inst02": {"FRIENDLY_MODEL": INSTRUCT, "FRIENDLY_TEMPERATURE": 0.2},
 }
 
 UNSURE = ("khong co thong tin", "khong tim thay", "khong co trong du lieu", "chua co thong tin", "khong biet", "khong ro", "khong the",
