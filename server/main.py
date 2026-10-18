@@ -319,9 +319,9 @@ async def chat(body: ChatIn, cid_mem: str = Depends(_cid)):
     turn = orchestrator.Turn(cid, text, body.reply_to, store.recent_history(cid),
                              store.session_facts(cid), store.shown_procedures(cid), clarify,
                              pick_proc=body.proc_id, memory=user_memory.for_policy(cid_mem))
-    # FINAL-PRODUCT: [B3] lưu nguyên văn người dùng gõ (chưa che CCCD/SĐT) vào messages.content; title hộp thoại cũng lấy 60 ký tự đầu. Bản cuối: che PII trước khi ghi (mục 2)
+    # G1.3: store che CCCD/SĐT khi ghi (lượt này vẫn xử lý bằng câu gốc trong bộ nhớ)
     store.add_message(cid, "user", text)
-    store.set_title_if_new(cid, mask_pii(text))
+    store.set_title_if_new(cid, text)
 
     box = {}
 
@@ -355,7 +355,7 @@ async def chat(body: ChatIn, cid_mem: str = Depends(_cid)):
     flat = orchestrator.flat_text({"blocks": blocks, "clarify": clar})   # thẻ hỏi lại kèm danh sách đánh số để "cái thứ hai" trỏ đúng
     # FINAL-PRODUCT: [B2][B3] plan_json lưu cả plan của lượt; xem store.add_message (mục 1, 2)
     mid = store.add_message(cid, "assistant", flat, kind, r.get("plan"),
-                            {"blocks": blocks, "clarify": clar})
+                            {"blocks": blocks, "clarify": clar}, pii_from=text)
     if r.get("trace") is not None:
         store.add_trace(cid, mid, r["trace"], box["ms"])
     out = {"conversation_id": cid, "message_id": mid, "blocks": blocks, "clarify": clar, "kind": kind}

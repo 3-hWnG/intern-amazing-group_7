@@ -56,6 +56,7 @@ MEMORY_DEFAULT_MODE = 'explicit'
 MEMORY_MAX_ITEMS = 50
 SUMMARY_TRIGGER = 0.6
 GUARDRAILS = SEED_GUARDRAILS
+INJECTION_GUARD = True
 USER_QUOTA_MB = 1024
 MAX_UPLOAD_MB = 200
 ACTIVE_WARN_DATASETS = 5
@@ -116,6 +117,9 @@ SETTINGS = [
     dict(key="GUARDRAILS", type="rules", group="Guardrail", label="Luật chặn / lời dặn",
          help="Chặn: trả lời cố định, không gọi AI. Lời dặn: thêm quy tắc cho AI khi tin nhắn chứa cụm từ (trống = luôn). "
               "Thay câu trả lời: câu trả lời chứa cụm từ thì thay. Cụm từ cách nhau bởi |."),
+    dict(key="INJECTION_GUARD", type="bool", group="Guardrail", label="Chặn chèn lệnh (bộ dò của Strict)",
+         help="Bật: câu đòi lộ lời dặn hệ thống, bỏ qua hướng dẫn, developer mode, jailbreak, quên vai trò… bị chặn bằng câu trả lời cố định, "
+              "không gọi AI (cùng bộ dò với chế độ Strict). Tắt nếu chặn nhầm."),
     dict(key="LANG_FALLBACK_APOLOGY", type="str", group="Ngôn ngữ", label="Câu xin lỗi khi người dùng không viết tiếng Việt",
          help="Chỉ hỗ trợ tiếng Việt: câu này được đặt đầu câu trả lời, sau đó AI trả lời bằng tiếng Việt."),
     dict(key="CLARIFY_MAX", type="int", group="Hội thoại", label="Số lần hỏi lại tối đa", min=0, max=5,

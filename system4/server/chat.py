@@ -24,6 +24,7 @@ import re
 import time
 import uuid
 
+from core import websearch as core_web
 from . import ambig, context, db, greet, ground, guard, lang, llm, memory, persona, search, settings, tabletool, websearch
 from ..abi import turn as abi_turn
 
@@ -412,7 +413,7 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                   "greeting_mode": gm}
         if info["block"]:   # guardrail chặn: không gọi AI, không ghi nhớ
             b = info["block"]
-            bmid = db.add_message(cid, "assistant", b["message"], "done", user_mid, {"guard": b["name"]})
+            bmid = db.add_message(cid, "assistant", b["message"], "done", user_mid, {"guard": b["name"]}, pii_from=text)
             db.save_trace(bmid, cid, user["id"], {"mode": mode, "query": text, "blocked_by": b["name"], "checks": checks},
                           settings.get("TRACE_KEEP"))
             yield sse({"type": "delta", "text": b["message"]})
@@ -423,7 +424,7 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             meta = {"specialist": True, "choices": amb["options"], "ambiguity": amb["phrase"], "mode": mode,
                     "retrieval": {k: sinfo.get(k) for k in ("datasets", "reranked", "candidates_n", "keyword", "vector", "search_ms")},
                     "timing": {"llm_ms": 0, "total_ms": int((time.perf_counter() - t0) * 1000)}}
-            amid = db.add_message(cid, "assistant", q, "done", user_mid, meta)
+            amid = db.add_message(cid, "assistant", q, "done", user_mid, meta, pii_from=text)
             db.save_trace(amid, cid, user["id"], {"mode": mode, "specialist": True, "query": squery, "retrieval": sinfo,
                                                   "checks": {**checks, "ambiguity": amb}, "prompts": [],
                                                   "output": {"final_text": q}, "timing": meta["timing"]}, settings.get("TRACE_KEEP"))
@@ -436,7 +437,7 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                     "sources": [{"n": i, "record_id": None, "url": s["url"], "title": s["title"], "dataset": "abi.com.vn", "score": None}
                                 for i, s in enumerate(abi_res["sources"], 1)],
                     "timing": {"llm_ms": 0, "total_ms": int((time.perf_counter() - t0) * 1000)}}
-            amid = db.add_message(cid, "assistant", ans, "done", user_mid, meta)
+            amid = db.add_message(cid, "assistant", ans, "done", user_mid, meta, pii_from=text)
             db.save_trace(amid, cid, user["id"], {"mode": mode, "specialist": True, "query": squery, "retrieval": sinfo, "checks": checks,
                                                   "prompts": [], "output": {"final_text": ans}, "timing": meta["timing"]}, settings.get("TRACE_KEEP"))
             yield sse({"type": "delta", "text": ans})
@@ -511,6 +512,10 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                     prompts.append({"why": "lọt nhiều chữ lạ: viết lại", "messages": msgs})
                     async for ev in gen(msgs):
                         yield ev
+            if web and (sinfo or {}).get("pii_masked") and not state.get("replaced"):   # G1.3 (D10): báo đã che số trước khi tìm web
+                note = "\n\n_" + core_web.PII_NOTE + "_"
+                state.setdefault("parts", []).append(note)
+                yield sse({"type": "delta", "text": note})
             if settings.get("CHOICE_CHECK") and evidence is not None and not web and not small and state.get("choices") and not state.get("replaced"):
                 kept = await _answerable(state["choices"], [d["id"] for d in active])   # nút gợi ý phải trả lời được từ dữ liệu
                 meta["choices_filter"] = {"before": len(state["choices"]), "kept": len(kept)}
@@ -558,9 +563,9 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                 content += "\n\n" + "\n".join(f"- {c}" for c in choices)
             mid = None
             if err:
-                mid = db.add_message(cid, "assistant", err, "error", user_mid, meta)
+                mid = db.add_message(cid, "assistant", err, "error", user_mid, meta, pii_from=text)
             elif content:
-                mid = db.add_message(cid, "assistant", content, status, user_mid, meta)
+                mid = db.add_message(cid, "assistant", content, status, user_mid, meta, pii_from=text)
             if mid:
                 a = state.get("ans")
                 db.save_trace(mid, cid, user["id"], {

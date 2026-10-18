@@ -76,7 +76,7 @@ class Routed:
         return asdict(self)
 
 
-# FINAL-PRODUCT: [B3] hàm che PII đã có nhưng chỉ dùng cho trace; bản cuối gọi nó trước khi ghi messages.content/plan_json/session_facts/title (mục 2)
+# G1.3: gọi ở mọi điểm ghi (server/db/store.py, system4/server/db.py) và trước khi tìm web (server/core/websearch.py)
 def mask_pii(text: str) -> str:
     """Guardrail 9: che CCCD/CMND/SĐT trước khi ghi log.
     Chịu được dấu cách/gạch/chấm giữa các cụm số (xem _PII_RUN); không che số tiền lớn có đơn vị
@@ -100,6 +100,47 @@ def mask_pii(text: str) -> str:
         return raw
 
     return _PII_RUN.sub(_repl, text)
+
+
+def pii_tokens(text: str) -> list[tuple[str, str]]:
+    """G1.3: các chuỗi số mà mask_pii sẽ che trong `text` -> [(nguyên văn, nhãn [ID]/[SDT])], dài trước.
+    Dùng để che ĐÚNG những số người dùng đã gõ khi chúng bị lặp lại trong câu trả lời — không che cả câu trả lời
+    (dữ liệu Cổng có mã dịch vụ công 1.000080.01 và số điện thoại cơ quan, che sẽ làm hỏng)."""
+    out = []
+    for m in _PII_RUN.finditer(text or ""):
+        lab = mask_pii(m.group(0)) if not _PII_CURRENCY_AFTER.match(m.string[m.end():m.end() + 12]) else m.group(0)
+        if lab != m.group(0):
+            out.append((m.group(0).strip(), lab.strip()))
+            digits = re.sub(r"\D", "", m.group(0))
+            if digits != m.group(0).strip():
+                out.append((digits, lab.strip()))   # LLM hay chép lại số đã bỏ dấu cách/gạch
+    return sorted(set(out), key=lambda t: -len(t[0]))
+
+
+def scrub(obj, tokens: list[tuple[str, str]]):
+    """Thay các chuỗi trong tokens ở mọi chuỗi con của obj (str / dict / list). tokens rỗng -> trả nguyên obj."""
+    if not tokens:
+        return obj
+    if isinstance(obj, str):
+        for raw, lab in tokens:
+            obj = obj.replace(raw, lab)
+        return obj
+    if isinstance(obj, dict):
+        return {k: scrub(v, tokens) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [scrub(v, tokens) for v in obj]
+    return obj
+
+
+def mask_deep(obj):
+    """mask_pii trên mọi chuỗi trong obj (str / dict / list). Dùng cho dữ liệu xuất phát từ lời người dùng (plan, facts, trace, state)."""
+    if isinstance(obj, str):
+        return mask_pii(obj)
+    if isinstance(obj, dict):
+        return {k: mask_deep(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [mask_deep(v) for v in obj]
+    return obj
 
 
 def pre_check(text: str) -> dict:

@@ -5,6 +5,7 @@ import sqlite3
 import uuid
 
 from config import DB_PATH, SCHEMA_PATH, HISTORY_MESSAGES, SHOWN_MAX, TRACE_KEEP
+from policy.policy import mask_deep, mask_pii, pii_tokens, scrub   # G1.3: chỉ lưu dữ liệu đã che CCCD/SĐT (D12)
 
 
 def conn() -> sqlite3.Connection:
@@ -62,7 +63,7 @@ def list_conversations() -> list[dict]:
 
 
 def rename_conversation(cid: str, title: str) -> None:
-    _run("UPDATE conversations SET title=? WHERE id=?", (title.strip()[:60] or "Cuộc trò chuyện mới", cid))
+    _run("UPDATE conversations SET title=? WHERE id=?", (mask_pii(title).strip()[:60] or "Cuộc trò chuyện mới", cid))
 
 
 def set_pinned(cid: str, pinned: bool) -> None:
@@ -80,12 +81,19 @@ def delete_conversation(cid: str | None = None) -> None:
 
 def set_title_if_new(cid: str, text: str) -> None:
     _run("UPDATE conversations SET title=? WHERE id=? AND title='Cuộc trò chuyện mới'",
-         (text.strip()[:60] or "Cuộc trò chuyện mới", cid))
+         (mask_pii(text).strip()[:60] or "Cuộc trò chuyện mới", cid))
 
 
-# FINAL-PRODUCT: [B3] content (nguyên văn người dùng) và plan_json chưa che CCCD/SĐT; che bằng policy.mask_pii trước khi ghi, hoặc ghi bản che + bản mã hoá có hạn dùng (mục 2)
 def add_message(cid: str, role: str, content: str, kind: str = "",
-                plan: dict | None = None, payload: dict | None = None) -> int:
+                plan: dict | None = None, payload: dict | None = None, pii_from: str = "") -> int:
+    """G1.3: tin của người dùng và plan được che CCCD/SĐT. Tin trả lời (lấy từ dữ liệu Cổng, có mã dịch vụ 1.000080.01, số điện thoại
+    cơ quan) chỉ che đúng các số có trong `pii_from` (câu người dùng của lượt đó), không che cả câu."""
+    toks = pii_tokens(pii_from)
+    if role == "user":
+        content = mask_pii(content)
+    else:
+        content, payload = scrub(content, toks), scrub(payload, toks)
+    plan = scrub(mask_deep(plan), toks) if plan else plan
     return _run(
         "INSERT INTO messages(conversation_id,role,content,kind,plan_json,sources_json) VALUES (?,?,?,?,?,?)",
         (cid, role, content, kind,
@@ -117,7 +125,7 @@ def recent_history(cid: str, n: int | None = None) -> list[dict]:
 # FINAL-PRODUCT: [B2][B3] trace_json chứa câu hỏi (đã mask_pii ở orchestrator) và plan_json nội bộ; chỉ dev được đọc, và đặt hạn xoá (mục 1, 2)
 def add_trace(cid: str, message_id: int, trace: dict, total_ms: int) -> None:
     _run("INSERT OR REPLACE INTO turn_traces VALUES (?,?,?,?)",
-         (cid, message_id, json.dumps(trace, ensure_ascii=False), total_ms))
+         (cid, message_id, json.dumps(mask_deep(trace), ensure_ascii=False), total_ms))
     # giới hạn dung lượng: chỉ giữ TRACE_KEEP lượt gần nhất
     _run("DELETE FROM turn_traces WHERE rowid <= (SELECT MAX(rowid) FROM turn_traces) - ?", (TRACE_KEEP,))
 
@@ -135,6 +143,7 @@ def session_facts(cid: str) -> list[dict]:
 
 # FINAL-PRODUCT: [B3] session_facts.text là lời người dùng kể (có thể chứa tên, địa chỉ, số giấy tờ), chưa che (mục 2)
 def add_fact(cid: str, kind: str, text: str, proc_id: str = "") -> None:
+    text = mask_pii(text)
     _run("INSERT OR IGNORE INTO session_facts(conversation_id,kind,text,proc_id) VALUES (?,?,?,?)",
          (cid, kind, text, proc_id))
 
@@ -182,7 +191,7 @@ def get_state(cid: str) -> dict | None:
 def set_state(cid: str, state: dict) -> None:
     _run("INSERT INTO conv_state(conversation_id,state_json) VALUES (?,?) "
          "ON CONFLICT(conversation_id) DO UPDATE SET state_json=excluded.state_json, updated_at=datetime('now')",
-         (cid, json.dumps(state, ensure_ascii=False)))
+         (cid, json.dumps(mask_deep(state), ensure_ascii=False)))
 
 
 # ---- Phase 26: bộ nhớ người dùng theo client_id (xem user_memory.py)
@@ -192,7 +201,7 @@ def mem_all(client_id: str) -> dict[str, str]:
 
 def mem_set(client_id: str, key: str, value: str) -> None:
     _run("INSERT INTO user_memory(client_id,key,value) VALUES (?,?,?) "
-         "ON CONFLICT(client_id,key) DO UPDATE SET value=excluded.value, updated_at=datetime('now')", (client_id, key, value))
+         "ON CONFLICT(client_id,key) DO UPDATE SET value=excluded.value, updated_at=datetime('now')", (client_id, key, mask_pii(value)))
 
 
 def mem_del(client_id: str, key: str | None = None) -> None:

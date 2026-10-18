@@ -195,7 +195,7 @@ def get_conversation(cid: str) -> dict | None:
 
 
 def rename_conversation(cid: str, title: str) -> None:
-    run("UPDATE conversations SET title=? WHERE id=?", (title.strip()[:60] or NEW_TITLE, cid))
+    run("UPDATE conversations SET title=? WHERE id=?", (mask_pii(title).strip()[:60] or NEW_TITLE, cid))
 
 
 def set_pinned(cid: str, pinned: bool) -> None:
@@ -203,7 +203,7 @@ def set_pinned(cid: str, pinned: bool) -> None:
 
 
 def set_title_if_new(cid: str, text: str) -> None:
-    run("UPDATE conversations SET title=? WHERE id=? AND title=?", (text.strip()[:60] or NEW_TITLE, cid, NEW_TITLE))
+    run("UPDATE conversations SET title=? WHERE id=? AND title=?", (mask_pii(text).strip()[:60] or NEW_TITLE, cid, NEW_TITLE))
 
 
 def delete_conversation(cid: str) -> None:
@@ -220,15 +220,21 @@ def _msg(r: dict) -> dict:
 
 
 def add_message(cid: str, role: str, content: str, status: str = "done", parent_id: int | None = None,
-                meta: dict | None = None) -> int:
-    """Thêm tin vào sau parent_id và đặt nó làm cuối nhánh đang xem."""
+                meta: dict | None = None, pii_from: str = "") -> int:
+    """Thêm tin vào sau parent_id và đặt nó làm cuối nhánh đang xem.
+    G1.3: tin người dùng được che CCCD/SĐT; tin trả lời chỉ che các số có trong pii_from (câu người dùng của lượt đó)."""
+    if role == "user":
+        content = mask_pii(content)
+    else:
+        content, meta = _scrub(content, pii_from), _scrub(meta, pii_from)
     mid = run("INSERT INTO messages(conversation_id,role,content,status,parent_id,meta) VALUES (?,?,?,?,?,?)",
               (cid, role, content, status, parent_id, json.dumps(meta or {}, ensure_ascii=False)))
     run("UPDATE conversations SET current_leaf=? WHERE id=?", (mid, cid))
     return mid
 
 
-def update_message(mid: int, content: str, status: str, meta: dict) -> None:
+def update_message(mid: int, content: str, status: str, meta: dict, pii_from: str = "") -> None:
+    content, meta = _scrub(content, pii_from), _scrub(meta, pii_from)
     run("UPDATE messages SET content=?, status=?, meta=? WHERE id=?",
         (content, status, json.dumps(meta, ensure_ascii=False), mid))
 
@@ -306,6 +312,17 @@ def mask_pii(text: str) -> str:
     return _mask(text)
 
 
+def _mask_deep(obj):
+    from policy import mask_deep
+    return mask_deep(obj)
+
+
+def _scrub(obj, pii_from: str):
+    """G1.3: che đúng các số CCCD/SĐT có trong câu người dùng (pii_from) ở obj; không che số khác (mã thủ tục, số của cơ quan)."""
+    from policy import pii_tokens, scrub
+    return scrub(obj, pii_tokens(pii_from))
+
+
 def log_feedback(engine: str, msg_key, user_id: int, domain_id, cid: str, prompt: str, answer: str, value: int, context: dict | None = None) -> None:
     """Chụp (câu hỏi, câu trả lời, 👍/👎) vào feedback_log; value 0 thì xoá dòng. Đổi ý thì ghi đè, không tạo trùng.
     Câu hỏi và câu trả lời được che CCCD/SĐT trước khi ghi."""
@@ -325,7 +342,7 @@ def get_summary(cid: str) -> tuple[str, int]:
 
 
 def set_summary(cid: str, text: str, upto: int) -> None:
-    run("UPDATE conversations SET summary=?, summary_upto=? WHERE id=?", (text, upto, cid))
+    run("UPDATE conversations SET summary=?, summary_upto=? WHERE id=?", (mask_pii(text), upto, cid))
 
 
 # ------------------------------------------------------------- bộ nhớ (NV2)
@@ -334,7 +351,7 @@ def list_memories(user_id: int) -> list[dict]:
 
 
 def add_memory(user_id: int, text: str, max_items: int) -> int:
-    mid = run("INSERT INTO memories(user_id,text) VALUES (?,?)", (user_id, text))
+    mid = run("INSERT INTO memories(user_id,text) VALUES (?,?)", (user_id, mask_pii(text)))
     run("DELETE FROM memories WHERE user_id=? AND id NOT IN (SELECT id FROM memories WHERE user_id=? ORDER BY id DESC LIMIT ?)",
         (user_id, user_id, max_items))   # quá giới hạn: bỏ điều cũ nhất
     return mid
@@ -488,7 +505,7 @@ def browse_records(ds_id: int, q: str = "", offset: int = 0, limit: int = 50) ->
 # ------------------------------------------------------- bộ công cụ dev (chi tiết câu trả lời)
 def save_trace(mid: int, cid: str, user_id: int, data: dict, keep: int) -> None:
     run("INSERT OR REPLACE INTO traces(message_id,conversation_id,user_id,data) VALUES (?,?,?,?)",
-        (mid, cid, user_id, json.dumps(data, ensure_ascii=False, default=str)))
+        (mid, cid, user_id, json.dumps(_mask_deep(data), ensure_ascii=False, default=str)))
     run("DELETE FROM traces WHERE message_id NOT IN (SELECT message_id FROM traces ORDER BY message_id DESC LIMIT ?)", (keep,))
 
 
@@ -496,7 +513,7 @@ def patch_trace(mid: int, key: str, value) -> None:
     r = run("SELECT data FROM traces WHERE message_id=?", (mid,), one=True)
     if r:
         d = json.loads(r["data"])
-        d[key] = value
+        d[key] = _mask_deep(value)
         run("UPDATE traces SET data=? WHERE message_id=?", (json.dumps(d, ensure_ascii=False, default=str), mid))
 
 
