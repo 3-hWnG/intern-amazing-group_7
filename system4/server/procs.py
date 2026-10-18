@@ -569,11 +569,13 @@ if __name__ == "__main__":   # python -m system3.system4.server.procs reapply   
     if sys.argv[1:] == ["reapply"]:
         print("  " + reapply_active())
     elif sys.argv[1:2] == ["apply"] and len(sys.argv) == 3:   # áp dụng một phiên bản (qua cổng kiểm G2.4), như nút "Áp dụng"
-        from . import procs_gate  # noqa: F401
-        db.init_db()
-        init()
-        apply(int(sys.argv[2]), wait=True)
-        print("  " + _job["message"])
-        print("  cổng kiểm: " + json.dumps((_job.get("result") or {}).get("gate"), ensure_ascii=False))
+        # chạy qua module của gói (không phải __main__): procs_gate gán gate_fn vào system3.system4.server.procs
+        from system3.system4.server import procs as P, procs_gate  # noqa: F401
+        assert P.gate_fn is not None, "cổng kiểm chưa được gắn"
+        P.db.init_db()
+        P.init()
+        P.apply(int(sys.argv[2]), wait=True)
+        print("  " + P._job["message"])
+        print("  cổng kiểm: " + json.dumps((P._job.get("result") or {}).get("gate"), ensure_ascii=False))
     else:
         print("Dùng: python -m system3.system4.server.procs reapply | apply <id phiên bản>")
