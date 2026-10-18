@@ -60,6 +60,9 @@ def _q_aggregate(t: dict) -> list[dict]:
             for v in common:
                 shown = next(x for x, n in zip(vals, norm) if n == v)
                 out.append({"q": f"Có bao nhiêu {noun} có {m['label']} là {shown}?", "count": norm.count(v)})
+                # dạng câu bỏ sót lần đầu (lỗi 18/10): liệt kê theo giá trị, và "bao nhiêu <danh từ> ở <giá trị>" không nêu tên trường
+                out.append({"q": f"Liệt kê các {noun} có {m['label']} là {shown}", "count": norm.count(v)})
+                out.append({"q": f"Có bao nhiêu {noun} ở {shown}?", "count": norm.count(v)})
     return out
 
 
@@ -78,9 +81,10 @@ def run(tables: list[dict], texts: list[dict], min_pass: float) -> dict:
                         good = a["kind"] != "answer"
                     else:
                         good = a["kind"] == "answer" and a.get("field") == c["field"] and any(s["record_id"] == c["row"] for s in a.get("sources", []))
-                else:
-                    good = a["kind"] == "answer" and a.get("route") == "aggregate" and a.get("table") == t["key"] and \
-                        re.search(rf"\*\*{c['count']}\*\*|Không có ", a["content"]) is not None and (c["count"] > 0 or "Không có " in a["content"])
+                else:   # đúng bảng, đúng số dòng (dạng đếm: **n**; dạng liệt kê giá trị: n dòng "- ")
+                    good = a["kind"] == "answer" and a.get("table") == t["key"] and (
+                        (a.get("route") == "aggregate" and re.search(rf"\*\*{c['count']}\*\*", a["content"]) is not None)
+                        or (a.get("route") == "lookup" and a["content"].count("\n- ") == c["count"]))
                 ok += good
                 if not good and len(fails) < 5:
                     fails.append({"q": c["q"], "got": (a.get("content") or a.get("reason") or "")[:160]})

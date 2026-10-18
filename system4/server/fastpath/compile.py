@@ -25,6 +25,8 @@ LONG_CHARS = 80
 SINGLE_STOP = {"ho", "va", "cua", "so", "ten", "the", "do", "of", "and", "you", "can", "there", "text", "n", "has", "is", "co", "khong",
                "id", "ma", "la", "gi", "nao", "dau", "at", "len", "thu", "tuc", "cac", "mot", "nhung", "vnd", "dong"}
 CUE_CACHE = config.RUNTIME_DIR / "fastpath_cues.json"
+# từ để hỏi / đếm (chữ gốc có dấu): gợi ý chỉ gồm những từ này ("bao nhiêu", "có bao nhiêu") khớp MỌI câu đếm -> bỏ (lỗi 18/10)
+QWORDS = {"bao", "nhiêu", "mấy", "có", "không", "nào", "gì", "là", "số", "lượng", "tổng"}
 
 
 def tokens(t: str) -> list[tuple[str, str]]:
@@ -50,8 +52,9 @@ def infer_type(name: str, values: list[str], n_rows: int) -> str:
     if sum(bool(DATE.match(v)) for v in vals) >= 0.8 * len(vals):
         return "date"
     uniq = len(set(fv)) / len(fv)
-    if (re.search(r"\b(id|hash|url|link|duong dan|uuid)\b", fold(name)) or
-            sum(bool(re.fullmatch(r"[\d\- ]{6,}", v)) for v in vals) >= 0.8 * len(vals)) and uniq > 0.9:
+    # mã: tên cột gợi ý, hoặc chuỗi số có số 0 đứng đầu / dấu cách / gạch (số điện thoại, CCCD, mã BH). Số trơn (giá 1450000) là SỐ (lỗi 18/10)
+    code_like = lambda v: bool(re.fullmatch(r"[\d\- .]{6,}", v)) and (v.startswith("0") or bool(re.search(r"[\- ]", v.strip())))
+    if (re.search(r"\b(id|hash|url|link|duong dan|uuid)\b", fold(name)) or sum(code_like(v) for v in vals) >= 0.8 * len(vals)) and uniq > 0.9:
         return "id"
     if sum(_is_num(v) for v in vals) >= 0.8 * len(vals):
         return "number"
@@ -183,8 +186,8 @@ def vet_cues(t: dict) -> dict:
         for c in m["cues"]:
             fc = [fold(w) for w in c]
             why = None
-            if all(w in SINGLE_STOP for w in fc):
-                why = "chữ chung"
+            if all(w in SINGLE_STOP for w in fc) or all(w.lower() in QWORDS or f in SINGLE_STOP for w, f in zip(c, fc)):
+                why = "chữ chung / chỉ là từ để hỏi"
             elif sum(_phrase_in(fc, v) for v in vals) >= max(2, 0.1 * n):
                 why = "là giá trị trong ô"
             elif sum(_phrase_in(fc, r["title"]) for r in t["rows"]) >= max(2, 0.05 * n):
@@ -215,7 +218,10 @@ def compile_dataset(ds: dict, use_llm: bool | None = None) -> dict:
         if use_llm and t["parent"] is None and len(t["rows"]) >= 2:
             out = llm_cues(t)
             llm_used += bool(out.get("fields"))
-            t["entity_noun"] = (out.get("entity_noun") or "").strip()[:40]
+            noun = [w for _, w in tokens(out.get("entity_noun") or "")]
+            while noun and fold(noun[0]) in ("mot", "cac", "nhung", "moi", "1"):   # AI hay viết "một tour", "các điểm đến" (lỗi 18/10)
+                noun = noun[1:]
+            t["entity_noun"] = " ".join(noun)[:40]
             for item in out.get("fields", []):
                 m = t["fields"].get(item.get("name"))
                 if not m:

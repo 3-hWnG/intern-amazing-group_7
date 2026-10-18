@@ -129,7 +129,7 @@ with TestClient(main.app) as c:
     as_user("lan")
     # ---- người dùng bật "Chỉ trả lời bằng luật": đường nhanh vẫn trả lời (không cần AI)
     assert c.post("/s4/account/prefs", json={"rules_only": True}).json()["rules_only"] is True
-    m, _ = chat("Số điện thoại của bạn Kiều Mỹ Linh?")
+    m, _ = chat("SĐT của bạn Kiều Mỹ Linh?")   # chỉ tên cột (AI giả): "SĐT" là gợi ý; "số điện thoại" là chữ lạ -> nhường (cổng chữ lạ)
     assert m["meta"].get("fast_path") and phone(12) in m["content"].replace(" ", ""), m["content"]
     c.post("/s4/account/prefs", json={"rules_only": False})
 
