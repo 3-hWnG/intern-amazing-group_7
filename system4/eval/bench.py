@@ -1,6 +1,6 @@
 """NV5 — bộ đo chung cho độ chính xác, tốc độ, hành vi (System 4 Friendly / Chuyên gia) trên model THẬT.
 
-    python system4/eval/bench.py run NAME [--set KEY=VALUE ...] [--split dev|exam|all] [--repeat N] [--suites a,b] [--no-behavior]
+    python system4/eval/bench.py run NAME [--set KEY=VALUE ...] [--split dev|exam|blind|all] [--repeat N] [--suites a,b] [--no-behavior]
     python system4/eval/bench.py compare results/bench/A.json results/bench/B.json ...
     python system4/eval/bench.py swap            # thời gian Ollama đổi qua lại 2 model (Strict qwen3:4b <-> Friendly Instruct)
     python system4/eval/bench.py strict --model M --name N   # bộ đo System 3 (Strict) với model M (câu 1D)
@@ -27,9 +27,20 @@ import httpx
 
 HERE = Path(__file__).resolve().parent
 REPO = HERE.parents[1]
-PYROOT = REPO.parent / "pyroot"
+def _pyroot() -> Path:
+    """Thư mục có junction system3 -> CHÍNH repo này (18/10: "pyroot" trên máy dev trỏ sang repo system3 khác, nên server bench
+    từng import system3.* của repo kia). Biến BENCH_PYROOT thắng; không tìm thấy thì giữ "pyroot" như cũ."""
+    if os.environ.get("BENCH_PYROOT"):
+        return Path(os.environ["BENCH_PYROOT"])
+    for p in sorted(REPO.parent.glob("pyroot*")):
+        if (p / "system3").exists() and (p / "system3").resolve() == REPO.resolve():
+            return p
+    return REPO.parent / "pyroot"
+
+
+PYROOT = _pyroot()
 PY = REPO / ".venv" / "Scripts" / "python.exe"
-RUNTIME = HERE / "bench_runtime"
+RUNTIME = Path(os.environ.get("BENCH_RUNTIME") or HERE / "bench_runtime")   # BENCH_RUNTIME: chạy trên runtime riêng (vd. bản sạch)
 OUT_DIR = HERE / "results" / "bench"
 PORT = 8399
 BASE = f"http://127.0.0.1:{PORT}"
@@ -63,6 +74,9 @@ def score(check: dict, content: str, meta: dict) -> tuple[bool, list[str]]:
         why.append("thiếu: " + ", ".join(x for x in check["all"] if fold(x) not in f))
     if "any" in check and not any(fold(x) in f for x in check["any"]):
         why.append("không có ý nào trong: " + " | ".join(check["any"]))
+    for n in check.get("num", []):   # con số đứng riêng (không dính chữ số khác): "4" không khớp "14" hay "4.000"
+        if not re.search(r"(?<![\d.,])" + re.escape(n) + r"(?![\d]|[.,]\d)", content):
+            why.append(f"thiếu số {n}")
     if "none" in check and any(fold(x) in f for x in check["none"]):
         why.append("có chữ cấm: " + ", ".join(x for x in check["none"] if fold(x) in f))
     for rx in check.get("no_regex", []):
@@ -139,7 +153,7 @@ class Client:
     def ensure_datasets(self):
         """Nạp 4 bộ dữ liệu một lần cho bench_runtime (lần sau dùng lại; đổi bộ đọc tệp thì server tự xử lý lại)."""
         files = {"class": HERE / "data" / "ds_lop_gia.xlsx", "tourism": HERE / "data" / "tourism_records.xlsx",
-                 "procedures": HERE / "data" / "MAU_100_THU_TUC.xlsx", "policy": policy_docx()}
+                 "procedures": HERE / "data" / "MAU_100_THU_TUC.xlsx", "policy": policy_docx(), "du_lich": tourism_xlsx()}
         have = {d["filename"]: d for d in self.c.get("/s4/datasets").json()["datasets"]}
         for key, path in files.items():
             if path.name not in have:
@@ -157,6 +171,13 @@ class Client:
             d = ds[path.name]
             assert d["status"] == "ready", f"{path.name}: {d['message']}"
             self.ds[key] = d
+        t0 = time.time()   # đường nhanh: đợi biên dịch + tự kiểm xong (kể cả khi đo đường cũ) để không đo lẫn lúc GPU đang biên dịch
+        while time.time() - t0 < 900:
+            st = {k: self.c.get(f"/s4/fastpath/{d['id']}").json().get("status") for k, d in self.ds.items()}
+            if all(s in ("ready", "error", "skipped") for s in st.values()):
+                break
+            time.sleep(3)
+        print("  đường nhanh:", {k: self.c.get(f"/s4/fastpath/{d['id']}").json().get("message", "")[:90] for k, d in self.ds.items()})
         self.active = {k for k, d in self.ds.items() if d["active"]}
 
     def use(self, keys: list[str]):
@@ -201,6 +222,15 @@ class Client:
                 "prompt_s": round(sum(s.get("prompt_s", 0) for s in stats), 2), "output_tokens": sum(s.get("output_tokens", 0) for s in stats),
                 "output_s": round(sum(s.get("output_s", 0) for s in stats), 2), "load_s": round(sum(s.get("load_s", 0) for s in stats), 2),
                 "plan": (tr.get("output") or {}).get("plan")}
+
+
+def tourism_xlsx() -> Path:
+    """Dữ liệu du lịch giả cho bộ mù (make_tourism.py); thiếu thì sinh lại."""
+    path = HERE / "data" / "du_lich_gia.xlsx"
+    if not path.exists():
+        from make_tourism import build
+        build(path)
+    return path
 
 
 def policy_docx() -> Path:
@@ -261,6 +291,7 @@ def run(args):
                              "consulted": [s.get("title") for s in r["meta"].get("consulted") or []],
                              "small_talk": r["meta"].get("small_talk"), "grounding": r["meta"].get("grounding"),
                              "ambiguity": r["meta"].get("ambiguity"), "guard": r["meta"].get("guard"),
+                             "fast_path": (r["meta"].get("fast_path") or {}).get("route"),   # đường nhanh trả lời bằng code (None = đường cũ)
                              **{k: r[k] for k in ("first_s", "final_first_s", "total_s", "search_ms", "search_parts", "table_ms", "llm_calls",
                                                   "prompt_tokens", "prompt_s", "output_tokens", "output_s", "load_s", "plan")}})
                 print(f"  {'PASS' if ok else 'FAIL'} {c['id']:<18} {r['first_s']:>5.1f}s/{r['total_s']:>5.1f}s"
@@ -301,6 +332,7 @@ def _p90(xs):
 def summarize(res: dict) -> dict:
     runs = res["runs"]
     acc = [r for r in runs if r["suite"] in ("accuracy", "halluc")]
+    tour = [r for r in runs if r["suite"] == "tourism"]
     gr = [r for r in runs if r["suite"] == "greeting"]
     b = (res.get("behavior") or {}).get("summary") or {}
     b_fail = (b.get("total", 0) - b.get("passed", 0)) if b else None
@@ -308,6 +340,8 @@ def summarize(res: dict) -> dict:
     s = {"accuracy": _rate(acc), "accuracy_dev": _rate([r for r in acc if r["split"] == "dev"]),
          "accuracy_exam": _rate([r for r in acc if r["split"] == "exam"]),
          "acc_only": _rate([r for r in runs if r["suite"] == "accuracy"]), "halluc": _rate([r for r in runs if r["suite"] == "halluc"]),
+         "tourism": _rate(tour), "tourism_fails": sum(not r["pass"] for r in tour),
+         "fast_path": sum(bool(r.get("fast_path")) for r in runs),
          "greeting": _rate(gr), "greeting_fails": sum(not r["pass"] for r in gr), "behavior": f"{b.get('passed')}/{b.get('total')}" if b else None,
          "wrong_behavior": sum(not r["pass"] for r in gr) + (b_fail or 0),
          "first_med": _med([r["final_first_s"] for r in runs]), "total_med": _med([r["total_s"] for r in runs]),
