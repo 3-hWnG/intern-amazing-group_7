@@ -62,7 +62,7 @@ Hiện tại: hồ sơ nhẹ (tỉnh, xã/phường, loại người dùng, ghi 
 | `server/user_memory.py`, `server/main.py` `/memory*` | tin `X-Client-Id` tự khai: ai biết hoặc đoán được id là đọc, sửa, xoá được hồ sơ người khác; thiếu header thì dùng chung 'default' (mọi người không có id chung một hồ sơ) | lấy người dùng từ phiên đăng nhập; bỏ 'default' (không đăng nhập thì không lưu, chỉ giữ trong phiên) |
 | `server/db/schema.sql` `user_memory` | cột `client_id` | đổi thành `user_id` (di chuyển dữ liệu: gộp theo tài khoản khi người dùng đăng nhập lần đầu); đặt hạn xoá |
 | `web/static/js/chat.js` `CLIENT` | UUID tự sinh, mất khi xoá dữ liệu trình duyệt; đổi trình duyệt/máy là mất hồ sơ | hồ sơ theo tài khoản, đồng bộ giữa thiết bị |
-| `server/user_memory.py` `PROVINCES` | danh sách 63 tỉnh trước sáp nhập 01/07/2025, chỉ để hiển thị (không lọc) | danh mục 34 tỉnh/thành hiện hành và xã/phường; nếu muốn lọc theo địa phương thì dữ liệu thủ tục phải có chiều tỉnh |
+| `server/user_memory.py` `provinces()` | **Đã làm (G4.4, 18/10):** danh sách tỉnh lấy từ dữ liệu (bản 3: 34 tỉnh); tỉnh trong hồ sơ dùng để chọn bản riêng của tỉnh | còn: danh mục xã/phường; tên tỉnh cũ trước sáp nhập (vd. Bình Dương) chưa đổi sang tỉnh mới |
 
 Việc cần làm cùng lúc với mục 3 (quyền sở hữu): test hai tài khoản không thấy hồ sơ của nhau; "Quên tất cả" chỉ xoá của tài khoản đó; không ghi CCCD/SĐT (đã từ chối ở API, giữ khi chuyển sang tài khoản).
 

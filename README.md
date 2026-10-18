@@ -2,14 +2,24 @@
 
 Project RIÊNG, dùng lại dữ liệu của repo V10.6 (snapshot trong `data/snapshot`, 1.350 thủ tục). Không import Backend/Frontend của V10.6.
 Tài liệu: [docs/SETUP.md](docs/SETUP.md) (cài đặt) · [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md) (kiến trúc, bảng timeout) · [docs/EVAL.md](docs/EVAL.md) (cách đo, quy tắc bộ mù) · [docs/CONTRIBUTING.md](docs/CONTRIBUTING.md) (cổng hồi quy) · [docs/KNOWN_ISSUES.md](docs/KNOWN_ISSUES.md) (lỗi đã biết, ai quyết) · [docs/FINAL_PRODUCT_CHECKLIST.md](docs/FINAL_PRODUCT_CHECKLIST.md) (đừng quên cho bản cuối: dev/người dùng, che PII, quyền hộp thoại, công tắc AI) · [docs/BAO_CAO_DOT4.md](docs/BAO_CAO_DOT4.md) (báo cáo ngắn đợt 4) · kế hoạch: [PLAN_SYSTEM3](docs/PLAN_SYSTEM3.md), [DOT3](docs/PLAN_SYSTEM3_DOT3.md), [DOT4](docs/PLAN_SYSTEM3_DOT4.md), [DOT5](docs/PLAN_SYSTEM3_DOT5.md).
-Chạy: `python run_server.py` ở thư mục gốc (cổng 8300). Không cần `PYTHONPATH`, thư mục gốc tên gì cũng được. Bước sinh chữ bật mặc định và cần Ollama + `qwen3:4b`; không có Ollama thì lượt đó rơi về câu trả lời bằng code, hoặc đặt `S3_USE_LLM=0` để tắt hẳn. Mọi thứ hiện giờ là **chế độ nhà phát triển**, chưa an toàn cho người dùng thường: xem [docs/FINAL_PRODUCT_CHECKLIST.md](docs/FINAL_PRODUCT_CHECKLIST.md).
+Chạy: `python run_server.py` ở thư mục gốc (cổng 8300). Không cần `PYTHONPATH`, thư mục gốc tên gì cũng được. Bước sinh chữ bật mặc định và cần Ollama + `qwen3:4b-instruct-2507-q4_K_M` (một model cho cả hai chế độ, D9); không có Ollama thì lượt đó rơi về câu trả lời bằng code, hoặc đặt `S3_USE_LLM=0` để tắt hẳn. Mọi thứ hiện giờ là **chế độ nhà phát triển**, chưa an toàn cho người dùng thường: xem [docs/FINAL_PRODUCT_CHECKLIST.md](docs/FINAL_PRODUCT_CHECKLIST.md).
 Kiểm tài liệu so với số đo thật: `python eval/check_docs.py` (phải sạch).
 Dựng lại từ Git (Phase 28): `python run_server.py eval/run_all.py` (thêm `--quick` để bỏ phần chậm) dựng DB, dựng DB V10.6 từ mã vendor `eval/vendor_v106/`, chạy mọi gate không GPU và in bảng số kèm ngưỡng; xem [eval/REPRODUCE.md](eval/REPRODUCE.md). Không cần `repo/` cạnh `system3`.
 
 ## System 4 (Friendly mode, song song trên cùng web) — nhánh `System_3&4`
 `Launch web.bat` giờ bật thêm **đăng nhập/đăng ký** và công tắc **Strict | Friendly** (Strict = System 3 bên dưới, không đổi). `S4_ENABLED=0` → web System 3 như cũ.
-**Một model cho cả hai chế độ:** ⚙ Cài đặt → "Model dùng chung (Strict + Friendly)" chọn model Ollama cho Friendly (nhanh, bộ nhớ, tóm tắt) và bước LLM của Strict (tác dụng ngay, không khởi động lại; thắng biến `LLM_MODEL`). "Suy nghĩ kỹ" của Friendly có ô model riêng.
+**Một model cho cả hai chế độ:** ⚙ Cài đặt → "Model dùng chung (Strict + Friendly)" chọn model Ollama cho Friendly (nhanh, bộ nhớ, tóm tắt) và bước LLM của Strict (tác dụng ngay, không khởi động lại; thắng biến `LLM_MODEL`). Chế độ "Suy nghĩ kỹ" đã bỏ hẳn (18/10, D9).
 Xem [system4/README.md](system4/README.md), nhiệm vụ [docs/SYSTEM4_NV1_NEN_TANG.md](docs/SYSTEM4_NV1_NEN_TANG.md) … NV4, deploy [docs/SYSTEM4_DEPLOY.md](docs/SYSTEM4_DEPLOY.md).
+
+## Thay đổi tuần 19–23/10 (kế hoạch G0–G4, [docs/KE_HOACH_THUC_THI_2026-10-19.md](docs/KE_HOACH_THUC_THI_2026-10-19.md))
+- Dữ liệu chính thức: **thủ tục phiên bản 3** (1.517 thủ tục, 34 tỉnh), áp dụng qua cổng kiểm; mã cũ ghép sang mã mới bằng `proc_lineage`.
+- Một hàng GPU chung cho cả hai chế độ (`server/core/gpu.py`): phần luật chạy song song, chỉ lời gọi model xếp hàng.
+- Máy không có card đồ hoạ: cảnh báo + công tắc "Chỉ trả lời bằng luật" theo tài khoản; ngắt mạch Ollama.
+- Liệt kê / đếm thủ tục bằng text-to-SQL trên bảng `proc_flat` có hộp cát (`server/listsql.py`, cần LLM; không có LLM thì liệt kê gần đúng như cũ).
+- Thủ tục có bản riêng của tỉnh: hỏi "Bạn làm thủ tục ở tỉnh/thành nào?", nhớ cho cả hội thoại; danh sách tỉnh lấy từ dữ liệu.
+- Tên hội thoại Strict = tên thủ tục của lượt trả lời trực tiếp đầu tiên. Biểu mẫu: tên mẫu + link trang thủ tục trên Cổng.
+- Friendly: hồ sơ lĩnh vực (cách trả lời, trích dẫn, hỏi lại, tìm web…), dùng lại câu đã 👍 khi người khác hỏi y chang, tóm tắt giữ tên chủ đề.
+- Số đo: eval đầy đủ #1, #2 ở [docs/PLAN_TUAN_TOI.md](docs/PLAN_TUAN_TOI.md); độ trễ / tải 10 người ở [ARCHITECTURE_REVIEW §5.4](docs/ARCHITECTURE_REVIEW_2026-10-15.md).
 
 ## Kiến trúc đang chạy
 User → Orchestrator → **Planner (luật; Qwen3-4B hybrid là tuỳ chọn, TẮT mặc định)** → Policy/Router (luật) → Answerer (code, nguyên văn + nguồn) → [LLM chỉ sinh chữ giải thích điều kiện/so sánh, mọi ý qua verifier, lỗi/timeout 7 s thì giữ bản bằng code] → câu trả lời. Timeout cả hai bước LLM (Planner hybrid, Answer Composer) là 7 giây, cấu hình được: bảng ở [docs/ARCHITECTURE.md](docs/ARCHITECTURE.md). Map với kiến trúc G7 của nhóm: cùng file. Box 1–4, 5A, 6A, 10 đã có; 3 (LLM Planner) làm hybrid nhưng không bật; 5B/6B (RAG, import) mới chỉ có thiết kế giao diện trong `knowledge/`.

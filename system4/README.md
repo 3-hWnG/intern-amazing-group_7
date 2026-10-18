@@ -8,7 +8,7 @@ Trạng thái: **xong NV1 (nền tảng), NV2 (AI trò chuyện kiểu ChatGPT),
 | Mở web | Trang đăng nhập / đăng ký. **Tài khoản đầu tiên là dev**, các tài khoản sau là user. |
 | Trang chính | Giao diện như System 3, thêm công tắc **Strict \| Friendly** ở thanh trên. |
 | Strict | Nguyên hành vi System 3 (thủ tục hành chính, có nguồn), thêm: sao chép, tạo lại, sửa tin, ‹ 1/2 ›, 👍/👎, Dừng (System 4 phát lại các câu trước vào nhánh mới khi sửa / tạo lại). |
-| Friendly | Trợ lý hỗ trợ của **Team 7** (đổi trong ⚙). Chữ hiện dần, **Dừng**, chữ có định dạng (in đậm, danh sách, bảng, code), sao chép, **tạo lại**, **sửa tin đã gửi**, chuyển phiên bản **‹ 1/2 ›**, 👍/👎. Hỏi lại bằng **nút lựa chọn** (tối đa 2 lần liên tiếp). Chỉ tiếng Việt: viết ngôn ngữ khác thì có câu xin lỗi rồi trả lời tiếng Việt; chữ Hán/emoji bị lọc. Mặc định **trả lời nhanh** (~1–3 s); công tắc **Suy nghĩ kỹ**, nút **Trả lời nhanh** để ngắt, nút **Kỹ hơn**. |
+| Friendly | Trợ lý hỗ trợ của **Team 7** (đổi trong ⚙). Chữ hiện dần, **Dừng**, chữ có định dạng (in đậm, danh sách, bảng, code), sao chép, **tạo lại**, **sửa tin đã gửi**, chuyển phiên bản **‹ 1/2 ›**, 👍/👎. Hỏi lại bằng **nút lựa chọn** (tối đa 2 lần liên tiếp). Chỉ tiếng Việt: viết ngôn ngữ khác thì có câu xin lỗi rồi trả lời tiếng Việt; chữ Hán/emoji bị lọc. Một chế độ trả lời (~1–3 s khi GPU rảnh; 10 người cùng dùng: chờ hàng p95 ~14 s, xem ARCHITECTURE_REVIEW §5.4). Câu y chang câu đã được 👍 thì trả ngay. |
 | Dữ liệu → Chuyên gia (NV3) | Nút **+** (hoặc kéo thả) tải CSV / Excel / JSON / TXT / Word / PDF. Bật bộ dữ liệu nào thì AI chỉ trả lời từ đó, có **nguồn [n]** bấm xem bản ghi gốc; không có thì nói không có. Cửa sổ **Dữ liệu**: bật/tắt, xem, xoá, dung lượng 1 GB (dev không giới hạn), cảnh báo khi bật quá nhiều. |
 | Bộ nhớ (mọi người dùng) | Nút **Bộ nhớ** ở góc dưới thanh bên: chọn **Tự động ghi nhớ** hoặc **Chỉ nhớ khi tôi bảo "hãy nhớ…"**, xem / xoá từng điều. Điều đã nhớ dùng ở mọi hội thoại Friendly. Sau câu trả lời có dòng "Đã cập nhật bộ nhớ". |
 | Danh sách hội thoại | Một danh sách chung, mỗi dòng có nhãn Strict/Friendly. Bấm một dòng thì tự chuyển sang chế độ của nó. Mỗi người chỉ thấy hội thoại của mình. |
@@ -65,6 +65,6 @@ python ..\system4\eval\abi\test_abi.py
 ```
 
 ## Lưu ý
-- `qwen3:4b` (bản luôn suy nghĩ) là model duy nhất được dùng. **Chế độ Nhanh** (mặc định) ép đầu ra JSON nên model không suy nghĩ: chữ đầu ~1 s, cả câu ~2,5 s, nhưng có thể bịa chi tiết. **Suy nghĩ kỹ** (công tắc cạnh ô nhập, hoặc nút "Kỹ hơn"): ~25–40 s, bấm "Trả lời nhanh" để ngắt. Số đo: docs/SYSTEM4_NV2_AI_TRO_CHUYEN.md phần D.
+- Model `qwen3:4b-instruct-2507-q4_K_M` dùng chung cho Strict và Friendly. Đầu ra ép JSON (không suy nghĩ): chữ đầu ~1 s, cả câu ~2,5 s khi GPU rảnh, nhưng có thể bịa chi tiết. Chế độ "Suy nghĩ kỹ" đã bỏ hẳn (18/10, D9). Mỗi lĩnh vực có hồ sơ riêng (cách trả lời, trích dẫn, hỏi lại, tìm web) — sửa ở ô Lĩnh vực.
 - Panel AI (nút "AI bật/tắt") ở chế độ Strict là của System 3: đổi được khi server chạy `S3_DEV=1` **và** tài khoản là dev.
 - Chỉ chạy **1 tiến trình server** (hàng đợi và cấu hình nằm trong bộ nhớ). Xem docs/SYSTEM4_DEPLOY.md.

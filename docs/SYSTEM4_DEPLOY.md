@@ -13,7 +13,7 @@ Trạng thái 2026-10-07 (sau NV4). Theo lựa chọn 7C: **chỉ có tài liệ
 | 5 Backend API | FastAPI + SQLite (`server/runtime/system3.db`, `system4/runtime/system4.db`) | SQLite đủ cho 1 máy. Nhiều máy → PostgreSQL: chỉ sửa `system4/server/db.py` (mọi câu SQL nằm ở đó) |
 | 6 Cache (Redis) | Chưa có | Chỗ cắm: đầu `/s4/chat` (routes.py), trước khi gọi model |
 | 7 Hàng đợi | Trong bộ nhớ: System 3 `core/queue.py`, System 4 `llm.Turn` (1 lượt/lần, báo vị trí, giới hạn `FRIENDLY_QUEUE_MAX`) | Redis/RQ khi chạy nhiều tiến trình |
-| 8 AI Service | Ollama tại máy: `qwen3:4b` (trả lời), `bge-m3` (tìm theo nghĩa); reranker bge-reranker-v2-m3 chạy bằng torch trong server (GPU) | vLLM chỉ chạy trên Linux. Chỉ cần sửa `system4/server/llm.py` (một hàm `stream_chat`) |
+| 8 AI Service | Ollama tại máy: `qwen3:4b-instruct-2507-q4_K_M` (trả lời, dùng chung Strict + Friendly), `bge-m3` (tìm theo nghĩa); reranker bge-reranker-v2-m3 chạy bằng torch trong server (GPU) | vLLM chỉ chạy trên Linux. Chỉ cần sửa `system4/server/llm.py` (`_stream`, `chat_json`) và `server/core/llm.py` |
 | 9 Trả kết quả (streaming) | SSE (`/s4/chat`), có nút Dừng | Nginx: tắt buffer (`proxy_buffering off`); server đã gửi `X-Accel-Buffering: no` |
 | Lưu trữ: Vector DB (Qdrant) | Qdrant **local mode** (`system4/runtime/qdrant`, collection `records`, 1024 chiều) | Qdrant server: đổi `_qdrant()` trong `system4/server/search.py` sang `QdrantClient(url=...)`, nạp lại dữ liệu |
 | Lưu trữ: Object storage | Thư mục `system4/runtime/datasets/<user>/<id>/` (tệp gốc người dùng) | MinIO/S3 |
@@ -36,7 +36,7 @@ Trạng thái 2026-10-07 (sau NV4). Theo lựa chọn 7C: **chỉ có tài liệ
 | `S3_USE_LLM`, `S3_DEV`, … | xem `server/config.py` | Cấu hình System 3 (không đổi) |
 
 ## 3. Các bước dự kiến khi lên máy chủ Linux (chưa chạy thử)
-1. Cài Python 3.12, Ollama, NVIDIA driver; `ollama pull qwen3:4b` và `ollama pull bge-m3`.
+1. Cài Python 3.12, Ollama, NVIDIA driver; `ollama pull qwen3:4b-instruct-2507-q4_K_M` và `ollama pull bge-m3` (hoặc chạy `Set up first time.bat`). Trước mỗi lần nâng Ollama / đổi model: `python run_server.py system4/eval/ollama_contract.py`.
 2. Lấy code từ nhánh `System_3&4`; tạo venv; `pip install -r requirements.txt`.
 3. Tạo liên kết `pyroot/system3 -> <repo>` (như bước 3 của `Set up first time.bat`, trên Linux dùng `ln -s`); `python -m system3.data.build`; `python system4/setup_models.py reranker`.
 4. Chạy `S4_ENABLED=1 S4_COOKIE_SECURE=1 PYTHONPATH=<pyroot> python server/main.py` dưới systemd. **Chỉ 1 tiến trình** (không dùng `--workers`).

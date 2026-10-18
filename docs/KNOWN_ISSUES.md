@@ -2,6 +2,18 @@
 
 Mỗi mục có người chịu trách nhiệm quyết định. Cập nhật khi đóng.
 
+## Sau kế hoạch G0–G4 (18/10)
+| Mục | Tình trạng | Quyết định / người chịu trách nhiệm |
+|---|---|---|
+| Friendly chờ hàng GPU khi 10 người cùng dùng: p95 13,6 s (mục tiêu 10 s) | chấp nhận cho thí điểm (D17); câu đã 👍 hỏi y chang thì trả ngay (D18) | trưởng nhóm, 18/10 |
+| Lượt chỉ-luật khi 10 người dùng: p95 1,2 s (mục tiêu 0,5 s) — CPU dùng chung với Ollama + reranker | mở | trưởng nhóm |
+| Hỏi lại khi mơ hồ (G4.1): bộ mù 50%, chưa đạt 60%; tín hiệu reranker / độ rộng cụm lỗ ròng trên dữ liệu chọn ngưỡng | mở: cần bộ chọn ngưỡng giống bộ mù | trưởng nhóm quyết |
+| Thẻ hỏi tỉnh (D5) làm 9 ca bộ mù nhãn "trả lời" thành hỏi lại (nhãn viết trước D5) | có chủ ý; tắt bằng `S3_PROVINCE_CLARIFY=0` | trưởng nhóm: có sửa nhãn golden không |
+| Liệt kê / đếm text-to-SQL chỉ chạy khi có LLM; "liên quan đến X" có khi được hiểu là lĩnh vực thay vì chữ trong tên (3/45 ca bộ đo riêng) | mở, nhỏ | — |
+| Tệp biểu mẫu Cổng trả 0 byte nên không có bản lưu: trả tên mẫu + link trang thủ tục (D7) | có chủ ý | — |
+| Tên tỉnh cũ trước sáp nhập (Bình Dương…) không đổi sang tỉnh mới khi chọn bản riêng | mở | — |
+| Strict trong System 4 chưa hiện gợi ý "Nhớ tỉnh/thành" (chỉ web System 3 hiện) | mở, nhỏ | — |
+
 ## Bộ test 10 câu của nhóm (`eval/cases_team.json`): 8/10
 
 | Ca | Tình trạng | Quyết định |
@@ -25,7 +37,7 @@ Mỗi mục có người chịu trách nhiệm quyết định. Cập nhật khi
 | mơ hồ theo đối tượng hiếm trong dữ liệu thật; hồ sơ "người dân" gần như không bớt hỏi lại (hầu hết thủ tục khai "Công dân Việt Nam") | giới hạn của dữ liệu, không sửa được bằng code | ghi rõ ở README; không hứa hơn |
 | `procedure_subjects` có chỗ lệch với tên thủ tục: thu hẹp thẻ theo đối tượng có thể ẩn đúng thủ tục (vd đăng ký đất đai lần đầu cho hộ gia đình chỉ khai doanh nghiệp/Việt kiều) | mở; giảm nhẹ bằng luật "câu nêu rõ thì hồ sơ không can thiệp" và thẻ ghi "không thấy thì gõ tên thủ tục" | nhóm rà dữ liệu đối tượng nếu muốn bật mạnh hơn |
 | `pick` (bỏ hỏi, chọn ứng viên hợp đối tượng) có thể đổi đáp án so với ứng viên đứng đầu của truy hồi; câu trả lời luôn nói "Theo hồ sơ của bạn ... nếu chưa đúng, bạn nói lại nhé" | chấp nhận theo thiết kế; chưa đo trên câu thật | Nhân duyệt sau khi có câu hỏi thật |
-| danh sách tỉnh = 63 đơn vị trước sáp nhập 07/2025; tỉnh/xã chỉ hiển thị | chờ danh mục 34 tỉnh | mục 6 checklist |
+| danh sách tỉnh | **đóng (G4.4):** lấy từ dữ liệu (bản 3: 34 tỉnh); tỉnh trong hồ sơ chọn bản riêng của tỉnh | — |
 | đường `context_facts`/`session_facts` vẫn không được Planner luật tạo | không đổi ở Phase 26 (hồ sơ đi vào Policy) | — |
 
 ## Bước sinh chữ (Answer Composer)

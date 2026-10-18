@@ -2,8 +2,8 @@
 
 ## Yêu cầu
 - Python 3.12 (đã thử trên Windows 10: 3.12.2 ở máy dev; bạn báo cài sạch được trên 3.12.8).
-- [Ollama](https://ollama.com) và model `qwen3:4b` — cần cho bước LLM sinh chữ giải thích điều kiện/so sánh, **bật mặc định** (`S3_USE_LLM=1`, quyết định của nhóm). Planner chạy bằng luật nên **không cần LLM để hệ thống trả lời**: không có Ollama thì lượt đó rơi về câu trả lời bằng code; đặt `S3_USE_LLM=0` để tắt hẳn (và không nạp model).
-- GPU không bắt buộc. Máy dev: GTX 1660 Super 6 GB, qwen3:4b chạy 100% GPU.
+- [Ollama](https://ollama.com) và model `qwen3:4b-instruct-2507-q4_K_M` (`Set up first time.bat` tải sẵn; một model cho Strict + Friendly) — cần cho bước LLM sinh chữ giải thích điều kiện/so sánh, **bật mặc định** (`S3_USE_LLM=1`, quyết định của nhóm). Planner chạy bằng luật nên **không cần LLM để hệ thống trả lời**: không có Ollama thì lượt đó rơi về câu trả lời bằng code; đặt `S3_USE_LLM=0` để tắt hẳn (và không nạp model).
+- GPU không bắt buộc. Máy không có card đồ hoạ: giao diện cảnh báo AI chậm (7–40 giây), Strict bỏ bước LLM và trả bản code ngay; có công tắc "Chỉ trả lời bằng luật" theo tài khoản. Máy đo: RTX 4050 6 GB, model chạy 100% GPU.
 
 ## Cấu trúc thư mục khi clone
 Mã import theo dạng `system3.*`. **Dùng launcher `run_server.py` ở gốc**: nó tự đăng ký package `system3` trỏ vào thư mục chứa nó, nên clone về thư mục tên gì (`intern-amazing-group_7/`, `abc/`...) cũng chạy, không cần `PYTHONPATH`. Gọi thư mục clone là `<SYSTEM3>` (có `run_server.py`, `server/`, `data/` ngay bên trong).
@@ -61,7 +61,12 @@ Biến môi trường (xem `server/config.py`):
 | `PLANNER_LLM_NUM_PREDICT` | 220 | trần token đầu ra của LLM Planner |
 | `S3_PLANNER_LLM_CACHE` | (trống) | CHỈ để đo: tệp jsonl phát lại đề xuất LLM (quét ngưỡng không gọi lại model) |
 | `S3_TABLE_BUTTON` | 1 | 0 = tắt nút "Tạo bảng full" và endpoint `GET /procedure/{proc_id}/table` (câu trả lời về như cũ) |
-| `LLM_MODEL` | qwen3:4b (`Launch web.bat` đặt `qwen3:4b-instruct-2507-q4_K_M` từ 2026-10-08, xem SYSTEM4_NV5 D6) | model Ollama |
+| `LLM_MODEL` | `qwen3:4b-instruct-2507-q4_K_M` (mặc định từ 18/10; ⚙ "Model dùng chung" thắng biến này) | model Ollama |
+| `S3_RULE_WORKERS` | 8 | số luồng chạy phần luật song song (G3.1) |
+| `S3_QUEUE_CONCURRENCY` / `S4_CONCURRENCY` | 1 | số chỗ GPU (card lớn: đặt N cùng `OLLAMA_NUM_PARALLEL=N`) |
+| `S3_STRICT_GPU_WAIT` | 3.0 | giây bước sinh chữ của Strict chờ GPU trước khi trả bản code |
+| `S3_PROVINCE_CLARIFY` | 1 | 0 = tắt thẻ hỏi tỉnh (G4.4) |
+| `S4_FORCE_CPU` | — | 1 = coi như máy không có card đồ hoạ (thử G3.3) |
 | `OLLAMA_HOST` | http://127.0.0.1:11434 | địa chỉ Ollama |
 | `LLM_KEEP_ALIVE` | 30m | giữ model trong VRAM |
 
