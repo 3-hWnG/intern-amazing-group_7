@@ -16,7 +16,7 @@ import threading
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from . import account, admin, auth, config, datasets, db, domains, llm, procs, routes, search, settings, strict
+from . import account, admin, auth, config, datasets, db, domains, llm, procs, procs_gate, routes, search, settings, strict  # noqa: F401 (procs_gate gán cổng kiểm)
 
 PUBLIC = {"/s4/login", "/s4/auth/login", "/s4/auth/signup", "/s4/auth/logout", "/s4/public", "/health", "/favicon.ico"}
 _CONV = re.compile(r"^/conversations/([^/]+)")

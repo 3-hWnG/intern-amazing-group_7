@@ -445,6 +445,7 @@ def apply(vid: int, wait: bool = False, gate: bool = True) -> None:
     load(vid)   # kiểm tồn tại
 
     def work():
+        _job["state"] = "running"
         _job["message"] = "Đang dựng DB thủ tục từ phiên bản đã chọn (khoảng 1 phút)…"
         path = ensure_built(vid, lambda m: _job.update(message=m))
         cur = active_id()
@@ -567,5 +568,12 @@ if __name__ == "__main__":   # python -m system3.system4.server.procs reapply   
             pass
     if sys.argv[1:] == ["reapply"]:
         print("  " + reapply_active())
+    elif sys.argv[1:2] == ["apply"] and len(sys.argv) == 3:   # áp dụng một phiên bản (qua cổng kiểm G2.4), như nút "Áp dụng"
+        from . import procs_gate  # noqa: F401
+        db.init_db()
+        init()
+        apply(int(sys.argv[2]), wait=True)
+        print("  " + _job["message"])
+        print("  cổng kiểm: " + json.dumps((_job.get("result") or {}).get("gate"), ensure_ascii=False))
     else:
-        print("Dùng: python -m system3.system4.server.procs reapply")
+        print("Dùng: python -m system3.system4.server.procs reapply | apply <id phiên bản>")
