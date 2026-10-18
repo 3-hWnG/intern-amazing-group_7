@@ -13,7 +13,7 @@ from fastapi.responses import FileResponse, RedirectResponse, Response
 from pydantic import BaseModel
 from starlette.background import BackgroundTask
 
-from . import auth, chat, config, datasets, db, guard, llm, persona, procs, procs_xlsx, search
+from . import account, auth, chat, config, datasets, db, guard, llm, persona, procs, procs_xlsx, search
 
 
 class NewUser(BaseModel):
@@ -198,15 +198,7 @@ def make_router(s3_store) -> APIRouter:
             raise HTTPException(404, "không có người dùng này")
         if target["role"] == "dev" and other_active_devs(uid) == 0:
             raise HTTPException(422, "Phải còn ít nhất một tài khoản dev đang hoạt động")
-        for cid in db.strict_ids(uid):   # hội thoại Strict nằm trong DB System 3
-            for b in db.strict_branches(cid):
-                s3_store.delete_conversation(b)
-                db.forget_strict(b)
-            s3_store.delete_conversation(cid)
-            db.forget_strict(cid)
-        for d in db.list_datasets(uid):
-            datasets.delete(d)
-        db.run("DELETE FROM users WHERE id=?", (uid,))   # phiên, hội thoại Friendly, bộ nhớ... xoá theo khoá ngoại
+        account.purge_user(s3_store, uid)   # G1.4: xoá mọi thứ của người đó; 👍/👎 giữ nhưng bỏ danh tính
         return {"users": user_rows()}
 
     @r.get("/users/{uid}/conversations")

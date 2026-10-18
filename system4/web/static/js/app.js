@@ -400,6 +400,7 @@
           const val = m.feedback === v ? 0 : v;
           try { await api("/s4/strict/" + convId + "/feedback", { node_id: m.node_id, value: val }); } catch (e) { alert("Lỗi: " + e.message); return; }
           m.feedback = val; bar.querySelectorAll(".fb").forEach((y) => y.classList.remove("on")); if (val) x.classList.add("on");
+          fbNote(w, val);
           reasonChips(w, "strict", val, (reason) => api("/s4/strict/" + convId + "/feedback", { node_id: m.node_id, value: -1, reason }));
         }, "fb" + (m.feedback === v ? " on" : "")));
       });
@@ -414,6 +415,12 @@
     strict: [["wrong_proc", "Sai thủ tục"], ["wrong_number", "Sai số liệu"], ["no_clarify", "Không hỏi lại"], ["other", "Khác"]],
     friendly: [["wrong_info", "Sai thông tin"], ["off_topic", "Không đúng ý hỏi"], ["bad_format", "Dài / khó đọc"], ["other", "Khác"]],
   };
+  /* D13: bấm 👍/👎 -> báo rõ cặp hỏi–đáp (đã che số) được giữ lại, kể cả khi xoá tài khoản */
+  const FEEDBACK_NOTE = "Câu hỏi và câu trả lời (đã che số giấy tờ) được giữ để cải thiện hệ thống, kể cả khi bạn xoá tài khoản.";
+  function fbNote(wrap, val) {
+    const old = wrap.querySelector(".fb-note"); if (old) old.remove();
+    if (val) wrap.appendChild(el("div", "fb-note muted small", FEEDBACK_NOTE));
+  }
   function reasonChips(wrap, kind, val, send) {
     const old = wrap.querySelector(".fb-reason"); if (old) old.remove();
     if (val !== -1) return;
@@ -592,6 +599,7 @@
           m.feedback = val;
           bar.querySelectorAll(".fb").forEach((y) => y.classList.remove("on"));
           if (val) x.classList.add("on");
+          fbNote(w, val);
           reasonChips(w, "friendly", val, (reason) => api("/s4/conversations/" + convId + "/messages/" + m.id + "/feedback", { value: -1, reason }));
         }, "fb" + (m.feedback === v ? " on" : ""));
         bar.appendChild(btn);
@@ -1323,6 +1331,42 @@
   $("open-memory").onclick = openMemory;
   $("memory-close").onclick = () => { memModal.hidden = true; };
   memModal.addEventListener("click", (e) => { if (e.target === memModal) memModal.hidden = true; });
+
+  /* ---- Tài khoản & quyền riêng tư (G1.4, G1.7): dung lượng, đổi mật khẩu, xoá hội thoại / bộ nhớ / tài khoản ---- */
+  const accModal = $("account");
+  const mb = (n) => (n / 1048576).toLocaleString("vi-VN", { maximumFractionDigits: 1 }) + " MB";
+  async function openAccount() {
+    try {
+      const d = await api("/s4/account"), u = d.usage;
+      $("account-usage").textContent = `Đã dùng ${mb(u.used)}` + (u.quota ? ` / ${mb(u.quota)}` : " (dev: không giới hạn)") +
+        ` — dữ liệu tải lên ${mb(u.datasets)}, hội thoại Strict ${mb(u.strict)}, hội thoại Friendly ${mb(u.friendly)}.`;
+      accModal.hidden = false;
+    } catch (e) { alert("Lỗi: " + e.message); }
+  }
+  $("open-account").onclick = openAccount;
+  $("account-close").onclick = () => { accModal.hidden = true; };
+  accModal.addEventListener("click", (e) => { if (e.target === accModal) accModal.hidden = true; });
+  $("account-password").onsubmit = async (e) => {
+    e.preventDefault();
+    const f = e.target;
+    try { await api("/s4/account/password", { old_password: f.old_password.value, new_password: f.new_password.value }); f.reset(); alert("Đã đổi mật khẩu."); }
+    catch (err) { alert("Lỗi: " + err.message); }
+  };
+  $("account-del-convs").onclick = async () => {
+    if (!confirm("Xoá TẤT CẢ hội thoại (Strict và Friendly) của bạn? Không khôi phục được.")) return;
+    try { await api("/s4/account/conversations", null, "DELETE"); await loadConv(null, mode); refreshList(); openAccount(); }
+    catch (e) { alert("Lỗi: " + e.message); }
+  };
+  $("account-del-memory").onclick = async () => {
+    if (!confirm("Xoá bộ nhớ (những điều AI nhớ về bạn và hồ sơ của chế độ Strict)?")) return;
+    try { await api("/s4/account/memory", null, "DELETE"); alert("Đã xoá bộ nhớ."); } catch (e) { alert("Lỗi: " + e.message); }
+  };
+  $("account-delete").onsubmit = async (e) => {
+    e.preventDefault();
+    if (!confirm("Xoá tài khoản và toàn bộ dữ liệu của bạn? Không khôi phục được.")) return;
+    try { await api("/s4/account", { password: e.target.password.value }, "DELETE"); toLogin(); }
+    catch (err) { alert("Lỗi: " + err.message); }
+  };
 
   /* ---------------------------------------------------------- khởi động -- */
   (async function init() {

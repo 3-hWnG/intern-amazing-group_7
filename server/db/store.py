@@ -102,6 +102,17 @@ def add_message(cid: str, role: str, content: str, kind: str = "",
 
 
 # FINAL-PRODUCT: [B2] trả cả plan; bản cuối chỉ đưa plan cho dev (mục 1)
+def messages_bytes(cids) -> int:
+    """Tổng số byte nội dung tin nhắn của các hội thoại (hạn mức dung lượng của System 4, D12)."""
+    cids = list(cids)
+    total = 0
+    for i in range(0, len(cids), 500):
+        part = cids[i:i + 500]
+        total += _run(f"SELECT COALESCE(SUM(length(CAST(content AS BLOB))),0) n FROM messages WHERE conversation_id IN ({','.join('?' * len(part))})",
+                      part, one=True)["n"]
+    return total
+
+
 def get_messages(cid: str) -> list[dict]:
     out = []
     for r in _run("SELECT * FROM messages WHERE conversation_id=? ORDER BY id", (cid,), many=True):

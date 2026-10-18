@@ -26,6 +26,7 @@
       <div class="user-row">
         <span id="user-name"></span>
         <span class="user-links">
+          <button id="open-account" class="link" type="button" title="Đổi mật khẩu, xoá hội thoại / bộ nhớ / tài khoản, dung lượng đã dùng">Tài khoản</button>
           <button id="open-memory" class="link" type="button" title="Những điều AI nhớ về bạn (Friendly)">Bộ nhớ</button>
           <button id="logout" class="link" type="button">Đăng xuất</button>
         </span>
@@ -117,6 +118,38 @@
     </footer>
   </div>
 </div>
+<div id="account" class="s4-modal" hidden>
+  <div class="s4-dialog" role="dialog" aria-modal="true" aria-labelledby="account-title">
+    <header>
+      <h2 id="account-title">Tài khoản &amp; quyền riêng tư</h2>
+      <button id="account-close" class="icon" type="button" aria-label="Đóng">✕</button>
+    </header>
+    <div class="body">
+      <h3>Dung lượng đã dùng</h3>
+      <p id="account-usage" class="mem-help"></p>
+      <p class="mem-help">Hội thoại và dữ liệu bạn tải lên tính chung một hạn mức. Đầy thì cần xoá bớt hội thoại hoặc dữ liệu mới hỏi tiếp được.
+        Số CCCD/số điện thoại bạn gõ được che trước khi lưu.</p>
+      <h3>Đổi mật khẩu</h3>
+      <form id="account-password" class="dom-form">
+        <input name="old_password" type="password" placeholder="Mật khẩu hiện tại" autocomplete="current-password" required>
+        <input name="new_password" type="password" placeholder="Mật khẩu mới" autocomplete="new-password" required>
+        <button class="primary" type="submit">Đổi mật khẩu</button>
+      </form>
+      <h3>Xoá dữ liệu</h3>
+      <p class="mem-help">
+        <button id="account-del-convs" class="btn-ghost" type="button">Xoá hết hội thoại</button>
+        <button id="account-del-memory" class="btn-ghost" type="button">Xoá bộ nhớ</button>
+      </p>
+      <h3>Xoá tài khoản</h3>
+      <p class="mem-help">Xoá toàn bộ hội thoại, bộ nhớ, dữ liệu tải lên và tài khoản. Riêng các câu hỏi – câu trả lời bạn đã bấm 👍/👎
+        (đã che số giấy tờ) được giữ lại để cải thiện hệ thống, không còn gắn với bạn.</p>
+      <form id="account-delete" class="dom-form">
+        <input name="password" type="password" placeholder="Nhập lại mật khẩu để xác nhận" autocomplete="current-password" required>
+        <button class="btn-ghost" type="submit">Xoá tài khoản</button>
+      </form>
+    </div>
+  </div>
+</div>
 <div id="records-modal" class="s4-modal" hidden>
   <div class="s4-dialog wide" role="dialog" aria-modal="true" aria-labelledby="records-title">
     <header>
@@ -143,6 +176,6 @@
 <script src="/s4/static/vendor/marked.umd.js?v=18.1.0"></script>
 <script src="/s4/static/vendor/purify.min.js?v=3.4.16"></script>
 <script src="/s4/static/js/inspector.js?v=dev1"></script>
-<script src="/s4/static/js/app.js?v=dev11"></script>
+<script src="/s4/static/js/app.js?v=dev12"></script>
 </body>
 </html>

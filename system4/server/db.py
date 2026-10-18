@@ -447,8 +447,23 @@ def visible_domains(user: dict) -> list[dict]:
     return rows
 
 
-def used_bytes(user_id: int) -> int:
-    return run("SELECT COALESCE(SUM(size_bytes),0) n FROM datasets WHERE user_id=?", (user_id,), one=True)["n"]
+def usage_parts(user_id: int, s3_store=None) -> dict:
+    """D12/G1.7: dung lượng của một người = tệp tải lên + nội dung tin nhắn Friendly + tin nhắn Strict (DB System 3, cả nhánh ẩn)."""
+    if s3_store is None:
+        from db import store as s3_store   # server/db/store.py của System 3 (thư mục server nằm trên sys.path)
+    ds = run("SELECT COALESCE(SUM(size_bytes),0) n FROM datasets WHERE user_id=?", (user_id,), one=True)["n"]
+    fr = run("SELECT COALESCE(SUM(length(CAST(m.content AS BLOB))),0) n FROM messages m JOIN conversations c ON c.id=m.conversation_id"
+             " WHERE c.user_id=?", (user_id,), one=True)["n"]
+    ids = set(strict_ids(user_id))
+    for cid in list(ids):
+        ids |= set(strict_branches(cid))
+    st = s3_store.messages_bytes(ids) if ids else 0
+    return {"datasets": ds, "friendly": fr, "strict": st}
+
+
+def used_bytes(user_id: int, s3_store=None) -> int:
+    """Tổng dung lượng tính vào hạn mức USER_QUOTA_MB (tệp + hội thoại, D12)."""
+    return sum(usage_parts(user_id, s3_store).values())
 
 
 def insert_records(ds_id: int, recs: list[dict]) -> list[int]:

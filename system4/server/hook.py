@@ -16,7 +16,7 @@ import threading
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response
 from fastapi.staticfiles import StaticFiles
 
-from . import admin, auth, config, datasets, db, domains, llm, routes, search, settings, strict
+from . import account, admin, auth, config, datasets, db, domains, llm, routes, search, settings, strict
 
 PUBLIC = {"/s4/login", "/s4/auth/login", "/s4/auth/signup", "/s4/auth/logout", "/s4/public", "/health", "/favicon.ico"}
 _CONV = re.compile(r"^/conversations/([^/]+)")
@@ -52,6 +52,7 @@ def install(app, s3_store) -> None:
     app.include_router(routes.make_router(s3_store, strict_list, drop_strict))
     app.include_router(strict.make_router(app, s3_store))
     app.include_router(admin.make_router(s3_store))
+    app.include_router(account.make_router(s3_store))
     app.include_router(domains.make_router())
     app.include_router(abi_scheduler.make_router())
     app.mount("/s4/static", StaticFiles(directory=str(config.WEB_DIR / "static")), name="s4_static")
@@ -81,6 +82,8 @@ def install(app, s3_store) -> None:
 
         if path == "/chat" and method == "POST" and not db.can_use_domain(user, db.get_domain(1)):
             return deny(403, "Domain Thủ tục đang khoá: chỉ dev và cán bộ dùng được")
+        if path == "/chat" and method == "POST" and account.over_quota(user, s3_store):   # G1.7: mọi lượt Strict (cả cầu nối)
+            return deny(413, account.QUOTA_MESSAGE)
 
         if path == "/conversations":   # danh sách / xoá tất cả của System 3 -> chỉ của người này
             if method == "GET":

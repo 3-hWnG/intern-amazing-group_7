@@ -7,7 +7,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Response, StreamingResponse
 from pydantic import BaseModel
 
-from . import auth, chat as chat_turn, config, datasets, db, domains, export, memory, search, settings
+from . import account, auth, chat as chat_turn, config, datasets, db, domains, export, memory, search, settings
 
 
 class Credentials(BaseModel):
@@ -247,6 +247,8 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
             dom = db.get_domain(body.domain_id or 2)
         if not dom or dom["engine"] not in ("friendly", "abi") or not db.can_use_domain(u, dom):   # abi: pipeline Friendly + nguồn abi.com.vn
             raise HTTPException(403, "Bạn không dùng được lĩnh vực này")
+        if account.over_quota(u, s3_store):   # G1.7: hội thoại tính vào hạn mức dung lượng chung với dữ liệu tải lên
+            raise HTTPException(413, account.QUOTA_MESSAGE)
         if body.regenerate_of:
             m = own_message(request, cid, body.regenerate_of)
             if m["role"] != "assistant" or not m["parent_id"]:
