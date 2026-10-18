@@ -10,6 +10,7 @@ import collections, json, os, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import answer_adapter  # noqa: E402
+import stamp  # noqa: E402
 import rank_metrics as rm  # noqa: E402
 
 args = [a for a in sys.argv[1:] if not a.startswith("--")]
@@ -123,4 +124,4 @@ if lr:
     md += f"\n\nliệt kê: {sum(x['beh_ok'] for x in lr)}/{len(lr)} câu có trả danh sách; trung bình {sum(x['dom_prec'] for x in lr) / len(lr):.0%} mục trong danh sách đúng lĩnh vực được hỏi."
 print(md)
 os.makedirs(os.path.join(HERE, "results"), exist_ok=True)
-json.dump({"domain": dom, "by": by, "table_md": md, "rows": rows}, open(os.path.join(HERE, "results", f"golden_{dom}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+json.dump({"domain": dom, "by": by, "stamp": stamp.stamp(), "table_md": md, "rows": rows}, open(os.path.join(HERE, "results", f"golden_{dom}.json"), "w", encoding="utf-8"), ensure_ascii=False, indent=1)

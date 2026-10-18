@@ -17,6 +17,7 @@ from collections import defaultdict
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from rules_scorer import score_rule  # noqa: E402
+import stamp  # noqa: E402
 DB = os.environ.get("S3_DB") or os.environ.get("S3_DATA_DB") or os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "data", "runtime", "system3.db")   # DB của System 3 (repo V10.6 cũ không còn)
 
 # --------------------------------------------------------------- nguồn ------
@@ -292,7 +293,7 @@ def main():
     os.makedirs(os.path.join(HERE, "results"), exist_ok=True)
     name = a.name or time.strftime("%Y%m%d-%H%M%S")
     path = os.path.join(HERE, "results", f"{name}.json")
-    json.dump({"adapter": a.adapter, "n": len(results), "table_md": md, "split_report_md": sr, "summary": sm, "cases": results},
+    json.dump({"adapter": a.adapter, "stamp": stamp.stamp(DB), "n": len(results), "table_md": md, "split_report_md": sr, "summary": sm, "cases": results},
               open(path, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
     print(f"\nĐã ghi {path}")
 
