@@ -3,6 +3,8 @@ from __future__ import annotations
 import hashlib
 import re
 import secrets
+import threading
+import time
 
 import bcrypt
 
@@ -49,6 +51,44 @@ def verify(username: str, password: str) -> dict | None:
     if not bcrypt.checkpw(pw, u["password_hash"].encode()):
         return None
     return u
+
+
+# G1.5 (P25): chống đoán mật khẩu. Đếm lần đăng nhập SAI theo (tên, IP) trong bộ nhớ tiến trình (khởi động lại thì đếm lại):
+# 5 lần sai trong 10 phút -> khoá cặp đó tới khi lần sai cũ nhất ra khỏi cửa sổ (API trả 429 kèm số giây chờ). Không đụng đăng ký.
+LOGIN_MAX_FAILS = 5
+LOGIN_WINDOW = 600
+_fails: dict[tuple[str, str], list[float]] = {}
+_fails_lock = threading.Lock()
+
+
+def _key(username: str, ip: str) -> tuple[str, str]:
+    return ((username or "").strip().lower(), ip or "")
+
+
+def login_wait(username: str, ip: str, now: float | None = None) -> int:
+    """Số giây còn phải chờ (0 = được thử)."""
+    now = time.time() if now is None else now
+    with _fails_lock:
+        ts = [t for t in _fails.get(_key(username, ip), []) if now - t < LOGIN_WINDOW]
+        if ts:
+            _fails[_key(username, ip)] = ts
+        else:
+            _fails.pop(_key(username, ip), None)
+        return int(ts[0] + LOGIN_WINDOW - now) + 1 if len(ts) >= LOGIN_MAX_FAILS else 0
+
+
+def login_failed(username: str, ip: str, now: float | None = None) -> None:
+    with _fails_lock:
+        if len(_fails) > 10000:   # chặn phình bộ nhớ khi bị dò hàng loạt: bỏ các cặp cũ
+            cut = (time.time() if now is None else now) - LOGIN_WINDOW
+            for k in [k for k, v in _fails.items() if not v or v[-1] < cut]:
+                _fails.pop(k, None)
+        _fails.setdefault(_key(username, ip), []).append(time.time() if now is None else now)
+
+
+def login_ok(username: str, ip: str) -> None:
+    with _fails_lock:
+        _fails.pop(_key(username, ip), None)
 
 
 def new_session(user_id: int) -> tuple[str, int]:

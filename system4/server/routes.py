@@ -130,10 +130,17 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         return _login_response(u)
 
     @r.post("/auth/login")
-    def login(body: Credentials):
-        u = auth.verify(body.username.strip(), body.password)
+    def login(body: Credentials, request: Request):
+        name, ip = body.username.strip(), (request.client.host if request.client else "")
+        wait = auth.login_wait(name, ip)
+        if wait:   # G1.5: 5 lần sai / 10 phút theo (tên, IP)
+            raise HTTPException(429, f"Đăng nhập sai quá nhiều lần. Thử lại sau {(wait + 59) // 60} phút.",
+                                headers={"Retry-After": str(wait)})
+        u = auth.verify(name, body.password)
         if not u:
+            auth.login_failed(name, ip)
             raise HTTPException(401, "Sai tên đăng nhập hoặc mật khẩu")
+        auth.login_ok(name, ip)
         if u["disabled"]:
             raise HTTPException(403, "Tài khoản đã bị khoá")
         return _login_response(u)
