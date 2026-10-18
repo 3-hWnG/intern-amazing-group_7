@@ -151,6 +151,45 @@ TOUR_CASES = [
 ]
 
 
+# ---------------- shop (bộ MÙ thứ hai): cua_hang_gia.xlsx (make_shop.py). Soạn 18/10/2026 SAU lượt đo đầu (bộ du lịch đã bị xem kết quả)
+# và TRƯỚC khi sửa 5 lỗi đường nhanh; không chỉnh câu / đáp án theo kết quả. Đáp án lấy từ make_shop.py.
+SH = "cua_hang"
+SHOP_CASES = [
+    C("sh-b01", "shop", "blind", [SH], "Giá bán của Laptop Kim Long 14 là bao nhiêu?", any=["15.900.000", "15,900,000", "15900000", "15,9 triệu"], source="Laptop Kim Long 14"),
+    C("sh-b02", "shop", "blind", [SH], "Điện thoại Sao Mai S1 bảo hành mấy tháng?", num=["18"]),
+    C("sh-b03", "shop", "blind", [SH], "Số điện thoại chi nhánh Cầu Giấy?", any=["0911 200 004", "0911200004"]),
+    C("sh-b04", "shop", "blind", [SH], "Chi nhánh Hải Châu ở địa chỉ nào?", all=["Bạch Đằng"]),
+    C("sh-b05", "shop", "blind", [SH], "Tivi Thủy Tinh 43 inch còn hàng không?", any=["hết hàng", "không còn", "không ghi", "chưa có thông tin", "không có thông tin", "hết"]),
+    C("sh-b06", "shop", "blind", [SH], "Mã sản phẩm của Tủ lạnh Bạch Dương 320L là gì?", all=["SP12"]),
+    C("sh-b07", "shop", "blind", [SH], "SP07 là sản phẩm gì?", all=["Tai nghe Sóng Âm B2"]),
+    C("sh-b08", "shop", "blind", [SH], "Chương trình Black Friday giảm bao nhiêu?", all=["15%"]),
+    C("sh-b09", "shop", "blind", [SH], "Khuyến mãi Tựu trường áp dụng cho sản phẩm nào?", all=["Laptop"]),
+    C("sh-b10", "shop", "blind", [SH], "gia may giat bach duong 9kg", any=["9.790.000", "9,790,000", "9790000"]),
+    C("sh-b11", "shop", "blind", [SH], ["Laptop Kim Long 16 Pro giá bao nhiêu?", "Bảo hành bao lâu?"], num=["24"]),
+    C("sh-b12", "shop", "blind", [SH], ["Chi nhánh Quận 1 mở cửa mấy giờ?", "Còn số điện thoại thì sao?"], any=["0911 200 001", "0911200001"]),
+    C("sh-b13", "shop", "blind", [SH], "Có bao nhiêu sản phẩm của hãng Lotus?", num=["4"]),
+    C("sh-b14", "shop", "blind", [SH], "Liệt kê các laptop", all=["Kim Long 14", "Kim Long 16 Pro"]),
+    C("sh-b15", "shop", "blind", [SH], "Có mấy chi nhánh ở Hà Nội?", num=["2"]),
+    C("sh-b16", "shop", "blind", [SH], "Chi nhánh nào có bãi đỗ ô tô?", all=["Thủ Đức", "Cầu Giấy", "Hải Châu"]),
+    C("sh-b17", "shop", "blind", [SH], "Những sản phẩm nào đang hết hàng?", all=["Sao Mai S1", "Kim Long 16 Pro", "Thủy Tinh 43", "Quạt điều hòa"]),
+    C("sh-b18", "shop", "blind", [SH], "Có bao nhiêu sản phẩm bảo hành 24 tháng?", num=["6"]),
+    C("sh-b19", "shop", "blind", [SH], "Sản phẩm nào đắt nhất?", all=["Kim Long 16 Pro"]),
+    C("sh-b20", "shop", "blind", [SH], "Khuyến mãi nào diễn ra trong tháng 11?", all=["Black Friday"]),
+    C("sh-b21", "shop", "blind", [SH], "Liệt kê các sản phẩm phụ kiện", all=["Tai nghe Sóng Âm B2", "Sạc nhanh Sóng Âm 65W", "Lotus Fit"]),
+    C("sh-b22", "shop", "blind", [SH], "Điện thoại Lotus giá bao nhiêu?", ask_back=True, choices_all=["Lotus A5", "Lotus A7"]),
+    C("sh-b23", "shop", "blind", [SH], "Có bao nhiêu sản phẩm ra mắt năm 2026?", num=["9"]),
+    C("sh-b24", "shop", "blind", [SH], "Mình muốn mua đồ để nghe nhạc, có gì không?", any=["Tai nghe"]),
+    C("sh-b25", "shop", "blind", [SH], "Có chương trình nào cho người đổi điện thoại cũ không?", any=["Đổi điện thoại cũ", "500.000"]),
+    C("sh-b26", "shop", "blind", [SH], "Giá iPhone 17 Pro Max bao nhiêu?", refusal=True, none=["4.990.000", "6.490.000"]),
+    C("sh-b27", "shop", "blind", [SH], "Chi nhánh ở Hải Phòng ở đâu?", refusal=True),
+    C("sh-b28", "shop", "blind", [SH], "Laptop Kim Long 14 nặng bao nhiêu kg?", refusal=True),
+    C("sh-b29", "shop", "blind", [SH], "Cửa hàng có giao hàng miễn phí không?", refusal=True),
+    C("sh-b30", "shop", "blind", [SH], "Nồi cơm điện Hạt Ngọc 1.8L thuộc loại nào?", all=["Gia dụng"]),
+    C("sh-b31", "shop", "blind", [SH], "Tivi Thủy Tinh 55 inch ra mắt ngày nào?", any=["30/08/2025", "2025-08-30", "30/8/2025", "30 tháng 8"]),
+    C("sh-b32", "shop", "blind", [SH], "Hãng của Quạt điều hòa Hạt Ngọc Q5 là gì?", all=["Hạt Ngọc"]),
+]
+
+
 def procedure_cases() -> list[dict]:
     """Câu về thủ tục sinh từ MAU_100_THU_TUC.xlsx như nv3_specialist.py (6 thủ tục: 3 dev, 3 exam)."""
     import openpyxl
@@ -172,4 +211,4 @@ def procedure_cases() -> list[dict]:
 
 
 def all_cases() -> list[dict]:
-    return CASES + procedure_cases() + TOUR_CASES
+    return CASES + procedure_cases() + TOUR_CASES + SHOP_CASES

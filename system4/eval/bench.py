@@ -153,7 +153,7 @@ class Client:
     def ensure_datasets(self):
         """Nạp 4 bộ dữ liệu một lần cho bench_runtime (lần sau dùng lại; đổi bộ đọc tệp thì server tự xử lý lại)."""
         files = {"class": HERE / "data" / "ds_lop_gia.xlsx", "tourism": HERE / "data" / "tourism_records.xlsx",
-                 "procedures": HERE / "data" / "MAU_100_THU_TUC.xlsx", "policy": policy_docx(), "du_lich": tourism_xlsx()}
+                 "procedures": HERE / "data" / "MAU_100_THU_TUC.xlsx", "policy": policy_docx(), "du_lich": tourism_xlsx(), "cua_hang": shop_xlsx()}
         have = {d["filename"]: d for d in self.c.get("/s4/datasets").json()["datasets"]}
         for key, path in files.items():
             if path.name not in have:
@@ -230,6 +230,16 @@ def tourism_xlsx() -> Path:
     if not path.exists():
         from make_tourism import build
         build(path)
+    return path
+
+
+def shop_xlsx() -> Path:
+    """Dữ liệu cửa hàng giả cho bộ mù thứ hai (make_shop.py); thiếu thì sinh lại."""
+    path = HERE / "data" / "cua_hang_gia.xlsx"
+    if not path.exists():
+        from make_shop import OUT, SHEETS
+        from make_tourism import build
+        build(OUT, SHEETS)
     return path
 
 
@@ -333,6 +343,7 @@ def summarize(res: dict) -> dict:
     runs = res["runs"]
     acc = [r for r in runs if r["suite"] in ("accuracy", "halluc")]
     tour = [r for r in runs if r["suite"] == "tourism"]
+    shop = [r for r in runs if r["suite"] == "shop"]
     gr = [r for r in runs if r["suite"] == "greeting"]
     b = (res.get("behavior") or {}).get("summary") or {}
     b_fail = (b.get("total", 0) - b.get("passed", 0)) if b else None
@@ -341,6 +352,7 @@ def summarize(res: dict) -> dict:
          "accuracy_exam": _rate([r for r in acc if r["split"] == "exam"]),
          "acc_only": _rate([r for r in runs if r["suite"] == "accuracy"]), "halluc": _rate([r for r in runs if r["suite"] == "halluc"]),
          "tourism": _rate(tour), "tourism_fails": sum(not r["pass"] for r in tour),
+         "shop": _rate(shop), "shop_fails": sum(not r["pass"] for r in shop),
          "fast_path": sum(bool(r.get("fast_path")) for r in runs),
          "greeting": _rate(gr), "greeting_fails": sum(not r["pass"] for r in gr), "behavior": f"{b.get('passed')}/{b.get('total')}" if b else None,
          "wrong_behavior": sum(not r["pass"] for r in gr) + (b_fail or 0),

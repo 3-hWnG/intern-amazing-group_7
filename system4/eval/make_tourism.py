@@ -64,12 +64,13 @@ SHEETS = [
 ]
 
 
-def build(path: Path = OUT) -> Path:
+def build(path: Path = OUT, sheets: list = SHEETS) -> Path:
+    """Ghi các sheet (tên, tiêu đề cột, dòng) thành .xlsx: font Arial, số >= 1000 dạng #,##0, ngày dd/mm/yyyy."""
     wb = Workbook()
     wb.remove(wb.active)
     head_font, body_font = Font(name="Arial", bold=True, color="FFFFFF"), Font(name="Arial")
     fill = PatternFill("solid", fgColor="1F4E78")
-    for name, header, rows in SHEETS:
+    for name, header, rows in sheets:
         ws = wb.create_sheet(name)
         ws.append(header)
         for c in ws[1]:
