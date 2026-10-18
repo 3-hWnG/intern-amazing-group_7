@@ -108,6 +108,13 @@ Dùng lại mẫu của `system4/abi/versions.py`: phiên bản, một bản "đ
 | 4.9 Tài liệu khớp code (I2–I15) | README, `FINAL_PRODUCT_CHECKLIST`, `KNOWN_ISSUES`, `SYSTEM4_DEPLOY`, `EVAL.md`, `SYSTEM4_SU_THAT.md`. Ghi lại các quyết định D1–D16. Lập danh sách câu trên slide và trong bài báo cần sửa (gửi trưởng nhóm, không tự sửa slide) | `check_docs` sạch |
 | 4.10 (nếu kịp) Từ đồng nghĩa sửa được ở trang Quản trị | Gom `SEED_SYNONYMS`, `PRE_SYN`/`EXTRA_SYN`, `context.EVENTS`, `policy._SITUATION` thành bảng dữ liệu; trang Quản trị sửa được; mặc định giữ nguyên | Mẫu so khớp không đổi khi chưa sửa bảng |
 
+**Kết quả 4.1 (18/10) — không đưa luật nào vào.** Công cụ `eval/clarify_signals.py` thử hai tín hiệu trên dev + `cases_p30` (không dùng bộ mù):
+(A) reranker câu hỏi × tên thủ tục — điểm cao nhất thấp, chênh hạng 1–2 nhỏ, khác họ; (B) độ rộng cụm chính — cụm khớp liền trong tên nhiều thủ tục / nhiều họ.
+Trên bộ chọn ngưỡng (dev + p30-tune) cả hai đều **lỗ ròng**: A tốt nhất +1 ca hỏi lại đúng / −13 ca trả lời đúng; B tốt nhất +2 / −17
+(reranker vốn thiếu tự tin với câu hỏi tự nhiên so với tên thủ tục dài). Hiện trạng trên dữ liệu chọn ngưỡng đã cao: dev + p30-tune 63/70, p30-held/fresh 59/71 (83%),
+trong khi bộ mù 47% — các ca hỏi lại của bộ mù khác hẳn dữ liệu chọn ngưỡng. Muốn tiến tiếp cần bộ chọn ngưỡng mới giống bộ mù (việc cần trưởng nhóm quyết, ghi ở KET_QUA).
+Ca bỏ lỡ còn lại trên p30: chữ đệm lọt vào cụm chính ("đang tìm hiểu", "về"), cụm không có trong tên thủ tục cấp xã ("học bổng", "quân nhân"), cụm hẹp nhưng nhiều dạng ("đăng ký xe").
+
 **Kết thúc tuần:** **eval đầy đủ lần #3** trên bản 3 (số cuối).
 
 ## 4. Kết quả cuối phải nộp
