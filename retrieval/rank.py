@@ -696,15 +696,13 @@ _COND_START = re.compile(r"^" + COND_W + r"\b")
 
 def _attach_orphans(segs: list, cmp) -> list:
     """Đoạn "Nếu <hoàn cảnh> thì <hỏi mục>" KHÔNG ra thủ tục nào (chữ của hoàn cảnh) mà đứng sau một đoạn đã có thủ tục: là phần điều kiện/mục hỏi của thủ tục đó, không phải ý thứ hai
-    (ý thứ hai thật không mở đầu bằng 'nếu/trường hợp'). G4.8: cùng nghĩa với dạng đuôi "<hoàn cảnh> thì sao / thế nào" không ra thủ tục nào
-    ("Khai tử cần giấy tờ gì, tổ chức tang lễ ở nơi khác thì sao"); ý thứ hai thật ("…, còn khai tử thì sao") ra thủ tục nên không bị gộp."""
+    (ý thứ hai thật không mở đầu bằng 'nếu/trường hợp')."""
     if cmp or len(segs) < 2:
         return segs
     out: list = []
     for sg in segs:
         prev = next((o for o in reversed(out) if o.proc_id), None)
-        tail = sg.reason in ("out_of_scope", "no_match") and bool(_TAIL_SEG.search(_fold(sg.text)))
-        if prev is not None and not sg.proc_id and (_COND_START.match(sg.text.strip().lower()) or tail):
+        if prev is not None and not sg.proc_id and _COND_START.match(sg.text.strip().lower()):
             prev.query.fields += [f for f in sg.query.fields if f not in prev.query.fields]
             cond = strip_condition(sg.text)[1] or sg.text.strip()
             prev.query.flags["condition"] = "; ".join(([prev.query.flags["condition"]] if prev.query.flags.get("condition") else []) + [cond])

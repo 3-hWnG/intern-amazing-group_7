@@ -471,8 +471,7 @@ def split_segments(text: str) -> list[str]:
             continue
 
         has_action = bool(nxt_words & ACTION_VERBS)
-        core = re.sub(r"\s*(?:thi|vay) (?:sao|the nao|ra sao)\s*$", "", nxt_f)   # G4.8: "thì" của đuôi hỏi "… thì sao" không phải vế điều kiện
-        is_passive_or_cond = bool(re.match(r"^(?:duoc|bi|co|phai|nam|o|tai)\b", nxt_f) or re.search(r"\bthi\b", core))
+        is_passive_or_cond = bool(re.match(r"^(?:duoc|bi|co|phai|nam|o|tai)\b", nxt_f) or re.search(r"\bthi\b", nxt_f))
 
         if d in ("va", "voi lai", "va lai") and (is_passive_or_cond or not has_action):
             segs[-1] += pieces[i] + nxt
