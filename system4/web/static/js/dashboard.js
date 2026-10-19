@@ -546,15 +546,22 @@
       const job = el("div", "job" + (st.captcha ? " warn" : ""));
       job.hidden = !busy;
       job.textContent = st.running ? (st.step || "Đang đồng bộ…") : building ? `Đang nạp phiên bản ${building.id}… ${building.dataset.progress || 0}%` : "";
-      const b = btn("Đồng bộ FLM", async () => {
-        try { const res = await A.api("/s4/flm/sync", {}); draw(res); if (!res.started && res.reason) alert(res.reason); } catch (e) { alert(e.message); }
-      }, "primary", "Mở một cửa sổ Chrome riêng trên máy chạy server; nếu FLM đòi captcha thì tích \"I'm not a robot\" trong cửa sổ đó");
-      b.disabled = busy;
+      const go = (mode) => async () => {
+        try { const res = await A.api("/s4/flm/sync", { mode }); draw(res); if (!res.started && res.reason) alert(res.reason); } catch (e) { alert(e.message); }
+      };
+      const b = btn("Đồng bộ FLM (khách)", go("guest"), "primary", "Các ngành trong ⚙ FLM_PROGRAMS, trang khách: mở Chrome riêng; nếu FLM đòi captcha thì tích \"I'm not a robot\" trong cửa sổ đó");
+      const bf = btn("Đồng bộ đầy đủ (đăng nhập)", go("full"), "btn-ghost", "MỌI ngành + tài liệu, lịch từng buổi, câu hỏi (30–40 phút): mở Chrome riêng ở trang đăng nhập FLM, bạn tự đăng nhập trong cửa sổ đó");
+      b.disabled = bf.disabled = busy;
       const runs = table(["Bắt đầu", "Kết quả", "Request", "Kết thúc"]);
-      (r.runs || []).forEach((x) => runs.appendChild(row([fmtTime(x.started), x.ok ? (x.result === "unchanged" ? `không có gì mới (phiên bản ${x.version})` : `phiên bản mới ${x.version}` + (x.pruned && x.pruned.length ? ` · tự xoá ${x.pruned.join(", ")}` : "")) : "lỗi: " + (x.error || ""), x.requests ?? "", fmtTime(x.finished)])));
-      box.appendChild(fold("Đồng bộ flm.fpt.edu.vn (trang khách, 1 request/giây; không tự chạy theo lịch vì captcha cần người bấm)", busy || !vs.length,
-        el("p", "mem-help", "Bấm Đồng bộ: server mở cửa sổ Chrome riêng ở trang FLM. Nếu FLM hiện captcha, tích \"I'm not a robot\" rồi bấm Continue trong cửa sổ đó (không cần đăng nhập). Dữ liệu đổi thì thành phiên bản mới; không đổi thì chỉ ghi lần kiểm."),
-        job, el("div", "row", ""), b, el("h4", "", "Các lần đồng bộ gần đây"), scrollBox(runs)));
+      (r.runs || []).forEach((x) => runs.appendChild(row([fmtTime(x.started) + (x.mode === "full" ? " · đầy đủ" : ""), x.ok ? (x.result === "unchanged" ? `không có gì mới (phiên bản ${x.version})` : `phiên bản mới ${x.version}` + (x.pruned && x.pruned.length ? ` · tự xoá ${x.pruned.join(", ")}` : "")) : "lỗi: " + (x.error || ""), x.requests ?? "", fmtTime(x.finished)])));
+      const brow = el("div", "row"); brow.append(b, bf);
+      box.appendChild(fold("Đồng bộ flm.fpt.edu.vn (1 request/giây; không tự chạy theo lịch vì captcha / đăng nhập cần người bấm)", busy || !vs.length,
+        el("p", "mem-help", "Khách: server mở cửa sổ Chrome riêng ở trang FLM; nếu FLM hiện captcha, tích \"I'm not a robot\" rồi bấm Continue (không cần đăng nhập). " +
+          "Đầy đủ: cửa sổ Chrome riêng mở trang ĐĂNG NHẬP của FLM — bạn tự đăng nhập trong đó (Google @fpt.edu.vn hoặc Sign In); mật khẩu chỉ đi tới FLM / Google, " +
+          "hệ thống không thấy và không lưu. Phiên giữ tới khi tắt server" + (r.login_open ? " (đang mở: lần sau không phải đăng nhập lại)" : "") +
+          ". Lấy khung mới nhất của mọi ngành, môn combo / tự chọn, tài liệu, lịch từng buổi, câu hỏi (tệp đính kèm chỉ lấy link), khoảng 30–40 phút. " +
+          "Dữ liệu đổi thì thành phiên bản mới; không đổi thì chỉ ghi lần kiểm."),
+        job, brow, el("h4", "", "Các lần đồng bộ gần đây"), scrollBox(runs)));
       clearTimeout(abiTimer);
       if (busy) abiTimer = setTimeout(() => { if (!$("domain-modal").hidden && tab === "data") load(); }, 2000);
     }

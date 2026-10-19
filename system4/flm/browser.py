@@ -126,7 +126,8 @@ class Browser:
                     time.sleep(0.25)
             else:
                 raise BrowserError("Chrome không mở được cổng điều khiển")
-        page = next((t for t in self._targets() if t.get("type") == "page"), None)
+        pages = [t for t in self._targets() if t.get("type") == "page"]   # sau đăng nhập Google có thể thêm tab: ưu tiên tab FLM
+        page = next((t for t in pages if "flm.fpt.edu.vn" in t.get("url", "")), pages[0] if pages else None)
         if not page:
             raise BrowserError("Chrome không có tab nào")
         self.ws = _WS(page["webSocketDebuggerUrl"])

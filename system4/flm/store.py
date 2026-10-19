@@ -50,8 +50,13 @@ def get(vid: int | None) -> dict | None:
     return next((v for v in versions() if v["id"] == vid), None)
 
 
+def ids_of(v: dict) -> list[int]:
+    """Bộ dữ liệu của một phiên bản: tệp bảng (dataset_id) + tệp lịch học (extra_ids, chế độ đăng nhập)."""
+    return [i for i in [v.get("dataset_id")] + list(v.get("extra_ids") or []) if i]
+
+
 def dataset_ids() -> set[int]:
-    return {v["dataset_id"] for v in versions() if v.get("dataset_id")}
+    return {i for v in versions() for i in ids_of(v)}
 
 
 def is_flm_dataset(ds: dict) -> bool:

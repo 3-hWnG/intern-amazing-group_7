@@ -46,6 +46,10 @@ assert scrape.captcha_page('<div class="g-recaptcha" data-sitekey="x">') and not
 assert build._major("… Software Engineering Major (Chương trình cử nhân ngành CNTT, chuyên ngành Kỹ thuật phần mềm)") == "Kỹ thuật phần mềm"
 
 
+def v_skip(rec):   # trang không có quyền xem được ghi lại (lần chạy có ghi "skipped" trong store.runs)
+    return any("3534" in x for x in (store.runs()[0].get("skipped") or []))
+
+
 # ------------------------------------------------------------------ trình duyệt giả
 CAPTCHA = '<html><body><form action="/gui/guest-captcha/continue"><div class="g-recaptcha"></div></form></body></html>'
 
@@ -86,6 +90,58 @@ class FakeBrowser:
         if path.startswith("/gui/role/guest/SyllabusDetails"):
             return 200, url, page("syllabus_12223.html").replace("30.0%", FakeBrowser.weight)
         return 404, url, "not found"
+
+    def close(self, quit_chrome=True):
+        pass
+
+
+class FakeLogin:
+    """Chế độ đăng nhập: 2 lần kiểm đầu còn ở /Login (người dùng đang đăng nhập), rồi ở /Home có nút Sign out. Trang = fixtures/flm/full_*
+    (lấy từ FLM thật khi đăng nhập 19/10/2026, đã xoá tên / email)."""
+    login_polls = 2
+    expire_after = None
+    deny = ()   # trang tài khoản không có quyền xem: FLM chuyển về /Login nhưng phiên vẫn còn
+    made, closed, n_total = [], [], [0]
+
+    def __init__(self, profile, port=None):
+        self.polls, self.n = 0, 0
+        FakeLogin.made.append(port)
+
+    def start(self, url):
+        pass
+
+    def location(self):
+        self.polls += 1
+        return scrape.BASE + ("/Login" if self.polls <= FakeLogin.login_polls else "/Home")
+
+    def eval(self, expr):
+        if "readyState" in expr:
+            return "complete"
+        return "<html><body>login</body></html>" if self.polls <= FakeLogin.login_polls else '<html><button id="lbtnSignOut"></button></html>'
+
+    def fetch(self, url):
+        self.n += 1
+        FakeLogin.n_total[0] += 1
+        path = url[len(scrape.BASE):]
+        if path == "/Home":
+            ok = FakeLogin.expire_after is None or self.n <= FakeLogin.expire_after
+            return 200, url if ok else scrape.BASE + "/Login", '<button id="lbtnSignOut"></button>' if ok else "<html>login</html>"
+        if FakeLogin.expire_after is not None and self.n > FakeLogin.expire_after:
+            return 200, scrape.BASE + "/Login", "<html>login</html>"
+        if any(path.startswith(d) for d in FakeLogin.deny):
+            return 200, scrape.BASE + "/Login?ReturnUrl=x", "<html>login</html>"
+        for pre, fx in (("/gui/role/student/ListCurriculum", "full_list_all.html"), ("/gui/role/student/CurriculumDetails", "full_curriculum_3548.html"),
+                        ("/Compo/ViewComBo", "full_combo_3548.html"), ("/Compo/Detail/", "full_combo_detail_2746.html"),
+                        ("/Elective/ViewElective", "full_elective_3548.html"), ("/Elective/Detail/", "full_elective_detail_481.html"),
+                        ("/gui/role/student/SyllabusDetails", "full_syllabus_12223.html")):
+            if path.startswith(pre):
+                return 200, url, page(fx)
+        if path.startswith("/gui/role/student/SyllabusManagement"):
+            return 200, url, page("full_sylsearch_P.html") if path.endswith("keyword=P") else "<html><body>0 syllabus(es) found</body></html>"
+        return 404, url, "not found"
+
+    def call(self, method, **kw):
+        FakeLogin.closed.append(method)
 
     def close(self, quit_chrome=True):
         pass
@@ -203,4 +259,50 @@ with TestClient(main.app) as c:
     assert not rec["ok"] and "captcha" in rec["error"] and [v["id"] for v in store.versions()] == [2] and store.active_id() == 2, rec
     st = as_("boss").get("/s4/flm/status").json()
     assert st["runs"][0]["ok"] is False and not st["state"]["running"] and st["versions"][0]["dataset"]["status"] == "ready", st["runs"][:1]
+
+    # ================================================================ chế độ ĐĂNG NHẬP: mọi ngành, tài liệu, lịch buổi học
+    assert scrape.program_key("BIT_SE-2026_K22D_23A") == "BIT_SE" and scrape.program_key("BEN_CHN_K19D,K20A") == "BEN_CHN"
+    assert [x["program"] for x in scrape.newest_per_program(scrape.parse_list(page("full_list_all.html")))] == ["BBA_HM", "BIT_AI", "BIT_SE", "PEN_A2"]
+    syl = scrape.parse_syllabus(page("full_syllabus_12223.html"))
+    assert len(syl["materials"]) == 3 and len(syl["schedule"]) == 5 and len(syl["questions"]) == 3
+    assert syl["schedule"][0]["_links"] == ["https://flm.fpt.edu.vn/download/12223/S/1_PRF192_Slides_1.zip"]   # chỉ LINK, không tải
+    sync.BROWSER = FakeLogin
+    FakeLogin.deny = ("/gui/role/student/CurriculumDetails?curid=3534",)   # BBA_HM: không có quyền xem -> bỏ qua, không dừng
+    r = c.post("/s4/flm/sync", json={"mode": "full"}).json()
+    assert r["started"], r
+    for _ in range(400):
+        st = c.get("/s4/flm/status").json()
+        if not st["state"]["running"]:
+            break
+        time.sleep(0.1)
+    rec = st["runs"][0]
+    assert rec["ok"] and rec["mode"] == "full" and rec["result"] == "new" and rec["programs"] == ["BIT_AI", "BIT_SE", "PEN_A2"], rec
+    assert v_skip(rec), rec
+    v = store.get(rec["version"])
+    assert v["mode"] == "full" and len(v["extra_ids"]) == 1 and store.active_id() == v["id"], v
+    assert v["counts"]["Lịch học (môn)"] == 2 and "CLO" not in v["counts"] and v["counts"]["Môn học"] == 12, v["counts"]   # 6 môn khung + 4 combo + 2 tự chọn
+    md = db.get_dataset(v["extra_ids"][0])
+    assert md["status"] == "ready" and md["active"] and "lịch học" in md["name"], md
+    assert {v["dataset_id"], md["id"]} <= {d["id"] for d in db.active_datasets(db.user_by_name("dan")["id"], flm["id"], "user")}   # dùng chung
+    hits = c.get(f"/s4/datasets/{md['id']}/records?q=Slides_1").json()["records"]
+    assert hits and "download/12223/S/1_PRF192_Slides_1.zip" in hits[0]["text"], hits[:1]
+    assert st["login_open"] and FakeLogin.made == [sync.LOGIN_PORT]                                      # phiên giữ lại, cổng riêng
+    # lần hai: phiên còn (không phải đăng nhập lại, không mở Chrome mới), mọi trang lấy từ bộ đệm, dữ liệu không đổi
+    n0 = FakeLogin.n_total[0]
+    rec2 = sync.run("full")
+    assert rec2["ok"] and rec2["result"] == "unchanged" and rec2["cached"] >= 2 and FakeLogin.made == [sync.LOGIN_PORT], rec2
+    assert FakeLogin.n_total[0] - n0 == rec2["requests"] and rec2["requests"] <= 2 < rec["requests"], (rec2["requests"], rec["requests"])
+    # phiên đăng nhập hết hạn giữa chừng (bộ đệm trống): báo rõ trang nào, giữ phiên bản cũ
+    import shutil
+    shutil.rmtree(store.root() / "cache" / "full")
+    FakeLogin.expire_after = 3
+    sync._login["browser"].n = 0
+    rec3 = sync.run("full")
+    assert not rec3["ok"] and "hết hạn (ở /" in rec3["error"] and store.active_id() == v["id"], rec3
+    bad = json.loads((store.root() / "cache" / "full" / "bad_pages.json").read_text(encoding="utf-8"))
+    assert len(bad) == 1 and bad[0] in rec3["error"], bad          # trang làm mất phiên được ghi lại: lần sau bỏ qua
+    # tắt server: đóng Chrome đăng nhập, xoá hồ sơ (cookie)
+    sync.login_profile().mkdir(parents=True, exist_ok=True)
+    sync.close_login()
+    assert "Browser.close" in FakeLogin.closed and not sync.login_profile().exists() and sync._login["browser"] is None
 print("OK test_flm")

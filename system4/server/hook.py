@@ -71,6 +71,8 @@ def install(app, s3_store) -> None:
     app.include_router(abi_scheduler.make_router())
     from ..flm import sync as flm_sync   # lĩnh vực FLM: nút "Đồng bộ FLM" (không có lịch tự đồng bộ: captcha cần người bấm)
     app.include_router(flm_sync.make_router())
+    if os.environ.get("S4_WARMUP", "1") == "1":   # phiên đăng nhập FLM chỉ sống tới khi tắt server (test không đụng Chrome thật trên máy)
+        threading.Thread(target=flm_sync.close_login, name="s4-flm-cleanup", daemon=True).start()
     app.mount("/s4/static", StaticFiles(directory=str(config.WEB_DIR / "static")), name="s4_static")
 
     def deny(code: int, detail: str) -> JSONResponse:

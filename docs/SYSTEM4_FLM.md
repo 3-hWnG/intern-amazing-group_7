@@ -14,6 +14,30 @@ Trả lời bằng pipeline Friendly trên **bảng FLM + đường nhanh** (lea
   lúc 19/10) **chưa có đề cương công khai**: vẫn có tên / tín chỉ / kỳ / tiên quyết từ khung, cột "Đề cương trên FLM" ghi rõ.
 - **Không có lịch tự đồng bộ** (captcha cần người bấm).
 
+## Đồng bộ đầy đủ (đăng nhập) — leader 19/10/2026 chiều
+- Nút **Đồng bộ đầy đủ (đăng nhập)** (hoặc `-m system3.system4.flm.sync --full` khi web tắt): server mở **Chrome riêng ở trang đăng nhập FLM**
+  (hồ sơ `runtime/flm/login_profile`, cổng 9334, khác Chrome khách). Người dùng **tự đăng nhập trong cửa sổ đó** (Google @fpt.edu.vn hoặc Sign In):
+  mật khẩu chỉ đi tới FLM / Google; hệ thống không có ô nhập mật khẩu, không thấy, không lưu.
+- Phiên (cookie) **giữ tới khi tắt server** (đồng bộ lại trong lúc server còn chạy không phải đăng nhập lại); tắt server -> đóng Chrome đăng nhập
+  và xoá hồ sơ; server tắt đột ngột thì lần bật sau xoá.
+- Lấy **mọi ngành**: `/gui/role/student/ListCurriculum?keyword=_` (510 khung lúc 19/10) -> nhóm theo mã ngành (`scrape.program_key`, 66 ngành)
+  -> khung mới nhất mỗi ngành (bỏ `_FNO`) + môn trong combo / tự chọn (`/Compo`, `/Elective`) -> chỉ mục đề cương A–Z
+  (`SyllabusManagement?keyword=<chữ>`) -> đề cương đầy đủ của mọi môn: thêm **tài liệu** (gvMaterial), **lịch từng buổi** (gvSchedule),
+  **câu hỏi thảo luận** (gvCQ). Tệp đính kèm (slide .zip…) **chỉ lấy link**, không tải.
+- Ước tính ~1 + 66×(3 + combo / tự chọn mới) + 26 + ~1.200 request ≈ 30–40 phút ở 1 request/giây. Đề cương đã đọc giữ 7 ngày ở
+  `runtime/flm/cache/full/`: bị ngắt (phiên hết hạn, mất mạng) thì lần sau đi tiếp nhanh.
+- Một phiên bản đầy đủ = **2 bộ dữ liệu**: tệp Excel (CLO và tài liệu là cột của "Môn học" để bớt dòng; không có sheet CLO) + tệp
+  `flm_vN_lich_hoc.md` (mỗi môn một mục: lịch các buổi, câu hỏi). Dùng chung cho mọi tài khoản (leader chọn).
+- Test: `test_flm.py` phần "chế độ ĐĂNG NHẬP", fixture `fixtures/flm/full_*.html` lấy từ FLM thật khi đăng nhập, đã xoá tên / email.
+- **Chạy thật 19/10/2026** (tài khoản sinh viên): 65 ngành (khung LLB_LA_K22A, curid 2915, bị bỏ qua: mở trang đó làm FLM **đăng xuất** tài khoản —
+  `scrape.collect_full` ghi trang làm mất phiên vào `cache/full/bad_pages.json`, lần sau tự bỏ qua), 4.628 dòng khung, 1.305 môn, 671 PLO,
+  2.686 đầu điểm, 569 môn có lịch từng buổi + câu hỏi. 2 bộ dữ liệu: 9.355 bản ghi (bảng) + 19.242 đoạn (lịch học, tệp 13 MB).
+  Lần chạy trọn: 642 request + 401 trang từ bộ đệm, 22 phút, rồi ~15 phút nạp (bge-m3). Hai lần trước dừng ở trang 2915 -> sinh ra cơ chế trên.
+- Thử nhanh trên dữ liệu thật (không phải bộ mù): "PRF192 có bao nhiêu tín chỉ?" -> 3 (đường nhanh); "Mã chương trình ngành Quản trị khách sạn?" ->
+  BBA_HM_K22C; "Buổi 5 của môn PRF192 học gì?" / "Câu hỏi thảo luận buổi 1 môn PRF192" -> tìm đúng đoạn lịch / câu hỏi. Chưa tốt: "buổi cuối"
+  (tìm kiếm không hiểu "cuối"); "Tài liệu của môn X" ra cả thẻ môn thay vì riêng trường tài liệu.
+- Dữ liệu sau đăng nhập KHÔNG đưa vào git (chỉ bản chụp chế độ khách ở `system4/flm/snapshot/`).
+
 ## Dữ liệu (tệp Excel, `system4/flm/build.py`)
 | Sheet | Một dòng là | Cột tiêu đề (để đường nhanh tìm thực thể) |
 |---|---|---|
