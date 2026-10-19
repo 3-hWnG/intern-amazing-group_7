@@ -97,6 +97,7 @@ ABI_SYNC_HOURS = 6
 ABI_CODE_ANSWER = True
 ABI_API_KEY = ''
 ABI_BOT_CONTACT = ''
+FLM_PROGRAMS = 'BIT_SE, BIT_AI'
 FASTPATH_ENABLED = True
 FASTPATH_LLM_CUES = True
 FASTPATH_MIN_PASS = 0.9
@@ -155,7 +156,7 @@ SETTINGS = [
          help="Chọn model KHÔNG suy nghĩ (vd. qwen3:4b-instruct-2507-q4_K_M). qwen3:4b hay viết suy luận vào câu trả lời; nếu khác \"Model dùng chung\" thì Ollama đổi model nên chậm thêm vài giây."),
     dict(key="WEBSEARCH_TIMEOUT", type="int", group="Dữ liệu (Chuyên gia)", label="Tìm web: chờ tối đa (giây)", min=2, max=30),
     dict(key="EVIDENCE_CHARS", type="int", group="Dữ liệu (Chuyên gia)", label="Độ dài mỗi đoạn gửi cho AI (ký tự)", min=200, max=4000,
-         help="Ngắn hơn = trả lời nhanh hơn nhưng có thể thiếu chi tiết."),
+         help="Ngắn hơn = trả lời nhanh hơn nhưng có thể thiếu chi tiết. Không bao giờ ngắn hơn \"Độ dài mỗi đoạn văn bản\": đoạn văn bản luôn được gửi trọn."),
     dict(key="KB_NOT_FOUND_MESSAGE", type="text", group="Dữ liệu (Chuyên gia)", label="Câu trả lời khi dữ liệu không có thông tin",
          help="Chế độ Chuyên gia: tìm không thấy đoạn nào liên quan mà AI vẫn tự trả lời bằng kiến thức chung -> thay bằng câu này."),
     dict(key="EMBED_MODEL", type="str", group="Dữ liệu (Chuyên gia)", label="Model tìm theo nghĩa (Ollama)",
@@ -251,4 +252,8 @@ SETTINGS = [
          help="Chủ web yêu cầu User-Agent định danh: \"AHBI-Assistant-Bot/1.0 (+liên hệ)\". Điền email hoặc số điện thoại của nhóm; "
               "để trống thì dùng link GitHub của dự án. Email / điện thoại riêng của cán bộ trung tâm KHÔNG bao giờ được hiển thị "
               "(thoả thuận với chủ web; bỏ ngay khi tải về)."),
+    dict(key="FLM_PROGRAMS", type="str", group="Lĩnh vực FLM (flm.fpt.edu.vn)", label="Ngành lấy từ FLM (tiền tố mã khung chương trình)",
+         help="Cách nhau bởi dấu phẩy, vd. \"BIT_SE, BIT_AI\". Mỗi lần đồng bộ lấy khung chương trình MỚI NHẤT của mỗi ngành (bỏ bản _FNO) "
+              "cùng đề cương các môn. Đồng bộ mở một cửa sổ Chrome riêng ở trang captcha của FLM: dev tự tích captcha (chế độ khách, "
+              "không đăng nhập). Mỗi ngành khoảng 50 môn, ~100 request, 1 request/giây."),
 ]

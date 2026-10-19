@@ -75,7 +75,7 @@
     };
     A.domains().filter((d) => !(userView && d.locked)).forEach((d) => {
       const tags = [[d.kind === "hard" ? "Cứng" : "Mềm", d.kind]];
-      if (d.engine === "strict") tags.push(["System 3"]); else if (d.engine === "abi") tags.push(["abi.com.vn"]);
+      if (d.engine === "strict") tags.push([d.data_mode === "s4" ? "System 4" : "System 3"]); else if (d.engine === "abi") tags.push(["abi.com.vn"]); else if (d.engine === "flm") tags.push(["flm.fpt.edu.vn"]);
       if (d.locked) tags.push(["Chỉ cán bộ", "lock"]);
       if (d.mine) tags.push(["Của tôi"]);
       item(d.id, d.name, tags, d.guardrail ? "Guardrail: " + d.guardrail : "");
@@ -90,10 +90,20 @@
 
   function tabsFor(d) {
     const t = [["overview", "Tổng quan"]];
-    if (d.engine === "strict") { if (staff()) t.push(["data", "Dữ liệu thủ tục"], ["stats", "Thống kê"]); }
-    else if (d.engine === "abi") { if (staff()) t.push(["data", "Dữ liệu ABI"]); }
+    // lĩnh vực cứng có dữ liệu cào / đồng bộ riêng: thêm thẻ "Dữ liệu tải thêm" (tệp dùng chung do dev / cán bộ tải lên)
+    if (d.engine === "strict") { if (staff()) t.push(["data", "Dữ liệu thủ tục"], ["extra", "Dữ liệu tải lên"], ["stats", "Thống kê"]); if (d.data_mode === "s4") t.push(["fast", "Đường nhanh"]); }
+    else if (d.engine === "abi") { if (staff()) t.push(["data", "Dữ liệu ABI"], ["extra", "Dữ liệu tải thêm"]); }
+    else if (d.engine === "flm") { if (staff()) t.push(["data", "Dữ liệu FLM"], ["extra", "Dữ liệu tải thêm"]); t.push(["fast", "Đường nhanh"]); }
     else t.push(["data", "Dữ liệu"], ["fast", "Đường nhanh"]);
     return t;
+  }
+  function extraData(d, pane) {
+    const help = d.engine === "strict"
+      ? (d.data_mode === "s4" ? "Đang ở chế độ System 4: lĩnh vực Thủ tục CHỈ trả lời từ các tệp dưới đây (DB thủ tục của System 3 đang tắt)."
+        : "Đang ở chế độ System 3: các tệp dưới đây CHƯA được dùng. Chuyển nguồn dữ liệu sang System 4 ở thẻ Tổng quan để dùng chúng (khi đó DB thủ tục của System 3 tắt).")
+      : "Tệp dùng chung tải thêm vào lĩnh vực, tìm chung với dữ liệu đồng bộ (phiên bản đang dùng). Chuyển phiên bản không bật / tắt các tệp này.";
+    pane.appendChild(el("p", "mem-help", help));
+    pane.appendChild(A.dataPanel(d, true));
   }
 
   function renderMain() {
@@ -113,15 +123,17 @@
       tabs.appendChild(b);
     });
     pane.appendChild(el("h3", "dash-title", d.name));
-    ({ overview: overviewTab, data: d.engine === "strict" ? strictData : d.engine === "abi" ? abiData : friendlyData, fast: fastTab, stats: strictStats })[tab](d, pane);
+    ({ overview: overviewTab, data: d.engine === "strict" ? strictData : d.engine === "abi" ? abiData : d.engine === "flm" ? flmData : friendlyData, extra: extraData, fast: fastTab, stats: strictStats })[tab](d, pane);
   }
 
   /* ================================================================ tổng quan ============== */
   function overviewTab(d, pane) {
     const kind = d.kind === "hard" ? "Lĩnh vực cứng: không xoá được, dữ liệu dùng chung do dev / cán bộ tải lên, mọi người (được phép) cùng dùng."
       : "Lĩnh vực mềm: kiểu Friendly; dữ liệu là của riêng từng người.";
-    const eng = d.engine === "strict" ? " Trả lời bằng luật của System 3 (thủ tục hành chính), có nguồn."
-      : d.engine === "abi" ? " Dữ liệu abi.com.vn tự đồng bộ; câu đếm / liệt kê / theo ngày do code trả lời." : "";
+    const eng = d.engine === "strict" ? (d.data_mode === "s4" ? " Chế độ System 4: trả lời từ dữ liệu tải lên của lĩnh vực (DB thủ tục của System 3 đang tắt)."
+        : " Trả lời bằng luật của System 3 (thủ tục hành chính), có nguồn.")
+      : d.engine === "abi" ? " Dữ liệu abi.com.vn tự đồng bộ; câu đếm / liệt kê / theo ngày do code trả lời."
+      : d.engine === "flm" ? " Khung chương trình + đề cương môn học của ĐH FPT, đồng bộ từ flm.fpt.edu.vn (bấm Đồng bộ FLM, có thể cần tích captcha); câu tra cứu rõ ràng do đường nhanh trả lời." : "";
     pane.appendChild(el("p", "mem-help", kind + eng + (d.locked ? " Đang khoá: chỉ dev và cán bộ dùng." : "")));
     const acts = el("div", "row");
     acts.appendChild(btn(d.pinned ? "Bỏ ghim khỏi thanh chọn" : "Ghim lên thanh chọn", async () => {
@@ -156,6 +168,14 @@
         lab.append(cb, " " + label); ed.appendChild(lab);
       });
     }
+    let mode = null;   // Thủ tục: hai nguồn dữ liệu loại trừ nhau (leader 19/10)
+    if (staff() && d.engine === "strict") {
+      mode = el("select");
+      [["s3", "System 3 — luật + DB thủ tục cào từ Cổng DVC (mặc định)"], ["s4", "System 4 — chỉ dữ liệu tải lên (tắt DB thủ tục của System 3)"]].forEach(([v, t]) => {
+        const o = el("option", "", t); o.value = v; o.selected = (d.data_mode || "s3") === v; mode.appendChild(o);
+      });
+      ed.append(el("label", "dash-lab", "Nguồn dữ liệu (hội thoại Strict cũ chỉ còn xem khi ở System 4)"), mode);
+    }
     ed.appendChild(btn("Lưu", async () => {
       const body = { guardrail: g.value };
       if (prof) {
@@ -165,6 +185,7 @@
       }
       if (d.engine !== "strict") body.name = name.value;
       if (staff()) { body.locked = flags.locked.checked; if (d.engine !== "strict") { body.kind = flags.hard.checked ? "hard" : "soft"; body.user_upload = flags.upload.checked; } }
+      if (mode) { body.data_mode = mode.value; if (mode.value !== "s4") delete body.profile; }   // hồ sơ chỉ dùng ở chế độ System 4
       try { A.setDomains((await A.api("/s4/domains/" + d.id, body, "PATCH")).domains); await A.afterDomainsChanged(); render(); } catch (e) { alert(e.message); }
     }, "primary"));
     pane.appendChild(card("Sửa lĩnh vực", ed));
@@ -194,7 +215,8 @@
   function friendlyData(d, pane) {
     pane.appendChild(el("p", "mem-help", d.kind === "hard"
       ? "Bộ dữ liệu dùng chung của lĩnh vực: dev / cán bộ tải lên, mọi người dùng được. Bật bộ nào thì AI chỉ trả lời từ bộ đó."
-      : "Bộ dữ liệu riêng của bạn trong lĩnh vực này: tải lên, bật/tắt, xem, xoá. Không hiện ở lĩnh vực khác."));
+      : "Bộ dữ liệu riêng của bạn trong lĩnh vực này: tải lên, bật/tắt, xem, xoá. Không hiện ở lĩnh vực khác."
+        + (d.can_share ? " Dev / cán bộ bấm \"Dùng chung\" ở một bộ để mọi người dùng được lĩnh vực này đều thấy và hỏi được bộ đó (chỉ đọc)." : "")));
     pane.appendChild(A.dataPanel(d));
   }
 
@@ -488,6 +510,51 @@
         runs.appendChild(row([fmtTime(x.started), x.source || "prod", res, x.requests ?? "", x.ms ? Math.round(x.ms / 1000) + " s" : "", ch]));
       });
       box.appendChild(fold("Đồng bộ abi.com.vn (API chính thức, khoá API) — không bao giờ gọi trợ lý AI của web", busy, job, brow, el("h4", "", "Các lần đồng bộ gần đây"), scrollBox(runs)));
+      clearTimeout(abiTimer);
+      if (busy) abiTimer = setTimeout(() => { if (!$("domain-modal").hidden && tab === "data") load(); }, 2000);
+    }
+    load();
+  }
+
+  /* ================================================================ FLM (flm.fpt.edu.vn) === */
+  const FLM_SHEETS = ["Chương trình", "Khung chương trình", "Môn học", "CLO", "Đánh giá"];
+  async function flmData(d, pane) {
+    const box = el("div"); pane.appendChild(box);
+    const load = async () => { try { draw(await A.api("/s4/flm/status")); } catch (e) { box.innerHTML = ""; box.appendChild(errBox(e)); } };
+    function draw(r) {
+      box.innerHTML = "";
+      const st = r.state || {}, vs = r.versions || [];
+      const act = vs.find((v) => v.active);
+      const building = vs.find((v) => v.dataset && v.dataset.status !== "ready"), busy = !!st.running || !!building;
+      box.appendChild(card(null, el("div", "", "Lĩnh vực FLM đang dùng: " + (act ? `${act.label} · ${(act.curricula || []).map((c) => c.code).join(", ")}` : "chưa có dữ liệu — bấm Đồng bộ FLM")),
+        el("p", "mem-help", `Ngành (⚙ FLM_PROGRAMS): ${(r.programs || []).join(", ") || "chưa đặt"} — mỗi ngành lấy khung chương trình mới nhất + đề cương các môn, chế độ khách (không có tài liệu / lịch buổi học).`)));
+      const vt = table(["#", "Phiên bản", "Khung chương trình", ...FLM_SHEETS, "Bộ dữ liệu", ""]);
+      if (!vs.length) vt.appendChild(row(["Chưa có phiên bản nào."]));
+      vs.forEach((v) => {
+        const name = el("span", "", v.label);
+        if (v.active) name.appendChild(span("đang dùng", "tag on"));
+        const a2 = el("div");
+        if (!v.active) {
+          a2.appendChild(btn("Dùng bản này", async (b) => { b.disabled = true; try { draw(await A.api(`/s4/flm/versions/${v.id}/activate`, {})); } catch (e) { alert(e.message); load(); } }, "primary"));
+          a2.appendChild(btn("Xoá", async () => { if (!confirm(`Xoá ${v.label}?`)) return; try { draw(await A.api(`/s4/flm/versions/${v.id}`, null, "DELETE")); } catch (e) { alert(e.message); } }));
+        }
+        const ds = v.dataset ? (v.dataset.status === "ready" ? v.dataset.n_records + " bản ghi" : v.dataset.status + " " + (v.dataset.progress || 0) + "%") : "đã mất";
+        const tr = row([v.id, name, (v.curricula || []).map((c) => `${c.code} (${c.subjects} môn)`).join(", "), ...FLM_SHEETS.map((k) => (v.counts || {})[k] ?? ""), ds, a2]);
+        tr.lastChild.className = "actions"; vt.appendChild(tr);
+      });
+      box.appendChild(card(`Phiên bản (giữ ${r.keep || 2} bản mới nhất)`, scrollBox(vt)));
+      const job = el("div", "job" + (st.captcha ? " warn" : ""));
+      job.hidden = !busy;
+      job.textContent = st.running ? (st.step || "Đang đồng bộ…") : building ? `Đang nạp phiên bản ${building.id}… ${building.dataset.progress || 0}%` : "";
+      const b = btn("Đồng bộ FLM", async () => {
+        try { const res = await A.api("/s4/flm/sync", {}); draw(res); if (!res.started && res.reason) alert(res.reason); } catch (e) { alert(e.message); }
+      }, "primary", "Mở một cửa sổ Chrome riêng trên máy chạy server; nếu FLM đòi captcha thì tích \"I'm not a robot\" trong cửa sổ đó");
+      b.disabled = busy;
+      const runs = table(["Bắt đầu", "Kết quả", "Request", "Kết thúc"]);
+      (r.runs || []).forEach((x) => runs.appendChild(row([fmtTime(x.started), x.ok ? (x.result === "unchanged" ? `không có gì mới (phiên bản ${x.version})` : `phiên bản mới ${x.version}` + (x.pruned && x.pruned.length ? ` · tự xoá ${x.pruned.join(", ")}` : "")) : "lỗi: " + (x.error || ""), x.requests ?? "", fmtTime(x.finished)])));
+      box.appendChild(fold("Đồng bộ flm.fpt.edu.vn (trang khách, 1 request/giây; không tự chạy theo lịch vì captcha cần người bấm)", busy || !vs.length,
+        el("p", "mem-help", "Bấm Đồng bộ: server mở cửa sổ Chrome riêng ở trang FLM. Nếu FLM hiện captcha, tích \"I'm not a robot\" rồi bấm Continue trong cửa sổ đó (không cần đăng nhập). Dữ liệu đổi thì thành phiên bản mới; không đổi thì chỉ ghi lần kiểm."),
+        job, el("div", "row", ""), b, el("h4", "", "Các lần đồng bộ gần đây"), scrollBox(runs)));
       clearTimeout(abiTimer);
       if (busy) abiTimer = setTimeout(() => { if (!$("domain-modal").hidden && tab === "data") load(); }, 2000);
     }

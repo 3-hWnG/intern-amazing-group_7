@@ -19,6 +19,8 @@ from pydantic import BaseModel
 from . import auth, db, settings
 
 RESET_TEXT = "Đã bắt đầu chủ đề mới"
+S4_ONLY = ("Lĩnh vực Thủ tục đang ở chế độ System 4 (trả lời từ dữ liệu tải lên, DB thủ tục của System 3 đang tắt): "
+           "hội thoại Strict cũ chỉ xem được. Mở hội thoại mới trong lĩnh vực Thủ tục để hỏi.")
 
 
 class StrictChatIn(BaseModel):
@@ -123,6 +125,8 @@ def make_router(app, s3_store) -> APIRouter:
 
     async def send(request: Request, cid: str | None, text: str, reply_mid: int | None, web: bool = False) -> tuple[str, int, int]:
         """Gửi một câu cho System 3. Trả (hội thoại, id tin người dùng, id tin trợ lý)."""
+        if db.s4_mode(db.get_domain(1)):   # chế độ System 4: DB thủ tục của System 3 tắt, hội thoại Strict cũ chỉ còn xem
+            raise HTTPException(409, S4_ONLY)
         body = {"text": text, "conversation_id": cid}
         if reply_mid:
             body["reply_to"] = reply_mid

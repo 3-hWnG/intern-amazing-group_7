@@ -57,9 +57,10 @@
     domainId = d.id;
     ls.set("s4_domain", String(domainId));
     document.body.dataset.domain = String(domainId);
-    setMode(d.engine === "strict" ? "strict" : "friendly");
+    const s3 = d.engine === "strict" && d.data_mode !== "s4";   // Thủ tục ở chế độ System 4 = pipeline Friendly trên dữ liệu tải lên
+    setMode(s3 ? "strict" : "friendly");
     renderDomainBar();
-    $("attach").style.display = d.can_upload ? "" : "none";
+    $("attach").style.display = d.can_upload && !s3 ? "" : "none";   // chế độ System 3 không dùng tệp tải lên (tải ở Quản lý lĩnh vực)
     loadDatasets();
   }
   function renderDomainBar() {
@@ -104,7 +105,11 @@
   const isStaff = () => !viewUser && !!me && (me.role === "dev" || me.role === "can_bo");
   async function afterDomainsChanged() {
     if (!domains.some((d) => d.id === domainId)) { setDomain((domains[0] || {}).id); await loadConv(null); refreshList(); }
-    else { renderDomainBar(); setDomain(domainId); }
+    else {
+      const before = mode;
+      renderDomainBar(); setDomain(domainId);
+      if (mode !== before) { await loadConv(null); refreshList(); }   // Thủ tục đổi nguồn System 3 <-> 4: hội thoại đang mở thuộc chế độ cũ
+    }
   }
   const openDomainManager = (openId, openTab) => S4Dash.open(openId, openTab);
   $("open-domains").onclick = () => openDomainManager();
@@ -947,7 +952,7 @@
 
   async function loadDatasets() {
     try { ds = await api("/s4/datasets?domain_id=" + domainId); } catch (_) { return; }
-    $("attach").style.display = ds.can_upload ? "" : "none";
+    $("attach").style.display = ds.can_upload && mode !== "strict" ? "" : "none";
     renderSpecBadge();
     ds.datasets.forEach((d) => {
       if (!pending.has(d.id)) return;
@@ -1007,7 +1012,7 @@
   const panels = new Set();
   const refreshPanels = () => panels.forEach((p) => { if (p.isConnected) p.refresh(); else panels.delete(p); });
 
-  function dsItem(d, refresh) {
+  function dsItem(d, refresh, canShare) {   // canShare: lĩnh vực mềm không riêng ai + dev / cán bộ -> nút "Dùng chung"
     const li = el("li");
     const sw = el("label", "switch"), cb = el("input"), knob = el("span");
     const mineDs = d.user_id === me.id || isStaff();
@@ -1024,10 +1029,14 @@
     main.appendChild(el("div", "ds-msg" + (d.status === "error" ? " err" : ""), d.message || d.status));
     if (d.status === "queued" || d.status === "processing") { const pg = el("div", "ds-progress"); const i = el("i"); i.style.width = d.progress + "%"; pg.appendChild(i); main.appendChild(pg); }
     main.appendChild(el("div", "ds-meta", [KIND[d.kind] || "", d.n_records ? d.n_records + " bản ghi" : "", fmtSize(d.size_bytes), d.filename,
-      d.user_id !== me.id ? "dùng chung (" + (d.username || "dev") + ")" : "", d.locked ? "chỉ cán bộ" : ""].filter(Boolean).join(" · ")));
+      d.user_id !== me.id ? "dùng chung (" + (d.username || "dev") + ")" : d.shared ? "dùng chung với mọi người" : "", d.locked ? "chỉ cán bộ" : ""].filter(Boolean).join(" · ")));
     const act = el("div", "ds-actions");
     if (d.status === "ready") act.appendChild(actionBtn("Xem", "Xem các bản ghi", () => openRecords(d)));
     if (d.status === "ready") act.appendChild(actionBtn("Cách đọc", "Xem hệ thống đã đọc tệp thế nào: dòng tiêu đề, cột tiêu đề, bản ghi đầu", () => S4Inspect.reading(d.id)));
+    if (canShare && d.user_id === me.id) act.appendChild(actionBtn(d.shared ? "Thôi dùng chung" : "Dùng chung", "Dùng chung: mọi người dùng được lĩnh vực này đều thấy và hỏi được bộ dữ liệu (chỉ đọc)", async () => {
+      try { await api("/s4/datasets/" + d.id, { shared: !d.shared }, "PATCH"); } catch (e) { alert(e.message); }
+      refresh();
+    }));
     if (isStaff()) act.appendChild(actionBtn(d.locked ? "Mở khoá" : "Khoá", "Khoá: chỉ dev và cán bộ dùng bộ dữ liệu này", async () => {
       try { await api("/s4/datasets/" + d.id, { locked: !d.locked }, "PATCH"); } catch (e) { alert(e.message); }
       refresh();
@@ -1043,7 +1052,7 @@
     return li;
   }
 
-  function dataPanel(dom) {
+  function dataPanel(dom, uploadedOnly) {   // uploadedOnly: chỉ tệp tải lên (lĩnh vực cứng có dữ liệu đồng bộ riêng, vd. ABI)
     const root = el("div", "dom-data");
     const quota = el("div", "quota"), warn = el("div", "data-warn"), list = el("ul", "data-list");
     const up = el("button", "primary", "+ Tải tệp lên"); up.type = "button";
@@ -1054,7 +1063,7 @@
     let timer = null;
     root.refresh = async () => {
       let st;
-      try { st = await api("/s4/datasets?domain_id=" + dom.id); } catch (_) { return; }
+      try { st = await api("/s4/datasets?domain_id=" + dom.id + (uploadedOnly ? "&uploaded=1" : "")); } catch (_) { return; }
       const q = st.quota || {}, used = q.used || 0;
       quota.innerHTML = "";
       if (q.limit) {
@@ -1067,7 +1076,7 @@
       up.hidden = !st.can_upload;
       list.innerHTML = "";
       if (!st.datasets.length) list.appendChild(el("li", "mem-empty", st.can_upload ? 'Chưa có bộ dữ liệu nào trong lĩnh vực này. Bấm "+ Tải tệp lên".' : "Lĩnh vực này chưa có bộ dữ liệu dùng chung."));
-      st.datasets.forEach((d) => list.appendChild(dsItem(d, () => { root.refresh(); if (dom.id === domainId) loadDatasets(); })));
+      st.datasets.forEach((d) => list.appendChild(dsItem(d, () => { root.refresh(); if (dom.id === domainId) loadDatasets(); }, st.domain && st.domain.can_share)));
       clearTimeout(timer);
       if (st.datasets.some((d) => d.status === "queued" || d.status === "processing")) timer = setTimeout(() => { if (root.isConnected) root.refresh(); }, 2000);
     };
@@ -1229,7 +1238,7 @@
     try { saved = JSON.parse(ls.get("s4_conv") || "null"); } catch (_) {}
     await loadDomains();
     const wantMode = saved ? saved.mode : (ls.get("s4_mode") || pub.default_mode);
-    const byMode = domains.find((d) => d.engine === (wantMode === "strict" ? "strict" : "friendly"));
+    const byMode = domains.find((d) => wantMode === "strict" ? d.engine === "strict" && d.data_mode !== "s4" : d.engine === "friendly");
     setDomain(Number(ls.get("s4_domain")) || (byMode || domains[0] || {}).id);
     if (saved && mode !== saved.mode) saved = null;   // domain đã chọn khác chế độ của hội thoại cũ (domain bị khoá…)
     loadCfg();

@@ -34,7 +34,9 @@ def _migrate(c: sqlite3.Connection) -> None:
         if col not in cols("conversations"):
             c.execute(f"ALTER TABLE conversations ADD COLUMN {col} {ddl}")
     for t, col, ddl in (("conversations", "domain_id", "INTEGER NOT NULL DEFAULT 2"), ("datasets", "domain_id", "INTEGER NOT NULL DEFAULT 2"),
-                        ("datasets", "locked", "INTEGER NOT NULL DEFAULT 0"), ("domains", "profile", "TEXT NOT NULL DEFAULT '{}'")):
+                        ("datasets", "locked", "INTEGER NOT NULL DEFAULT 0"), ("domains", "profile", "TEXT NOT NULL DEFAULT '{}'"),
+                        ("domains", "data_mode", "TEXT NOT NULL DEFAULT 's3'"),
+                        ("datasets", "shared", "INTEGER NOT NULL DEFAULT 0")):   # 19/10: dataset dùng chung của lĩnh vực mềm (dev / cán bộ)
         if col not in cols(t):
             c.execute(f"ALTER TABLE {t} ADD COLUMN {col} {ddl}")
     if c.execute("SELECT COUNT(*) FROM domains").fetchone()[0] == 0:   # hai domain có sẵn, không xoá được
@@ -42,6 +44,8 @@ def _migrate(c: sqlite3.Connection) -> None:
         c.execute("INSERT INTO domains(id,name,kind,engine,user_upload,sort) VALUES (2,'Trò chuyện chung','soft','friendly',1,1)")
     if not c.execute("SELECT 1 FROM domains WHERE engine='abi'").fetchone():   # lĩnh vực ABI (docs/PLAN_ABI_LINH_VUC.md): tìm theo engine, KHÔNG cố định id
         c.execute("INSERT INTO domains(name,kind,engine,guardrail,sort) VALUES (?,?,?,?,?)", (ABI_DOMAIN_NAME, "hard", "abi", ABI_GUARDRAIL, 2))
+    if not c.execute("SELECT 1 FROM domains WHERE engine='flm'").fetchone():   # lĩnh vực FLM (system4/flm): tìm theo engine, KHÔNG cố định id
+        c.execute("INSERT INTO domains(name,kind,engine,guardrail,sort) VALUES (?,?,?,?,?)", (FLM_DOMAIN_NAME, "hard", "flm", FLM_GUARDRAIL, 3))
     if "model" not in cols("strict_nodes"):
         c.execute("ALTER TABLE strict_nodes ADD COLUMN model TEXT NOT NULL DEFAULT ''")
     if "rules_only" not in cols("user_prefs"):   # G3.3: "Chỉ trả lời bằng luật" theo tài khoản
@@ -411,22 +415,25 @@ def update_dataset(ds_id: int, **cols) -> None:
 
 
 _ELEVATED = ("dev", "can_bo")   # được dùng domain / dataset đã khoá
+# dataset dùng chung: mọi dataset của domain cứng; ở domain mềm chỉ cái có cờ shared (dev / cán bộ đặt, chỉ ở domain mềm không riêng ai)
+_SHARED = "(m.kind='hard' OR (d.shared=1 AND m.owner_id IS NULL))"
 
 
 def active_datasets(user_id: int, domain_id: int | None = None, role: str = "dev") -> list[dict]:
     """Bộ dữ liệu đang bật. domain_id None = mọi domain của riêng người này. Có domain_id: dataset RIÊNG của người này trong domain đó,
-    cộng dataset dùng chung của domain cứng (người dùng thường không thấy dataset đã khoá)."""
+    cộng dataset dùng chung (mọi dataset của domain cứng; dataset có cờ shared của domain mềm) — người dùng thường không thấy
+    dataset đã khoá."""
     if domain_id is None:
         return run("SELECT id, name, n_records FROM datasets WHERE user_id=? AND active=1 AND status='ready'", (user_id,), many=True)
     return run("SELECT d.id, d.name, d.n_records FROM datasets d JOIN domains m ON m.id=d.domain_id "
                "WHERE d.domain_id=? AND d.active=1 AND d.status='ready' "
-               "AND (d.user_id=? OR (m.kind='hard' AND (d.locked=0 OR ? IN ('dev','can_bo'))))", (domain_id, user_id, role), many=True)
+               f"AND (d.user_id=? OR ({_SHARED} AND (d.locked=0 OR ? IN ('dev','can_bo'))))", (domain_id, user_id, role), many=True)
 
 
 def visible_datasets(user: dict, domain_id: int) -> list[dict]:
-    """Danh sách hiện trong "Dữ liệu" của một domain: của mình + dùng chung của domain cứng (không thấy cái đã khoá nếu là Người dân)."""
+    """Danh sách hiện trong "Dữ liệu" của một domain: của mình + dùng chung (không thấy cái đã khoá nếu là Người dân)."""
     return run("SELECT d.*, u.username FROM datasets d JOIN users u ON u.id=d.user_id JOIN domains m ON m.id=d.domain_id "
-               "WHERE d.domain_id=? AND (d.user_id=? OR (m.kind='hard' AND (d.locked=0 OR ? IN ('dev','can_bo')))) ORDER BY d.id DESC",
+               f"WHERE d.domain_id=? AND (d.user_id=? OR ({_SHARED} AND (d.locked=0 OR ? IN ('dev','can_bo')))) ORDER BY d.id DESC",
                (domain_id, user["id"], user["role"]), many=True)
 
 
@@ -435,7 +442,7 @@ def readable_dataset(user: dict, ds: dict) -> bool:
     if ds["user_id"] == user["id"] or user["role"] in _ELEVATED:   # dev + cán bộ quản lý dữ liệu ở bảng điều khiển
         return True
     d = get_domain(ds["domain_id"])
-    return bool(d and d["kind"] == "hard" and can_use_domain(user, d) and (not ds["locked"] or user["role"] in _ELEVATED))
+    return bool(d and (d["kind"] == "hard" or (ds.get("shared") and d["owner_id"] is None)) and can_use_domain(user, d) and (not ds["locked"] or user["role"] in _ELEVATED))
 
 
 # ------------------------------------------------------------------- domain
@@ -444,6 +451,23 @@ ABI_DOMAIN_NAME = "ABI – Trung tâm Ươm tạo"
 ABI_GUARDRAIL = ("Bạn là trợ lý tra cứu thông tin Trung tâm Ươm tạo Doanh nghiệp Nông nghiệp Công nghệ cao TP.HCM (ABI, web abi.com.vn). "
                  "Chỉ trả lời từ dữ liệu được cung cấp; không đoán số liệu, ngày giờ, tên người. Câu hỏi ngoài phạm vi trung tâm thì nói rõ "
                  "bạn chỉ hỗ trợ thông tin về trung tâm.")
+
+
+def s4_mode(d: dict | None) -> bool:
+    """Lĩnh vực Thủ tục (engine strict) đang ở chế độ "chỉ System 4": bỏ DB thủ tục của System 3, trả lời bằng pipeline Friendly
+    trên các bộ dữ liệu tải lên của lĩnh vực. Hai chế độ loại trừ nhau (leader 19/10): không trộn luật System 3 với dữ liệu tải lên."""
+    return bool(d) and d["engine"] == "strict" and d.get("data_mode") == "s4"
+
+
+def friendly_pipeline(d: dict | None) -> bool:
+    """Lĩnh vực trả lời bằng pipeline Friendly (server/chat.py): friendly, abi, flm (bảng FLM + đường nhanh), và Thủ tục ở chế độ System 4."""
+    return bool(d) and (d["engine"] in ("friendly", "abi", "flm") or s4_mode(d))
+
+
+FLM_DOMAIN_NAME = "FLM – Đề cương FPTU"
+FLM_GUARDRAIL = ("Bạn là trợ lý tra cứu khung chương trình và đề cương môn học của Trường Đại học FPT (dữ liệu từ flm.fpt.edu.vn, "
+                 "chế độ khách). Chỉ trả lời từ dữ liệu được cung cấp; không đoán số tín chỉ, trọng số, môn tiên quyết. Nói rõ dữ liệu "
+                 "là khung chương trình mới nhất của các ngành đã đồng bộ; câu hỏi ngoài phạm vi thì nói bạn chỉ hỗ trợ thông tin đề cương.")
 
 
 def get_domain(did: int | None) -> dict | None:

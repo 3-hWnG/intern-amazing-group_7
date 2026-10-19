@@ -45,6 +45,7 @@ class DatasetPatch(BaseModel):
     active: bool | None = None
     name: str | None = None
     locked: bool | None = None   # chỉ dev: khoá = chỉ dev và cán bộ dùng
+    shared: bool | None = None   # dev / cán bộ, lĩnh vực mềm không riêng ai: mọi người dùng được lĩnh vực đều thấy (chỉ đọc)
 
 
 class MemoryModeIn(BaseModel):
@@ -257,7 +258,9 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
             dom = db.get_domain(db.get_conversation(cid)["domain_id"])
         else:
             dom = db.get_domain(body.domain_id or 2)
-        if not dom or dom["engine"] not in ("friendly", "abi") or not db.can_use_domain(u, dom):   # abi: pipeline Friendly + nguồn abi.com.vn
+        if dom and dom["engine"] == "strict" and not db.s4_mode(dom):
+            raise HTTPException(409, "Lĩnh vực Thủ tục đang trả lời bằng System 3 (luật + DB thủ tục), không dùng hội thoại Friendly")
+        if not dom or not db.friendly_pipeline(dom) or not db.can_use_domain(u, dom):   # abi: pipeline Friendly + nguồn abi.com.vn
             raise HTTPException(403, "Bạn không dùng được lĩnh vực này")
         if account.over_quota(u, s3_store):   # G1.7: hội thoại tính vào hạn mức dung lượng chung với dữ liệu tải lên
             raise HTTPException(413, account.QUOTA_MESSAGE)
@@ -312,15 +315,18 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
             mapping = {}
         return {k: d[k] for k in ("id", "user_id", "name", "filename", "size_bytes", "kind", "status", "progress", "message",
                                   "n_records", "created_at", "domain_id")} | {"active": bool(d["active"]), "mapping": mapping,
-                                                                              "locked": bool(d.get("locked")), "username": d.get("username")}
+                                                                              "locked": bool(d.get("locked")), "shared": bool(d.get("shared")),
+                                                                              "username": d.get("username")}
 
     @r.get("/datasets")
-    def list_datasets(request: Request, domain_id: int = 2):
+    def list_datasets(request: Request, domain_id: int = 2, uploaded: bool = False):
+        """uploaded=1: chỉ tệp tải lên (bỏ bộ dữ liệu do đồng bộ tự tạo, vd. phiên bản ABI) — thẻ "Dữ liệu tải thêm" của lĩnh vực cứng."""
         u = _user(request)
         dom = db.get_domain(domain_id)
         if not dom or not db.can_use_domain(u, dom):
             raise HTTPException(404, "không có lĩnh vực này")
-        return {"datasets": [ds_view(d) for d in db.visible_datasets(u, domain_id)], "quota": datasets.quota(u),
+        rows = [d for d in db.visible_datasets(u, domain_id) if not (uploaded and datasets.managed(d))]
+        return {"datasets": [ds_view(d) for d in rows], "quota": datasets.quota(u),
                 "active": datasets.active_summary(u["id"], domain_id, u["role"]), "formats": sorted(datasets.ingest.SUPPORTED),
                 "can_upload": domains.can_upload(u, dom), "domain": domains.view(u, dom)}
 
@@ -346,6 +352,9 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
             raise HTTPException(422, str(e)) from None
         finally:
             await f.close()
+        if str(form.get("shared") or "") in ("1", "true") and domains.can_share(u, dom):   # tải lên là dùng chung luôn
+            db.update_dataset(d["id"], shared=1)
+            d = {**d, "shared": 1}
         return {"dataset": ds_view({**d, "username": u["username"]}), "active": datasets.active_summary(u["id"], domain_id, u["role"])}
 
     @r.patch("/datasets/{ds_id}")
@@ -357,8 +366,15 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
             db.update_dataset(ds_id, locked=1 if body.locked else 0)
         if body.name is not None and body.name.strip():
             db.update_dataset(ds_id, name=body.name.strip()[:120])
+        if body.shared is not None:
+            dom = db.get_domain(ds["domain_id"])
+            if not dom or not domains.can_share(_user(request), dom):
+                raise HTTPException(403, "Chỉ dev / cán bộ đặt dùng chung, và chỉ ở lĩnh vực mềm không riêng ai")
+            db.update_dataset(ds_id, shared=1 if body.shared else 0)
         if body.active is not None and datasets.synced(ds):   # lĩnh vực ABI: bật đúng phiên bản bằng nút chọn phiên bản
             raise HTTPException(422, "Bộ dữ liệu ABI bật / tắt theo phiên bản: chọn phiên bản ở Quản lý lĩnh vực hoặc Quản trị → Dữ liệu ABI")
+        if body.active is not None and datasets.managed(ds) == "flm":
+            raise HTTPException(422, "Bộ dữ liệu FLM bật / tắt theo phiên bản: chọn phiên bản ở Quản lý lĩnh vực → FLM → Dữ liệu FLM")
         if body.active is not None:
             if body.active and not ds["active"]:
                 err = datasets.can_activate(ds["user_id"], ds)
@@ -372,6 +388,8 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         ds = own_dataset(request, ds_id)
         if datasets.synced(ds):
             raise HTTPException(422, "Bộ dữ liệu này thuộc một phiên bản ABI: xoá phiên bản ở Quản trị → Dữ liệu ABI")
+        if datasets.managed(ds) == "flm":
+            raise HTTPException(422, "Bộ dữ liệu này thuộc một phiên bản FLM: xoá phiên bản ở Quản lý lĩnh vực → FLM → Dữ liệu FLM")
         datasets.delete(ds)
         return {"ok": True, "active": datasets.active_summary(ds["user_id"], ds["domain_id"], "dev")}
 

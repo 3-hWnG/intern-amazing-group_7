@@ -43,6 +43,8 @@ def install(app, s3_store) -> None:
     from ..abi import scheduler as abi_scheduler
     if os.environ.get("S4_ABI_SYNC", os.environ.get("S4_WARMUP", "1")) == "1":   # ABI: tự đồng bộ abi.com.vn theo ⚙ ABI_SYNC_HOURS (test tắt)
         abi_scheduler.start()
+    from . import bootstrap   # máy mới: có dev là tự nạp dữ liệu thật (Y tế / Giáo dục / Du lịch) + bản chụp FLM, một lần (test tắt)
+    bootstrap.start()
     if os.environ.get("S4_WARMUP", "1") == "1":   # test đặt S4_WARMUP=0
         threading.Thread(target=search.warm_up, name="s4-warmup", daemon=True).start()   # nạp sẵn bge-m3 + reranker
         threading.Thread(target=llm.warm_up, name="s4-warmup-llm", daemon=True).start()   # KEEP_MODELS_LOADED: nạp sẵn model trả lời
@@ -67,6 +69,8 @@ def install(app, s3_store) -> None:
     app.include_router(domains.make_router())
     app.include_router(fastpath.make_router())
     app.include_router(abi_scheduler.make_router())
+    from ..flm import sync as flm_sync   # lĩnh vực FLM: nút "Đồng bộ FLM" (không có lịch tự đồng bộ: captcha cần người bấm)
+    app.include_router(flm_sync.make_router())
     app.mount("/s4/static", StaticFiles(directory=str(config.WEB_DIR / "static")), name="s4_static")
 
     def deny(code: int, detail: str) -> JSONResponse:
@@ -94,6 +98,8 @@ def install(app, s3_store) -> None:
 
         if path == "/chat" and method == "POST" and not db.can_use_domain(user, db.get_domain(1)):
             return deny(403, "Domain Thủ tục đang khoá: chỉ dev và cán bộ dùng được")
+        if path == "/chat" and method == "POST" and db.s4_mode(db.get_domain(1)):   # chế độ System 4: DB thủ tục của System 3 tắt
+            return deny(409, strict.S4_ONLY)
         if path == "/chat" and method == "POST" and account.over_quota(user, s3_store):   # G1.7: mọi lượt Strict (cả cầu nối)
             return deny(413, account.QUOTA_MESSAGE)
 

@@ -133,6 +133,14 @@ def synced(ds: dict) -> bool:
     return '"source": "abi_sync"' in (ds.get("mapping") or "")
 
 
+def managed(ds: dict) -> str:
+    """Bộ dữ liệu do đồng bộ quản lý (bật / tắt / xoá theo PHIÊN BẢN, không bằng tay): "abi" | "flm" | "" (tệp tải lên thường)."""
+    if synced(ds):
+        return "abi"
+    from ..flm import store as flm_store
+    return "flm" if flm_store.is_flm_dataset(ds) else ""
+
+
 def process(ds_id: int) -> None:
     ds = db.get_dataset(ds_id)
     if not ds or synced(ds):

@@ -1,0 +1,65 @@
+{
+ "counts": {
+  "y_te_benh_vien_tphcm.xlsx": 85,
+  "y_te_hoi_dap_bac_si.md": 300,
+  "giao_duc_truong_dai_hoc.xlsx": 361,
+  "giao_duc_luat_giao_duc_2019.txt": 115,
+  "du_lich_di_tich_dac_biet.xlsx": 150,
+  "du_lich_diem_den.md": 6
+ },
+ "sources": {
+  "luat_giao_duc_2019.json": {
+   "retrieved": "2026-10-19",
+   "url": "https://pbgdpl.cantho.gov.vn/attachment/284"
+  },
+  "medqa_rows.json": {
+   "retrieved": "2026-10-19",
+   "dataset": "hungnm/vietnamese-medical-qa",
+   "num_rows": 9335
+  },
+  "wiki_benh_vien_hcm.json": {
+   "title": "Danh sách bệnh viện tại Thành phố Hồ Chí Minh",
+   "revid": 75626151,
+   "retrieved": "2026-10-19"
+  },
+  "wiki_di_tich_dac_biet.json": {
+   "title": "Di tích quốc gia đặc biệt (Việt Nam)",
+   "revid": 75571348,
+   "retrieved": "2026-10-19"
+  },
+  "wiki_diem_den.json": {
+   "retrieved": "2026-10-19",
+   "pages": [
+    {
+     "title": "Phố cổ Hội An",
+     "revid": 75622292
+    },
+    {
+     "title": "Vịnh Hạ Long",
+     "revid": 75510308
+    },
+    {
+     "title": "Vườn quốc gia Phong Nha – Kẻ Bàng",
+     "revid": 75369419
+    },
+    {
+     "title": "Sa Pa",
+     "revid": 75216552
+    },
+    {
+     "title": "Đà Lạt",
+     "revid": 75592476
+    },
+    {
+     "title": "Phú Quốc",
+     "revid": 75641049
+    }
+   ]
+  },
+  "wiki_truong_dai_hoc.json": {
+   "title": "Danh sách trường đại học, học viện và cao đẳng tại Việt Nam",
+   "revid": 75600723,
+   "retrieved": "2026-10-19"
+  }
+ }
+}

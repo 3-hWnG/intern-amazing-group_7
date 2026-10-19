@@ -58,3 +58,12 @@ Answer Policy/
 
 # Claude Code local config (preview launch.json)
 .claude/
+
+# Trò chơi Kéo - Búa - Bao + báo cáo (bài phụ, không đưa lên repo)
+keo_bua_bao/
+
+# Công cụ tạo/đọc .docx cho Claude (node_modules, script skill, thư viện Python) — cài một lần, không đưa lên repo
+tools/
+
+# Dữ liệu thật của 3 lĩnh vực mềm: tệp gốc tải về (dựng lại bằng system4/eval/real_domains/fetch.py)
+system4/eval/real_domains/raw/
