@@ -38,7 +38,9 @@ def _q_field(t: dict) -> list[dict]:
         for f, m in fields:
             if not r["fields"].get(f):
                 continue
-            out.append({"q": f"{m['label']} của {r['title']} là gì?", "row": r["id"], "field": f})
+            # tên cột bị vet_cues bỏ (vd. "địa điểm" nằm trong 7% tên di tích) thì engine cố ý không nhận nó: đừng hỏi bằng nó (19/10)
+            if any(" ".join(fold(w) for w in c) == " ".join(fold(m["label"]).split()) for c in m["cues"]):
+                out.append({"q": f"{m['label']} của {r['title']} là gì?", "row": r["id"], "field": f})
             alt = next((c for c in m["cues"] if c not in m.get("header", []) and " ".join(c) != fold(m["label"])), None)
             if alt:
                 out.append({"q": f"{r['title']} {' '.join(alt)}?", "row": r["id"], "field": f})

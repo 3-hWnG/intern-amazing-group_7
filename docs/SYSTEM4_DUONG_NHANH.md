@@ -143,3 +143,16 @@ khi dữ liệu có nhiều bảng.
 Kiểm ở mức code sau khi tắt (không phải lượt đo mới; bộ `shop` đã bị xem): trên bộ cửa hàng code tự trả lời 15/32 câu, đúng 15, các câu còn lại đi đường cũ;
 dev (NV5 + du lịch) 0 câu sai. Tổng trên bộ mù với cấu hình này **chưa đo bằng model thật** — ước tính 29/32 ở mục F là suy ra.
 Bật lại đếm / liệt kê chỉ nên sau khi sửa lỗi ở mục F và đo trên bộ mù thứ ba.
+
+## G. Sửa tìm ra trên dữ liệu THẬT (19/10/2026, `system4/eval/real_domains/`)
+Nạp 6 bộ dữ liệu thật (bệnh viện TP.HCM, trường đại học, di tích quốc gia đặc biệt — Wikipedia; hỏi đáp bác sĩ; Luật Giáo dục 2019; bài điểm đến)
+lộ ra 4 lỗi chung của đường nhanh, đã sửa (test: `system4/tests/fastpath_realdata_test.py`):
+1. `engine.show`: năm 4 chữ số ở cột tên có "năm" in thành "2.009" -> giữ nguyên "2009". Cột khác như cũ (1450000 -> 1.450.000).
+2. `engine._entities`: dòng được gọi trọn tên luôn đứng trước dòng chỉ khớp vài chữ ("Trường Đại học FPT … công lập hay tư thục" từng ra
+   "Trường Đại học Công nghệ Swinburne - FPT" vì "công" trùng). Đây là câu trả lời SAI, không phải nhường.
+3. `engine._leftover`: chữ lạ xét trên chữ của CHÍNH bảng, không lẫn chữ của đoạn văn bản cùng lĩnh vực ("Truyền thuyết về tên gọi Vịnh Hạ Long"
+   từng ra thẻ dòng di tích vì "truyền thuyết" có trong bài viết). Đổi lại: câu có chữ chỉ có trong văn bản thì nhường cho tìm kiếm + AI nhiều hơn.
+4. `selftest._q_field`: không hỏi bằng tên cột khi `vet_cues` đã bỏ nó (bảng di tích: "địa điểm" nằm trong 11/150 tên) -> bảng không bị tắt oan.
+`fastpath_dev.py` (accuracy / greeting / tourism, 94 câu) trước và sau: 37 câu code trả lời, **0 sai**, không đổi. Bộ mù `shop` không chạy lại.
+Còn sai (ghi trong `real_domains/showcase.py` · KNOWN_LIMITS): "Vịnh Hạ Long được UNESCO công nhận … năm nào?" ra năm xếp hạng di tích (2009, đúng là 1994);
+"Hội An được xếp hạng … năm nào?" ra "Đợt 1" (gợi ý "xếp hạng" dài hơn "năm").

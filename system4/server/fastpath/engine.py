@@ -50,13 +50,16 @@ def parse_date(v) -> datetime | None:
     return None
 
 
-def show(v, typ: str) -> str:
-    """Hiển thị theo kiểu cột: ngày ISO -> dd/mm/yyyy (giờ VN); số nguyên lớn -> 1.450.000."""
+def show(v, typ: str, col: str = "") -> str:
+    """Hiển thị theo kiểu cột: ngày ISO -> dd/mm/yyyy (giờ VN); số nguyên lớn -> 1.450.000. Cột năm ("Năm thành lập": 1900) giữ nguyên,
+    không thành "1.900" (lỗi thấy 19/10 trên dữ liệu thật: bệnh viện, di tích)."""
     s = str(v)
     if typ == "date" and re.match(r"\d{4}-\d{2}-\d{2}", s):
         d = parse_date(s)
         if d:
             return d.strftime("%d/%m/%Y %H:%M") if (d.hour or d.minute) else d.strftime("%d/%m/%Y")
+    if typ == "number" and re.fullmatch(r"\d{4}", s) and 1000 <= int(s) <= 2100 and re.search(r"\bnam\b", fold(col)):
+        return s
     if typ == "number" and re.fullmatch(r"-?\d{4,}", s):
         return f"{int(s):,}".replace(",", ".")
     return s
@@ -103,9 +106,12 @@ class Engine:
             t["_tt"] = [set(w) for w in t["_tw"]]
             stem = (t.get("file") or "").rsplit(".", 1)[0].replace("_", " ")
             t["_tok"] = set(words(" ".join([t["title_label"], t["name"], t.get("entity_noun", ""), stem]))) | {"dong", "muc"}   # "dòng" / "mục" = một dòng của bảng
+            t["_vocab"], t["_rawvocab"] = set(), set()   # chữ của RIÊNG bảng này (cổng _leftover), không lẫn chữ của đoạn văn bản
             for i, (r, tt) in enumerate(zip(t["rows"], t["_tt"])):
                 self.byrow[r["id"]] = (t, i)
                 docs.append(tt | set(w for v in r["fields"].values() for w in words(str(v))))
+                t["_vocab"] |= docs[-1]
+                t["_rawvocab"] |= {w for _, w in tokens(r["title"] + " " + " ".join(str(v) for v in r["fields"].values()))}
         for x in self.texts:
             x["_w"] = set(words(x["title"] + " " + x["text"]))
             docs.append(x["_w"])
@@ -171,7 +177,9 @@ class Engine:
             if named:
                 cov, tcov = max(cov, ACCEPT), 1.0
             out.append((cov, tcov, len(tw) if named else 0, i))
-        out.sort(reverse=True)
+        # dòng được gọi ĐÍCH DANH (tên nằm trọn trong câu) đứng trước dòng chỉ khớp vài chữ: "Trường Đại học FPT … công lập hay tư thục"
+        # từng chọn "Trường Đại học Công nghệ Swinburne - FPT" vì "công" (lập) trùng "Công" (nghệ) làm độ phủ cao hơn (dữ liệu thật 19/10)
+        out.sort(key=lambda x: (x[2] > 0, x), reverse=True)
         return out
 
     def _aggregate(self, t: dict, q: list[str], used: set[int], field, neg) -> dict | None:
@@ -245,10 +253,12 @@ class Engine:
 
     def _leftover(self, q: list[str], qt: list, t: dict, i: int, fpos: set[int], agg_pos: set[int], field) -> bool:
         """Cổng phạm vi cho câu tra một dòng: còn chữ KHÔNG HỀ có trong dữ liệu (vd. "vé MÁY BAY đi Phú Quốc")
-        -> câu hỏi điều dữ liệu không ghi: nhường đường cũ. >= 2 chữ lạ, hoặc 1 chữ lạ khi không nhận ra trường được hỏi."""
+        -> câu hỏi điều dữ liệu không ghi: nhường đường cũ. >= 2 chữ lạ, hoặc 1 chữ lạ khi không nhận ra trường được hỏi.
+        "Có trong dữ liệu" = có trong CHÍNH BẢNG đó: lĩnh vực có cả bảng di tích lẫn bài viết về Vịnh Hạ Long thì "truyền thuyết về tên gọi
+        Vịnh Hạ Long" từng được trả bằng thẻ dòng di tích vì "truyền thuyết" có trong bài viết (dữ liệu thật 19/10)."""
         title = set(t["_tw"][i])
         def known(j, w):   # gõ có dấu thì so chữ có dấu ("máy" bay khác "Mây" Ngàn); gõ không dấu thì so bỏ dấu
-            return w in self.vocab if fold(qt[j][1]) == qt[j][1] else qt[j][1] in self.rawvocab
+            return w in t["_vocab"] if fold(qt[j][1]) == qt[j][1] else qt[j][1] in t["_rawvocab"]
         unknown = [w for j, w in enumerate(q) if j not in fpos and j not in agg_pos and w not in title and w not in STOP and w not in GREET
                    and w not in t["_tok"] and not known(j, w) and not w.isdigit()]
         return len(unknown) >= 2 or (len(unknown) == 1 and not field)
@@ -278,7 +288,7 @@ class Engine:
         noun = t.get("entity_noun") or "mục"
         if field and field not in agg["filter_fields"] and t["fields"][field]["type"] != "flag" and not agg["count"] and 1 <= len(agg["rows"]) <= 5:
             ftype, lab = t["fields"][field]["type"], t["fields"][field]["label"]   # "Hạng Kim cương được những ưu đãi nào?": liệt kê GIÁ TRỊ
-            lines = [f"- {r['title']}: {show(r['fields'].get(field) or '(không ghi)', ftype)}" for r in agg["rows"]]
+            lines = [f"- {r['title']}: {show(r['fields'].get(field) or '(không ghi)', ftype, field)}" for r in agg["rows"]]
             return {"kind": "answer", "route": "lookup", "table": t["key"], "content": f"{lab[:1].upper() + lab[1:]} ({agg['desc']}):\n" + "\n".join(lines),
                     "sources": [self._src(t, r) for r in agg["rows"]]}
         names = [r["title"] for r in agg["rows"]]
@@ -417,11 +427,11 @@ class Engine:
             label, v = m["label"], row["fields"].get(field)
             if v:
                 return {"kind": "answer", "route": "field", "table": t["key"], "field": field,
-                        "content": f"**{label[:1].upper() + label[1:]}** của {row['title']}: {show(v, m['type'])}", "sources": src}
+                        "content": f"**{label[:1].upper() + label[1:]}** của {row['title']}: {show(v, m['type'], field)}", "sources": src}
             return {"kind": "answer", "route": "field-empty", "table": t["key"], "field": field,
                     "content": f"Dữ liệu không ghi {label} của {row['title']}.", "sources": src}
         shown = {k: m for k, m in t["fields"].items() if m["type"] != "empty"}
-        card = "\n".join(f"- **{m['label']}**: {show(row['fields'][k], m['type'])[:300]}" for k, m in shown.items() if row["fields"].get(k))
+        card = "\n".join(f"- **{m['label']}**: {show(row['fields'][k], m['type'], k)[:300]}" for k, m in shown.items() if row["fields"].get(k))
         miss = [m["label"] for k, m in shown.items() if not row["fields"].get(k)]
         tail = f"\n\n_Dữ liệu không ghi: {', '.join(miss)}._" if miss else ""
         return {"kind": "answer", "route": "card", "table": t["key"], "content": f"**{row['title']}**\n{card}{tail}", "sources": src}
