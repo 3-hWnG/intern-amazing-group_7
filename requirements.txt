@@ -14,6 +14,7 @@ ddgs==9.16.0               # nút Tìm web (DuckDuckGo)
 openpyxl==3.1.5             # đọc Excel (NV3)
 python-docx==1.2.0          # đọc Word (NV3)
 pypdf==6.19.0               # đọc PDF (NV3)
+lxml==6.1.3                 # đọc trang FLM (system4/flm) + bảng Wikipedia (system4/eval/real_domains); trước chỉ có nhờ ddgs kéo theo
 huggingface-hub==1.33.0     # tải model reranker một lần lúc cài đặt (<2.0 vì tokenizers đòi)
 transformers==5.19.0        # chạy reranker (NV3)
 torch==2.14.1+cu126         # chạy reranker trên GPU (NV3), khoảng 2.5 GB
