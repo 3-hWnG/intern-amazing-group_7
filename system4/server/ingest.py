@@ -5,7 +5,9 @@ NV5 (A5): tiêu đề cột hai tầng (ô gộp "Điểm" trên "Toán | Văn")
 một trang tính (cách nhau bởi dòng trống), và người dùng tự chọn dòng tiêu đề trong "Cách đọc" (overrides).
 - Bảng (CSV, Excel, JSON danh sách, bảng trong Word): code chọn cột tiêu đề, AI kiểm lại, code duyệt.
   Không khớp được -> phương án C: mỗi dòng thành một đoạn chữ "cột: giá trị; …" (kind = rows).
-- Văn bản (TXT/MD, đoạn văn Word, PDF): chia theo tiêu đề / đoạn, mỗi phần ~CHUNK_CHARS ký tự (kind = text).
+- Văn bản (TXT/MD, đoạn văn Word, PDF): chia theo MỤC (tiêu đề # / style Heading của Word / dòng trông như tiêu đề), rồi mỗi
+  mục thành các đoạn <= CHUNK_CHARS ký tự cắt ở dòng trống > dòng > câu > khoảng trắng; mỗi đoạn mở đầu bằng tên mục (kind = text).
+  PDF: nối các trang trước khi chia (mục vắt qua hai trang vẫn là một mục), nguồn ghi khoảng trang.
 """
 from __future__ import annotations
 import csv
@@ -17,7 +19,8 @@ from pathlib import Path
 
 from . import llm, settings
 
-READER_VERSION = 4   # tăng khi đổi cách đọc tệp: dữ liệu đọc bằng bản cũ được xử lý lại khi khởi động server
+READER_VERSION = 5   # tăng khi đổi cách đọc tệp: dữ liệu đọc bằng bản cũ được xử lý lại khi khởi động server
+                     # 5 (19/10): văn bản chia theo MỤC (PDF nối trang + nhận dòng tiêu đề), không cắt giữa chữ
 csv.field_size_limit(2**31 - 1)   # ô rất dài (mô tả, văn bản dán vào) không làm hỏng việc đọc CSV
 SUPPORTED = {".csv", ".tsv", ".xlsx", ".xlsm", ".json", ".txt", ".md", ".docx", ".pdf"}
 _TITLE_HINTS = ("tên", "ten", "name", "title", "tiêu đề", "tieu de", "sản phẩm", "san pham", "thủ tục", "thu tuc", "mặt hàng",
@@ -89,56 +92,110 @@ def read(path: Path) -> list[tuple]:
     if ext == ".docx":
         import docx
         d = docx.Document(str(path))
-        out, title, buf = [], path.stem, []
+        out, buf = [], []
         body = d.element.body
         tables = {t._tbl: t for t in d.tables}
         paras = {p._p: p for p in d.paragraphs}
+        is_head = lambda p: (p.style.name or "").lower().startswith(("heading", "title")) and p.text.strip()
+        styled = any(is_head(p) for p in d.paragraphs)   # không có style Heading nào: đoán dòng tiêu đề như PDF
         for child in body.iterchildren():
             if child in paras:
                 p = paras[child]
-                if (p.style.name or "").lower().startswith(("heading", "title")) and p.text.strip():
-                    if buf:
-                        out.append(("text", title, "\n".join(buf), path.name)); buf = []
-                    title = p.text.strip()
+                if styled and is_head(p):
+                    buf.append(HEAD_MARK + p.text.strip())
                 elif p.text.strip():
                     buf.append(p.text.strip())
             elif child in tables:
                 rows = [[_cell(c.text) for c in r.cells] for r in tables[child].rows]
                 if len(rows) >= 2:
+                    out += _split_sections(buf, path.stem, path.name, guess=not styled)
+                    buf = []
                     out.append(("table", f"{path.stem} · bảng {sum(1 for x in out if x[0] == 'table') + 1}", rows))
-        if buf:
-            out.append(("text", title, "\n".join(buf), path.name))
-        return out
+        return out + _split_sections(buf, path.stem, path.name, guess=not styled)
     if ext == ".pdf":
         from pypdf import PdfReader
         try:
             reader = PdfReader(str(path))
         except Exception as e:
             raise IngestError(f"Không đọc được PDF: {e}") from None
-        out = []
+        lines, pages = [], []
         for i, page in enumerate(reader.pages, 1):
-            t = (page.extract_text() or "").strip()
-            if t:
-                out.append(("text", f"{path.stem} · trang {i}", t, f"{path.name} · trang {i}"))
-        if not out:
+            for ln in (page.extract_text() or "").splitlines():
+                lines.append(ln)
+                pages.append(i)
+        if not any(ln.strip() for ln in lines):
             raise IngestError("PDF không có chữ (có thể là ảnh quét). Hiện chỉ hỗ trợ PDF có chữ.")
-        return out
+        return _split_sections(lines, path.stem, path.name, guess=True, pages=pages)
     raise IngestError("Định dạng không hỗ trợ")
 
 
 def _sections(text: str, source: str, markdown: bool) -> list[tuple]:
-    """Chia văn bản theo tiêu đề Markdown (#) nếu có; không có thì để một phần, việc chia đoạn làm ở bước sau."""
-    out, title, buf = [], Path(source).stem, []
+    """Chia văn bản theo tiêu đề Markdown (#) nếu có; không có # thì đoán dòng tiêu đề (looks_heading)."""
+    lines, marked = [], False
     for line in text.splitlines():
         m = re.match(r"^\s{0,3}#{1,6}\s+(.+)$", line) if markdown else None
-        if m:
-            if "".join(buf).strip():
-                out.append(("text", title, "\n".join(buf).strip(), source))
-            title, buf = m.group(1).strip(), []
+        marked = marked or bool(m)
+        lines.append(HEAD_MARK + m.group(1).strip() if m else line)
+    return _split_sections(lines, Path(source).stem, source, guess=not marked)
+
+
+HEAD_MARK = "\x00H"   # dòng đã biết chắc là tiêu đề (Markdown #, style Heading của Word)
+_LEGAL = re.compile(r"^(chương|mục|phần|điều|phụ lục)\s+([0-9]+[a-z]?|[ivxlc]+)(\s*$|[.:)])", re.I)   # "Điều 5 Luật…" (câu) thì không
+_ROMAN = re.compile(r"^[IVXLC]{1,6}[.)]\s+\S")
+
+
+def looks_heading(line: str) -> bool:
+    """Dòng (của PDF / TXT / Word không có style) trông như tên mục: "Chương II", "Điều 5. Đối tượng…", "IV. HỒ SƠ",
+    dòng IN HOA ngắn, hoặc dòng ngắn kết thúc bằng ":" ("Deployment:", "Implement Websearch:"). Câu thường, gạch đầu dòng,
+    "1. …" (thường là ý liệt kê) thì không."""
+    t = " ".join(line.split())
+    if not t or len(t) > 90 or t[0] in "-*•+–(":
+        return False
+    if _LEGAL.match(t) or _ROMAN.match(t):
+        return True
+    letters = [c for c in t if c.isalpha()]
+    if len(letters) >= 6 and len(t.split()) >= 2 and all(c.isupper() for c in letters) and not t.endswith((",", ";")):
+        return True
+    return t.endswith(":") and len(t) <= 60 and t.count(":") == 1 and len(t.split()) <= 8
+
+
+def _split_sections(lines: list[str], stem: str, filename: str, guess: bool, pages: list[int] | None = None) -> list[tuple]:
+    """Dòng -> các mục ("text", tên mục (không có thì tên tệp), chữ, nguồn, tên mục). Nhãn liền nhau (mục rỗng, vd. "Task:" rồi
+    "Sửa code:") gộp thành một tên "Task: › Sửa code:". Dòng tiêu đề tự nó là một câu ("Điều 1. Giờ làm việc từ 8 giờ.") mà
+    không có nội dung theo sau thì chính nó là nội dung, không bị bỏ."""
+    out, head, last, buf, pg = [], "", "", [], []
+
+    def label(h: str) -> bool:   # chỉ là nhãn (không mang nội dung): "Task:", "Chương II", "Điều 5. Đối tượng tuyển sinh"
+        return not h.rstrip().endswith((".", "!", "?")) and len(h) <= 60
+
+    def flush():
+        body, h = "\n".join(buf).strip(), head
+        if not body and h and not label(last):   # tiêu đề mang nội dung, không có thân
+            body, h = last, h.rsplit(" › ", 1)[0] if " › " in h else ""
+        if body:
+            src = filename
+            if pages and pg:
+                a, b = min(pg), max(pg)
+                src = f"{filename} · trang {a}" + (f"–{b}" if b != a else "")
+            out.append(("text", h or stem, body, src, h))
+
+    for i, line in enumerate(lines):
+        known = line.startswith(HEAD_MARK)
+        text = line[len(HEAD_MARK):] if known else line
+        if known or (guess and looks_heading(text)):
+            if "".join(buf).strip() or (head and not label(last)):
+                flush()
+                head = ""
+            elif head:   # mục rỗng: nối tên với tiêu đề con
+                head += " › "
+            last = " ".join(text.split())
+            head += last
+            buf, pg = [], [pages[i]] if pages else []
         else:
-            buf.append(line)
-    if "".join(buf).strip():
-        out.append(("text", title, "\n".join(buf).strip(), source))
+            buf.append(text)
+            if pages and text.strip():
+                pg.append(pages[i])
+    flush()
     return out
 
 
@@ -370,27 +427,51 @@ def table_records(name: str, rows: list[list[str]], filename: str, use_ai: bool 
     return recs, {"kind": "rows", "sheet": name, "fields": headers, **how}
 
 
-def text_records(title: str, text: str, source: str) -> list[dict]:
-    """Chia văn bản thành đoạn ~CHUNK_CHARS ký tự theo đoạn văn, gối đầu một đoạn để không mất ý ở chỗ cắt."""
+def _cut(s: str, size: int) -> list[str]:
+    """Một dòng dài hơn size: cắt ở cuối câu (". ", "; ", ": "), rồi ", ", cuối cùng ở khoảng trắng — không cắt giữa chữ."""
+    out = []
+    while len(s) > size:
+        cut = -1
+        for sep in (". ", "? ", "! ", "; ", ": ", ", ", " "):
+            k = s.rfind(sep, 0, size)
+            if k > size * (0.5 if sep != " " else 0.2):
+                cut = k + len(sep)
+                break
+        cut = cut if cut > 0 else size   # một "chữ" dài hơn size (đường link…): đành cắt cứng
+        out.append(s[:cut].strip())
+        s = s[cut:].strip()
+    if s:
+        out.append(s)
+    return out
+
+
+def text_records(title: str, text: str, source: str, head: str = "") -> list[dict]:
+    """Chia một mục văn bản thành đoạn <= CHUNK_CHARS ký tự: gom theo đoạn văn (dòng trống / gạch đầu dòng); đoạn văn dài thì
+    gom theo DÒNG (chữ PDF không có dòng trống); dòng dài thì cắt ở câu / khoảng trắng. Gối đầu đơn vị cuối nếu nó ngắn.
+    head (tên mục) đứng đầu mỗi đoạn để tìm kiếm và AI biết đoạn thuộc mục nào."""
     size = settings.get("CHUNK_CHARS")
-    paras = [p.strip() for p in re.split(r"\n\s*\n|\n(?=[-*•]\s)", text) if p.strip()]
+    lead = f"{head}\n" if head else ""
+    room = max(200, size - len(lead))
+    units = []
+    for p in re.split(r"\n\s*\n|\n(?=[-*•]\s)", text):
+        p = p.strip()
+        if not p:
+            continue
+        if len(p) <= room:
+            units.append(p)
+            continue
+        for ln in p.split("\n"):
+            units += _cut(ln.strip(), room) if ln.strip() else []
     pieces, buf = [], []
-    for p in paras:
-        while len(p) > size * 1.5:   # đoạn quá dài: cắt theo câu
-            cut = p.rfind(". ", 0, size)
-            cut = cut + 1 if cut > size * 0.5 else size
-            paras_head, p = p[:cut].strip(), p[cut:].strip()
-            if buf:
-                pieces.append("\n".join(buf)); buf = []
-            pieces.append(paras_head)
-        if buf and sum(len(x) for x in buf) + len(p) > size:
+    for u in units:
+        if buf and sum(len(x) + 1 for x in buf) + len(u) > room:
             pieces.append("\n".join(buf))
-            buf = [buf[-1]] if len(buf[-1]) < size * 0.4 else []
-        buf.append(p)
+            buf = [buf[-1]] if len(buf[-1]) < room * 0.25 and len(buf[-1]) + 1 + len(u) <= room else []
+        buf.append(u)
     if buf:
         pieces.append("\n".join(buf))
     multi = len(pieces) > 1
-    return [{"title": f"{title} (phần {i})" if multi else title, "fields": {}, "text": t, "source": source}
+    return [{"title": f"{title} (phần {i})" if multi else title, "fields": {}, "text": lead + t, "source": source}
             for i, t in enumerate(pieces, 1)]
 
 
@@ -447,7 +528,7 @@ def to_records(path: Path, filename: str, use_ai: bool = True, overrides: dict |
                 if r:
                     recs += r; maps.append(m if m["kind"] != "text" else {"kind": "text", "title": m["title"], "chunks": m["chunks"]})
         else:
-            r = text_records(part[1], part[2], part[3])
+            r = text_records(part[1], part[2], part[3], part[4] if len(part) > 4 else "")
             if r:
                 recs += r; maps.append({"kind": "text", "title": part[1], "chunks": len(r)})
     if not recs:

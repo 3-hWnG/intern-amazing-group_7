@@ -137,7 +137,7 @@ def build(memories: list[str], summary: str, instructions: list[str], *, clarify
         if evidence:
             kb_data = ["", "Dữ liệu tham khảo:"]
             for i, e in enumerate(evidence, 1):
-                kb_data.append(f"[{i}] {e['title']} (nguồn: {e['dataset']})\n{e['text'] if e.get('full') else e['text'][:settings.get('EVIDENCE_CHARS')]}")
+                kb_data.append(f"[{i}] {e['title']} (nguồn: {e['dataset']})\n{e['text'] if e.get('full') else e['text'][:settings.evidence_chars()]}")
         else:
             kb_data = ["", "Dữ liệu tham khảo: KHÔNG tìm thấy kết quả web nào cho câu hỏi này (có thể mất mạng)." if web else
                        "Dữ liệu tham khảo: KHÔNG tìm thấy đoạn nào liên quan đến câu hỏi trong các bộ dữ liệu đang bật."]

@@ -29,6 +29,8 @@ from ..abi import turn as abi_turn
 RULES_ONLY_MESSAGE = ("Bạn đang ở chế độ **chỉ trả lời bằng luật** nên lĩnh vực này (cần AI viết câu trả lời) tạm không trả lời. "
                       "Lĩnh vực Thủ tục vẫn trả lời bằng dữ liệu. Tắt chế độ này trong ô Tài khoản nếu muốn dùng AI (máy không có card đồ hoạ "
                       "thì AI trả lời chậm, khoảng 7–40 giây).")
+NO_DATA_MESSAGE = ("Lĩnh vực «{name}» chưa có bộ dữ liệu nào đang bật nên chưa trả lời được (lĩnh vực này chỉ trả lời từ dữ liệu). "
+                   "Dev / cán bộ cần tải lên hoặc đồng bộ dữ liệu ở Quản lý lĩnh vực.")
 _background: set = set()   # giữ tham chiếu tới việc nền để không bị dọn mất giữa chừng
 _turns: dict[str, dict] = {}   # lượt đang chạy: turn_id -> {"user": id}
 
@@ -324,7 +326,9 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
         web = web and not web_blocked
         abi_mode = dom["engine"] == "abi"   # lĩnh vực ABI: dữ liệu abi.com.vn (system4/abi), luôn ở chế độ Chuyên gia
         active = db.active_datasets(user["id"], dom["id"], user["role"])
-        gm = settings.get("GREETING_MODE") if active or abi_mode else "off"
+        # câu chào: xét khi có dữ liệu, ở ABI, và ở lĩnh vực "chỉ trả lời từ dữ liệu" kể cả khi CHƯA có dữ liệu (19/10: lĩnh vực FLM chưa
+        # đồng bộ trả lời "Chào…" xong bị thay bằng "không có trong dữ liệu")
+        gm = settings.get("GREETING_MODE") if active or abi_mode or prof["answer_mode"] != "free" else "off"
         gate = gm in ("code_first", "ai_first") and greet.is_greeting(text, history_path)   # quy tắc code: ngắn + có từ chào
         small_by_code = gm == "code_first" and gate        # code nhận trước: không tra dữ liệu
         ask_small = gm != "off" and not small_by_code       # AI được đánh dấu câu xã giao
@@ -351,9 +355,12 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             if fp:
                 sinfo["fast_path"] = fp["trace"]   # đường nhanh đã nhường: lý do hiện trong 🔍
             ids = [d["id"] for d in active]
-            if not evidence and search.is_overview(text):   # "tóm tắt file": không có đoạn nào khớp thì đưa các đoạn đầu của tệp văn bản
-                evidence = await asyncio.to_thread(search.overview, ids)
-                sinfo["overview"] = len(evidence)
+            if search.is_overview(text):   # "tóm tắt file": các đoạn đầu của tệp văn bản trước, rồi tới đoạn tìm được (bỏ trùng)
+                ov = await asyncio.to_thread(search.overview, ids)   # (19/10: chia theo mục thì một đoạn ngắn như tên tài liệu
+                seen = {e["id"] for e in ov}                         #  vẫn có thể khớp chữ "nội dung" -> trước đây chặn mất đường này)
+                if ov:
+                    evidence = (ov + [e for e in evidence if e["id"] not in seen])[:max(len(ov), settings.get("RETRIEVAL_TOP_K"))]
+                    sinfo["overview"] = len(ov)
             sinfo["search_ms"] = int((time.perf_counter() - t0) * 1000)
             if settings.get("TABLE_TOOL") and "table" in prof["tools"] and tabletool.triggered(text):
                 t1 = time.perf_counter()
@@ -439,7 +446,7 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             yield sse({"type": "done"})
             return
         if prof["answer_mode"] == "verbatim" and evidence is not None and not small_by_code:   # trích nguyên văn bằng code, không gọi AI
-            ans = profile.verbatim(evidence, settings.get("EVIDENCE_CHARS"))
+            ans = profile.verbatim(evidence, settings.evidence_chars())
             meta = {"specialist": True, "mode": mode, "verbatim": True,
                     "sources": [{"n": i, "record_id": e.get("id"), "url": e.get("url"), "title": e["title"], "dataset": e["dataset"],
                                  "score": e.get("score")} for i, e in enumerate(evidence, 1)],
@@ -508,7 +515,8 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                     meta["small_talk"] = "code" if small_by_code else meta.get("small_talk_override") or "ai"
                 if evidence == [] and not web and not small and not state.get("replaced") and kb_violation("".join(state.get("parts") or [])):
                     # yêu cầu .docx: không dùng kiến thức chung. Tìm không thấy mà AI vẫn tự trả lời -> thay bằng câu cố định
-                    state["replaced"] = {"name": "Chỉ trả lời từ dữ liệu", "message": settings.get("KB_NOT_FOUND_MESSAGE")}
+                    msg = settings.get("KB_NOT_FOUND_MESSAGE") if active or abi_mode else NO_DATA_MESSAGE.format(name=dom["name"])
+                    state["replaced"] = {"name": "Chỉ trả lời từ dữ liệu", "message": msg}
                     yield sse({"type": "replace", "text": state["replaced"]["message"]})
                 # ---- kiểm chi tiết bịa (NV5, 2A): viết lại một lần
                 if settings.get("GROUNDING_CHECK") == "rewrite" and not small and not state.get("replaced"):

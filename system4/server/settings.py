@@ -48,6 +48,12 @@ def get(key: str):
     return o[key] if key in o else _defaults[key]
 
 
+def evidence_chars() -> int:
+    """Số ký tự mỗi đoạn gửi cho AI: không ngắn hơn một đoạn văn bản (CHUNK_CHARS). Trước 19/10 đoạn 900 ký tự bị cắt còn 700,
+    nên tìm trúng đoạn nhờ phần đuôi mà AI không thấy phần đó (vd. "Domain mềm: …" của Kế hoạch tuần tới.pdf)."""
+    return max(get("EVIDENCE_CHARS"), get("CHUNK_CHARS"))
+
+
 def validate(key: str, value):
     s = SPECS.get(key)
     if not s:

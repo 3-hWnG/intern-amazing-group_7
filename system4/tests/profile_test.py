@@ -88,7 +88,9 @@ with TestClient(main.app) as c:
     ev, m = chat("Công ty cho nghỉ phép bao nhiêu ngày?", A["id"])
     sp = system_of()
     assert "KHÔNG tìm thấy đoạn nào" in sp and "Bạn là trợ lý nhân sự." in sp and profile.NO_CLARIFY in sp, sp[-800:]
-    assert m["content"] == settings.get("KB_NOT_FOUND_MESSAGE"), m["content"]
+    # lĩnh vực chưa có bộ dữ liệu nào: nói rõ là CHƯA CÓ dữ liệu (19/10), không phải "không có trong các bộ dữ liệu đang bật"
+    from system3.system4.server import chat as chat_mod
+    assert m["content"] == chat_mod.NO_DATA_MESSAGE.format(name=A["name"]), m["content"]
     # ---- B không có dữ liệu: AI chung, không có lời dặn của A
     ev, m = chat("Công ty cho nghỉ phép bao nhiêu ngày?", B["id"])
     sp = system_of()
