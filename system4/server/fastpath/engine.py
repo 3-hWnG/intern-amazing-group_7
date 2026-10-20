@@ -65,8 +65,10 @@ def show(v, typ: str, col: str = "") -> str:
     return s
 
 
-def _accent_ok(q_raw: str, c_raw: str) -> bool:
-    return q_raw == c_raw or fold(q_raw) == q_raw   # gõ có dấu thì phải đúng dấu; gõ không dấu thì so bỏ dấu
+def _accent_ok(q_raw: str, c_raw: str, accented: bool = False) -> bool:
+    """Gõ có dấu thì phải đúng dấu; gõ không dấu thì so bỏ dấu. accented = cả câu có gõ dấu: chữ không dấu trong câu đó là chữ không dấu
+    thật, không khớp gợi ý có dấu ("thông TIN" không phải "TÍN chỉ": "Cho mình thông tin môn PRF192" từng trả số tín chỉ, FLM 19/10)."""
+    return q_raw == c_raw or (fold(q_raw) == q_raw and not (accented and fold(c_raw) != c_raw))
 
 
 def _contig(q: list[str], phrase: list[str]) -> int | None:
@@ -92,11 +94,12 @@ def _cap_words(text: str) -> list[list[str]]:
 
 
 class Engine:
-    def __init__(self, tables: list[dict], texts: list[dict], enabled: dict, aggregate: bool = True):
+    def __init__(self, tables: list[dict], texts: list[dict], enabled: dict, aggregate: bool = True, refuse: bool = True):
         self.ents = [t for t in tables if t["parent"] is None and len(t["rows"]) >= 1]
         self.texts = texts
         self.enabled = enabled
         self.aggregate = aggregate   # ⚙ FASTPATH_AGGREGATE: tắt thì câu đếm / liệt kê nhường đường cũ (bài tự kiểm vẫn chấm để báo cáo)
+        self.refuse = refuse         # False = có đoạn văn bản không lập chỉ mục (tự kiểm đã tắt): từ vựng không đủ để nói "không có tên này"
         self.bykey = {t["key"]: t for t in tables}
         self.byrow = {}
         docs = []
@@ -144,6 +147,7 @@ class Engine:
     # ------------------------------------------------------------------ các bước
     def _field(self, t: dict, q: list[tuple[str, str]], skip: set[int]) -> tuple[str | None, set[int], bool]:
         best, pos, neg = None, set(), False
+        accented = any(fold(w) != w for _, w in q)
         for f, meta in t["fields"].items():
             if meta["type"] == "empty":
                 continue
@@ -152,7 +156,7 @@ class Engine:
                 for i in range(len(q) - n + 1):
                     if any(j in skip for j in range(i, i + n)) or [x[0] for x in q[i:i + n]] != fc:
                         continue
-                    if all(_accent_ok(q[i + k][1], cue[k]) for k in range(n)) and n > len(pos):
+                    if all(_accent_ok(q[i + k][1], cue[k], accented) for k in range(n)) and n > len(pos):
                         best, pos, neg = f, set(range(i, i + n)), is_neg
                     break
         if best:   # mọi gợi ý khác của CÙNG trường có trong câu cũng là chữ của trường ("sinh ... ngày" đảo thứ tự)
@@ -181,6 +185,25 @@ class Engine:
         # từng chọn "Trường Đại học Công nghệ Swinburne - FPT" vì "công" (lập) trùng "Công" (nghệ) làm độ phủ cao hơn (dữ liệu thật 19/10)
         out.sort(key=lambda x: (x[2] > 0, x), reverse=True)
         return out
+
+    def _named(self, t: dict, i: int, q: list[str], named_len: int) -> bool:
+        """Câu có gọi rõ dòng i không: tên nằm trọn trong câu, có mã của dòng ("PRF192", "T01"), có trọn một phần tên ("Programming
+        Fundamentals" của "PRF192 · Programming Fundamentals – Cơ sở lập trình", phần >= 2 chữ, >= 1/4 tên theo IDF), hoặc phủ >= nửa tên.
+        Không hỏi trường nào thì chỉ trả nguyên thẻ khi gọi rõ: "Mình muốn học ngành kinh tế…" từng nhận thẻ môn JTE301
+        "Dịch chuyên ngành Kinh tế - Thương mại" vì trùng 3 chữ trong tên dài 12 chữ (dữ liệu FLM thật 19/10)."""
+        if named_len:
+            return True
+        tw, qs = t["_tw"][i], set(q)
+        if any(w in qs and any(c.isdigit() for c in w) and any(c.isalpha() for c in w) for w in tw):
+            return True
+        tot = self.mass(set(tw))
+        if not tot:
+            return False
+        for part in re.split(r"\s[·–-]\s|[_(),;/|]", t["rows"][i]["title"]):
+            pw = words(part)
+            if len(pw) >= 2 and _contig(q, pw) is not None and self.mass(set(pw)) / tot >= 0.25:
+                return True
+        return self.mass({w for w in tw if w in qs}) / tot >= 0.5
 
     def _aggregate(self, t: dict, q: list[str], used: set[int], field, neg) -> dict | None:
         filters, used, rows, filter_fields = [], set(used), t["rows"], set()
@@ -371,6 +394,8 @@ class Engine:
                     return {"kind": "decline", "reason": f"bảng «{t['name']}»: loại câu tra trường đang tắt (tự kiểm chưa đạt)"}
                 if self._leftover(q, qt, t, i, fpos, agg_pos, field):
                     return {"kind": "decline", "reason": "câu còn chữ không có trong dữ liệu (vd. hỏi điều dữ liệu không ghi)"}
+                if not field and not state.get("pending") and not any(self._named(t, x[3], q, x[2]) for x in tie):
+                    return {"kind": "decline", "reason": "không hỏi trường nào và không gọi rõ tên dòng nào: không trả nguyên thẻ"}
                 if len(tie) > 1 and not any(x[1] >= 1.0 for x in tie):
                     rows = [t["rows"][x[3]] for x in tie][:8]
                     state["pending"] = {"table": t["key"], "field": field}
@@ -410,7 +435,7 @@ class Engine:
                 return {"kind": "answer", "route": "text", "content": f"Theo «{x['title']}»: {x['text']}",
                         "sources": [{"record_id": x["id"], "title": x["title"], "dataset": x["dataset"]}]}
         # 6) gọi đích danh một tên riêng mà dữ liệu không có (có chữ không hề xuất hiện trong dữ liệu)
-        for grp in _cap_words(text):
+        for grp in _cap_words(text) if self.refuse else []:
             gw = words(" ".join(grp))
             if not any(all(w in tt for w in gw) for t in self.ents for tt in t["_tt"]) and any(w not in self.vocab for w in gw):
                 return {"kind": "refuse", "route": "refuse", "content": f"Mình không tìm thấy «{' '.join(grp)}» trong dữ liệu đang bật.", "sources": []}

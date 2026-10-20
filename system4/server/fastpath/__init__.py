@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 import logging
+import os
 import queue
 import threading
 import time
@@ -25,6 +26,7 @@ _jobs: "queue.Queue[int]" = queue.Queue()
 _worker: threading.Thread | None = None
 _cache: dict = {}
 _lock = threading.Lock()
+_build_lock = threading.Lock()   # một engine dựng một lần: luồng dựng sẵn và câu hỏi đầu tiên không cùng dựng
 
 
 def _is_synced(ds: dict) -> bool:
@@ -53,16 +55,23 @@ def _save(ds_id: int, **cols) -> None:
         db.run(f"INSERT INTO fastpath(dataset_id,{','.join(cols)}) VALUES (?{',?' * len(cols)})", (ds_id, *cols.values()))
 
 
+def _evict(ds_id: int) -> None:
+    """Bỏ khỏi bộ nhớ đệm các engine có bộ dữ liệu này (trước 20/10 xoá HẾT: một người nạp tệp ở lĩnh vực khác cũng làm câu FLM kế tiếp
+    phải dựng lại engine)."""
+    with _lock:
+        for k in [k for k in _cache if any(i == ds_id for i, _ in k[1])]:
+            del _cache[k]
+
+
 def delete(ds_id: int) -> None:
     db.run("DELETE FROM fastpath WHERE dataset_id=?", (ds_id,))
-    with _lock:
-        _cache.clear()
+    _evict(ds_id)
 
 
-def _materialize(spec: dict) -> tuple[list[dict], list[dict]]:
+def _materialize(spec: dict, with_texts: bool = True) -> tuple[list[dict], list[dict]]:
     """spec (chỉ id bản ghi) -> bảng có dòng đầy đủ + đoạn văn bản, đọc từ DB."""
     ds = db.get_dataset(spec["dataset_id"]) or {}
-    ids = [i for t in spec["tables"] for i in t["row_ids"]] + list(spec.get("text_ids", []))
+    ids = [i for t in spec["tables"] for i in t["row_ids"]] + (list(spec.get("text_ids", [])) if with_texts else [])
     recs = {}
     for k in range(0, len(ids), 900):
         part = ids[k:k + 900]
@@ -73,7 +82,7 @@ def _materialize(spec: dict) -> tuple[list[dict], list[dict]]:
         rows = [{"id": i, "title": recs[i]["title"], "fields": json.loads(recs[i]["fields"] or "{}")} for i in t["row_ids"] if i in recs]
         tables.append({**{k: v for k, v in t.items() if k != "row_ids"}, "rows": rows})
     texts = [{"id": i, "title": recs[i]["title"], "text": recs[i]["text"], "source": recs[i]["source"], "dataset_id": spec["dataset_id"],
-              "dataset": ds.get("name", "")} for i in spec.get("text_ids", []) if i in recs]
+              "dataset": ds.get("name", "")} for i in spec.get("text_ids", []) if i in recs] if with_texts else []
     return tables, texts
 
 
@@ -103,8 +112,7 @@ def build(ds_id: int) -> dict | None:
     except Exception as e:   # đường nhanh hỏng thì vẫn còn đường cũ: ghi lỗi, không làm hỏng bộ dữ liệu
         log.exception("fastpath %s", ds_id)
         _save(ds_id, status="error", message=f"Lỗi biên dịch: {e}")
-    with _lock:
-        _cache.clear()
+    _evict(ds_id)
     return get(ds_id)
 
 
@@ -123,6 +131,7 @@ def _work() -> None:
         try:
             ds_id = _jobs.get(timeout=5)
         except queue.Empty:
+            warm()   # hết việc biên dịch: dựng sẵn engine để câu hỏi đầu tiên không phải chờ
             return
         try:
             build(ds_id)
@@ -133,9 +142,39 @@ def _work() -> None:
 def ensure_all() -> None:
     """Khởi động server: bộ dữ liệu sẵn sàng mà chưa biên dịch (dữ liệu có từ trước) hoặc biên dịch dở -> biên dịch nền."""
     have = {r["dataset_id"]: r["status"] for r in db.run("SELECT dataset_id, status FROM fastpath", many=True)}
-    for d in db.run("SELECT id FROM datasets WHERE status='ready'", many=True):
-        if have.get(d["id"]) in (None, "queued", "building"):
-            enqueue(d["id"])
+    todo = [d["id"] for d in db.run("SELECT id FROM datasets WHERE status='ready'", many=True) if have.get(d["id"]) in (None, "queued", "building")]
+    for i in todo:
+        enqueue(i)
+    if not todo and _warm_on():
+        threading.Thread(target=warm, name="s4-fastpath-warm", daemon=True).start()
+
+
+def _warm_on() -> bool:
+    return os.environ.get("S4_WARMUP", "1") == "1" and bool(settings.get("FASTPATH_ENABLED"))   # test đặt S4_WARMUP=0
+
+
+def warm() -> None:
+    """Dựng sẵn engine cho bộ dữ liệu đang bật của từng lĩnh vực: phần dùng chung (lĩnh vực cứng, bộ dùng chung) + của tài khoản dev đầu tiên.
+    Lúc khởi động và sau mỗi lần biên dịch. Đo 19/10: câu đầu tiên ở lĩnh vực FLM chờ ~12 s chỉ để dựng engine."""
+    if not _warm_on():
+        return
+    try:
+        dev = db.first_dev_id()
+        sets = set()
+        for dom in db.run("SELECT id FROM domains", many=True):
+            for uid, role in ((-1, "nguoi_dan"), (-1, "dev"), (dev, "dev")):
+                if uid is None:
+                    continue
+                ids = tuple(sorted(d["id"] for d in db.active_datasets(uid, dom["id"], role)))
+                if ids:
+                    sets.add(ids)
+        for ids in sorted(sets, key=len, reverse=True)[:12]:
+            t0 = time.perf_counter()
+            eng, used = _engine(list(ids))
+            if eng:
+                log.info("fastpath warm %s: %d ms", used, int((time.perf_counter() - t0) * 1000))
+    except Exception:   # dựng sẵn hỏng thì câu hỏi đầu tiên tự dựng như cũ
+        log.exception("fastpath warm")
 
 
 def _engine(ds_ids: list[int]) -> tuple[Engine | None, list[int]]:
@@ -148,16 +187,24 @@ def _engine(ds_ids: list[int]) -> tuple[Engine | None, list[int]]:
     with _lock:
         if key in _cache:
             return _cache[key], [r["dataset_id"] for r in ready]
-    tables, texts, enabled = [], [], {}
-    for r in ready:
-        t, x = _materialize(r["spec"])
-        tables += t; texts += x
-        enabled.update(r["report"].get("enabled", {}))
-    eng = Engine(tables, texts, enabled, aggregate=agg)
-    with _lock:
-        if len(_cache) > 16:
-            _cache.clear()
-        _cache[key] = eng
+    with _build_lock:
+        with _lock:
+            if key in _cache:   # luồng khác vừa dựng xong
+                return _cache[key], [r["dataset_id"] for r in ready]
+        tables, texts, enabled, skipped = [], [], {}, False
+        for r in ready:
+            on = r["report"].get("enabled", {})
+            # đoạn văn bản mà tự kiểm đã tắt thì engine không dùng: không đọc, không lập chỉ mục (bộ lịch học FLM 19.242 đoạn, 19/10)
+            use_text = on.get(f"text:{r['dataset_id']}", True)
+            t, x = _materialize(r["spec"], with_texts=use_text)
+            tables += t; texts += x
+            skipped |= not use_text and bool(r["spec"].get("text_ids"))
+            enabled.update(on)
+        eng = Engine(tables, texts, enabled, aggregate=agg, refuse=not skipped)
+        with _lock:
+            if len(_cache) > 24:
+                _cache.clear()
+            _cache[key] = eng
     return eng, [r["dataset_id"] for r in ready]
 
 
@@ -178,13 +225,14 @@ def answer(ds_ids: list[int], text: str, history_path: list[dict], grounded: boo
     """Kết quả cho chat.py: {"use": bool, "result": {...}, "trace": {...}}. use = False -> đi đường cũ (kèm lý do trong trace)."""
     t0 = time.perf_counter()
     eng, used = _engine(ds_ids)
+    build_ms = round((time.perf_counter() - t0) * 1000, 2)
     if not eng:
         return {"use": False, "trace": {"reason": "chưa có bộ dữ liệu nào đã biên dịch", "datasets": len(ds_ids)}}
     state = state_from(history_path)
     r = eng.answer(text, state)
     use = r["kind"] == "answer" or (r["kind"] == "ask" and can_ask) or (r["kind"] == "refuse" and grounded)
     trace = {"kind": r["kind"], "route": r.get("route"), "table": r.get("table"), "field": r.get("field"), "reason": r.get("reason"),
-             "engine_ms": r["ms"], "total_ms": round((time.perf_counter() - t0) * 1000, 2), "datasets": used,
+             "engine_ms": r["ms"], "build_ms": build_ms, "total_ms": round((time.perf_counter() - t0) * 1000, 2), "datasets": used,
              "state_in": state, "state_out": state if use else None}
     if not use and r["kind"] in ("ask", "refuse"):
         trace["reason"] = "lĩnh vực không hỏi lại / đã hết lượt hỏi lại" if r["kind"] == "ask" else "lĩnh vực trả lời tự do: để AI trả lời"

@@ -36,6 +36,11 @@ Trả lời bằng pipeline Friendly trên **bảng FLM + đường nhanh** (lea
 - Thử nhanh trên dữ liệu thật (không phải bộ mù): "PRF192 có bao nhiêu tín chỉ?" -> 3 (đường nhanh); "Mã chương trình ngành Quản trị khách sạn?" ->
   BBA_HM_K22C; "Buổi 5 của môn PRF192 học gì?" / "Câu hỏi thảo luận buổi 1 môn PRF192" -> tìm đúng đoạn lịch / câu hỏi. Chưa tốt: "buổi cuối"
   (tìm kiếm không hiểu "cuối"); "Tài liệu của môn X" ra cả thẻ môn thay vì riêng trường tài liệu.
+- Sửa 19/10 tối (leader báo): "Mình muốn học ngành kinh tế, bạn giúp được gì cho mình" từng ra **thẻ môn JTE301** (trùng "ngành kinh tế" trong
+  tên môn dài) -> đường nhanh chỉ trả nguyên thẻ khi câu **gọi rõ** dòng (trọn tên / mã / trọn một phần tên); câu tư vấn chuyển cho AI + tìm kiếm.
+  Phần xã giao ("bạn giúp được gì cho mình") làm reranker chấm mọi đoạn dưới ngưỡng -> không đoạn nào qua thì tìm lại một lần bằng câu đã bỏ
+  phần đó (`search.strip_chitchat`): ra chương trình Kinh doanh quốc tế, Luật Kinh tế… Còn yếu: "ngành marketing" ra môn Marketing hơn là
+  chương trình Marketing (tìm kiếm chỉ đưa 4 đoạn). "Cho mình thông tin môn PRF192" từng ra số tín chỉ ("tin" khớp "tín") -> đã sửa.
 - Dữ liệu sau đăng nhập KHÔNG đưa vào git (chỉ bản chụp chế độ khách ở `system4/flm/snapshot/`).
 
 ## Dữ liệu (tệp Excel, `system4/flm/build.py`)

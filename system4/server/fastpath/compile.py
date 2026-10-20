@@ -11,6 +11,7 @@ Gợi ý lưu kèm chữ có dấu: engine so dấu khi người dùng gõ có d
 """
 from __future__ import annotations
 
+import functools
 import hashlib
 import json
 import re
@@ -29,9 +30,15 @@ CUE_CACHE = config.RUNTIME_DIR / "fastpath_cues.json"
 QWORDS = {"bao", "nhiêu", "mấy", "có", "không", "nào", "gì", "là", "số", "lượng", "tổng"}
 
 
+@functools.lru_cache(maxsize=300_000)
+def _fold_word(w: str) -> str:
+    return re.sub(r"[^a-z0-9]", "", fold(w))
+
+
 def tokens(t: str) -> list[tuple[str, str]]:
-    """[(chữ bỏ dấu, chữ gốc viết thường)]."""
-    return [(f, w) for w in re.findall(r"[^\W_]+", (t or "").lower()) for f in [re.sub(r"[^a-z0-9]", "", fold(w))] if f]
+    """[(chữ bỏ dấu, chữ gốc viết thường)]. Bỏ dấu nhớ theo từng chữ: dựng engine trên bảng FLM (9.355 dòng) gọi fold 1,3 triệu lần
+    cho cùng vài chục nghìn chữ (đo 20/10)."""
+    return [(f, w) for w in re.findall(r"[^\W_]+", (t or "").lower()) for f in [_fold_word(w)] if f]
 
 
 def words(t: str) -> list[str]:

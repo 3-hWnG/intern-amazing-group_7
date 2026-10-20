@@ -1,7 +1,10 @@
-"""Ba lỗi đường nhanh tìm ra trên dữ liệu THẬT (19/10/2026, system4/eval/real_domains) — dòng lấy nguyên từ data/:
+"""Lỗi đường nhanh tìm ra trên dữ liệu THẬT (19/10/2026, system4/eval/real_domains) — dòng lấy nguyên từ data/:
 1. năm 4 chữ số in thành "2.009"                      -> engine.show giữ nguyên số năm ở cột "Năm …"
 2. "Trường Đại học FPT … công lập hay tư thục" ra Swinburne - FPT -> dòng được gọi trọn tên đứng trước dòng chỉ khớp vài chữ
 3. "Truyền thuyết về tên gọi Vịnh Hạ Long" ra thẻ dòng di tích  -> cổng chữ lạ xét chữ của CHÍNH bảng, không lẫn chữ của bài văn bản
+4. FLM: "Mình muốn học ngành kinh tế, bạn giúp được gì cho mình" ra thẻ môn JTE301 -> không hỏi trường thì chỉ trả thẻ khi gọi rõ tên dòng
+5. FLM: "Cho mình thông tin môn PRF192" ra số tín chỉ ("tin" khớp "tín") -> câu gõ có dấu thì chữ không dấu không khớp gợi ý có dấu
+6. Câu có phần xã giao làm reranker chấm mọi đoạn dưới ngưỡng -> search.strip_chitchat (tìm lại một lần khi không có đoạn nào)
 Model giả. Chạy: python run_server.py system4/tests/fastpath_realdata_test.py"""
 import hashlib
 import math
@@ -61,13 +64,23 @@ DITICH = ("Tên di tích,Địa điểm,Hạng mục,Đợt xếp hạng,Năm x�
           "Văn Miếu - Quốc Tử Giám,\"Phường Văn Miếu - Quốc Tử Giám, thành phố Hà Nội\",\"Di tích lịch sử, kiến trúc nghệ thuật\",Đợt 2,2012,\n"
           "Khu đền tháp Mỹ Sơn,\"Xã Duy Phú, thành phố Đà Nẵng\",Di tích kiến trúc nghệ thuật,Đợt 1,2009,Được UNESCO công nhận là Di sản văn hóa thế giới\n"
           "Côn Sơn - Kiếp Bạc,\"Phường Trần Hưng Đạo, thành phố Hải Phòng\",\"Di tích lịch sử, kiến trúc nghệ thuật\",Đợt 2,2012,\n").encode()
+MON = ("Tên môn (kèm mã),Mã môn,Tên môn,Tên tiếng Anh,Số tín chỉ,Thuộc chuyên ngành\n"
+       "PRF192 · Programming Fundamentals – Cơ sở lập trình,PRF192,Cơ sở lập trình,Programming Fundamentals,3,Kỹ thuật phần mềm\n"
+       "JTE301 · Translation in Economics & Commerce – Dịch chuyên ngành Kinh tế - Thương mại,JTE301,Dịch chuyên ngành Kinh tế - Thương mại,"
+       "Translation in Economics & Commerce,3,Ngôn ngữ Nhật\n"
+       "ECO111 · Microeconomics – Kinh tế vi mô,ECO111,Kinh tế vi mô,Microeconomics,3,Quản trị kinh doanh\n"
+       "ECO121 · Macroeconomics – Kinh tế vĩ mô,ECO121,Kinh tế vĩ mô,Macroeconomics,3,Quản trị kinh doanh\n"
+       "CSD203 · Data Structures and Algorithm with Python – Cấu trúc dữ liệu và giải thuật với Python,CSD203,"
+       "Cấu trúc dữ liệu và giải thuật với Python,Data Structures and Algorithm with Python,3,Trí tuệ nhân tạo\n"
+       "MAE101 · Mathematics for Engineering – Toán cho ngành kỹ thuật,MAE101,Toán cho ngành kỹ thuật,Mathematics for Engineering,3,"
+       "Kỹ thuật phần mềm\n").encode()
 BAI = ("# Vịnh Hạ Long\n## Truyền thuyết\nTrong tâm thức của người Việt với ý niệm về cội nguồn con Rồng cháu Tiên, một số truyền thuyết cho rằng "
        "Rồng Mẹ và Rồng Con không trở về trời mà ở lại hạ giới; nơi Rồng Mẹ đáp xuống là Hạ Long.\n").encode()
 
 with TestClient(main.app) as c:
     c.cookies.set(auth.COOKIE, c.post("/s4/auth/signup", json={"username": "boss", "password": "123456"}).cookies.get(auth.COOKIE))
     ids = {}
-    for name, data in (("truong.csv", TRUONG), ("di_tich.csv", DITICH), ("diem_den.md", BAI)):
+    for name, data in (("truong.csv", TRUONG), ("di_tich.csv", DITICH), ("diem_den.md", BAI), ("mon_hoc.csv", MON)):
         ids[name] = c.post("/s4/datasets", files={"file": (name, data)}).json()["dataset"]["id"]
     for _ in range(200):
         if all(db.get_dataset(i)["status"] == "ready" and (fastpath.get(i) or {}).get("status") in ("ready", "error", "skipped")
@@ -85,4 +98,21 @@ with TestClient(main.app) as c:
     assert r["use"] and "An Nhơn Tây" in r["result"]["content"], r["result"]
     r = ask("Năm xếp hạng của Đô thị cổ Hội An là gì?", "di_tich.csv")
     assert r["use"] and r["result"]["content"].endswith(": 2009"), r["result"]                                  # không phải "2.009"
+    r = ask("Mình muốn học ngành kinh tế, bạn giúp được gì cho mình", "mon_hoc.csv")
+    assert not r["use"] and r["result"]["kind"] == "decline", r["result"]                                       # câu tư vấn: để AI + tìm kiếm
+    for q in ("PRF192", "Môn PRF192", "Môn Programming Fundamentals", "Cơ sở lập trình"):                     # gọi rõ: mã / trọn một phần tên
+        r = ask(q, "mon_hoc.csv")
+        assert r["use"] and r["result"]["route"] == "card" and r["result"]["content"].startswith("**PRF192"), (q, r["result"])
+    r = ask("Cho mình thông tin môn PRF192", "mon_hoc.csv")
+    assert r["result"].get("field") != "Số tín chỉ", r["result"]
+    r = ask("PRF192 co bao nhieu tin chi", "mon_hoc.csv")                                                      # gõ không dấu: vẫn khớp
+    assert r["use"] and r["result"].get("field") == "Số tín chỉ", r["result"]
+    e1, _ = fastpath._engine([ids["truong.csv"]])
+    e2, _ = fastpath._engine([ids["di_tich.csv"]])
+    fastpath._evict(ids["truong.csv"])                                                                         # chỉ bỏ engine có bộ đó (20/10)
+    assert fastpath._engine([ids["di_tich.csv"]])[0] is e2 and fastpath._engine([ids["truong.csv"]])[0] is not e1
+assert search.strip_chitchat("Mình muốn học ngành kinh tế, bạn giúp được gì cho mình") == "học ngành kinh tế"
+assert search.strip_chitchat("Tư vấn giúp mình ngành marketing") == "ngành marketing"
+assert search.strip_chitchat("Mình không muốn học toán") == "Mình không muốn học toán"
+assert search.strip_chitchat("Chào bạn nhé") == ""
 print("OK fastpath_realdata_test")

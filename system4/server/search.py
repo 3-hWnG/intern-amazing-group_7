@@ -171,10 +171,47 @@ def reranker_status() -> dict:
 
 
 # ------------------------------------------------------------------- tìm
+_P = r"(?:mình|tôi|tớ|em|con|cháu)"
+_CHITCHAT = [re.compile(x, re.I) for x in (
+    r"\b(?:bạn|cậu|ad|admin|anh|chị|em)\s+(?:có thể\s+|ơi\s+)?(?:giúp|hỗ trợ|tư vấn)\s+(?:được\s+)?(?:những\s+)?(?:gì|chi)(?:\s+cho\s+" + _P + r")?",
+    r"\b(?:cho|giúp)\s+" + _P + r"\s+(?:hỏi|biết)(?:\s+(?:là|về))?",
+    r"\b(?:tư vấn|hỗ trợ|giúp)\s+(?:giúp\s+|cho\s+)?" + _P + r"(?:\s+(?:với|nhé|nha|nhá|ạ|về))?",
+    r"\b" + _P + r"\s+(?:đang\s+|rất\s+)?(?:muốn|cần|định|thích|hỏi)(?:\s+(?:được\s+)?(?:hỏi|biết|tìm hiểu|tư vấn)(?:\s+về)?)?",
+    r"\b(?:xin chào|chào bạn|chào|bạn ơi|ad ơi|ạ|nhé|nha|nhá)(?=\W|$)",
+)]
+
+
+def strip_chitchat(query: str) -> str:
+    """Bỏ phần xã giao của câu hỏi ("Mình muốn …", "bạn giúp được gì cho mình", "tư vấn giúp mình"); không còn gì thì trả "".
+    Reranker chấm cả câu: "Mình muốn học ngành kinh tế, bạn giúp được gì cho mình" -> mọi đoạn < -4.5 (dưới ngưỡng), còn "học ngành
+    kinh tế" -> chương trình Kinh doanh quốc tế / Luật Kinh tế được 0,5 (dữ liệu FLM thật 19/10)."""
+    t = unicodedata.normalize("NFC", query)
+    for rx in _CHITCHAT:
+        t = rx.sub(" ", t)
+    t = re.sub(r"\s+([,.!?])", r"\1", re.sub(r"\s+", " ", t)).strip(" ,.!?;:-")
+    return t if len(re.findall(r"\w+", t)) >= 2 else ""
+
+
 def search(user_id: int, query: str, dataset_ids: list[int] | None = None, overrides: dict | None = None) -> tuple[list[dict], dict]:
     """Tìm trong các bộ dữ liệu đang bật của người dùng (hoặc dataset_ids chỉ định — phòng thử tìm kiếm của dev).
     overrides: đổi tạm RETRIEVAL_CANDIDATES / RETRIEVAL_TOP_K / RERANKER_ENABLED / RERANK_MIN_SCORE (chỉ cho lần gọi này).
-    Trả (đoạn gửi cho AI, thông tin) — info["candidates"] = bảng xếp hạng đầy đủ cho bộ công cụ dev."""
+    Trả (đoạn gửi cho AI, thông tin) — info["candidates"] = bảng xếp hạng đầy đủ cho bộ công cụ dev.
+    Không đoạn nào qua ngưỡng reranker mà câu có phần xã giao -> tìm lại MỘT lần bằng câu đã bỏ phần đó (câu đang tìm ra thì không đổi)."""
+    out, info = _search(user_id, query, dataset_ids, overrides)
+    if out or not info.get("reranked"):
+        return out, info
+    short = strip_chitchat(query)
+    if not short or re.findall(r"\w+", short.lower()) == re.findall(r"\w+", query.lower()):
+        return out, info
+    out2, info2 = _search(user_id, short, dataset_ids, overrides)
+    if not out2:
+        info["requery"] = {"query": short, "found": 0}
+        return out, info
+    info2["requery"] = {"query": short, "found": len(out2), "original": query, "timing_first": info.get("timing")}
+    return out2, info2
+
+
+def _search(user_id: int, query: str, dataset_ids: list[int] | None = None, overrides: dict | None = None) -> tuple[list[dict], dict]:
     cfg = lambda k: (overrides or {}).get(k, settings.get(k))
     if dataset_ids is None:
         ds = db.active_datasets(user_id)

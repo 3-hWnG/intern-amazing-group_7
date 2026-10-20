@@ -412,7 +412,8 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                     "fast_path": {"kind": r["kind"], "route": r.get("route"), "ms": r["ms"], "state": fp["trace"]["state_out"]},
                     "sources": [{"n": i, "record_id": x["record_id"], "url": None, "title": x["title"], "dataset": x["dataset"], "score": None}
                                 for i, x in enumerate(r.get("sources") or [], 1)],
-                    "timing": {"llm_ms": 0, "total_ms": int((time.perf_counter() - t0) * 1000)}}
+                    "timing": {"llm_ms": 0, "total_ms": int((time.perf_counter() - t0) * 1000),
+                               "fast_path_ms": fp["trace"]["total_ms"], "build_ms": fp["trace"]["build_ms"]}}
             if r["kind"] == "ask":
                 meta["choices"] = r["choices"]
             fmid = db.add_message(cid, "assistant", ans, "done", user_mid, meta, pii_from=text)
@@ -570,7 +571,10 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             meta["mode"] = state.get("mode", mode)
             meta["model"] = settings.get("FRIENDLY_MODEL")   # model lúc trả lời, cho feedback_log
             if "t_llm" in locals():
-                meta["timing"] = {"llm_ms": int((time.perf_counter() - t_llm) * 1000), "total_ms": int((time.perf_counter() - t0) * 1000)}
+                meta["timing"] = {"llm_ms": int((time.perf_counter() - t_llm) * 1000), "total_ms": int((time.perf_counter() - t0) * 1000),
+                                  "before_llm_ms": int((t_wait - t0) * 1000)}   # 20/10: tách thời gian trước AI (đường nhanh, tìm, dựng lời dặn)
+                if fp:
+                    meta["timing"].update(fast_path_ms=fp["trace"].get("total_ms"), build_ms=fp["trace"].get("build_ms"))
             f = state.get("filter")
             if f and (f.removed_letters or f.removed_other):
                 meta["filtered"] = {"letters": f.removed_letters, "other": f.removed_other}
@@ -585,7 +589,8 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                 content = f"{prefix}\n\n{content}".strip()
             if evidence is not None:
                 meta["specialist"] = True
-                meta["retrieval"] = {k: sinfo.get(k) for k in ("datasets", "reranked", "candidates_n", "keyword", "vector", "search_ms", "web", "error")}
+                meta["retrieval"] = {k: sinfo.get(k) for k in ("datasets", "reranked", "candidates_n", "keyword", "vector", "search_ms", "web", "error",
+                                                                 "timing", "requery")}
             if web:
                 meta["web"] = True
             if abi_res:

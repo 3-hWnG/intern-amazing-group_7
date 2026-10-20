@@ -156,3 +156,17 @@ lộ ra 4 lỗi chung của đường nhanh, đã sửa (test: `system4/tests/fa
 `fastpath_dev.py` (accuracy / greeting / tourism, 94 câu) trước và sau: 37 câu code trả lời, **0 sai**, không đổi. Bộ mù `shop` không chạy lại.
 Còn sai (ghi trong `real_domains/showcase.py` · KNOWN_LIMITS): "Vịnh Hạ Long được UNESCO công nhận … năm nào?" ra năm xếp hạng di tích (2009, đúng là 1994);
 "Hội An được xếp hạng … năm nào?" ra "Đợt 1" (gợi ý "xếp hạng" dài hơn "năm").
+
+## H. FLM: câu tư vấn ra thẻ môn + chậm (20/10/2026, leader báo trên web)
+Sửa (test: `fastpath_realdata_test.py` mục 4–6):
+1. `engine._named`: không hỏi trường nào thì chỉ trả **nguyên thẻ** khi câu gọi rõ dòng (trọn tên / mã như "PRF192" / trọn một phần tên ≥ 2 chữ và
+   ≥ 1/4 tên theo IDF / phủ ≥ nửa tên). "Mình muốn học ngành kinh tế, bạn giúp được gì cho mình" từng ra thẻ môn JTE301 -> nay nhường.
+2. `engine._accent_ok`: câu gõ có dấu thì chữ không dấu không khớp gợi ý có dấu ("thông tin" ≠ "tín chỉ").
+3. `search.strip_chitchat`: không đoạn nào qua ngưỡng reranker mà câu có phần xã giao -> tìm lại MỘT lần bằng câu đã bỏ phần đó.
+Tốc độ (leader chọn hướng A — không đổi chất lượng):
+4. `compile.tokens` nhớ bỏ dấu theo từng chữ (1,3 triệu lần gọi `fold` cho cùng vài chục nghìn chữ).
+5. Engine không đọc / không lập chỉ mục đoạn văn bản mà tự kiểm đã tắt (bộ lịch học FLM 19.242 đoạn). Khi đó tắt bước "không tìm thấy «tên riêng»"
+   (từ vựng không đủ) -> nhường. Dựng engine FLM: ~12 s -> ~1,5 s.
+6. Bộ nhớ đệm engine: biên dịch một bộ dữ liệu chỉ bỏ engine có bộ đó (trước: xoá hết); dựng sẵn engine của từng lĩnh vực (phần dùng chung + dev
+   đầu tiên) lúc bật server và sau mỗi lần biên dịch (`fastpath.warm`, tắt khi `S4_WARMUP=0`); khoá dựng: không dựng trùng.
+7. Meta câu trả lời ghi `timing.fast_path_ms`, `build_ms`, `before_llm_ms`, `retrieval.timing` (từng bước tìm) để lần sau biết chậm ở đâu.
