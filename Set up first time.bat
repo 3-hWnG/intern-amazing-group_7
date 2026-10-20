@@ -51,12 +51,16 @@ echo [6/11] System 4: Friendly uses the same answer model as step 4 (nothing mor
 echo [7/11] System 4: downloading reranker BAAI/bge-reranker-v2-m3 (about 2.3 GB, first time only)...
 "%REPO%\.venv\Scripts\python.exe" "%REPO%\system4\setup_models.py" reranker || goto :fail
 
-echo [8/11] Building database (about 1 minute)...
+echo [8/11] Building database (about 2 minutes the first time)...
 set "PYTHONPATH=%PYROOT%"
 set "PYTHONIOENCODING=utf-8"
 cd /d "%PYROOT%"
 "%REPO%\.venv\Scripts\python.exe" -m system3.data.build || goto :fail
 "%REPO%\.venv\Scripts\python.exe" -m system3.data.tests.test_data || goto :fail
+rem Official procedures data = version 3 (scraped 13/10/2026, 1,517 procedures, data\snapshot\procedures_v3.jsonl in git).
+rem Loaded once as a procedures version and applied; re-running finds it and adds nothing. A machine already using a version
+rem other than the original one (dev chose it in the admin page) keeps it.
+"%REPO%\.venv\Scripts\python.exe" -m system3.system4.server.procs seed-v3 || goto :fail
 rem System 4: build the database of the procedures version in use (data\runtime\knowledge\VERSION-BUILD.db, one file
 rem per version: switching or rolling back versions in the admin page is instant and never overwrites the running file).
 "%REPO%\.venv\Scripts\python.exe" -m system3.system4.server.procs reapply || goto :fail
@@ -81,7 +85,7 @@ echo [11/11] System 4: checking that the GPU is usable for the reranker...
 "%REPO%\.venv\Scripts\python.exe" "%REPO%\system4\setup_models.py" check-gpu
 
 echo.
-echo Setup complete. Run "Launch web.bat" to start the website.
+echo Setup complete. Run "Launch web.bat" to start the website. Strict mode answers from procedures version 3 (1,517 procedures).
 echo The first account you sign up becomes dev. About 2 minutes later the domains Y te, Giao duc, Du lich and FLM have their data
 echo (shared with every account). ABI needs its API key: Settings - Linh vuc ABI - Khoa API, then "Dong bo abi.com.vn".
 pause

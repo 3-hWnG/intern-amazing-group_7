@@ -553,6 +553,36 @@ def scrape(limit: int = 0, rps: float = 2.0) -> None:
     _start("scrape", work)
 
 
+SHIPPED_V3 = ("procedures_v3.jsonl", "Cào 13/10/2026 15:45")   # D4: dữ liệu chính thức, có trong git (data/snapshot)
+
+
+def seed_shipped() -> str:
+    """`Set up first time.bat`: nạp bản 3 trong git thành một phiên bản và áp dụng. Chạy lại được:
+    đã có phiên bản cùng nội dung thì không tạo thêm; chỉ đổi bản đang dùng khi máy còn dùng bản Gốc (không đè lựa chọn của dev).
+    Không qua cổng kiểm: bản 3 đã qua cổng (bản 2 -> 3) khi nhóm chọn làm dữ liệu chính thức."""
+    db.init_db()
+    init()
+    src = Path(_s3_data().SNAPSHOT) / SHIPPED_V3[0]
+    if not src.is_file():
+        raise FileNotFoundError(f"không có {src} (git pull chưa đủ?)")
+    recs = _read(src)
+    sha = lambda rs: _content_sha([(r["proc_id"], r.get("content_hash") or "") for r in rs])
+    want = sha(recs)
+    vid = next((v["id"] for v in versions() if v["n_records"] == len(recs)
+                and (VERSIONS / f"{v['id']}.jsonl").is_file() and sha(load(v["id"])[0]) == want), None)
+    made = vid is None
+    if made:
+        vid = _new_version(recs, SHIPPED_V3[1], "scrape", active_id(), f"{len(recs)} thủ tục từ dichvucong.gov.vn (nạp từ data/snapshot/{SHIPPED_V3[0]})")
+    head = f"Bản 3 ({len(recs)} thủ tục) là phiên bản {vid}" + (" (vừa nạp)" if made else " (đã có)")
+    cur = active_id()
+    if cur == vid:
+        return head + ", đang dùng."
+    if cur != original_id():
+        return head + f". Máy đang dùng phiên bản {cur} (dev đã chọn): giữ nguyên; muốn đổi thì bấm Áp dụng ở trang quản trị."
+    apply(vid, wait=True, gate=False)
+    return head + ". " + _job["message"]
+
+
 def reapply_active() -> str:
     """`Set up first time.bat`: dựng sẵn DB của phiên bản đang dùng (data/runtime/knowledge) để web khởi động nhanh."""
     db.init_db()
@@ -568,6 +598,8 @@ if __name__ == "__main__":   # python -m system3.system4.server.procs reapply   
             pass
     if sys.argv[1:] == ["reapply"]:
         print("  " + reapply_active())
+    elif sys.argv[1:] == ["seed-v3"]:   # nạp + áp dụng bản 3 trong git (Set up first time.bat gọi)
+        print("  " + seed_shipped())
     elif sys.argv[1:2] == ["apply"] and len(sys.argv) == 3:   # áp dụng một phiên bản (qua cổng kiểm G2.4), như nút "Áp dụng"
         # chạy qua module của gói (không phải __main__): procs_gate gán gate_fn vào system3.system4.server.procs
         from system3.system4.server import procs as P, procs_gate  # noqa: F401
@@ -578,4 +610,4 @@ if __name__ == "__main__":   # python -m system3.system4.server.procs reapply   
         print("  " + P._job["message"])
         print("  cổng kiểm: " + json.dumps((P._job.get("result") or {}).get("gate"), ensure_ascii=False))
     else:
-        print("Dùng: python -m system3.system4.server.procs reapply | apply <id phiên bản>")
+        print("Dùng: python -m system3.system4.server.procs reapply | seed-v3 | apply <id phiên bản>")

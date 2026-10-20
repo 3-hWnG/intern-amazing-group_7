@@ -83,7 +83,7 @@ Thông tin thêm:
 
 **Tính năng kiểu ChatGPT cho Strict (1A):** sao chép, tạo lại, sửa tin đã gửi, ‹ 1/2 ›, 👍/👎, Dừng, xuất theo nhánh đang xem. Câu trả lời vẫn do System 3 tạo (gọi đúng API `/chat` của System 3). Sửa / tạo lại = hội thoại System 3 mới (nhánh, ẩn khỏi danh sách) + **phát lại** các câu trước (kể cả lựa chọn đã bấm ở thẻ hỏi lại và lệnh "chủ đề mới"). Hội thoại Strict cũ được dựng cây khi mở lần đầu.
 
-**Cài đặt:** `Set up first time.bat` sau bước dựng DB chạy thêm `python -m system3.system4.server.procs reapply` → nếu đang dùng phiên bản khác Gốc thì dựng lại theo phiên bản đó (không âm thầm quay về Gốc).
+**Cài đặt:** `Set up first time.bat` sau bước dựng DB chạy thêm `python -m system3.system4.server.procs reapply` → nếu đang dùng phiên bản khác Gốc thì dựng lại theo phiên bản đó (không âm thầm quay về Gốc). Trước đó (20/10) chạy `procs seed-v3`: nạp bản 3 trong git (`data/snapshot/procedures_v3.jsonl`, dữ liệu chính thức D4) thành một phiên bản và áp dụng khi máy còn dùng bản Gốc; đã có thì bỏ qua; không qua cổng kiểm vì bản 3 đã qua cổng khi nhóm chọn.
 
 **Kiểm tra**
 - `system4/tests/test_nv4.py` qua: quyền dev, quản lý người dùng, nháp + chuẩn dữ liệu (thiếu trường / sai kiểu / đổi mã bị chặn), so sánh, **Áp dụng thật** (dựng bằng `system3.data.build` trên **bản sao** DB: 1.350 → 1.349 thủ tục, tên đã sửa có trong DB, Planner System 3 dùng dữ liệu mới) rồi quay lại Gốc, cào (giả lập tiến trình, không mạng), phiên bản Strict (tạo lại, sửa, chuyển, chủ đề mới, thẻ hỏi lại + phát lại, xoá kèm nhánh), xoá người dùng kéo theo dữ liệu.
