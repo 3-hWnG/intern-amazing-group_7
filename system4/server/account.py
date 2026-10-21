@@ -71,7 +71,7 @@ QUOTA_MESSAGE = "Đã hết dung lượng, hãy xoá bớt hội thoại hoặc 
 
 def over_quota(user: dict, s3_store=None) -> bool:
     """G1.7 (D12): hội thoại tính chung hạn mức USER_QUOTA_MB với dữ liệu tải lên; đầy thì từ chối lượt mới. Dev không giới hạn."""
-    if user.get("role") == "dev":
+    if user.get("role") in ("dev", "guest"):   # khách: hội thoại trong RAM, giới hạn bằng số lượt hỏi (ratelimit.py)
         return False
     return db.used_bytes(user["id"], s3_store) >= settings.get("USER_QUOTA_MB") * 1024 * 1024
 

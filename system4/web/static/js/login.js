@@ -45,11 +45,30 @@
 
   fetch("/s4/public").then((r) => r.json()).then((p) => {
     pub = p;
-    if (p.user) { location.href = "/"; return; }
+    if (p.user && p.user.role !== "guest") { location.href = "/"; return; }   // khách mở trang này để đăng nhập: ở lại
     document.title = "Đăng nhập · " + p.app_title;
     $("app-title").textContent = p.app_title;
     $("tab-signup").hidden = !p.signup_open;
     $("first-hint").hidden = !p.first_account;
     setTab(p.first_account ? "signup" : "login");
+    const g = p.guest_limits || {};
+    $("guest-row").hidden = !p.guest_enabled;
+    $("guest-btn").textContent = p.user ? "Quay lại dùng thử (khách)" : "Dùng thử không cần đăng nhập";
+    $("guest-note").textContent = `Khách: tối đa ${g.per_day} câu hỏi mỗi ngày, ${g.per_min} câu mỗi phút; hội thoại xoá sau 24 giờ. ` +
+      `Tài khoản: ${(p.user_limits || {}).per_day} câu mỗi ngày.`;
   }).catch(() => {});
+
+  $("guest-btn").onclick = async () => {
+    $("guest-btn").disabled = true;
+    try {
+      const res = await fetch("/s4/auth/guest", { method: "POST" });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(typeof data.detail === "string" ? data.detail : "Có lỗi, vui lòng thử lại");
+      location.href = "/";
+    } catch (err) {
+      showError(err.message);
+    } finally {
+      $("guest-btn").disabled = false;
+    }
+  };
 })();

@@ -103,6 +103,7 @@
      app.js chỉ đưa cho nó các hàm dùng chung (S4Dash.init trong init()). ---- */
   let viewUser = false;   // dev / cán bộ bật "Xem như người dùng" trong bảng điều khiển
   const isStaff = () => !viewUser && !!me && (me.role === "dev" || me.role === "can_bo");
+  const isGuest = () => !!me && me.role === "guest";   // khách: chỉ trò chuyện (không 👍/👎, bộ nhớ, tài khoản, bảng điều khiển)
   async function afterDomainsChanged() {
     if (!domains.some((d) => d.id === domainId)) { setDomain((domains[0] || {}).id); await loadConv(null); refreshList(); }
     else {
@@ -261,7 +262,7 @@
       if (me && me.role === "dev") bar.appendChild(actionBtn("🔍", "Soi: kế hoạch và dấu vết System 3 cho câu trả lời này", () => S4Inspect.strict(m.node_id), "inspect"));
       if (m.kind !== "chitchat" || !String(m.content || "").startsWith("Đã bắt đầu chủ đề mới"))
         bar.appendChild(actionBtn("↻", "Tạo lại câu trả lời (phát lại các câu trước để System 3 dựng lại ngữ cảnh)", () => strictRedo(w, "regenerate", { node_id: m.node_id })));
-      [[1, "👍", "Câu trả lời tốt"], [-1, "👎", "Câu trả lời chưa tốt"]].forEach(([v, label, title]) => {
+      if (!isGuest()) [[1, "👍", "Câu trả lời tốt"], [-1, "👎", "Câu trả lời chưa tốt"]].forEach(([v, label, title]) => {
         bar.appendChild(actionBtn(label, title, async (x) => {
           const val = m.feedback === v ? 0 : v;
           try { await api("/s4/strict/" + convId + "/feedback", { node_id: m.node_id, value: val }); } catch (e) { alert("Lỗi: " + e.message); return; }
@@ -344,7 +345,7 @@
     box.appendChild(status); scroll();
     try { renderStrict((await api("/s4/strict/" + convId + "/" + action, body)).messages); }
     catch (e) { status.remove(); const x = el("div", "msg assistant"); x.appendChild(el("div", "bubble err", "Lỗi: " + e.message)); box.appendChild(x); }
-    finally { setBusy(false); refreshList(); }
+    finally { setBusy(false); refreshList(); refreshUsage(); }
   }
 
   /* ------------------------------------------------------ Friendly ------- */
@@ -456,7 +457,7 @@
     bar.appendChild(actionBtn("↻", "Tạo lại câu trả lời", () => regenerate(w, m)));
     if (me && me.role === "dev") bar.appendChild(actionBtn("🔍", "Soi: AI đã tìm gì, nhận lời dặn gì, nghĩ gì, kiểm soát nào đã chạy", () => S4Inspect.friendly(m.id, true), "inspect"));
     else if (m.meta && m.meta.specialist) bar.appendChild(actionBtn("Vì sao?", "Vì sao có câu trả lời này: nguồn và độ liên quan", () => S4Inspect.friendly(m.id, false), "deeper"));
-    if (!err) {
+    if (!err && !isGuest()) {
       const fb = (v, label, title) => {
         const btn = actionBtn(label, title, async (x) => {
           const val = m.feedback === v ? 0 : v;
@@ -500,6 +501,7 @@
   }
 
   function memoryNote(ev) {
+    if (isGuest()) return;
     const last = [...box.querySelectorAll(".msg.assistant")].pop();
     if (!last) return;
     const n = el("div", "mem-note");
@@ -728,7 +730,7 @@
       if (mode === "friendly") await sendFriendly({ text, conversation_id: convId, websearch: webOn, domain_id: domainId, ...(extra || {}) });
       else await sendStrict(text, replyTo);
     } finally {
-      setBusy(false); scroll(); refreshList();
+      setBusy(false); scroll(); refreshList(); refreshUsage();
     }
   }
 
@@ -757,7 +759,9 @@
   if (innerWidth <= 760) $("sidebar").classList.add("hidden");
   $("toggle-sidebar").onclick = () => $("sidebar").classList.toggle("hidden");
   $("web-toggle").onclick = () => { webOn = !webOn; const b = $("web-toggle"); b.setAttribute("aria-pressed", String(webOn)); b.classList.toggle("on", webOn); $("input").focus(); };
-  $("logout").onclick = async () => { try { await api("/s4/auth/logout", {}); } catch (_) {} toLogin(); };
+  $("logout").onclick = async () => {
+    if (isGuest()) { toLogin(); return; }   // khách: giữ phiên khách (trang đăng nhập có nút quay lại dùng thử)
+    try { await api("/s4/auth/logout", {}); } catch (_) {} toLogin(); };
 
   /* ---- cấu hình AI của Strict (System 3: GET/POST /config), chỉ hiện ở chế độ Strict ---- */
   const aiBadge = $("ai-badge"), cfgPanel = $("cfg-panel");
@@ -1133,7 +1137,7 @@
 
   $("attach").onclick = () => $("file-input").click();
   $("file-input").onchange = () => { const f = [...$("file-input").files]; $("file-input").value = ""; if (f.length) uploadFiles(f); };
-  $("spec-badge").onclick = () => openDomainManager(domainId);
+  $("spec-badge").onclick = () => { if (!isGuest()) openDomainManager(domainId); };
   [["records-close", "records-modal"], ["source-close", "source-modal"]].forEach(([b, m]) => {
     $(b).onclick = () => { $(m).hidden = true; };
     $(m).addEventListener("click", (e) => { if (e.target === $(m)) $(m).hidden = true; });
@@ -1218,6 +1222,21 @@
     catch (err) { alert("Lỗi: " + err.message); }
   };
 
+  /* Hạn mức câu hỏi (ratelimit.py): khách luôn thấy còn bao nhiêu câu hôm nay; tài khoản chỉ thấy khi sắp hết. */
+  function showUsage(l) {
+    const b = $("guest-banner");
+    if (!l || !l.enforced || (!isGuest() && l.left_today > 10)) { b.hidden = true; return; }
+    $("guest-left").textContent = isGuest()
+      ? `Bạn đang dùng thử với tư cách khách: còn ${l.left_today}/${l.per_day} câu hỏi hôm nay, tối đa ${l.per_min} câu mỗi phút. ` +
+        `Hội thoại của khách bị xoá sau 24 giờ. Tài khoản (miễn phí) được ${(pub.user_limits || {}).per_day || "nhiều"} câu mỗi ngày.`
+      : `Còn ${l.left_today}/${l.per_day} câu hỏi hôm nay (làm mới lúc 0 giờ).`;
+    b.querySelector("a").hidden = !isGuest();
+    b.hidden = false;
+  }
+  async function refreshUsage() {
+    try { const p = await api("/s4/public"); pub.limits = p.limits; showUsage(p.limits); } catch (_) {}
+  }
+
   /* ---------------------------------------------------------- khởi động -- */
   (async function init() {
     try { pub = await api("/s4/public"); } catch (_) { pub = {}; }
@@ -1226,9 +1245,15 @@
     document.title = pub.app_title || "Instant Specialist";
     const nameEl = $("user-name");
     nameEl.textContent = me.username;
-    nameEl.appendChild(el("span", "role-tag", "· " + ({ dev: "dev", can_bo: "cán bộ" }[me.role] || "người dân")));
+    nameEl.appendChild(el("span", "role-tag", "· " + ({ dev: "dev", can_bo: "cán bộ", guest: "chưa đăng nhập" }[me.role] || "người dân")));
     $("open-settings").hidden = me.role !== "dev";
     $("open-admin").hidden = me.role !== "dev";
+    if (isGuest()) {
+      ["open-account", "open-memory", "open-domains"].forEach((id) => { $(id).hidden = true; });
+      $("logout").textContent = "Đăng nhập";
+      $("spec-badge").title = "Dữ liệu lĩnh vực này đang dùng. Đăng nhập để tải thêm dữ liệu của bạn.";
+    }
+    showUsage(pub.limits);
     $("cpu-banner").hidden = !pub.cpu_mode;   // G3.3: máy không có card đồ hoạ
     $("rules-only-banner").checked = !!pub.rules_only;
     S4Dash.init({ api, el, me: () => me, domains: () => domains, setDomains: (d) => { domains = d; }, loadDomains, renderDomainBar,

@@ -102,6 +102,15 @@ FASTPATH_ENABLED = True
 FASTPATH_LLM_CUES = True
 FASTPATH_MIN_PASS = 0.9
 FASTPATH_AGGREGATE = False
+GUEST_ENABLED = True
+LIMIT_GUEST_PER_MIN = 3
+LIMIT_GUEST_PER_DAY = 20
+LIMIT_USER_PER_MIN = 10
+LIMIT_USER_PER_DAY = 200
+LIMIT_CANBO_PER_MIN = 30
+LIMIT_CANBO_PER_DAY = 2000
+LIMIT_DEV_PER_MIN = 60
+LIMIT_DEV_PER_DAY = 10000
 # ==== HẾT MẶC ĐỊNH ====
 
 # Danh sách cài đặt hiện trên panel. type: str | text (nhiều dòng) | int | float | bool | choice | rules
@@ -256,4 +265,20 @@ SETTINGS = [
          help="Cách nhau bởi dấu phẩy, vd. \"BIT_SE, BIT_AI\". Mỗi lần đồng bộ lấy khung chương trình MỚI NHẤT của mỗi ngành (bỏ bản _FNO) "
               "cùng đề cương các môn. Đồng bộ mở một cửa sổ Chrome riêng ở trang captcha của FLM: dev tự tích captcha (chế độ khách, "
               "không đăng nhập). Mỗi ngành khoảng 50 môn, ~100 request, 1 request/giây."),
+    dict(key="GUEST_ENABLED", type="bool", group="Giới hạn sử dụng", label="Cho dùng thử không cần đăng nhập (khách)",
+         help="Trang đăng nhập có nút \"Dùng thử không cần đăng nhập\". Khách chỉ trò chuyện được (không tải dữ liệu, không 👍/👎, "
+              "không bộ nhớ); hội thoại của khách chỉ nằm trong RAM, xoá sau 24 giờ hoặc khi tắt server. Tắt: khách đang dùng bị mời đăng nhập."),
+    dict(key="LIMIT_GUEST_PER_MIN", type="int", group="Giới hạn sử dụng", label="Khách: số câu hỏi mỗi phút", min=1, max=60,
+         help="Mỗi IP được gấp 5 lần (nhiều khách dùng chung mạng). Khách luôn chỉ có 1 câu đang trả lời, tối đa 1000 ký tự mỗi câu."),
+    dict(key="LIMIT_GUEST_PER_DAY", type="int", group="Giới hạn sử dụng", label="Khách: số câu hỏi mỗi ngày", min=1, max=10000,
+         help="Làm mới lúc 0 giờ. Hết lượt thì mời đăng nhập / đăng ký."),
+    dict(key="LIMIT_USER_PER_MIN", type="int", group="Giới hạn sử dụng", label="Người dân: số câu hỏi mỗi phút", min=1, max=600,
+         help="Một câu hỏi = tin mới, sửa tin hoặc tạo lại câu trả lời. Luôn chỉ có 1 câu đang trả lời, tối đa 4000 ký tự mỗi câu."),
+    dict(key="LIMIT_USER_PER_DAY", type="int", group="Giới hạn sử dụng", label="Người dân: số câu hỏi mỗi ngày", min=1, max=100000),
+    dict(key="LIMIT_CANBO_PER_MIN", type="int", group="Giới hạn sử dụng", label="Cán bộ: số câu hỏi mỗi phút", min=1, max=600,
+         help="Tối đa 3 câu đang trả lời cùng lúc."),
+    dict(key="LIMIT_CANBO_PER_DAY", type="int", group="Giới hạn sử dụng", label="Cán bộ: số câu hỏi mỗi ngày", min=1, max=100000),
+    dict(key="LIMIT_DEV_PER_MIN", type="int", group="Giới hạn sử dụng", label="Dev: số câu hỏi mỗi phút", min=1, max=600,
+         help="Tối đa 5 câu đang trả lời cùng lúc. Bench / đo tải tự tắt giới hạn (S4_RATE_LIMIT=0)."),
+    dict(key="LIMIT_DEV_PER_DAY", type="int", group="Giới hạn sử dụng", label="Dev: số câu hỏi mỗi ngày", min=1, max=1000000),
 ]

@@ -117,7 +117,7 @@ def start_server(settings: dict, log_name: str) -> subprocess.Popen:
     RUNTIME.mkdir(parents=True, exist_ok=True)
     (RUNTIME / "settings.json").write_text(json.dumps(settings, ensure_ascii=False, indent=2), encoding="utf-8")
     env = dict(os.environ, PYTHONPATH=str(PYROOT), PYTHONIOENCODING="utf-8", S4_ENABLED="1", S3_USE_LLM="0", APP_PORT=str(PORT),
-               S4_RUNTIME_DIR=str(RUNTIME), S3_DB_PATH=str(RUNTIME / "s3.db"),
+               S4_RUNTIME_DIR=str(RUNTIME), S3_DB_PATH=str(RUNTIME / "s3.db"), S4_RATE_LIMIT="0",   # bench hỏi liên tục: tắt giới hạn lượt hỏi
                LLM_MODEL=settings.get("FRIENDLY_MODEL", "qwen3:4b"))   # System 3 nạp sẵn model này lúc khởi động: dùng chung, khỏi chiếm thêm
     log = open(RUNTIME / f"server_{log_name}.log", "w", encoding="utf-8")
     p = subprocess.Popen([str(PY), "main.py"], cwd=REPO / "server", env=env, stdout=log, stderr=subprocess.STDOUT)

@@ -8,7 +8,7 @@ from fastapi.responses import FileResponse, JSONResponse, RedirectResponse, Resp
 from pydantic import BaseModel
 
 from core import aihealth
-from . import account, answer_cache, auth, chat as chat_turn, config, datasets, db, domains, export, memory, search, settings
+from . import account, answer_cache, auth, chat as chat_turn, config, datasets, db, domains, export, guest, memory, ratelimit, search, settings
 
 
 class Credentials(BaseModel):
@@ -72,6 +72,10 @@ def _user(request: Request) -> dict:
     return u
 
 
+def _ip(request: Request) -> str:
+    return request.client.host if request.client else ""
+
+
 def _dev(request: Request) -> dict:
     u = _user(request)
     if u["role"] != "dev":
@@ -101,12 +105,16 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
     @r.get("/public")
     def public(request: Request):
         """Cấu hình cho giao diện (không cần đăng nhập)."""
-        u = auth.user_from_cookie(request.cookies.get(auth.COOKIE))
+        u = auth.user_from_cookie(request.cookies.get(auth.COOKIE)) or guest.user_from_cookie(request.cookies.get(guest.COOKIE))
         return {"app_title": settings.get("APP_TITLE"), "default_mode": settings.get("DEFAULT_MODE"),
                 "signup_open": auth.signup_open(), "first_account": db.count_users() == 0,
                 "min_password_length": settings.get("MIN_PASSWORD_LENGTH"),
                 "friendly_model": settings.get("FRIENDLY_MODEL"),
-                "cpu_mode": aihealth.cpu_only() if u else False, "rules_only": bool(u) and db.get_rules_only(u["id"]),
+                "cpu_mode": aihealth.cpu_only() if u else False,
+                "rules_only": bool(u) and u["role"] != "guest" and db.get_rules_only(u["id"]),
+                "guest_enabled": guest.enabled() and db.count_users() > 0,
+                "guest_limits": ratelimit.limits("guest"), "user_limits": ratelimit.limits("user"),
+                "limits": ratelimit.usage(u) if u else None,   # hạn mức của người đang xem + số câu đã hỏi hôm nay
                 "user": u}
 
     # ------------------------------------------------------- đăng nhập
@@ -114,6 +122,21 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         token, age = auth.new_session(u["id"])
         resp = JSONResponse({"user": {"id": u["id"], "username": u["username"], "role": u["role"]}})
         auth.set_cookie(resp, token, age)
+        resp.delete_cookie(guest.COOKIE, path="/")   # đăng nhập rồi thì thôi là khách (đăng xuất không quay về phiên khách cũ)
+        return resp
+
+    @r.post("/auth/guest")
+    def guest_start(request: Request):
+        """Dùng thử không cần đăng nhập: cookie khách ký HMAC, không tạo dòng nào trong DB. Đã có phiên khách còn hạn thì dùng tiếp."""
+        if not guest.enabled() or db.count_users() == 0:   # máy mới: tài khoản đầu tiên (dev) phải được tạo trước
+            raise HTTPException(403, "Chế độ khách đang tắt. Vui lòng đăng nhập hoặc đăng ký.")
+        u = guest.user_from_cookie(request.cookies.get(guest.COOKIE))
+        if u:
+            return {"user": u}
+        ratelimit.guest_new(_ip(request))
+        token = guest.new_token()
+        resp = JSONResponse({"user": guest.user_from_cookie(token)})
+        guest.set_cookie(resp, token)
         return resp
 
     @r.post("/auth/signup")
@@ -153,6 +176,7 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
         auth.end_session(request.cookies.get(auth.COOKIE))
         resp = JSONResponse({"ok": True})
         resp.delete_cookie(auth.COOKIE, path="/")
+        resp.delete_cookie(guest.COOKIE, path="/")
         return resp
 
     @r.get("/auth/me")
@@ -264,6 +288,20 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
             raise HTTPException(403, "Bạn không dùng được lĩnh vực này")
         if account.over_quota(u, s3_store):   # G1.7: hội thoại tính vào hạn mức dung lượng chung với dữ liệu tải lên
             raise HTTPException(413, account.QUOTA_MESSAGE)
+        ticket = ratelimit.begin_turn(u, _ip(request), 0 if body.regenerate_of else len(body.text.strip()))   # 429 / 413 khi quá hạn mức
+        try:
+            text, user_mid, cid = user_turn(request, body, u, cid, dom)
+        except BaseException:   # tin không hợp lệ: trả lại lượt
+            ticket.refund()
+            raise
+        history = db.get_path(cid)[:-1]   # nhánh tới trước tin người dùng
+        return StreamingResponse(ratelimit.guarded(ticket, chat_turn.run(u, cid, user_mid, text, history, body.websearch,
+                                                                         allow_cache=not body.regenerate_of)),
+                                 media_type="text/event-stream",
+                                 headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+
+    def user_turn(request: Request, body: ChatIn, u: dict, cid: str | None, dom: dict) -> tuple[str, int, str]:
+        """Tin người dùng của lượt này: tin mới / sửa tin (ghi tin mới) / tạo lại (dùng tin cũ). Trả (nội dung, id tin, hội thoại)."""
         if body.regenerate_of:
             m = own_message(request, cid, body.regenerate_of)
             if m["role"] != "assistant" or not m["parent_id"]:
@@ -286,10 +324,7 @@ def make_router(s3_store, strict_list, drop_strict) -> APIRouter:
                 parent = db.current_leaf(cid)
             user_mid = db.add_message(cid, "user", text, "done", parent)
             db.set_title_if_new(cid, text)
-        history = db.get_path(cid)[:-1]   # nhánh tới trước tin người dùng
-        return StreamingResponse(chat_turn.run(u, cid, user_mid, text, history, body.websearch, allow_cache=not body.regenerate_of),
-                                 media_type="text/event-stream",
-                                 headers={"Cache-Control": "no-cache", "X-Accel-Buffering": "no"})
+        return text, user_mid, cid
 
     # ------------------------------------------------ dữ liệu người dùng (NV3)
     def own_dataset(request: Request, ds_id: int) -> dict:

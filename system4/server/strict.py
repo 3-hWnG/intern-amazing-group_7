@@ -16,7 +16,7 @@ from fastapi import APIRouter, HTTPException, Request
 from fastapi.responses import Response
 from pydantic import BaseModel
 
-from . import auth, db, settings
+from . import auth, db, guest, ratelimit, settings
 
 RESET_TEXT = "Đã bắt đầu chủ đề mới"
 S4_ONLY = ("Lĩnh vực Thủ tục đang ở chế độ System 4 (trả lời từ dữ liệu tải lên, DB thủ tục của System 3 đang tắt): "
@@ -113,7 +113,8 @@ def make_router(app, s3_store) -> APIRouter:
         """Gọi API System 3 trong cùng tiến trình, mang cookie của người dùng (qua middleware y như trình duyệt)."""
         transport = httpx.ASGITransport(app=app)
         async with httpx.AsyncClient(transport=transport, base_url="http://s3.internal", timeout=600,
-                                     cookies={auth.COOKIE: request.cookies.get(auth.COOKIE, "")}) as c:
+                                     cookies={auth.COOKIE: request.cookies.get(auth.COOKIE, ""), guest.COOKIE: request.cookies.get(guest.COOKIE, "")},
+                                     headers={"X-S4-Internal": guest.INTERNAL}) as c:   # lượt hỏi đã đếm ở đây, middleware không đếm lại
             resp = await c.request(method, url, json=body)
         if resp.status_code != 200:
             try:
@@ -122,6 +123,17 @@ def make_router(app, s3_store) -> APIRouter:
                 detail = resp.text
             raise HTTPException(resp.status_code, detail or "System 3 lỗi")
         return resp.json()
+
+    async def counted(request: Request, n_chars: int, work):
+        """Một lượt hỏi (tin mới / sửa / tạo lại, kể cả các câu phát lại bên trong) = một lượt trong hạn mức (ratelimit.py)."""
+        ticket = ratelimit.begin_turn(request.state.user, request.client.host if request.client else "", n_chars)
+        try:
+            return await work()
+        except BaseException:   # System 3 lỗi / người dùng bấm Dừng: trả lại lượt
+            ticket.refund()
+            raise
+        finally:
+            ticket.end()
 
     async def send(request: Request, cid: str | None, text: str, reply_mid: int | None, web: bool = False) -> tuple[str, int, int]:
         """Gửi một câu cho System 3. Trả (hội thoại, id tin người dùng, id tin trợ lý)."""
@@ -172,7 +184,7 @@ def make_router(app, s3_store) -> APIRouter:
         reply_mid = None
         if body.reply_to and leaf and body.reply_to == leaf["id"] and leaf["role"] == "assistant":
             reply_mid = leaf["s3_mid"]   # chỉ thẻ hỏi lại cuối cùng bấm được (như System 3)
-        cid, umid, amid = await send(request, leaf["s3_cid"] if leaf else None, text, reply_mid, body.websearch)
+        cid, umid, amid = await counted(request, len(text), lambda: send(request, leaf["s3_cid"] if leaf else None, text, reply_mid, body.websearch))
         root = root or cid
         un = _add(root, leaf["id"] if leaf else None, "user", cid, umid, replied=bool(reply_mid))
         an = _add(root, un, "assistant", cid, amid)
@@ -189,8 +201,10 @@ def make_router(app, s3_store) -> APIRouter:
             raise HTTPException(422, "chỉ sửa được tin của người dùng, nội dung không được trống")
         parent = _node(n["parent_id"]) if n["parent_id"] else None
         before = _path(root, parent) if parent else []
-        cid = await replay(request, root, before)
-        cid, umid, amid = await send(request, cid, text, None)
+
+        async def work():
+            return await send(request, await replay(request, root, before), text, None)
+        cid, umid, amid = await counted(request, len(text), work)
         db.run("INSERT OR IGNORE INTO strict_branch(cid,root) VALUES (?,?)", (cid, root))
         db.set_strict_owner(cid, owner_check(request, root)["id"])
         un = _add(root, n["parent_id"], "user", cid, umid)
@@ -210,10 +224,13 @@ def make_router(app, s3_store) -> APIRouter:
             raise HTTPException(422, "tin này không có câu hỏi đi kèm")
         parent = _node(u["parent_id"]) if u["parent_id"] else None
         before = _path(root, parent) if parent else []
-        cid = await replay(request, root, before)
-        last = max((m["id"] for m in s3_store.get_messages(cid) if m["role"] == "assistant"), default=None) if cid else None
         text = s3_message(u["s3_cid"], u["s3_mid"])["content"]
-        cid, umid, amid = await send(request, cid, text, last if u["replied"] else None)
+
+        async def work():
+            cid = await replay(request, root, before)
+            last = max((m["id"] for m in s3_store.get_messages(cid) if m["role"] == "assistant"), default=None) if cid else None
+            return await send(request, cid, text, last if u["replied"] else None)
+        cid, umid, amid = await counted(request, 0, work)
         db.run("INSERT OR IGNORE INTO strict_branch(cid,root) VALUES (?,?)", (cid, root))
         db.set_strict_owner(cid, owner_check(request, root)["id"])
         an = _add(root, u["id"], "assistant", cid, amid)

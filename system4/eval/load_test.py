@@ -59,7 +59,8 @@ def main() -> int:
     tmp = tempfile.mkdtemp(prefix="s4load_")
     env = {k: v for k, v in os.environ.items() if k not in ("S3_USE_LLM", "S3_NO_WARMUP", "S4_FORCE_CPU")}
     env.update(APP_PORT=str(PORT), S4_ENABLED="1", S3_DB_PATH=os.path.join(tmp, "s3.db"), S4_RUNTIME_DIR=os.path.join(tmp, "s4"),
-               S3_PLANNER_MODE="rules", S4_ABI_SYNC="0", PYTHONIOENCODING="utf-8")
+               S3_PLANNER_MODE="rules", S4_ABI_SYNC="0", PYTHONIOENCODING="utf-8",
+               S4_RATE_LIMIT="0")   # đo sức chịu của model, không đo giới hạn lượt hỏi (ratelimit.py)
     if a.db:
         env["S3_DATA_DB"] = a.db
     log = open(os.path.join(tmp, "server.log"), "w", encoding="utf-8")

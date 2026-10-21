@@ -7,9 +7,12 @@ import uuid
 from . import config
 
 NEW_TITLE = "Cuộc trò chuyện mới"
+GUEST_CONN = None   # guest.install gán: trong lượt của khách trả kết nối DB RAM (hội thoại khách không ghi vào tệp DB), ngoài lượt khách trả None
 
 
 def conn() -> sqlite3.Connection:
+    if GUEST_CONN is not None and (g := GUEST_CONN()) is not None:
+        return g
     c = sqlite3.connect(str(config.DB_PATH), timeout=5)
     c.row_factory = sqlite3.Row
     c.execute("PRAGMA foreign_keys=ON")

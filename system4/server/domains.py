@@ -48,7 +48,7 @@ def can_upload(user: dict, d: dict) -> bool:
     ABI tìm chung dữ liệu đồng bộ + tệp tải thêm; Thủ tục chỉ dùng tệp tải lên khi ở chế độ System 4 (db.s4_mode)."""
     if staff(user):
         return True
-    return d["kind"] == "soft" and bool(d["user_upload"])
+    return user.get("role") != "guest" and d["kind"] == "soft" and bool(d["user_upload"])
 
 
 def can_share(user: dict, d: dict) -> bool:

@@ -7,7 +7,7 @@
 <link rel="icon" href="data:,">
 <!-- Giao diện = bản sao trang System 3 (web/templates/index.html) + công tắc Strict/Friendly, đăng nhập, cài đặt -->
 <link rel="stylesheet" href="/static/css/styles.css?v=20261006g">
-<link rel="stylesheet" href="/s4/static/css/s4.css?v=dev6">
+<link rel="stylesheet" href="/s4/static/css/s4.css?v=dev7">
 <link rel="stylesheet" href="/s4/static/css/dashboard.css?v=dev3">
 <style>
 .block-card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:11px 14px}
@@ -52,6 +52,10 @@
     <div id="cpu-banner" class="cpu-banner" role="status" hidden>
       <span>Máy không có card đồ hoạ: trả lời bằng AI sẽ chậm (7–40 giây). Lĩnh vực Thủ tục trả lời bằng dữ liệu, không chờ AI.</span>
       <label><input type="checkbox" id="rules-only-banner"> Chỉ trả lời bằng luật</label>
+    </div>
+    <div id="guest-banner" class="guest-banner" role="status" hidden>
+      <span id="guest-left"></span>
+      <a href="/s4/login">Đăng nhập / Đăng ký</a>
     </div>
     <div id="messages" class="messages"></div>
     <form id="composer" class="composer">
@@ -198,6 +202,6 @@
 <script src="/s4/static/vendor/purify.min.js?v=3.4.16"></script>
 <script src="/s4/static/js/inspector.js?v=dev2"></script>
 <script src="/s4/static/js/dashboard.js?v=dev1"></script>
-<script src="/s4/static/js/app.js?v=dev17"></script>
+<script src="/s4/static/js/app.js?v=dev18"></script>
 </body>
 </html>

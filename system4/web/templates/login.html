@@ -6,7 +6,7 @@
 <title>Đăng nhập</title>
 <link rel="icon" href="data:,">
 <link rel="stylesheet" href="/static/css/styles.css?v=20261006g">
-<link rel="stylesheet" href="/s4/static/css/s4.css?v=nv1">
+<link rel="stylesheet" href="/s4/static/css/s4.css?v=nv2">
 </head>
 <body class="light auth-page">
 <main class="auth-card">
@@ -24,7 +24,12 @@
     <p class="error" id="auth-error" role="alert" hidden></p>
     <button class="primary" id="auth-submit" type="submit">Đăng nhập</button>
   </form>
+  <div class="auth-guest" id="guest-row" hidden>
+    <span class="auth-or">hoặc</span>
+    <button class="btn-ghost" id="guest-btn" type="button">Dùng thử không cần đăng nhập</button>
+    <p class="auth-note" id="guest-note"></p>
+  </div>
 </main>
-<script src="/s4/static/js/login.js?v=nv4"></script>
+<script src="/s4/static/js/login.js?v=nv5"></script>
 </body>
 </html>
