@@ -197,7 +197,9 @@ with TestClient(main.app) as c:
                 {"plan": "", "answer": "Chào bạn, mình có thể giúp gì?", "ask_back": False, "choices": []}]
     ev = chat("Chào bạn")
     m = last(ev)
-    assert any(e["type"] == "restart" for e in ev) and m["meta"]["small_talk"] == "forced" and m["content"].startswith("Chào bạn"), m
+    assert any(e["type"] == "checking" for e in ev) and m["meta"]["small_talk"] == "forced" and m["content"].startswith("Chào bạn"), m
+    shown = "".join(e["text"] for e in ev if e["type"] == "delta")
+    assert shown == "Thông tin này không có trong dữ liệu.", shown   # chỉ bản đầu hiện dần
     # ai_only: tin AI
     setv(GREETING_MODE="ai_only")
     answers.append({"plan": "", "small_talk": True, "answer": "Cảm ơn bạn nhé!", "ask_back": False, "choices": [], "sources": []})
@@ -242,7 +244,8 @@ with TestClient(main.app) as c:
                 {"plan": "", "answer": "Dữ liệu không có số hotline.", "ask_back": False, "choices": [], "sources": []}]
     ev = chat("Số điện thoại tổng đài là gì?")
     m = last(ev)
-    assert any(e["type"] == "restart" for e in ev) and m["meta"]["grounding"]["items"] == ["1900 8888 99"], m["meta"]
+    assert any(e["type"] == "checking" for e in ev) and m["meta"]["grounding"]["items"] == ["1900 8888 99"], m["meta"]
+    assert m["content"] == "Dữ liệu không có số hotline." and len(m["versions"]) == 2 and m["meta"]["revised_from"]["id"] == m["versions"][0], m
     assert "1900 8888 99" in prompts[-1][-1]["content"] or "1900 8888 99" in prompts[-1][0]["content"]
     setv(GROUNDING_CHECK="off")
 

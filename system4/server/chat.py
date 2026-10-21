@@ -8,12 +8,15 @@ Thứ tự trong một lượt:
   2. ngôn ngữ (code)    -> không phải tiếng Việt: hiện câu xin lỗi trước, AI trả lời tiếng Việt
   3. lời dặn hệ thống   -> vai trò + bộ nhớ + tóm tắt + guardrail "instruct" + cảm xúc + giới hạn hỏi lại
   4. AI sinh chữ        -> lọc chữ ngoài Latin/emoji; guardrail "replace"; lọt nhiều chữ lạ -> viết lại 1 lần
+     Chỉ lần viết đầu hiện dần. Bước kiểm cần viết lại (chi tiết bịa, thiếu [n], chữ lạ, câu chào bị từ chối): bản đã hiện được lưu
+     thành một phiên bản và GIỮ trên màn hình; bản viết lại không hiện dần, lưu thành phiên bản mới (cùng tin người dùng) và thành
+     nhánh đang xem khi xong — người dùng mở lại bản đầu bằng ‹ ›. Dừng / lỗi lúc viết lại: giữ bản đầu.
   5. lưu câu trả lời    -> nút lựa chọn khi AI hỏi lại
   6. việc nền           -> bộ nhớ (chỉ khi tin nhắn đáng nhớ), tóm tắt hội thoại dài
 NV5 (mỗi bước bật/tắt trong ⚙, mặc định tắt = như trước): câu chào khi bật dữ liệu (GREETING_MODE), công cụ bảng (TABLE_TOOL),
 hỏi lại khi trùng tên (AMBIGUITY_CHECK, trả lời bằng code), kiểm chi tiết bịa rồi viết lại (GROUNDING_CHECK), thứ tự lời dặn
 để Ollama dùng lại phần đã đọc (PROMPT_CACHE_ORDER), chế độ Nhanh dạng chữ (FAST_FORMAT=text).
-Sự kiện SSE: meta, queue, start, delta, restart, replace, done | error, memory.
+Sự kiện SSE: meta, queue, start, delta, checking (đang kiểm + viết lại, bản đầu giữ nguyên), replace, done | error, memory.
 """
 from __future__ import annotations
 import asyncio
@@ -302,6 +305,27 @@ def _answer_text(state: dict) -> str:
     return raw if state.get("mode") == "fast" and state.get("fmt") == "json" else persona.split_choices(raw)[0]
 
 
+def _shown(state: dict) -> tuple[str, list[str]]:
+    """Câu trả lời AI vừa viết, dạng lưu: (nội dung, lựa chọn hỏi lại)."""
+    if state.get("mode") == "fast" and state.get("fmt") == "json":
+        return "".join(state.get("parts") or []).strip(), state.get("choices") or []
+    return persona.split_choices("".join(state.get("parts") or []))
+
+
+def _sources_meta(content: str, state: dict, evidence: list[dict] | None, small: bool) -> dict:
+    """Chuyên gia: nguồn = các đoạn AI ghi [n] (hoặc liệt kê trong "sources"); không ghi số nào thì 3 đoạn đã tra."""
+    if evidence is None or small:
+        return {}
+    cited = sorted({int(n) for n in re.findall(r"\[(\d{1,2})\]", content)} | set(state.get("sources") or []))
+    out = {"sources": [{"n": n, "record_id": evidence[n - 1]["id"], "url": evidence[n - 1].get("url"), "title": evidence[n - 1]["title"],
+                        "dataset": evidence[n - 1]["dataset"], "score": evidence[n - 1].get("score")}
+                       for n in cited if 1 <= n <= len(evidence)]}
+    if not out["sources"]:
+        out["consulted"] = [{"record_id": e["id"], "url": e.get("url"), "title": e["title"], "dataset": e["dataset"], "score": e.get("score")}
+                            for e in evidence[:3]]
+    return out
+
+
 async def _answerable(choices: list[str], dataset_ids: list[int]) -> list[str]:
     """Giữ lựa chọn mà bộ dữ liệu đang bật có đoạn khớp. AI tự nghĩ ra lựa chọn nên có thể gợi ý điều dữ liệu không có;
     chọn vào đó chỉ nhận "không có trong dữ liệu"."""
@@ -485,10 +509,32 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
         prefix = settings.get("LANG_FALLBACK_APOLOGY") if info["foreign"] else ""
         state = {"kb": evidence is not None, "ask_small": ask_small and evidence is not None}
         meta, status, err, small = {}, "done", None, small_by_code
+        draft = {}   # bản đầu đã hiện, khi một bước kiểm cần viết lại: {"mid", "why"}
 
-        async def gen(m):   # chạy lại (viết lại sau khi kiểm)
-            async for ev in _fast(m, prefix, state):
-                yield ev
+        def revise(why: str):
+            """Bước kiểm cần viết lại. Lần đầu: lưu câu trả lời đang hiện thành một phiên bản (người dùng mở lại được bằng ‹ ›)
+            và báo giao diện giữ nguyên nó trong lúc kiểm. Trả sự kiện SSE, hoặc None nếu đã báo rồi."""
+            if draft:
+                return None
+            content = _shown(state)[0]
+            if prefix and content:
+                content = f"{prefix}\n\n{content}"
+            dmid = None
+            if content:   # chữ lạ bị lọc hết: chưa hiện gì, không có bản đầu để giữ
+                dmeta = {"mode": state.get("mode", mode), "model": settings.get("FRIENDLY_MODEL"), "draft": {"why": why},
+                         **_sources_meta(content, state, evidence, small)}
+                if evidence is not None:
+                    dmeta["specialist"] = True
+                dmid = db.add_message(cid, "assistant", content, "done", user_mid, dmeta, pii_from=text)
+                db.save_trace(dmid, cid, user["id"], {"mode": mode, "specialist": evidence is not None, "status": "draft", "draft_why": why,
+                                                      "query": squery if evidence is not None else text, "retrieval": sinfo, "checks": checks,
+                                                      "prompts": prompts[:1], "output": {"final_text": content}}, settings.get("TRACE_KEEP"))
+            draft.update(mid=dmid, why=why)
+            return sse({"type": "checking", "draft_id": dmid, "why": why})
+
+        async def quiet(m):   # viết lại sau khi kiểm: không hiện dần (bản đầu vẫn trên màn hình), chỉ cập nhật state
+            async for _ in _fast(m, prefix, state):
+                pass
         try:
             t_wait = time.perf_counter()
             async with llm.Turn():
@@ -506,19 +552,20 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                 elif gm == "ai_first" and gate and evidence is not None and not state.get("replaced") and _refusal(_answer_text(state)):
                     meta["small_talk_override"] = "forced"   # câu chào ngắn mà AI trả lời "không có trong dữ liệu": viết lại
                     small = True
-                    yield sse({"type": "restart"})
+                    if ev := revise("trả lời câu chào bằng “không có trong dữ liệu”"):
+                        yield ev
                     msgs, _ = bm(fast=state["mode"] == "fast", evidence=None, small_talk=False, extra=[greet.SMALL_TALK_INSTRUCTION])
                     prompts.append({"why": "câu chào bị trả lời 'không có trong dữ liệu': viết lại kiểu xã giao", "messages": msgs})
                     state["kb"], state["ask_small"] = False, False
-                    async for ev in gen(msgs):
-                        yield ev
+                    await quiet(msgs)
                 if small:
                     meta["small_talk"] = "code" if small_by_code else meta.get("small_talk_override") or "ai"
                 if evidence == [] and not web and not small and not state.get("replaced") and kb_violation("".join(state.get("parts") or [])):
                     # yêu cầu .docx: không dùng kiến thức chung. Tìm không thấy mà AI vẫn tự trả lời -> thay bằng câu cố định
                     msg = settings.get("KB_NOT_FOUND_MESSAGE") if active or abi_mode else NO_DATA_MESSAGE.format(name=dom["name"])
                     state["replaced"] = {"name": "Chỉ trả lời từ dữ liệu", "message": msg}
-                    yield sse({"type": "replace", "text": state["replaced"]["message"]})
+                    if not draft:   # đã có bản đầu trên màn hình: câu cố định thành phiên bản mới, không ghi đè bản đầu
+                        yield sse({"type": "replace", "text": state["replaced"]["message"]})
                 # ---- kiểm chi tiết bịa (NV5, 2A): viết lại một lần
                 if settings.get("GROUNDING_CHECK") == "rewrite" and not small and not state.get("replaced"):
                     kb = evidence is not None
@@ -526,38 +573,40 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                     items = ground.ungrounded(_answer_text(state), allowed, kb, settings.get("BUSINESS_NAME"))
                     if items:
                         meta["grounding"] = {"items": items}
-                        yield sse({"type": "restart"})
+                        if ev := revise("có chi tiết không tìm thấy trong nguồn"):
+                            yield ev
                         msgs, _ = bm(fast=state["mode"] == "fast", extra=extra0 + [ground.rewrite_instruction(items, kb)])
                         prompts.append({"why": "chi tiết không có nguồn: viết lại", "messages": msgs})
-                        async for ev in gen(msgs):
-                            yield ev
+                        await quiet(msgs)
                         if not state.get("replaced"):
                             meta["grounding"]["after"] = ground.ungrounded(_answer_text(state), allowed, kb, settings.get("BUSINESS_NAME"))
                 if prof["require_citation"] and evidence and not small and not state.get("replaced") and not _cited(state):
                     meta["cite_retry"] = True   # G4.3: lĩnh vực bắt buộc trích dẫn mà AI không ghi [n]: viết lại một lần
-                    yield sse({"type": "restart"})
+                    if ev := revise("thiếu số đoạn nguồn [n]"):
+                        yield ev
                     msgs, _ = bm(fast=True, extra=extra0 + [profile.CITE_RETRY])
                     prompts.append({"why": "thiếu số đoạn nguồn: viết lại", "messages": msgs})
-                    async for ev in gen(msgs):
-                        yield ev
+                    await quiet(msgs)
                     if not state.get("replaced") and not _cited(state):
                         meta["uncited"] = True
                 if not state.get("replaced") and state["filter"].heavy_leak():   # lọt nhiều chữ lạ: viết lại một lần
                     meta["leak_retry"] = True
-                    yield sse({"type": "restart"})
+                    if ev := revise("lọt nhiều chữ không phải tiếng Việt"):
+                        yield ev
                     msgs, _ = bm(fast=state["mode"] == "fast", leak_retry=True)
                     prompts.append({"why": "lọt nhiều chữ lạ: viết lại", "messages": msgs})
-                    async for ev in gen(msgs):
-                        yield ev
+                    await quiet(msgs)
             if web_blocked:
                 meta["web_blocked"] = True
                 note = "\n\n_Lĩnh vực này không dùng Tìm web: câu trả lời trên không lấy từ web._"
                 state.setdefault("parts", []).append(note)
-                yield sse({"type": "delta", "text": note})
+                if not draft:   # có bản đầu: ghi chú nằm trong phiên bản mới, không nối vào bản đầu trên màn hình
+                    yield sse({"type": "delta", "text": note})
             if web and (sinfo or {}).get("pii_masked") and not state.get("replaced"):   # G1.3 (D10): báo đã che số trước khi tìm web
                 note = "\n\n_" + core_web.PII_NOTE + "_"
                 state.setdefault("parts", []).append(note)
-                yield sse({"type": "delta", "text": note})
+                if not draft:
+                    yield sse({"type": "delta", "text": note})
             if settings.get("CHOICE_CHECK") and evidence is not None and not web and not small and state.get("choices") and not state.get("replaced"):
                 kept = await _answerable(state["choices"], [d["id"] for d in active])   # nút gợi ý phải trả lời được từ dữ liệu
                 meta["choices_filter"] = {"before": len(state["choices"]), "kept": len(kept)}
@@ -581,10 +630,8 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
             if state.get("replaced"):
                 meta["guard"] = state["replaced"]["name"]
                 content, choices = state["replaced"]["message"], []
-            elif state.get("mode") == "fast" and state.get("fmt") == "json":
-                content, choices = "".join(state.get("parts") or []).strip(), state.get("choices") or []
             else:
-                content, choices = persona.split_choices("".join(state.get("parts") or []))
+                content, choices = _shown(state)
             if prefix and not state.get("replaced") and (content or status != "error"):
                 content = f"{prefix}\n\n{content}".strip()
             if evidence is not None:
@@ -595,26 +642,25 @@ async def run(user: dict, cid: str, user_mid: int, text: str, history_path: list
                 meta["web"] = True
             if abi_res:
                 meta["abi"] = sinfo.get("abi")
-            if evidence is not None and not small:   # Chuyên gia: nguồn = các đoạn AI ghi [n] (hoặc liệt kê trong "sources")
-                cited = sorted({int(n) for n in re.findall(r"\[(\d{1,2})\]", content)} | set(state.get("sources") or []))
-                meta["sources"] = [{"n": n, "record_id": evidence[n - 1]["id"], "url": evidence[n - 1].get("url"), "title": evidence[n - 1]["title"],
-                                    "dataset": evidence[n - 1]["dataset"], "score": evidence[n - 1].get("score")}
-                                   for n in cited if 1 <= n <= len(evidence)]
-                if not meta["sources"]:
-                    meta["consulted"] = [{"record_id": e["id"], "url": e.get("url"), "title": e["title"], "dataset": e["dataset"], "score": e.get("score")}
-                                         for e in evidence[:3]]
+            meta.update(_sources_meta(content, state, evidence, small))
+            if draft.get("mid"):
+                meta["revised_from"] = {"id": draft["mid"], "why": draft["why"]}   # giao diện: "bản đầu ở phiên bản trước"
             if cacheable and status == "done" and not err and not state.get("replaced") and not meta.get("leak_retry"):
                 meta["cacheable"], meta["cache_fp"] = True, answer_cache.fingerprint(dom)   # 👍 thì người khác hỏi y chang được trả ngay
             if choices and not info["exhausted"]:
                 meta["choices"] = choices
             elif choices:   # đã hết lượt hỏi lại mà AI vẫn đưa lựa chọn: hiện như văn bản
                 content += "\n\n" + "\n".join(f"- {c}" for c in choices)
-            mid = None
-            if err:
+            mid, kept = None, bool(draft.get("mid")) and status != "done"
+            if kept:   # dừng / lỗi lúc viết lại: giữ bản đầu làm câu trả lời, không lưu bản viết dở (người dùng chưa thấy nó)
+                db.set_leaf(cid, draft["mid"])
+                db.patch_trace(draft["mid"], "rewrite", {"status": status, "error": err, "why": draft["why"], "prompts": prompts[1:]})
+                mid, err = draft["mid"], None
+            elif err:
                 mid = db.add_message(cid, "assistant", err, "error", user_mid, meta, pii_from=text)
             elif content:
                 mid = db.add_message(cid, "assistant", content, status, user_mid, meta, pii_from=text)
-            if mid:
+            if mid and not kept:
                 a = state.get("ans")
                 db.save_trace(mid, cid, user["id"], {
                     "mode": mode, "final_mode": meta["mode"], "specialist": evidence is not None, "status": status, "error": err,

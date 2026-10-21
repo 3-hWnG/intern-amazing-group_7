@@ -147,7 +147,7 @@ class Web:
         self.dom = next(d for d in self.c.get("/s4/domains").json()["domains"] if d["engine"] == "abi")
 
     def __call__(self, q: str) -> dict:
-        text, cid, t0, done_ms = "", None, time.perf_counter(), None
+        text, cid, t0, done_ms, revised = "", None, time.perf_counter(), None, False
         with self.c.stream("POST", "/s4/chat", json={"text": q, "domain_id": self.dom["id"]}) as r:
             for line in r.iter_lines():
                 if not line.startswith("data: "):
@@ -157,13 +157,18 @@ class Web:
                     cid = e["conversation_id"]
                 elif e["type"] == "delta":
                     text += e["text"]
-                elif e["type"] in ("restart", "replace"):
+                elif e["type"] == "replace":
                     text = e.get("text", "")
+                elif e["type"] == "checking":   # viết lại sau khi kiểm: bản cuối không hiện dần, đọc từ hội thoại khi xong
+                    revised = True
                 elif e["type"] == "error":
                     text += "\n[LỖI] " + e["message"]
                 elif e["type"] == "done":   # câu trả lời hiện xong; luồng còn mở tới khi bước ghi nhớ chạy xong
                     done_ms = int((time.perf_counter() - t0) * 1000)
-        meta =self.c.get(f"/s4/conversations/{cid}/messages").json()["messages"][-1]["meta"] if cid else {}
+        msg = self.c.get(f"/s4/conversations/{cid}/messages").json()["messages"][-1] if cid else {}
+        meta = msg.get("meta") or {}
+        if revised:
+            text = msg.get("content", text)
         abi = meta.get("abi") or {}
         return {"answer": text, "kind": ("code" if abi.get("code_answer") else "ai") + (f":{abi['intent']}" if abi.get("intent") else ""),
                 "sources": [s.get("url") for s in meta.get("sources") or []], "llm_ms": (meta.get("timing") or {}).get("llm_ms"), "done_ms": done_ms}

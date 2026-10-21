@@ -52,6 +52,8 @@ async def fake_fast(messages, schema):
     fast_prompts.append(messages)
     if fast_script:
         d = fast_script.pop(0)
+        if isinstance(d, Exception):   # model lỗi giữa chừng (vd. lúc viết lại)
+            raise d
     else:
         d = _as_json(script.pop(0) if script else "Dạ, chúng tôi hiểu rồi.")
     raw = json.dumps(d)   # ensure_ascii=True: có \uXXXX, \" và \n để kiểm bộ tách dần
@@ -195,10 +197,27 @@ with TestClient(main.app) as c:
     assert m["meta"]["filtered"] == {"letters": 3, "other": 1} and "leak_retry" not in m["meta"], m["meta"]
     script.extend(["你好你好你好你好你好你好你好你好你好你好 chào", "Chào bạn, chúng tôi giúp được nhiều việc."])
     ev = chat("Xin chào")
-    assert any(e["type"] == "restart" for e in ev), [e["type"] for e in ev]
+    chk = [e for e in ev if e["type"] == "checking"]
+    assert len(chk) == 1 and chk[0]["why"] == "lọt nhiều chữ không phải tiếng Việt", [e["type"] for e in ev]
+    assert ev.index(chk[0]) > max(i for i, e in enumerate(ev) if e["type"] == "delta"), "bản viết lại không hiện dần"
     assert "CHỈ viết tiếng Việt" in system_of()
-    m = path(ev[0]["conversation_id"])[-1]
+    p = path(ev[0]["conversation_id"])
+    m = p[-1]
     assert m["content"] == "Chào bạn, chúng tôi giúp được nhiều việc." and m["meta"]["leak_retry"], m
+    # bản đầu (đã hiện) là phiên bản 1 của cùng tin người dùng; bản cuối là phiên bản 2, đang xem
+    assert m["versions"] == [chk[0]["draft_id"], m["id"]] and m["meta"]["revised_from"]["id"] == chk[0]["draft_id"], m
+    r = c.post(f"/s4/conversations/{ev[0]['conversation_id']}/switch", json={"message_id": chk[0]["draft_id"]})
+    first = r.json()["messages"][-1]
+    assert first["id"] == chk[0]["draft_id"] and first["content"].endswith("chào") and first["meta"]["draft"]["why"], first
+    # model lỗi lúc viết lại: giữ bản đầu làm câu trả lời (đang xem), không lưu tin lỗi, không báo lỗi
+    fast_script.append(_as_json("你好你好你好你好你好你好你好你好你好你好 xin chào"))   # bản đầu, rồi lỗi ở lần viết lại
+    fast_script.append(llm.LLMError("Ollama mất kết nối"))
+    ev = chat("Chào bạn")
+    types = [e["type"] for e in ev]
+    assert "checking" in types and "error" not in types and types[-1] in ("done", "memory"), types
+    p = path(ev[0]["conversation_id"])
+    assert p[-1]["id"] == ev[types.index("checking")]["draft_id"] and p[-1]["status"] == "done" and len(p[-1]["versions"]) == 1, p[-1]
+    assert c.get(f"/s4/trace/{p[-1]['id']}").json()["trace"]["rewrite"]["error"] == "Ollama mất kết nối"
 
     # ---- cảm xúc tiêu cực
     chat("Tôi rất bực mình vì chờ lâu quá")

@@ -449,6 +449,8 @@
     }
     if (m.status === "stopped") w.appendChild(el("div", "stopped-note", "(đã dừng)"));
     if (m.meta && m.meta.cached) w.appendChild(el("div", "stopped-note", "Câu trả lời có sẵn (đã được đánh giá hữu ích). Bấm ↻ để AI trả lời lại."));
+    if (m.meta && m.meta.draft) w.appendChild(el("div", "stopped-note", "Bản đầu, chưa qua kiểm tra (hệ thống viết lại vì " + m.meta.draft.why + "). Bản đã kiểm ở phiên bản sau ›"));
+    if (m.meta && m.meta.revised_from) w.appendChild(el("div", "stopped-note", "Đã kiểm tra và viết lại (" + m.meta.revised_from.why + "). Bản đầu ở phiên bản trước ‹"));
     const choices = (m.meta && m.meta.choices) || [];
     if (choices.length) w.appendChild(clarifyCard({ question: "Chọn nhanh:", options: choices, allow_free_text: true }, null, !isLast));
     const bar = el("div", "msg-actions");
@@ -644,7 +646,7 @@
       const finish = () => { if (!settled) { settled = true; resolve(); } };
       const status = statusLine("Đang gửi…");
       box.appendChild(status); scroll();
-      let wrap = null, bubble = null, raw = "", failed = false, raf = 0;
+      let wrap = null, bubble = null, raw = "", failed = false, raf = 0, checking = false;
       const paint = () => { raf = 0; if (bubble) { bubble.innerHTML = md(visible(raw)); scroll(); } };
       const ensureBubble = () => {
         if (!bubble) {
@@ -690,9 +692,15 @@
               } else if (ev.type === "queue") status.setText("Đang chờ tới lượt (còn " + ev.position + " lượt trước bạn)…");
               else if (ev.type === "start") status.setText("AI đang trả lời…");
               else if (ev.type === "delta") { ensureBubble(); raw += ev.text; if (!raf) raf = requestAnimationFrame(paint); }
-              else if (ev.type === "restart") {
-                raw = ""; if (wrap) wrap.remove(); wrap = bubble = null;
-                box.appendChild(status); status.setText("Đang viết lại câu trả lời…");
+              else if (ev.type === "checking") {
+                /* bước kiểm cần viết lại: bản đầu đứng yên cho người dùng đọc; bản đã kiểm không hiện dần, xong thì
+                   "done" vẽ lại hội thoại và nhảy sang phiên bản mới (‹ › để mở lại bản đầu) */
+                checking = true;
+                if (raf) { cancelAnimationFrame(raf); paint(); }
+                box.appendChild(status);
+                status.setText(bubble ? "Đang kiểm tra và viết lại câu trả lời — bản trên vẫn giữ để bạn đọc, bản đã kiểm sẽ là phiên bản mới…"
+                                      : "Đang viết lại câu trả lời…");
+                scroll();
               } else if (ev.type === "replace") { ensureBubble(); raw = ev.text; paint(); }
               else if (ev.type === "error") fail(ev.message);
               else if (ev.type === "done") {
@@ -708,8 +716,8 @@
         } catch (e) {
           if (e.name === "AbortError") {
             status.remove();
-            if (wrap) wrap.appendChild(el("div", "stopped-note", "(đã dừng)"));
-            finish();
+            if (checking && bubble) { finish(); loadConv(convId, "friendly"); }   // dừng lúc viết lại: server giữ bản đầu làm câu trả lời
+            else { if (wrap) wrap.appendChild(el("div", "stopped-note", "(đã dừng)")); finish(); }
           } else if (!settled) fail(e.message);
         } finally {
           if (abortCtl === ctl) abortCtl = null;

@@ -207,8 +207,8 @@ class Client:
                     if ev["type"] == "delta":
                         first = first or time.time() - t0
                         final_first = final_first or time.time() - t0
-                    elif ev["type"] in ("restart", "replace"):
-                        final_first = None if ev["type"] == "restart" else (final_first or time.time() - t0)
+                    elif ev["type"] in ("checking", "replace"):   # checking: bản cuối không hiện dần, hiện lúc xong (= total)
+                        final_first = None if ev["type"] == "checking" else (final_first or time.time() - t0)
         total = time.time() - t0
         cid = evs[0]["conversation_id"]
         msg = self.c.get(f"/s4/conversations/{cid}/messages").json()["messages"][-1]
