@@ -1,0 +1,2012 @@
+[
+ {
+  "id": "real_v1_s4-001",
+  "q": "UNESCO cho rằng đường nối của hai con đường nào đi qua lõi vườn quốc gia là không cần thiết?",
+  "source_gold": [
+   "đường Hồ Chí Minh và đường 20"
+  ],
+  "check": {
+   "any": [
+    "đường Hồ Chí Minh và đường 20"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-002",
+  "q": "Các ngọn núi ở vùng phi carxtơ có độ dốc là bao nhiêu?",
+  "source_gold": [
+   "25-30 độ"
+  ],
+  "check": {
+   "any": [
+    "25-30 độ"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-003",
+  "q": "Tổ chức WWF thừa nhận điều gì về vườn quốc gia này?",
+  "source_gold": [
+   "có tính đa dạng sinh học cao nhất hành tinh"
+  ],
+  "check": {
+   "any": [
+    "có tính đa dạng sinh học cao nhất hành tinh"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-004",
+  "q": "Các hang động ở khu vực nào của Phong Nha-Kẻ Bàng được khám phá với chiều dài lớn hơn hẳn?",
+  "source_gold": [
+   "khu vực Phong Nha"
+  ],
+  "check": {
+   "any": [
+    "khu vực Phong Nha"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-005",
+  "q": "Một vài thung lũng hẹp nằm dọc theo các con khe nào?",
+  "source_gold": [
+   "khe Am, khe Cha Lo, khe Chua Ngút"
+  ],
+  "check": {
+   "any": [
+    "khe Am, khe Cha Lo, khe Chua Ngút"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-006",
+  "q": "Diện tích của rừng ẩm nhiệt đới thường xanh trên đá vôi cao dưới 800 mét là bao nhiêu?",
+  "source_gold": [
+   "110.476 ha"
+  ],
+  "check": {
+   "any": [
+    "110.476 ha"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-007",
+  "q": "Hang nào được mệnh danh là hang động lớn nhất thế giới?",
+  "source_gold": [
+   "Sơn Động"
+  ],
+  "check": {
+   "any": [
+    "Sơn Động"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-008",
+  "q": "Thu nhập hàng ngày của những người hướng dẫn khách du lịch trên thuyền là bao nhiêu?",
+  "source_gold": [
+   "khoảng 70.000 đồng"
+  ],
+  "check": {
+   "any": [
+    "khoảng 70.000 đồng"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-009",
+  "q": "Cơ quan nào đã đào tạo cho một số người chuyển từ làm việc phá rừng sang bảo vệ rừng và làm du lịch?",
+  "source_gold": [
+   "Trung tâm Văn hóa Du lịch Phong Nha-Kẻ Bàng"
+  ],
+  "check": {
+   "any": [
+    "Trung tâm Văn hóa Du lịch Phong Nha-Kẻ Bàng"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-010",
+  "q": "Phong Nha - Kẻ Bàng là vùng carxtơ lớn và cổ nhất châu lục nào?",
+  "source_gold": [
+   "châu Á"
+  ],
+  "check": {
+   "any": [
+    "châu Á"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-011",
+  "q": "Ai đã phát hiện ra những bằng chứng khảo cổ về sự sinh sống của con người ở khu vực Phong Nha - Kẻ Bàng?",
+  "source_gold": [
+   "các nhà khảo cổ Pháp và Việt Nam"
+  ],
+  "check": {
+   "any": [
+    "các nhà khảo cổ Pháp và Việt Nam"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-012",
+  "q": "Loại rừng nào chiếm diện tích ít nhất trong vườn quốc gia?",
+  "source_gold": [
+   "rừng tre nứa và mây song"
+  ],
+  "check": {
+   "any": [
+    "rừng tre nứa và mây song"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-013",
+  "q": "Cơ quan nào tuyên bố sẽ thuê tư vấn nước ngoài quy hoạch xây dựng và phát triển du lịch vùng phụ cận của vườn quốc gia này?",
+  "source_gold": [
+   "Ủy ban Nhân dân tỉnh Quảng Bình"
+  ],
+  "check": {
+   "any": [
+    "Ủy ban Nhân dân tỉnh Quảng Bình"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-014",
+  "q": "Thủ tướng chính phủ đã có quyết định mở rộng vườn quốc gia Phong Nha-Kẻ Bàng vào thời gian nào?",
+  "source_gold": [
+   "Tháng 8 năm 2013"
+  ],
+  "check": {
+   "any": [
+    "Tháng 8 năm 2013"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-015",
+  "q": "Carxtơ tại khu vực này xuất hiện từ bao nhiêu năm trước?",
+  "source_gold": [
+   "400 triệu năm"
+  ],
+  "check": {
+   "any": [
+    "400 triệu năm"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-016",
+  "q": "Vườn quốc gia Phong Nha-Kẻ Bàng nằm trong khu vực có dạng địa hình gì?",
+  "source_gold": [
+   "núi đá vôi"
+  ],
+  "check": {
+   "any": [
+    "núi đá vôi"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-017",
+  "q": "Theo ý kiến khác thì những ngọn núi nằm thành từng dãy đều đặn ở Phong Nha được so sánh với hình tượng nào?",
+  "source_gold": [
+   "các quan đứng thành hàng trên sân chầu hay ở quan thự"
+  ],
+  "check": {
+   "any": [
+    "các quan đứng thành hàng trên sân chầu hay ở quan thự"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-018",
+  "q": "Phố cổ Hội An, Thánh địa Mỹ Sơn và Cố đô Huế cùng nằm ở miền nào của nước ta?",
+  "source_gold": [
+   "miền Trung"
+  ],
+  "check": {
+   "any": [
+    "miền Trung"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-019",
+  "q": "Phương tiện nào có thể dùng trong tuyến du lịch đi theo dòng sông Chày để vào rừng sâu?",
+  "source_gold": [
+   "du thuyền"
+  ],
+  "check": {
+   "any": [
+    "du thuyền"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-020",
+  "q": "Một số người làm bảo vệ rừng trong vườn quốc gia này từng làm công việc gì?",
+  "source_gold": [
+   "lâm tặc"
+  ],
+  "check": {
+   "any": [
+    "lâm tặc"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-021",
+  "q": "Dân cư vùng này sống chủ yếu bằng nghề gì?",
+  "source_gold": [
+   "nông, khai thác lâm sản"
+  ],
+  "check": {
+   "any": [
+    "nông, khai thác lâm sản"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-022",
+  "q": "Núi lửa phun lên làm đá vôi bị biến chất thành gì?",
+  "source_gold": [
+   "vôi sống"
+  ],
+  "check": {
+   "any": [
+    "vôi sống"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-023",
+  "q": "Khu giới thiệu Vườn quốc gia Phong Nha - Kẻ Bàng được xây dựng nhằm mục đích gì?",
+  "source_gold": [
+   "giới thiệu sự đa dạng sinh học của vườn quốc gia này"
+  ],
+  "check": {
+   "any": [
+    "giới thiệu sự đa dạng sinh học của vườn quốc gia này"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-024",
+  "q": "Vườn quốc gia Phong Nha - Kẻ Bàng là bộ phận của vùng sinh thái nào?",
+  "source_gold": [
+   "Trường Sơn"
+  ],
+  "check": {
+   "any": [
+    "Trường Sơn"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-025",
+  "q": "Nhiệt độ xuống mức thấp nhất ở vùng này vào mùa nào?",
+  "source_gold": [
+   "mùa đông"
+  ],
+  "check": {
+   "any": [
+    "mùa đông"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-026",
+  "q": "Các bồn trầm tích được tạo thành do chuyển động như thế nào của địa hình?",
+  "source_gold": [
+   "sụt lún"
+  ],
+  "check": {
+   "any": [
+    "sụt lún"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-027",
+  "q": "Hang Thiên Đường đón khách tham quan lần đầu tiên vào ngày tháng năm nào?",
+  "source_gold": [
+   "ngày 3 tháng 9 năm 2010"
+  ],
+  "check": {
+   "any": [
+    "ngày 3 tháng 9 năm 2010"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-028",
+  "q": "Hang Sơn Động có kích thước to gấp bao nhiêu lần so với hang Phong Nha?",
+  "source_gold": [
+   "4-5 lần"
+  ],
+  "check": {
+   "any": [
+    "4-5 lần"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-029",
+  "q": "Đặc điểm tự nhiên của khu vực Phong Nha - Kẻ Bàng được so sánh với cái gì?",
+  "source_gold": [
+   "các khu vực carxtơ khác trên thế giới đã được công nhận là di sản thế giới"
+  ],
+  "check": {
+   "any": [
+    "các khu vực carxtơ khác trên thế giới đã được công nhận là di sản thế giới"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-030",
+  "q": "Đoàn Địa chất 20 đã hoàn thành công trình đo vẽ bản đồ địa chất của họ với sự hỗ trợ từ ai?",
+  "source_gold": [
+   "các chuyên gia Liên Xô"
+  ],
+  "check": {
+   "any": [
+    "các chuyên gia Liên Xô"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-031",
+  "q": "Bản đồ địa chất tờ Minh Hóa được vẽ theo tỉ lệ bao nhiêu?",
+  "source_gold": [
+   "1:50.000"
+  ],
+  "check": {
+   "any": [
+    "1:50.000"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-032",
+  "q": "Ảnh hưởng nghiêm trọng nhất mà du khách có thể gây ra đối với vườn quốc gia này là gì?",
+  "source_gold": [
+   "đe dọa đến sự đa dạng sinh học"
+  ],
+  "check": {
+   "any": [
+    "đe dọa đến sự đa dạng sinh học"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-033",
+  "q": "Hiện nay thì thôn Phong Nha trực thuộc huyện nào?",
+  "source_gold": [
+   "Bố Trạch"
+  ],
+  "check": {
+   "any": [
+    "Bố Trạch"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-034",
+  "q": "Các thời kỳ kiến tạo địa hình tại Phong Nha - Kẻ Bàng bao gồm các pha chuyển động gì?",
+  "source_gold": [
+   "đứt gãy, phối tảng và uốn nếp"
+  ],
+  "check": {
+   "any": [
+    "đứt gãy, phối tảng và uốn nếp"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-035",
+  "q": "Ai đã cho rằng Phong Nha là tên một ngôi làng miền núi ngày xưa?",
+  "source_gold": [
+   "Lê Quý Đôn"
+  ],
+  "check": {
+   "any": [
+    "Lê Quý Đôn"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-036",
+  "q": "Các thạch nhũ mang hình thù của những hình tượng gì?",
+  "source_gold": [
+   "hình sư tử, hình ngai vàng, hình đức Phật v.v"
+  ],
+  "check": {
+   "any": [
+    "hình sư tử, hình ngai vàng, hình đức Phật v.v"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-037",
+  "q": "Tám động của hệ thống động Vòm đổ vào dòng sông gì?",
+  "source_gold": [
+   "sông Chay"
+  ],
+  "check": {
+   "any": [
+    "sông Chay"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-038",
+  "q": "Đỉnh Co Unet là đỉnh núi cao thứ hai trong vùng carxtơ của vườn quốc gia chỉ sau đỉnh núi nào?",
+  "source_gold": [
+   "Phu Tạo"
+  ],
+  "check": {
+   "any": [
+    "Phu Tạo"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-039",
+  "q": "Hệ sinh thái Bắc Trường Sơn nằm ở khu vực nào của Việt Nam?",
+  "source_gold": [
+   "khu vực Bắc Trung Bộ"
+  ],
+  "check": {
+   "any": [
+    "khu vực Bắc Trung Bộ"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-040",
+  "q": "Chính phủ Việt Nam có quyết định xây đường Hồ Chí Minh chạy theo các tuyến đường nào?",
+  "source_gold": [
+   "15 và 12A"
+  ],
+  "check": {
+   "any": [
+    "15 và 12A"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-041",
+  "q": "Ngoài Phong Nha - Kẻ Bàng thì còn bao nhiêu địa danh khác trên thế giới được công nhận là di sản thiên nhiên thế giới trong năm 2003?",
+  "source_gold": [
+   "30"
+  ],
+  "check": {
+   "any": [
+    "30"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-042",
+  "q": "Các dãy núi trong vùng carxtơ này chạy dọc theo biên giới của hai quốc gia nào?",
+  "source_gold": [
+   "Việt Nam và Lào"
+  ],
+  "check": {
+   "any": [
+    "Việt Nam và Lào"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-043",
+  "q": "Âm thanh phát ra khi gõ vào các phiến đá và cột đá được so sánh với tiếng của nhạc cụ nào?",
+  "source_gold": [
+   "tiếng cồng chiêng và tiếng trống"
+  ],
+  "check": {
+   "any": [
+    "tiếng cồng chiêng và tiếng trống"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-044",
+  "q": "Vì sao UNESCO đánh giá tuyến đường Hồ Chí Minh mới không ảnh hưởng đến vườn quốc gia Phong Nha - Kẻ Bàng?",
+  "source_gold": [
+   "do tuyến đường được xây với mức độ trách nhiệm đối với môi trường cao"
+  ],
+  "check": {
+   "any": [
+    "do tuyến đường được xây với mức độ trách nhiệm đối với môi trường cao"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-045",
+  "q": "Công tác quy hoạch và quản lý quy hoạch xây dựng có vấn đề ở khu vực phụ cận vườn quốc gia đã để lại hệ quả gì?",
+  "source_gold": [
+   "cấp sổ đỏ tràn lan cho dân địa phương, hàng loạt ngôi nhà và hàng quán được dân xây dựng một cách tự phát, lộn xộn"
+  ],
+  "check": {
+   "any": [
+    "cấp sổ đỏ tràn lan cho dân địa phương, hàng loạt ngôi nhà và hàng quán được dân xây dựng một cách tự phát, lộn xộn"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-046",
+  "q": "Đường nối giữa đường Hồ Chí Minh và quốc lộ 20 chạy qua đâu?",
+  "source_gold": [
+   "lõi vườn quốc gia này"
+  ],
+  "check": {
+   "any": [
+    "lõi vườn quốc gia này"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-047",
+  "q": "Hệ thống hang động tại khu vực Phong Nha - Kẻ Bàng được hình thành do nguyên nhân gì?",
+  "source_gold": [
+   "những kiến tạo địa chất xảy ra trong lòng dãy núi đá vôi Kẻ Bàng"
+  ],
+  "check": {
+   "any": [
+    "những kiến tạo địa chất xảy ra trong lòng dãy núi đá vôi Kẻ Bàng"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-048",
+  "q": "Vì sao việc tham quan và thám hiểm hang Thiên Đường có thể diễn ra khá thuận lợi?",
+  "source_gold": [
+   "Phần lớn nền động là đất dẻo, khá bằng phẳng"
+  ],
+  "check": {
+   "any": [
+    "Phần lớn nền động là đất dẻo, khá bằng phẳng"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-049",
+  "q": "Sự tham quan của du khách đã tác động tiêu cực đến cộng đồng loài sinh vật nào trong hang động?",
+  "source_gold": [
+   "dơi"
+  ],
+  "check": {
+   "any": [
+    "dơi"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-050",
+  "q": "Lượng mưa trung bình hàng năm cao nhất có thể của vườn quốc gia này là bao nhiêu mm?",
+  "source_gold": [
+   "2.500"
+  ],
+  "check": {
+   "any": [
+    "2.500"
+   ]
+  },
+  "notes": "Dap an goc ViQuAD co nguyen van trong muc Phong Nha - Ke Bang cua du_lich_diem_den.md."
+ },
+ {
+  "id": "real_v1_s4-051",
+  "q": "Núi lửa phun lên làm đá cuội bị biến chất thành gì?",
+  "source_gold": [],
+  "check": {
+   "refusal": true
+  },
+  "notes": "Cau hoi 'da cuoi' (tien de sai): bai chi noi nui lua lam bien chat da voi, khong noi da cuoi."
+ },
+ {
+  "id": "real_v1_s4-052",
+  "q": "Ai cho rằng động Tiên Sơn được khai phá cách đây hàng chục triệu năm trước?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co dap an (Hoi hang dong Hoang gia Anh).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-053",
+  "q": "Vườn quốc gia Phong Nha - Kẻ Bàng được UNESCO công nhận là di sản thiên nhiên vì đạt tiêu chuẩn nào từ thế giới?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co dap an (tieu chi dia chat, dia mao).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-054",
+  "q": "Các thời kỳ chiến tranh tại Phong Nha - Kẻ Bàng bao gồm các pha chuyển động gì?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai co pha chuyen dong kien tao; 'thoi ky chien tranh' la tien de lech, khong chac dap an.",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-055",
+  "q": "Phong Nha - Kẻ Bàng được công nhận là di sản thiên nhiên UNESCO trong kỳ họp toàn thể lần thứ mấy của thế giới?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co dap an (ky hop toan the lan thu 27).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-056",
+  "q": "Ai đã khảo sát và thí điểm mở tuyến du lịch bằng du thuyền vào rừng Phong Nha - Kẻ Bàng?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co dap an (cac don vi kinh doanh du lich).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-057",
+  "q": "Hang sông ngầm nào dài nhất Hà Nội?",
+  "source_gold": [],
+  "check": {
+   "refusal": true
+  },
+  "notes": "Hang song ngam dai nhat Ha Noi: bai Phong Nha-Ke Bang (Quang Binh) khong noi ve Ha Noi."
+ },
+ {
+  "id": "real_v1_s4-058",
+  "q": "Khu vực nằm trong Vườn quốc gia Phong Nha-Kẻ Bàng có dạng địa hình gì?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Cau mo ho, bai co nhieu dang dia hinh (cacxto...).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-059",
+  "q": "Hệ thống hang động đã tác động như thế nào đến quá trình phong hóa vật lý và hóa học của Phong Nha?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Cau hoi dao nguoc quan he, bai co noi dung lien quan nhung khong ro, khong chac.",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-060",
+  "q": "Động Phong Nha được nhận định là một thánh đường của di tích khảo cổ quan trọng vào năm nào?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co dap an (nam 1995).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-061",
+  "q": "Diện tích của rừng bảo tồn trên đá vôi dưới 800 mét là bao nhiêu?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co dap an (74,7% = 110.476 ha).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-062",
+  "q": "Người ta phát hiện các mảnh kim loại và khoáng sản có tráng men của Chàm ở khu vực nào?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai noi manh gom trang men o dong Phong Nha, cau doi 'kim loai va khoang san', khong chac.",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-063",
+  "q": "Tổ chức UNESCO đã ước tính với mỗi km đường cần một lượng thuốc nổ là bao nhiêu?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co dap an (4,5 tan thuoc no, do To chuc dong thuc vat uoc tinh).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-064",
+  "q": "Quá trình kiến tạo carxtơ đã sót lại các đặc điểm gì?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Cau mo ho, bai co noi dung lien quan (cac dong khac nhau), khong chac.",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-065",
+  "q": "Ai đã phát hiện ra những bằng chứng khảo cổ về sự sinh sống của thần linh ở khu vực Phong Nha - Kẻ Bàng?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Tien de lech (than linh vs con nguoi); bai co nhac Cadiere, khong chac.",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-066",
+  "q": "Vì lí do gì mà Ủy ban đánh giá vườn quốc gia này là không cần thiết?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co noi dung (UNESCO cho rang duong noi khong can thiet).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-067",
+  "q": "Ngoài Phong Nha - Kẻ Bàng thì còn bao nhiêu địa danh khác ở Việt Nam được công nhận là di sản thiên nhiên thế giới trong năm 2003?",
+  "source_gold": [],
+  "check": {
+   "refusal": true
+  },
+  "notes": "Hoi con bao nhieu dia danh khac o Viet Nam duoc cong nhan di san thien nhien the gioi nam 2003: bai chi noi 30 dia danh khac tren the gioi, khong noi dem rieng Viet Nam."
+ },
+ {
+  "id": "real_v1_s4-068",
+  "q": "Tại vườn quốc gia của các nước nào đã phát hiện thêm 10 loài động vật mới sau khi khảo sát các nhà khoa học này?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co dap an (Duc, Nga va Viet Nam).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-069",
+  "q": "Ai là người đã phát hiện tai mới cho một loài thằn lằn tại Chà Nòi vào năm 2002?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co dap an (Thomas Zegler).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-070",
+  "q": "Chính phủ hiện không còn ý nghĩa bảo tồn với các loài động vật nào?",
+  "source_gold": [],
+  "check": {
+   "refusal": true
+  },
+  "notes": "Chinh phu hien khong con y nghia bao ton voi loai dong vat nao: bai khong noi vay (chi noi san bat dong vat hoang da)."
+ },
+ {
+  "id": "real_v1_s4-071",
+  "q": "Các chuyên gia cho rằng thế giới cần làm gì thì Phong Nha - Kẻ Bàng có thể được Việt Nam công nhận di sản thiên nhiên lần hai?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co noi dung (neu Viet Nam hoan thien ho so thi UNESCO cong nhan lan 2).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-072",
+  "q": "Ý kiến giải thích thông thái cho rằng chữ Phong trong tên gọi Phong Nha có nghĩa là gì?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co dap an (nghia 'gio', chu Han).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-073",
+  "q": "Ai đã cung cấp thông tin cho Khu bảo tồn Phong Nha - Kẻ Bàng về việc nâng cấp và bảo tồn UNESCO?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co noi dung (Chinh phu Viet Nam cung cap thong tin cho UNESCO).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-074",
+  "q": "Tám động của hệ thống động bậc thang đổ vào dòng sông gì?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co dap an (song Chay).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-075",
+  "q": "Các biên giới trong vùng carxtơ này chạy dọc theo dãy núi của hai quốc gia nào?",
+  "source_gold": [],
+  "check": {},
+  "notes": "drop: Bai hien tai co dap an (Viet Nam va Lao).",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4-076",
+  "q": "Tôi bị chó cắn 3 ngày rồi nhưng thấy trong không được ổn, chó nhà thôi nhưng bây giờ người muốn nóng sốt nhẹ và buồn nôn, không đi đại tiện được, tôi có bị sao không?",
+  "check": {},
+  "notes": "urgent: Cho can 3 ngay kem sot nhe, buon non: nguy co dai/uon van, can kham ngay.",
+  "urgent": true,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-077",
+  "q": "Bác sĩ cho biết kết quả xét nghiệm như ảnh thì có nghiêm trọng không ạ",
+  "check": {},
+  "notes": "needs_image: Hoi ket qua xet nghiem 'nhu anh' nhung khong co anh kem theo.",
+  "urgent": false,
+  "needs_image": true
+ },
+ {
+  "id": "real_v1_s4-078",
+  "q": "Bác sĩ cho em hỏi, em bị đau đầu nặng. Đi khám xét nghiệm máu cho kết quả là sốt siêu vi nhưng không có sốt mà chỉ đau đầu thì kết quả có đúng không ạ? Mong nhận được hồi đáp từ bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-079",
+  "q": "Em là nam, 35 tuổi. Em bị dị ứng kháng sinh amoxicillin, em có thể chích vaccine Covid không ạ?",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-080",
+  "q": "Bác sĩ ơi cho em hỏi: Em có cảm giác như bị nghẹn thức ăn hoặc khi uống 1 hớp nước to bị nghẹn không khí ở cổ, cảm giác rất tức tức khó chịu. Trước em cũng có cảm giác như hiện giờ nhưng dạo gần đây có vẻ nó nặng hơn, hầu như em bị 24/24. Bác sĩ cho em hỏi: Em thường xuyên bị nghẹn cổ là dấu hiệu bệnh gì? Chào bác sĩ. Gần đây tôi thấy bị nghẹn khi nuốt nước bọt và bị trào ngược lại đó là bị sao vậy bác sĩ . Bác sĩ tư vấn giúp tôi. Tôi cảm ơn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-081",
+  "q": "Chào bác sĩ, Vào mùa đông người già hay dùng than để sưởi, nhưng lại đóng kín phòng do đó có hít khá nhiều khí thải từ than, hiện bị hôn mê. Bác sĩ cho em hỏi người bị ngộ độc khí CO từ than củi cần xử trí thế nào? Em cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "urgent: Ngo doc khi CO, nguoi dang hon me: cap cuu.",
+  "urgent": true,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-082",
+  "q": "Xin chào bác sĩ, Em bị viêm mũi, mỗi lần sổ mũi em uống 1 viên kháng histamin loại em thường dùng là cetirizine. Hiện tại em đã có thai được 10 ngày. Bác sĩ tư vấn cho em loại thuốc kháng histamim có thể dùng trong suốt thai kỳ mà không ảnh hưởng đến thai nhi vì em phải dùng thường xuyên. Em xin cảm ơn!",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-083",
+  "q": "Chào bác sĩ. Âm đạo bị hôi thì chữa bằng cách nào? Xin bác sĩ tư vấn giúp mình. Mình cảm ơn bác sĩ nhiều.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-084",
+  "q": "Chào bác sĩ, Cháu ăn hàu với sò lông một lát sau cháu bị ói nôn, cháu có uống sữa rồi lại tiếp tục nôn. Cháu nôn như thế 4 lần từ đầu giờ chiều cho đến 6h tối. Vậy bác sĩ cho cháu hỏi biểu hiện của ngộ độc thực phẩm là gì? Cháu cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-085",
+  "q": "Chào bác sĩ, Vợ em có tiền sử bệnh hen. Gần đây, sau khi sinh con xong thì các cơn hen của vợ em nặng hơn. Lần gần nhất, khi cơn hen phát lên, vợ em lại bị tê (mất cảm giác tai) và tê môi. Vậy bác sĩ cho em hỏi mất cảm giác tai, tê môi khi phát cơn hen có sao không? Triệu chứng tê tai, môi này có phải là dấu hiệu của tai biến nhẹ không thưa bác sĩ? Em cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "urgent: Hen nang hon, mat cam giac tai va te moi: can xu tri / kham ngay.",
+  "urgent": true,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-086",
+  "q": "Xin chào bác sĩ, Cháu năm nay 20 tuổi, ở phía dưới khoé miệng 2 bên của cháu có xuất hiện thâm đen. Nó xuất hiện 1 năm rùi. Có lúc thì nó thâm đen thấy rõ, có lúc thì thâm đen nhạt. Cháu ko biết biểu hiện như thế là bị gì. Nhờ bác sĩ tư vấn giùm cháu.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-087",
+  "q": "Xin chào bác sĩ, bé cháu gần 3 tháng, vì cháu bị đổ mồ hôi đầu, mồ hôi lưng nhiều nên cháu cho bé đi khám o BV Nhi Đồng 2, BS bảo bị thiếu canxi nên cho bổ sung canxi và Vitamin D3 kết hợp phơi nắng. Bé uống thì thấy bé đỡ hẳn, ngủ ít giật mình và ngủ ngon hơn. Nhưng khoảng 3-4 ngày nay bé ngủ cứ đưa 2 chân lên, gập người lại rồi xoay vòng vòng khắp giương cả đêm. Ban ngày cháu thấy bé có biểu hiện muốn lật. Vậy bé nhà cháu có bị gì khong BS ?",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-088",
+  "q": "Chào bác sĩ, Trước đây, em hay bị viêm amidan, nhưng đợt này em thấy khó nuốt, thỉnh thoảng ho ra chất màu trắng đục đàn hồi như cao su. Vậy cho em hỏi khó nuốt kèm ho đờm trắng đục có phải dấu hiệu viêm họng không? Cảm ơn bác sĩ tư vấn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-089",
+  "q": "Chào bác sĩ ạ! Con em là bé gái, cháu bắt đầu có kinh nguyệt vào lúc cháu vừa tròn 8 tuổi 8 tháng. Như vậy cháu có bị xem là dậy thì sớm không? Cháu bắt đầu phát triển ngực khoảng 8 tuổi. Cảm ơn bác sĩ đã tư vấn giúp em. Trần Thị Quỳnh Trâm (1983) Chào bác sĩ! Bé học lớp 4 có dấu hiệu dậy thì sớm. Xin bác sĩ cho biết 9 tuổi bé bị kinh có sớm so với tuổi của cháu không? Cảm ơn bác sĩ. Chào bác sĩ ạ! Con em tháng 4 năm 2020 là tròn 9 tuổi. Cháu vừa mới có kinh nguyệt như vậy có phải là dậy thì sớm không. Có cách nào làm chậm lại không ạ? Mong bác sĩ tư vấn. Em cảm ơn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-090",
+  "q": "Tôi xin hỏi triệu chứng bị đau đầu, méo nửa cơ mặt, méo miệng là triệu chứng của bệnh gì vậy ạ?",
+  "check": {},
+  "notes": "urgent: Dau dau, meo nua mat, meo mieng: nghi dot quy/liet day VII, kham ngay.",
+  "urgent": true,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-091",
+  "q": "Chào bác sĩ, kết quả xét nghiệm HbA1C 7.0 thì có phải điều trị không ạ?",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-092",
+  "q": "Chào bác sĩ! Chồng em bị hen suyễn đến năm 18 tuổi thì khỏe mạnh hoàn toàn. Bé đầu nhà em năm nay được 3 tuổi hay bị bệnh phát khò khè thể hen, bác sĩ bệnh viện đang theo dõi nhưng chưa có kết luận chính xác. Em muốn hỏi bác sĩ làm sao để con không bị di truyền bệnh hen suyễn từ bố? Mong bác sĩ tư vấn giúp em. Em xin cảm ơn bác sĩ nhiều.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-093",
+  "q": "Chào bác sĩ, Bác sĩ cho em hỏi chụp cắt lớp vi tính có phải sử dụng thuốc cản quang không? Khi nào chụp cắt lớp vi tính có thêm chỉ định sử dụng thuốc cản quang? Em cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-094",
+  "q": "Chào bác sĩ, Em bị dị ứng thuốc giảm đau kháng viêm bao gồm thuốc hạ sốt. Vậy bác sĩ cho em hỏi người dị ứng thuốc hạ sốt phải làm gì khi sốt? Em cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-095",
+  "q": "Xin chào bác sĩ, Cho cháu hỏi làm sao để cháu cao lên được nhiều ạ cháu năm nay 18 tuổi thì còn cao lên được bao nhiêu cm nữa ạ",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-096",
+  "q": "Xin chào bác sĩ, tôi năm nay 38 tuổi thỉnh thoảng tôi hay bị chóng mặt nhất là khi đầu thay đổi tư thế kèm theo cảm giác hơi buồn nôn. Đi chụp MRI sọ não thấy có hẹp nhẹ D/m DSC trái. Có dùng thuốc theo đơn rồi nhưng vẫn bị lại vậy bác sĩ có thể tư vấn cho tôi dùng thuốc gì, tập thể dục như thế nào và chế độ ăn uống như thế nào để khỏi bệnh được không ạ?",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-097",
+  "q": "Chào bác sĩ. Tôi bị đau nửa người bên trái, đau đầu bên trái (căng nhói từ hốc mắt, đau qua đầu đến ót và cổ vai gáy), thỉnh thoảng giật giật trong đầu, suy giảm thị lực mắt trái. Bác sĩ cho tôi hỏi tình trạng của tôi là bị bệnh gì ạ? Mong bác sĩ tư vấn giúp tôi. Tôi xin cảm ơn.",
+  "check": {},
+  "notes": "urgent: Dau nua nguoi trai, giam thi luc mat trai: nghi bat thuong than kinh, kham ngay.",
+  "urgent": true,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-098",
+  "q": "Xin chào bác sĩ, dạo này tôi hay bị mẩn ngứa ở vùng bụng và nổi lên đường như giun, nhưng tôi đi khám thì bảo là dị ứng thời tiết. Mong bác sĩ tư vấn cho tôi thường xuyên mẩn ngứa vùng bụng là bị sao?",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-099",
+  "q": "Chào bác sĩ! Bác sĩ cho cháu hỏi thường xuyên đau tức ngực là dấu hiệu của bệnh gì? Bởi vì 1 - 2 tháng nay, cháu thường xuyên bị đau tức ngực, cơn tức nghẹn lên cổ, nó chỉ diễn ra trong vài phút rồi tự khỏi, nếu không cháu chỉ cần uống nước là khỏi luôn. Cháu cảm ơn bác sĩ rất nhiều ạ!",
+  "check": {},
+  "notes": "urgent: Dau tuc nguc tung con keo dai 1-2 thang: can danh gia tim mach.",
+  "urgent": true,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-100",
+  "q": "Xin chào bác sĩ, Tôi năm nay 27 tuổi, giới tính nữ, cách đây không lâu 2 tháng trước tôi đã có quan hệ với 1 người đàn ông và đó là lần đầu tiên của tôi. Chúng tôi không dùng bất kỳ biện pháp phòng tránh nào tuy nhiên chúng tôi mới chỉ quan hệ ngoài không xâm nhập được vào trong vì đó là lần đầu nên khá đau. Kể từ hôm đó cho đến nay tôi chưa quan hệ thêm lần nào ,tuy nhiên tôi đã bị chậm kinh mất 2 tháng kể từ sau tháng có quan hệ đến giờ, trước đó chu kỳ kinh của tôi cũng khá đều. Tôi cũng lo lắng về việc có em bé nên đã dùng que thử , kết quả hiện 1 vạch măcj dù vậy đen nay tôi vẫn chưa có kinh , điều đó làm tôi lo lắng. Bác sĩ có lời khuyên nài cho tôi ? cảm ơn bác sĩ!",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-101",
+  "q": "Xin chào bác sĩ, Con trai tôi năm nay 15 tuổi. Nhịp tim của cháu luôn xấp xỉ ở khoảng 95 -100 nhịp phút. Cháu đi xe đạp đi học với khoảng cách 1,5 km mà cánh tay đã bị tê. Vậy cho tôi hỏi bệnh của cháu là sao? Phải cho cháu khám ở Viện nào? ( bản thân tôi từng bị nhồi máu cơ tim năm 43 tuổi).",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-102",
+  "q": "Xin chào bác sĩ, E bầu 15 tuần, e bị mọc răng khôn, nướu bị viêm sưng đau nhiều, e đã ngậm muối và uống nhiều nước lọc, nhưng không bớt. Bs giúp e pải làm sao ạ",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-103",
+  "q": "tôi bị nổi mân đỏ hai hôm nay, ngứa, k sốt, nổi o mặt, ngực, mặt, lưng, tay chân, tôi đang cho bé bú gần 6 tháng. bác sĩ cho tôi hỏi tôi mắc bệnh gì ạ",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-104",
+  "q": "Chào bác sĩ. Em mang thai lần thứ 2 sau 5 năm. Bác sĩ cho em hỏi, lần mang thai này cần tiêm phòng những loại vắc-xin nào ạ? Mong bác sĩ tư vấn giúp em, em xin cảm ơn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-105",
+  "q": "Cho e hỏi là: bé nhà em được 2 tháng và trên đầu có các vảy ạ. Tắm xong thì sạch và đến sáng hôm sau thì lại bị lên vảy ạ. Bác sĩ tư vấn giúp em ạ.n",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-106",
+  "q": "Xin chào bác sĩ, E bị thủy đậu đang nên rất nhiều bong nước ở mặt và ở đầu cả toàn thân nữa, bác sĩ cho e hỏi e có được tắm và gội đầu băng dầu gội k!",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-107",
+  "q": "Tôi xét nghiệm máu ngày 14.12.2019, chỉ số glucose 13.2 mmol/l, và ngày 27.02.2020 chỉ số glucose 15.4 mmol/l. như vậy tôi có bị bệnh tiểu đường hay không?",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-108",
+  "q": "Bác sĩ ơi, cho em hỏi bị thoát vị đĩa đệm thì có đạp xe đạp (kiểu xe thể thao) được không? Tiếp theo là sau một thời gian mình ko đi xe đạp, bây giờ mình đi lại thì tối ngủ chân có cảm giác nhức và mỏi không ngủ được. Bác sĩ cho e hỏi có cách nào cho đỡ hơn không? Em cảm ơn ạ!",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-109",
+  "q": "Xin chào bác sĩ, Bác sĩ cho e hỏi ba bầu có ăn đc quả dâu tằm và quả xung không vậy. Bà bầu không nên ăn quả gì vậy bs",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-110",
+  "q": "Xin chào bác sĩ, Tôi bị bệnh chàm liệu có cách nào chữa khỏi ko vậy",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-111",
+  "q": "Chào bác sĩ, Em mới sinh em bé được 10 ngày bằng hình thức sinh mổ và khi xét nghiệm PCR cho kết quả dương tính với Covid, em xin được cách ly chữa trị tại nhà, được 3 ngày. Em với chồng em đều không có triệu chứng gì hết kể cả nóng ho sổ mũi, em vẫn cho con bú bằng sữa mẹ bình thường. Vậy bác sĩ cho em hỏi sản phụ mắc Covid cho con bú có ảnh hưởng gì? Em cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-112",
+  "q": "Vợ em đang điều trị bệnh nhiễm khuẩn viêm đa tạng và đang lọc máu được 26 giờ. Vậy em muốn chuyển viện có được không? Bác sĩ nói bệnh nặng.",
+  "check": {},
+  "notes": "urgent: Nhiem khuan da tang dang loc mau: benh nang, hoi chuyen vien.",
+  "urgent": true,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-113",
+  "q": "Xin chào bác sĩ, tôi bị đau và sưng lợi bên trái phía trong cùng hàm răng liệu tôi bị ls vậy a",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-114",
+  "q": "Thưa bác sĩ, gần đây con có triệu chứng là: Đau nửa đầu bên trái Ngồi lâu đứng dậy chóng mặt với cột sống gần phần xương chậu bị nhức Chạy bộ nhanh quá hoặc đi xe máy vào đường gồ ghề não con nhức và buốt Nhói ngực bên phải ạ Không biết con bị bệnh gì? Mong bác sĩ trả lời.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-115",
+  "q": "Chào bác sĩ, Em bị viêm xoang cấp từ hồi bầu tháng thứ 7, đã chữa nhưng không khỏi hẳn, mũi ngạt liên tục, đến giờ đã được gần 4 tháng mũi vẫn ngạt, không biết bệnh mình là bệnh gì. Em đi khám thì có chỗ bảo viêm mũi dị ứng, chỗ thì bảo xoang, em không hắt hơi, không đau đầu, không ho, chỉ ngạt và có dịch chảy xuống họng thôi. Em đang nuôi con nhỏ 2 tuần tuổi. Vậy bác sĩ cho em hỏi nguyên nhân gây ngạt mũi kéo dài là gì? Em cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-116",
+  "q": "chào bác sĩ ,e năm nay 28 tuổi..bác sĩ cho e hỏi: chó đã tiêm 3 mũi vắc xin phòng dại và 1 mũi vắc xin (mũi này khi chó cắn người khác không cần đi tiêm phòng lại )và e năm vừa rồi bị vật nhọn đâm trúng chân ,e đã tiêm uốn ván 3 mũi vậy cho e hỏi: chó đã tiêm đủ như vậy và e đã tiêm uốn ván bị vật nhọn đâm trúng,liệu e có đi tiêm phòng vắc xin uốn ván bị chó cắn nữa k ạ? e cảm ơn bác sĩ",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-117",
+  "q": "Xin chào bác sĩ, cho em hỏi bìu dương vật sưng to, cứng và tinh hoàn không cân đối có nguy hiểm không ạ? Cảm ơn bác sĩ đã tư vấn.",
+  "check": {},
+  "notes": "urgent: Bui sung to, cung, tinh hoan khong can doi: nghi xoan/viem tinh hoan, kham ngay.",
+  "urgent": true,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-118",
+  "q": "Xin chào bác sĩ, Vai em dạo này mỏi, có kêu lục cục ở khớp vai, ít vận động, có cần đi khám không, do công vịêc kế tóan ngồi nhìêu. Em có đi khám ở phòng khám đa kho qúôc tế thì bác sĩ lại cho chụp xquang cổ và kết lụân không bị gì, bác sĩ tư vấn gíup em",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-119",
+  "q": "Xin chào bác sĩ,bé nhà e được 9th thì có thể bổ sung thêm canxi ko ạ? Và uống loại nào ?",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-120",
+  "q": "Chào bác sĩ, Bác sĩ cho em hỏi, em suy giáp mãn tính có được uống mầm đậu nành Healthy Care của Úc không? Em cảm ơn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-121",
+  "q": "Chào bác sĩ, Em bé nhà cháu được 16 tháng tuổi, hơn 10kg. Từ trưa nay, tức ngày 8.1.2020, cháu thấy bé có biểu hiện đái dắt, đi tiểu nhiều lần, nước tiểu ít ướt đũng quần chứ không ướt dầm dề như trước, nước tiểu trong. Bé vẫn nô nghịch bình thường không có biểu hiện gì lạ khác. Vậy bác sĩ cho cháu hỏi bé 16 tháng tiểu dắt nhiều lần trong ngày có nguy hiểm không? Cháu cảm ơn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-122",
+  "q": "Xin chào bác sĩ,tôi xin được hỏi một vấn đề, tôi có một người bạn hay đau bụng dưới đi tiểu thì thấy buốt vậy bạn tôi có phải bị bệnh sỏi thận không",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-123",
+  "q": "chào bác sỉ e bị viêm họng hạt gây tình trạng lâu lâu sốt và khô họng e có nên cắt k ạ , nếu cắt thì bao lâu lành ạ có nguy hiểm k * e muốn hỏi bác sĩ thêm này nữa e phát hiện ra lưỡi gà của e nhỏ hơn người bình thường, tiếng nói e cũng nhỏ hơn người bình thường nhưng lâu lâu e lại e lại nói chuyện bình thường nhưng rất lớn như vậy e đã bị gì ạ",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-124",
+  "q": "Chào bác sĩ! Mình mang thai được 4 tháng mà ốm nghén rất nhiều ạ. Vậy có cách nào trị ốm nghén không ạ? Chào bác sĩ. Ốm nghén quá ăn gì cũng nôn thậm chí uống nước cũng nôn. Nên không ăn không uống được gì thì phải làm sao ạ? Mong bác sĩ tư vấn. Xin cảm ơn. Chào bác sĩ. Vợ đang có bầu khoảng 5 tuần. Vợ em đang bị ốm nghén. Hiện tại không ăn được gì cả. Ăn gì cũng bị nôn ra, trong người cảm thấy mệt. Nhờ bác sĩ tư vấn xem cách nào giảm nôn được không ạ. Cả ngày hôm nay không ăn được gì rồi, em sợ ảnh hưởng tới sức khoẻ. Mong bác sĩ tư vấn. Xin cảm ơn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-125",
+  "q": "Chào bác sĩ, mẹ tôi bị ung thư phổi giai đoạn cuối nên tôi muốn hỏi bác sĩ về thuốc giảm đau cho bà. Thương bà quá ạ. Mong bác sĩ tư vấn giúp tôi. Tôi xin chân thành cảm ơn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-126",
+  "q": "bác sĩ cho tôi hỏi tôi mới đi nội soi dạ dày về có kết quả như này có nguy hiểm k ạ",
+  "check": {},
+  "notes": "needs_image: Hoi ket qua noi soi da day 'nhu nay' nhung khong co noi dung ket qua.",
+  "urgent": false,
+  "needs_image": true
+ },
+ {
+  "id": "real_v1_s4-127",
+  "q": "Chào bác sĩ, Bác sĩ cho em hỏi điều trị u não ác tính độ 3 như thế nào? Bệnh nhân vừa mới phẫu thuật bác sĩ tư vấn giúp em điều trị bằng xạ trị, hóa trị và đặc biệt là Liệu pháp miễn dịch như thế nào? Em cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-128",
+  "q": "Chào bác sĩ ạ. Tôi đi khám tuyến giáp được bác sĩ kết luận có nhân đồng âm thùy phải tirads 3. Bác sĩ bảo tôi chọc sinh thiết kết quả cho thấy tổn thương lành tính. Sau 3 tháng đi khám lại thì bác sĩ kết luận có nhân hỗn hợp thùy phải tirads 4. Bác sĩ giúp tôi đánh giá kết quả điều trị bệnh tuyến giáp Tirads 3, Tirads 4? Cảm ơn sự tư vấn của bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-129",
+  "q": "Xin chào bác sĩ, Em năm nay 36 tuổi. Vợ em 31 tuổi. 2 vc em cưới nhau được 6 năm nhưng chưa có con. Tụi em ko sử dụng biện pháp tránh thai nào. Giờ 2 vc em rất muốn có con. Vậy nhờ bác sĩ tư vấn giúp. Cám ơn bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-130",
+  "q": "Thưa bác sĩ, chồng tôi năm nay 33 tuổi. Anh có dấu hiệu đổ mồ hôi cơ thể rất nhiều về đêm khi ngủ. Vậy tôi xin hỏi chồng tôi có mắc bệnh gì không ạ? Mong được bác sĩ hồi đáp.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-131",
+  "q": "Xin chào bác sĩ, Hiện tôi hay bị buồn bực 2 bên đùi ,tối nào trước khi đi ngủ cũng chỉ muốn mát xa,đấm mạnh vào đùi khu vực xương đùi,đùi non và giữa đùi ,hiện tượng này kéo dài rất lâu rồi.ko biết là do đâu",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-132",
+  "q": "Chào bác sĩ, Hơi thở của em có mùi hôi nặng. Em đã đi khám răng miệng, nhưng không tìm ra nguyên nhân. Vậy bác sĩ cho em hỏi nguyên nhân hơi thở có mùi hôi nặng là gì? Cách điều trị thế nào? Em có tiền sử viêm hang vị và trào ngược dạ dày. Em cảm ơn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-133",
+  "q": "Bác sĩ cho hỏi, chỉ số Ne là 23.1 và Ly là 67.8 trong xét nghiệm máu có ý nghĩa gì vậy ạ?",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-134",
+  "q": "Chào bác sĩ. Hiện tôi bị sưng lợi, răng hàm đau xuất hiện thêm mọng lợi trắng thì phải làm sao ạ? Cảm ơn bác sĩ đã tư vấn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-135",
+  "q": "Chào bác sĩ! Tôi muốn được bác sĩ tư vấn giúp tôi về vấn đề trẻ 11 tuổi bị thừa cân nên làm gì? Xin cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-136",
+  "q": "Chào bác sĩ, Em bị zona thần kinh cách đây 7 năm và bị biến chứng, cứ đến mùa đông là bị đau nhức khi kiến đốt, khi nóng thì thay đổi cảm xúc. Bác sĩ cho em hỏi biến chứng zona thần kinh có thể chữa khỏi không? Thời gian chữa khoảng bao lâu? Mong bác sĩ tư vấn giúp em, em cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-137",
+  "q": "Chào bác sĩ, Cháu nhà em năm nay 16 tuổi. Cháu bị viêm da cơ địa chữa mãi không khỏi. Vậy bác sĩ cho em hỏi điều trị viêm da cơ địa thế nào? Hiện nay, em nghe nói có công nghệ cấy tế bào gốc, công nghệ này có áp dụng để chữa bệnh này không? Em cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-138",
+  "q": "Xin chào bác sĩ, Em 26 tuổi hay bị nhiệt miệng xin bác sỹ tư vấn cách chữa dứt điểm",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-139",
+  "q": "Chào bác sĩ, Cháu bị căng cứng bụng, có cục gì cứng chạy trong bụng, bụng căng thường xuyên, đi tiểu nhiều, đau lưng, nhưng không chán hay bỏ ăn. Cháu chỉ có biểu hiện duy nhất là căng cứng bụng và có cục gì đó chạy trong bụng, ngoài ra sinh hoạt hàng ngày đều bình thường. Vậy bác sĩ cho cháu hỏi căng cứng bụng kèm tiểu nhiều là dấu hiệu bệnh gì? Cháu cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-140",
+  "q": "Chào bác sĩ cho em hỏi, con em 2 tuổi bị sổ mũi, em pha nhầm cho cháu 1 gói Augmentin 500, vậy em có nên cho con tiếp tục uống không bác sĩ. Cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-141",
+  "q": "Chào bác sĩ! Tôi bị mất ngủ kéo dài tối không ngủ được, ngủ không sâu tỉnh giấc, nhiều lần thường xuyên thấy tim đập nhanh. Lâu lâu lại thấy chóng mặt khó thở xây xẩm mặt mày, tôi muốn hỏi triệu chứng chóng mặt, tim đập nhanh khi mất ngủ kéo dài có nguy hiểm không? Cảm ơn bác sĩ!",
+  "check": {},
+  "notes": "urgent: Tim dap nhanh, kho tho, xay xam: can kham.",
+  "urgent": true,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-142",
+  "q": "Chào bác sĩ, em hiện tại đang mang thai tuần 31 nhưng mấy ngày nay vùng bụng lại bị ngứa và nổi mụn nhiều như phát ban, giống tình trạng chất histamin giải phóng ra khiến bị mề đay và gây ngứa rất khó chịu. Em muốn hỏi, bầu 31 tuần bị ngứa bụng, nổi nhiều mụn nên làm gì để cải thiện ạ?",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-143",
+  "q": "Xin chào bác sĩ, Thưa bác sĩ, bà bầu bị Rau bám thấp thì nguy hiểm như thế nào ạ. Tiêu chuẩn cân nặng của thai nhi tuần 27 là bao nhiêu gram ạ. Em xin cảm ơn!",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-144",
+  "q": "Chào Bác sĩ, em năm nay 27 tuổi và em đã tiêm uốn ván cách đây 4 tháng. Cho em hỏi là em tiêm được vắc xin ngừa Covid không ạ? Em cảm ơn Bác sĩ ạ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-145",
+  "q": "Xin chào bác sĩ, em và ck quan hệ vào ngày 8/1/2016 không dùng biện pháp ngừa thai, chu kì KN của em là 30ngày, và ngày đầu tiên của ck trước là ngày 28/12. Vậy BS cho em hỏi là em có khả năng thụ thai ko? em đang mong có em bé, vì chưa tới ngày kinh nguyệt nên em ko biết là có bị trễ kinh hay k? và cho em hỏi 1 điều nữa là nếu có thai thì tiêm phòng cúm có được ko?có ảnh hưởng gì tới em bé hay ko? cảm ơn Bs rất nhiều!!! mong hồi âm sớm từ BS!",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-146",
+  "q": "Dạ e chào bác sỹ, khoảng 3 tháng trước e bị té xe, cẳng chân e có va chạm, e có đi chụp hình rồi xương không bị sao, nhưng sao đến giờ chỗ va chạm ngay xương cẳng chân e vẫn còn đau khi đụng vào ạ! bác sỹ cho e hỏi e có bị sao không ạ?",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-147",
+  "q": "Xin chào bác sĩ, Con em được hơn 6tháng rồi mà lúc chưa ăn dặm bé đi đại tiện thì pân đi bình thường giờ bé ăn dặm mà ngày đi 2-3 lần.mà phân loãng với bé cứ đi ít một. Vậy bs cho em hỏi như vậy là bé bị làm xao và cần phải uống thuốc ji không ạ Em cảm ơn ạ",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-148",
+  "q": "Chào bác sĩ, Em đi xét nghiệm chỉ số Triglyceride 3,9. Bác sĩ cho em hỏi chỉ số Triglyceride trong máu 3.9 mmol/L có nguy hiểm không? Mong được bác sĩ tư vấn sớm, em cảm ơn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-149",
+  "q": "bố cháu bị K phổi giai đoạn 4 đã truyền hoá chất đc 1,5 năm rồi ạ. đến 1 tháng gần đây BS viện K nói thuốc truyền ko đc nữa, phải xạ trị. nhưng vì covid nên ko thể vào viện dtri đc ạ. vì khối u ở cổ to chèn làm bố hay bị ho mà rất đau, Bs có kê thuốc uống có thành phần paracetamol nhưng vẫn đau nhiều ạ. BS cho cháu hỏi bố cháu có thể uống alphatroay hay tiêm voltaren đã giảm đau giảm viêm đc ko ạ? hay uống thuốc gì để khối u giảm kích thích ho và đau ko ạ? xin cảm ơn Bs nhiều!",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-150",
+  "q": "chào bác sĩ con em hồi sanh bé chỉ có 2kí và sanh sớm nên hấp điện hiện tại bé 6 tháng chỉ có 5.5 kí vậy thì bé có đang phát triển bình thường không bác sĩ",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-151",
+  "q": "Chào bác sĩ! Vợ em đang mang thai 38 tuần, bị viêm gan B và có dự định tiêm huyết thanh kháng viêm gan B HBIg. Tuy nhiên, thuốc đó chỉ có ở Hà Nội. Bác sĩ cho em hỏi có thể vận chuyển huyết thanh kháng viêm gan B HBIg đường xa không? Thuốc bị ảnh hưởng gì không? Mong bác sĩ tư vấn giúp em. Em xin cảm ơn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-152",
+  "q": "Chào bác sĩ, Dạo gần đây, em cảm thấy trong mũi bên trái của mình giống như có gì đó cản trở việc hô hấp. Đôi khi, em bị chảy máu mũi nhưng không nhiều. Máu mũi chỉ chảy trong mũi không chảy ra ngoài, tầm 1 tuần hoặc 2 tuần chảy 1 lần. Hiện tại, em vẫn thở được bình thường bằng 2 bên mũi, nhưng bên cánh mũi trái thì có gì đó cản trở. Vậy bác sĩ cho em hỏi ngạt mũi 1 bên kèm chảy máu mũi là bệnh gì? Mong bác sĩ tư vấn, em cảm ơn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-153",
+  "q": "Chào bác sĩ ạ! Tôi 19 tuổi, thường hay nhức đầu khó ngủ, ngủ không sâu giấc, toàn thức lúc nửa đêm rồi không ngủ lại được. Ban ngày nằm đến nhức đầu vẫn không ngủ được, thân mình mệt mỏi, ngồi tại chỗ được 1 tí đứng lên nhanh là đau đầu ngay. Vậy bác sĩ cho tôi hỏi nên khám tổng quát toàn diện hay khám chuyên về phần nào vậy ạ? Mong bác sĩ tư vấn!",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-154",
+  "q": "Chào bác sĩ, Bác sĩ cho em hỏi cần chuẩn bị gì trước khi gây mê ở người bệnh tiểu đường? Mong bác sĩ giải đáp, em cảm ơn bác sĩ.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-155",
+  "q": "Xin chào bác sĩ, Tôi bị đi khám ở Bv Bạch mai. Bị đau dây thần kinh, đau đầu. Bs kê đơn: pregobin( pregabalin 75mg), kiginko(ginkgo biloba40 mg) salomega( DHA 45mg EPA 45 mg). Uốg hết thuốc có thấy đỡ. Nhưg hết thuốc vẫn còn đau xin hỏi tôi cần uốg thêm bao nhiêu nữa và bệnh có khỏi đc ko?",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-156",
+  "q": "Bác sĩ ơi con hiện đang 14 tuổi, bị trễ kinh 1 tháng mà vẫn chưa tới thì có bị sao không ạ? Phan Trâm Anh (2006) Chào bác sĩ. Tại sao đã 2 kì rồi mà em vẫn chưa có kinh? Mong bác sĩ tư vấn. Xin cảm ơn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-157",
+  "q": "Xin chào bác sĩ, Bố cháu có hiện tượng nửa người bên phải bị tê dại, bắt đầu từ đầu lan xuống cơ thể đến tay chân. Khi ngủ dậy thường đau hơn những thời điểm khác trong ngày. Khi trời lạnh sẽ bị tê nhiều hơn đau. Bố cháu nă nay 53 tuổi ạ. Bác sĩ tư vấn giúp cháu đây là triệu chứng bệnh gì và nên chữa trị như nào với ạ",
+  "check": {},
+  "notes": "urgent: Te dai nua nguoi phai o nguoi 53 tuoi: nghi dot quy, kham ngay.",
+  "urgent": true,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-158",
+  "q": "Bác sĩ cho em hỏi là tự tập thể dục ở nhà có tốt hơn là đến các phòng tập thể dục có huấn luyện viên hướng dẫn không, tự tập thể dục ở nhà hiệu quả có cao không",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-159",
+  "q": "Chào bác sĩ. Trước đây, khi mang thai em bị viêm gan B, lúc sinh cháu thì bác sĩ chẩn đoán bé bị tim đập nhanh do bị virus viêm gan B của mẹ ảnh hưởng. Đến năm cháu 17 tuổi thì mất, xét nghiệm cháu bị men tim cao. Vậy cháu mất có phải là do bệnh tim không ạ? Cũng như bệnh viêm gan từ người mẹ có làm cho con bị bệnh tim không? Ngoài ra lúc em mang thai cháu bị tai nạn giao thông, nhưng do em không biết mình có thai nên vẫn chụp X-quang và CT, mổ và uống thuốc. Em xin cám ơn bác sĩ!",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4-160",
+  "q": "Chào bác sĩ, Mấy ngày gần đây lúc nào em cũng thấy trong cổ họng như có vật gì luôn nằm trong đó. Sáng ngủ dậy nhổ nước bọt thường kèm theo máu (ngủ dậy lúc nào cũng vậy). Bác sĩ cho em hỏi vướng cổ họng kèm nước bọt có máu là bệnh gì? Có phải ung thư vòm họng không? Em cảm ơn.",
+  "check": {},
+  "notes": "Cau hoi suc khoe thuong, khong co dau hieu cap cuu, khong tham chieu anh.",
+  "urgent": false,
+  "needs_image": false
+ },
+ {
+  "id": "real_v1_s4_bang-001",
+  "q": "Bệnh viện Chợ Rẫy thành lập năm nào vậy?",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "any": [
+    "1900"
+   ]
+  },
+  "notes": "Cot Nam thanh lap: 1900."
+ },
+ {
+  "id": "real_v1_s4_bang-002",
+  "q": "cho mình hỏi bệnh viện nhi đồng 1 có bao nhiêu giường",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "any": [
+    "1.400",
+    "1400"
+   ]
+  },
+  "notes": "Benh vien Nhi dong 1, cot So giuong: 1.400."
+ },
+ {
+  "id": "real_v1_s4_bang-003",
+  "q": "bv Từ Dũ nằm ở quận mấy",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "any": [
+    "Bến Thành"
+   ]
+  },
+  "notes": "Cot Co so: Phuong Ben Thanh (bang dung ten phuong moi, khong co 'quan')."
+ },
+ {
+  "id": "real_v1_s4_bang-004",
+  "q": "Bệnh viện Nhân dân 115 thuộc cơ quan nào quản lý?",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "any": [
+    "Công lập của thành phố"
+   ]
+  },
+  "notes": "Cot Co quan chu quan trong cho Benh vien Nhan dan 115; chi co cot Nhom 'Cong lap cua thanh pho'. Tra loi chap nhan duoc: dua vao cot Nhom."
+ },
+ {
+  "id": "real_v1_s4_bang-005",
+  "q": "Bệnh viện nào ở TP.HCM có số giường nhiều nhất?",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "any": [
+    "Chợ Rẫy"
+   ]
+  },
+  "notes": "So giuong lon nhat: Benh vien Cho Ray 1.800 (tiep theo Nhan dan 115: 1.600)."
+ },
+ {
+  "id": "real_v1_s4_bang-006",
+  "q": "có bao nhiêu bệnh viện tư nhân trong danh sách",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "any": [
+    "19"
+   ]
+  },
+  "notes": "Dem cot Nhom = 'Tu nhan': 19."
+ },
+ {
+  "id": "real_v1_s4_bang-007",
+  "q": "bệnh viện hùng vương khám bhyt tuyến nào",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "any": [
+    "Tỉnh",
+    "tuyến tỉnh"
+   ]
+  },
+  "notes": "Benh vien Hung Vuong, cot Tuyen BHYT: Tinh."
+ },
+ {
+  "id": "real_v1_s4_bang-008",
+  "q": "website của bệnh viện Đại học Y Dược TP.HCM là gì",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "refusal": true
+  },
+  "notes": "Cot Website cua Benh vien Dai hoc Y Duoc TP.HCM trong bang de trong."
+ },
+ {
+  "id": "real_v1_s4_bang-009",
+  "q": "liệt kê các bệnh viện ở quận 5",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "all": [
+    "Y học cổ truyền"
+   ]
+  },
+  "notes": "Chi 'Benh vien Y hoc co truyen' co cot Co so ghi 'Quan 3, Quan 5'. Bang dung ten phuong moi nen hau het benh vien khong ghi 'Quan 5'."
+ },
+ {
+  "id": "real_v1_s4_bang-010",
+  "q": "bệnh viện Thống Nhất thành lập trước 1975 phải không",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "any": [
+    "1975"
+   ]
+  },
+  "notes": "Benh vien Thong Nhat thanh lap nam 1975, khong phai truoc 1975 (cau tra loi dung la khong)."
+ },
+ {
+  "id": "real_v1_s4_bang-011",
+  "q": "Bệnh viện Việt Pháp khám một lần mất bao nhiêu tiền?",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "refusal": true
+  },
+  "notes": "Khong co Benh vien Viet Phap trong bang va khong co cot gia kham."
+ },
+ {
+  "id": "real_v1_s4_bang-012",
+  "q": "bệnh viện chợ rẫy có bao nhiêu bác sĩ",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "refusal": true
+  },
+  "notes": "Bang khong co cot so luong bac si."
+ },
+ {
+  "id": "real_v1_s4_bang-013",
+  "q": "sdt cấp cứu của bv nhi đồng 2 là gì",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "refusal": true
+  },
+  "notes": "Bang khong co cot so dien thoai cap cuu."
+ },
+ {
+  "id": "real_v1_s4_bang-014",
+  "q": "bệnh viện nhi đồng bao nhiêu giường",
+  "table": "system4/eval/real_domains/data/y_te_benh_vien_tphcm.xlsx",
+  "check": {
+   "ask_back": true,
+   "choices_all": [
+    "Nhi đồng 1",
+    "Nhi đồng 2",
+    "Nhi đồng Thành phố"
+   ]
+  },
+  "notes": "Ba benh vien 'Nhi dong': 1 (1.400 giuong), 2 (1.400), Thanh pho (1.000); cau chua ro."
+ },
+ {
+  "id": "real_v1_s4_bang-015",
+  "q": "Đại học Bách khoa TP.HCM viết tắt là gì?",
+  "table": "system4/eval/real_domains/data/giao_duc_truong_dai_hoc.xlsx",
+  "check": {
+   "any": [
+    "VNUHCM - UT",
+    "VNUHCM-UT"
+   ]
+  },
+  "notes": "Truong Dai hoc Bach khoa, DHQG-HCM: viet tat VNUHCM - UT."
+ },
+ {
+  "id": "real_v1_s4_bang-016",
+  "q": "Trường đại học Kinh tế quốc dân ở đâu?",
+  "table": "system4/eval/real_domains/data/giao_duc_truong_dai_hoc.xlsx",
+  "check": {
+   "refusal": true
+  },
+  "notes": "Khong co Truong Dai hoc Kinh te Quoc dan trong bang (chi co cac truong Kinh te khac)."
+ },
+ {
+  "id": "real_v1_s4_bang-017",
+  "q": "tên tiếng anh của đại học cần thơ là gì",
+  "table": "system4/eval/real_domains/data/giao_duc_truong_dai_hoc.xlsx",
+  "check": {
+   "any": [
+    "Can Tho University"
+   ]
+  },
+  "notes": "Bang chi co cac truong thanh vien cua Dai hoc Can Tho (vi du 'Can Tho University - College of Engineering'), khong co dong rieng cho Dai hoc Can Tho."
+ },
+ {
+  "id": "real_v1_s4_bang-018",
+  "q": "Đại học Ngoại thương thuộc cơ quan chủ quản nào?",
+  "table": "system4/eval/real_domains/data/giao_duc_truong_dai_hoc.xlsx",
+  "check": {
+   "any": [
+    "Bộ Giáo dục và Đào tạo"
+   ]
+  },
+  "notes": "Truong Dai hoc Ngoai thuong, cot Co quan chu quan: Bo Giao duc va Dao tao."
+ },
+ {
+  "id": "real_v1_s4_bang-019",
+  "q": "trường FPT có ký túc xá không",
+  "table": "system4/eval/real_domains/data/giao_duc_truong_dai_hoc.xlsx",
+  "check": {
+   "refusal": true
+  },
+  "notes": "Bang khong co cot ky tuc xa."
+ },
+ {
+  "id": "real_v1_s4_bang-020",
+  "q": "những trường nào trực thuộc Đại học Quốc gia Hà Nội?",
+  "table": "system4/eval/real_domains/data/giao_duc_truong_dai_hoc.xlsx",
+  "check": {
+   "all": [
+    "Công nghệ",
+    "Giáo dục",
+    "Kinh tế",
+    "Khoa học Tự nhiên",
+    "Khoa học Xã hội và Nhân văn",
+    "Ngoại ngữ",
+    "Y Dược",
+    "Việt Nhật",
+    "Luật",
+    "Quản trị và Kinh doanh",
+    "Quốc tế",
+    "Khoa học liên ngành và Nghệ thuật"
+   ]
+  },
+  "notes": "12 truong co cot Thuoc dai hoc = Dai hoc Quoc gia Ha Noi."
+ },
+ {
+  "id": "real_v1_s4_bang-021",
+  "q": "có bao nhiêu trường đại học tư thục trong danh sách",
+  "table": "system4/eval/real_domains/data/giao_duc_truong_dai_hoc.xlsx",
+  "check": {
+   "any": [
+    "71"
+   ]
+  },
+  "notes": "Dem cot Loai hinh = 'Tu thuc': 71."
+ },
+ {
+  "id": "real_v1_s4_bang-022",
+  "q": "UEH là trường nào",
+  "table": "system4/eval/real_domains/data/giao_duc_truong_dai_hoc.xlsx",
+  "check": {
+   "any": [
+    "Kinh tế TP.HCM",
+    "Kinh tế Thành phố Hồ Chí Minh"
+   ]
+  },
+  "notes": "Bang chi co dong 'Phan hieu Dai hoc Kinh te TP.HCM tai Vinh Long' voi viet tat 'UEH Mekong'; UEH la Dai hoc Kinh te TP.HCM."
+ },
+ {
+  "id": "real_v1_s4_bang-023",
+  "q": "liệt kê các trường đại học ở Đà Nẵng",
+  "table": "system4/eval/real_domains/data/giao_duc_truong_dai_hoc.xlsx",
+  "check": {
+   "all": [
+    "Kỹ thuật Y Dược Đà Nẵng",
+    "Thể dục Thể thao Đà Nẵng",
+    "Học viện chính sách và phát triển",
+    "Quảng Nam",
+    "Đông Á",
+    "Kiến trúc Đà Nẵng",
+    "Phan Châu Trinh"
+   ]
+  },
+  "notes": "7 truong co cot Dia diem = Da Nang. Cac truong thuoc Dai hoc Da Nang (cot Thuoc dai hoc) co Dia diem trong, co the them vao."
+ },
+ {
+  "id": "real_v1_s4_bang-024",
+  "q": "Đại học Quốc gia TP.HCM có những trường thành viên nào",
+  "table": "system4/eval/real_domains/data/giao_duc_truong_dai_hoc.xlsx",
+  "check": {
+   "all": [
+    "An Giang",
+    "Bách khoa",
+    "Công nghệ Thông tin",
+    "Khoa học Tự nhiên",
+    "Khoa học Xã hội và Nhân văn",
+    "Kinh tế – Luật",
+    "Quốc tế",
+    "Khoa học Sức khoẻ",
+    "Bến Tre"
+   ]
+  },
+  "notes": "9 dong co cot Thuoc dai hoc = Dai hoc Quoc gia TP.HCM (8 truong va Phan hieu Ben Tre)."
+ },
+ {
+  "id": "real_v1_s4_bang-025",
+  "q": "học phí đại học Bách khoa năm nay bao nhiêu",
+  "table": "system4/eval/real_domains/data/giao_duc_truong_dai_hoc.xlsx",
+  "check": {
+   "refusal": true
+  },
+  "notes": "Bang khong co cot hoc phi."
+ },
+ {
+  "id": "real_v1_s4_bang-026",
+  "q": "điểm chuẩn ngành CNTT của đại học Công nghiệp là mấy điểm",
+  "table": "system4/eval/real_domains/data/giao_duc_truong_dai_hoc.xlsx",
+  "check": {
+   "refusal": true
+  },
+  "notes": "Bang khong co cot diem chuan."
+ },
+ {
+  "id": "real_v1_s4_bang-027",
+  "q": "trường đại học sư phạm ở đâu",
+  "table": "system4/eval/real_domains/data/giao_duc_truong_dai_hoc.xlsx",
+  "check": {
+   "ask_back": true,
+   "choices_all": [
+    "Sư phạm Hà Nội",
+    "Sư phạm Thành phố Hồ Chí Minh"
+   ]
+  },
+  "notes": "Nhieu truong 'Su pham' (Ha Noi, TP.HCM, Hue, Da Nang, Thai Nguyen...); cau chua ro."
+ },
+ {
+  "id": "real_v1_s4_bang-028",
+  "q": "Văn Miếu - Quốc Tử Giám được xếp hạng di tích quốc gia đặc biệt năm nào?",
+  "table": "system4/eval/real_domains/data/du_lich_di_tich_dac_biet.xlsx",
+  "check": {
+   "any": [
+    "2012"
+   ]
+  },
+  "notes": "Van Mieu - Quoc Tu Giam: nam xep hang 2012 (dot 2)."
+ },
+ {
+  "id": "real_v1_s4_bang-029",
+  "q": "Thành nhà Hồ ở tỉnh nào vậy",
+  "table": "system4/eval/real_domains/data/du_lich_di_tich_dac_biet.xlsx",
+  "check": {
+   "any": [
+    "Thanh Hóa"
+   ]
+  },
+  "notes": "Thanh nha Ho: Xa Tay Do, tinh Thanh Hoa."
+ },
+ {
+  "id": "real_v1_s4_bang-030",
+  "q": "di tích Mỹ Sơn thuộc hạng mục nào",
+  "table": "system4/eval/real_domains/data/du_lich_di_tich_dac_biet.xlsx",
+  "check": {
+   "any": [
+    "Di tích kiến trúc nghệ thuật"
+   ]
+  },
+  "notes": "Khu den thap My Son: Hang muc Di tich kien truc nghe thuat."
+ },
+ {
+  "id": "real_v1_s4_bang-031",
+  "q": "Hoàng thành Thăng Long xếp hạng đợt mấy",
+  "table": "system4/eval/real_domains/data/du_lich_di_tich_dac_biet.xlsx",
+  "check": {
+   "any": [
+    "Đợt 1",
+    "đợt 1"
+   ]
+  },
+  "notes": "Khu trung tam Hoang thanh Thang Long: Dot 1 (2009)."
+ },
+ {
+  "id": "real_v1_s4_bang-032",
+  "q": "Hà Nội có bao nhiêu di tích quốc gia đặc biệt?",
+  "table": "system4/eval/real_domains/data/du_lich_di_tich_dac_biet.xlsx",
+  "check": {
+   "any": [
+    "22"
+   ]
+  },
+  "notes": "Dem cot Dia diem chua 'Ha Noi': 22 di tich."
+ },
+ {
+  "id": "real_v1_s4_bang-033",
+  "q": "liệt kê di tích đặc biệt ở Quảng Nam",
+  "table": "system4/eval/real_domains/data/du_lich_di_tich_dac_biet.xlsx",
+  "check": {},
+  "notes": "Bang khong co dong nao ghi 'Quang Nam' (My Son va Hoi An nay ghi thanh pho Da Nang do sap nhap dia gioi); cau hoi theo ten tinh cu nen dap an khong ro.",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4_bang-034",
+  "q": "di tích nào được unesco công nhận",
+  "table": "system4/eval/real_domains/data/du_lich_di_tich_dac_biet.xlsx",
+  "check": {
+   "all": [
+    "Hoàng thành Thăng Long",
+    "Phong Nha",
+    "Cố đô Huế",
+    "Hội An",
+    "Mỹ Sơn",
+    "Hạ Long",
+    "Thành nhà Hồ"
+   ]
+  },
+  "notes": "7 dong co Ghi chu 'Duoc UNESCO cong nhan' (them Trang An thuoc quan the Di san 2014)."
+ },
+ {
+  "id": "real_v1_s4_bang-035",
+  "q": "năm 2012 có những di tích nào được xếp hạng đặc biệt",
+  "table": "system4/eval/real_domains/data/du_lich_di_tich_dac_biet.xlsx",
+  "check": {
+   "all": [
+    "Cố đô Hoa Lư",
+    "Tôn Đức Thắng",
+    "Trung ương cục miền Nam",
+    "Nhà tù Côn Đảo",
+    "Yên Thế",
+    "Pác Bó",
+    "Tân Trào",
+    "Thành nhà Hồ",
+    "Tràng An",
+    "Văn Miếu",
+    "Kim Liên",
+    "Định Hóa",
+    "Côn Sơn",
+    "Cổ Loa",
+    "Đền Trần",
+    "Bạch Đằng",
+    "Yên Tử",
+    "Lam Kinh",
+    "Nguyễn Du",
+    "Chùa Keo",
+    "Óc Eo",
+    "Gò Tháp",
+    "Ba Bể",
+    "Cát Tiên"
+   ]
+  },
+  "notes": "24 di tich co Nam xep hang = 2012 (dot 2 va dot 3)."
+ },
+ {
+  "id": "real_v1_s4_bang-036",
+  "q": "đi từ Hà Nội tới Thành nhà Hồ mất bao lâu",
+  "table": "system4/eval/real_domains/data/du_lich_di_tich_dac_biet.xlsx",
+  "check": {
+   "refusal": true
+  },
+  "notes": "Bang khong co cot khoang cach hay thoi gian di chuyen."
+ },
+ {
+  "id": "real_v1_s4_bang-037",
+  "q": "giá vé vào Hoàng thành Thăng Long bao nhiêu",
+  "table": "system4/eval/real_domains/data/du_lich_di_tich_dac_biet.xlsx",
+  "check": {
+   "refusal": true
+  },
+  "notes": "Bang khong co cot gia ve."
+ },
+ {
+  "id": "real_v1_s4_bang-038",
+  "q": "Văn Miếu mở cửa mấy giờ",
+  "table": "system4/eval/real_domains/data/du_lich_di_tich_dac_biet.xlsx",
+  "check": {
+   "refusal": true
+  },
+  "notes": "Bang khong co cot gio mo cua."
+ },
+ {
+  "id": "real_v1_s4_bang-039",
+  "q": "có mấy di tích đặc biệt thuộc loại lịch sử cách mạng",
+  "table": "system4/eval/real_domains/data/du_lich_di_tich_dac_biet.xlsx",
+  "check": {},
+  "notes": "Cot Hang muc co 'Di tich lich su' nhung khong co phan loai 'lich su cach mang'; cau hoi dung khai niem khong co trong bang.",
+  "drop": true
+ },
+ {
+  "id": "real_v1_s4_bang-040",
+  "q": "thành cổ nằm ở tỉnh nào",
+  "table": "system4/eval/real_domains/data/du_lich_di_tich_dac_biet.xlsx",
+  "check": {
+   "any": [
+    "Quảng Trị"
+   ]
+  },
+  "notes": "Chi co mot dong ten chua 'Thanh co': Thanh co Quang Tri (tinh Quang Tri); cau nhap du dinh mo ho nhung bang khong mo ho."
+ }
+]

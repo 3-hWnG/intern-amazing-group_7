@@ -1,6 +1,6 @@
 # Minh chứng cho bảng Evaluation Metrics (slide 2: Strict, slide 3: Friendly)
 
-Tài liệu chuẩn bị cho buổi gặp mentor. Mỗi dòng trong hai bảng của slide được truy ngược về: **con số này là gì, đếm trên mẫu nào, file nào chứa kết quả gốc, chạy lại bằng lệnh nào, và mentor có thể hỏi gì.** Viết ngày 2026-10-15, đối chiếu với repo ở commit `ca06c43` (nhánh `merge_sys_3_4`).
+Tài liệu chuẩn bị cho buổi gặp mentor. Mỗi dòng trong hai bảng của slide được truy ngược về: **con số này là gì, đếm trên mẫu nào, file nào chứa kết quả gốc, chạy lại bằng lệnh nào, và mentor có thể hỏi gì.** Viết ngày 2026-10-15, đối chiếu với repo ở commit `ca06c43` (nhánh `merge_sys_3_4`). **Cập nhật 2026-10-22:** thêm số đo trên câu hỏi thật (mục 0b).
 
 ## 0. Cách đọc tài liệu này
 
@@ -23,11 +23,59 @@ Tóm tắt trạng thái các dòng của slide (chi tiết ở mục 3 và 4):
 
 **Điều cần làm trước buổi gặp (ưu tiên cao nhất):** sửa slide 3 theo mục 4b; hỏi người viết slide nguồn cũ của các số lệch nếu muốn giữ chúng. Với slide 2: dòng 7 và 8 vẫn chưa đo trên máy không GPU (mục 6).
 
+## 0b. Cập nhật 22/10/2026: số đo trên câu hỏi thật (real_v1) và số nên dùng trên slide
+
+Từ 22/10 đã có bộ đo **không do nhóm hoặc AI soạn**: câu hỏi của người dân trên Cổng dịch vụ công (Strict, 300 câu) và câu hỏi thật hoặc do người viết trên Wikipedia (Friendly, 200 câu). Chạy **một lần**, nhãn đã khoá trước khi chạy. Báo cáo một trang: [EVAL_THAT_V1.md](EVAL_THAT_V1.md). Kết quả thô: `eval/saved_results/2026-10-22_real_v1/` và `system4/eval/saved_results/2026-10-22_real_v1/`.
+
+**Quy tắc phân loại cho slide.** Mọi bộ do nhóm hoặc agent soạn (553 câu "mù" snapshot 1.350, bộ khuôn, bài thi Friendly 26 câu, 22 tình huống, bộ 16 câu Tìm web) chuyển thành **"dev / hồi quy"**: dùng để bắt lỗi khi sửa code, không dùng làm số chính. Số chính của slide lấy từ real_v1. Không gọi `pseudo_real` hay `cases_real_log_v1` là "thật".
+
+### Số real_v1 nên đưa vào slide 2 (Strict)
+
+| Dòng slide | Số real_v1 (282 câu, chế độ luật, không GPU, DB bản 3) | Mức bằng chứng |
+|---|---|---|
+| Có tìm đúng thủ tục không? (top-1 / top-3) | **12,7% (7/55)**, CI 6,3–24,0% / 21,8% (12/55); MRR 0,227 | 🟢 |
+| Phản ứng đúng kiểu | **56,0% (158/282)**, CI 50,2–61,7% | 🟢 |
+| Hỏi lại đúng (recall) | **1/7** (14,3%); mẫu rất nhỏ | 🟢 |
+| Từ chối đúng (recall) | **52,7% (116/220)**, CI 46,1–59,2% | 🟢 |
+
+Cách nói với mentor: "Trên câu hỏi thật của người dân, Strict đạt 56% hành vi đúng và 13% top-1. Thấp hơn nhiều so với bộ nhóm soạn (72–78%), vì câu thật dài, nhiều luật, xử phạt, khiếu nại; hệ thống trả lời thay vì từ chối ở 101/220 câu ngoài phạm vi, và chọn nhầm một thủ tục (`1.115406`) ở 26 câu." Đây là số trung thực, không nên giấu.
+
+### Số real_v1 nên đưa vào slide 3 (Friendly)
+
+| Dòng slide | Số real_v1 (177 câu, `inst02`, GTX 1660 SUPER) | Mức bằng chứng |
+|---|---|---|
+| Trả lời đúng từ văn bản (Du lịch, 1 bài Wikipedia, 50 câu) | **92,0% (46/50)**, CI 81–97% | 🟢 |
+| Trả lời đúng từ bảng (26 câu) | **65,4% (17/26)**, CI 46–81% | 🟢 |
+| Từ chối khi dữ liệu không có (14 câu) | **71,4% (10/14)**, CI 45–88% | 🟢 |
+| Hỏi lại khi mơ hồ (2 câu) | 0/2 (quá ít câu để kết luận) | 🟡 |
+| Y tế (85 câu): khuyên khám | 94,1% (80/85); câu `urgent` khuyên cấp cứu **4/10** | 🟢 |
+| Thời gian | câu đầu median 13,0 s, cả câu median 19,4 s, p90 32,4 s (máy 6 GB, GPU chia cho reranker) | 🟢 |
+
+Giới hạn cần nói kèm: nhãn do hai lượt AI gán (κ 0,753 ở Strict); Du lịch văn bản chỉ phủ một bài Wikipedia; 40 câu bảng soạn khi chỉ nhìn tên cột và được người duyệt; Y tế chỉ đo bằng luật chữ.
+
+### Số cũ lệch trên slide và số nên dùng
+
+| Slide | Số cũ trên slide | Số nên dùng | Nguồn | Mục chi tiết |
+|---|---|---|---|---|
+| 3, dòng 1 | đúng 92% (72/78) | **96,2% (75/78)**, CI 89–99% (cùng bài thi 26 câu, đo lại 15/10); hai số chồng khoảng tin cậy, nói "92–96%" | `system4/eval/saved_results/2026-10-15/inst02.json` | 4b.A |
+| 3, dòng 6 | 21/22 tình huống | **17/22** (đo lại 15/10); chưa điều tra 5 ca trượt | `inst02_nv2.json` | 4b.A |
+| 3, dòng 7 (GPU) | chữ đầu / cả câu 1,6 / 2,9 s; theo loại câu 1,7–4,7 / 2,4–7,1 s | median 3,8 / 5,3 s (bài thi); theo loại câu 1,1–9,4 / 2,3–11,4 s (chậm hơn slide 1,3–2,3 lần ở mọi loại câu) | `inst02.json` | 4b.B |
+| 3, dòng 8 | CPU chậm 4–8 lần | **khoảng 3 lần** (11,9 / 19,9 s; lớn nhất 63 s) | `inst02+cpu.json` | 4b.C |
+| 3, dòng 9 | 31/32 so với 32/32 | **25/26 trên cả CPU và GPU** (cùng một câu trượt); chưa có "32 câu" | `inst02+cpu.json` | 4b.C |
+| 3, dòng 10 | Tìm web: 14/16 tìm được kết quả | **16/16 có nguồn có URL; 14/16 có `[n]`** (bộ 16 câu do nhóm soạn) | `inst02_web.json` | 4b.D |
+| 3, dòng 11 | Tìm web: 0/16 bịa số | **chưa đo** (cần đọc tay); không đưa lên slide | | 4b.D |
+| 2, dòng 7 | dưới 0,2 s, có hay không GPU đều vậy | 1 người p95 ~0,19 s; **10 người p95 1,18 s**; máy không GPU **chưa đo** | `load_10users_real.json` | 3, dòng 7 |
+| 2, dòng 8 | ~1,5 s (GPU), ~7 s (CPU) | 10 người có GPU: p50 2,9 s / p95 4,0 s; "7 s" là timeout của bước LLM, **không phải số đo**; bỏ hoặc ghi "chưa đo" | `ARCHITECTURE_REVIEW_2026-10-15.md` §5.4 | 3, dòng 8 |
+| 2, dòng 1–4 | top-1 73%, hành vi 78%, hỏi lại 47%, từ chối 90% (553 mù, snapshot 1.350) | Trên bản 3 (518 ca mù): top-1 **72%**, hành vi **77%**, hỏi lại **50%**, từ chối 90%; ghi rõ "bộ do nhóm soạn, dùng cho hồi quy" | `docs/KET_QUA_THUC_THI_2026-10-23.md` | 3, dòng 1–4 |
+| 2, câu chú thích dòng 5 | số liệu lấy trên 553 câu | mẫu thật của "87% không bịa số" là **92 ca RAGAS-lite**, không phải 553 | `ragas_lite_d2.json` | 3, dòng 5 |
+
+Các số 🟡/🔴 ở mục 3–4 giữ nguyên nhãn cho tới khi có file thô mới.
+
 ## 1. Các bộ test và ý nghĩa của "bộ mù"
 
 ### 1.1 Ai soạn, soạn thế nào
 
-Mọi bộ test đều do nhóm hoặc agent (Claude) soạn. **Chưa có câu hỏi hay nhãn nào do người ngoài nhóm hoặc chuyên gia pháp lý cung cấp.** Đáp án của bộ Strict là mã thủ tục (`proc_id`) do người soạn gán từ DB, kèm các "giả định" ghi trong `eval/H3_ASSUMPTIONS.md`, `H4_ASSUMPTIONS.md`, `H5_ASSUMPTIONS.md`, `H6_ASSUMPTIONS.md`, `PSEUDO_REAL_ASSUMPTIONS.md`. Đây là điểm yếu số một nếu mentor hỏi "đáp án chuẩn từ đâu ra".
+Các bộ ở mục này đều do nhóm hoặc agent (Claude) soạn; **chưa có chuyên gia pháp lý rà nhãn**. Bộ real_v1 (mục 0b, từ 22/10) dùng câu hỏi thật của người dân (câu hỏi không do nhóm viết), nhưng nhãn của nó vẫn do hai lượt AI gán. Đáp án của bộ Strict là mã thủ tục (`proc_id`) do người soạn gán từ DB, kèm các "giả định" ghi trong `eval/H3_ASSUMPTIONS.md`, `H4_ASSUMPTIONS.md`, `H5_ASSUMPTIONS.md`, `H6_ASSUMPTIONS.md`, `PSEUDO_REAL_ASSUMPTIONS.md`. Đây là điểm yếu số một nếu mentor hỏi "đáp án chuẩn từ đâu ra".
 
 Bộ "log thật" (`eval/cases_real_log_v1.json`) **không phải log thật**: dự án chưa deploy nên chưa có người dùng thật. File `eval/REAL_LOG_v1.md` ghi rõ điều này; đó là 29 câu viết tay theo văn phong người dân.
 
@@ -330,7 +378,7 @@ Phát biểu này nằm ở ba slide và có cả bằng chứng mạnh nhất c
 | "Chạy không GPU thì sao?" | Strict (luật) không dùng GPU ở phần truy xuất, nên nhanh. Với Friendly và bước sinh chữ: **cần số đo thật**; nếu chưa đo thì nói chưa đo. |
 | "Friendly 92% đo trên gì?" | Bài thi 26 câu exam × 3 lần trên dữ liệu giả (danh sách lớp), chính sách, du lịch; chấm bằng luật. Giới hạn: câu do Claude soạn, mẫu nhỏ, kiến thức chung của model 4B dao động. |
 | "Sao không dùng RAGAS?" | Đã thử và kiểm giám khảo: bắt được 51% ý bịa cài sẵn, κ 0,02 / 0,20. Nên dùng chỉ số luật. Chuẩn κ là LLM, chưa phải người; phiếu 15 ca chưa điền. |
-| "Có dữ liệu người dùng thật không?" | Chưa. Bộ "log thật" là mô phỏng (`REAL_LOG_v1.md`). Nút 👍/👎 đã lưu cặp (câu hỏi, câu trả lời) kèm ngữ cảnh để dùng khi deploy; hiện có 3 👍 / 1 👎. |
+| "Có dữ liệu người dùng thật không?" | Chưa có log người dùng thật. Bộ "log thật" cũ là mô phỏng (`REAL_LOG_v1.md`). Từ 22/10 có bộ **câu hỏi thật của người dân** trên Cổng dịch vụ công (real_v1, mục 0b); đó là câu hỏi công khai, không phải log của hệ thống. Nút 👍/👎 đã lưu cặp (câu hỏi, câu trả lời) kèm ngữ cảnh để dùng khi deploy; hiện có 3 👍 / 1 👎. |
 
 ## 8. Danh sách file chứng cứ (tất cả đường dẫn tính từ thư mục gốc repo `merged/`)
 
@@ -354,4 +402,8 @@ Phát biểu này nằm ở ba slide và có cả bằng chứng mạnh nhất c
 | Tìm web, Strict A/B | `eval/results/websearch_ab.md`, `eval/run_websearch_ab.py` | **ngoài git** |
 | Ghi chú tài liệu cũ mâu thuẫn với code | `docs/SYSTEM4_SU_THAT.md` | trong git |
 | Tóm tắt 1 phút cho mentor | `docs/TOM_TAT_EVAL_CHO_MENTOR.md` | trong git |
+| real_v1: báo cáo một trang | `docs/EVAL_THAT_V1.md` | chưa commit |
+| real_v1: câu hỏi, nhãn, khoá | `eval/real_v1/`, `system4/eval/real_v1/` (`LOCK.md`) | chưa commit |
+| real_v1: kết quả thô Strict | `eval/saved_results/2026-10-22_real_v1/` | chưa commit |
+| real_v1: kết quả thô Friendly | `system4/eval/saved_results/2026-10-22_real_v1/` | chưa commit |
 | Bản đồ bài báo cho từng lựa chọn thiết kế | `eval/CRITERIA.md` mục 4, `docs/research paper/PAPER_LIST_33.md` | trong git |

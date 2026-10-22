@@ -1,0 +1,19 @@
+{
+ "n": 282,
+ "behavior_ok": 158,
+ "answer_n": 55,
+ "top1": 7,
+ "top3": 12,
+ "mrr": 0.22727272727272727,
+ "confusion": {
+  "apologize->answer": 101,
+  "apologize->apologize": 116,
+  "clarify->apologize": 3,
+  "answer->answer": 41,
+  "answer->apologize": 13,
+  "answer->clarify": 1,
+  "clarify->answer": 3,
+  "apologize->clarify": 3,
+  "clarify->clarify": 1
+ }
+}

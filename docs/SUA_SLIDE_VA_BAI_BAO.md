@@ -28,3 +28,15 @@ Slide: theo mô tả trong [MINH_CHUNG_EVALUATION_SLIDE.md](MINH_CHUNG_EVALUATIO
 | P5 | 244 | phí công bố cho 467/1.350 thủ tục (34,6%) | bản 3: **549/1.517 (36,2%)**; có số tiền cụ thể: 170 | đếm `fees_clean` |
 | P6 | 250 | "eliminates phantom …" (khẳng định tuyệt đối) | Không có phép đo nào chứng minh "loại bỏ hoàn toàn"; nên viết "giảm" kèm số đo | |
 | P7 | 252 (hướng phát triển) | mở rộng phí theo tỉnh | Đã có: bản riêng của 34 tỉnh, thẻ hỏi tỉnh (D5) — có thể chuyển từ "hướng phát triển" sang "đã làm" | G4.4 |
+
+## Cập nhật 22/10: số từ bộ câu hỏi thật (real_v1)
+
+Danh sách để trưởng nhóm quyết; **không tự sửa slide hay bài báo**. Số chi tiết và mức bằng chứng: [MINH_CHUNG_EVALUATION_SLIDE.md](MINH_CHUNG_EVALUATION_SLIDE.md) mục 0b; báo cáo: [EVAL_THAT_V1.md](EVAL_THAT_V1.md).
+
+| # | Chỗ | Hiện nói | Sự thật bây giờ | Nguồn |
+|---|---|---|---|---|
+| S10 | Slide 2 (Strict), mọi dòng tỷ lệ | số trên bộ "mù" do nhóm soạn (top-1 72–73%, hành vi 77–78%) | Đưa thêm số trên câu hỏi thật: hành vi **56,0%** (158/282), top-1 **12,7%** (7/55). Gọi bộ nhóm soạn là "dev / hồi quy" | `eval/saved_results/2026-10-22_real_v1/report.md` |
+| S11 | Slide 2, dòng từ chối | từ chối đúng 90% (52/58) | Trên câu thật: **52,7%** (116/220); hệ thống trả lời ở 101/220 câu ngoài phạm vi | như trên |
+| S12 | Slide 3 (Friendly) | 92% đúng, 83% không bịa, 100% chào, 21/22 tình huống | Thêm số câu thật/Wikipedia: Du lịch văn bản **92,0%** (46/50), bảng **65,4%** (17/26), từ chối **71,4%** (10/14), Y tế `urgent` khuyên cấp cứu **4/10** | `system4/eval/saved_results/2026-10-22_real_v1/report.md` |
+| S13 | Mọi chỗ nói "bộ mù" cho bộ sinh tự động, bộ real-log hoặc pseudo_real | "mù", "thật" | Chỉ real_v1 là câu hỏi thật; các bộ khác là "dev / hồi quy". Nhãn real_v1 do hai lượt AI gán, chưa có lượt kiểm của người | `docs/EVAL_THAT_V1.md` §6 |
+| P8 | Bài báo, phần đánh giá | số top-1 75,3% trên HOLDOUT-4 | Thêm một đoạn: trên 282 câu hỏi thật, top-1 12,7%, hành vi 56,0%; nêu rõ nhãn do AI và cỡ mẫu nhỏ | `eval/saved_results/2026-10-22_real_v1/` |
