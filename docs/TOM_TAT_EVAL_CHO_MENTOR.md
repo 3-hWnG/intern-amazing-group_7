@@ -35,3 +35,18 @@ Viết lại 2026-10-14. Mọi số đo trên code hiện tại, `S3_USE_LLM=0`,
 
 ## Còn thiếu (nói thẳng nếu bị hỏi)
 Domain Trò chuyện chung chưa có số đo; tỷ lệ dữ liệu đúng nguồn chưa có (phiếu 50 bản ghi chưa điền); chưa đo máy không GPU và Planner bằng LLM; mọi bộ test do nhóm hoặc agent soạn, chưa có người ngoài kiểm.
+
+## Cập nhật 22/10/2026: câu hỏi thật (real_v1)
+
+Từ 22/10 có bộ đo trên **câu hỏi thật của người dân** (Strict, 282 câu sau khi bỏ câu cụt) và câu hỏi thật hoặc do người viết trên Wikipedia (Friendly, 177 câu); chạy một lần, nhãn khoá trước khi chạy. Báo cáo: `docs/EVAL_THAT_V1.md`.
+
+| Điều | Số | Ghi chú |
+|---|---|---|
+| Strict, hành vi đúng | 158/282, **56,0%** (50,2–61,7%) | thấp hơn bộ nhóm soạn (77–78%) |
+| Strict, top-1 / top-3 | 7/55, **12,7%** / 12/55, 21,8% | chỉ 55 câu có đáp án |
+| Strict, từ chối đúng | 116/220, 52,7% | trả lời ở 101/220 câu ngoài phạm vi |
+| Friendly, Du lịch văn bản / bảng | 92,0% (46/50) / 65,4% (17/26) | một bài Wikipedia; 40 câu bảng soạn khi chỉ nhìn tên cột |
+| Friendly, từ chối | 71,4% (10/14) | |
+| Friendly, Y tế `urgent` khuyên cấp cứu | 4/10 | điểm yếu an toàn |
+
+**Được nói:** có bộ câu hỏi thật của người dân, nhãn khoá trước khi chạy, chạy một lần, báo cả số thấp. **Không nói:** "nhãn do chuyên gia" hoặc "độc lập giữa hai người" (hai lượt đều là AI); "log người dùng thật" (đây là câu hỏi công khai trên Cổng).
