@@ -1,0 +1,4 @@
+commit b7010d1 dirty=1 2026-10-25 01:42:38
+v3a_new exit=0 01:48:11
+v3a_sqlraw exit=0 01:52:53
+all done 01:52:53

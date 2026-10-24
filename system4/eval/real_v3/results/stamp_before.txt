@@ -1,0 +1,8 @@
+commit 7e78438 2026-10-24 21:50:19
+v3b_rag exit=1 21:53:21
+v3b_old exit=0 22:09:13
+v3b_fp exit=0 22:19:39
+v3b_fpagg exit=0 22:26:46
+all done 22:26:46
+v3b_rag rerun (lượt 1 server chết lúc nạp dữ liệu, chưa trả lời câu nào) 22:27:16
+v3b_rag exit=0 22:37:33
