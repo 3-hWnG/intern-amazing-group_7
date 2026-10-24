@@ -1,0 +1,86 @@
+[inst02+v3b_rag] cài đặt: {'FRIENDLY_MODEL': 'qwen3:4b-instruct-2507-q4_K_M', 'FRIENDLY_TEMPERATURE': 0.2, 'FASTPATH_SQL': False, 'FASTPATH_ENABLED': False, 'TABLE_TOOL': False}
+  52 câu × 1 lần
+[thermal] 71.1 °C >= 66.0 -> tạm dừng (nạp chinh_sach_team7.docx)
+[thermal] 60.1 °C, chạy tiếp sau 11 s
+  nạp chinh_sach_team7.docx…
+  nạp hanh_chinh_tinh_thanh.xlsx…
+[thermal] 69.1 °C >= 66.0 -> tạm dừng (nạp giao_thong_san_bay.xlsx)
+[thermal] 60.1 °C, chạy tiếp sau 11 s
+  nạp giao_thong_san_bay.xlsx…
+[thermal] 75.1 °C >= 66.0 -> tạm dừng (nạp moi_truong_vuon_quoc_gia.xlsx)
+[thermal] 61.1 °C, chạy tiếp sau 11 s
+  nạp moi_truong_vuon_quoc_gia.xlsx…
+[thermal] 76.1 °C >= 66.0 -> tạm dừng (nạp nang_luong_thuy_dien.xlsx)
+[thermal] 60.1 °C, chạy tiếp sau 11 s
+  nạp nang_luong_thuy_dien.xlsx…
+Traceback (most recent call last):
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpx\_transports\default.py", line 101, in map_httpcore_exceptions
+    yield
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpx\_transports\default.py", line 250, in handle_request
+    resp = self._pool.handle_request(req)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpcore\_sync\connection_pool.py", line 256, in handle_request
+    raise exc from None
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpcore\_sync\connection_pool.py", line 236, in handle_request
+    response = connection.handle_request(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpcore\_sync\connection.py", line 103, in handle_request
+    return self._connection.handle_request(request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 136, in handle_request
+    raise exc
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 106, in handle_request
+    ) = self._receive_response_headers(**kwargs)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 177, in _receive_response_headers
+    event = self._receive_event(timeout=timeout)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpcore\_sync\http11.py", line 217, in _receive_event
+    data = self._network_stream.read(
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpcore\_backends\sync.py", line 126, in read
+    with map_exceptions(exc_map):
+         ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hoang Nhan PC\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpcore\_exceptions.py", line 14, in map_exceptions
+    raise to_exc(exc) from exc
+httpcore.ReadError: [WinError 10054] An existing connection was forcibly closed by the remote host
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\system4\eval\bench.py", line 478, in <module>
+    {"run": run, "compare": compare, "swap": swap, "strict": strict}[args.cmd](args)
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\system4\eval\bench.py", line 317, in run
+    cl.ensure_datasets({k for c in cases for k in c["datasets"]} | {"policy"} if args.suites else None)   # chọn suite: chỉ nạp bộ dữ liệu cần
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\system4\eval\bench.py", line 185, in ensure_datasets
+    d = {x["filename"]: x for x in self.c.get("/s4/datasets").json()["datasets"]}.get(path.name, {})
+                                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpx\_client.py", line 1053, in get
+    return self.request(
+           ^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpx\_client.py", line 825, in request
+    return self.send(request, auth=auth, follow_redirects=follow_redirects)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpx\_client.py", line 914, in send
+    response = self._send_handling_auth(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpx\_client.py", line 942, in _send_handling_auth
+    response = self._send_handling_redirects(
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpx\_client.py", line 979, in _send_handling_redirects
+    response = self._send_single_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpx\_client.py", line 1014, in _send_single_request
+    response = transport.handle_request(request)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpx\_transports\default.py", line 249, in handle_request
+    with map_httpcore_exceptions():
+         ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\Hoang Nhan PC\AppData\Local\Programs\Python\Python312\Lib\contextlib.py", line 158, in __exit__
+    self.gen.throw(value)
+  File "D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\.venv\Lib\site-packages\httpx\_transports\default.py", line 118, in map_httpcore_exceptions
+    raise mapped_exc(message) from exc
+httpx.ReadError: [WinError 10054] An existing connection was forcibly closed by the remote host
