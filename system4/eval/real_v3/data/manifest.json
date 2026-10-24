@@ -1,0 +1,24 @@
+{
+ "pages": {
+  "75581808": "Đơn vị hành chính cấp tỉnh (Việt Nam)",
+  "75639956": "Danh sách sân bay tại Việt Nam",
+  "75659364": "Danh sách vườn quốc gia tại Việt Nam",
+  "75522391": "Danh sách thủy điện tại Việt Nam"
+ },
+ "license": "CC BY-SA 4.0 (Wikipedia tiếng Việt)",
+ "files": {
+  "hanh_chinh_tinh_thanh.xlsx": {
+   "Tỉnh thành": 34
+  },
+  "giao_thong_san_bay.xlsx": {
+   "Sân bay dân dụng": 22,
+   "Năng lực khai thác": 22
+  },
+  "moi_truong_vuon_quoc_gia.xlsx": {
+   "Vườn quốc gia": 37
+  },
+  "nang_luong_thuy_dien.xlsx": {
+   "Thủy điện": 372
+  }
+ }
+}

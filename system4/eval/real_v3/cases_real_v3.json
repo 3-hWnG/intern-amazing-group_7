@@ -1,0 +1,992 @@
+[
+ {
+  "id": "v3-tinh_thanh-01",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "tinh_thanh"
+  ],
+  "kind": "L",
+  "turns": [
+   "Trung tâm hành chính của Quảng Ninh ở đâu?"
+  ],
+  "check": {
+   "all": [
+    "Hạ Long"
+   ],
+   "source": "Quảng Ninh"
+  },
+  "gold_note": "Quảng Ninh / Trung tâm hành chính = Hạ Long"
+ },
+ {
+  "id": "v3-tinh_thanh-02",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "tinh_thanh"
+  ],
+  "kind": "L",
+  "turns": [
+   "Tuyên Quang có bao nhiêu phường?"
+  ],
+  "check": {
+   "num": [
+    "7"
+   ],
+   "source": "Tuyên Quang"
+  },
+  "gold_note": "Tuyên Quang / Số phường = 7"
+ },
+ {
+  "id": "v3-tinh_thanh-03",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "tinh_thanh"
+  ],
+  "kind": "L",
+  "turns": [
+   "Dân số của Sơn La là bao nhiêu người?"
+  ],
+  "check": {
+   "any": [
+    "1.404.587",
+    "1,404,587",
+    "1404587",
+    "1 404 587"
+   ],
+   "source": "Sơn La"
+  },
+  "gold_note": "Sơn La / Dân số (người) = 1404587"
+ },
+ {
+  "id": "v3-tinh_thanh-04",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "tinh_thanh"
+  ],
+  "kind": "U",
+  "turns": [
+   "ca mau thuoc vung nao"
+  ],
+  "check": {
+   "all": [
+    "Đồng bằng sông Cửu Long"
+   ]
+  },
+  "gold_note": "Cà Mau / Vùng = Đồng bằng sông Cửu Long"
+ },
+ {
+  "id": "v3-tinh_thanh-05",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "tinh_thanh"
+  ],
+  "kind": "C",
+  "turns": [
+   "Có bao nhiêu tỉnh thành thuộc vùng Trung du và miền núi phía Bắc?"
+  ],
+  "check": {
+   "num": [
+    "9"
+   ]
+  },
+  "gold_note": "eq Vùng=Trung du và miền núi phía Bắc -> 9"
+ },
+ {
+  "id": "v3-tinh_thanh-06",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "tinh_thanh"
+  ],
+  "kind": "C",
+  "turns": [
+   "Có bao nhiêu tỉnh thành có số xã trên 82?"
+  ],
+  "check": {
+   "num": [
+    "13"
+   ]
+  },
+  "gold_note": "Số xã > 82 -> 13"
+ },
+ {
+  "id": "v3-tinh_thanh-07",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "tinh_thanh"
+  ],
+  "kind": "S",
+  "turns": [
+   "Liệt kê các tỉnh thành thuộc vùng Đồng bằng sông Cửu Long."
+  ],
+  "check": {
+   "all": [
+    "Đồng Tháp",
+    "Vĩnh Long",
+    "Cần Thơ",
+    "An Giang",
+    "Cà Mau"
+   ]
+  },
+  "gold_note": "eq Vùng=Đồng bằng sông Cửu Long -> ['Đồng Tháp', 'Vĩnh Long', 'Cần Thơ', 'An Giang', 'Cà Mau']"
+ },
+ {
+  "id": "v3-tinh_thanh-08",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "tinh_thanh"
+  ],
+  "kind": "S",
+  "turns": [
+   "Liệt kê các tỉnh thành thuộc vùng Duyên hải Nam Trung Bộ và Tây Nguyên."
+  ],
+  "check": {
+   "all": [
+    "Đà Nẵng",
+    "Quảng Ngãi",
+    "Gia Lai",
+    "Đắk Lắk",
+    "Khánh Hòa",
+    "Lâm Đồng"
+   ]
+  },
+  "gold_note": "eq Vùng=Duyên hải Nam Trung Bộ và Tây Nguyên -> ['Đà Nẵng', 'Quảng Ngãi', 'Gia Lai', 'Đắk Lắk', 'Khánh Hòa', 'Lâm Đồng']"
+ },
+ {
+  "id": "v3-tinh_thanh-09",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "tinh_thanh"
+  ],
+  "kind": "M",
+  "turns": [
+   "Tỉnh thành nào có số phường nhỏ nhất?"
+  ],
+  "check": {
+   "all": [
+    "Lai Châu"
+   ]
+  },
+  "gold_note": "min Số phường = 2 (Lai Châu)"
+ },
+ {
+  "id": "v3-tinh_thanh-10",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "tinh_thanh"
+  ],
+  "kind": "M",
+  "turns": [
+   "Trong các tỉnh thành thuộc vùng Đồng bằng sông Hồng, tỉnh thành nào có số phường lớn nhất?"
+  ],
+  "check": {
+   "all": [
+    "Hà Nội"
+   ]
+  },
+  "gold_note": "Vùng=Đồng bằng sông Hồng: max Số phường = 51 (Hà Nội)"
+ },
+ {
+  "id": "v3-tinh_thanh-11",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "tinh_thanh"
+  ],
+  "kind": "A",
+  "turns": [
+   "Tổng số phường của các tỉnh thành thuộc vùng Đông Nam Bộ là bao nhiêu?"
+  ],
+  "check": {
+   "num": [
+    "160"
+   ]
+  },
+  "gold_note": "sum Số phường where Vùng=Đông Nam Bộ = 160 (3 dòng)"
+ },
+ {
+  "id": "v3-tinh_thanh-12",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "tinh_thanh"
+  ],
+  "kind": "R",
+  "turns": [
+   "Ai là Chủ tịch UBND Hà Tĩnh hiện nay?"
+  ],
+  "check": {
+   "refusal": true
+  },
+  "gold_note": "bảng không có cột này"
+ },
+ {
+  "id": "v3-tinh_thanh-13",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "tinh_thanh"
+  ],
+  "kind": "F",
+  "turns": [
+   "Đắk Lắk có bao nhiêu phường?",
+   "Còn năm thành lập thì sao?"
+  ],
+  "check": {
+   "num": [
+    "1904"
+   ]
+  },
+  "gold_note": "Đắk Lắk: Số phường=14; Thành lập=1904"
+ },
+ {
+  "id": "v3-san_bay-01",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "san_bay"
+  ],
+  "kind": "L",
+  "turns": [
+   "Sân bay Cà Mau được xây dựng năm nào?"
+  ],
+  "check": {
+   "num": [
+    "1962"
+   ],
+   "source": "Cà Mau"
+  },
+  "gold_note": "Cà Mau / @Năm xây dựng = 1962"
+ },
+ {
+  "id": "v3-san_bay-02",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "san_bay"
+  ],
+  "kind": "L",
+  "turns": [
+   "Sân bay Phú Quốc được xây dựng năm nào?"
+  ],
+  "check": {
+   "num": [
+    "2012"
+   ],
+   "source": "Phú Quốc"
+  },
+  "gold_note": "Phú Quốc / @Năm xây dựng = 2012"
+ },
+ {
+  "id": "v3-san_bay-03",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "san_bay"
+  ],
+  "kind": "L",
+  "turns": [
+   "Sản lượng thông qua năm 2023 của sân bay Vinh là bao nhiêu?"
+  ],
+  "check": {
+   "any": [
+    "2.459.000",
+    "2,459,000",
+    "2459000",
+    "2 459 000"
+   ]
+  },
+  "gold_note": "Vinh / Sản lượng thông qua (2023) = 2459000"
+ },
+ {
+  "id": "v3-san_bay-04",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "san_bay"
+  ],
+  "kind": "U",
+  "turns": [
+   "san bay tuy hoa la san bay cap may"
+  ],
+  "check": {
+   "all": [
+    "4C"
+   ]
+  },
+  "gold_note": "Tuy Hòa / Cấp sân bay = 4C"
+ },
+ {
+  "id": "v3-san_bay-05",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "san_bay"
+  ],
+  "kind": "C",
+  "turns": [
+   "Có bao nhiêu sân bay ở Đắk Lắk?"
+  ],
+  "check": {
+   "num": [
+    "2"
+   ]
+  },
+  "gold_note": "eq Tỉnh/ thành=Đắk Lắk -> 2"
+ },
+ {
+  "id": "v3-san_bay-06",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "san_bay"
+  ],
+  "kind": "C",
+  "turns": [
+   "Có bao nhiêu sân bay có sản lượng thông qua năm 2023 trên 5.600.000 lượt khách?"
+  ],
+  "check": {
+   "num": [
+    "3"
+   ]
+  },
+  "gold_note": "Sản lượng thông qua (2023) > 5600000 -> 3"
+ },
+ {
+  "id": "v3-san_bay-07",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "san_bay"
+  ],
+  "kind": "S",
+  "turns": [
+   "Liệt kê các sân bay ở Thành phố Hồ Chí Minh."
+  ],
+  "check": {
+   "all": [
+    "Côn Đảo",
+    "Tân Sơn Nhất"
+   ]
+  },
+  "gold_note": "eq Tỉnh/ thành=Thành phố Hồ Chí Minh -> ['Côn Đảo', 'Tân Sơn Nhất']"
+ },
+ {
+  "id": "v3-san_bay-08",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "san_bay"
+  ],
+  "kind": "S",
+  "turns": [
+   "Liệt kê các sân bay ở Đà Nẵng."
+  ],
+  "check": {
+   "all": [
+    "Đà Nẵng",
+    "Chu Lai"
+   ]
+  },
+  "gold_note": "eq Tỉnh/ thành=Đà Nẵng -> ['Đà Nẵng', 'Chu Lai']"
+ },
+ {
+  "id": "v3-san_bay-09",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "san_bay"
+  ],
+  "kind": "M",
+  "turns": [
+   "Sân bay nào có năng lực khai thác nhỏ nhất?"
+  ],
+  "check": {
+   "all": [
+    "Cà Mau"
+   ]
+  },
+  "gold_note": "min Năng lực khai thác = 200000 (Cà Mau)"
+ },
+ {
+  "id": "v3-san_bay-10",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "san_bay"
+  ],
+  "kind": "M",
+  "turns": [
+   "Sân bay nào có sản lượng thông qua năm 2023 lớn nhất?"
+  ],
+  "check": {
+   "all": [
+    "Tân Sơn Nhất"
+   ]
+  },
+  "gold_note": "max Sản lượng thông qua (2023) = 40725000 (Tân Sơn Nhất)"
+ },
+ {
+  "id": "v3-san_bay-11",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "san_bay"
+  ],
+  "kind": "A",
+  "turns": [
+   "Tổng sản lượng thông qua năm 2023 của tất cả các sân bay là bao nhiêu?"
+  ],
+  "check": {
+   "any": [
+    "113.592.000",
+    "113,592,000",
+    "113592000",
+    "113 592 000"
+   ]
+  },
+  "gold_note": "sum Sản lượng thông qua (2023) = 113592000 (22 dòng)"
+ },
+ {
+  "id": "v3-san_bay-12",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "san_bay"
+  ],
+  "kind": "R",
+  "turns": [
+   "Sân bay Đồng Hới có bao nhiêu nhân viên?"
+  ],
+  "check": {
+   "refusal": true
+  },
+  "gold_note": "bảng không có cột này"
+ },
+ {
+  "id": "v3-san_bay-13",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "san_bay"
+  ],
+  "kind": "F",
+  "turns": [
+   "Sân bay Tân Sơn Nhất có bao nhiêu đường băng?",
+   "Còn mã ICAO/IATA thì sao?"
+  ],
+  "check": {
+   "all": [
+    "VVTS/SGN"
+   ]
+  },
+  "gold_note": "Tân Sơn Nhất: Số đường băng=2; Mã ICAO/IATA=VVTS/SGN"
+ },
+ {
+  "id": "v3-vuon_quoc_gia-01",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "vuon_quoc_gia"
+  ],
+  "kind": "L",
+  "turns": [
+   "Vườn quốc gia Phia Oắc – Phia Đén nằm ở tỉnh nào?"
+  ],
+  "check": {
+   "all": [
+    "Cao Bằng"
+   ],
+   "source": "Phia Oắc – Phia Đén"
+  },
+  "gold_note": "Phia Oắc – Phia Đén / Địa điểm = Cao Bằng"
+ },
+ {
+  "id": "v3-vuon_quoc_gia-02",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "vuon_quoc_gia"
+  ],
+  "kind": "L",
+  "turns": [
+   "Diện tích vườn quốc gia Bến En là bao nhiêu ha?"
+  ],
+  "check": {
+   "any": [
+    "14.735",
+    "14,735",
+    "14735",
+    "14 735"
+   ],
+   "source": "Bến En"
+  },
+  "gold_note": "Bến En / Diện tích (ha) = 14735"
+ },
+ {
+  "id": "v3-vuon_quoc_gia-03",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "vuon_quoc_gia"
+  ],
+  "kind": "L",
+  "turns": [
+   "Vườn quốc gia Côn Đảo nằm ở tỉnh nào?"
+  ],
+  "check": {
+   "all": [
+    "Thành phố Hồ Chí Minh"
+   ],
+   "source": "Côn Đảo"
+  },
+  "gold_note": "Côn Đảo / Địa điểm = Thành phố Hồ Chí Minh"
+ },
+ {
+  "id": "v3-vuon_quoc_gia-04",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "vuon_quoc_gia"
+  ],
+  "kind": "U",
+  "turns": [
+   "dien tich vuon quoc gia u minh thuong la bao nhieu ha"
+  ],
+  "check": {
+   "num": [
+    "8053"
+   ]
+  },
+  "gold_note": "U Minh Thượng / Diện tích (ha) = 8053"
+ },
+ {
+  "id": "v3-vuon_quoc_gia-05",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "vuon_quoc_gia"
+  ],
+  "kind": "C",
+  "turns": [
+   "Có bao nhiêu vườn quốc gia ở An Giang?"
+  ],
+  "check": {
+   "num": [
+    "2"
+   ]
+  },
+  "gold_note": "in Địa điểm=An Giang -> 2"
+ },
+ {
+  "id": "v3-vuon_quoc_gia-06",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "vuon_quoc_gia"
+  ],
+  "kind": "C",
+  "turns": [
+   "Có bao nhiêu vườn quốc gia có diện tích trên 42.000 ha?"
+  ],
+  "check": {
+   "num": [
+    "9"
+   ]
+  },
+  "gold_note": "Diện tích (ha) > 42000 -> 9"
+ },
+ {
+  "id": "v3-vuon_quoc_gia-07",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "vuon_quoc_gia"
+  ],
+  "kind": "S",
+  "turns": [
+   "Liệt kê các vườn quốc gia ở Lào Cai."
+  ],
+  "check": {
+   "all": [
+    "Bát Xát",
+    "Hoàng Liên"
+   ]
+  },
+  "gold_note": "in Địa điểm=Lào Cai -> ['Bát Xát', 'Hoàng Liên']"
+ },
+ {
+  "id": "v3-vuon_quoc_gia-08",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "vuon_quoc_gia"
+  ],
+  "kind": "S",
+  "turns": [
+   "Liệt kê các vườn quốc gia ở Cà Mau."
+  ],
+  "check": {
+   "all": [
+    "Mũi Cà Mau",
+    "U Minh Hạ"
+   ]
+  },
+  "gold_note": "in Địa điểm=Cà Mau -> ['Mũi Cà Mau', 'U Minh Hạ']"
+ },
+ {
+  "id": "v3-vuon_quoc_gia-09",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "vuon_quoc_gia"
+  ],
+  "kind": "M",
+  "turns": [
+   "Vườn quốc gia nào có diện tích nhỏ nhất?"
+  ],
+  "check": {
+   "all": [
+    "Xuân Thủy"
+   ]
+  },
+  "gold_note": "min Diện tích (ha) = 7100 (Xuân Thủy)"
+ },
+ {
+  "id": "v3-vuon_quoc_gia-10",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "vuon_quoc_gia"
+  ],
+  "kind": "M",
+  "turns": [
+   "Trong các vườn quốc gia thuộc vùng Trung du và miền núi phía Bắc, vườn quốc gia nào có diện tích nhỏ nhất?"
+  ],
+  "check": {
+   "all": [
+    "Ba Bể"
+   ]
+  },
+  "gold_note": "Vùng=Trung du và miền núi phía Bắc: min Diện tích (ha) = 7610 (Ba Bể)"
+ },
+ {
+  "id": "v3-vuon_quoc_gia-11",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "vuon_quoc_gia"
+  ],
+  "kind": "A",
+  "turns": [
+   "Tổng diện tích của các vườn quốc gia thuộc vùng Bắc Trung Bộ là bao nhiêu?"
+  ],
+  "check": {
+   "any": [
+    "333.901",
+    "333,901",
+    "333901",
+    "333 901"
+   ]
+  },
+  "gold_note": "sum Diện tích (ha) where Vùng=Bắc Trung Bộ = 333901 (6 dòng)"
+ },
+ {
+  "id": "v3-vuon_quoc_gia-12",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "vuon_quoc_gia"
+  ],
+  "kind": "R",
+  "turns": [
+   "Số điện thoại của vườn quốc gia Sông Thanh là gì?"
+  ],
+  "check": {
+   "refusal": true
+  },
+  "gold_note": "bảng không có cột này"
+ },
+ {
+  "id": "v3-vuon_quoc_gia-13",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "vuon_quoc_gia"
+  ],
+  "kind": "F",
+  "turns": [
+   "Vườn quốc gia Cúc Phương được thành lập năm nào?",
+   "Còn diện tích thì sao?"
+  ],
+  "check": {
+   "any": [
+    "22.200",
+    "22,200",
+    "22200",
+    "22 200"
+   ]
+  },
+  "gold_note": "Cúc Phương: Năm thành lập=1966; Diện tích (ha)=22200"
+ },
+ {
+  "id": "v3-thuy_dien-01",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "thuy_dien"
+  ],
+  "kind": "L",
+  "turns": [
+   "Thủy điện Đakrông 3 nằm trên sông nào?"
+  ],
+  "check": {
+   "all": [
+    "Đakrông"
+   ],
+   "source": "Đakrông 3"
+  },
+  "gold_note": "Đakrông 3 / Trên sông = Đakrông"
+ },
+ {
+  "id": "v3-thuy_dien-02",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "thuy_dien"
+  ],
+  "kind": "L",
+  "turns": [
+   "Thủy điện Thân Giáp nằm trên sông nào?"
+  ],
+  "check": {
+   "all": [
+    "Bắc Vọng"
+   ],
+   "source": "Thân Giáp"
+  },
+  "gold_note": "Thân Giáp / Trên sông = Bắc Vọng"
+ },
+ {
+  "id": "v3-thuy_dien-03",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "thuy_dien"
+  ],
+  "kind": "L",
+  "turns": [
+   "Sản lượng điện mỗi năm của thủy điện Nậm Bụm 1 là bao nhiêu?"
+  ],
+  "check": {
+   "any": [
+    "56,8",
+    "56.8"
+   ],
+   "source": "Nậm Bụm 1"
+  },
+  "gold_note": "Nậm Bụm 1 / Sản lượng (triệu kWh/năm) = 56.8"
+ },
+ {
+  "id": "v3-thuy_dien-04",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "thuy_dien"
+  ],
+  "kind": "U",
+  "turns": [
+   "thuy dien ia grai 1 co cong suat bao nhieu mw"
+  ],
+  "check": {
+   "any": [
+    "10,8",
+    "10.8"
+   ]
+  },
+  "gold_note": "Ia Grai 1 / Công suất (MW) = 10.8"
+ },
+ {
+  "id": "v3-thuy_dien-05",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "thuy_dien"
+  ],
+  "kind": "C",
+  "turns": [
+   "Có bao nhiêu thủy điện ở Quảng Ngãi?"
+  ],
+  "check": {
+   "num": [
+    "25"
+   ]
+  },
+  "gold_note": "in Vị trí hành chính=Quảng Ngãi -> 25"
+ },
+ {
+  "id": "v3-thuy_dien-06",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "thuy_dien"
+  ],
+  "kind": "C",
+  "turns": [
+   "Có bao nhiêu thủy điện có công suất trên 28 MW?"
+  ],
+  "check": {
+   "num": [
+    "132"
+   ]
+  },
+  "gold_note": "Công suất (MW) > 28 -> 132"
+ },
+ {
+  "id": "v3-thuy_dien-07",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "thuy_dien"
+  ],
+  "kind": "S",
+  "turns": [
+   "Liệt kê các thủy điện trên Sông Lô."
+  ],
+  "check": {
+   "all": [
+    "Phong Quang",
+    "Sông Lô 2",
+    "Sông Lô 3",
+    "Sông Lô 4",
+    "Sông Lô 5",
+    "Sông Lô 6",
+    "Sông Lô 8A",
+    "Sông Lô 8B"
+   ]
+  },
+  "gold_note": "eq Trên sông=Sông Lô -> ['Phong Quang', 'Sông Lô 2', 'Sông Lô 3', 'Sông Lô 4', 'Sông Lô 5', 'Sông Lô 6', 'Sông Lô 8A', 'Sông Lô 8B']"
+ },
+ {
+  "id": "v3-thuy_dien-08",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "thuy_dien"
+  ],
+  "kind": "S",
+  "turns": [
+   "Liệt kê các thủy điện trên Ngòi Bo."
+  ],
+  "check": {
+   "all": [
+    "Sử Pán 1",
+    "Sử Pán 2",
+    "Bản Hồ",
+    "Nậm Củn",
+    "Tà Thàng"
+   ]
+  },
+  "gold_note": "eq Trên sông=Ngòi Bo -> ['Sử Pán 1', 'Sử Pán 2', 'Bản Hồ', 'Nậm Củn', 'Tà Thàng']"
+ },
+ {
+  "id": "v3-thuy_dien-09",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "thuy_dien"
+  ],
+  "kind": "M",
+  "turns": [
+   "Thủy điện nào có công suất nhỏ nhất?"
+  ],
+  "check": {
+   "all": [
+    "Ankroet"
+   ]
+  },
+  "gold_note": "min Công suất (MW) = 4.4 (Ankroet)"
+ },
+ {
+  "id": "v3-thuy_dien-10",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "thuy_dien"
+  ],
+  "kind": "M",
+  "turns": [
+   "Trong các thủy điện trên Sông Lô, thủy điện nào có công suất nhỏ nhất?"
+  ],
+  "check": {
+   "all": [
+    "Phong Quang"
+   ]
+  },
+  "gold_note": "Trên sông=Sông Lô: min Công suất (MW) = 18 (Phong Quang)"
+ },
+ {
+  "id": "v3-thuy_dien-11",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "thuy_dien"
+  ],
+  "kind": "A",
+  "turns": [
+   "Tổng công suất của các thủy điện ở Quảng Ngãi là bao nhiêu?"
+  ],
+  "check": {
+   "any": [
+    "2.007,4",
+    "2,007.4",
+    "2007,4",
+    "2007.4"
+   ]
+  },
+  "gold_note": "sum Công suất (MW) where Vị trí hành chính=Quảng Ngãi = 2007.4 (25 dòng)"
+ },
+ {
+  "id": "v3-thuy_dien-12",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "thuy_dien"
+  ],
+  "kind": "R",
+  "turns": [
+   "Ai là giám đốc thủy điện La Trọng?"
+  ],
+  "check": {
+   "refusal": true
+  },
+  "gold_note": "bảng không có cột này"
+ },
+ {
+  "id": "v3-thuy_dien-13",
+  "suite": "real3",
+  "split": "blind",
+  "datasets": [
+   "thuy_dien"
+  ],
+  "kind": "F",
+  "turns": [
+   "Thủy điện Sê San 4A khởi công năm nào?",
+   "Còn năm hoạt động thì sao?"
+  ],
+  "check": {
+   "all": [
+    "2011"
+   ]
+  },
+  "gold_note": "Sê San 4A: Năm khởi công=2008; Năm hoạt động=2011"
+ }
+]

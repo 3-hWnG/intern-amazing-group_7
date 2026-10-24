@@ -210,5 +210,13 @@ def procedure_cases() -> list[dict]:
     return out
 
 
+def real3_cases() -> list[dict]:
+    """Bộ MÙ thứ ba (24/10/2026): 52 câu sinh từ 4 bảng Wikipedia THẬT mà engine chưa gặp (system4/eval/real_v3, make_cases_v3.py),
+    khoá trước khi sửa đường nhanh (real_v3/LOCK.md). Không chỉnh câu / đáp án theo kết quả."""
+    import json
+    path = Path(__file__).resolve().parent / "real_v3" / "cases_real_v3.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
+
+
 def all_cases() -> list[dict]:
-    return CASES + procedure_cases() + TOUR_CASES + SHOP_CASES
+    return CASES + procedure_cases() + TOUR_CASES + SHOP_CASES + real3_cases()

@@ -1,0 +1,45 @@
+{"id": "real_v2-246", "beh": "skip", "expect_ids": [], "fields": [], "notes": "Cau cut: chi ke la giao vien hop dong trong chi tieu bien che, khong co cau hoi."}
+{"id": "real_v2-247", "beh": "answer", "expect_ids": ["1.116410"], "fields": ["place", "documents"], "notes": "Doi CMND tai TP.HCM khi ho khau o Dong Nai: nay la 'Cap, cap doi, cap lai the can cuoc' 1.116410."}
+{"id": "real_v2-248", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Tim hieu an tich truoc day cua nguoi khac qua LLTP: DB khong co thu tuc LLTP."}
+{"id": "real_v2-249", "beh": "answer", "expect_ids": ["1.012564"], "fields": ["documents"], "notes": "Que quan tren so ho khau va cong DVC khong khop giay khai sinh, sua the nao: 'Dieu chinh thong tin trong CSDL quoc gia ve dan cu' 1.012564 (nhu real_v1-036)."}
+{"id": "real_v2-250", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Huyen doan doi ten so do tru so tiep quan (to chuc, tai san cong): khong phai thu tuc cap xa cho nguoi dan."}
+{"id": "real_v2-251", "beh": "answer", "expect_ids": ["1.013978"], "fields": ["conditions", "documents"], "notes": "Dat dang canh tac sau khi hien dat lam duong co duoc cap GCN, quy trinh: 'Dang ky dat dai, cap GCN' 1.013978 (ho gia dinh, nhu real_v1-166)."}
+{"id": "real_v2-252", "beh": "answer", "expect_ids": ["1.000253"], "fields": ["conditions", "legal_basis"], "notes": "Ban nguoi Duc tam tru 2 ngay tai nha co can khai bao: 'Khai bao tam tru cho nguoi nuoc ngoai' 1.000253 (nhu real_v1-262); phan muc phat la luat, phu."}
+{"id": "real_v2-253", "beh": "clarify", "expect_ids": ["1.115932", "1.116768"], "fields": [], "notes": "Tach thua de co 2 GCN rieng: DB chi co ban theo tinh (HCM 1.115932, Tay Ninh 1.116768), cau chua neu tinh -> clarify (nhu real_v1-249)."}
+{"id": "real_v2-254", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Kien nghi phan cap dang ky mo to cho cong an huyen."}
+{"id": "real_v2-255", "beh": "answer", "expect_ids": ["3.000722", "1.001193"], "fields": ["place"], "notes": "Nop truc tuyen khai sinh + BHYT tre duoi 6 tuoi nhung cong khong tai: 'Lien thong: dang ky khai sinh, thuong tru, BHYT...' 3.000722 (hoac khai sinh 1.001193). Ranh gioi: co phan loi cong."}
+{"id": "real_v2-256", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "LLTP cap nham mau so 1 (ket qua ho so), DB khong co thu tuc LLTP."}
+{"id": "real_v2-257", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Kien nghi thanh lap truong giao duong."}
+{"id": "real_v2-258", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "LLTP xin nhan som (tinh trang ho so)."}
+{"id": "real_v2-259", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Kien nghi bo so ho khau."}
+{"id": "real_v2-260", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Ho chieu in sai so CMND: DB khong co thu tuc ho chieu (chi co trinh bao mat ho chieu)."}
+{"id": "real_v2-261", "beh": "answer", "expect_ids": ["1.116789"], "fields": ["time"], "notes": "Theo quy dinh bao lau nhan so tam tru sau khi nop du ho so: 'Dang ky tam tru' 1.116789, truong thoi gian (cau hoi chung, nhu real_v1-123)."}
+{"id": "real_v2-262", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Kien nghi cu tri ve cham tra the CCCD."}
+{"id": "real_v2-263", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Lop mam non tu thuc co thuoc dien quan ly PCCC (quy dinh), nhu real_v1-176."}
+{"id": "real_v2-264", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Doi gioi tinh tren the can cuoc sau chuyen gioi co duoc khong (phap luat chua quy dinh); gan nhat 1.012564/1.014060."}
+{"id": "real_v2-265", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Tinh da co dich vu cong cap CMND online chua (trien khai dia phuong), nhu real_v1-226."}
+{"id": "real_v2-266", "beh": "skip", "expect_ids": [], "fields": [], "notes": "Cau cut: chi ke ve huu truoc tuoi va qua trinh dong BHXH, khong co cau hoi."}
+{"id": "real_v2-267", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "LLTP hon 1 thang chua co (tinh trang ho so)."}
+{"id": "real_v2-268", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Khieu nai chu dau tu Danh Khoi cham cap GCN (tranh chap du an)."}
+{"id": "real_v2-269", "beh": "answer", "expect_ids": ["1.116410"], "fields": ["place", "time", "documents"], "notes": "CMND cap 2005 het han, cac buoc, thoi gian, dia diem lam CCCD: 1.116410."}
+{"id": "real_v2-270", "beh": "answer", "expect_ids": ["1.116788"], "fields": ["conditions", "documents"], "notes": "Dang ky thuong tru cho em vo (sinh 2014) vao noi o cua vo chong: 'Dang ky thuong tru' 1.116788."}
+{"id": "real_v2-271", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Ho so tach thua tra cuu da giai quyet nhung mot cua bao chua xong (tinh trang ho so)."}
+{"id": "real_v2-272", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Quang cao truong quoc te (spam HTML), khong phai cau hoi thu tuc."}
+{"id": "real_v2-273", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Xu ly to chuc nghi le ton giao mua dich (luat)."}
+{"id": "real_v2-274", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Nha o 2 tang nong thon co phai xin giay phep xay dung hay duoc mien (giai thich luat); gan nhat 1.013225, nhu real_v1-037."}
+{"id": "real_v2-275", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Gan trung real_v2-274: mien giay phep xay dung (giai thich luat)."}
+{"id": "real_v2-276", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Ho so chuyen nhuong dat da nop, nop thue online co can mang chung tu (ho so dang xu ly; dang ky bien dong cap tinh)."}
+{"id": "real_v2-277", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Kien nghi phan khu trai giam."}
+{"id": "real_v2-278", "beh": "skip", "expect_ids": [], "fields": [], "notes": "Chi neu nhan dinh ve tiem vaccine va the BHYT, khong co cau hoi."}
+{"id": "real_v2-279", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Phu cap tham nien nhan vien Bao CAND (chinh sach noi bo nganh)."}
+{"id": "real_v2-280", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Nghi huu som can bo CAND thuong binh (chinh sach noi bo nganh)."}
+{"id": "real_v2-281", "beh": "answer", "expect_ids": ["1.116789", "1.000253"], "fields": ["conditions", "documents"], "notes": "Vo chong (vo quoc tich VN, chong Dan Mach) dang ky tam tru tai nha thue cua con gai: 'Dang ky tam tru' 1.116789; chong la nguoi nuoc ngoai: 1.000253 (ca hai chap nhan)."}
+{"id": "real_v2-282", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "LLTP chua cap nhat, lay giay hen o dau (tinh trang ho so)."}
+{"id": "real_v2-283", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "So do nham so thua voi hang xom, hang xom khong dua so: tranh chap, can tu van phap ly; gan nhat 1.012796 (nhu real_v1-148). Ranh gioi."}
+{"id": "real_v2-284", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Vien chuc lam CCHN co can LLTP (CCHN/LLTP khong co trong DB)."}
+{"id": "real_v2-285", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Sua so CMND va van bang tren chung chi hanh nghe: DB khong co thu tuc CCHN."}
+{"id": "real_v2-286", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Xu ly co so tu tai gia lua dao (luat)."}
+{"id": "real_v2-287", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Thong tin thu hoi so ho khau giay (chinh sach)."}
+{"id": "real_v2-288", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Khieu nai chu dau tu Danh Khoi cham cap GCN (tranh chap du an)."}
+{"id": "real_v2-289", "beh": "answer", "expect_ids": ["1.004859"], "fields": ["place", "documents"], "notes": "Giay khai sinh ghi sai ten me, sua o dau, giay to gi: 'Thay doi, cai chinh, bo sung thong tin ho tich' 1.004859 (nhu real_v1-287)."}
+{"id": "real_v2-290", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Khieu nai du an Nhon Hoi New City chua nhan so (tranh chap du an)."}

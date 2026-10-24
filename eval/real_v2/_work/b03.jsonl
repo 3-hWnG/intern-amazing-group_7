@@ -1,0 +1,40 @@
+{"id": "real_v2-086", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Kien nghi quy dinh bat buoc trang bi PCCC cho cho nong thon."}
+{"id": "real_v2-087", "beh": "skip", "expect_ids": [], "fields": [], "notes": "Chi co loi chao 'kinh thua ban lanh dao,'."}
+{"id": "real_v2-088", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Dac xa, xoa an tich (luat)."}
+{"id": "real_v2-089", "beh": "answer", "expect_ids": ["1.116410"], "fields": ["documents", "place"], "notes": "Nguoi ngoai tinh lam can cuoc tai Binh Dinh, can giay to gi, toi dau: 'Cap, cap doi, cap lai the can cuoc' 1.116410 (phan xin SDT la phu)."}
+{"id": "real_v2-090", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Quang cao thu mua phe lieu (spam), khong phai cau hoi thu tuc."}
+{"id": "real_v2-091", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Tranh chap lao dong: cong ty chua tra tro cap thoi viec (khieu nai)."}
+{"id": "real_v2-092", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Mau con dau BHXH tinh dung quy dinh (quy dinh quan ly con dau), khong phai thu tuc nguoi dan."}
+{"id": "real_v2-093", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Quy tac lan duong va xu phat vuot phai (luat giao thong)."}
+{"id": "real_v2-094", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Chat van ve toi pham xang dau."}
+{"id": "real_v2-095", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Tham nien lien tuc trong CAND (chinh sach noi bo nganh)."}
+{"id": "real_v2-096", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Tranh chap voi chu dau tu FLC Lux City (cau bi cat nhung ro la khieu nai du an)."}
+{"id": "real_v2-097", "beh": "answer", "expect_ids": ["2.000908"], "fields": [], "notes": "Mat bang tot nghiep cao dang, xin cap lai/ban sao: 'Thu tuc cap ban sao tu so goc' 2.000908 (nhu real_v1-101). Ranh gioi: van bang do truong cap, cau hoi la So GD co cap duoc khong."}
+{"id": "real_v2-098", "beh": "answer", "expect_ids": ["1.116410"], "fields": ["place"], "notes": "Lam the can cuoc o tinh khac (Can Tho): 'Cap, cap doi, cap lai the can cuoc' 1.116410, hoi noi lam."}
+{"id": "real_v2-099", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "So Y te phe duyet nhan su phong xet nghiem tu nhan: DB khong co."}
+{"id": "real_v2-100", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Bien phap do nong do con mua Covid (nghiep vu CSGT)."}
+{"id": "real_v2-101", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Thong tin ve ho chieu gan chip (khong phai thu tuc cap xa; DB khong co cap ho chieu)."}
+{"id": "real_v2-102", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Kien nghi tang so cong an vien."}
+{"id": "real_v2-103", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Nguoi tam dinh chi thi hanh an phat tu di kham benh noi khac (luat thi hanh an)."}
+{"id": "real_v2-104", "beh": "answer", "expect_ids": ["2.000635"], "fields": ["documents", "place"], "notes": "Mat ban sao giay khai sinh cua con va giay dang ky ket hon, xin ban sao (online duoc khong): 'Cap ban sao Trich luc ho tich, ban sao Giay khai sinh' 2.000635."}
+{"id": "real_v2-105", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Kien nghi xu ly cho vay qua app."}
+{"id": "real_v2-106", "beh": "skip", "expect_ids": [], "fields": [], "notes": "Chi co loi chao 'Da em chao anh (chi)!'."}
+{"id": "real_v2-107", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Du thao luat ve hang GPLX."}
+{"id": "real_v2-108", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Xu ly bien so gia (luat xu phat)."}
+{"id": "real_v2-109", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Kien nghi an toan hoc truc tuyen."}
+{"id": "real_v2-110", "beh": "skip", "expect_ids": [], "fields": [], "notes": "Chi chep thong bao 'ho so ... da bi huy' (khuyen mai), khong co cau hoi."}
+{"id": "real_v2-111", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Khieu nai ket qua tuyen sinh Hoc vien CSND."}
+{"id": "real_v2-112", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Thu doan mua ban nguoi (thong tin phong chong toi pham)."}
+{"id": "real_v2-113", "beh": "answer", "expect_ids": ["1.116410"], "fields": ["conditions"], "notes": "Nguoi di lao dong nuoc ngoai tu 1989 chua co CMND, ve nuoc muon cap can cuoc, dieu kien gi: 'Cap, cap doi, cap lai the can cuoc' 1.116410."}
+{"id": "real_v2-114", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Giay kham suc khoe trong ho so CCHN dieu duong: DB khong co thu tuc CCHN."}
+{"id": "real_v2-115", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Thoi gian so tuyen thi khoi nganh cong an (tuyen sinh)."}
+{"id": "real_v2-116", "beh": "answer", "expect_ids": ["2.000908"], "fields": ["documents"], "notes": "Xin mau don cap lai ban sao bang THPT: 'Thu tuc cap ban sao tu so goc' 2.000908 (nhu real_v1-101)."}
+{"id": "real_v2-117", "beh": "answer", "expect_ids": ["1.115970"], "fields": ["documents", "conditions"], "notes": "Dang ky xe o to mua cua doanh nghiep chua xuat hoa don: 'Dang ky, cap chung nhan dang ky xe' 1.115970."}
+{"id": "real_v2-118", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Kien nghi xu ly hinh su trom cap dien."}
+{"id": "real_v2-119", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Khieu nai chu dau tu Danh Khoi cham lam so do (tranh chap du an)."}
+{"id": "real_v2-120", "beh": "skip", "expect_ids": [], "fields": [], "notes": "Cau cut: chi ke da dang ky LLTP truc tuyen kem ma ho so, khong co cau hoi."}
+{"id": "real_v2-121", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Khieu nai van phong dang ky dat dai tu choi cap GCN mot phan thua (de nghi xem xet giai quyet), nhu real_v1-190."}
+{"id": "real_v2-122", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Kien nghi phu cap tham nien Cong an xa."}
+{"id": "real_v2-123", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Huyen da cap CCCD va thu thap du lieu chua (ke hoach dia phuong), nhu real_v1-226."}
+{"id": "real_v2-124", "beh": "apologize", "expect_ids": [], "fields": [], "notes": "Cong ty cu gia mao chu ky, boi thuong (phap luat dan su)."}
+{"id": "real_v2-125", "beh": "answer", "expect_ids": ["1.116788"], "fields": ["documents", "conditions"], "notes": "Cong dan VN dinh cu nuoc ngoai dang ky thuong tru tai VN: 'Dang ky thuong tru' 1.116788 (nhu real_v1-011)."}

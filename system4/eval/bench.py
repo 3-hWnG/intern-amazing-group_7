@@ -153,7 +153,8 @@ class Client:
     def ensure_datasets(self):
         """Nạp 4 bộ dữ liệu một lần cho bench_runtime (lần sau dùng lại; đổi bộ đọc tệp thì server tự xử lý lại)."""
         files = {"class": HERE / "data" / "ds_lop_gia.xlsx", "tourism": HERE / "data" / "tourism_records.xlsx",
-                 "procedures": HERE / "data" / "MAU_100_THU_TUC.xlsx", "policy": policy_docx(), "du_lich": tourism_xlsx(), "cua_hang": shop_xlsx()}
+                 "procedures": HERE / "data" / "MAU_100_THU_TUC.xlsx", "policy": policy_docx(), "du_lich": tourism_xlsx(), "cua_hang": shop_xlsx(),
+                 **REAL3_FILES}
         have = {d["filename"]: d for d in self.c.get("/s4/datasets").json()["datasets"]}
         for key, path in files.items():
             if path.name not in have:
@@ -224,6 +225,11 @@ class Client:
                 "plan": (tr.get("output") or {}).get("plan")}
 
 
+REAL3_FILES = {k: HERE / "real_v3" / "data" / f for k, f in (   # bộ mù thứ ba: 4 bảng Wikipedia thật (real_v3/build_v3.py)
+    ("tinh_thanh", "hanh_chinh_tinh_thanh.xlsx"), ("san_bay", "giao_thong_san_bay.xlsx"),
+    ("vuon_quoc_gia", "moi_truong_vuon_quoc_gia.xlsx"), ("thuy_dien", "nang_luong_thuy_dien.xlsx"))}
+
+
 def tourism_xlsx() -> Path:
     """Dữ liệu du lịch giả cho bộ mù (make_tourism.py); thiếu thì sinh lại."""
     path = HERE / "data" / "du_lich_gia.xlsx"
@@ -287,15 +293,18 @@ def run(args):
         cl.use(["policy"]); cl.chat("Chào bạn")             # nóng máy: model + bge-m3 + reranker
         cl.use([]); cl.chat("Bạn giúp được gì cho mình?")
         runs = []
+        sys.path.insert(0, str(REPO / "eval"))
+        from thermal import guard   # 24/10: máy không quá 70 °C — nóng thì ngủ giữa các câu (eval/thermal.py)
         for c in cases:
             for rep in range(args.repeat):
+                guard(label=c["id"])
                 cl.use(c["datasets"])
                 cl.forget()
                 cid, r = None, None
                 for t in c["turns"]:
                     r = cl.chat(t, cid); cid = r["cid"]
                 ok, why = score(c["check"], r["content"], r["meta"])
-                runs.append({"id": c["id"], "suite": c["suite"], "split": c["split"], "rep": rep, "pass": ok, "why": why,
+                runs.append({"id": c["id"], "suite": c["suite"], "split": c["split"], "kind": c.get("kind"), "rep": rep, "pass": ok, "why": why,
                              "answer": r["content"][:600], "choices": r["meta"].get("choices"),
                              "sources": [s.get("title") for s in r["meta"].get("sources") or []],
                              "consulted": [s.get("title") for s in r["meta"].get("consulted") or []],
@@ -353,6 +362,8 @@ def summarize(res: dict) -> dict:
          "acc_only": _rate([r for r in runs if r["suite"] == "accuracy"]), "halluc": _rate([r for r in runs if r["suite"] == "halluc"]),
          "tourism": _rate(tour), "tourism_fails": sum(not r["pass"] for r in tour),
          "shop": _rate(shop), "shop_fails": sum(not r["pass"] for r in shop),
+         "real3": _rate([r for r in runs if r["suite"] == "real3"]),
+         "real3_kind": {k: _rate([r for r in runs if r["suite"] == "real3" and r.get("kind") == k]) for k in "LUCSMARF"},
          "fast_path": sum(bool(r.get("fast_path")) for r in runs),
          "greeting": _rate(gr), "greeting_fails": sum(not r["pass"] for r in gr), "behavior": f"{b.get('passed')}/{b.get('total')}" if b else None,
          "wrong_behavior": sum(not r["pass"] for r in gr) + (b_fail or 0),
