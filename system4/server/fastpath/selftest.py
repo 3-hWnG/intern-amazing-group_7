@@ -68,21 +68,76 @@ def _q_aggregate(t: dict) -> list[dict]:
     return out
 
 
-def run(tables: list[dict], texts: list[dict], min_pass: float) -> dict:
-    """Trả {"enabled": {table_key: {"field": bool, "aggregate": bool}, "text:<ds>": bool}, "tables": {...chi tiết...}}."""
-    eng = Engine(tables, texts, {})
+def _q_sql(t: dict) -> list[dict]:
+    """24/10 (lộ trình SQL): câu sinh từ KIỂU cột của chính bảng, đáp án tính bằng Python trên dữ liệu (không qua SQL):
+    đếm theo một giá trị cột liệt kê, liệt kê 2-8 dòng theo giá trị đó, lớn nhất / nhỏ nhất của cột số, đếm vượt ngưỡng, tổng theo giá trị."""
+    from . import sqlroute
+    out, noun, rows = [], t.get("entity_noun") or "dòng", t["rows"]
+    if len(rows) < 2:
+        return out
+    box = sqlroute.Box(t)
+    enums = [c for c in box.cols if c["kind"] == "text" and 2 <= len(c["values"]) <= 15]
+    nums = [c for c in box.cols if c["kind"] == "num"]
+    cell = lambda r, c: str(r["fields"].get(c["field"]) or "")
+    for c in enums[:2]:
+        groups = sorted(c["values"], key=lambda v: -sum(cell(r, c) == v for r in rows))
+        v = groups[0]
+        hit = [r["title"] for r in rows if cell(r, c) == v]
+        out.append({"q": f"Có bao nhiêu {noun} có {c['label']} là {v}?", "count": len(hit)})
+        small = next((g for g in groups if 2 <= sum(cell(r, c) == g for r in rows) <= 8), None)
+        if small:
+            out.append({"q": f"Kể tên các {noun} có {c['label']} là {small}.", "titles": {r["title"] for r in rows if cell(r, c) == small}})
+    for c in nums[:2]:
+        vals = [(sqlroute.to_number(cell(r, c), c["style"]), r["title"]) for r in rows]
+        vals = [(x, ti) for x, ti in vals if isinstance(x, (int, float))]
+        if len(vals) < 3:
+            continue
+        top = max(vals)[1]
+        if sum(1 for x, _ in vals if x == max(vals)[0]) == 1:
+            out.append({"q": f"{noun.capitalize()} nào có {c['label']} cao nhất?", "titles": {top}})
+        mid = sorted(x for x, _ in vals)[len(vals) // 2]
+        out.append({"q": f"Có bao nhiêu {noun} có {c['label']} lớn hơn {sqlroute.fmt(mid)}?", "count": sum(1 for x, _ in vals if x > mid)})
+        if enums:
+            e = enums[0]
+            g = sorted(e["values"], key=lambda v: -sum(cell(r, e) == v for r in rows))[0]
+            tot = sum(x for x, ti in vals if any(r["title"] == ti and cell(r, e) == g for r in rows))
+            out.append({"q": f"Tổng {c['label']} của các {noun} có {e['label']} là {g} là bao nhiêu?", "value": tot})
+    return out
+
+
+def _sql_good(c: dict, a: dict, t: dict) -> bool:
+    if a.get("kind") != "answer" or a.get("route") != "sql" or a.get("table") != t["key"]:
+        return False
+    if "count" in c:
+        return a.get("count") == c["count"] or re.search(rf"\*\*{c['count']}\*\*", a.get("content", "")) is not None
+    if "titles" in c:
+        return set(a.get("titles") or []) == c["titles"]
+    v = a.get("value")
+    return isinstance(v, (int, float)) and abs(v - c["value"]) <= 1e-6 * max(1.0, abs(c["value"]))
+
+
+def run(tables: list[dict], texts: list[dict], min_pass: float, sql=None) -> dict:
+    """Trả {"enabled": {table_key: {"field": bool, "aggregate": bool, "sql": bool}, "text:<ds>": bool}, "tables": {...chi tiết...}}.
+    sql = hàm gọi model (24/10): có thì chấm thêm lộ trình SQL; không có thì không có route "sql" (tắt)."""
+    eng = Engine(tables, texts, {})                                   # lộ trình cũ chấm riêng: SQL không chen vào câu đếm của code
+    eng_sql = Engine(tables, texts, {t["key"]: {"sql": True} for t in tables}, sql=sql) if sql else None
     enabled, detail = {}, {}
     for t in eng.ents:
         res = {}
-        for route, qs in (("field", _q_field(t)), ("aggregate", _q_aggregate(t) if len(t["rows"]) >= 2 else [])):
+        routes = [("field", _q_field(t)), ("aggregate", _q_aggregate(t) if len(t["rows"]) >= 2 else [])]
+        if sql:
+            routes.append(("sql", _q_sql(t)))
+        for route, qs in routes:
             ok, fails = 0, []
             for c in qs:
-                a = eng.answer(c["q"], {})
+                a = (eng_sql if route == "sql" else eng).answer(c["q"], {})
                 if route == "field":
                     if c.get("negative"):
                         good = a["kind"] != "answer"
                     else:
                         good = a["kind"] == "answer" and a.get("field") == c["field"] and any(s["record_id"] == c["row"] for s in a.get("sources", []))
+                elif route == "sql":
+                    good = _sql_good(c, a, t)
                 else:   # đúng bảng, đúng số dòng (dạng đếm: **n**; dạng liệt kê giá trị: n dòng "- ")
                     good = a["kind"] == "answer" and a.get("table") == t["key"] and (
                         (a.get("route") == "aggregate" and re.search(rf"\*\*{c['count']}\*\*", a["content"]) is not None)

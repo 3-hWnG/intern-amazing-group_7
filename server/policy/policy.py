@@ -484,6 +484,19 @@ def check(plan, *, user_text: str, conn=None, facts: list[str] | None = None,
         out.tasks.append(rt)
         cond_hits.append(cond_hit)
 
+    # --- 24/10 (câu khó, phương án A): cổng ý định NGOÀI PHẠM VI (scope.py): hỏi tình trạng hồ sơ, khiếu nại, kiến nghị, luật / xử phạt, chế độ nội bộ ngành,
+    # thủ tục không có trong dữ liệu -> từ chối kèm lý do, TRƯỚC các luật hỏi lại. Không áp khi đang trả lời thẻ hỏi lại (known_procs / no_clarify). S3_SCOPE_GATE=0 tắt.
+    if not known_procs and not no_clarify and not any(t.route == "chitchat" for t in out.tasks):
+        from .scope import verdict, READER_REASON
+        v = verdict(user_text, chosen=any(t.route == "direct" for t in out.tasks))
+        if not v and getattr(plan, "intent", "") in READER_REASON:     # phương án C: ý định model đọc được (planner/reader.py)
+            v = READER_REASON[plan.intent]
+        if v:
+            out.tasks = [RoutedTask(route="apologize", reason=v, action=(raw[0].action if raw else ""))]
+            out.flags.append("scope:" + v)
+            out.behavior = "apologize"
+            return out
+
     # --- clarify bằng LUẬT (đã duyệt): >=3 thủ tục khác nhóm, điểm sát nhau, người dùng chưa nêu từ phân biệt -> hỏi lại, không đoán.
     # Sau khi đã trả lời thẻ (no_clarify) thì chọn ứng viên gần ý nhất, không hỏi lần 2. 2 biến thể gần nhau: giữ bản mặc định + nút.
     if not no_clarify and not known_procs and len(out.tasks) == 1 and out.tasks[0].route == "direct":

@@ -102,6 +102,8 @@ FASTPATH_ENABLED = True
 FASTPATH_LLM_CUES = True
 FASTPATH_MIN_PASS = 0.9
 FASTPATH_AGGREGATE = False
+FASTPATH_SQL = True          # 24/10: bật mặc định — chỉ chạy trên bảng qua bài tự kiểm lúc nạp (selftest route "sql")
+FASTPATH_SQL_RAW = False
 GUEST_ENABLED = True
 LIMIT_GUEST_PER_MIN = 3
 LIMIT_GUEST_PER_DAY = 20
@@ -244,6 +246,13 @@ SETTINGS = [
          help="Tắt (mặc định, leader chọn 18/10): code chỉ trả lời câu tra một dòng, câu nối tiếp, hỏi lại khi trùng tên, trích văn bản; câu đếm / "
               "liệt kê đi đường cũ (tìm kiếm + AI + công cụ bảng). Lý do: trên bộ mù cửa hàng, tra một dòng đúng 14/14 nhưng đếm / liệt kê chỉ 1/6 "
               "(docs/SYSTEM4_DUONG_NHANH.md mục F). Bật: code tính cả đếm / liệt kê (nhanh hơn, có thể sai trên dữ liệu nhiều bảng)."),
+    dict(key="FASTPATH_SQL", type="bool", group="Tốc độ & độ chính xác", label="Đường nhanh: đếm / liệt kê / lớn nhất / tổng bằng SQL",
+         help="Bật (24/10): câu cần tính trên nhiều dòng (đếm, liệt kê, lớn nhất / nhỏ nhất, tổng, so sánh số) chạy trên bảng phẳng đã biên dịch "
+              "lúc nạp (số đọc đúng cách viết, cột năm, chữ bỏ dấu). AI 4B chỉ viết MỘT câu SELECT trên đúng bảng đó; code chạy trong hộp cát và "
+              "viết câu trả lời từ kết quả. Bài tự kiểm lúc nạp bật / tắt lộ trình này theo từng bảng. Tắt: các câu đó đi như trước."),
+    dict(key="FASTPATH_SQL_RAW", type="bool", group="Tốc độ & độ chính xác", label="Đường nhanh: SQL không qua bước biên dịch (chỉ để đo)",
+         help="Mốc so sánh cho bài báo: AI viết SQL trên bảng thô (cột chữ nguyên văn, không kiểu số, không giá trị mẫu), không tự kiểm. "
+              "Chỉ dùng khi đo; người dùng thường để tắt."),
     dict(key="FASTPATH_MIN_PASS", type="float", group="Tốc độ & độ chính xác", label="Đường nhanh: ngưỡng bài tự kiểm", min=0.5, max=1.0,
          help="Lúc nạp, code tự sinh câu hỏi + đáp án từ chính dữ liệu và chạy thử. Bảng nào đạt dưới ngưỡng này ở một loại câu (tra trường / "
               "đếm-liệt kê / văn bản) thì loại câu đó tắt cho bảng ấy, câu hỏi đi đường cũ."),

@@ -43,6 +43,8 @@ APOLOGY = {
     "expired": "Thủ tục này không còn trong danh mục của Cổng Dịch vụ công nên mình không trả lời để tránh đưa thông tin lỗi thời.",
     "injection": "Mình chỉ hỗ trợ tra cứu thủ tục hành chính cấp xã/phường và không thể làm theo yêu cầu đó.",
 }
+from policy.scope import APOLOGY_TEXT as _SCOPE_APOLOGY  # noqa: E402  (24/10: lý do từ chối của cổng ý định ngoài phạm vi)
+APOLOGY.update(_SCOPE_APOLOGY)
 CHITCHAT = "Xin chào! Mình là trợ lý tra cứu thủ tục hành chính cấp xã/phường. Bạn cần hỏi thủ tục nào?"
 
 

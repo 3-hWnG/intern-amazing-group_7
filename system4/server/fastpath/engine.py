@@ -34,6 +34,12 @@ MONTH = re.compile(r"\bthang (\d{1,2})\b")
 VN = timezone(timedelta(hours=7))
 ACCEPT = 0.6     # độ phủ tối thiểu (theo IDF) của chữ nội dung trong câu hỏi
 LIST_MAX = 40
+# 24/10 (lộ trình SQL, sqlroute.py): câu cần phép tính trên nhiều dòng ngoài đếm / liệt kê
+SUPERL = re.compile(r"\b(?:lon|nho|cao|thap|nhieu|it|dai|ngan|rong|hep|som|muon|moi|cu|dong|lau|xa|gan|manh|yeu|re|dat) nhat\b")
+SUMQ = re.compile(r"\b(?:tong(?! cong ty| cuc| giam doc| bi thu| thong| lanh su)|trung binh|cong lai)\b")
+COMPARE = re.compile(r"\b(?:tren|duoi|hon|lon hon|nho hon|it hon|nhieu hon|cao hon|thap hon|tu|qua|vuot) \d")
+# chỉ để BẬT lộ trình SQL: "nhiều giường nhất" (danh từ chen giữa tính từ và "nhất")
+SUPERL_GAP = re.compile(r"\b(?:lon|nho|cao|thap|nhieu|it|dai|ngan|rong|hep|som|muon|moi|cu|dong|lau|xa|gan|manh|yeu|re|dat)(?: \w+){0,2} nhat\b")
 
 
 def parse_date(v) -> datetime | None:
@@ -94,12 +100,16 @@ def _cap_words(text: str) -> list[list[str]]:
 
 
 class Engine:
-    def __init__(self, tables: list[dict], texts: list[dict], enabled: dict, aggregate: bool = True, refuse: bool = True):
+    def __init__(self, tables: list[dict], texts: list[dict], enabled: dict, aggregate: bool = True, refuse: bool = True,
+                 sql=None, sql_compiled: bool = True):
         self.ents = [t for t in tables if t["parent"] is None and len(t["rows"]) >= 1]
         self.texts = texts
         self.enabled = enabled
         self.aggregate = aggregate   # ⚙ FASTPATH_AGGREGATE: tắt thì câu đếm / liệt kê nhường đường cũ (bài tự kiểm vẫn chấm để báo cáo)
         self.refuse = refuse         # False = có đoạn văn bản không lập chỉ mục (tự kiểm đã tắt): từ vựng không đủ để nói "không có tên này"
+        self.sql = sql               # 24/10: hàm gọi model (messages, schema, timeout) cho lộ trình SQL (sqlroute.py); None = tắt
+        self.sql_compiled = sql_compiled   # False = mốc so sánh "text-to-SQL không qua bước biên dịch" (cột chữ nguyên văn, không kiểu)
+        self._boxes: dict = {}
         self.bykey = {t["key"]: t for t in tables}
         self.byrow = {}
         docs = []
@@ -136,7 +146,8 @@ class Engine:
     def on(self, t: dict, route: str) -> bool:
         if route == "aggregate" and not self.aggregate:
             return False
-        return self.enabled.get(t["key"], {}).get(route, True)
+        # lộ trình SQL chỉ chạy khi bài tự kiểm của bảng đã chấm nó đạt (bảng biên dịch trước 24/10 chưa có kết quả này: tắt, đợi biên dịch lại)
+        return self.enabled.get(t["key"], {}).get(route, route != "sql")
 
     def idf(self, w: str) -> float:
         return math.log((self.N + 1) / (self.df.get(w, 0) + 0.5))
@@ -378,6 +389,12 @@ class Engine:
                          for mm in COUNT.finditer(qs) for t in self.ents for nw in self.nouns(t))
         clear_row = bool(best) and best[0][0] >= ACCEPT and bool(best[3])
         count_q = bool(COUNT.search(qs)) and bool(agg_pos) and not numeric_field and (noun_after or not clear_row)
+        # SQL: "bao nhiêu <danh từ của bảng>" là câu đếm kể cả khi câu có cột số ("bao nhiêu di tích xếp hạng năm 2012")
+        count_sql = count_q or (bool(COUNT.search(qs)) and noun_after)
+        if self.sql and (count_sql or LIST.search(qs) or SUPERL_GAP.search(qs) or SUMQ.search(qs) or COMPARE.search(qs)):
+            r = self._sql_answer(q, qt, text)          # 24/10: lộ trình SQL trên bảng phẳng đã biên dịch (model viết SELECT, code trả lời)
+            if r:
+                return r
         if count_q or LIST.search(qs):   # câu đếm / liệt kê: phép tính trên cả bảng trước (lỗi b17, b18 ngày 18/10)
             agg = self._aggregate_best(q, qt, agg_pos)
             if agg:
@@ -440,6 +457,41 @@ class Engine:
             if not any(all(w in tt for w in gw) for t in self.ents for tt in t["_tt"]) and any(w not in self.vocab for w in gw):
                 return {"kind": "refuse", "route": "refuse", "content": f"Mình không tìm thấy «{' '.join(grp)}» trong dữ liệu đang bật.", "sources": []}
         return {"kind": "decline", "reason": "không đủ chắc"}
+
+    # ------------------------------------------------------------------ lộ trình SQL
+    def sql_table(self, q: list[str], qt: list) -> dict | None:
+        """Bảng để viết SQL: bảng được nhắc tên / danh từ trước, rồi tới số cột được hỏi tới, rồi độ phủ chữ của câu trong giá trị của bảng."""
+        best = None
+        for t in self.ents:
+            if len(t["rows"]) < 2 or not self.on(t, "sql"):
+                continue
+            mention = len({w for w in q if w in t["_tok"] and w not in STOP and w not in ("dong", "muc")})
+            cols = sum(1 for f, m in t["fields"].items() for c in m["cues"] if _contig(q, [fold(w) for w in c]) is not None)
+            content = [w for w in q if w not in STOP and w not in GREET]
+            cov = self.mass(w for w in content if w in t["_vocab"] or w in t["_tok"]) / (self.mass(content) or 1)
+            # danh từ của bảng nêu NGUYÊN CỤM ("bệnh viện ...") thắng chữ trùng lẻ của bảng khác ("... Bệnh viện đại học" ~ bảng trường đại học)
+            noun_hit = any(_contig(q, nw) is not None for nw in self.nouns(t))
+            key = (noun_hit, mention, min(cols, 3), round(cov, 2))
+            if best is None or key > best[0]:
+                best = (key, t)
+        return best[1] if best and (best[0][0] or best[0][1] or best[0][2] or best[0][3] >= ACCEPT) else None
+
+    def _sql_answer(self, q: list[str], qt: list, text: str) -> dict | None:
+        from . import sqlroute
+        t = self.sql_table(q, qt)
+        if t is None:
+            return None
+        box = self._boxes.get(t["key"])
+        if box is None:
+            box = self._boxes[t["key"]] = sqlroute.Box(t, compiled=self.sql_compiled)
+        res = sqlroute.answer(box, text, self.sql)
+        if not res:
+            return None
+        title_ids = {r["title"]: r for r in t["rows"]}
+        src = [self._src(t, title_ids[x]) for x in res.get("titles", [])[:5] if x in title_ids] or [
+            {"record_id": None, "title": f"Tính trên cả bảng «{t['name']}» ({len(t['rows'])} dòng)", "dataset": t["dataset"]}]
+        return {"kind": "answer", "route": "sql", "table": t["key"], "content": res["text"], "sources": src, "sql": res["sql"],
+                "sql_kind": res["kind"], "count": res.get("count"), "titles": res.get("titles", []), "value": res.get("value")}
 
     @staticmethod
     def _src(t: dict, r: dict) -> dict:

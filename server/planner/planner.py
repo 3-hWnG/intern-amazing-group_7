@@ -52,6 +52,7 @@ class Plan:
     note: str = ""
     llm_trace: dict = field(default_factory=dict)   # Phase 19: nhật ký Planner hybrid (-> trace["planner_llm"]); {} khi mode=rules
     ctx: dict = field(default_factory=dict)     # quyết định ngữ cảnh (follow_up|new_related|return|correction|story|independent) + lý do
+    intent: str = ""                            # phương án C (reader.py): ý định model đọc được ("" = thủ tục / không đọc); Policy từ chối khi khác "thu_tuc"
     state: dict = field(default_factory=dict)   # ConvState SAU lượt này (đề xuất; orchestrator ghi lại theo thủ tục thực sự trả lời)
 
     def to_dict(self):
@@ -195,6 +196,70 @@ def _hybrid(rule_plan: Plan, turns, question, segs, res, conn, last_proc, facts,
     return rule_plan
 
 
+def _semantic(rule_plan: Plan, question: str, segs: list[Segment], conn) -> None:
+    """Phương án B (24/10, retrieval/semantic.py): reranker chấm lại thủ tục cho câu hỏi ĐẦU (không kế thừa ngữ cảnh) mà luật chọn
+    tối đa một thủ tục, hoặc câu kể dài (> 30 chữ). Điểm tốt nhất dưới ngưỡng -> không có thủ tục phù hợp; thủ tục khác hơn hẳn -> đổi.
+    Nhiều lượt, xã giao, chọn theo thứ tự, câu ngắn hỏi nhiều thủ tục: giữ nguyên luật. Bật bằng S3_SEMANTIC=1."""
+    from system3.retrieval import semantic
+    if not semantic.enabled() or not segs or any(s.reason in ("chitchat", "order_unknown") or s.inherited for s in segs):
+        return
+    direct = [t for t in rule_plan.tasks if t.procedure_id]
+    if len(direct) > 1 and len(question.split()) <= 30:
+        return
+    rule_ids = [h.proc_id for s in segs for h in s.hits[:5]]
+    rule_pick = direct[0].procedure_id if direct else None
+    try:
+        d = semantic.decide(conn, semantic.query_text(question, segs), rule_ids, rule_pick)
+    except Exception as exc:        # model / Ollama lỗi -> giữ kế hoạch luật (không làm hỏng câu trả lời)
+        rule_plan.llm_trace["semantic"] = {"error": str(exc)[:200]}
+        return
+    rule_plan.llm_trace["semantic"] = d
+    ranked = [pid for pid, _ in d["ranked"]]
+    if d["action"] == "none":
+        rule_plan.tasks = [Task(action="out_of_scope", procedure_query=segs[0].query.procedure_query, candidates=ranked[:5])]
+        rule_plan.note = "semantic:none"
+    elif d["action"] in ("swap", "rescue"):
+        fields = list(dict.fromkeys(f for t in rule_plan.tasks for f in t.fields))
+        t = _mk_task(d["pick"], fields, _label(conn, d["pick"]))
+        t.candidates = [d["pick"]] + [x for x in ranked if x != d["pick"]][:4]
+        rule_plan.tasks = [t]
+        rule_plan.note = "semantic:" + d["action"]
+
+
+def _reader(rule_plan: Plan, question: str, segs: list[Segment], conn) -> None:
+    """Phương án C (24/10, reader.py): model 4B phân loại ý định + gọi tên thủ tục bằng chữ; luật xếp hạng TÊN đó trên cùng kho.
+    Chỉ câu hỏi đầu (không kế thừa ngữ cảnh), không xã giao. Bật bằng S3_READER=1."""
+    from . import reader
+    if not reader.enabled() or not segs or any(s.reason in ("chitchat", "order_unknown") or s.inherited for s in segs):
+        return
+    r = reader.read(question)
+    rule_plan.llm_trace["reader"] = r
+    if r is None:
+        return
+    if r["intent"] != "thu_tuc":
+        if os.environ.get("S3_READER_INTENT", "1") == "1":       # =0: bóc tách, chỉ dùng TÊN thủ tục model đọc, bỏ phân loại ý định
+            rule_plan.intent = r["intent"]
+        return
+    name = r["procedure"].strip()
+    direct = [t for t in rule_plan.tasks if t.procedure_id]
+    if not name or (len(direct) > 1 and len(question.split()) <= 30):
+        return
+    from system3.retrieval.query import understand
+    idx = _index()
+    hits = idx.rank(understand(conn, name, idx.syn), limit=5)
+    top = hits[0] if hits else None
+    if not top or top.flags or top.score < ACCEPT_SCORE or top.cov < 0.5:
+        return
+    top3 = [h.proc_id for h in hits[:3]]
+    if direct and direct[0].procedure_id in top3:
+        return            # luật trên cả câu đã chọn một thủ tục khớp tên model đọc: giữ
+    fields = list(dict.fromkeys(f for t in rule_plan.tasks for f in t.fields))
+    t = _mk_task(top.proc_id, fields, _label(conn, top.proc_id))
+    t.candidates = top3
+    rule_plan.tasks = [t]
+    rule_plan.note = "reader:swap"
+
+
 def plan(turns: list[dict], *, last_proc: str | None = None, facts: list[str] | None = None,
          use_llm: bool | None = None, llm_chat_json=None, shown: list[dict] | None = None, state: dict | None = None,
          mode: str | None = None) -> Plan:
@@ -208,6 +273,8 @@ def plan(turns: list[dict], *, last_proc: str | None = None, facts: list[str] | 
     segs = res.segments
     rule_plan = _from_rules(segs, conn)
     rule_plan.ctx, rule_plan.state = res.ctx, res.state.to_dict() if res.state else {}
+    _semantic(rule_plan, question, segs, conn)
+    _reader(rule_plan, question, segs, conn)
     if mode is None:
         mode = hybrid.get_config()["mode"]
     if mode == "hybrid":          # Phase 19: luật luôn có kế hoạch; LLM nền chỉ sửa khi confidence >= ngưỡng và qua kiểm Policy/dữ liệu

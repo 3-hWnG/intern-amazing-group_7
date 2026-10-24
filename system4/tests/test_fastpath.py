@@ -89,7 +89,8 @@ with TestClient(main.app) as c:
     tab = rep["tables"][0]
     types = {f["name"]: f["type"] for f in tab["fields"]}
     assert types["Nữ"] == "flag" and types["Ngày sinh"] == "date" and types["SĐT"] == "id", types
-    assert tab["enabled"] == {"field": True, "aggregate": True}, tab["test"]
+    # 25/10: FASTPATH_SQL bật mặc định -> thêm route "sql"; test không có Ollama nên model không viết được SQL -> bài tự kiểm TẮT route này
+    assert tab["enabled"] == {"field": True, "aggregate": True, "sql": False}, tab["test"]
     assert tab["test"]["field"]["rate"] >= 0.9 and tab["test"]["field"]["n"] >= 20, tab["test"]["field"]
     assert "tự kiểm" in rep["message"] and rep["llm_tables"] == 0
 

@@ -65,11 +65,19 @@ def main() -> int:
     filt = [a for a in sys.argv[1:] if not a.startswith("--")]
     data_db = str(ROOT / "data" / "runtime" / "system3.db") if live else str(fixture_db.ensure(quiet=True))
     print(f"DB thủ tục: {data_db}")
+    pace = os.environ.get("TEST_THERMAL", "0") == "1"   # 24/10: máy không quá 70 °C — canh nhiệt + nghỉ giữa các test (eval/thermal.py)
+    if pace:
+        from thermal import guard, low_priority
+        low_priority()     # tiến trình con thừa hưởng ưu tiên thấp + số luồng CPU
     fails, known = [], []
     for path, how in TESTS:
         if filt and not any(f in path for f in filt):
             continue
+        if pace:
+            guard(every=0, label=path)
         ok, dt, out = run_one(path, how, data_db)
+        if pace:
+            time.sleep(min(60.0, dt * float(os.environ.get("THERMAL_DUTY", "1.0"))))
         tag = "PASS" if ok else ("KNOWN" if path in KNOWN_FAIL else "FAIL")
         print(f"{tag:5s} {dt:6.1f}s  {path}", flush=True)
         if not ok:

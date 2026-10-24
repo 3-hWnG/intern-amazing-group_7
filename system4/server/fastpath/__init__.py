@@ -59,7 +59,7 @@ def _evict(ds_id: int) -> None:
     """Bỏ khỏi bộ nhớ đệm các engine có bộ dữ liệu này (trước 20/10 xoá HẾT: một người nạp tệp ở lĩnh vực khác cũng làm câu FLM kế tiếp
     phải dựng lại engine)."""
     with _lock:
-        for k in [k for k in _cache if any(i == ds_id for i, _ in k[1])]:
+        for k in [k for k in _cache if any(i == ds_id for i, _ in k[-1])]:      # khoá = (cờ..., các cặp (dataset_id, updated_at)): phần tử CUỐI
             del _cache[k]
 
 
@@ -86,6 +86,20 @@ def _materialize(spec: dict, with_texts: bool = True) -> tuple[list[dict], list[
     return tables, texts
 
 
+def _sql_chat(priority: int):
+    """Hàm gọi model cho lộ trình SQL (sqlroute.py), giữ chỗ GPU chung: P1 lúc hỏi (như công cụ bảng), P3 lúc nạp (bài tự kiểm, việc nền)."""
+    def call(messages, schema, timeout=60):
+        from core import gpu
+        from .. import llm
+        with gpu.slot(priority):
+            return llm.chat_json(messages, schema, timeout=timeout)
+    return call
+
+
+def _sql_on() -> bool:
+    return bool(settings.get("FASTPATH_SQL")) or bool(settings.get("FASTPATH_SQL_RAW"))
+
+
 def build(ds_id: int) -> dict | None:
     """Biên dịch + tự kiểm một bộ dữ liệu (đồng bộ; chạy trong luồng nền)."""
     ds = db.get_dataset(ds_id)
@@ -100,7 +114,8 @@ def build(ds_id: int) -> dict | None:
         spec = C.compile_dataset(ds)
         tables, texts = _materialize(spec)
         t1 = time.perf_counter()
-        test = selftest.run(tables, texts, settings.get("FASTPATH_MIN_PASS"))
+        from core import gpu
+        test = selftest.run(tables, texts, settings.get("FASTPATH_MIN_PASS"), sql=_sql_chat(gpu.P3) if settings.get("FASTPATH_SQL") else None)
         report = {"compile_ms": int((t1 - t0) * 1000), "selftest_ms": int((time.perf_counter() - t1) * 1000),
                   "llm_tables": spec["llm_tables"], **test}
         n_on = sum(v for e in test["enabled"].values() for v in (e.values() if isinstance(e, dict) else [e]))
@@ -183,7 +198,8 @@ def _engine(ds_ids: list[int]) -> tuple[Engine | None, list[int]]:
     if not ready:
         return None, []
     agg = bool(settings.get("FASTPATH_AGGREGATE"))
-    key = (agg, tuple(sorted((r["dataset_id"], r["updated_at"]) for r in ready)))
+    sql_raw = bool(settings.get("FASTPATH_SQL_RAW"))
+    key = (agg, _sql_on(), sql_raw, tuple(sorted((r["dataset_id"], r["updated_at"]) for r in ready)))
     with _lock:
         if key in _cache:
             return _cache[key], [r["dataset_id"] for r in ready]
@@ -200,7 +216,11 @@ def _engine(ds_ids: list[int]) -> tuple[Engine | None, list[int]]:
             tables += t; texts += x
             skipped |= not use_text and bool(r["spec"].get("text_ids"))
             enabled.update(on)
-        eng = Engine(tables, texts, enabled, aggregate=agg, refuse=not skipped)
+        if sql_raw:      # mốc "SQL không qua biên dịch": không dùng kết quả tự kiểm của lộ trình SQL
+            enabled = {k: ({**v, "sql": True} if isinstance(v, dict) else v) for k, v in enabled.items()}
+        from core import gpu
+        eng = Engine(tables, texts, enabled, aggregate=agg, refuse=not skipped,
+                     sql=_sql_chat(gpu.P1) if _sql_on() else None, sql_compiled=not sql_raw)
         with _lock:
             if len(_cache) > 24:
                 _cache.clear()

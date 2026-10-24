@@ -30,6 +30,8 @@ FIELD_CUES: dict[str, list[str]] = {
     "meta": ["co quan nao ban hanh", "ai ban hanh", "ban hanh", "so hieu", "link", "duong link", "van ban nao quy dinh", "van ban quy dinh", "thong tu nao quy dinh", "nghi dinh nao quy dinh", "can cu vao van ban nao", "van ban nao", "thong tu nao", "nghi dinh nao", "luat nao", "quy dinh nao", "dua tren quy dinh nao", "dua tren", "quyet dinh cong bo", "trich dan", "duong dan", "lay thong tin o dau", "lay thong tin", "lay tu dau", "nguon", "can cu phap ly", "co so phap ly", "van ban phap luat", "van ban", "quyet dinh so", "nghi dinh", "luat nao",
              "can cu"],
 }
+if os.environ.get("S3_LEXICON2", "1") == "1":       # A2 (24/10): "yêu cầu, điều kiện để ..." = hỏi điều kiện. Phải đứng TRƯỚC các tập dẫn xuất (_CUE_WORDS ...)
+    FIELD_CUES["explanation"].append("yeu cau")
 # cụm chứa cụm chỉ-field nhưng là DANH TỪ ("giấy tờ cá nhân" trong lời kể), không phải mục được hỏi
 NOT_FIELD = ("giay to ca nhan", "giay to tuy than", "ho so ca nhan", "ban sao giay to", "ban chinh giay to")
 _FIELD_VERBS = {"giai", "quyet", "thuc", "hien", "xong", "lam"}
@@ -125,9 +127,77 @@ COLLOQUIAL = [(r"độc thân", "tình trạng hôn nhân"), (r"báo tử", "kha
               (r"(?:đổi|sửa|thay) (?:họ|ngày sinh|năm sinh|quê quán|dân tộc)|(?:đổi|sửa|thay) tên (?:cho )?(?:con|bé|cháu)|(?:sửa|đổi) tên trong (?:giấy )?khai sinh|sai (?:họ|tên|ngày sinh|năm sinh) (?:trong )?(?:giấy )?khai sinh|(?:sửa|chỉnh sửa|đính chính) (?:giấy )?khai sinh", "thay đổi cải chính bổ sung thông tin hộ tịch"),
               (r"người cao tuổi hưởng trợ cấp|trợ cấp người cao tuổi|trợ cấp (?:từ )?(?:đủ )?75 tuổi", "trợ cấp hưu trí xã hội"),
               (r"lấn ranh(?: giới)?|lấn đất", "tranh chấp đất đai")]
+# 24/10 (câu khó, phương án A2): từ người dân dùng trong câu hỏi THẬT -> tên thủ tục chính thức của bản 3 (Luật Cư trú 2020 bỏ sổ hộ khẩu,
+# Luật Căn cước 2023 đổi "căn cước công dân" thành "thẻ căn cước"). Đặt TRƯỚC bảng trên (luật sau chạy trên chữ đã thay). Tắt: S3_LEXICON2=0.
+COLLOQUIAL2 = [
+    (r"chứng thực(?: điện tử)?(?: bản sao)? (?:bằng|chứng chỉ|giấy tờ|văn bằng|học bạ|giấy khai sinh|căn cước|cmnd|cccd)", "chứng thực bản sao từ bản chính"),
+    (r"(?:sửa|điều chỉnh|cập nhật|thay đổi|chỉnh sửa|đính chính)(?: lại)? (?:thông tin|năm sinh|ngày sinh|ngày tháng năm sinh|ngày, tháng, năm sinh|họ tên|họ và tên|tên|quê quán|nơi sinh|dân tộc)"
+     r"(?: của (?:tôi|mẹ tôi|bố tôi|cha tôi|em|mình|con tôi))? (?:trên|trong|ở) (?:sổ hộ khẩu|hộ khẩu|chứng minh nhân dân|cmnd|thẻ căn cước|căn cước công dân|cccd|cơ sở dữ liệu(?: quốc gia)?(?: về dân cư)?|hệ thống|cổng dịch vụ công|vneid)",
+     "điều chỉnh thông tin trong cơ sở dữ liệu quốc gia về dân cư theo đề nghị của công dân"),
+    (r"(?:giấy )?(?:xác nhận|chứng nhận) số (?:cmnd|cmt|chứng minh nhân dân|chứng minh thư)(?: cũ| 9 số| 09 số)?|số (?:cmnd|cmt|chứng minh nhân dân|chứng minh thư) (?:cũ|bị thay đổi|đã thay đổi|thay đổi)",
+     "xác nhận số chứng minh nhân dân 09 số số định danh cá nhân"),
+    (r"(?:làm|cấp|đổi|cấp đổi|cấp lại|làm lại|xin cấp|xin làm|đăng ký làm|đăng ký cấp|đi làm)(?: mới| lại)?(?: thẻ)? (?:căn cước công dân|căn cước|cccd|chứng minh nhân dân|chứng minh thư|cmnd|cmt)(?! điện tử)"
+     r"(?: gắn chíp(?: điện tử)?| có gắn chíp(?: điện tử)?| mẫu mới)?", "cấp đổi cấp lại thẻ căn cước"),
+    (r"(?:thẻ )?căn cước công dân(?: gắn chíp(?: điện tử)?| có gắn chíp(?: điện tử)?)?|cccd(?: gắn chíp(?: điện tử)?)?", "thẻ căn cước"),
+    (r"(?:nhập|chuyển|đăng ký|đăng kí|làm|xin)(?: sổ)? hộ khẩu(?: thường trú)?|(?:nhập|chuyển) khẩu(?= (?:cho|vào|về|tại|ở|thường trú))", "đăng ký thường trú"),
+    (r"(?:đăng ký |làm |xin )?(?:kt3|kt 3|sổ tạm trú)", "đăng ký tạm trú"),
+    (r"(?:làm lại|cấp lại|xin cấp lại|xin lại|đổi|làm|đăng ký|cấp|bị mất|mất) (?:biển số|biển kiểm soát)(?: xe)?(?: máy| ô tô| mô tô)?", "cấp lại đăng ký xe biển số xe"),
+    (r"cà vẹt(?: xe)?(?: máy)?|giấy đăng ký xe", "chứng nhận đăng ký xe"),
+    (r"sang tên(?:,? đổi chủ)? (?:xe|chiếc xe|ô tô|xe máy|mô tô)", "đăng ký xe sang tên"),
+    (r"(?:làm|xin cấp|xin|cấp|đăng ký cấp)(?: lần đầu)? (?:sổ đỏ|sổ hồng|bìa đỏ|giấy chứng nhận quyền sử dụng đất)(?: lần đầu)?", "đăng ký đất đai cấp giấy chứng nhận quyền sử dụng đất"),
+    (r"(?:làm lại|cấp lại|xin lại|xin cấp lại|xin bản sao|cấp bản sao|bản sao|trích lục)(?: bản sao)? (?:giấy khai sinh|giấy đăng ký kết hôn|giấy chứng nhận (?:đăng ký )?kết hôn)",
+     "cấp bản sao trích lục hộ tịch bản sao giấy khai sinh"),
+    (r"(?:cấp lại|xin cấp lại|xin lại|làm lại|cấp|xin cấp|xin)(?: bản sao)? (?:văn bằng|bằng tốt nghiệp|bằng cấp(?: \d)?|bằng thpt|bằng đại học|bằng cao đẳng|bằng trung cấp)|bản sao (?:văn bằng|bằng tốt nghiệp|bằng cấp(?: \d)?|bằng thpt)",
+     "cấp bản sao từ sổ gốc"),
+    (r"(?:giấy |mẫu )?(?:xác nhận (?:thông tin )?(?:cư trú|tạm trú|thường trú)|ct07|ct 07)", "xác nhận thông tin về cư trú"),
+    (r"(?:thay đổi|đổi|sửa|điều chỉnh|cập nhật)(?: lại)? (?:thông tin|tên|họ tên|ngày sinh|năm sinh|nghề nghiệp|tên ngành nghề|ngành nghề|chức danh)(?: [\wÀ-ỹ]+){0,4}? "
+     r"(?:trên|trong|ở) (?:sổ bhxh|sổ bảo hiểm xã hội|sổ bảo hiểm|thẻ bhyt|thẻ bảo hiểm y tế|thẻ bảo hiểm)", "điều chỉnh thông tin trên sổ bảo hiểm xã hội thẻ bảo hiểm y tế"),
+    (r"(?:đổi|sửa|thay đổi|thay)(?: lại)? (?:chữ lót|tên đệm|tên lót|họ tên|họ và tên)", "thay đổi cải chính bổ sung thông tin hộ tịch"),
+    (r"(?:giấy )?khai sinh(?: của [\wÀ-ỹ]+){0,2} (?:bị )?(?:sai|ghi sai|nhầm|ghi nhầm)", "thay đổi cải chính bổ sung thông tin hộ tịch khai sinh sai"),
+    (r"(?:đã )?bán(?: chiếc| 01| 1)? xe(?: máy| ô tô| mô tô)?(?: [\wÀ-ỹ,]+){0,10}? (?:không|chưa) (?:làm (?:thủ tục )?)?sang tên", "thu hồi chứng nhận đăng ký xe biển số xe"),
+    (r"(?:định danh(?: điện tử)?|vneid)(?: mức(?: độ)?) ?(?:2|02|hai)", "tài khoản định danh điện tử mức độ 02"),
+]
+if os.environ.get("S3_LEXICON2", "1") == "1":
+    COLLOQUIAL = COLLOQUIAL2 + COLLOQUIAL
+_LEX2_RE = [(re.compile(r"(?<!\w)(?:" + p + r")(?!\w)", re.I), r) for p, r in COLLOQUIAL2]
+
+
+def normalize_terms(text: str) -> str:
+    """A2 trên CẢ câu, trước khi tách ý: cụm có dấu phẩy ("ngày, tháng, năm sinh ... trên CMND") không bị bộ tách ý cắt rời."""
+    if os.environ.get("S3_LEXICON2", "1") != "1" or not text:
+        return text
+    for rx, rep in _LEX2_RE:
+        text = rx.sub(rep, text)
+    return text
 _COLLOQUIAL_RE = [(re.compile(r"(?<!\w)(?:" + p + r")(?!\w)"), r) for p, r in COLLOQUIAL]
 # người gõ KHÔNG DẤU ("doc than", "sao y") cũng được lợi: bản bỏ dấu của cùng luật, chỉ chạy khi cả câu không có dấu; bỏ luật ngắn (bỏ dấu "đẻ" thành "de" trùng "để")
 _COLLOQUIAL_FOLD = [(re.compile(r"(?<!\w)(?:" + _fold(p) + r")(?!\w)"), r) for p, r in COLLOQUIAL if len(_fold(p)) >= 7]
+
+
+# 24/10 (câu khó, phương án A1): câu hỏi THẬT gửi cơ quan có lời gửi / lời chào / tự giới thiệu / lời cảm ơn ("Bộ Công an cho tôi hỏi", "Kính gửi Sở ...",
+# "rất mong được quý cơ quan hướng dẫn", "Xin chân thành cảm ơn"). Đo trên real_v1: bộ tách ý cắt "bộ công an cho tôi hỏi" thành một ý riêng và nó khớp
+# thủ tục 1.115406 (tên dài có "Công an nhân dân"): 26 câu ngoài phạm vi + 10 câu có đáp án chọn nhầm. Ở đây bỏ tên cơ quan khỏi lời hỏi, giữ "cho tôi hỏi".
+# Tắt: S3_LETTER_STRIP=0.
+_AGENCY = r"(?:bộ|sở|ban|phòng|cục|ủy ban|uỷ ban|ubnd|công an|quý\s+cơ\s+quan|các\s+cơ\s+quan(?:\s+chức\s+năng)?|cơ\s+quan(?:\s+chức\s+năng)?|quý\s+(?:anh|chị|sở|ban|cơ quan)|anh\s*/\s*chị|anh\s+chị|ad|admin|tòa\s+soạn|toà\s+soạn|dịch\s+vụ\s+công)"
+_LETTER = [
+    (re.compile(r"^\s*(?:kính\s+(?:gửi|gởi|thưa|chào)|xin\s+chào|chào|thưa|dear)\b[^.?!\n:]{0,90}?(?:[,.:!\n]|$)", re.I), " "),
+    (re.compile(_AGENCY + r"(?:\s+[\wÀ-ỹ.]+){0,6}?\s+(?:cho|giúp|vui\s+lòng|làm\s+ơn)\s+(?:tôi|em|cháu|mình|con|chúng\s+tôi|tui)\s+(?:được\s+)?(?:hỏi|biết|xin\s+hỏi)", re.I), " cho tôi hỏi"),
+    (re.compile(r"((?:tôi|em|cháu|mình|con|chúng tôi)\s+(?:muốn|xin|cần|mạn phép|xin phép)\s+(?:được\s+)?hỏi)\s+" + _AGENCY + r"(?:\s+[\wÀ-ỹ]+){0,4}?(?=\s*[,:.?]|\s+(?:về|là|trường|nếu|có|thì|như|rằng))", re.I), r"\1"),
+    (re.compile(r"(?:rất\s+)?(?:mong|kính\s+mong|xin)\s+(?:được\s+)?" + _AGENCY + r"(?:\s+[\wÀ-ỹ]+){0,5}?\s+(?:hướng\s+dẫn|giải\s+đáp|trả\s+lời|tư\s+vấn|hỗ\s+trợ|giúp\s+đỡ|cho\s+biết)", re.I), " mong được hướng dẫn"),
+    (re.compile(r"(?:xin\s+)?(?:chân\s+thành\s+)?(?:cảm|cám)\s+ơn(?:\s+(?:quý|anh|chị|bạn|nhiều|ạ|nhé|rất\s+nhiều|cơ\s+quan|sở|ban)[\wÀ-ỹ ]{0,30})?[.!]*\s*$|trân\s+trọng[.!]*\s*$", re.I), " "),
+    (re.compile(r"(?:tôi|em|cháu|mình)\s+(?:tên\s+)?là\s+\[TÊN\]\s*,?", re.I), " "),
+]
+
+
+def strip_letter(text: str) -> str:
+    """Bỏ lời gửi cơ quan / lời chào / cảm ơn khỏi câu hỏi (giữ nguyên phần hỏi). Không đổi câu ngắn không có các mẫu này."""
+    if os.environ.get("S3_LETTER_STRIP", "1") != "1" or not text:
+        return text
+    t = text
+    for rx, rep in _LETTER:
+        t = rx.sub(rep, t)
+    t = re.sub(r"\s{2,}", " ", t).strip(" ,;")
+    return t if len(t.split()) >= 2 else text
 
 
 def _colloquial(text: str) -> str:

@@ -118,9 +118,12 @@ def start_server(settings: dict, log_name: str) -> subprocess.Popen:
     (RUNTIME / "settings.json").write_text(json.dumps(settings, ensure_ascii=False, indent=2), encoding="utf-8")
     env = dict(os.environ, PYTHONPATH=str(PYROOT), PYTHONIOENCODING="utf-8", S4_ENABLED="1", S3_USE_LLM="0", APP_PORT=str(PORT),
                S4_RUNTIME_DIR=str(RUNTIME), S3_DB_PATH=str(RUNTIME / "s3.db"), S4_RATE_LIMIT="0",   # bench hỏi liên tục: tắt giới hạn lượt hỏi
+               S4_BOOTSTRAP="0",   # 24/10: bench chỉ đo bộ dữ liệu nó tự nạp; bootstrap (dữ liệu thật + FLM) trên runtime mới làm máy quá nóng và server chết
+               S4_ABI_SYNC="0",    # 25/10: không đồng bộ abi.com.vn khi đo (runtime đo không có khoá: lượt "trước" gọi /site/settings một lần, bị 401)
                LLM_MODEL=settings.get("FRIENDLY_MODEL", "qwen3:4b"))   # System 3 nạp sẵn model này lúc khởi động: dùng chung, khỏi chiếm thêm
     log = open(RUNTIME / f"server_{log_name}.log", "w", encoding="utf-8")
     p = subprocess.Popen([str(PY), "main.py"], cwd=REPO / "server", env=env, stdout=log, stderr=subprocess.STDOUT)
+    _restrict(p.pid)
     for _ in range(180):
         try:
             if httpx.get(BASE + "/health", timeout=2).status_code == 200:
@@ -132,6 +135,16 @@ def start_server(settings: dict, log_name: str) -> subprocess.Popen:
         time.sleep(1)
     p.kill()
     raise SystemExit("server không lên sau 180 giây")
+
+
+def _restrict(pid: int) -> None:
+    """24/10 (máy không quá 70 °C): server bench + tiến trình chạy model của Ollama chỉ dùng 4 luồng CPU, ưu tiên thấp (eval/thermal.py)."""
+    sys.path.insert(0, str(REPO / "eval"))
+    import thermal
+    thermal.restrict(pid, 4)
+    for image in ("llama-server.exe", "ollama_llama_server.exe"):
+        for q in thermal.pids_of(image):
+            thermal.restrict(q, 4)
 
 
 def stop_server(p: subprocess.Popen):
@@ -150,18 +163,31 @@ class Client:
             assert self.c.post("/s4/auth/signup", json=cred).status_code == 200, "không tạo được tài khoản bench"
         self.ds = {}
 
-    def ensure_datasets(self):
-        """Nạp 4 bộ dữ liệu một lần cho bench_runtime (lần sau dùng lại; đổi bộ đọc tệp thì server tự xử lý lại)."""
+    def ensure_datasets(self, needed: set | None = None):
+        """Nạp các bộ dữ liệu một lần cho bench_runtime (lần sau dùng lại; đổi bộ đọc tệp thì server tự xử lý lại).
+        24/10: chỉ nạp bộ mà các câu được chọn cần (`needed`), TỪNG bộ một, đợi xử lý xong mới nạp bộ sau, canh nhiệt giữa các lần nạp."""
         files = {"class": HERE / "data" / "ds_lop_gia.xlsx", "tourism": HERE / "data" / "tourism_records.xlsx",
                  "procedures": HERE / "data" / "MAU_100_THU_TUC.xlsx", "policy": policy_docx(), "du_lich": tourism_xlsx(), "cua_hang": shop_xlsx(),
                  **REAL3_FILES}
+        if needed:
+            files = {k: v for k, v in files.items() if k in needed}
+        sys.path.insert(0, str(REPO / "eval"))
+        from thermal import guard
         have = {d["filename"]: d for d in self.c.get("/s4/datasets").json()["datasets"]}
         for key, path in files.items():
             if path.name not in have:
+                guard(every=0, label="nạp " + path.name)
                 with open(path, "rb") as f:
                     r = self.c.post("/s4/datasets", files={"file": (path.name, f)})
                 assert r.status_code == 200, r.text
                 print(f"  nạp {path.name}…")
+                t0 = time.time()
+                while time.time() - t0 < 1800:     # đợi bộ này xử lý + biên dịch đường nhanh xong rồi mới nạp bộ sau (đỡ dồn tải)
+                    d = {x["filename"]: x for x in self.c.get("/s4/datasets").json()["datasets"]}.get(path.name, {})
+                    fp = self.c.get(f"/s4/fastpath/{d['id']}").json().get("status") if d.get("id") and d.get("status") == "ready" else None
+                    if d.get("status") == "error" or fp in ("ready", "error", "skipped"):
+                        break
+                    time.sleep(5)
         while True:
             ds = {d["filename"]: d for d in self.c.get("/s4/datasets").json()["datasets"]}
             pending = [n for n in (p.name for p in files.values()) if ds[n]["status"] not in ("ready", "error")]
@@ -289,7 +315,8 @@ def run(args):
     srv = start_server(settings, args.name)
     try:
         cl = Client()
-        cl.ensure_datasets()
+        cl.ensure_datasets({k for c in cases for k in c["datasets"]} | {"policy"} if args.suites else None)   # chọn suite: chỉ nạp bộ dữ liệu cần
+        _restrict(srv.pid)     # tiến trình chạy model của Ollama chỉ có sau lượt gọi đầu: giới hạn lại
         cl.use(["policy"]); cl.chat("Chào bạn")             # nóng máy: model + bge-m3 + reranker
         cl.use([]); cl.chat("Bạn giúp được gì cho mình?")
         runs = []

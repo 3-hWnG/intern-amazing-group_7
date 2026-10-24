@@ -21,7 +21,8 @@ import time
 from ctypes import wintypes
 
 LIMIT = float(os.environ.get("THERMAL_LIMIT", "68"))     # dừng khi trung vị CPU hoặc GPU >= mức này (chừa 2 °C dưới 70)
-RESUME = float(os.environ.get("THERMAL_RESUME", "60"))   # chạy tiếp khi cả hai <= mức này
+RESUME = float(os.environ.get("THERMAL_RESUME", "64"))   # chạy tiếp khi cả hai <= mức này (đo 24/10: máy chỉ chạy trình duyệt + VS Code đã ~62 °C)
+CORES = int(os.environ.get("THERMAL_CORES", "2"))        # số luồng CPU logic cho tiến trình đo (ít luồng = ít nhiệt)
 LOG = os.environ.get("THERMAL_LOG") or os.path.join(os.path.dirname(os.path.abspath(__file__)), "results", "thermal.csv")
 
 _pdh = None
@@ -122,14 +123,37 @@ def guard(every: float = 5.0, label: str = "") -> float:
     return slept
 
 
-def low_priority() -> None:
-    """Hạ ưu tiên tiến trình (BELOW_NORMAL) và số luồng tính toán: máy đỡ nóng, người dùng vẫn dùng được."""
+def restrict(pid: int | None = None, cores: int | None = None) -> bool:
+    """Hạ ưu tiên (BELOW_NORMAL) và giới hạn tiến trình `pid` (None = chính nó) vào `cores` luồng CPU logic đầu tiên."""
     try:
-        ctypes.windll.kernel32.SetPriorityClass(ctypes.windll.kernel32.GetCurrentProcess(), 0x00004000)
+        k32 = ctypes.windll.kernel32
+        h = k32.GetCurrentProcess() if pid is None else k32.OpenProcess(0x0200 | 0x0400, False, pid)   # SET_INFORMATION | QUERY_INFORMATION
+        if not h:
+            return False
+        k32.SetPriorityClass(h, 0x00004000)
+        k32.SetProcessAffinityMask(h, ctypes.c_size_t((1 << (cores or CORES)) - 1))
+        if pid is not None:
+            k32.CloseHandle(h)
+        return True
     except (AttributeError, OSError):
-        pass
+        return False
+
+
+def pids_of(image: str) -> list[int]:
+    """PID các tiến trình theo tên tệp chạy (vd. 'llama-server.exe'), qua tasklist (không cần psutil)."""
+    try:
+        out = subprocess.run(["tasklist", "/FI", f"IMAGENAME eq {image}", "/FO", "CSV", "/NH"], capture_output=True, text=True, timeout=20,
+                             creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0)).stdout
+        return [int(line.split('","')[1]) for line in out.splitlines() if line.startswith('"') and '","' in line]
+    except (OSError, ValueError, IndexError, subprocess.SubprocessError):
+        return []
+
+
+def low_priority() -> None:
+    """Hạ ưu tiên tiến trình (BELOW_NORMAL), giới hạn CORES luồng CPU và số luồng tính toán: máy đỡ nóng, người dùng vẫn dùng được."""
+    restrict(None)
     for k in ("OMP_NUM_THREADS", "MKL_NUM_THREADS", "OPENBLAS_NUM_THREADS"):
-        os.environ.setdefault(k, "4")
+        os.environ.setdefault(k, str(CORES))
 
 
 def summary(path: str | None = None) -> dict:
