@@ -1,0 +1,1714 @@
+[
+  {
+    "id": "v4_b-dt-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "followup",
+    "turns": [
+      "Dân tộc Tày có bao nhiêu người?",
+      "Thế còn địa bàn cư trú ở đâu?"
+    ],
+    "check": {
+      "any": [
+        "Miền núi phía Bắc",
+        "Bắc Kạn",
+        "Cao Bằng",
+        "Lạng Sơn"
+      ]
+    },
+    "gold_note": "Followup lượt 2 hỏi địa bàn cư trú của dân tộc Tày",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dt-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "unaccent",
+    "turns": [
+      "dan toc hoa chu yeu cu tru o dau"
+    ],
+    "check": {
+      "any": [
+        "Khắp cả nước",
+        "Toàn quốc",
+        "Đồng bằng / Toàn quốc"
+      ]
+    },
+    "gold_note": "Dân tộc Hoa cư trú khắp cả nước",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dt-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "refusal",
+    "turns": [
+      "Dân tộc Mông có trang phục truyền thống màu gì?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Bảng không có cột màu sắc trang phục",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dt-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "ambiguous",
+    "turns": [
+      "Dân tộc nào đông dân thứ nhì Việt Nam?"
+    ],
+    "check": {
+      "ask_back": true
+    },
+    "gold_note": "Câu hỏi mơ hồ (nhiều cách hiểu thứ nhì theo % hoặc số tuyệt đối, hoặc dân tộc thiểu số đông nhất)",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dt-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "cho mình hỏi dân tộc Nùng thuộc hệ ngôn ngữ nào"
+    ],
+    "check": {
+      "any": [
+        "Hệ Tai-Kadai",
+        "Tai-Kadai"
+      ]
+    },
+    "gold_note": "Nùng thuộc hệ Tai-Kadai",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dt-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "filter",
+    "turns": [
+      "ở Tây Nguyên có những dân tộc bản địa nào"
+    ],
+    "check": {
+      "all": [
+        "Gia Rai",
+        "Ê Đê",
+        "Ba Na"
+      ]
+    },
+    "gold_note": "Thống nhất chấp nhận các dân tộc cư trú chính ở Tây Nguyên",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dt-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "dân tộc Chăm thuộc nhóm ngôn ngữ gì vậy"
+    ],
+    "check": {
+      "any": [
+        "Mã Lai-Đa Đảo",
+        "Malayo-Polynesian"
+      ]
+    },
+    "gold_note": "Chăm thuộc nhóm Mã Lai-Đa Đảo",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dt-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "dân tộc Khơ me có tên gọi khác không"
+    ],
+    "check": {
+      "any": [
+        "Khmer",
+        "Khơ-me",
+        "Miên",
+        "Việt gốc Miên"
+      ]
+    },
+    "gold_note": "Tên gọi khác của Khmer",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dt-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "count",
+    "turns": [
+      "có bao nhiêu dân tộc thuộc hệ Nam Đảo"
+    ],
+    "check": {
+      "num": [
+        "5"
+      ]
+    },
+    "gold_note": "5 dân tộc hệ Nam Đảo: Chăm, Gia Rai, Ê Đê, Raglai, Chu Ru",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dt-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "dân tộc Kinh chiếm bao nhiêu phần trăm dân số"
+    ],
+    "check": {
+      "any": [
+        "85,32%",
+        "85.32%",
+        "85,32",
+        "85.32"
+      ]
+    },
+    "gold_note": "Tỷ lệ dân số Kinh",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dt-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Người Mường Lò có địa bàn cư trú chính ở đâu?"
+    ],
+    "check": {
+      "any": [
+        "Thị xã Nghĩa Lộ, Yên Bái",
+        "Nghĩa Lộ",
+        "Yên Bái"
+      ]
+    },
+    "gold_note": "Mường Lò cư trú tại Nghĩa Lộ Yên Bái",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-svd-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "the_thao"
+    ],
+    "kind": "followup",
+    "turns": [
+      "Sân vận động Mỹ Đình chứa được bao nhiêu người?",
+      "Sân này khánh thành năm nào thế?"
+    ],
+    "check": {
+      "any": [
+        "2003"
+      ]
+    },
+    "gold_note": "Lượt 2 hỏi năm khánh thành sân Mỹ Đình = 2003",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-svd-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "the_thao"
+    ],
+    "kind": "unaccent",
+    "turns": [
+      "san thong nhat o dau vay ban"
+    ],
+    "check": {
+      "any": [
+        "Thành phố Hồ Chí Minh",
+        "TP.HCM",
+        "TP Hồ Chí Minh"
+      ]
+    },
+    "gold_note": "Sân Thống Nhất ở TP.HCM",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-svd-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "the_thao"
+    ],
+    "kind": "refusal",
+    "turns": [
+      "Giá vé vào sân Lạch Tray xem bóng đá là bao nhiêu?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Bảng không có cột giá vé",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-svd-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "the_thao"
+    ],
+    "kind": "ambiguous",
+    "turns": [
+      "Sân vận động ở Hà Nội"
+    ],
+    "check": {
+      "ask_back": true
+    },
+    "gold_note": "Câu mơ hồ: Hà Nội có nhiều sân (Mỹ Đình, Hàng Đẫy...)",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-svd-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "the_thao"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "CLB Hải Phòng đá ở sân vận động nào"
+    ],
+    "check": {
+      "any": [
+        "Lạch Tray",
+        "Sân vận động Lạch Tray"
+      ]
+    },
+    "gold_note": "Hải Phòng đá ở Lạch Tray",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-svd-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "the_thao"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "sân Cần Thơ có sức chứa bao nhiêu khán giả"
+    ],
+    "check": {
+      "any": [
+        "30.000",
+        "30000",
+        "30.000 chỗ"
+      ]
+    },
+    "gold_note": "Sức chứa Cần Thơ = 30.000",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-svd-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "the_thao"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "sân vận động Trống Đồng dự kiến khánh thành năm nào"
+    ],
+    "check": {
+      "any": [
+        "2027/2028",
+        "2027",
+        "2028"
+      ]
+    },
+    "gold_note": "Sân Trống Đồng khánh thành 2027/2028",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-svd-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "the_thao"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "trạng thái của sân vận động Rạch Chiếc hiện nay ra sao"
+    ],
+    "check": {
+      "any": [
+        "Đang xây dựng"
+      ]
+    },
+    "gold_note": "Rạch Chiếc đang xây dựng",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-svd-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "the_thao"
+    ],
+    "kind": "count",
+    "turns": [
+      "có bao nhiêu sân vận động có sức chứa từ 30000 chỗ trở lên"
+    ],
+    "check": {
+      "num": [
+        "3"
+      ]
+    },
+    "gold_note": "3 sân >= 30.000 chỗ đang hoạt động: Mỹ Đình, Cần Thơ, Lạch Tray",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-svd-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "the_thao"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "sân vận động Hàng Đẫy nằm ở tỉnh thành nào"
+    ],
+    "check": {
+      "any": [
+        "Hà Nội"
+      ]
+    },
+    "gold_note": "Hàng Đẫy ở Hà Nội",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-svd-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "the_thao"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "đội bóng nào sử dụng sân vận động Hàng Đẫy làm sân nhà"
+    ],
+    "check": {
+      "any": [
+        "Hà Nội",
+        "Công an Hà Nội",
+        "Viettel"
+      ]
+    },
+    "gold_note": "Đội bóng sân Hàng Đẫy",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-pvt-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "followup",
+    "turns": [
+      "Ca Huế được công nhận năm nào?",
+      "Thế loại hình của nó là gì?"
+    ],
+    "check": {
+      "any": [
+        "Nghệ thuật trình diễn dân gian"
+      ]
+    },
+    "gold_note": "Lượt 2 hỏi loại hình Ca Huế",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-pvt-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "unaccent",
+    "turns": [
+      "hoi giong o phu dong duoc cong nhan nam nao"
+    ],
+    "check": {
+      "any": [
+        "2014",
+        "2010"
+      ]
+    },
+    "gold_note": "Hội Gióng ghi danh quốc gia năm 2014",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-pvt-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "refusal",
+    "turns": [
+      "Nghệ nhân nào hát Ca trù hay nhất hiện nay?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Bảng không có cột nghệ nhân",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-pvt-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "ambiguous",
+    "turns": [
+      "Lễ hội Đền Hùng"
+    ],
+    "check": {
+      "ask_back": true
+    },
+    "gold_note": "Mơ hồ: cần hỏi rõ năm ghi danh hay loại hình",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-pvt-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Nghệ thuật Bài Chòi được ghi danh là loại hình gì"
+    ],
+    "check": {
+      "any": [
+        "Nghệ thuật trình diễn dân gian",
+        "Tập quán xã hội và tín ngưỡng"
+      ]
+    },
+    "gold_note": "Loại hình Bài Chòi",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-pvt-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Hát Xoan được ghi nhận thuộc tỉnh nào"
+    ],
+    "check": {
+      "any": [
+        "Phú Thọ"
+      ]
+    },
+    "gold_note": "Hát Xoan ở Phú Thọ",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-pvt-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Nghề làm gốm của người Chăm thuộc loại hình di sản nào"
+    ],
+    "check": {
+      "any": [
+        "Nghề thủ công truyền thống"
+      ]
+    },
+    "gold_note": "Nghề làm gốm Chăm",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-pvt-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "count",
+    "turns": [
+      "ở tỉnh Bắc Ninh có bao nhiêu di sản văn hóa phi vật thể quốc gia"
+    ],
+    "check": {
+      "num": [
+        "15"
+      ]
+    },
+    "gold_note": "Thống nhất đếm chính xác số di sản có Bắc Ninh trong địa điểm = 15",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-pvt-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Múa Then của người Tày Nùng được công nhận năm nào"
+    ],
+    "check": {
+      "any": [
+        "2012",
+        "2015"
+      ]
+    },
+    "gold_note": "Múa Then",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-pvt-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Không gian văn hóa Cồng chiêng Tây Nguyên thuộc loại hình nào"
+    ],
+    "check": {
+      "any": [
+        "Không gian văn hóa",
+        "Nghệ thuật trình diễn dân gian"
+      ]
+    },
+    "gold_note": "Cồng chiêng Tây Nguyên",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-pvt-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "van_hoa"
+    ],
+    "kind": "count",
+    "turns": [
+      "năm 2015 có bao nhiêu di sản phi vật thể được công nhận"
+    ],
+    "check": {
+      "num": [
+        "37"
+      ]
+    },
+    "gold_note": "37 di sản công nhận năm 2015",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bv-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "lich_su"
+    ],
+    "kind": "followup",
+    "turns": [
+      "Trống đồng Ngọc Lũ đang được lưu giữ ở đâu?",
+      "Niên đại của trống này là khi nào?"
+    ],
+    "check": {
+      "any": [
+        "Văn hóa Đông Sơn",
+        "Cách ngày nay 2500 - 2000 năm"
+      ]
+    },
+    "gold_note": "Lượt 2 hỏi niên đại Trống Ngọc Lũ",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bv-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "lich_su"
+    ],
+    "kind": "unaccent",
+    "turns": [
+      "trong dong den hung o tinh nao"
+    ],
+    "check": {
+      "any": [
+        "Phú Thọ",
+        "thành phố Việt Trì"
+      ]
+    },
+    "gold_note": "Trống Đền Hùng ở Phú Thọ",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bv-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "lich_su"
+    ],
+    "kind": "refusal",
+    "turns": [
+      "Trống đồng Ngọc Lũ nặng bao nhiêu ki lô gam?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Bảng không có cột khối lượng/trọng lượng",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bv-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "lich_su"
+    ],
+    "kind": "ambiguous",
+    "turns": [
+      "Trống đồng Đông Sơn"
+    ],
+    "check": {
+      "ask_back": true
+    },
+    "gold_note": "Mơ hồ: có nhiều trống đồng văn hóa Đông Sơn",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bv-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "lich_su"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Bia đá tiến sĩ Văn Miếu Thăng Long được công nhận vào đợt mấy"
+    ],
+    "check": {
+      "any": [
+        "Đợt 3",
+        "3"
+      ]
+    },
+    "gold_note": "Bia tiến sĩ Văn Miếu công nhận đợt 3 (2015)",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bv-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "lich_su"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Tượng Phật bà Quan Âm chùa Bút Tháp ở tỉnh nào"
+    ],
+    "check": {
+      "any": [
+        "Bắc Ninh",
+        "tỉnh Bắc Ninh"
+      ]
+    },
+    "gold_note": "Chùa Bút Tháp ở Bắc Ninh",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bv-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "lich_su"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Áo ngự bào triều Nguyễn hiện được đơn vị nào lưu giữ"
+    ],
+    "check": {
+      "any": [
+        "Bảo tàng Cổ vật Cung đình Huế",
+        "Trung tâm Bảo tồn Di tích Cố đô Huế"
+      ]
+    },
+    "gold_note": "Lưu giữ áo ngự bào",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bv-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "lich_su"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Trống đồng Sông Lô được công nhận năm nào"
+    ],
+    "check": {
+      "any": [
+        "2012"
+      ]
+    },
+    "gold_note": "Trống Sông Lô công nhận 2012",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bv-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "lich_su"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Trống đồng Sông Lò hiện đang ở bảo tàng nào"
+    ],
+    "check": {
+      "any": [
+        "Bảo tàng Tỉnh Hà Giang",
+        "Hà Giang"
+      ]
+    },
+    "gold_note": "Trống Sông Lò ở Hà Giang",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bv-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "lich_su"
+    ],
+    "kind": "count",
+    "turns": [
+      "Đợt 1 có bao nhiêu bảo vật quốc gia được công nhận"
+    ],
+    "check": {
+      "num": [
+        "30"
+      ]
+    },
+    "gold_note": "Đợt 1 có 30 bảo vật",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bv-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "lich_su"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Trống đồng Cảnh Thịnh thuộc niên đại triều đại nào"
+    ],
+    "check": {
+      "any": [
+        "Thời Tây Sơn",
+        "Tây Sơn",
+        "năm 1800"
+      ]
+    },
+    "gold_note": "Trống Cảnh Thịnh thời Tây Sơn",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dstg-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "du_lich"
+    ],
+    "kind": "followup",
+    "turns": [
+      "Hoàng thành Thăng Long được UNESCO công nhận năm nào?",
+      "Nằm ở tỉnh thành nào thế?"
+    ],
+    "check": {
+      "any": [
+        "Thành phố Hà Nội",
+        "Hà Nội"
+      ]
+    },
+    "gold_note": "Lượt 2 hỏi vị trí Hoàng thành Thăng Long",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dstg-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "du_lich"
+    ],
+    "kind": "unaccent",
+    "turns": [
+      "vinh ha long duoc unesco cong nhan nam nao"
+    ],
+    "check": {
+      "any": [
+        "1994",
+        "2000",
+        "2023"
+      ]
+    },
+    "gold_note": "Vịnh Hạ Long công nhận lần đầu 1994",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dstg-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "du_lich"
+    ],
+    "kind": "refusal",
+    "turns": [
+      "Giá vé tham quan phố cổ Hội An hiện nay là bao nhiêu tiền?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Bảng không có cột giá vé",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dstg-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "du_lich"
+    ],
+    "kind": "ambiguous",
+    "turns": [
+      "Di sản thế giới ở miền Trung"
+    ],
+    "check": {
+      "ask_back": true
+    },
+    "gold_note": "Mơ hồ: miền Trung có nhiều di sản (Huế, Hội An, Mỹ Sơn, Phong Nha)",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dstg-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "du_lich"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Vườn quốc gia Phong Nha Kẻ Bàng là di sản thiên nhiên hay văn hóa"
+    ],
+    "check": {
+      "any": [
+        "Di sản thiên nhiên",
+        "Thiên nhiên"
+      ]
+    },
+    "gold_note": "Phong Nha là di sản thiên nhiên",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dstg-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "du_lich"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Quần thể di tích Cố đô Huế nằm ở đâu"
+    ],
+    "check": {
+      "any": [
+        "Thừa Thiên Huế",
+        "Huế"
+      ]
+    },
+    "gold_note": "Cố đô Huế ở Huế",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dstg-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "du_lich"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Quần thể danh thắng Tràng An thuộc tỉnh nào"
+    ],
+    "check": {
+      "any": [
+        "Ninh Bình",
+        "tỉnh Ninh Bình"
+      ]
+    },
+    "gold_note": "Tràng An ở Ninh Bình",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dstg-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "du_lich"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Thánh địa Mỹ Sơn thuộc niên đại nào"
+    ],
+    "check": {
+      "any": [
+        "Thế kỷ IV - XIII",
+        "Thế kỷ 4 - 13"
+      ]
+    },
+    "gold_note": "Niên đại Mỹ Sơn",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dstg-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "du_lich"
+    ],
+    "kind": "count",
+    "turns": [
+      "Việt Nam có bao nhiêu di sản thế giới chính thức được liệt kê"
+    ],
+    "check": {
+      "num": [
+        "8"
+      ]
+    },
+    "gold_note": "8 di sản thế giới chính thức",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dstg-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "du_lich"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Quần thể Hương Sơn có tình trạng thế nào trong danh sách đề cử"
+    ],
+    "check": {
+      "any": [
+        "Khu đề cử dự kiến",
+        "Đề cử",
+        "Đã gửi UNESCO"
+      ]
+    },
+    "gold_note": "Hương Sơn là đề cử dự kiến",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dstg-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "du_lich"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Thành nhà Hồ thuộc tỉnh thành nào"
+    ],
+    "check": {
+      "any": [
+        "Thanh Hóa",
+        "tỉnh Thanh Hóa"
+      ]
+    },
+    "gold_note": "Thành nhà Hồ ở Thanh Hóa",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dh-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "giao_duc"
+    ],
+    "kind": "followup",
+    "turns": [
+      "Trường Đại học Bách khoa Hà Nội viết tắt là gì?",
+      "Trụ sở ở đâu vậy bạn?"
+    ],
+    "check": {
+      "any": [
+        "Hà Nội",
+        "Số 1 Đại Cồ Việt"
+      ]
+    },
+    "gold_note": "Lượt 2 hỏi trụ sở ĐH Bách khoa Hà Nội",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dh-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "giao_duc"
+    ],
+    "kind": "unaccent",
+    "turns": [
+      "dai hoc ngoai thuong viet tat la gi"
+    ],
+    "check": {
+      "any": [
+        "FTU"
+      ]
+    },
+    "gold_note": "ĐH Ngoại thương viết tắt FTU",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dh-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "giao_duc"
+    ],
+    "kind": "refusal",
+    "turns": [
+      "Học phí một năm của Đại học Ngoại thương là bao nhiêu?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Bảng không có cột học phí",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dh-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "giao_duc"
+    ],
+    "kind": "ambiguous",
+    "turns": [
+      "Trường Đại học Bách khoa"
+    ],
+    "check": {
+      "ask_back": true
+    },
+    "gold_note": "Mơ hồ: có ĐH Bách khoa Hà Nội, ĐH Bách khoa ĐHQG-HCM, ĐH Bách khoa ĐH Đà Nẵng",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dh-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "giao_duc"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Trường Đại học FPT là trường công lập hay tư thục"
+    ],
+    "check": {
+      "any": [
+        "Tư thục"
+      ]
+    },
+    "gold_note": "ĐH FPT là tư thục",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dh-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "giao_duc"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Học viện Tài chính trực thuộc cơ quan nào"
+    ],
+    "check": {
+      "any": [
+        "Bộ Tài chính"
+      ]
+    },
+    "gold_note": "Học viện Tài chính trực thuộc Bộ Tài chính",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dh-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "giao_duc"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Trường Đại học Cần Thơ có địa điểm ở đâu"
+    ],
+    "check": {
+      "any": [
+        "Cần Thơ",
+        "thành phố Cần Thơ"
+      ]
+    },
+    "gold_note": "ĐH Cần Thơ ở Cần Thơ",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dh-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "giao_duc"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Tên tiếng Anh của Trường Đại học Công nghệ ĐHQGHN là gì"
+    ],
+    "check": {
+      "any": [
+        "VNU-University of Engineering and Technology",
+        "UET"
+      ]
+    },
+    "gold_note": "Tên tiếng Anh UET",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dh-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "giao_duc"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Trường Đại học Y Hà Nội trực thuộc đơn vị nào quản lý"
+    ],
+    "check": {
+      "any": [
+        "Bộ Y tế"
+      ]
+    },
+    "gold_note": "ĐH Y Hà Nội trực thuộc Bộ Y tế",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dh-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "giao_duc"
+    ],
+    "kind": "count",
+    "turns": [
+      "Có bao nhiêu trường đại học tư thục trong danh sách"
+    ],
+    "check": {
+      "num": [
+        "60"
+      ]
+    },
+    "gold_note": "Thống nhất số trường tư thục là 60 trường",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dh-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "giao_duc"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Trường Đại học Luật Hà Nội trực thuộc cơ quan nào"
+    ],
+    "check": {
+      "any": [
+        "Bộ Tư pháp"
+      ]
+    },
+    "gold_note": "ĐH Luật Hà Nội thuộc Bộ Tư pháp",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bvsg-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "y_te"
+    ],
+    "kind": "followup",
+    "turns": [
+      "Bệnh viện Chợ Rẫy có bao nhiêu giường bệnh?",
+      "Năm thành lập của bệnh viện là năm nào?"
+    ],
+    "check": {
+      "any": [
+        "1900"
+      ]
+    },
+    "gold_note": "Lượt 2 hỏi năm thành lập Chợ Rẫy = 1900",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bvsg-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "y_te"
+    ],
+    "kind": "unaccent",
+    "turns": [
+      "benh vien tu du nam o dau"
+    ],
+    "check": {
+      "any": [
+        "Phường Phạm Ngũ Lão",
+        "Quận 1"
+      ]
+    },
+    "gold_note": "BV Từ Dũ ở Quận 1",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bvsg-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "y_te"
+    ],
+    "kind": "refusal",
+    "turns": [
+      "Trưởng khoa cấp cứu Bệnh viện Chợ Rẫy là bác sĩ nào?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Bảng không có cột tên bác sĩ trưởng khoa",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bvsg-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "y_te"
+    ],
+    "kind": "ambiguous",
+    "turns": [
+      "Bệnh viện Nhi đồng"
+    ],
+    "check": {
+      "ask_back": true
+    },
+    "gold_note": "Mơ hồ: có Nhi đồng 1, Nhi đồng 2, Nhi đồng Thành phố",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bvsg-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "y_te"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Bệnh viện Thống Nhất trực thuộc tuyến quản lý nào"
+    ],
+    "check": {
+      "any": [
+        "Tuyến trung ương / Bộ ngành",
+        "Bộ Y tế"
+      ]
+    },
+    "gold_note": "BV Thống Nhất tuyến trung ương",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bvsg-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "y_te"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Bệnh viện Nhân dân Gia Định có tên gọi cũ là gì"
+    ],
+    "check": {
+      "any": [
+        "Bệnh viện Nguyễn Văn Học"
+      ]
+    },
+    "gold_note": "Tên cũ BV Gia Định",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bvsg-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "y_te"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Bệnh viện Đại học Y Dược Thành phố Hồ Chí Minh có bao nhiêu giường"
+    ],
+    "check": {
+      "any": [
+        "1.000",
+        "1000",
+        "1.000 giường"
+      ]
+    },
+    "gold_note": "Số giường BV ĐH Y Dược",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bvsg-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "y_te"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Bệnh viện Hùng Vương là bệnh viện chuyên khoa hay đa khoa"
+    ],
+    "check": {
+      "any": [
+        "Chuyên khoa"
+      ]
+    },
+    "gold_note": "BV Hùng Vương chuyên khoa sản phụ khoa",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bvsg-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "y_te"
+    ],
+    "kind": "count",
+    "turns": [
+      "có bao nhiêu bệnh viện trực thuộc tuyến bộ ngành tại TP.HCM"
+    ],
+    "check": {
+      "num": [
+        "10"
+      ]
+    },
+    "gold_note": "10 BV tuyến bộ ngành",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bvsg-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "y_te"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Bệnh viện Mắt Thành phố Hồ Chí Minh thành lập năm nào"
+    ],
+    "check": {
+      "any": [
+        "1978"
+      ]
+    },
+    "gold_note": "BV Mắt thành lập 1978",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-bvsg-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "y_te"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Bệnh viện Bệnh Nhiệt đới nằm ở cơ sở nào"
+    ],
+    "check": {
+      "any": [
+        "Phường Chợ Lớn",
+        "Quận 5"
+      ]
+    },
+    "gold_note": "BV Bệnh Nhiệt đới",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dtqg-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich"
+    ],
+    "kind": "followup",
+    "turns": [
+      "Cố đô Hoa Lư được xếp hạng đợt mấy?",
+      "Năm xếp hạng là năm nào?"
+    ],
+    "check": {
+      "any": [
+        "2012"
+      ]
+    },
+    "gold_note": "Lượt 2 hỏi năm xếp hạng Cố đô Hoa Lư = 2012",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dtqg-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich"
+    ],
+    "kind": "unaccent",
+    "turns": [
+      "dia dao cu chi nam o dau"
+    ],
+    "check": {
+      "any": [
+        "Thành phố Hồ Chí Minh",
+        "TP.HCM",
+        "Củ Chi"
+      ]
+    },
+    "gold_note": "Địa đạo Củ Chi",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dtqg-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich"
+    ],
+    "kind": "refusal",
+    "turns": [
+      "Giá vé tham quan Dinh Độc Lập hiện nay là bao nhiêu?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Bảng không có cột giá vé",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dtqg-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich"
+    ],
+    "kind": "ambiguous",
+    "turns": [
+      "Khu di tích Lam Kinh"
+    ],
+    "check": {
+      "ask_back": true
+    },
+    "gold_note": "Mơ hồ: Lam Kinh ở Thanh Hóa xếp hạng đợt 3",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dtqg-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Đền Hùng được xếp hạng di tích quốc gia đặc biệt năm nào"
+    ],
+    "check": {
+      "any": [
+        "2009"
+      ]
+    },
+    "gold_note": "Đền Hùng xếp hạng đợt 1 năm 2009",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dtqg-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Khu di tích trung tâm Hoàng thành Thăng Long được xếp hạng vào đợt mấy"
+    ],
+    "check": {
+      "any": [
+        "Đợt 1",
+        "1"
+      ]
+    },
+    "gold_note": "Hoàng thành Thăng Long xếp hạng đợt 1",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dtqg-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Nhà tù Côn Đảo nằm ở tỉnh thành nào"
+    ],
+    "check": {
+      "any": [
+        "Bà Rịa - Vũng Tàu",
+        "Bà Rịa Vũng Tàu"
+      ]
+    },
+    "gold_note": "Nhà tù Côn Đảo",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dtqg-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Di tích Cổ Loa thuộc hạng mục di tích nào"
+    ],
+    "check": {
+      "any": [
+        "Di tích lịch sử, kiến trúc nghệ thuật, khảo cổ",
+        "Khảo cổ",
+        "Lịch sử"
+      ]
+    },
+    "gold_note": "Hạng mục Cổ Loa",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dtqg-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich"
+    ],
+    "kind": "count",
+    "turns": [
+      "Đợt 1 năm 2009 có bao nhiêu di tích được xếp hạng"
+    ],
+    "check": {
+      "num": [
+        "10"
+      ]
+    },
+    "gold_note": "10 di tích đợt 1 năm 2009",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dtqg-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Khu di tích Kim Liên quê Bác nằm ở tỉnh nào"
+    ],
+    "check": {
+      "any": [
+        "Nghệ An",
+        "tỉnh Nghệ An",
+        "Nam Đàn"
+      ]
+    },
+    "gold_note": "Khu di tích Kim Liên ở Nghệ An",
+    "source": "human_written_blind_b"
+  },
+  {
+    "id": "v4_b-dtqg-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich"
+    ],
+    "kind": "lookup",
+    "turns": [
+      "Vịnh Hạ Long được xếp hạng di tích quốc gia đặc biệt vào năm nào"
+    ],
+    "check": {
+      "any": [
+        "2009"
+      ]
+    },
+    "gold_note": "Vịnh Hạ Long xếp hạng đợt 1 năm 2009",
+    "source": "human_written_blind_b"
+  }
+]

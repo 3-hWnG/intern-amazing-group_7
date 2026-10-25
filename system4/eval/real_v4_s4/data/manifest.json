@@ -1,0 +1,43 @@
+{
+  "dataset": "real_v4_s4",
+  "license": "CC BY-SA 4.0 (Wikipedia tiếng Việt)",
+  "created_at": "2026-10-25",
+  "files": {
+    "van_hoa_dan_toc.xlsx": {
+      "Dân tộc và Ngôn ngữ": 59,
+      "Địa bàn cư trú": 59
+    },
+    "the_thao_san_van_dong.xlsx": {
+      "Sân vận động": 53,
+      "Đội bóng và Trạng thái": 53
+    },
+    "van_hoa_phi_vat_the.xlsx": {
+      "Di sản phi vật thể": 532
+    },
+    "lich_su_bao_vat_quoc_gia.xlsx": {
+      "Bảo vật quốc gia": 329
+    },
+    "du_lich_di_san_the_gioi.xlsx": {
+      "Di sản thế giới": 14
+    },
+    "giao_duc_truong_dai_hoc.xlsx": {
+      "Trường đại học": 503
+    },
+    "y_te_benh_vien_tphcm.xlsx": {
+      "Bệnh viện": 85
+    },
+    "di_tich_quoc_gia_dac_biet.xlsx": {
+      "Di tích đặc biệt": 150
+    }
+  },
+  "pages": {
+    "75432455": "Các dân tộc tại Việt Nam",
+    "75645255": "Danh sách sân vận động tại Việt Nam",
+    "75593715": "Danh sách Di sản văn hóa phi vật thể quốc gia (Việt Nam)",
+    "75588583": "Bảo vật quốc gia (Việt Nam)",
+    "75601879": "Danh sách di sản thế giới tại Việt Nam",
+    "75654510": "Danh sách trường đại học, học viện và cao đẳng tại Việt Nam",
+    "75626151": "Danh sách bệnh viện tại Thành phố Hồ Chí Minh",
+    "75571348": "Di tích quốc gia đặc biệt (Việt Nam)"
+  }
+}
