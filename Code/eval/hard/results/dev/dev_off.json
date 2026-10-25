@@ -1,0 +1,8102 @@
+{
+ "name": "dev_off",
+ "src": "real_v1/cases_real_v1_labeled.json",
+ "env": {
+  "S3_FOCUS": "0",
+  "S3_LETTER_STRIP": "0",
+  "S3_LEXICON2": "0",
+  "S3_ORG_DEFAULT": "0",
+  "S3_SCOPE_GATE": "0",
+  "S3_WEAK_NAME": "0",
+  "S3_USE_LLM": "0",
+  "S3_PLANNER_MODE": "rules",
+  "S3_NO_WARMUP": "1",
+  "S3_DATA_DB": "D:\\Claude\\System 3\\intern-amazing-group_7-merge_sys_3_4\\data\\runtime\\knowledge\\3-423eff02f8.db"
+ },
+ "summary": {
+  "n": 282,
+  "behavior": {
+   "k": 158,
+   "n": 282,
+   "p": 0.5603,
+   "ci": [
+    0.5019,
+    0.617
+   ]
+  },
+  "recall": {
+   "answer": {
+    "k": 41,
+    "n": 55,
+    "p": 0.7455,
+    "ci": [
+     0.617,
+     0.8419
+    ]
+   },
+   "clarify": {
+    "k": 1,
+    "n": 7,
+    "p": 0.1429,
+    "ci": [
+     0.0257,
+     0.5131
+    ]
+   },
+   "apologize": {
+    "k": 116,
+    "n": 220,
+    "p": 0.5273,
+    "ci": [
+     0.4614,
+     0.5922
+    ]
+   }
+  },
+  "balanced2": 0.6364,
+  "balanced3": 0.4719,
+  "top1": {
+   "k": 7,
+   "n": 55,
+   "p": 0.1273,
+   "ci": [
+    0.063,
+    0.2402
+   ]
+  },
+  "top3": {
+   "k": 12,
+   "n": 55,
+   "p": 0.2182,
+   "ci": [
+    0.1295,
+    0.3437
+   ]
+  },
+  "end2end": {
+   "k": 6,
+   "n": 55,
+   "p": 0.1091,
+   "ci": [
+    0.051,
+    0.2183
+   ]
+  },
+  "mrr": 0.1697,
+  "confusion": {
+   "apologize->answer": 101,
+   "apologize->apologize": 116,
+   "clarify->apologize": 3,
+   "answer->answer": 41,
+   "answer->apologize": 13,
+   "answer->clarify": 1,
+   "clarify->answer": 3,
+   "apologize->clarify": 3,
+   "clarify->clarify": 1
+  }
+ },
+ "rows": [
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012922",
+    "1.007833",
+    "1.009055",
+    "1.009076",
+    "1.116316"
+   ],
+   "id": "real_v1-001",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.012922",
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 1302.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-002",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 141.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-003",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406",
+    "1.010092"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 126.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-005",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 145.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.013142",
+    "1.013161",
+    "1.013143",
+    "1.013455",
+    "2.000992"
+   ],
+   "id": "real_v1-006",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.013142",
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 186.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-007",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 36.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-008",
+   "beh": "clarify",
+   "exp": [
+    "1.115231",
+    "1.115232"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 379.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-009",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 230.4
+  },
+  {
+   "rr": 1.0,
+   "ranked": [
+    "1.116788",
+    "1.012680",
+    "1.013314",
+    "1.006391",
+    "1.003133"
+   ],
+   "id": "real_v1-011",
+   "beh": "answer",
+   "exp": [
+    "1.116788"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116788"
+   ],
+   "top1": true,
+   "top3": true,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 190.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-012",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 131.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-013",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 113.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-014",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 144.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-015",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 33.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.010811",
+    "1.010812",
+    "1.012590",
+    "1.010783",
+    "1.013744"
+   ],
+   "id": "real_v1-016",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.010811"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 48.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.000884",
+    "2.000992",
+    "2.001008",
+    "2.000815",
+    "1.012470"
+   ],
+   "id": "real_v1-017",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.000884"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 86.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-018",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 245.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.010805",
+    "1.115406",
+    "2.002237",
+    "1.008950",
+    "1.014318"
+   ],
+   "id": "real_v1-019",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.010805"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 153.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-020",
+   "beh": "answer",
+   "exp": [
+    "1.116410"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.115406",
+    "3.000285"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 99.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.014318",
+    "1.014352",
+    "1.014319",
+    "1.012533",
+    "1.014111"
+   ],
+   "id": "real_v1-021",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.014318"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 124.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-022",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 42.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-023",
+   "beh": "answer",
+   "exp": [
+    "1.115970"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 45.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-024",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 130.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.004680",
+    "1.004656",
+    "1.013743",
+    "2.001921",
+    "1.014849"
+   ],
+   "id": "real_v1-025",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.004680"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 181.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-026",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 112.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-027",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 119.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-028",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 99.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012538",
+    "3.000243",
+    "1.012533",
+    "1.012537",
+    "3.000244"
+   ],
+   "id": "real_v1-029",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.012538"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 179.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-030",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 151.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-031",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 99.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-032",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 76.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116843",
+    "1.116846",
+    "1.116845",
+    "1.008725",
+    "1.116842"
+   ],
+   "id": "real_v1-033",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.116843"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 158.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-034",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 98.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116788",
+    "1.012680",
+    "1.006391",
+    "3.000722",
+    "1.013314"
+   ],
+   "id": "real_v1-035",
+   "beh": "answer",
+   "exp": [
+    "1.012566"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116788",
+    "1.012680"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 703.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.000894",
+    "1.014371",
+    "1.000593",
+    "1.005277",
+    "2.000806"
+   ],
+   "id": "real_v1-036",
+   "beh": "answer",
+   "exp": [
+    "1.012564"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.000894",
+    "1.004873"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 104.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.011607",
+    "1.011608",
+    "1.011606",
+    "1.116214",
+    "1.116736"
+   ],
+   "id": "real_v1-037",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.011607"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 58.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-038",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 274.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.000992",
+    "2.001008",
+    "3.000569",
+    "3.000570",
+    "1.115921"
+   ],
+   "id": "real_v1-039",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.000992"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 75.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-040",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 47.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.000992",
+    "2.001008",
+    "1.003930",
+    "2.000575",
+    "1.010814"
+   ],
+   "id": "real_v1-041",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.000992"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 119.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-042",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 66.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-043",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 227.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-044",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 140.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-045",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 150.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.004327",
+    "1.004335",
+    "1.010805",
+    "1.013743",
+    "1.012538"
+   ],
+   "id": "real_v1-046",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.004327"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 126.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-047",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 172.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-048",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 49.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-049",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 117.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-050",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 47.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116847",
+    "1.116849",
+    "1.003133",
+    "1.014364",
+    "1.005739"
+   ],
+   "id": "real_v1-051",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.116847"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 108.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-052",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 111.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-053",
+   "beh": "answer",
+   "exp": [
+    "1.116410"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 161.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-054",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 76.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.013798",
+    "1.003956",
+    "1.012470",
+    "1.011725",
+    "1.014364"
+   ],
+   "id": "real_v1-055",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.013798",
+    "6.003494"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 160.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-056",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 167.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-057",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 141.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-058",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406",
+    "1.014312"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 128.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-059",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 221.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.013161",
+    "1.115406",
+    "1.013142",
+    "1.013143",
+    "1.013163"
+   ],
+   "id": "real_v1-060",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.013161",
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 205.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115979",
+    "3.000351",
+    "1.115621",
+    "1.115933",
+    "2.002638"
+   ],
+   "id": "real_v1-061",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115979"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 93.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-062",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 289.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012566",
+    "1.115443",
+    "1.116880",
+    "2.000992",
+    "2.001008"
+   ],
+   "id": "real_v1-063",
+   "beh": "answer",
+   "exp": [
+    "1.116410"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.012566"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 131.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-064",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 338.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-065",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 207.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-066",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 56.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-067",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 201.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-068",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 112.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-069",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406",
+    "2.002165"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 110.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.004327",
+    "1.010805",
+    "1.013997",
+    "1.004335",
+    "1.013743"
+   ],
+   "id": "real_v1-070",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.004327"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 166.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-071",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 177.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-072",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 255.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.000755",
+    "6.001690",
+    "1.001646",
+    "1.013163",
+    "1.013143"
+   ],
+   "id": "real_v1-073",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.000755"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 172.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "3.000122",
+    "1.011520",
+    "1.012837",
+    "2.001621",
+    "6.006716"
+   ],
+   "id": "real_v1-074",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "3.000122"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 230.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-075",
+   "beh": "answer",
+   "exp": [
+    "1.115970"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.115406",
+    "1.115970"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 109.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-076",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 150.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.004327",
+    "1.004335",
+    "1.010805",
+    "1.013743",
+    "1.012538"
+   ],
+   "id": "real_v1-078",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.004327"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 197.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.000689",
+    "1.001695",
+    "2.000547",
+    "1.003583",
+    "1.001022"
+   ],
+   "id": "real_v1-079",
+   "beh": "answer",
+   "exp": [
+    "2.000635"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.000689"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 180.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-080",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 285.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-082",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 139.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012753",
+    "1.013978",
+    "1.115375",
+    "1.115373",
+    "1.115748"
+   ],
+   "id": "real_v1-084",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.012753",
+    "1.115750"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 240.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-085",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 405.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-086",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 105.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-087",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 26.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.013133",
+    "1.010818",
+    "1.008591",
+    "1.013143",
+    "1.013455"
+   ],
+   "id": "real_v1-088",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.013133"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 174.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "3.000228",
+    "1.116412",
+    "1.116414",
+    "3.000285",
+    "1.116410"
+   ],
+   "id": "real_v1-090",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "3.000228"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 96.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-091",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 82.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-092",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 88.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012888",
+    "2.001035",
+    "2.001406",
+    "1.013979",
+    "1.013173"
+   ],
+   "id": "real_v1-093",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.012888"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 145.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-094",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 204.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-095",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 70.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-096",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 51.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.002165",
+    "1.014359",
+    "1.009057",
+    "1.115406",
+    "2.000992"
+   ],
+   "id": "real_v1-097",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.002165",
+    "1.014451"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 173.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-099",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 67.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.001396",
+    "2.001157",
+    "1.014053",
+    "3.000579",
+    "3.000116"
+   ],
+   "id": "real_v1-100",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.001396"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 68.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116556",
+    "1.116557",
+    "1.014159",
+    "1.014363",
+    "1.013792"
+   ],
+   "id": "real_v1-101",
+   "beh": "answer",
+   "exp": [
+    "2.000908"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116556"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 156.0
+  },
+  {
+   "rr": 1.0,
+   "ranked": [
+    "1.004873",
+    "1.005739",
+    "1.116880",
+    "1.007833",
+    "1.116019"
+   ],
+   "id": "real_v1-102",
+   "beh": "answer",
+   "exp": [
+    "1.004873"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.004873",
+    "1.000894"
+   ],
+   "top1": true,
+   "top3": true,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 161.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.004837",
+    "3.000323",
+    "1.001612",
+    "1.001669",
+    "2.001396"
+   ],
+   "id": "real_v1-103",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.004837"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 320.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-104",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 130.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "3.000228",
+    "3.000722",
+    "3.000285",
+    "3.000286",
+    "1.116410"
+   ],
+   "id": "real_v1-105",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "3.000228",
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 202.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-107",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 149.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-108",
+   "beh": "answer",
+   "exp": [
+    "1.116410"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 19.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012566",
+    "2.000992",
+    "2.001008",
+    "1.013979",
+    "1.116414"
+   ],
+   "id": "real_v1-109",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.012566"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 55.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-110",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 237.3
+  },
+  {
+   "rr": 0.5,
+   "ranked": [
+    "1.014060",
+    "1.116410",
+    "3.000228",
+    "1.116412",
+    "3.000722"
+   ],
+   "id": "real_v1-111",
+   "beh": "answer",
+   "exp": [
+    "1.116410"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.014060"
+   ],
+   "top1": false,
+   "top3": true,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 120.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-112",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 243.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-113",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 178.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-114",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 28.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.004335",
+    "1.115406",
+    "2.001921",
+    "1.013962",
+    "1.014364"
+   ],
+   "id": "real_v1-116",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.004335"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 150.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-117",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 47.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "6.001690",
+    "5.003916",
+    "1.013161",
+    "1.010775",
+    "1.012582"
+   ],
+   "id": "real_v1-118",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "6.001690"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 216.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-119",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 69.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116788",
+    "1.012680",
+    "3.000722",
+    "2.002349",
+    "1.003133"
+   ],
+   "id": "real_v1-120",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.116788"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "random",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 341.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-121",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 228.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.014200",
+    "1.014197",
+    "1.014199",
+    "1.014196",
+    "2.002820"
+   ],
+   "id": "real_v1-122",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.014200"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 291.5
+  },
+  {
+   "rr": 1.0,
+   "ranked": [
+    "1.116410",
+    "3.000228",
+    "1.014060",
+    "1.116412",
+    "3.000722"
+   ],
+   "id": "real_v1-123",
+   "beh": "answer",
+   "exp": [
+    "1.116410"
+   ],
+   "got": "clarify",
+   "tops": [
+    "1.116410"
+   ],
+   "top1": true,
+   "top3": true,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 57.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-124",
+   "beh": "answer",
+   "exp": [
+    "1.116410",
+    "1.012564",
+    "1.014060"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 75.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "3.000228",
+    "1.116412",
+    "3.000722",
+    "1.116414",
+    "3.000285"
+   ],
+   "id": "real_v1-125",
+   "beh": "answer",
+   "exp": [
+    "1.116410"
+   ],
+   "got": "answer",
+   "tops": [
+    "3.000228"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 98.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-126",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 133.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-127",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 62.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-128",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 88.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.002820",
+    "1.014199",
+    "1.014196",
+    "1.008950",
+    "1.009063"
+   ],
+   "id": "real_v1-129",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.002820"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 91.7
+  },
+  {
+   "rr": 1.0,
+   "ranked": [
+    "1.116788",
+    "1.115934",
+    "1.115935",
+    "1.115927",
+    "1.115936"
+   ],
+   "id": "real_v1-130",
+   "beh": "answer",
+   "exp": [
+    "1.116788"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116788"
+   ],
+   "top1": true,
+   "top3": true,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 117.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115626",
+    "1.116729",
+    "1.115827",
+    "1.012817",
+    "1.001699"
+   ],
+   "id": "real_v1-131",
+   "beh": "clarify",
+   "exp": [
+    "1.115931",
+    "1.116767"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.115626"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 147.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.013962",
+    "1.007700",
+    "1.115646",
+    "1.115645",
+    "1.115923"
+   ],
+   "id": "real_v1-132",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.013962"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 227.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.010825",
+    "1.012591",
+    "1.008327",
+    "2.002184",
+    "1.012223"
+   ],
+   "id": "real_v1-133",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.010825"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 88.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-135",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 41.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-136",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406",
+    "2.000821"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 158.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-137",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406",
+    "1.115979"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 181.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115625",
+    "1.115210",
+    "1.117049",
+    "1.115514",
+    "1.116729"
+   ],
+   "id": "real_v1-138",
+   "beh": "answer",
+   "exp": [
+    "1.013978"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.115625"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 140.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-139",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 77.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-140",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 52.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116411",
+    "1.116414",
+    "1.116412",
+    "1.014066",
+    "1.012564"
+   ],
+   "id": "real_v1-141",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.116411"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 149.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.002080",
+    "3.000261",
+    "1.001909",
+    "1.001656",
+    "3.000118"
+   ],
+   "id": "real_v1-142",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.002080",
+    "1.012566"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 138.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116556",
+    "1.116557",
+    "1.009064",
+    "2.002165",
+    "1.007895"
+   ],
+   "id": "real_v1-144",
+   "beh": "answer",
+   "exp": [
+    "1.013743"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116556",
+    "1.013163"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 219.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-145",
+   "beh": "answer",
+   "exp": [
+    "2.000635",
+    "1.004884"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 33.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.014193",
+    "1.001798",
+    "1.116466",
+    "1.001939",
+    "1.014312"
+   ],
+   "id": "real_v1-146",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.014193"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 209.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-147",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 199.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-148",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 330.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.002516",
+    "1.010041",
+    "1.116556",
+    "1.116557",
+    "1.011046"
+   ],
+   "id": "real_v1-149",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.002516"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 110.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-150",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 261.8
+  },
+  {
+   "rr": 1.0,
+   "ranked": [
+    "1.116788",
+    "3.000722",
+    "1.013314",
+    "1.116789",
+    "1.012680"
+   ],
+   "id": "real_v1-151",
+   "beh": "answer",
+   "exp": [
+    "1.116788"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116788",
+    "1.115406"
+   ],
+   "top1": true,
+   "top3": true,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 204.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116413",
+    "2.002516",
+    "1.010041",
+    "1.116556",
+    "1.116557"
+   ],
+   "id": "real_v1-152",
+   "beh": "answer",
+   "exp": [
+    "1.116410"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116413"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 57.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.002303",
+    "1.010814",
+    "1.010092",
+    "1.014337",
+    "1.002179"
+   ],
+   "id": "real_v1-153",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.002303"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 75.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-154",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 406.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-155",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 37.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-156",
+   "beh": "apologize",
+   "exp": [],
+   "got": "clarify",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 127.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-157",
+   "beh": "answer",
+   "exp": [
+    "1.116789"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 122.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-158",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 100.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "3.000722",
+    "3.000285",
+    "1.116410",
+    "3.000286",
+    "1.014060"
+   ],
+   "id": "real_v1-159",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "3.000722",
+    "3.000228"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 134.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012538",
+    "1.012537",
+    "1.013173",
+    "1.014359",
+    "1.013142"
+   ],
+   "id": "real_v1-160",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.012538"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 153.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-161",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 120.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-162",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 141.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.001939",
+    "3.000722",
+    "1.002051",
+    "1.012537",
+    "1.014193"
+   ],
+   "id": "real_v1-163",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.001939",
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 113.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-164",
+   "beh": "answer",
+   "exp": [
+    "1.012566"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 126.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-165",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 20.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012812",
+    "1.013967",
+    "1.013314",
+    "1.116777",
+    "1.116778"
+   ],
+   "id": "real_v1-166",
+   "beh": "answer",
+   "exp": [
+    "1.013978"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.012812"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 150.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.010814",
+    "1.012566",
+    "1.012817",
+    "1.116414",
+    "1.003930"
+   ],
+   "id": "real_v1-167",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.010814",
+    "1.012566"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 423.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.004873",
+    "1.010814",
+    "1.014943",
+    "1.005040",
+    "1.014801"
+   ],
+   "id": "real_v1-168",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.004873",
+    "1.000894"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 119.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-169",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 158.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-170",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 280.0
+  },
+  {
+   "rr": 0.5,
+   "ranked": [
+    "1.116789",
+    "1.116788",
+    "1.001570",
+    "1.007042",
+    "1.010337"
+   ],
+   "id": "real_v1-171",
+   "beh": "answer",
+   "exp": [
+    "1.116788"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116789"
+   ],
+   "top1": false,
+   "top3": true,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 133.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-172",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 235.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.003677",
+    "1.007700",
+    "1.013962",
+    "1.115406",
+    "1.007833"
+   ],
+   "id": "real_v1-173",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.003677",
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 246.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.002080",
+    "3.000261",
+    "1.001909",
+    "1.001656",
+    "3.000118"
+   ],
+   "id": "real_v1-174",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.002080"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 136.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-175",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 235.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116839",
+    "1.116841",
+    "1.116835",
+    "1.116820",
+    "1.116840"
+   ],
+   "id": "real_v1-176",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.116839",
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 158.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-177",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 87.2
+  },
+  {
+   "rr": 1.0,
+   "ranked": [
+    "1.116788",
+    "1.003133",
+    "1.006391",
+    "1.013314",
+    "2.002321"
+   ],
+   "id": "real_v1-178",
+   "beh": "answer",
+   "exp": [
+    "1.116788"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116788",
+    "1.115406"
+   ],
+   "top1": true,
+   "top3": true,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 168.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-179",
+   "beh": "answer",
+   "exp": [
+    "1.116410"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.115406",
+    "3.000228"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 196.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.014193",
+    "1.001798",
+    "1.116466",
+    "1.001656",
+    "1.010091"
+   ],
+   "id": "real_v1-180",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.014193"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 89.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-181",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 58.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012533",
+    "3.000243",
+    "1.012538",
+    "1.012537",
+    "3.000244"
+   ],
+   "id": "real_v1-182",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.012533",
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 243.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-183",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 86.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "5.003887",
+    "1.014997",
+    "1.115406",
+    "3.000623",
+    "1.115923"
+   ],
+   "id": "real_v1-184",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "5.003887"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 110.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-185",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 509.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012566",
+    "2.000992",
+    "2.001008",
+    "1.013163",
+    "1.013455"
+   ],
+   "id": "real_v1-187",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.012566"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 184.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-188",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 260.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-189",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 208.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-190",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 169.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.001193",
+    "1.003583",
+    "2.000635",
+    "2.000528",
+    "1.008532"
+   ],
+   "id": "real_v1-191",
+   "beh": "answer",
+   "exp": [
+    "1.012564",
+    "1.116410"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.001193"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 157.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-192",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 57.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-193",
+   "beh": "answer",
+   "exp": [
+    "1.116788"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.115406",
+    "1.116788"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 115.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115750",
+    "1.115519",
+    "1.117049",
+    "1.115537",
+    "1.116881"
+   ],
+   "id": "real_v1-194",
+   "beh": "answer",
+   "exp": [
+    "1.013978"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.115750"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 180.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-195",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 68.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-196",
+   "beh": "answer",
+   "exp": [
+    "1.002759"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 39.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-197",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 34.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-198",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 195.3
+  },
+  {
+   "rr": 0.5,
+   "ranked": [
+    "1.116789",
+    "1.116788",
+    "1.115938",
+    "1.115923",
+    "1.013962"
+   ],
+   "id": "real_v1-199",
+   "beh": "answer",
+   "exp": [
+    "1.116788"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116789"
+   ],
+   "top1": false,
+   "top3": true,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 177.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-200",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 64.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "3.000285",
+    "1.116410",
+    "3.000286",
+    "1.014060",
+    "3.000228"
+   ],
+   "id": "real_v1-201",
+   "beh": "answer",
+   "exp": [
+    "1.004772"
+   ],
+   "got": "answer",
+   "tops": [
+    "3.000285",
+    "1.004772"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 179.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-202",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 160.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012566",
+    "1.013978",
+    "1.115626",
+    "1.116104",
+    "1.012084"
+   ],
+   "id": "real_v1-203",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.012566"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 200.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-204",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 188.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-205",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 126.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-206",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 231.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-207",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 111.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-208",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 29.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.000635",
+    "1.116154",
+    "1.115148",
+    "1.115406",
+    "1.010774"
+   ],
+   "id": "real_v1-209",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.000635"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 77.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.010803",
+    "1.010829",
+    "1.010830",
+    "1.013750",
+    "1.010801"
+   ],
+   "id": "real_v1-210",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.010803",
+    "1.014632"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 196.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-211",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 166.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116788",
+    "1.013962",
+    "1.115892",
+    "3.000661",
+    "1.116737"
+   ],
+   "id": "real_v1-212",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.116788"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 123.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116789",
+    "1.013962",
+    "1.000253",
+    "1.116003",
+    "1.115892"
+   ],
+   "id": "real_v1-213",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.116789"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 312.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116788",
+    "1.115938",
+    "1.012680",
+    "1.003133",
+    "1.013314"
+   ],
+   "id": "real_v1-214",
+   "beh": "answer",
+   "exp": [
+    "1.115970"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116788"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 210.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-215",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 347.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115960",
+    "2.002284",
+    "2.001960",
+    "1.014113",
+    "1.014997"
+   ],
+   "id": "real_v1-216",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115960",
+    "3.000182"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 193.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-217",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 144.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-218",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 29.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-219",
+   "beh": "clarify",
+   "exp": [
+    "1.116525",
+    "1.115743"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 44.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-220",
+   "beh": "answer",
+   "exp": [
+    "2.000815"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 63.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-221",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 95.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-222",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 116.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116410",
+    "1.014060",
+    "1.116412",
+    "3.000228",
+    "3.000722"
+   ],
+   "id": "real_v1-223",
+   "beh": "answer",
+   "exp": [
+    "1.012566"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116410"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 164.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.000992",
+    "2.001008",
+    "1.116414",
+    "3.000728",
+    "1.001667"
+   ],
+   "id": "real_v1-224",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.000992"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 104.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-225",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 62.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "3.000228",
+    "1.116412",
+    "1.116414",
+    "3.000285",
+    "1.116410"
+   ],
+   "id": "real_v1-226",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "3.000228",
+    "2.000605"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 107.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-227",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 131.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.001193",
+    "2.000635",
+    "1.003583",
+    "2.000528",
+    "3.000722"
+   ],
+   "id": "real_v1-228",
+   "beh": "answer",
+   "exp": [
+    "1.004884"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.001193",
+    "1.004884"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 112.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-229",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 95.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-230",
+   "beh": "clarify",
+   "exp": [
+    "2.001159",
+    "1.116789"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 80.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116789",
+    "1.116788",
+    "1.001570",
+    "1.007042",
+    "1.010337"
+   ],
+   "id": "real_v1-231",
+   "beh": "answer",
+   "exp": [
+    "1.010041"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116789",
+    "1.001193"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 246.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-232",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 229.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.003005",
+    "1.014364",
+    "1.013311",
+    "1.013312",
+    "2.002820"
+   ],
+   "id": "real_v1-233",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.003005",
+    "2.000806"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 269.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-234",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 122.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-235",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 41.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-236",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406",
+    "3.000323"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 228.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-237",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 36.8
+  },
+  {
+   "rr": 1.0,
+   "ranked": [
+    "1.012566",
+    "1.116414",
+    "1.116729",
+    "1.116880",
+    "1.115827"
+   ],
+   "id": "real_v1-238",
+   "beh": "answer",
+   "exp": [
+    "1.012566"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.012566"
+   ],
+   "top1": true,
+   "top3": true,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 191.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-239",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 141.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-240",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 77.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-241",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 93.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-242",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 138.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-243",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 158.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "3.000285",
+    "1.116410",
+    "3.000286",
+    "1.014060",
+    "3.000228"
+   ],
+   "id": "real_v1-244",
+   "beh": "apologize",
+   "exp": [],
+   "got": "clarify",
+   "tops": [
+    "3.000285"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 99.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-245",
+   "beh": "apologize",
+   "exp": [],
+   "got": "clarify",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 244.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.001613",
+    "1.001909",
+    "2.000755",
+    "1.010092",
+    "1.001656"
+   ],
+   "id": "real_v1-246",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.001613"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 188.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116410",
+    "3.000228",
+    "1.014060",
+    "1.116412",
+    "3.000722"
+   ],
+   "id": "real_v1-247",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.116410",
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 290.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "6.001690",
+    "1.001646",
+    "5.003916",
+    "1.115148",
+    "1.013962"
+   ],
+   "id": "real_v1-248",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "6.001690"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 249.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012753",
+    "1.115825",
+    "1.115750",
+    "1.115537",
+    "1.115691"
+   ],
+   "id": "real_v1-249",
+   "beh": "clarify",
+   "exp": [
+    "1.115932",
+    "1.116768"
+   ],
+   "got": "clarify",
+   "tops": [
+    "1.012753"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 82.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-250",
+   "beh": "answer",
+   "exp": [
+    "1.115971"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 96.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-251",
+   "beh": "answer",
+   "exp": [
+    "1.116788"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 95.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.000950",
+    "1.004327",
+    "1.004335",
+    "1.115406",
+    "1.013962"
+   ],
+   "id": "real_v1-253",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.000950",
+    "1.012538"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 141.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.013962",
+    "1.115892",
+    "3.000661",
+    "1.116737",
+    "1.116945"
+   ],
+   "id": "real_v1-255",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.013962"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 157.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-256",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 91.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.013978",
+    "1.012753",
+    "1.116727",
+    "1.116947",
+    "1.116082"
+   ],
+   "id": "real_v1-257",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.013978",
+    "1.001632"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 164.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.000821",
+    "1.012538",
+    "1.001613",
+    "2.000755",
+    "1.012537"
+   ],
+   "id": "real_v1-259",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.000821",
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 247.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012817",
+    "1.013979",
+    "1.012753",
+    "1.115750",
+    "1.115921"
+   ],
+   "id": "real_v1-260",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.012817"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 149.2
+  },
+  {
+   "rr": 0.3333,
+   "ranked": [
+    "2.000635",
+    "1.001193",
+    "1.004772",
+    "1.000893",
+    "3.000722"
+   ],
+   "id": "real_v1-261",
+   "beh": "answer",
+   "exp": [
+    "1.004772",
+    "1.116410"
+   ],
+   "got": "answer",
+   "tops": [
+    "2.000635"
+   ],
+   "top1": false,
+   "top3": true,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 261.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.005040",
+    "1.011047",
+    "1.010041",
+    "1.116789",
+    "1.013550"
+   ],
+   "id": "real_v1-262",
+   "beh": "answer",
+   "exp": [
+    "1.000253"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.005040",
+    "1.116789"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 205.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-263",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 114.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-264",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 121.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-265",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 169.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-266",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 190.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116788",
+    "1.012680",
+    "3.000722",
+    "1.013314",
+    "1.116789"
+   ],
+   "id": "real_v1-267",
+   "beh": "answer",
+   "exp": [
+    "1.012566"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116788"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 504.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-268",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 183.1
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-270",
+   "beh": "answer",
+   "exp": [
+    "1.004859"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 314.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-271",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 195.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "2.000755",
+    "1.001613",
+    "2.000821",
+    "1.001742",
+    "1.002179"
+   ],
+   "id": "real_v1-272",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "2.000755"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 168.8
+  },
+  {
+   "rr": 1.0,
+   "ranked": [
+    "1.000894",
+    "1.000593",
+    "2.000806",
+    "2.002189",
+    "1.000094"
+   ],
+   "id": "real_v1-273",
+   "beh": "clarify",
+   "exp": [
+    "1.000894",
+    "1.004873"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.000894",
+    "1.004873"
+   ],
+   "top1": true,
+   "top3": true,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 53.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-274",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 173.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-275",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 20.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-276",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 60.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.012537",
+    "1.002759",
+    "1.002051",
+    "1.012538",
+    "1.010091"
+   ],
+   "id": "real_v1-277",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.012537"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 149.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-278",
+   "beh": "answer",
+   "exp": [
+    "1.116788"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 168.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-279",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 158.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-280",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 110.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-281",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 204.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-282",
+   "beh": "answer",
+   "exp": [
+    "3.000285",
+    "3.000286"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.115406",
+    "3.000285"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 113.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-283",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 197.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-284",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 325.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-285",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 104.2
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-286",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 70.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-287",
+   "beh": "answer",
+   "exp": [
+    "1.004859"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 209.6
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116768",
+    "1.115932",
+    "3.000610",
+    "1.115625",
+    "1.115210"
+   ],
+   "id": "real_v1-288",
+   "beh": "answer",
+   "exp": [
+    "1.014159"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.116768"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 74.1
+  },
+  {
+   "rr": 1.0,
+   "ranked": [
+    "1.000894",
+    "1.000593",
+    "1.007833",
+    "1.000689",
+    "2.000806"
+   ],
+   "id": "real_v1-289",
+   "beh": "clarify",
+   "exp": [
+    "1.000894",
+    "1.004746"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.000894"
+   ],
+   "top1": true,
+   "top3": true,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 248.2
+  },
+  {
+   "rr": 0.5,
+   "ranked": [
+    "3.000285",
+    "1.116410",
+    "3.000286",
+    "1.014060",
+    "3.000228"
+   ],
+   "id": "real_v1-291",
+   "beh": "answer",
+   "exp": [
+    "1.116410"
+   ],
+   "got": "answer",
+   "tops": [
+    "3.000285",
+    "1.012566"
+   ],
+   "top1": false,
+   "top3": true,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 51.0
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.014193",
+    "1.001798",
+    "1.116466",
+    "1.001939",
+    "1.014312"
+   ],
+   "id": "real_v1-292",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.014193"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 364.4
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.116788",
+    "3.000722",
+    "1.013314",
+    "1.116789",
+    "1.006391"
+   ],
+   "id": "real_v1-293",
+   "beh": "apologize",
+   "exp": [],
+   "got": "answer",
+   "tops": [
+    "1.116788"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 146.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-295",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 61.8
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-296",
+   "beh": "answer",
+   "exp": [
+    "1.116410"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.115406",
+    "1.116410"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "direct",
+     ""
+    ]
+   ],
+   "ms": 73.3
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-297",
+   "beh": "answer",
+   "exp": [
+    "1.013978"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 90.5
+  },
+  {
+   "rr": 0.0,
+   "ranked": [
+    "1.115406",
+    "1.013962",
+    "1.004327",
+    "1.004335",
+    "1.013163"
+   ],
+   "id": "real_v1-298",
+   "beh": "answer",
+   "exp": [
+    "1.116788"
+   ],
+   "got": "answer",
+   "tops": [
+    "1.115406"
+   ],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "direct",
+     ""
+    ],
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 107.9
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-299",
+   "beh": "apologize",
+   "exp": [],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 228.7
+  },
+  {
+   "rr": 0.0,
+   "ranked": [],
+   "id": "real_v1-300",
+   "beh": "answer",
+   "exp": [
+    "1.116410"
+   ],
+   "got": "apologize",
+   "tops": [],
+   "top1": false,
+   "top3": false,
+   "stratum": "chude",
+   "routes": [
+    [
+     "apologize",
+     "not_found"
+    ]
+   ],
+   "ms": 35.1
+  }
+ ]
+}

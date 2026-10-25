@@ -1,0 +1,24 @@
+\section{Evaluation Protocol}
+
+\textbf{Order of work.} Each test set was sampled, labeled and locked by SHA-256 and a commit; rules and thresholds were developed on the
+development set only; the code was frozen in a commit; each configuration was run once on the test set and the results were read once.
+Reusing a test set for selection inflates its estimates\cite{dwork2015}, so no test set was used to choose anything. A run with all
+switches off matched the base system on every question. After the first test set had been run, it joined the development set (595
+questions) for the second round, which was evaluated on the second test set.
+
+\textbf{Selection rule.} Written before each test run: choose the development configuration with the highest balanced accuracy, subject to
+end-to-end accuracy not lower than that of the rule layer alone, ties going to end-to-end accuracy. In the first round this selected A + B;
+A with the name-only reader was excluded by its lower development end-to-end accuracy (65.5\% against 69.1\%). In the second round, A2 + B
+tied A2 (balanced accuracy 0.916) with one more end-to-end answer (88 against 87 of 114) and was selected; A2 with the name-only reader
+(0.925) was excluded (84). These development numbers are optimistic, since A2 was written on the same questions.
+
+\textbf{Metrics.} \emph{Behavior accuracy} is the share of correct three-way decisions. Because most real questions should be refused, a
+system that always refuses scores 79.2\% on the first test set; the main metric is therefore \emph{balanced accuracy}, the mean recall of
+\emph{answer} and \emph{refuse}\cite{brodersen2010}; \emph{clarify} questions are too few to weigh equally and are reported separately.
+\emph{Top-1} is the share of \emph{answer} questions whose correct procedure is ranked first, and \emph{end-to-end} accuracy the share that
+the system also answers. Proportions carry Wilson 95\% intervals\cite{wilson1927}; paired comparisons use the exact two-sided McNemar
+test\cite{mcnemar1947,dietterich1998}.
+
+\textbf{Setup.} All runs use the procedure data of 13 October 2026 on one laptop with an NVIDIA GeForce RTX 4050 (6\,GB), paced by a
+temperature guard that pauses between questions. Frozen commits, the hashes of the question sets and the per-question decisions are in the
+project repository.

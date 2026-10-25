@@ -1,0 +1,20 @@
+\section{Related Work}
+
+\textbf{Vietnamese public-service and legal question answering.} Pham Duy and Le Thanh retrieve legal passages for public-service
+questions, using 4,547 question--answer pairs from the portal's frequently-asked-questions pages and 785,996 passages, with BM25+, a
+contrastively trained PhoBERT encoder and a cross-encoder, evaluated by Recall@$k$, MAP and NDCG\cite{phamduy2023}. ViGPTQA trains
+Vietnamese instruction-following LLMs and evaluates them on question answering, including law\cite{vigptqa2023}; Hien et al.\ combine
+vector retrieval over 45,000 legal documents with an LLM, evaluated with RAGAS and a user study\cite{hien2025}; their system routes
+out-of-scope questions to experts, but this step is not evaluated. None of these measures refusal on real citizen questions.
+
+\textbf{Abstention and out-of-scope detection.} Adding unanswerable questions to SQuAD caused a large drop for strong
+readers\cite{rajpurkar2018}; a trained calibrator helps a reader abstain under domain shift\cite{kamath2020}; on CLINC150, intent
+classifiers that do well in scope struggle to flag out-of-scope queries\cite{larson2019}. A survey frames abstention from the query, the
+model and human values\cite{wen2025}, and clarifying questions are a third option between answering and refusing\cite{aliannejadi2019}.
+
+\textbf{Who decides.} Retrieval-augmented generation conditions a generator on retrieved passages\cite{lewis2020}; Self-RAG lets the model
+decide when to retrieve and critique its output\cite{asai2024}, and corrective RAG lets a retrieval evaluator choose an
+action\cite{yan2024}. Programmable guardrails take the opposite route: developer-written rails, independent of the LLM, constrain the
+dialogue\cite{rebedea2023}. In e-government, a proposed governance pipeline adds validation, monitoring and escalation to
+humans\cite{kaplan2026}, and a benchmark for governmental use finds that answering correctly does not imply acknowledging what one does
+not know\cite{samson2026}. We compare rules, a reranker score and a local LLM as the decider under one protocol.

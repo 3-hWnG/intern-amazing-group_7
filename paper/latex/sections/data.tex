@@ -1,0 +1,39 @@
+\section{Task and Data}
+
+\textbf{Task.} For a citizen's question the system outputs \emph{answer} with a procedure identifier, \emph{clarify} with candidate
+procedures, or \emph{refuse} with a short reason. A question is labeled \emph{answer} when exactly one commune-level procedure (or a pair of
+equivalent ones) is clearly what the citizen needs; \emph{clarify} when several different procedures fit, or when the procedure exists
+only in province-specific versions and no province is given; \emph{refuse} when the procedure is not in the data or not handled at commune
+level, or the question concerns the status of a submitted file, a complaint or petition, law and penalties, police internal matters, or
+no procedure at all.
+
+\textbf{Procedure data.} The National Public Service Portal\cite{dvcportal} was collected once on 13 October 2026: 1,517 procedures,
+including province-specific versions for 34 provinces. The 542 commune-level procedures that are not province-specific form the scope.
+Records hold name, field, agency, documents, fees, processing time, steps and legal basis, and no personal data. The portal has no
+official API; we used its public, unauthenticated JSON endpoints at two requests per second on one thread.
+
+\textbf{Real questions.} We pooled two public Hugging Face datasets of citizen questions sent to the Binh Dinh provincial portal\cite{hfdvc}
+and the Ministry of Public Security portal\cite{hfmps}. Personal data were masked before labeling. After removing duplicates, lines under
+four words, greetings, and 266 questions used earlier to design clarification rules, the pool has 1,490 questions. Samples were drawn with
+fixed seeds from a \emph{random} stratum and a \emph{topical} stratum (keywords of commune-level fields, written before any system output
+was seen, to obtain more answerable questions):
+\begin{itemize}
+\item \textbf{Development set}: 282 questions after removing non-questions (55 answer, 7 clarify, 220 refuse).
+\item \textbf{First test set}: 313 other questions (59 answer, 6 clarify, 248 refuse), locked by SHA-256 and a commit before any code
+change. Eleven of them are near-duplicates of development questions (resent by the same citizens); results without them are given in
+Section~\ref{sec:test1}.
+\item \textbf{Second test set}: the rest of the pool, random stratum only, in an order locked before the second improvement round. An
+author labeled the first 400, with labels proposed by Gemini 4 Argon and reviewed item by item; 363 remain after removing non-questions
+(21 answer, 7 clarify, 335 refuse). The AI assistant that wrote the rules (Section~\ref{sec:method}) never read these questions or labels before the
+final run.
+\end{itemize}
+
+\textbf{Labels and agreement.} Labels for the development and first test sets were produced, following a written guideline, with the
+same AI assistant that wrote the rules (for the development set, two independent passes, reconciled and reviewed by the project lead). A random sample of 100 first-test questions was labeled
+again: Gemini 4 Argon proposed labels and an author checked every item without seeing the first pass, although that author had seen the
+aggregate class proportions. The second pass marked 9 petitions as non-questions; on the other 91 the passes agree on 79 (86.8\%), Cohen's
+$\kappa=0.685$\cite{cohen1960} (95\% bootstrap interval 0.55--0.82), substantial agreement\cite{landis1977}. Most disagreements are
+\emph{answer} versus \emph{clarify} between closely related procedures. The first-pass labels were not changed.
+
+\textbf{Team-written set.} For comparison we use the blind part of the team's regression set: 518 questions written over several rounds,
+102 of them imitating citizen phrasing, with 384 \emph{answer} (381 whose procedure still exists), 76 \emph{clarify} and 58 \emph{refuse}.

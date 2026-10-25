@@ -1,0 +1,7 @@
+# văn bản câu hỏi dựng lại bằng eval/rebuild_questions.py: không commit (giấy phép dataset gốc không ghi rõ)
+eval/real_v1/cases_*.json
+eval/real_v2/cases_*.json
+eval/real_v4/cases_*.json
+eval/results/
+__pycache__/
+*.db

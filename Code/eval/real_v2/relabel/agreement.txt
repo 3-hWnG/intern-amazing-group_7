@@ -1,0 +1,36 @@
+A 100 nhãn, B 100 nhãn, chung 100; chỉ A: 0, chỉ B: 0
+skip: A 0, B 9, cả hai 0, lệch 9
+
+beh trên 91 câu cả hai không skip: khớp 79/91 (86.8%), Cohen's kappa = 0.685
+ma trận (hàng A, cột B):
+               answer    clarify  apologize
+    answer         13          7          2
+   clarify          1          1          0
+ apologize          0          2         65
+
+expect_ids trên 13 câu cả hai gán answer: khớp hệt 12 (92.3%), một bên là tập con 1, lệch hẳn 0
+kappa 95% bootstrap (2000 lần): 0.548 – 0.820
+
+bất đồng cần thống nhất: 22 câu
+  real_v2-017 | A: answer(1.115970) | B: apologize
+  real_v2-023 | A: apologize | B: skip
+  real_v2-034 | A: apologize | B: clarify
+  real_v2-118 | A: apologize | B: skip
+  real_v2-129 | A: apologize | B: skip
+  real_v2-135 | A: apologize | B: skip
+  real_v2-136 | A: answer(1.012796,1.012566) | B: clarify
+  real_v2-144 | A: answer(1.012566) | B: clarify
+  real_v2-160 | A: answer(1.116410,1.012566) | B: clarify
+  real_v2-165 | A: clarify | B: answer(1.013949)
+  real_v2-184 | A: answer(2.000635,1.004884) | B: clarify
+  real_v2-202 | A: answer(2.000635,1.004884) | B: answer(2.000635)
+  real_v2-205 | A: answer(1.001193,1.116410) | B: clarify
+  real_v2-206 | A: answer(1.001193,1.116410) | B: clarify
+  real_v2-212 | A: apologize | B: skip
+  real_v2-222 | A: apologize | B: skip
+  real_v2-225 | A: apologize | B: skip
+  real_v2-239 | A: answer(1.002759) | B: apologize
+  real_v2-264 | A: apologize | B: clarify
+  real_v2-304 | A: apologize | B: skip
+  real_v2-327 | A: answer(1.012812,1.013967) | B: clarify
+  real_v2-339 | A: apologize | B: skip

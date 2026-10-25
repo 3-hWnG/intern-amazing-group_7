@@ -1,0 +1,57 @@
+DB thủ tục: D:\Claude\System 3\intern-amazing-group_7-merge_sys_3_4\eval\runtime\fixture_snapshot.db
+PASS     0.2s  data/tests/test_data.py
+PASS     4.5s  server/tests/answer_llm_test.py
+PASS     0.4s  server/tests/cap_test.py
+PASS     3.9s  server/tests/clarify_vague_test.py
+PASS     0.2s  server/tests/compare_cue_test.py
+PASS     3.5s  server/tests/context_test.py
+PASS     0.8s  server/tests/fee_display_test.py
+PASS     1.2s  server/tests/fee_query_test.py
+PASS     3.3s  server/tests/forms_test.py
+PASS    15.4s  server/tests/gpu_sched_test.py
+PASS     8.0s  server/tests/lineage_test.py
+PASS     1.1s  server/tests/list_intent_test.py
+PASS     2.7s  server/tests/listsql_test.py
+PASS     5.9s  server/tests/memory_test.py
+PASS    14.4s  server/tests/p20_api_test.py
+KNOWN    1.0s  server/tests/p23_input_test.py
+PASS     4.3s  server/tests/p26_memory_test.py
+PASS     1.3s  server/tests/p30_clarify_test.py
+PASS     5.7s  server/tests/p31_variants_test.py
+PASS     3.4s  server/tests/planner_hybrid_test.py
+PASS     6.2s  server/tests/province_test.py
+PASS     3.6s  server/tests/title_test.py
+PASS     7.4s  system4/tests/account_test.py
+PASS    13.4s  system4/tests/answer_cache_test.py
+PASS    18.7s  system4/tests/bootstrap_test.py
+PASS     3.9s  system4/tests/choices_test.py
+PASS    13.3s  system4/tests/cpu_mode_test.py
+PASS     4.2s  system4/tests/fastpath_realdata_test.py
+PASS    20.6s  system4/tests/gate_test.py
+PASS     4.9s  system4/tests/guest_limit_test.py
+PASS     5.1s  system4/tests/login_limit_test.py
+PASS     4.7s  system4/tests/memory_accounts_test.py
+PASS     3.9s  system4/tests/overview_test.py
+PASS     7.0s  system4/tests/pii_storage_test.py
+PASS     3.4s  system4/tests/profile_test.py
+PASS     2.8s  system4/tests/summary_topic_test.py
+PASS     3.9s  system4/tests/test_dashboard.py
+PASS     7.3s  system4/tests/test_domains.py
+PASS     5.7s  system4/tests/test_fastpath.py
+PASS    16.5s  system4/tests/test_flm.py
+PASS     6.3s  system4/tests/test_hard_extra.py
+PASS    39.7s  system4/tests/test_nv1.py
+PASS    20.8s  system4/tests/test_nv2.py
+PASS    38.5s  system4/tests/test_nv3.py
+PASS    68.3s  system4/tests/test_nv4.py
+PASS     5.9s  system4/tests/test_nv5.py
+PASS     5.5s  system4/tests/test_roles_stats.py
+PASS     7.0s  system4/tests/test_shared_model.py
+PASS     4.4s  system4/tests/test_shared_soft.py
+PASS     4.7s  system4/tests/test_websearch.py
+PASS     1.1s  system4/tests/text_chunk_test.py
+PASS    21.4s  system4/eval/abi/test_abi.py
+PASS     0.2s  eval/safety/test_pii_injection.py
+hồi quy đã biết: server/tests/p23_input_test.py — câu khai tử bị tách >1 ý (sửa ở G4.8)
+
+ĐẠT: 0 test trượt, 1 hồi quy đã biết

@@ -1,0 +1,47 @@
+\section{System and Variants}\label{sec:method}
+
+\textbf{Base system.} The assistant as it stood before this study uses no language model to decide. A question is split into segments (one
+per requested procedure), each normalized (abbreviations, synonyms, the fields asked for such as documents or fees), and procedures are
+ranked by inverse document frequency over whole Vietnamese syllables\cite{robertson2009}, with a penalty for mismatched diacritics, a bonus
+for adjacent matches, and thresholds on score and coverage (the share of the question's weight found in the name). A policy module checks
+the plan against the data (real identifiers, commune scope, province versions, at most three procedures) and outputs the behavior. Answers
+are composed by code from the requested fields of the record, with the source. An optional LLM rewriting step is off in all experiments:
+we measure the decision, not the wording.
+
+\textbf{Rule layer (A).} Rules written from the base system's errors on the development set, each behind a switch; with all switches off,
+the system reproduces the base output on every test question.
+\begin{itemize}
+\item \emph{Letter stripping}: remove greetings, the addressed agency, self-introductions and thanks, which otherwise match procedure names.
+\item \emph{Citizen lexicon}: about twenty patterns map citizen wording to current official names, including terms changed by recent laws
+(the household registration book, abolished by the 2020 Law on Residence; ``citizen identity card'', renamed ``identity card'' in 2023).
+\item \emph{Weak-name filter}: a segment sharing a few words with a very long procedure name does not name it.
+\item \emph{Out-of-scope gate}: patterns for the status of one's own file, complaints and petitions, law and penalties, police internal
+matters and recruitment, and topics absent from the data yield \emph{refuse}; explicit procedural questions (how to file a complaint) are
+exempt.
+\item \emph{Focus}: in long letters, keep only segments that ask something.
+\item \emph{Organization default}: without a mentioned organization, prefer the household or individual version.
+\end{itemize}
+
+\textbf{Second round (A2).} Once the first test set had been run and its results read, a second round, behind one more switch, was written
+on the remaining errors of A on the development and first test sets. It makes the lexicon tolerate inserted words; lets a request
+recognized by the lexicon override a procedure inferred from a life event in the story (a parent's death suggests death registration, but
+the question asks to transfer the parent's car); adds out-of-scope patterns (status in plain words, police staff asking about their benefits,
+private disputes); answers questions on the processing time set by regulation;
+and answers with the version common to all provinces instead of asking for the province, as the labeling guideline prescribes.
+
+\textbf{Reranker (B).} Candidates are the rule ranker's top eight and the ten in-scope procedures closest to the question under
+BGE-M3\cite{chen2024m3}; a cross-encoder, bge-reranker-v2-m3\cite{bgererank}, scores each (question, procedure description) pair. The
+system refuses when the best score is below a threshold and replaces the rule's choice when another candidate wins by a margin; alone, it
+also answers when the rules find nothing but the best score is positive. Thresholds were chosen by grid search on development (alone:
+$-3.5$ and $0.5$; on top of A: $-8$ and $2$, no rescue).
+
+\textbf{LLM reader (C).} A local 4-billion-parameter model (Qwen3-4B-Instruct-2507, Q4\_K\_M quantization, Ollama, temperature 0, JSON
+schema)\cite{qwen3,qwen3inst} returns one of six intents (procedure, file status, complaint, law, internal, other) and, for procedure
+questions, the procedure's name in words, which the rule ranker maps to a procedure; the model never writes an identifier. Non-procedure
+intents become refusals; the \emph{name-only} variant ignores the intent.
+
+\textbf{RAG baseline (R).} To represent a common design in which the model decides, BGE-M3 retrieves the five in-scope procedures closest to
+the raw question and the same 4B model returns \emph{answer} with a number, \emph{clarify} or \emph{refuse}; no rule is used. A first, short
+prompt asked for clarification too often on development; two variants (ordered decision rules, and the same with procedure descriptions)
+were then declared together before either was run. Their development balanced accuracies were 0.343, 0.445 and 0.432, and the second was
+run once on each test set. R was added after the first test set had been run, but nothing in it was chosen on a test set.

@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="vi"><head><meta charset="UTF-8"><title>Dev — biến thể mặc định</title>
+<style>body{font:14px/1.5 sans-serif;margin:20px}details{margin:4px 0}.d{font-weight:600}small{color:#666}</style></head>
+<body><h1>Biến thể mặc định (chỉ dev, chỉ đọc)</h1><div id="out">Đang tải…</div>
+<script>
+fetch("/dev/default_variants").then(r => r.json()).then(({groups}) => {
+  const out = document.getElementById("out"); out.textContent = groups.length + " nhóm";
+  groups.forEach(g => {
+    const d = document.createElement("details"), s = document.createElement("summary");
+    s.textContent = g.head + " (" + g.variants.length + ") — " + g.reason; d.appendChild(s);
+    g.variants.forEach(v => { const p = document.createElement("div");
+      p.className = v.proc_id === g.default ? "d" : "";
+      p.textContent = (v.proc_id === g.default ? "★ " : "• ") + v.name + (v.province ? " [" + v.province + "]" : "") + "  " + v.proc_id;
+      d.appendChild(p); });
+    out.appendChild(d);
+  });
+});
+</script></body></html>

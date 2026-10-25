@@ -1,0 +1,31 @@
+\section{Introduction}
+
+Many everyday administrative procedures in Vietnam are handled by commune-level offices: civil status, residence, identity cards,
+certified copies, social benefits. The National Public Service Portal publishes the official record of each procedure\cite{dvcportal},
+but citizens rarely ask in its language. They write letters, with a greeting, a family story, abbreviations, often no diacritics, and
+somewhere a question. Many questions are not about carrying out a procedure at all, but about a file already submitted, a complaint, a
+fine, or the benefits of police officers. Answering these from procedure records gives confident but wrong guidance, which costs citizens
+time and trust\cite{kaplan2026,samson2026}.
+
+The task is therefore a three-way decision before it is a retrieval problem: \emph{answer} with one procedure, \emph{clarify} when
+several fit, or \emph{refuse}. Abstention is a known weak point of language models\cite{wen2025,kamath2020}, and intent classifiers
+struggle with out-of-scope queries\cite{larson2019}, yet prior work on Vietnamese public-service question answering evaluates only
+answerable questions\cite{phamduy2023}.
+
+We study this decision on real citizen questions, for an assistant that covers only procedures handled at the commune level (communes,
+wards and special zones), not all administrative procedures in Vietnam, and that runs on one local machine so that questions need not
+leave the office\cite{jimenez2026}. We report four findings.
+
+\begin{itemize}
+\item \textbf{Our team-written test set overstated performance}: 79\% of real questions are out of scope (88--92\% in random samples),
+against 11\% of the team's, and top-1 accuracy falls from 71.9\% to 33.9\%.
+\item \textbf{A transparent rule layer closes much of the gap} on two locked test sets, mostly by refusing correctly, with no net change
+on the team-written set.
+\item \textbf{Learned components do not replace the rules}: a reranker and a local 4B LLM add no significant end-to-end gain, and letting
+the model decide scores below always refusing.
+\item \textbf{Development gains need a fresh test}: a second round of rules that looked better on development ties the first on new
+questions.
+\end{itemize}
+
+Throughout, development and test sets are separated, each test set is locked by hash and commit before the code it evaluates, each
+configuration runs once on frozen code, and every configuration is reported, including those that lost.

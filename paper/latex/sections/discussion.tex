@@ -1,0 +1,32 @@
+\section{Discussion}
+
+\textbf{Why rules help.} Most of the gain is in refusing correctly: on the first test set, 87 more correct refusals against one fewer
+correct \emph{answer} decision. Out-of-scope questions in real traffic fall into a few recurring kinds (file status, complaints and
+petitions, penalties, police internal matters) whose wording is regular enough for patterns and whose cost of error is high. The learned
+components answer a different question. The reranker scores how well a procedure matches a text, which is high for a complaint that
+mentions a real procedure; the LLM reader recognizes intents but often labels long narrative procedural questions as complaints or legal
+questions. Its procedure name alone gave the best first-test scores, but it lowered end-to-end accuracy on development in both rounds, so
+we do not claim that it helps.
+
+\textbf{Remaining errors of A.} In a post-hoc analysis of the 24 \emph{answer} questions that A misses on the first test set, 12 are
+refused; for 4 of them the base system had ranked the correct procedure first, so the out-of-scope gate is at fault. Of the 12 that A
+answers wrongly or clarifies, 7 have the correct procedure outside its top five: long letters in which the procedure is implied rather
+than named (a car registered to a deceased parent, while the story triggers death registration). A2 was written against such errors.
+
+\textbf{Why the second round did not carry over.} A2 + B changes the decision or the chosen procedure of about as many questions on the new
+set as on development (5.2\% against 6.2\%), but, counting a decision as correct only with the right procedure, the changes were 30 gains
+and no losses on development and 4 and 4 on the new set. The clearest sign is in refusals: its new out-of-scope patterns turned 15 wrong
+answers into correct refusals on development but one of the 335 questions to be refused in the new set, which suggests that they were
+written from particular phrasings. Two other factors may contribute: with 21 answerable questions the new set has little power on the
+\emph{answer} side, and its labels were proposed by a different model with a slightly extended guideline. Either way, a gain of 25
+questions on reused questions became a tie on new ones.
+
+\textbf{Limitations and threats to validity.} (i) One domain, language and data snapshot; the rules are hand-written for Vietnamese
+commune-level procedures, and the results say nothing about provincial or ministry procedures or a general assistant for all procedures. (ii) The test
+sets have only 59 and 21 \emph{answer} and 6 and 7 \emph{clarify} questions, so small differences are not significant and nothing can be
+concluded about clarification. (iii) The development and first test labels were produced with the same AI assistant that wrote the rules;
+the second-pass sample and the second test set were labeled with another model and checked item by item by an author, who had seen the
+aggregate class proportions of the first test set. Agreement is substantial and conclusions hold under either label set, but no fully
+independent human annotation exists. (iv) All questions come from the same two portals, and 79\% refusals in our samples understate the
+share in random traffic. (v) Systems from other studies could not be run on our questions, and their published numbers measure different
+tasks; our external baseline is a RAG design we implemented. (vi) LLM components were run once at temperature 0 on one quantized model.

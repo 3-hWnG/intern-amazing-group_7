@@ -1,0 +1,17 @@
+91 câu (bỏ 9 câu B gán skip). Lớp theo A: {'answer': 22, 'clarify': 2, 'apologize': 67}, theo B: {'answer': 14, 'clarify': 10, 'apologize': 67}
+
+| Cấu hình | Cân bằng (nhãn A) | Cân bằng (nhãn B) | Đúng trọn (nhãn A) | Đúng trọn (nhãn B) |
+|---|---|---|---|---|
+| off | 0.640 | 0.748 | 5/22 | 5/14 |
+| A | 0.857 | 0.919 | 14/22 | 9/14 |
+| B | 0.677 | 0.772 | 8/22 | 7/14 |
+| C | 0.759 | 0.845 | 10/22 | 7/14 |
+| AC | 0.872 | 0.934 | 13/22 | 9/14 |
+| ACname | 0.842 | 0.905 | 13/22 | 9/14 |
+| final | 0.857 | 0.919 | 15/22 | 10/14 |
+nhãn A: off -> A: hành vi +26/-1 (p = 4.17e-07)
+nhãn A: A -> final: hành vi +0/-0 (p = 1)
+nhãn A: A -> ACname: hành vi +1/-2 (p = 1)
+nhãn B: off -> A: hành vi +24/-1 (p = 1.55e-06)
+nhãn B: A -> final: hành vi +0/-0 (p = 1)
+nhãn B: A -> ACname: hành vi +1/-2 (p = 1)
