@@ -1216,300 +1216,26 @@
     "gold_note": "Kiểm tra: Niên đại / Lịch sử=1696"
   },
   {
-    "id": "v4-di_san_the_gioi-01",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "L",
-    "turns": [
-      "Niên đại của di sản Đô thị cổ Hội An là thời kỳ nào?"
-    ],
-    "check": {
-      "all": [
-        "Thế kỷ XV-XIX"
-      ],
-      "source": "Đô thị cổ Hội An"
-    },
-    "gold_note": "Đô thị cổ Hội An / Niên đại = Thế kỷ XV-XIX"
-  },
-  {
-    "id": "v4-di_san_the_gioi-02",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "L",
-    "turns": [
-      "Di sản Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc được UNESCO công nhận năm nào?"
-    ],
-    "check": {
-      "num": [
-        "1732"
-      ],
-      "source": "Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc"
-    },
-    "gold_note": "Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc / Năm công nhận = 1732"
-  },
-  {
-    "id": "v4-di_san_the_gioi-03",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "L",
-    "turns": [
-      "Di sản Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc nằm ở đâu?"
-    ],
-    "check": {
-      "all": [
-        "Thành phố Quảng Ninh, thành phố Bắc Ninh & Thành phố Hải Phòng"
-      ],
-      "source": "Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc"
-    },
-    "gold_note": "Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc / Địa điểm = Thành phố Quảng Ninh, thành phố Bắc Ninh & Thành phố Hải Phòng"
-  },
-  {
-    "id": "v4-di_san_the_gioi-04",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "U",
-    "turns": [
-      "di san khu di tich cham my son nam o dau"
-    ],
-    "check": {
-      "all": [
-        "Thành phố Đà Nẵng"
-      ]
-    },
-    "gold_note": "Unaccent: Khu di tích Chăm Mỹ Sơn / Địa điểm = Thành phố Đà Nẵng"
-  },
-  {
-    "id": "v4-di_san_the_gioi-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "U",
-    "turns": [
-      "di san khu di tich trung tam hoang thanh thang long-ha noi duoc unesco cong nhan nam nao"
-    ],
-    "check": {
-      "num": [
-        "1328"
-      ]
-    },
-    "gold_note": "Unaccent: Khu di tích trung tâm Hoàng thành Thăng Long-Hà Nội / Năm công nhận = 1328"
-  },
-  {
-    "id": "v4-di_san_the_gioi-06",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "C",
-    "turns": [
-      "Có bao nhiêu di sản thế giới ở Hải Phòng?"
-    ],
-    "check": {
-      "num": [
-        "2"
-      ]
-    },
-    "gold_note": "Đếm Địa điểm=Hải Phòng -> 2"
-  },
-  {
-    "id": "v4-di_san_the_gioi-07",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "C",
-    "turns": [
-      "Có bao nhiêu di sản thế giới có năm công nhận từ 1997 trở lên?"
-    ],
-    "check": {
-      "num": [
-        "7"
-      ]
-    },
-    "gold_note": "Năm công nhận >= 1997 -> 7"
-  },
-  {
-    "id": "v4-di_san_the_gioi-08",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "S",
-    "turns": [
-      "Liệt kê các di sản thế giới ở Đà Nẵng."
-    ],
-    "check": {
-      "all": [
-        "Đô thị cổ Hội An",
-        "Khu di tích Chăm Mỹ Sơn"
-      ]
-    },
-    "gold_note": "Liệt kê Đà Nẵng -> ['Đô thị cổ Hội An', 'Khu di tích Chăm Mỹ Sơn']"
-  },
-  {
-    "id": "v4-di_san_the_gioi-09",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "S",
-    "turns": [
-      "Liệt kê các di sản thế giới là Di sản thiên nhiên."
-    ],
-    "check": {
-      "all": [
-        "Vườn quốc gia Phong Nha-Kẻ Bàng và Vườn quốc gia Hin Nam No",
-        "Vịnh Hạ Long - Quần đảo Cát Bà"
-      ]
-    },
-    "gold_note": "Liệt kê Di sản thiên nhiên -> ['Vườn quốc gia Phong Nha-Kẻ Bàng và Vườn quốc gia Hin Nam No', 'Vịnh Hạ Long - Quần đảo Cát Bà']"
-  },
-  {
-    "id": "v4-di_san_the_gioi-10",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "M",
-    "turns": [
-      "Di sản thế giới nào có năm công nhận lớn nhất?"
-    ],
-    "check": {
-      "all": [
-        "Khu di sản thiên nhiên Ba Bể-Na Hang"
-      ]
-    },
-    "gold_note": "Max Năm công nhận = 6262 (Khu di sản thiên nhiên Ba Bể-Na Hang)"
-  },
-  {
-    "id": "v4-di_san_the_gioi-11",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "M",
-    "turns": [
-      "Di sản thế giới nào có năm công nhận nhỏ nhất?"
-    ],
-    "check": {
-      "all": [
-        "Khu di tích trung tâm Hoàng thành Thăng Long-Hà Nội"
-      ]
-    },
-    "gold_note": "Min Năm công nhận = 1328 (Khu di tích trung tâm Hoàng thành Thăng Long-Hà Nội)"
-  },
-  {
-    "id": "v4-di_san_the_gioi-12",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "A",
-    "turns": [
-      "Tổng số di sản thế giới là Di sản thiên nhiên là bao nhiêu?"
-    ],
-    "check": {
-      "num": [
-        "2"
-      ]
-    },
-    "gold_note": "Tổng = 2"
-  },
-  {
-    "id": "v4-di_san_the_gioi-13",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "R",
-    "turns": [
-      "Giá vé tham quan di sản Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc là bao nhiêu?"
-    ],
-    "check": {
-      "refusal": true
-    },
-    "gold_note": "Bảng không có thông tin thuộc tính này"
-  },
-  {
-    "id": "v4-di_san_the_gioi-14",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "F",
-    "turns": [
-      "Di sản Quần thể di tích Cố đô Huế nằm ở đâu?",
-      "Còn niên đại thì sao?"
-    ],
-    "check": {
-      "all": [
-        "Thế kỷ XIX-XX"
-      ]
-    },
-    "gold_note": "Follow-up: Quần thể di tích Cố đô Huế: Địa điểm=Thành phố Huế -> Niên đại=Thế kỷ XIX-XX"
-  },
-  {
-    "id": "v4-di_san_the_gioi-15",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "X",
-    "turns": [
-      "Cho biết năm công nhận và niên đại của Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc."
-    ],
-    "check": {
-      "all": [
-        "1732",
-        "Thế kỷ XIII"
-      ]
-    },
-    "gold_note": "Đa cột: Năm công nhận=1732, Niên đại=Thế kỷ XIII"
-  },
-  {
-    "id": "v4-di_san_the_gioi-16",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "X",
-    "turns": [
-      "Di sản thế giới Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc có năm công nhận là gì?"
-    ],
-    "check": {
-      "num": [
-        "1732"
-      ]
-    },
-    "gold_note": "Kiểm tra: Năm công nhận=1732"
-  },
-  {
     "id": "v4-dai_hoc-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dai_hoc"
+    ],
+    "kind": "L",
+    "turns": [
+      "Trụ sở của Trường Đại học Xây dựng Hà Nội ở đâu?"
+    ],
+    "check": {
+      "all": [
+        "Hà Nội"
+      ],
+      "source": "Trường Đại học Xây dựng Hà Nội"
+    },
+    "gold_note": "Trường Đại học Xây dựng Hà Nội / Địa điểm = Hà Nội"
+  },
+  {
+    "id": "v4-dai_hoc-02",
     "suite": "real4",
     "split": "blind",
     "datasets": [
@@ -1528,7 +1254,7 @@
     "gold_note": "Trường Công nghệ / Địa điểm = Toàn quốc"
   },
   {
-    "id": "v4-dai_hoc-02",
+    "id": "v4-dai_hoc-03",
     "suite": "real4",
     "split": "blind",
     "datasets": [
@@ -1547,26 +1273,25 @@
     "gold_note": "Học viện Chính trị Quốc gia Hồ Chí Minh / Loại hình = Công lập"
   },
   {
-    "id": "v4-dai_hoc-03",
+    "id": "v4-dai_hoc-04",
     "suite": "real4",
     "split": "blind",
     "datasets": [
       "dai_hoc"
     ],
-    "kind": "L",
+    "kind": "U",
     "turns": [
-      "Cơ quan chủ quản của Học viện Phòng không – Không quân là đơn vị nào?"
+      "co quan chu quan cua hoc vien phong khong – khong quan la don vi nao"
     ],
     "check": {
       "all": [
         "Quân sự"
-      ],
-      "source": "Học viện Phòng không – Không quân"
+      ]
     },
-    "gold_note": "Học viện Phòng không – Không quân / Cơ quan chủ quản = Quân sự"
+    "gold_note": "Unaccent: Học viện Phòng không – Không quân / Cơ quan chủ quản = Quân sự"
   },
   {
-    "id": "v4-dai_hoc-04",
+    "id": "v4-dai_hoc-05",
     "suite": "real4",
     "split": "blind",
     "datasets": [
@@ -1584,24 +1309,6 @@
     "gold_note": "Unaccent: Trường Cao đẳng Y tế Quảng Bình / Địa điểm = Quảng Trị"
   },
   {
-    "id": "v4-dai_hoc-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "dai_hoc"
-    ],
-    "kind": "U",
-    "turns": [
-      "ten tieng anh cua truong dien – dien tu la gi"
-    ],
-    "check": {
-      "all": [
-        "HUST School of Electrical and Electronic Engineering"
-      ]
-    },
-    "gold_note": "Unaccent: Trường Điện – Điện tử / Tên giao dịch tiếng Anh = HUST School of Electrical and Electronic Engineering"
-  },
-  {
     "id": "v4-dai_hoc-06",
     "suite": "real4",
     "split": "blind",
@@ -1610,14 +1317,14 @@
     ],
     "kind": "C",
     "turns": [
-      "Có bao nhiêu trường đại học ở Quảng Ninh?"
+      "Có bao nhiêu trường đại học trực thuộc Giáo hội Phật giáo Việt Nam?"
     ],
     "check": {
       "num": [
-        "5"
+        "4"
       ]
     },
-    "gold_note": "Đếm Địa điểm=Quảng Ninh -> 5"
+    "gold_note": "Đếm Cơ quan chủ quản=Giáo hội Phật giáo Việt Nam -> 4"
   },
   {
     "id": "v4-dai_hoc-07",
@@ -1628,14 +1335,14 @@
     ],
     "kind": "C",
     "turns": [
-      "Số lượng trường đại học ở Hà Nội là bao nhiêu?"
+      "Số lượng trường đại học trực thuộc Bộ Công Thương là bao nhiêu?"
     ],
     "check": {
       "num": [
-        "112"
+        "8"
       ]
     },
-    "gold_note": "Đếm Hà Nội -> 112"
+    "gold_note": "Đếm Bộ Công Thương -> 8"
   },
   {
     "id": "v4-dai_hoc-08",
@@ -1646,15 +1353,17 @@
     ],
     "kind": "S",
     "turns": [
-      "Liệt kê các trường đại học trực thuộc Tổng Liên đoàn Lao động Việt Nam."
+      "Liệt kê các trường đại học trực thuộc Trường dự bị đại học."
     ],
     "check": {
       "all": [
-        "Trường Đại học Công đoàn",
-        "Trường Đại học Tôn Đức Thắng"
+        "Trường Dự bị Đại học Thành phố Hồ Chí Minh",
+        "Trường Dự bị Đại học Dân tộc Trung ương Nha Trang",
+        "Trường Dự bị Đại học Dân tộc Sầm Sơn",
+        "Trường Dự bị Đại học Dân tộc Trung ương"
       ]
     },
-    "gold_note": "Liệt kê Tổng Liên đoàn Lao động Việt Nam -> ['Trường Đại học Công đoàn', 'Trường Đại học Tôn Đức Thắng']"
+    "gold_note": "Liệt kê Trường dự bị đại học -> ['Trường Dự bị Đại học Thành phố Hồ Chí Minh', 'Trường Dự bị Đại học Dân tộc Trung ương Nha Trang', 'Trường Dự bị Đại học Dân tộc Sầm Sơn', 'Trường Dự bị Đại học Dân tộc Trung ương']"
   },
   {
     "id": "v4-dai_hoc-09",
@@ -1665,17 +1374,19 @@
     ],
     "kind": "S",
     "turns": [
-      "Liệt kê các trường đại học trực thuộc Giáo hội Phật giáo Việt Nam."
+      "Liệt kê các trường đại học ở Thanh Hóa."
     ],
     "check": {
       "all": [
-        "Học viện Phật giáo Việt Nam tại Hà Nội",
-        "Học viện Phật giáo Việt Nam tại Thành phố Hồ Chí Minh",
-        "Học viện Phật giáo Việt Nam tại Huế",
-        "Học viện Phật giáo Nam tông Khmer"
+        "Trường Dự bị Đại học Dân tộc Sầm Sơn",
+        "Trường Cao đẳng Y – Dược Hợp Lực",
+        "Trường Cao đẳng Y tế Thanh Hóa",
+        "Trường Cao đẳng Kinh tế Kỹ thuật Công thương",
+        "Trường Cao đẳng Nông nghiệp Thanh Hóa",
+        "Trường Cao đẳng Thể dục Thể thao Thanh Hóa"
       ]
     },
-    "gold_note": "Liệt kê Giáo hội Phật giáo Việt Nam -> ['Học viện Phật giáo Việt Nam tại Hà Nội', 'Học viện Phật giáo Việt Nam tại Thành phố Hồ Chí Minh', 'Học viện Phật giáo Việt Nam tại Huế', 'Học viện Phật giáo Nam tông Khmer']"
+    "gold_note": "Liệt kê Thanh Hóa -> ['Trường Dự bị Đại học Dân tộc Sầm Sơn', 'Trường Cao đẳng Y – Dược Hợp Lực', 'Trường Cao đẳng Y tế Thanh Hóa', 'Trường Cao đẳng Kinh tế Kỹ thuật Công thương', 'Trường Cao đẳng Nông nghiệp Thanh Hóa', 'Trường Cao đẳng Thể dục Thể thao Thanh Hóa']"
   },
   {
     "id": "v4-dai_hoc-10",
@@ -1722,14 +1433,14 @@
     ],
     "kind": "A",
     "turns": [
-      "Tổng số trường đại học ở Thanh Hóa là bao nhiêu?"
+      "Tổng số trường đại học trực thuộc Bộ Tài chính là bao nhiêu?"
     ],
     "check": {
       "num": [
-        "6"
+        "4"
       ]
     },
-    "gold_note": "Tổng = 6"
+    "gold_note": "Tổng = 4"
   },
   {
     "id": "v4-dai_hoc-13",
@@ -1740,7 +1451,7 @@
     ],
     "kind": "R",
     "turns": [
-      "Hiệu trưởng hiện nay của Trường Cao đẳng Công nghệ Viettronics là ai?"
+      "Điểm chuẩn ngành Công nghệ thông tin của Trường Đại học Đồng Tháp năm ngoái là bao nhiêu?"
     ],
     "check": {
       "refusal": true
@@ -1756,7 +1467,7 @@
     ],
     "kind": "F",
     "turns": [
-      "Trụ sở của Trường Đại học Xây dựng Hà Nội ở đâu?",
+      "Trụ sở của Trường Cao đẳng Công nghệ Viettronics ở đâu?",
       "Còn loại hình thì sao?"
     ],
     "check": {
@@ -1764,7 +1475,7 @@
         "Công lập"
       ]
     },
-    "gold_note": "Follow-up: Trường Đại học Xây dựng Hà Nội: Địa điểm=Hà Nội -> Loại hình=Công lập"
+    "gold_note": "Follow-up: Trường Cao đẳng Công nghệ Viettronics: Địa điểm=Hải Phòng -> Loại hình=Công lập"
   },
   {
     "id": "v4-dai_hoc-15",
@@ -1775,15 +1486,15 @@
     ],
     "kind": "X",
     "turns": [
-      "Cho biết tên giao dịch tiếng anh và cơ quan chủ quản của Trường Đại học Sư phạm Kỹ thuật."
+      "Cho biết cơ quan chủ quản và loại hình của Trường Cao đẳng Công nghệ Thủ Đức."
     ],
     "check": {
       "all": [
-        "Danang University of Technology and Education",
-        "Đại học vùng"
+        "Trường cao đẳng chuyên nghiệp khác",
+        "Công lập"
       ]
     },
-    "gold_note": "Đa cột: Tên giao dịch tiếng Anh=Danang University of Technology and Education, Cơ quan chủ quản=Đại học vùng"
+    "gold_note": "Đa cột: Cơ quan chủ quản=Trường cao đẳng chuyên nghiệp khác, Loại hình=Công lập"
   },
   {
     "id": "v4-dai_hoc-16",
@@ -1794,310 +1505,14 @@
     ],
     "kind": "X",
     "turns": [
-      "Trường đại học Trường Đại học Sư phạm Kỹ thuật có tên giao dịch tiếng anh là gì?"
+      "Trường đại học Trường Cao đẳng Công nghệ Thủ Đức có cơ quan chủ quản là gì?"
     ],
     "check": {
       "all": [
-        "Danang University of Technology and Education"
+        "Trường cao đẳng chuyên nghiệp khác"
       ]
     },
-    "gold_note": "Kiểm tra: Tên giao dịch tiếng Anh=Danang University of Technology and Education"
-  },
-  {
-    "id": "v4-benh_vien-01",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "L",
-    "turns": [
-      "Bệnh viện Đa khoa Tân Bình thuộc tuyến quản lý nào?"
-    ],
-    "check": {
-      "all": [
-        "Tuyến Thành phố / Sở Y tế"
-      ],
-      "source": "Bệnh viện Đa khoa Tân Bình"
-    },
-    "gold_note": "Bệnh viện Đa khoa Tân Bình / Tuyến quản lý = Tuyến Thành phố / Sở Y tế"
-  },
-  {
-    "id": "v4-benh_vien-02",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "L",
-    "turns": [
-      "Tên gọi khác của Bệnh viện Hùng Vương là gì?"
-    ],
-    "check": {
-      "all": [
-        "Bảo sanh viện Hùng Vương"
-      ],
-      "source": "Bệnh viện Hùng Vương"
-    },
-    "gold_note": "Bệnh viện Hùng Vương / Tên khác = Bảo sanh viện Hùng Vương"
-  },
-  {
-    "id": "v4-benh_vien-03",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "L",
-    "turns": [
-      "Bệnh viện Nguyễn Trãi thuộc tuyến quản lý nào?"
-    ],
-    "check": {
-      "all": [
-        "Tuyến Thành phố / Sở Y tế"
-      ],
-      "source": "Bệnh viện Nguyễn Trãi"
-    },
-    "gold_note": "Bệnh viện Nguyễn Trãi / Tuyến quản lý = Tuyến Thành phố / Sở Y tế"
-  },
-  {
-    "id": "v4-benh_vien-04",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "U",
-    "turns": [
-      "benh vien da khoa sai gon nam o phuong/quan nao"
-    ],
-    "check": {
-      "all": [
-        "Phường Bến Thành"
-      ]
-    },
-    "gold_note": "Unaccent: Bệnh viện Đa khoa Sài Gòn / Cơ sở = Phường Bến Thành"
-  },
-  {
-    "id": "v4-benh_vien-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "U",
-    "turns": [
-      "benh vien da khoa khu vuc hoc mon la benh vien chuyen khoa hay da khoa"
-    ],
-    "check": {
-      "all": [
-        "Đa khoa"
-      ]
-    },
-    "gold_note": "Unaccent: Bệnh viện Đa khoa khu vực Hóc Môn / Loại bệnh viện = Đa khoa"
-  },
-  {
-    "id": "v4-benh_vien-06",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "C",
-    "turns": [
-      "Có bao nhiêu bệnh viện Tuyến trung ương / Bộ ngành?"
-    ],
-    "check": {
-      "num": [
-        "9"
-      ]
-    },
-    "gold_note": "Đếm Tuyến quản lý=Tuyến trung ương / Bộ ngành -> 9"
-  },
-  {
-    "id": "v4-benh_vien-07",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "C",
-    "turns": [
-      "Có bao nhiêu bệnh viện có năm thành lập từ 1989 trở lên?"
-    ],
-    "check": {
-      "num": [
-        "30"
-      ]
-    },
-    "gold_note": "Năm thành lập >= 1989 -> 30"
-  },
-  {
-    "id": "v4-benh_vien-08",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "S",
-    "turns": [
-      "Liệt kê các bệnh viện Bệnh viện đại học."
-    ],
-    "check": {
-      "all": [
-        "Bệnh viện Đại học Y Dược Thành phố Hồ Chí Minh",
-        "Bệnh viện Đại học Quốc tế Hồng Bàng"
-      ]
-    },
-    "gold_note": "Liệt kê Bệnh viện đại học -> ['Bệnh viện Đại học Y Dược Thành phố Hồ Chí Minh', 'Bệnh viện Đại học Quốc tế Hồng Bàng']"
-  },
-  {
-    "id": "v4-benh_vien-09",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "S",
-    "turns": [
-      "Liệt kê các bệnh viện Bệnh viện đại học."
-    ],
-    "check": {
-      "all": [
-        "Bệnh viện Đại học Y Dược Thành phố Hồ Chí Minh",
-        "Bệnh viện Đại học Quốc tế Hồng Bàng"
-      ]
-    },
-    "gold_note": "Liệt kê Bệnh viện đại học -> ['Bệnh viện Đại học Y Dược Thành phố Hồ Chí Minh', 'Bệnh viện Đại học Quốc tế Hồng Bàng']"
-  },
-  {
-    "id": "v4-benh_vien-10",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "M",
-    "turns": [
-      "Bệnh viện nào có năm thành lập lớn nhất?"
-    ],
-    "check": {
-      "all": [
-        "Bệnh viện Đại học Quốc tế Hồng Bàng"
-      ]
-    },
-    "gold_note": "Max Năm thành lập = 2026 (Bệnh viện Đại học Quốc tế Hồng Bàng)"
-  },
-  {
-    "id": "v4-benh_vien-11",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "M",
-    "turns": [
-      "Bệnh viện nào có năm thành lập nhỏ nhất?"
-    ],
-    "check": {
-      "all": [
-        "Bệnh viện Bệnh Nhiệt đới"
-      ]
-    },
-    "gold_note": "Min Năm thành lập = 1862 (Bệnh viện Bệnh Nhiệt đới)"
-  },
-  {
-    "id": "v4-benh_vien-12",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "A",
-    "turns": [
-      "Tổng số giường bệnh của tất cả các bệnh viện là bao nhiêu?"
-    ],
-    "check": {
-      "any": [
-        "26.237",
-        "26,237",
-        "26237",
-        "26 237"
-      ]
-    },
-    "gold_note": "Tổng Số giường = 26237"
-  },
-  {
-    "id": "v4-benh_vien-13",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "R",
-    "turns": [
-      "Giám đốc Bệnh viện đa khoa Phương Nam hiện nay là ai?"
-    ],
-    "check": {
-      "refusal": true
-    },
-    "gold_note": "Bảng không có thông tin thuộc tính này"
-  },
-  {
-    "id": "v4-benh_vien-14",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "F",
-    "turns": [
-      "Bệnh viện Nhi đồng 2 là bệnh viện chuyên khoa hay đa khoa?",
-      "Còn tên khác thì sao?"
-    ],
-    "check": {
-      "all": [
-        "Bệnh viện Grall, Bệnh viện Đồn Đất"
-      ]
-    },
-    "gold_note": "Follow-up: Bệnh viện Nhi đồng 2: Loại bệnh viện=Chuyên khoa -> Tên khác=Bệnh viện Grall, Bệnh viện Đồn Đất"
-  },
-  {
-    "id": "v4-benh_vien-15",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "X",
-    "turns": [
-      "Cho biết cơ sở và tuyến quản lý của Bệnh viện Tâm thần."
-    ],
-    "check": {
-      "all": [
-        "Phường Chợ Quán , Xã Bình Lợi , Phường Cầu Kiệu",
-        "Tuyến Thành phố / Sở Y tế"
-      ]
-    },
-    "gold_note": "Đa cột: Cơ sở=Phường Chợ Quán , Xã Bình Lợi , Phường Cầu Kiệu, Tuyến quản lý=Tuyến Thành phố / Sở Y tế"
-  },
-  {
-    "id": "v4-benh_vien-16",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "X",
-    "turns": [
-      "Bệnh viện Bệnh viện Tâm thần có cơ sở là gì?"
-    ],
-    "check": {
-      "all": [
-        "Phường Chợ Quán , Xã Bình Lợi , Phường Cầu Kiệu"
-      ]
-    },
-    "gold_note": "Kiểm tra: Cơ sở=Phường Chợ Quán , Xã Bình Lợi , Phường Cầu Kiệu"
+    "gold_note": "Kiểm tra: Cơ quan chủ quản=Trường cao đẳng chuyên nghiệp khác"
   },
   {
     "id": "v4-di_tich_dac_biet-01",
@@ -2394,5 +1809,610 @@
       ]
     },
     "gold_note": "Kiểm tra: Địa điểm=Các phường: Yên Tử, Uông Bí, thành phố Quảng Ninh"
+  },
+  {
+    "id": "v4-ngan_hang-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "L",
+    "turns": [
+      "Vốn điều lệ của ngân hàng Kỹ Thương Việt Nam là bao nhiêu?"
+    ],
+    "check": {
+      "any": [
+        "70.862",
+        "70,862",
+        "70862"
+      ]
+    },
+    "gold_note": "Techcombank / Vốn điều lệ = 70862"
+  },
+  {
+    "id": "v4-ngan_hang-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "L",
+    "turns": [
+      "Ngân hàng nào có viết tắt là MBBank?"
+    ],
+    "check": {
+      "any": [
+        "Quân đội"
+      ]
+    },
+    "gold_note": "MBBank -> Quân đội"
+  },
+  {
+    "id": "v4-ngan_hang-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "L",
+    "turns": [
+      "Trụ sở của ngân hàng Tiên Phong ở đâu?"
+    ],
+    "check": {
+      "any": [
+        "57 Lý Thường Kiệt, phường Cửa Nam, Hà Nội"
+      ]
+    },
+    "gold_note": "Tiên Phong / Trụ sở"
+  },
+  {
+    "id": "v4-ngan_hang-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "L",
+    "turns": [
+      "Ngân hàng Sài Gòn Công Thương cập nhật dữ liệu vào thời điểm nào?"
+    ],
+    "check": {
+      "any": [
+        "Q4/2023"
+      ]
+    },
+    "gold_note": "Saigonbank / Ngày cập nhật"
+  },
+  {
+    "id": "v4-ngan_hang-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "U",
+    "turns": [
+      "ngan hang nao co von dieu le lon nhat"
+    ],
+    "check": {
+      "any": [
+        "Ngoại thương Việt Nam",
+        "Vietcombank"
+      ]
+    },
+    "gold_note": "Max vốn điều lệ = 83.557 (Vietcombank)"
+  },
+  {
+    "id": "v4-ngan_hang-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "U",
+    "turns": [
+      "ngan hang nao co tru so o can tho"
+    ],
+    "check": {
+      "any": [
+        "Việt Nam Thương Tín",
+        "VietBank"
+      ]
+    },
+    "gold_note": "duy nhất 1 ngân hàng trụ sở Cần Thơ"
+  },
+  {
+    "id": "v4-ngan_hang-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "C",
+    "turns": [
+      "Có bao nhiêu ngân hàng có vốn điều lệ trên 50.000 tỷ đồng?"
+    ],
+    "check": {
+      "num": [
+        7
+      ]
+    },
+    "gold_note": "7 ngân hàng > 50000 tỷ"
+  },
+  {
+    "id": "v4-ngan_hang-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "C",
+    "turns": [
+      "Có bao nhiêu ngân hàng có trụ sở ở Hà Nội?"
+    ],
+    "check": {
+      "num": [
+        18
+      ]
+    },
+    "gold_note": "18 ngân hàng Hà Nội"
+  },
+  {
+    "id": "v4-ngan_hang-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "S",
+    "turns": [
+      "Liệt kê các ngân hàng có vốn điều lệ trên 50.000 tỷ đồng."
+    ],
+    "check": {
+      "all": [
+        "Ngoại thương Việt Nam",
+        "Việt Nam Thịnh Vượng",
+        "Kỹ Thương Việt Nam",
+        "Đầu tư và Phát triển Việt Nam",
+        "Quân đội",
+        "Công Thương Việt Nam",
+        "Á Châu"
+      ]
+    },
+    "gold_note": "7 dòng, trong ngưỡng liệt kê"
+  },
+  {
+    "id": "v4-ngan_hang-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "S",
+    "turns": [
+      "Liệt kê các ngân hàng cập nhật dữ liệu quý 4/2023."
+    ],
+    "check": {
+      "all": [
+        "Sài Gòn Tài Lộc",
+        "An Bình",
+        "Đại Chúng Việt Nam",
+        "Kiên Long",
+        "Sài Gòn Công Thương"
+      ]
+    },
+    "gold_note": "5 dòng Q4/2023"
+  },
+  {
+    "id": "v4-ngan_hang-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "M",
+    "turns": [
+      "Ngân hàng nào có vốn điều lệ lớn nhất?"
+    ],
+    "check": {
+      "any": [
+        "Ngoại thương Việt Nam",
+        "Vietcombank"
+      ]
+    },
+    "gold_note": "83.557 tỷ, lớn nhất"
+  },
+  {
+    "id": "v4-ngan_hang-12",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "M",
+    "turns": [
+      "Ngân hàng nào có vốn điều lệ nhỏ nhất?"
+    ],
+    "check": {
+      "any": [
+        "Bảo Việt",
+        "Baoviet Bank"
+      ]
+    },
+    "gold_note": "3.150 tỷ, nhỏ nhất"
+  },
+  {
+    "id": "v4-ngan_hang-13",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "A",
+    "turns": [
+      "Tổng vốn điều lệ của tất cả các ngân hàng trong danh sách là bao nhiêu?"
+    ],
+    "check": {
+      "any": [
+        "866.747",
+        "866,747",
+        "866747"
+      ]
+    },
+    "gold_note": "Tổng 30 dòng = 866747"
+  },
+  {
+    "id": "v4-ngan_hang-14",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "R",
+    "turns": [
+      "Lãi suất tiết kiệm 12 tháng của ngân hàng Vietcombank là bao nhiêu?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Không có cột lãi suất"
+  },
+  {
+    "id": "v4-ngan_hang-15",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "R",
+    "turns": [
+      "Ngân hàng nào có tỷ lệ nợ xấu thấp nhất?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Không có cột nợ xấu"
+  },
+  {
+    "id": "v4-ngan_hang-16",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "F",
+    "turns": [
+      "Ngân hàng Quân đội có vốn điều lệ bao nhiêu?",
+      "Thế trụ sở ở đâu?"
+    ],
+    "check": {
+      "any": [
+        "MB Grand Tower, 18 Lê Văn Lương, phường Yên Hòa, Hà Nội"
+      ]
+    },
+    "gold_note": "Lượt 2: trụ sở MBBank"
+  },
+  {
+    "id": "v4-xe_buyt-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Tuyến 172 đi từ đâu đến đâu?"
+    ],
+    "check": {
+      "all": [
+        "Bến xe Vũng Tàu",
+        "Bến Thành"
+      ]
+    },
+    "gold_note": "172: Bến xe Vũng Tàu <-> Bến Thành"
+  },
+  {
+    "id": "v4-xe_buyt-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Cự ly tuyến 721 là bao nhiêu km?"
+    ],
+    "check": {
+      "any": [
+        "180"
+      ]
+    },
+    "gold_note": "721 / Cự ly = 180 km"
+  },
+  {
+    "id": "v4-xe_buyt-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Thời gian hoạt động của tuyến 1 là khi nào?"
+    ],
+    "check": {
+      "any": [
+        "05:00 - 22:00"
+      ]
+    },
+    "gold_note": "tuyến 1 / Thời gian hoạt động"
+  },
+  {
+    "id": "v4-xe_buyt-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Giãn cách của tuyến 14 là bao nhiêu phút?"
+    ],
+    "check": {
+      "any": [
+        "6-12 phút",
+        "6 - 12 phút",
+        "6 đến 12 phút"
+      ]
+    },
+    "gold_note": "tuyến 14 / Giãn cách"
+  },
+  {
+    "id": "v4-xe_buyt-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "U",
+    "turns": [
+      "tuyen nao co cu ly ngan nhat"
+    ],
+    "check": {
+      "any": [
+        "155"
+      ]
+    },
+    "gold_note": "Min cự ly = 6.4 km, tuyến 155"
+  },
+  {
+    "id": "v4-xe_buyt-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "U",
+    "turns": [
+      "tuyen nao bat dau tu ben thanh di den ben xe vung tau"
+    ],
+    "check": {
+      "any": [
+        "172"
+      ]
+    },
+    "gold_note": "duy nhất tuyến 172 đến Bến xe Vũng Tàu"
+  },
+  {
+    "id": "v4-xe_buyt-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "C",
+    "turns": [
+      "Có bao nhiêu tuyến xe buýt có cự ly trên 30 km?"
+    ],
+    "check": {
+      "num": [
+        15
+      ]
+    },
+    "gold_note": "15 tuyến > 30 km"
+  },
+  {
+    "id": "v4-xe_buyt-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "C",
+    "turns": [
+      "Có bao nhiêu tuyến xuất phát từ Bến Thành?"
+    ],
+    "check": {
+      "num": [
+        19
+      ]
+    },
+    "gold_note": "19 tuyến điểm đầu = Bến Thành"
+  },
+  {
+    "id": "v4-xe_buyt-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "S",
+    "turns": [
+      "Liệt kê các tuyến đi qua Đại học Quốc gia (điểm đầu hoặc điểm cuối)."
+    ],
+    "check": {
+      "all": [
+        "8",
+        "10",
+        "19",
+        "33",
+        "50",
+        "52",
+        "53",
+        "99",
+        "170"
+      ]
+    },
+    "gold_note": "9 tuyến, trong ngưỡng liệt kê"
+  },
+  {
+    "id": "v4-xe_buyt-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "S",
+    "turns": [
+      "Liệt kê 5 tuyến có cự ly ngắn nhất."
+    ],
+    "check": {
+      "all": [
+        "155",
+        "6167",
+        "109",
+        "1"
+      ]
+    },
+    "gold_note": "top 5 ngắn nhất: 155(6.4), 6167(7.1), 109(9.3), 1(9.62), 158(9.8)"
+  },
+  {
+    "id": "v4-xe_buyt-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "M",
+    "turns": [
+      "Tuyến nào có cự ly dài nhất?"
+    ],
+    "check": {
+      "any": [
+        "721"
+      ]
+    },
+    "gold_note": "180 km, dài nhất"
+  },
+  {
+    "id": "v4-xe_buyt-12",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "M",
+    "turns": [
+      "Tuyến nào có cự ly ngắn nhất?"
+    ],
+    "check": {
+      "any": [
+        "155"
+      ]
+    },
+    "gold_note": "6.4 km, ngắn nhất"
+  },
+  {
+    "id": "v4-xe_buyt-13",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "A",
+    "turns": [
+      "Tổng cự ly của tất cả các tuyến trong danh sách là bao nhiêu km?"
+    ],
+    "check": {
+      "any": [
+        "2715.9",
+        "2715,9",
+        "2716"
+      ]
+    },
+    "gold_note": "tổng 107 dòng = 2715.9 km"
+  },
+  {
+    "id": "v4-xe_buyt-14",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "R",
+    "turns": [
+      "Giá vé tuyến 1 là bao nhiêu?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Không có cột giá vé trong bảng dữ liệu đã nạp"
+  },
+  {
+    "id": "v4-xe_buyt-15",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "R",
+    "turns": [
+      "Loại xe hiện tại của tuyến 172 là gì?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Không có cột loại xe"
+  },
+  {
+    "id": "v4-xe_buyt-16",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "F",
+    "turns": [
+      "Tuyến 167 có điểm đầu và điểm cuối là gì?",
+      "Thế cự ly của nó bao nhiêu km?"
+    ],
+    "check": {
+      "any": [
+        "13.5",
+        "13,5"
+      ]
+    },
+    "gold_note": "lượt 1: Đại học Hutech <-> Đại học Hutech (tuyến vòng); lượt 2: cự ly 13.5 km"
   }
 ]

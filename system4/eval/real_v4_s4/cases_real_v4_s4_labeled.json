@@ -1216,300 +1216,26 @@
     "gold_note": "Kiểm tra: Niên đại / Lịch sử=1696"
   },
   {
-    "id": "v4-di_san_the_gioi-01",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "L",
-    "turns": [
-      "Niên đại của di sản Đô thị cổ Hội An là thời kỳ nào?"
-    ],
-    "check": {
-      "all": [
-        "Thế kỷ XV-XIX"
-      ],
-      "source": "Đô thị cổ Hội An"
-    },
-    "gold_note": "Đô thị cổ Hội An / Niên đại = Thế kỷ XV-XIX"
-  },
-  {
-    "id": "v4-di_san_the_gioi-02",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "L",
-    "turns": [
-      "Di sản Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc được UNESCO công nhận năm nào?"
-    ],
-    "check": {
-      "num": [
-        "1732"
-      ],
-      "source": "Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc"
-    },
-    "gold_note": "Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc / Năm công nhận = 1732"
-  },
-  {
-    "id": "v4-di_san_the_gioi-03",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "L",
-    "turns": [
-      "Di sản Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc nằm ở đâu?"
-    ],
-    "check": {
-      "all": [
-        "Thành phố Quảng Ninh, thành phố Bắc Ninh & Thành phố Hải Phòng"
-      ],
-      "source": "Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc"
-    },
-    "gold_note": "Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc / Địa điểm = Thành phố Quảng Ninh, thành phố Bắc Ninh & Thành phố Hải Phòng"
-  },
-  {
-    "id": "v4-di_san_the_gioi-04",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "U",
-    "turns": [
-      "di san khu di tich cham my son nam o dau"
-    ],
-    "check": {
-      "all": [
-        "Thành phố Đà Nẵng"
-      ]
-    },
-    "gold_note": "Unaccent: Khu di tích Chăm Mỹ Sơn / Địa điểm = Thành phố Đà Nẵng"
-  },
-  {
-    "id": "v4-di_san_the_gioi-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "U",
-    "turns": [
-      "di san khu di tich trung tam hoang thanh thang long-ha noi duoc unesco cong nhan nam nao"
-    ],
-    "check": {
-      "num": [
-        "1328"
-      ]
-    },
-    "gold_note": "Unaccent: Khu di tích trung tâm Hoàng thành Thăng Long-Hà Nội / Năm công nhận = 1328"
-  },
-  {
-    "id": "v4-di_san_the_gioi-06",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "C",
-    "turns": [
-      "Có bao nhiêu di sản thế giới ở Hải Phòng?"
-    ],
-    "check": {
-      "num": [
-        "2"
-      ]
-    },
-    "gold_note": "Đếm Địa điểm=Hải Phòng -> 2"
-  },
-  {
-    "id": "v4-di_san_the_gioi-07",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "C",
-    "turns": [
-      "Có bao nhiêu di sản thế giới có năm công nhận từ 1997 trở lên?"
-    ],
-    "check": {
-      "num": [
-        "7"
-      ]
-    },
-    "gold_note": "Năm công nhận >= 1997 -> 7"
-  },
-  {
-    "id": "v4-di_san_the_gioi-08",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "S",
-    "turns": [
-      "Liệt kê các di sản thế giới ở Đà Nẵng."
-    ],
-    "check": {
-      "all": [
-        "Đô thị cổ Hội An",
-        "Khu di tích Chăm Mỹ Sơn"
-      ]
-    },
-    "gold_note": "Liệt kê Đà Nẵng -> ['Đô thị cổ Hội An', 'Khu di tích Chăm Mỹ Sơn']"
-  },
-  {
-    "id": "v4-di_san_the_gioi-09",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "S",
-    "turns": [
-      "Liệt kê các di sản thế giới là Di sản thiên nhiên."
-    ],
-    "check": {
-      "all": [
-        "Vườn quốc gia Phong Nha-Kẻ Bàng và Vườn quốc gia Hin Nam No",
-        "Vịnh Hạ Long - Quần đảo Cát Bà"
-      ]
-    },
-    "gold_note": "Liệt kê Di sản thiên nhiên -> ['Vườn quốc gia Phong Nha-Kẻ Bàng và Vườn quốc gia Hin Nam No', 'Vịnh Hạ Long - Quần đảo Cát Bà']"
-  },
-  {
-    "id": "v4-di_san_the_gioi-10",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "M",
-    "turns": [
-      "Di sản thế giới nào có năm công nhận lớn nhất?"
-    ],
-    "check": {
-      "all": [
-        "Khu di sản thiên nhiên Ba Bể-Na Hang"
-      ]
-    },
-    "gold_note": "Max Năm công nhận = 6262 (Khu di sản thiên nhiên Ba Bể-Na Hang)"
-  },
-  {
-    "id": "v4-di_san_the_gioi-11",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "M",
-    "turns": [
-      "Di sản thế giới nào có năm công nhận nhỏ nhất?"
-    ],
-    "check": {
-      "all": [
-        "Khu di tích trung tâm Hoàng thành Thăng Long-Hà Nội"
-      ]
-    },
-    "gold_note": "Min Năm công nhận = 1328 (Khu di tích trung tâm Hoàng thành Thăng Long-Hà Nội)"
-  },
-  {
-    "id": "v4-di_san_the_gioi-12",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "A",
-    "turns": [
-      "Tổng số di sản thế giới là Di sản thiên nhiên là bao nhiêu?"
-    ],
-    "check": {
-      "num": [
-        "2"
-      ]
-    },
-    "gold_note": "Tổng = 2"
-  },
-  {
-    "id": "v4-di_san_the_gioi-13",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "R",
-    "turns": [
-      "Giá vé tham quan di sản Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc là bao nhiêu?"
-    ],
-    "check": {
-      "refusal": true
-    },
-    "gold_note": "Bảng không có thông tin thuộc tính này"
-  },
-  {
-    "id": "v4-di_san_the_gioi-14",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "F",
-    "turns": [
-      "Di sản Quần thể di tích Cố đô Huế nằm ở đâu?",
-      "Còn niên đại thì sao?"
-    ],
-    "check": {
-      "all": [
-        "Thế kỷ XIX-XX"
-      ]
-    },
-    "gold_note": "Follow-up: Quần thể di tích Cố đô Huế: Địa điểm=Thành phố Huế -> Niên đại=Thế kỷ XIX-XX"
-  },
-  {
-    "id": "v4-di_san_the_gioi-15",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "X",
-    "turns": [
-      "Cho biết năm công nhận và niên đại của Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc."
-    ],
-    "check": {
-      "all": [
-        "1732",
-        "Thế kỷ XIII"
-      ]
-    },
-    "gold_note": "Đa cột: Năm công nhận=1732, Niên đại=Thế kỷ XIII"
-  },
-  {
-    "id": "v4-di_san_the_gioi-16",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_san_the_gioi"
-    ],
-    "kind": "X",
-    "turns": [
-      "Di sản thế giới Quần thể di tích và danh thắng Yên Tử – Vĩnh Nghiêm – Côn Sơn, Kiếp Bạc có năm công nhận là gì?"
-    ],
-    "check": {
-      "num": [
-        "1732"
-      ]
-    },
-    "gold_note": "Kiểm tra: Năm công nhận=1732"
-  },
-  {
     "id": "v4-dai_hoc-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dai_hoc"
+    ],
+    "kind": "L",
+    "turns": [
+      "Trụ sở của Trường Đại học Xây dựng Hà Nội ở đâu?"
+    ],
+    "check": {
+      "all": [
+        "Hà Nội"
+      ],
+      "source": "Trường Đại học Xây dựng Hà Nội"
+    },
+    "gold_note": "Trường Đại học Xây dựng Hà Nội / Địa điểm = Hà Nội"
+  },
+  {
+    "id": "v4-dai_hoc-02",
     "suite": "real4",
     "split": "blind",
     "datasets": [
@@ -1528,7 +1254,7 @@
     "gold_note": "Trường Công nghệ / Địa điểm = Toàn quốc"
   },
   {
-    "id": "v4-dai_hoc-02",
+    "id": "v4-dai_hoc-03",
     "suite": "real4",
     "split": "blind",
     "datasets": [
@@ -1547,26 +1273,25 @@
     "gold_note": "Học viện Chính trị Quốc gia Hồ Chí Minh / Loại hình = Công lập"
   },
   {
-    "id": "v4-dai_hoc-03",
+    "id": "v4-dai_hoc-04",
     "suite": "real4",
     "split": "blind",
     "datasets": [
       "dai_hoc"
     ],
-    "kind": "L",
+    "kind": "U",
     "turns": [
-      "Cơ quan chủ quản của Học viện Phòng không – Không quân là đơn vị nào?"
+      "co quan chu quan cua hoc vien phong khong – khong quan la don vi nao"
     ],
     "check": {
       "all": [
         "Quân sự"
-      ],
-      "source": "Học viện Phòng không – Không quân"
+      ]
     },
-    "gold_note": "Học viện Phòng không – Không quân / Cơ quan chủ quản = Quân sự"
+    "gold_note": "Unaccent: Học viện Phòng không – Không quân / Cơ quan chủ quản = Quân sự"
   },
   {
-    "id": "v4-dai_hoc-04",
+    "id": "v4-dai_hoc-05",
     "suite": "real4",
     "split": "blind",
     "datasets": [
@@ -1584,24 +1309,6 @@
     "gold_note": "Unaccent: Trường Cao đẳng Y tế Quảng Bình / Địa điểm = Quảng Trị"
   },
   {
-    "id": "v4-dai_hoc-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "dai_hoc"
-    ],
-    "kind": "U",
-    "turns": [
-      "ten tieng anh cua truong dien – dien tu la gi"
-    ],
-    "check": {
-      "all": [
-        "HUST School of Electrical and Electronic Engineering"
-      ]
-    },
-    "gold_note": "Unaccent: Trường Điện – Điện tử / Tên giao dịch tiếng Anh = HUST School of Electrical and Electronic Engineering"
-  },
-  {
     "id": "v4-dai_hoc-06",
     "suite": "real4",
     "split": "blind",
@@ -1610,14 +1317,14 @@
     ],
     "kind": "C",
     "turns": [
-      "Có bao nhiêu trường đại học ở Quảng Ninh?"
+      "Có bao nhiêu trường đại học trực thuộc Giáo hội Phật giáo Việt Nam?"
     ],
     "check": {
       "num": [
-        "5"
+        "4"
       ]
     },
-    "gold_note": "Đếm Địa điểm=Quảng Ninh -> 5"
+    "gold_note": "Đếm Cơ quan chủ quản=Giáo hội Phật giáo Việt Nam -> 4"
   },
   {
     "id": "v4-dai_hoc-07",
@@ -1628,14 +1335,14 @@
     ],
     "kind": "C",
     "turns": [
-      "Số lượng trường đại học ở Hà Nội là bao nhiêu?"
+      "Số lượng trường đại học trực thuộc Bộ Công Thương là bao nhiêu?"
     ],
     "check": {
       "num": [
-        "112"
+        "8"
       ]
     },
-    "gold_note": "Đếm Hà Nội -> 112"
+    "gold_note": "Đếm Bộ Công Thương -> 8"
   },
   {
     "id": "v4-dai_hoc-08",
@@ -1646,15 +1353,17 @@
     ],
     "kind": "S",
     "turns": [
-      "Liệt kê các trường đại học trực thuộc Tổng Liên đoàn Lao động Việt Nam."
+      "Liệt kê các trường đại học trực thuộc Trường dự bị đại học."
     ],
     "check": {
       "all": [
-        "Trường Đại học Công đoàn",
-        "Trường Đại học Tôn Đức Thắng"
+        "Trường Dự bị Đại học Thành phố Hồ Chí Minh",
+        "Trường Dự bị Đại học Dân tộc Trung ương Nha Trang",
+        "Trường Dự bị Đại học Dân tộc Sầm Sơn",
+        "Trường Dự bị Đại học Dân tộc Trung ương"
       ]
     },
-    "gold_note": "Liệt kê Tổng Liên đoàn Lao động Việt Nam -> ['Trường Đại học Công đoàn', 'Trường Đại học Tôn Đức Thắng']"
+    "gold_note": "Liệt kê Trường dự bị đại học -> ['Trường Dự bị Đại học Thành phố Hồ Chí Minh', 'Trường Dự bị Đại học Dân tộc Trung ương Nha Trang', 'Trường Dự bị Đại học Dân tộc Sầm Sơn', 'Trường Dự bị Đại học Dân tộc Trung ương']"
   },
   {
     "id": "v4-dai_hoc-09",
@@ -1665,17 +1374,19 @@
     ],
     "kind": "S",
     "turns": [
-      "Liệt kê các trường đại học trực thuộc Giáo hội Phật giáo Việt Nam."
+      "Liệt kê các trường đại học ở Thanh Hóa."
     ],
     "check": {
       "all": [
-        "Học viện Phật giáo Việt Nam tại Hà Nội",
-        "Học viện Phật giáo Việt Nam tại Thành phố Hồ Chí Minh",
-        "Học viện Phật giáo Việt Nam tại Huế",
-        "Học viện Phật giáo Nam tông Khmer"
+        "Trường Dự bị Đại học Dân tộc Sầm Sơn",
+        "Trường Cao đẳng Y – Dược Hợp Lực",
+        "Trường Cao đẳng Y tế Thanh Hóa",
+        "Trường Cao đẳng Kinh tế Kỹ thuật Công thương",
+        "Trường Cao đẳng Nông nghiệp Thanh Hóa",
+        "Trường Cao đẳng Thể dục Thể thao Thanh Hóa"
       ]
     },
-    "gold_note": "Liệt kê Giáo hội Phật giáo Việt Nam -> ['Học viện Phật giáo Việt Nam tại Hà Nội', 'Học viện Phật giáo Việt Nam tại Thành phố Hồ Chí Minh', 'Học viện Phật giáo Việt Nam tại Huế', 'Học viện Phật giáo Nam tông Khmer']"
+    "gold_note": "Liệt kê Thanh Hóa -> ['Trường Dự bị Đại học Dân tộc Sầm Sơn', 'Trường Cao đẳng Y – Dược Hợp Lực', 'Trường Cao đẳng Y tế Thanh Hóa', 'Trường Cao đẳng Kinh tế Kỹ thuật Công thương', 'Trường Cao đẳng Nông nghiệp Thanh Hóa', 'Trường Cao đẳng Thể dục Thể thao Thanh Hóa']"
   },
   {
     "id": "v4-dai_hoc-10",
@@ -1722,14 +1433,14 @@
     ],
     "kind": "A",
     "turns": [
-      "Tổng số trường đại học ở Thanh Hóa là bao nhiêu?"
+      "Tổng số trường đại học trực thuộc Bộ Tài chính là bao nhiêu?"
     ],
     "check": {
       "num": [
-        "6"
+        "4"
       ]
     },
-    "gold_note": "Tổng = 6"
+    "gold_note": "Tổng = 4"
   },
   {
     "id": "v4-dai_hoc-13",
@@ -1740,7 +1451,7 @@
     ],
     "kind": "R",
     "turns": [
-      "Hiệu trưởng hiện nay của Trường Cao đẳng Công nghệ Viettronics là ai?"
+      "Điểm chuẩn ngành Công nghệ thông tin của Trường Đại học Đồng Tháp năm ngoái là bao nhiêu?"
     ],
     "check": {
       "refusal": true
@@ -1756,7 +1467,7 @@
     ],
     "kind": "F",
     "turns": [
-      "Trụ sở của Trường Đại học Xây dựng Hà Nội ở đâu?",
+      "Trụ sở của Trường Cao đẳng Công nghệ Viettronics ở đâu?",
       "Còn loại hình thì sao?"
     ],
     "check": {
@@ -1764,7 +1475,7 @@
         "Công lập"
       ]
     },
-    "gold_note": "Follow-up: Trường Đại học Xây dựng Hà Nội: Địa điểm=Hà Nội -> Loại hình=Công lập"
+    "gold_note": "Follow-up: Trường Cao đẳng Công nghệ Viettronics: Địa điểm=Hải Phòng -> Loại hình=Công lập"
   },
   {
     "id": "v4-dai_hoc-15",
@@ -1775,15 +1486,15 @@
     ],
     "kind": "X",
     "turns": [
-      "Cho biết tên giao dịch tiếng anh và cơ quan chủ quản của Trường Đại học Sư phạm Kỹ thuật."
+      "Cho biết cơ quan chủ quản và loại hình của Trường Cao đẳng Công nghệ Thủ Đức."
     ],
     "check": {
       "all": [
-        "Danang University of Technology and Education",
-        "Đại học vùng"
+        "Trường cao đẳng chuyên nghiệp khác",
+        "Công lập"
       ]
     },
-    "gold_note": "Đa cột: Tên giao dịch tiếng Anh=Danang University of Technology and Education, Cơ quan chủ quản=Đại học vùng"
+    "gold_note": "Đa cột: Cơ quan chủ quản=Trường cao đẳng chuyên nghiệp khác, Loại hình=Công lập"
   },
   {
     "id": "v4-dai_hoc-16",
@@ -1794,310 +1505,14 @@
     ],
     "kind": "X",
     "turns": [
-      "Trường đại học Trường Đại học Sư phạm Kỹ thuật có tên giao dịch tiếng anh là gì?"
+      "Trường đại học Trường Cao đẳng Công nghệ Thủ Đức có cơ quan chủ quản là gì?"
     ],
     "check": {
       "all": [
-        "Danang University of Technology and Education"
+        "Trường cao đẳng chuyên nghiệp khác"
       ]
     },
-    "gold_note": "Kiểm tra: Tên giao dịch tiếng Anh=Danang University of Technology and Education"
-  },
-  {
-    "id": "v4-benh_vien-01",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "L",
-    "turns": [
-      "Bệnh viện Đa khoa Tân Bình thuộc tuyến quản lý nào?"
-    ],
-    "check": {
-      "all": [
-        "Tuyến Thành phố / Sở Y tế"
-      ],
-      "source": "Bệnh viện Đa khoa Tân Bình"
-    },
-    "gold_note": "Bệnh viện Đa khoa Tân Bình / Tuyến quản lý = Tuyến Thành phố / Sở Y tế"
-  },
-  {
-    "id": "v4-benh_vien-02",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "L",
-    "turns": [
-      "Tên gọi khác của Bệnh viện Hùng Vương là gì?"
-    ],
-    "check": {
-      "all": [
-        "Bảo sanh viện Hùng Vương"
-      ],
-      "source": "Bệnh viện Hùng Vương"
-    },
-    "gold_note": "Bệnh viện Hùng Vương / Tên khác = Bảo sanh viện Hùng Vương"
-  },
-  {
-    "id": "v4-benh_vien-03",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "L",
-    "turns": [
-      "Bệnh viện Nguyễn Trãi thuộc tuyến quản lý nào?"
-    ],
-    "check": {
-      "all": [
-        "Tuyến Thành phố / Sở Y tế"
-      ],
-      "source": "Bệnh viện Nguyễn Trãi"
-    },
-    "gold_note": "Bệnh viện Nguyễn Trãi / Tuyến quản lý = Tuyến Thành phố / Sở Y tế"
-  },
-  {
-    "id": "v4-benh_vien-04",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "U",
-    "turns": [
-      "benh vien da khoa sai gon nam o phuong/quan nao"
-    ],
-    "check": {
-      "all": [
-        "Phường Bến Thành"
-      ]
-    },
-    "gold_note": "Unaccent: Bệnh viện Đa khoa Sài Gòn / Cơ sở = Phường Bến Thành"
-  },
-  {
-    "id": "v4-benh_vien-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "U",
-    "turns": [
-      "benh vien da khoa khu vuc hoc mon la benh vien chuyen khoa hay da khoa"
-    ],
-    "check": {
-      "all": [
-        "Đa khoa"
-      ]
-    },
-    "gold_note": "Unaccent: Bệnh viện Đa khoa khu vực Hóc Môn / Loại bệnh viện = Đa khoa"
-  },
-  {
-    "id": "v4-benh_vien-06",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "C",
-    "turns": [
-      "Có bao nhiêu bệnh viện Tuyến trung ương / Bộ ngành?"
-    ],
-    "check": {
-      "num": [
-        "9"
-      ]
-    },
-    "gold_note": "Đếm Tuyến quản lý=Tuyến trung ương / Bộ ngành -> 9"
-  },
-  {
-    "id": "v4-benh_vien-07",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "C",
-    "turns": [
-      "Có bao nhiêu bệnh viện có năm thành lập từ 1989 trở lên?"
-    ],
-    "check": {
-      "num": [
-        "30"
-      ]
-    },
-    "gold_note": "Năm thành lập >= 1989 -> 30"
-  },
-  {
-    "id": "v4-benh_vien-08",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "S",
-    "turns": [
-      "Liệt kê các bệnh viện Bệnh viện đại học."
-    ],
-    "check": {
-      "all": [
-        "Bệnh viện Đại học Y Dược Thành phố Hồ Chí Minh",
-        "Bệnh viện Đại học Quốc tế Hồng Bàng"
-      ]
-    },
-    "gold_note": "Liệt kê Bệnh viện đại học -> ['Bệnh viện Đại học Y Dược Thành phố Hồ Chí Minh', 'Bệnh viện Đại học Quốc tế Hồng Bàng']"
-  },
-  {
-    "id": "v4-benh_vien-09",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "S",
-    "turns": [
-      "Liệt kê các bệnh viện Bệnh viện đại học."
-    ],
-    "check": {
-      "all": [
-        "Bệnh viện Đại học Y Dược Thành phố Hồ Chí Minh",
-        "Bệnh viện Đại học Quốc tế Hồng Bàng"
-      ]
-    },
-    "gold_note": "Liệt kê Bệnh viện đại học -> ['Bệnh viện Đại học Y Dược Thành phố Hồ Chí Minh', 'Bệnh viện Đại học Quốc tế Hồng Bàng']"
-  },
-  {
-    "id": "v4-benh_vien-10",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "M",
-    "turns": [
-      "Bệnh viện nào có năm thành lập lớn nhất?"
-    ],
-    "check": {
-      "all": [
-        "Bệnh viện Đại học Quốc tế Hồng Bàng"
-      ]
-    },
-    "gold_note": "Max Năm thành lập = 2026 (Bệnh viện Đại học Quốc tế Hồng Bàng)"
-  },
-  {
-    "id": "v4-benh_vien-11",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "M",
-    "turns": [
-      "Bệnh viện nào có năm thành lập nhỏ nhất?"
-    ],
-    "check": {
-      "all": [
-        "Bệnh viện Bệnh Nhiệt đới"
-      ]
-    },
-    "gold_note": "Min Năm thành lập = 1862 (Bệnh viện Bệnh Nhiệt đới)"
-  },
-  {
-    "id": "v4-benh_vien-12",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "A",
-    "turns": [
-      "Tổng số giường bệnh của tất cả các bệnh viện là bao nhiêu?"
-    ],
-    "check": {
-      "any": [
-        "26.237",
-        "26,237",
-        "26237",
-        "26 237"
-      ]
-    },
-    "gold_note": "Tổng Số giường = 26237"
-  },
-  {
-    "id": "v4-benh_vien-13",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "R",
-    "turns": [
-      "Giám đốc Bệnh viện đa khoa Phương Nam hiện nay là ai?"
-    ],
-    "check": {
-      "refusal": true
-    },
-    "gold_note": "Bảng không có thông tin thuộc tính này"
-  },
-  {
-    "id": "v4-benh_vien-14",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "F",
-    "turns": [
-      "Bệnh viện Nhi đồng 2 là bệnh viện chuyên khoa hay đa khoa?",
-      "Còn tên khác thì sao?"
-    ],
-    "check": {
-      "all": [
-        "Bệnh viện Grall, Bệnh viện Đồn Đất"
-      ]
-    },
-    "gold_note": "Follow-up: Bệnh viện Nhi đồng 2: Loại bệnh viện=Chuyên khoa -> Tên khác=Bệnh viện Grall, Bệnh viện Đồn Đất"
-  },
-  {
-    "id": "v4-benh_vien-15",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "X",
-    "turns": [
-      "Cho biết cơ sở và tuyến quản lý của Bệnh viện Tâm thần."
-    ],
-    "check": {
-      "all": [
-        "Phường Chợ Quán , Xã Bình Lợi , Phường Cầu Kiệu",
-        "Tuyến Thành phố / Sở Y tế"
-      ]
-    },
-    "gold_note": "Đa cột: Cơ sở=Phường Chợ Quán , Xã Bình Lợi , Phường Cầu Kiệu, Tuyến quản lý=Tuyến Thành phố / Sở Y tế"
-  },
-  {
-    "id": "v4-benh_vien-16",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "benh_vien"
-    ],
-    "kind": "X",
-    "turns": [
-      "Bệnh viện Bệnh viện Tâm thần có cơ sở là gì?"
-    ],
-    "check": {
-      "all": [
-        "Phường Chợ Quán , Xã Bình Lợi , Phường Cầu Kiệu"
-      ]
-    },
-    "gold_note": "Kiểm tra: Cơ sở=Phường Chợ Quán , Xã Bình Lợi , Phường Cầu Kiệu"
+    "gold_note": "Kiểm tra: Cơ quan chủ quản=Trường cao đẳng chuyên nghiệp khác"
   },
   {
     "id": "v4-di_tich_dac_biet-01",
@@ -2396,1715 +1811,1999 @@
     "gold_note": "Kiểm tra: Địa điểm=Các phường: Yên Tử, Uông Bí, thành phố Quảng Ninh"
   },
   {
-    "id": "v4_b-dt-01",
+    "id": "v4-ngan_hang-01",
     "suite": "real4",
     "split": "blind",
     "datasets": [
-      "van_hoa"
+      "ngan_hang"
     ],
-    "kind": "followup",
+    "kind": "L",
     "turns": [
-      "Dân tộc Tày có bao nhiêu người?",
-      "Thế còn địa bàn cư trú ở đâu?"
+      "Vốn điều lệ của ngân hàng Kỹ Thương Việt Nam là bao nhiêu?"
     ],
     "check": {
       "any": [
-        "Miền núi phía Bắc",
-        "Bắc Kạn",
-        "Cao Bằng",
-        "Lạng Sơn"
+        "70.862",
+        "70,862",
+        "70862"
       ]
     },
-    "gold_note": "Followup lượt 2 hỏi địa bàn cư trú của dân tộc Tày",
-    "source": "human_written_blind_b"
+    "gold_note": "Techcombank / Vốn điều lệ = 70862"
   },
   {
-    "id": "v4_b-dt-02",
+    "id": "v4-ngan_hang-02",
     "suite": "real4",
     "split": "blind",
     "datasets": [
-      "van_hoa"
+      "ngan_hang"
     ],
-    "kind": "unaccent",
+    "kind": "L",
     "turns": [
-      "dan toc hoa chu yeu cu tru o dau"
+      "Ngân hàng nào có viết tắt là MBBank?"
     ],
     "check": {
       "any": [
-        "Khắp cả nước",
-        "Toàn quốc",
-        "Đồng bằng / Toàn quốc"
+        "Quân đội"
       ]
     },
-    "gold_note": "Dân tộc Hoa cư trú khắp cả nước",
-    "source": "human_written_blind_b"
+    "gold_note": "MBBank -> Quân đội"
   },
   {
-    "id": "v4_b-dt-03",
+    "id": "v4-ngan_hang-03",
     "suite": "real4",
     "split": "blind",
     "datasets": [
-      "van_hoa"
+      "ngan_hang"
     ],
-    "kind": "refusal",
+    "kind": "L",
     "turns": [
-      "Dân tộc Mông có trang phục truyền thống màu gì?"
-    ],
-    "check": {
-      "refusal": true
-    },
-    "gold_note": "Bảng không có cột màu sắc trang phục",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dt-04",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "ambiguous",
-    "turns": [
-      "Dân tộc nào đông dân thứ nhì Việt Nam?"
-    ],
-    "check": {
-      "ask_back": true
-    },
-    "gold_note": "Câu hỏi mơ hồ (nhiều cách hiểu thứ nhì theo % hoặc số tuyệt đối, hoặc dân tộc thiểu số đông nhất)",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dt-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "cho mình hỏi dân tộc Nùng thuộc hệ ngôn ngữ nào"
+      "Trụ sở của ngân hàng Tiên Phong ở đâu?"
     ],
     "check": {
       "any": [
-        "Hệ Tai-Kadai",
-        "Tai-Kadai"
+        "57 Lý Thường Kiệt, phường Cửa Nam, Hà Nội"
       ]
     },
-    "gold_note": "Nùng thuộc hệ Tai-Kadai",
-    "source": "human_written_blind_b"
+    "gold_note": "Tiên Phong / Trụ sở"
   },
   {
-    "id": "v4_b-dt-06",
+    "id": "v4-ngan_hang-04",
     "suite": "real4",
     "split": "blind",
     "datasets": [
-      "van_hoa"
+      "ngan_hang"
     ],
-    "kind": "filter",
+    "kind": "L",
     "turns": [
-      "ở Tây Nguyên có những dân tộc bản địa nào"
+      "Ngân hàng Sài Gòn Công Thương cập nhật dữ liệu vào thời điểm nào?"
+    ],
+    "check": {
+      "any": [
+        "Q4/2023"
+      ]
+    },
+    "gold_note": "Saigonbank / Ngày cập nhật"
+  },
+  {
+    "id": "v4-ngan_hang-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "U",
+    "turns": [
+      "ngan hang nao co von dieu le lon nhat"
+    ],
+    "check": {
+      "any": [
+        "Ngoại thương Việt Nam",
+        "Vietcombank"
+      ]
+    },
+    "gold_note": "Max vốn điều lệ = 83.557 (Vietcombank)"
+  },
+  {
+    "id": "v4-ngan_hang-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "U",
+    "turns": [
+      "ngan hang nao co tru so o can tho"
+    ],
+    "check": {
+      "any": [
+        "Việt Nam Thương Tín",
+        "VietBank"
+      ]
+    },
+    "gold_note": "duy nhất 1 ngân hàng trụ sở Cần Thơ"
+  },
+  {
+    "id": "v4-ngan_hang-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "C",
+    "turns": [
+      "Có bao nhiêu ngân hàng có vốn điều lệ trên 50.000 tỷ đồng?"
+    ],
+    "check": {
+      "num": [
+        7
+      ]
+    },
+    "gold_note": "7 ngân hàng > 50000 tỷ"
+  },
+  {
+    "id": "v4-ngan_hang-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "C",
+    "turns": [
+      "Có bao nhiêu ngân hàng có trụ sở ở Hà Nội?"
+    ],
+    "check": {
+      "num": [
+        18
+      ]
+    },
+    "gold_note": "18 ngân hàng Hà Nội"
+  },
+  {
+    "id": "v4-ngan_hang-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "S",
+    "turns": [
+      "Liệt kê các ngân hàng có vốn điều lệ trên 50.000 tỷ đồng."
     ],
     "check": {
       "all": [
-        "Gia Rai",
-        "Ê Đê",
-        "Ba Na"
+        "Ngoại thương Việt Nam",
+        "Việt Nam Thịnh Vượng",
+        "Kỹ Thương Việt Nam",
+        "Đầu tư và Phát triển Việt Nam",
+        "Quân đội",
+        "Công Thương Việt Nam",
+        "Á Châu"
       ]
     },
-    "gold_note": "Thống nhất chấp nhận các dân tộc cư trú chính ở Tây Nguyên",
-    "source": "human_written_blind_b"
+    "gold_note": "7 dòng, trong ngưỡng liệt kê"
   },
   {
-    "id": "v4_b-dt-07",
+    "id": "v4-ngan_hang-10",
     "suite": "real4",
     "split": "blind",
     "datasets": [
-      "van_hoa"
+      "ngan_hang"
     ],
-    "kind": "lookup",
+    "kind": "S",
     "turns": [
-      "dân tộc Chăm thuộc nhóm ngôn ngữ gì vậy"
+      "Liệt kê các ngân hàng cập nhật dữ liệu quý 4/2023."
     ],
     "check": {
-      "any": [
-        "Mã Lai-Đa Đảo",
-        "Malayo-Polynesian"
+      "all": [
+        "Sài Gòn Tài Lộc",
+        "An Bình",
+        "Đại Chúng Việt Nam",
+        "Kiên Long",
+        "Sài Gòn Công Thương"
       ]
     },
-    "gold_note": "Chăm thuộc nhóm Mã Lai-Đa Đảo",
-    "source": "human_written_blind_b"
+    "gold_note": "5 dòng Q4/2023"
   },
   {
-    "id": "v4_b-dt-08",
+    "id": "v4-ngan_hang-11",
     "suite": "real4",
     "split": "blind",
     "datasets": [
-      "van_hoa"
+      "ngan_hang"
     ],
-    "kind": "lookup",
+    "kind": "M",
     "turns": [
-      "dân tộc Khơ me có tên gọi khác không"
+      "Ngân hàng nào có vốn điều lệ lớn nhất?"
     ],
     "check": {
       "any": [
+        "Ngoại thương Việt Nam",
+        "Vietcombank"
+      ]
+    },
+    "gold_note": "83.557 tỷ, lớn nhất"
+  },
+  {
+    "id": "v4-ngan_hang-12",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "M",
+    "turns": [
+      "Ngân hàng nào có vốn điều lệ nhỏ nhất?"
+    ],
+    "check": {
+      "any": [
+        "Bảo Việt",
+        "Baoviet Bank"
+      ]
+    },
+    "gold_note": "3.150 tỷ, nhỏ nhất"
+  },
+  {
+    "id": "v4-ngan_hang-13",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "A",
+    "turns": [
+      "Tổng vốn điều lệ của tất cả các ngân hàng trong danh sách là bao nhiêu?"
+    ],
+    "check": {
+      "any": [
+        "866.747",
+        "866,747",
+        "866747"
+      ]
+    },
+    "gold_note": "Tổng 30 dòng = 866747"
+  },
+  {
+    "id": "v4-ngan_hang-14",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "R",
+    "turns": [
+      "Lãi suất tiết kiệm 12 tháng của ngân hàng Vietcombank là bao nhiêu?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Không có cột lãi suất"
+  },
+  {
+    "id": "v4-ngan_hang-15",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "R",
+    "turns": [
+      "Ngân hàng nào có tỷ lệ nợ xấu thấp nhất?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Không có cột nợ xấu"
+  },
+  {
+    "id": "v4-ngan_hang-16",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "F",
+    "turns": [
+      "Ngân hàng Quân đội có vốn điều lệ bao nhiêu?",
+      "Thế trụ sở ở đâu?"
+    ],
+    "check": {
+      "any": [
+        "MB Grand Tower, 18 Lê Văn Lương, phường Yên Hòa, Hà Nội"
+      ]
+    },
+    "gold_note": "Lượt 2: trụ sở MBBank"
+  },
+  {
+    "id": "v4-xe_buyt-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Tuyến 172 đi từ đâu đến đâu?"
+    ],
+    "check": {
+      "all": [
+        "Bến xe Vũng Tàu",
+        "Bến Thành"
+      ]
+    },
+    "gold_note": "172: Bến xe Vũng Tàu <-> Bến Thành"
+  },
+  {
+    "id": "v4-xe_buyt-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Cự ly tuyến 721 là bao nhiêu km?"
+    ],
+    "check": {
+      "any": [
+        "180"
+      ]
+    },
+    "gold_note": "721 / Cự ly = 180 km"
+  },
+  {
+    "id": "v4-xe_buyt-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Thời gian hoạt động của tuyến 1 là khi nào?"
+    ],
+    "check": {
+      "any": [
+        "05:00 - 22:00"
+      ]
+    },
+    "gold_note": "tuyến 1 / Thời gian hoạt động"
+  },
+  {
+    "id": "v4-xe_buyt-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Giãn cách của tuyến 14 là bao nhiêu phút?"
+    ],
+    "check": {
+      "any": [
+        "6-12 phút",
+        "6 - 12 phút",
+        "6 đến 12 phút"
+      ]
+    },
+    "gold_note": "tuyến 14 / Giãn cách"
+  },
+  {
+    "id": "v4-xe_buyt-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "U",
+    "turns": [
+      "tuyen nao co cu ly ngan nhat"
+    ],
+    "check": {
+      "any": [
+        "155"
+      ]
+    },
+    "gold_note": "Min cự ly = 6.4 km, tuyến 155"
+  },
+  {
+    "id": "v4-xe_buyt-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "U",
+    "turns": [
+      "tuyen nao bat dau tu ben thanh di den ben xe vung tau"
+    ],
+    "check": {
+      "any": [
+        "172"
+      ]
+    },
+    "gold_note": "duy nhất tuyến 172 đến Bến xe Vũng Tàu"
+  },
+  {
+    "id": "v4-xe_buyt-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "C",
+    "turns": [
+      "Có bao nhiêu tuyến xe buýt có cự ly trên 30 km?"
+    ],
+    "check": {
+      "num": [
+        15
+      ]
+    },
+    "gold_note": "15 tuyến > 30 km"
+  },
+  {
+    "id": "v4-xe_buyt-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "C",
+    "turns": [
+      "Có bao nhiêu tuyến xuất phát từ Bến Thành?"
+    ],
+    "check": {
+      "num": [
+        19
+      ]
+    },
+    "gold_note": "19 tuyến điểm đầu = Bến Thành"
+  },
+  {
+    "id": "v4-xe_buyt-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "S",
+    "turns": [
+      "Liệt kê các tuyến đi qua Đại học Quốc gia (điểm đầu hoặc điểm cuối)."
+    ],
+    "check": {
+      "all": [
+        "8",
+        "10",
+        "19",
+        "33",
+        "50",
+        "52",
+        "53",
+        "99",
+        "170"
+      ]
+    },
+    "gold_note": "9 tuyến, trong ngưỡng liệt kê"
+  },
+  {
+    "id": "v4-xe_buyt-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "S",
+    "turns": [
+      "Liệt kê 5 tuyến có cự ly ngắn nhất."
+    ],
+    "check": {
+      "all": [
+        "155",
+        "6167",
+        "109",
+        "1"
+      ]
+    },
+    "gold_note": "top 5 ngắn nhất: 155(6.4), 6167(7.1), 109(9.3), 1(9.62), 158(9.8)"
+  },
+  {
+    "id": "v4-xe_buyt-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "M",
+    "turns": [
+      "Tuyến nào có cự ly dài nhất?"
+    ],
+    "check": {
+      "any": [
+        "721"
+      ]
+    },
+    "gold_note": "180 km, dài nhất"
+  },
+  {
+    "id": "v4-xe_buyt-12",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "M",
+    "turns": [
+      "Tuyến nào có cự ly ngắn nhất?"
+    ],
+    "check": {
+      "any": [
+        "155"
+      ]
+    },
+    "gold_note": "6.4 km, ngắn nhất"
+  },
+  {
+    "id": "v4-xe_buyt-13",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "A",
+    "turns": [
+      "Tổng cự ly của tất cả các tuyến trong danh sách là bao nhiêu km?"
+    ],
+    "check": {
+      "any": [
+        "2715.9",
+        "2715,9",
+        "2716"
+      ]
+    },
+    "gold_note": "tổng 107 dòng = 2715.9 km"
+  },
+  {
+    "id": "v4-xe_buyt-14",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "R",
+    "turns": [
+      "Giá vé tuyến 1 là bao nhiêu?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Không có cột giá vé trong bảng dữ liệu đã nạp"
+  },
+  {
+    "id": "v4-xe_buyt-15",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "R",
+    "turns": [
+      "Loại xe hiện tại của tuyến 172 là gì?"
+    ],
+    "check": {
+      "refusal": true
+    },
+    "gold_note": "Không có cột loại xe"
+  },
+  {
+    "id": "v4-xe_buyt-16",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "F",
+    "turns": [
+      "Tuyến 167 có điểm đầu và điểm cuối là gì?",
+      "Thế cự ly của nó bao nhiêu km?"
+    ],
+    "check": {
+      "any": [
+        "13.5",
+        "13,5"
+      ]
+    },
+    "gold_note": "lượt 1: Đại học Hutech <-> Đại học Hutech (tuyến vòng); lượt 2: cự ly 13.5 km"
+  },
+  {
+    "id": "v4_b-bao_vat-01",
+    "turns": [
+      "Bảo vật nào được công nhận ở đợt đầu tiên?"
+    ],
+    "check": {
+      "num": [
+        31
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Có tổng cộng 31 bảo vật được công nhận vào đợt 1 nên đáp án là 31 (hoặc liệt kê vài ví dụ + nói 'và 30 bảo vật khác cùng được công nhận ở đợt 1'), không được tự chọn bừa 1 cái rồi nói đó là 'được công nhận ở đợt đàu tiên'.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-bao_vat-02",
+    "turns": [
+      "Có những bảo vật nào có niên đại trước thế kỷ X?"
+    ],
+    "check": {
+      "num": [
+        108
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Có tổng cộng 108 bảo vật trước thể kỷ X nên đáp án là 108 (hoặc liệt kê vài ví dụ + nói 'và 107 bảo vật trước thế kỉ X'), không được tự chọn bừa 1 cái rồi nói chỉ có 1 cái đó là 'trước niên đại thế kỷ X'. [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-bao_vat-03",
+    "turns": [
+      "Bảo vật nào đang được một bảo tàng lưu giữ?"
+    ],
+    "check": {
+      "num": 195,
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Có tới 195 bảo vật được bảo tàng trên toàn quốc lưu giữ. Quá nhiều để liệt kê (>8 dòng, loại S không áp dụng), chấm bằng số lượng. [Họp thống nhất: chốt theo nhãn B (Phạm Lê Thiên Dấn) do 2 nhãn bất đồng nội dung thật]",
+    "labeler": "final (họp: dj quyết)"
+  },
+  {
+    "id": "v4_b-bao_vat-04",
+    "turns": [
+      "Có bao nhiêu bảo vật được công nhận trong năm 2020?"
+    ],
+    "check": {
+      "num": [
+        24
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Đếm số lượng bảo vật được công nhận vào năm 2020, cũng là đợt 9",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-bao_vat-05",
+    "turns": [
+      "Trống đồng Ngọc Lũ được công nhận vào đợt nào?",
+      "Bảo vật đó hiện thuộc đơn vị nào lưu giữ?"
+    ],
+    "check": {
+      "any": [
+        "Bảo tàng Lịch sử Quốc gia"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lượt 1 (Trống đồng Ngọc Lũ, đợt 1) chỉ để dẫn ngữ cảnh follow-up, không chấm. Lượt 2 lấy cột 'Chủ sở hữu / Đơn vị lưu giữ' = 'Bảo tàng Lịch sử Quốc gia'",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-bao_vat-06",
+    "turns": [
+      "bao vat nao co dia phuong la vinh long"
+    ],
+    "check": {
+      "any": [
+        "Tượng Thần Vishnu Vũng Liêm (STT 152)"
+      ],
+      "num": [
+        3,
+        1
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Cột Địa phương ghi tên tỉnh CŨ (trước sáp nhập 2025). Khớp chuỗi đúng 'Vĩnh Long' = 1 dòng (Tượng Thần Vishnu Vũng Liêm). Nhưng Vĩnh Long mới (sau sáp nhập) gồm cả Trà Vinh + Bến Tre cũ — nếu engine biết quy đổi địa giới mới/cũ thì phải cộng thêm 2 dòng ghi 'Trà Vinh'/'Tỉnh Trà Vinh' (Ngẫu tượng Linga - Yoni, Sưu tập vàng lá Châu Thành Trà Vinh), tổng 3. Không có dòng Bến Tre. Đây là bẫy chính: test S4-2 (khớp tên) mở rộng sang khớp địa giới hành chính cũ/mới — đa số engine hiện tại (chỉ bỏ dấu) sẽ CHỈ ra được 1 dòng, không tự quy đổi sang tỉnh cũ. [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-bao_vat-07",
+    "turns": [
+      "Bảo vật nào có giá đấu giá cao nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Câu này bot phải từ chối do không có cột số giá đấu giá trong dataset này",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-bao_vat-08",
+    "turns": [
+      "Bảo vật nào đang được bảo hiểm với số tiền lớn nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Câu này bot phải từ chối do không có cột bảo hiểm trong dataset này",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-bao_vat-09",
+    "turns": [
+      "Mình muốn tìm hiểu về tượng Phật."
+    ],
+    "check": {
+      "refusal": false,
+      "ask_back": true
+    },
+    "notes": "Tượng Phật khớp 28 dòng và câu hỏi cũng không nói rõ muốn biết thuộc tính nào trong 5 cột (Đợt công nhận, Năm công nhận, Niên đại / Lịch sử, Chủ sở hữu / Đơn vị lưu giữ, Địa phương) — hệ thống nên hỏi lại, không tự chọn 1 cột để trả lời",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-bao_vat-10",
+    "turns": [
+      "Liệt kê bảo vật do bảo tàng cấp tỉnh lưu giữ"
+    ],
+    "check": {
+      "num": [
+        71
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "đếm cột Chủ sở hữu / Đơn vị lưu giữ có chữ tỉnh: 71. Quá nhiều để liệt kê (>8 dòng, loại S không áp dụng), chấm bằng số lượng. [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-bao_vat-11",
+    "turns": [
+      "Bảo vật nào có ghi niên đại thời Lý?"
+    ],
+    "check": {
+      "any": [
+        "thời Lý"
+      ],
+      "all": [
+        "thời Lý"
+      ],
+      "num": [
+        9
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "đếm cột Niên đại / Lịch sử có chữ thời Lý.Có thể liệt kê or nêu số lượng (>8 dòng), ưu tiên chấm bằng số lượng [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-dan_toc-01",
+    "turns": [
+      "Mấy dân tộc có ngữ hệ Nam Á vậy?"
+    ],
+    "check": {
+      "any": [
+        "Kinh",
+        "Mường",
+        "Thổ",
+        "Chứt",
+        "Ba Na",
+        "Xơ Đăng",
+        "Cơ Ho",
+        "H'rê",
+        "M'Nông",
+        "Xtiêng",
+        "Giẻ Triêng",
+        "Mạ",
+        "Co",
+        "Chơ Ro",
+        "Rơ Măm",
+        "Brâu",
+        "Bru - Vân Kiều",
+        "Cơ Tu",
+        "Tà Ôi",
+        "Khơ Mú",
+        "Xinh Mun",
+        "Ơ Đu",
         "Khmer",
-        "Khơ-me",
-        "Miên",
-        "Việt gốc Miên"
-      ]
-    },
-    "gold_note": "Tên gọi khác của Khmer",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dt-09",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "count",
-    "turns": [
-      "có bao nhiêu dân tộc thuộc hệ Nam Đảo"
-    ],
-    "check": {
+        "Kháng",
+        "Mảng",
+        "Người Mường Lò (nhánh)",
+        "Người Mường La (nhánh)"
+      ],
       "num": [
-        "5"
-      ]
+        27
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "5 dân tộc hệ Nam Đảo: Chăm, Gia Rai, Ê Đê, Raglai, Chu Ru",
-    "source": "human_written_blind_b"
+    "notes": "Lọc cột Ngữ hệ = Nam Á, liệt kê các dân tộc khớp [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dt-10",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-dan_toc-02",
     "turns": [
-      "dân tộc Kinh chiếm bao nhiêu phần trăm dân số"
+      "Dân tộc nào có tỷ lệ dân số cao nhất?"
     ],
     "check": {
       "any": [
-        "85,32%",
-        "85.32%",
-        "85,32",
-        "85.32"
-      ]
+        "Kinh"
+      ],
+      "all": [
+        "Kinh"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Tỷ lệ dân số Kinh",
-    "source": "human_written_blind_b"
+    "notes": "Lọc cột Tỷ lệ dân số (%) lớn nhất [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dt-11",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-dan_toc-03",
     "turns": [
-      "Người Mường Lò có địa bàn cư trú chính ở đâu?"
+      "Có dân tộc nào ghi nhiều tên gọi khác nhau không?"
     ],
     "check": {
       "any": [
-        "Thị xã Nghĩa Lộ, Yên Bái",
-        "Nghĩa Lộ",
-        "Yên Bái"
-      ]
+        "Thổ",
+        "Chứt",
+        "Dao",
+        "Lô Lô"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Mường Lò cư trú tại Nghĩa Lộ Yên Bái",
-    "source": "human_written_blind_b"
+    "notes": "xét theo cột tên gọi khác, dùng cách lấy độ dài chuỗi kí tự ban đầu trừ đi độ dài sau khi xóa phẩy cộng 1 sẻa số tên gọi khác",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-svd-01",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "the_thao"
-    ],
-    "kind": "followup",
+    "id": "v4_b-dan_toc-04",
     "turns": [
-      "Sân vận động Mỹ Đình chứa được bao nhiêu người?",
-      "Sân này khánh thành năm nào thế?"
+      "Tìm các dân tộc thuộc cùng một nhóm ngôn ngữ giúp mình."
     ],
     "check": {
-      "any": [
-        "2003"
-      ]
-    },
-    "gold_note": "Lượt 2 hỏi năm khánh thành sân Mỹ Đình = 2003",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-svd-02",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "the_thao"
-    ],
-    "kind": "unaccent",
-    "turns": [
-      "san thong nhat o dau vay ban"
-    ],
-    "check": {
-      "any": [
-        "Thành phố Hồ Chí Minh",
-        "TP.HCM",
-        "TP Hồ Chí Minh"
-      ]
-    },
-    "gold_note": "Sân Thống Nhất ở TP.HCM",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-svd-03",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "the_thao"
-    ],
-    "kind": "refusal",
-    "turns": [
-      "Giá vé vào sân Lạch Tray xem bóng đá là bao nhiêu?"
-    ],
-    "check": {
-      "refusal": true
-    },
-    "gold_note": "Bảng không có cột giá vé",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-svd-04",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "the_thao"
-    ],
-    "kind": "ambiguous",
-    "turns": [
-      "Sân vận động ở Hà Nội"
-    ],
-    "check": {
+      "refusal": false,
       "ask_back": true
     },
-    "gold_note": "Câu mơ hồ: Hà Nội có nhiều sân (Mỹ Đình, Hàng Đẫy...)",
-    "source": "human_written_blind_b"
+    "notes": "không rõ nhóm ngôn ngữ nào, không tự chọn 1 hay liệt kê hết",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-svd-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "the_thao"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-dan_toc-05",
     "turns": [
-      "CLB Hải Phòng đá ở sân vận động nào"
+      "Dân tộc Khmer có dân số khoảng bao nhiêu?",
+      "Thế họ cư trú chủ yếu ở vùng nào?"
     ],
     "check": {
       "any": [
-        "Lạch Tray",
-        "Sân vận động Lạch Tray"
-      ]
+        "Đồng bằng / Toàn quốc",
+        "Đồng bằng",
+        "Toàn quốc"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Hải Phòng đá ở Lạch Tray",
-    "source": "human_written_blind_b"
+    "notes": "Lượt 1 (Khmer, dân số 1.319.652) chỉ để dẫn ngữ cảnh follow-up, không chấm. Lượt 2 lấy cột 'Vùng cư trú chủ yếu' = 'Đồng bằng / Toàn quốc', không lấy cột địa bàn cư trú chi tiết (liệt kê tỉnh) [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-svd-06",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "the_thao"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-dan_toc-06",
     "turns": [
-      "sân Cần Thơ có sức chứa bao nhiêu khán giả"
+      "dan toc nao co dan so tren mot trieu nguoi"
     ],
     "check": {
       "any": [
-        "30.000",
-        "30000",
-        "30.000 chỗ"
-      ]
+        "Kinh",
+        "Mường",
+        "Thái",
+        "Khmer",
+        "H'Mông",
+        "Tày",
+        "Nùng"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Sức chứa Cần Thơ = 30.000",
-    "source": "human_written_blind_b"
+    "notes": "Lọc cột Dân số(người) > 1.000.000, liệt kê các dân tọc khớp [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-svd-07",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "the_thao"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-dan_toc-07",
     "turns": [
-      "sân vận động Trống Đồng dự kiến khánh thành năm nào"
+      "Dân tộc nào có tuổi thọ trung bình cao nhất?"
     ],
     "check": {
-      "any": [
-        "2027/2028",
-        "2027",
-        "2028"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "gold_note": "Sân Trống Đồng khánh thành 2027/2028",
-    "source": "human_written_blind_b"
+    "notes": "Câu này bot phải từ chối do không có cột tuổi or tuổi thọ trong dataset này",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-svd-08",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "the_thao"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-dan_toc-08",
     "turns": [
-      "trạng thái của sân vận động Rạch Chiếc hiện nay ra sao"
+      "Dân tộc nào có thu nhập bình quân đầu người cao nhất?"
     ],
     "check": {
-      "any": [
-        "Đang xây dựng"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "gold_note": "Rạch Chiếc đang xây dựng",
-    "source": "human_written_blind_b"
+    "notes": "Câu này bot phải từ chối do không có cột thu nhập trong dataset này",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-svd-09",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "the_thao"
-    ],
-    "kind": "count",
+    "id": "v4_b-dan_toc-09",
     "turns": [
-      "có bao nhiêu sân vận động có sức chứa từ 30000 chỗ trở lên"
+      "Cho mình thông tin về dân tộc Thái."
     ],
     "check": {
-      "num": [
-        "3"
-      ]
-    },
-    "gold_note": "3 sân >= 30.000 chỗ đang hoạt động: Mỹ Đình, Cần Thơ, Lạch Tray",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-svd-10",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "the_thao"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "sân vận động Hàng Đẫy nằm ở tỉnh thành nào"
-    ],
-    "check": {
-      "any": [
-        "Hà Nội"
-      ]
-    },
-    "gold_note": "Hàng Đẫy ở Hà Nội",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-svd-11",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "the_thao"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "đội bóng nào sử dụng sân vận động Hàng Đẫy làm sân nhà"
-    ],
-    "check": {
-      "any": [
-        "Hà Nội",
-        "Công an Hà Nội",
-        "Viettel"
-      ]
-    },
-    "gold_note": "Đội bóng sân Hàng Đẫy",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-pvt-01",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "followup",
-    "turns": [
-      "Ca Huế được công nhận năm nào?",
-      "Thế loại hình của nó là gì?"
-    ],
-    "check": {
-      "any": [
-        "Nghệ thuật trình diễn dân gian"
-      ]
-    },
-    "gold_note": "Lượt 2 hỏi loại hình Ca Huế",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-pvt-02",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "unaccent",
-    "turns": [
-      "hoi giong o phu dong duoc cong nhan nam nao"
-    ],
-    "check": {
-      "any": [
-        "2014",
-        "2010"
-      ]
-    },
-    "gold_note": "Hội Gióng ghi danh quốc gia năm 2014",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-pvt-03",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "refusal",
-    "turns": [
-      "Nghệ nhân nào hát Ca trù hay nhất hiện nay?"
-    ],
-    "check": {
-      "refusal": true
-    },
-    "gold_note": "Bảng không có cột nghệ nhân",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-pvt-04",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "ambiguous",
-    "turns": [
-      "Lễ hội Đền Hùng"
-    ],
-    "check": {
+      "refusal": false,
       "ask_back": true
     },
-    "gold_note": "Mơ hồ: cần hỏi rõ năm ghi danh hay loại hình",
-    "source": "human_written_blind_b"
+    "notes": "Dân tộc 'Thái' khớp đúng 1 dòng (không trùng tên), nhưng câu hỏi không nói rõ muốn biết thuộc tính nào trong 5 cột (ngữ hệ, nhóm ngôn ngữ, tên gọi khác, tỷ lệ dân số, dân số) — hệ thống nên hỏi lại, không tự chọn 1 cột để trả lời",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-pvt-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-dan_toc-10",
     "turns": [
-      "Nghệ thuật Bài Chòi được ghi danh là loại hình gì"
+      "Ngữ hệ và nhóm ngôn ngữ của dân tộc Chăm là gì"
+    ],
+    "check": {
+      "all": [
+        "Hệ Nam Đảo",
+        "Chăm"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc dòng dân tộc Chăm, câu hỏi đòi 2 thông tin (ngữ hệ + nhóm ngôn ngữ)",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-dan_toc-11",
+    "turns": [
+      "Dân tộc nào có địa bàn cư trú chính ở Tây Nguyên?"
     ],
     "check": {
       "any": [
-        "Nghệ thuật trình diễn dân gian",
-        "Tập quán xã hội và tín ngưỡng"
-      ]
+        "Mạ",
+        "Nùng",
+        "Brâu",
+        "Cơ Ho",
+        "Ba Na",
+        "Giẻ Triêng",
+        "Êđê",
+        "Gia Rai",
+        "Rơ Măm",
+        "Bru - Vân Kiều",
+        "Xơ Đăng",
+        "Chu Ru",
+        "M'Nông"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Loại hình Bài Chòi",
-    "source": "human_written_blind_b"
+    "notes": "Lọc địa bàn cư trú chính có dân tộc nào thuộc Tây Nguyên thì liệt kê, Tây Nguyên bao gồm 5 tỉnh: Kon Tum, Gia Lai, Đắk Lắk, Đắk Nông và Lâm Đồng. [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-pvt-06",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-01",
     "turns": [
-      "Hát Xoan được ghi nhận thuộc tỉnh nào"
+      "Di tích nào được xếp hạng trong đợt đầu tiên?"
+    ],
+    "check": {
+      "all": [
+        "đợt 1"
+      ],
+      "num": [
+        10
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc cột Đợt xếp hạng = đợt 1, có 10 trường khớp(>8 dòng, loại S không áp dụng), chấm bằng số lượng. [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-02",
+    "turns": [
+      "Những di tích nào được xếp hạng trước năm 2010?"
+    ],
+    "check": {
+      "all": [
+        "2009"
+      ],
+      "num": [
+        10
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc cột Năm xếp hạng < 2010, có 10 trường khớp(>8 dòng, loại S không áp dụng), chấm bằng số lượng. [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-03",
+    "turns": [
+      "Di tích nào có nhiều hạng mục được liệt kê nhất?"
+    ],
+    "check": {
+      "all": [
+        "Thành nhà Hồ",
+        "Cổ Loa"
+      ],
+      "num": [
+        3
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Cột 'Hạng mục di tích' tách bằng dấu phẩy. Max = 3 hạng mục, hoà nhau giữa 2 di tích: 'Thành nhà Hồ' (Di tích lịch sử, kiến trúc nghệ thuật, khảo cổ) và 'Cổ Loa' (cùng 3 loại). Không có đáp án duy nhất — hệ thống chỉ nêu 1 trong 2 mà không nói rõ hoà nhau là thiếu, không được coi là sai hoàn toàn nhưng chưa đạt điểm tối đa. [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-04",
+    "turns": [
+      "Có bao nhiêu di tích được xếp hạng trong năm 2022?"
+    ],
+    "check": {
+      "all": [
+        "2022"
+      ],
+      "num": [
+        9
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc cột Năm xếp hạng = 2022, có 9 trường khớp(>8 dòng, loại S không áp dụng), chấm bằng số lượng. [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-05",
+    "turns": [
+      "Hoàng thành Thăng Long được xếp hạng năm nào?",
+      "Ghi chú của di tích đó có thông tin gì?"
     ],
     "check": {
       "any": [
-        "Phú Thọ"
-      ]
+        "Được UNESCO công nhận là Di sản văn hóa thế giới năm 2010"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Hát Xoan ở Phú Thọ",
-    "source": "human_written_blind_b"
+    "notes": "Lượt 1 (Hoàng thành Thăng Long, năm 2009) chỉ để dẫn ngữ cảnh follow-up, không chấm. Lượt 2 lấy cột 'Ghi chú' = 'Được UNESCO công nhận là Di sản văn hóa thế giới năm 2010'",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-pvt-07",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-06",
     "turns": [
-      "Nghề làm gốm của người Chăm thuộc loại hình di sản nào"
+      "di tich nao co dia diem o quang tri"
     ],
     "check": {
       "any": [
-        "Nghề thủ công truyền thống"
-      ]
+        "Vườn quốc gia Phong Nha - Kẻ Bàng",
+        "Đường Trường Sơn - Đường Hồ Chí Minh",
+        "Đôi bờ Hiền Lương - Bến Hải",
+        "Thành cổ Quảng Trị và những địa điểm lưu niệm sự kiện 81 ngày đêm năm 1972",
+        "Địa đạo Vĩnh Mốc và hệ thống làng hầm Vĩnh Linh"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Nghề làm gốm Chăm",
-    "source": "human_written_blind_b"
+    "notes": "Lọc cột địa điểm có quảng trị, liệt kê di tích khớp",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-pvt-08",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "count",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-07",
     "turns": [
-      "ở tỉnh Bắc Ninh có bao nhiêu di sản văn hóa phi vật thể quốc gia"
+      "Di tích nào có lượng khách tham quan cao nhất dịp Tết vừa rồi?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Câu này bot phải từ chối do không có cột lượng khách tham quan trong dataset này",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-08",
+    "turns": [
+      "Di tích nào có kinh phí trùng tu lớn nhất trong năm nay?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Câu này bot phải từ chối do không có cột kinh phí trùng tu trong dataset này",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-09",
+    "turns": [
+      "Cho mình thông tin về thành nhà Hồ."
+    ],
+    "check": {
+      "refusal": false,
+      "ask_back": true
+    },
+    "notes": "Thành nhà Hồ khớp đúng 1 dòng (không trùng tên), nhưng câu hỏi không nói rõ muốn biết thuộc tính nào trong 5 cột (Đợt xếp hạng, Năm xếp hạng, Địa điểm, Hạng mục di tích, Ghi chú) — hệ thống nên hỏi lại, không tự chọn 1 cột để trả lời",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-10",
+    "turns": [
+      "Tìm các di tích ở Hà Nội"
     ],
     "check": {
       "num": [
-        "15"
-      ]
+        22
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Thống nhất đếm chính xác số di sản có Bắc Ninh trong địa điểm = 15",
-    "source": "human_written_blind_b"
+    "notes": "Lọc cột Địa điểm = Hà Nội, 22 di tích khớp (>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-pvt-09",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-11",
     "turns": [
-      "Múa Then của người Tày Nùng được công nhận năm nào"
+      "Di tích nào có hạng mục liên quan đến khảo cổ?"
+    ],
+    "check": {
+      "num": [
+        14
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Cột 'Hạng mục di tích' có chữ khảo cổ, 14 di tích khớp(>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-ngan_hang-01",
+    "turns": [
+      "VPBank có vốn điều lệ khoảng bao nhiêu?"
+    ],
+    "check": {
+      "any": [
+        "79.339",
+        "79,339",
+        "79339"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "VPBank = Việt Nam Thịnh Vượng, vốn điều lệ 79.339 tỷ",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-ngan_hang-02",
+    "turns": [
+      "Có ngân hàng nào trụ sở ở Nghệ An không?"
+    ],
+    "check": {
+      "any": [
+        "Bắc Á",
+        "Bac A Bank"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Chỉ 1 ngân hàng trụ sở Nghệ An: Bắc Á (Bac A Bank)",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-ngan_hang-03",
+    "turns": [
+      "Những ngân hàng nào trụ sở tại TP.HCM?"
+    ],
+    "check": {
+      "num": [
+        9
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "9 ngân hàng trụ sở TP.HCM (Á Châu, HDBank, VIB, OCB, SCB, Sacombank, Nam A Bank, BVBank, Saigonbank) — quá 8 dòng nên chấm bằng số lượng, không bắt liệt kê hết.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-ngan_hang-04",
+    "turns": [
+      "Ngân hàng SHB có trụ sở ở đâu?"
+    ],
+    "check": {
+      "any": [
+        "77 Trần Hưng Đạo, phường Cửa Nam, Hà Nội"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "SHB = Sài Gòn – Hà Nội, trụ sở 77 Trần Hưng Đạo, Hà Nội — lưu ý tên đầy đủ có chữ 'Sài Gòn' dù trụ sở ở Hà Nội, dễ gây nhầm khi lọc theo tên.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-ngan_hang-05",
+    "turns": [
+      "Sacombank có vốn điều lệ bao nhiêu?",
+      "Trụ sở nó ở đâu?"
+    ],
+    "check": {
+      "any": [
+        "43-45-47 Nguyễn Thị Minh Khai, phường Sài Gòn, TP.HCM"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lượt 1 (Sacombank/STB, vốn 18.852) chỉ dẫn ngữ cảnh. Lượt 2 lấy Trụ sở. Lưu ý tên hiển thị trong bảng là 'Sài Gòn Tài Lộc' (khác tên thường gọi 'Sài Gòn Thương Tín') — đây là dữ liệu gốc từ Wikipedia, giữ nguyên không tự sửa.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-ngan_hang-06",
+    "turns": [
+      "ngan hang nao von dieu le duoi 5000 ty"
+    ],
+    "check": {
+      "all": [
+        "Kiên Long",
+        "Sài Gòn Công Thương",
+        "Bảo Việt"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "3 ngân hàng vốn điều lệ dưới 5.000 tỷ: Kiên Long (3.653), Sài Gòn Công Thương (3.388), Bảo Việt (3.150)",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-ngan_hang-07",
+    "turns": [
+      "Ngân hàng nào có app di động được đánh giá tốt nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Không có cột đánh giá app/dịch vụ số, bot phải từ chối",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-ngan_hang-08",
+    "turns": [
+      "Phí chuyển tiền liên ngân hàng của BIDV là bao nhiêu?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Không có cột phí dịch vụ, bot phải từ chối",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-ngan_hang-09",
+    "turns": [
+      "Cho mình biết về Ngân hàng Sài Gòn."
+    ],
+    "check": {
+      "refusal": false,
+      "ask_back": true
+    },
+    "notes": "Bẫy tên gần trùng: có 4 ngân hàng chứa chữ 'Sài Gòn' trong tên hiển thị (Sài Gòn = SCB, Sài Gòn – Hà Nội = SHB, Sài Gòn Tài Lộc = Sacombank, Sài Gòn Công Thương = Saigonbank). Khớp đúng chuỗi 'Sài Gòn' chỉ ra 1 (SCB), nhưng câu hỏi đời thường dễ bị hiểu nhầm — hệ thống nên hỏi lại ngân hàng nào trong 4 cái, không tự chọn bừa.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-ngan_hang-10",
+    "turns": [
+      "Ngân hàng nào vừa cập nhật số liệu gần đây nhất, quý mấy năm nào?"
+    ],
+    "check": {
+      "num": [
+        18
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "18 ngân hàng cùng cập nhật mới nhất Q2/2025 (hoà nhau, không có 1 ngân hàng duy nhất 'gần đây nhất') — chấm bằng số lượng ngân hàng ở quý mới nhất.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-ngan_hang-11",
+    "turns": [
+      "Ngân hàng nào có vốn điều lệ gần bằng BIDV nhất?"
+    ],
+    "check": {
+      "any": [
+        "Việt Nam Thịnh Vượng",
+        "VPBank",
+        "Kỹ Thương Việt Nam",
+        "Techcombank"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "BIDV vốn 70.214. Gần nhất về số: Techcombank 70.862 (cách 648) gần hơn VPBank 79.339 (cách 9.125). Đáp án đúng nhất là Techcombank — chấp nhận cả VPBank nếu engine chỉ so 'lớn hơn gần nhất' theo thứ tự bảng chứ không tính khoảng cách tuyệt đối, ghi rõ vào ASSUMPTIONS khi họp.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-phi_vat_the-01",
+    "turns": [
+      "Có những di sản nào thuộc loại hình nghệ thuật trình diễn dân gian?"
+    ],
+    "check": {
+      "num": [
+        107,
+        100
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "532 dòng, cột 'Loại hình' khớp chính xác 'Nghệ thuật trình diễn dân gian' = 100 dòng. Nếu tính cả các dòng ghép nhiều loại hình chứa cụm này (kể cả 1 dòng lỗi chính tả 'Tri thứ dân gian') thì lên 107. Câu có >8 kết quả nên không dùng kiểu liệt kê (S), chấm bằng số lượng; chấp nhận cả 2 cách đếm (100 = khớp đúng nhãn, 107 = chứa cụm từ) [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-phi_vat_the-02",
+    "turns": [
+      "Di sản nào được công nhận sớm nhất?"
+    ],
+    "check": {
+      "any": [
+        "2012"
+      ],
+      "num": [
+        32
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Năm công nhận sớm nhất trong bảng là 2012, nhưng có 32 di sản hoà nhau cùng năm (Ca trù, Chữ Nôm người Dao, Dân ca quan họ Bắc Ninh, Hát xoan, Hội Gióng...). Không có 1 di sản 'sớm nhất' duy nhất — đáp án đúng phải nói rõ năm 2012 và số lượng 32 (hoặc liệt kê vài ví dụ + nói 'và 31 di sản khác cùng năm'), không được tự chọn bừa 1 cái rồi nói đó là 'sớm nhất'. [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-phi_vat_the-03",
+    "turns": [
+      "Liệt kê các di sản được công nhận trong giai đoạn 2010–2015"
     ],
     "check": {
       "any": [
         "2012",
+        "2013",
+        "2014",
         "2015"
-      ]
+      ],
+      "num": [
+        138
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Múa Then",
-    "source": "human_written_blind_b"
+    "notes": "Không có dòng năm 2010 hoặc 2011 trong bảng. Đếm 2012-2015: 32+16+47+43 = 138. Quá nhiều để liệt kê (>8 dòng, loại S không áp dụng), chấm bằng số lượng. [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-pvt-10",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-phi_vat_the-04",
     "turns": [
-      "Không gian văn hóa Cồng chiêng Tây Nguyên thuộc loại hình nào"
-    ],
-    "check": {
-      "any": [
-        "Không gian văn hóa",
-        "Nghệ thuật trình diễn dân gian"
-      ]
-    },
-    "gold_note": "Cồng chiêng Tây Nguyên",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-pvt-11",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "van_hoa"
-    ],
-    "kind": "count",
-    "turns": [
-      "năm 2015 có bao nhiêu di sản phi vật thể được công nhận"
+      "Có bao nhiêu di sản được ghi nhận trong bảng?"
     ],
     "check": {
       "num": [
-        "37"
-      ]
+        532
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "37 di sản công nhận năm 2015",
-    "source": "human_written_blind_b"
+    "notes": "Đếm số dòng di sản",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-bv-01",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "lich_su"
-    ],
-    "kind": "followup",
+    "id": "v4_b-phi_vat_the-05",
     "turns": [
-      "Trống đồng Ngọc Lũ đang được lưu giữ ở đâu?",
-      "Niên đại của trống này là khi nào?"
+      "Tín ngưỡng thờ cúng Hùng Vương được công nhận năm nào?",
+      "Nó thuộc địa điểm nào vậy?"
     ],
     "check": {
       "any": [
-        "Văn hóa Đông Sơn",
-        "Cách ngày nay 2500 - 2000 năm"
-      ]
+        "Phú Thọ"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Lượt 2 hỏi niên đại Trống Ngọc Lũ",
-    "source": "human_written_blind_b"
+    "notes": "Lượt 1 (Tín ngưỡng thờ cúng Hùng Vương, 2012) chỉ để dẫn ngữ cảnh follow-up, không chấm. Lượt 2 lấy cột 'Địa điểmn' = 'Phú Thọ'",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-bv-02",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "lich_su"
-    ],
-    "kind": "unaccent",
+    "id": "v4_b-phi_vat_the-06",
     "turns": [
-      "trong dong den hung o tinh nao"
+      "di san nao duoc cong nhan sau nam 2020"
     ],
     "check": {
-      "any": [
-        "Phú Thọ",
-        "thành phố Việt Trì"
-      ]
+      "num": [
+        169,
+        207
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Trống Đền Hùng ở Phú Thọ",
-    "source": "human_written_blind_b"
+    "notes": "đếm 2021-2024: 33+45+90+1 = 169. Quá nhiều để liệt kê (>8 dòng, loại S không áp dụng), chấm bằng số lượng. [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-bv-03",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "lich_su"
-    ],
-    "kind": "refusal",
+    "id": "v4_b-phi_vat_the-07",
     "turns": [
-      "Trống đồng Ngọc Lũ nặng bao nhiêu ki lô gam?"
+      "Di sản nào có lượng khách tham dự đông nhất mỗi năm?"
     ],
     "check": {
-      "refusal": true
+      "refusal": true,
+      "ask_back": false
     },
-    "gold_note": "Bảng không có cột khối lượng/trọng lượng",
-    "source": "human_written_blind_b"
+    "notes": "Câu này bot phải từ chối do không có cột số lương khách trong dataset này",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-bv-04",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "lich_su"
-    ],
-    "kind": "ambiguous",
+    "id": "v4_b-phi_vat_the-08",
     "turns": [
-      "Trống đồng Đông Sơn"
+      "Di sản nào được ngân sách nhà nước cấp kinh phí bảo tồn nhiều nhất?"
     ],
     "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Câu này bot phải từ chối do không có cột kinh phí trong dataset này",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-phi_vat_the-09",
+    "turns": [
+      "Cho mình thông tin về hát xoan."
+    ],
+    "check": {
+      "refusal": false,
       "ask_back": true
     },
-    "gold_note": "Mơ hồ: có nhiều trống đồng văn hóa Đông Sơn",
-    "source": "human_written_blind_b"
+    "notes": "Hát xoan khớp đúng 1 dòng (không trùng tên), nhưng câu hỏi không nói rõ muốn biết thuộc tính nào trong 3 cột (Loại hình, Địa điểm, Năm công nhận) — hệ thống nên hỏi lại, không tự chọn 1 cột để trả lời",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-bv-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "lich_su"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-phi_vat_the-10",
     "turns": [
-      "Bia đá tiến sĩ Văn Miếu Thăng Long được công nhận vào đợt mấy"
-    ],
-    "check": {
-      "any": [
-        "Đợt 3",
-        "3"
-      ]
-    },
-    "gold_note": "Bia tiến sĩ Văn Miếu công nhận đợt 3 (2015)",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-bv-06",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "lich_su"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Tượng Phật bà Quan Âm chùa Bút Tháp ở tỉnh nào"
-    ],
-    "check": {
-      "any": [
-        "Bắc Ninh",
-        "tỉnh Bắc Ninh"
-      ]
-    },
-    "gold_note": "Chùa Bút Tháp ở Bắc Ninh",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-bv-07",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "lich_su"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Áo ngự bào triều Nguyễn hiện được đơn vị nào lưu giữ"
-    ],
-    "check": {
-      "any": [
-        "Bảo tàng Cổ vật Cung đình Huế",
-        "Trung tâm Bảo tồn Di tích Cố đô Huế"
-      ]
-    },
-    "gold_note": "Lưu giữ áo ngự bào",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-bv-08",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "lich_su"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Trống đồng Sông Lô được công nhận năm nào"
-    ],
-    "check": {
-      "any": [
-        "2012"
-      ]
-    },
-    "gold_note": "Trống Sông Lô công nhận 2012",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-bv-09",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "lich_su"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Trống đồng Sông Lò hiện đang ở bảo tàng nào"
-    ],
-    "check": {
-      "any": [
-        "Bảo tàng Tỉnh Hà Giang",
-        "Hà Giang"
-      ]
-    },
-    "gold_note": "Trống Sông Lò ở Hà Giang",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-bv-10",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "lich_su"
-    ],
-    "kind": "count",
-    "turns": [
-      "Đợt 1 có bao nhiêu bảo vật quốc gia được công nhận"
+      "Tìm các di sản ở Hà Nội"
     ],
     "check": {
       "num": [
-        "30"
-      ]
+        32
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Đợt 1 có 30 bảo vật",
-    "source": "human_written_blind_b"
+    "notes": "đếm cột địa điểm có chứ Hà Nội: 32. Quá nhiều để liệt kê (>8 dòng, loại S không áp dụng), chấm bằng số lượng. [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-bv-11",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "lich_su"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-phi_vat_the-11",
     "turns": [
-      "Trống đồng Cảnh Thịnh thuộc niên đại triều đại nào"
+      "Di sản nào được công nhận trong năm 2003?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Cột 'Năm công nhận' có tồn tại, nhưng giá trị thật trong data chỉ có từ 2012 đến 2024. Đây là bẫy lọc-ra-0-dòng, hệ thống phải nói không tìm thấy, không được bịa ra 1 di sản nào",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-the_thao-01",
+    "turns": [
+      "Sân nào có sức chứa lớn nhất trong danh sách?"
     ],
     "check": {
       "any": [
-        "Thời Tây Sơn",
-        "Tây Sơn",
-        "năm 1800"
-      ]
+        "VinFast – Trống Đồng"
+      ],
+      "all": [
+        "VinFast – Trống Đồng"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Trống Cảnh Thịnh thời Tây Sơn",
-    "source": "human_written_blind_b"
+    "notes": "Lọc cột Sức chứa (chỗ) lấy giá trị lớn nhất [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dstg-01",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "du_lich"
-    ],
-    "kind": "followup",
+    "id": "v4_b-the_thao-02",
     "turns": [
-      "Hoàng thành Thăng Long được UNESCO công nhận năm nào?",
-      "Nằm ở tỉnh thành nào thế?"
+      "Những sân vận động nào được khánh thành từ năm 2000 trở đi?"
     ],
     "check": {
       "any": [
-        "Thành phố Hà Nội",
-        "Hà Nội"
-      ]
+        "Pleiku",
+        "VinFast – Trống Đồng",
+        "Cẩm Phả",
+        "Buôn Ma Thuột",
+        "Thiên Trường",
+        "Bến Tre",
+        "Rạch Giá",
+        "Việt Yên",
+        "Cà Mau",
+        "Thành Long",
+        "Mỹ Đình",
+        "Bà Rịa",
+        "Đà Lạt",
+        "Phan Thiết",
+        "Lạng Sơn",
+        "Long An",
+        "PVF",
+        "Thái Nguyên",
+        "Chi Lăng (Hòa Xuân cũ)",
+        "Kon Tum",
+        "Hòa Bình",
+        "Rạch Chiếc"
+      ],
+      "num": [
+        22
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Lượt 2 hỏi vị trí Hoàng thành Thăng Long",
-    "source": "human_written_blind_b"
+    "notes": "Lọc cột Năm khánh thành >= 2000, liệt kê hết sân thỏa điều kiện [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dstg-02",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "du_lich"
-    ],
-    "kind": "unaccent",
+    "id": "v4_b-the_thao-03",
     "turns": [
-      "vinh ha long duoc unesco cong nhan nam nao"
+      "Sân nào đang có ghi chú về việc cải tạo hoặc nâng cấp?"
     ],
     "check": {
       "any": [
-        "1994",
-        "2000",
-        "2023"
-      ]
+        "VinFast – Trống Đồng",
+        "PVF",
+        "Rạch Chiếc",
+        "Lạng Sơn"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Vịnh Hạ Long công nhận lần đầu 1994",
-    "source": "human_written_blind_b"
+    "notes": "Lọc cột Ghi chú có dòng Đang xây dựng, liêtk kê hết những sân vận động khớp",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dstg-03",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "du_lich"
-    ],
-    "kind": "refusal",
+    "id": "v4_b-the_thao-04",
     "turns": [
-      "Giá vé tham quan phố cổ Hội An hiện nay là bao nhiêu tiền?"
+      "Có bao nhiêu sân đang được khai thác?"
     ],
     "check": {
-      "refusal": true
+      "num": [
+        49
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Bảng không có cột giá vé",
-    "source": "human_written_blind_b"
+    "notes": "Đếm số dòng ghi đang hoạt động ở cột Trạng thái khai thác",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dstg-04",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "du_lich"
-    ],
-    "kind": "ambiguous",
+    "id": "v4_b-the_thao-05",
     "turns": [
-      "Di sản thế giới ở miền Trung"
+      "Sân Mỹ Đình có sức chứa bao nhiêu chỗ?",
+      "Đội bóng nào quản lý sân đó vậy?"
     ],
     "check": {
+      "any": [
+        "Thể Công – Viettel Đội tuyển quốc gia Việt Nam"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lượt 1 (Mỹ Đình, sức chứa 40.192 chỗ) chỉ để dẫn ngữ cảnh follow-up, không chấm. Lượt 2 lấy cột 'Đội bóng chủ quản' = 'Thể Công – Viettel Đội tuyển quốc gia Việt Nam'",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-the_thao-06",
+    "turns": [
+      "san van dong nao co suc chua tren 30000 cho"
+    ],
+    "check": {
+      "any": [
+        "Mỹ Đình",
+        "VinFast – Trống Đồng",
+        "PVF",
+        "Rạch Chiếc"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc cột 'Sức chứa (chỗ)' > 30.000, liệt kê các sân khớp",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-the_thao-07",
+    "turns": [
+      "Sân nào có giá vé vào cửa rẻ nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Câu này bot phải từ chối do không có cột giá vé trong dataset này",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-the_thao-08",
+    "turns": [
+      "Sân nào có doanh thu bán vé cao nhất năm ngoái?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Câu này bot phải từ chối do không có cột giá vé trong dataset này",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-the_thao-09",
+    "turns": [
+      "Sân Thống Nhất giờ thế nào rồi?"
+    ],
+    "check": {
+      "refusal": false,
       "ask_back": true
     },
-    "gold_note": "Mơ hồ: miền Trung có nhiều di sản (Huế, Hội An, Mỹ Sơn, Phong Nha)",
-    "source": "human_written_blind_b"
+    "notes": "Sân 'Thống nhất' khớp đúng 1 dòng (không trùng tên), nhưng câu hỏi không nói rõ muốn biết thuộc tính nào trong 4 cột (Địa điểm, Năm khánh thành,Sức chứa (chỗ), Ghi chú) — hệ thống nên hỏi lại, không tự chọn 1 cột để trả lời [Họp thống nhất: chốt theo nhãn B (Phạm Lê Thiên Dấn) do 2 nhãn bất đồng nội dung thật]",
+    "labeler": "final (họp: dj quyết)"
   },
   {
-    "id": "v4_b-dstg-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "du_lich"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-the_thao-10",
     "turns": [
-      "Vườn quốc gia Phong Nha Kẻ Bàng là di sản thiên nhiên hay văn hóa"
+      "Sân nào có trạng thái khai thác là tạm ngừng?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Cột 'Trạng thái khai thác' có tồn tại, nhưng giá trị thật trong data chỉ có 'Đang hoạt động' hoặc 'Đang xây dựng' — không sân nào ghi 'tạm ngừng'. Đây là bẫy lọc-ra-0-dòng, hệ thống phải nói không tìm thấy, không được bịa ra 1 sân nào",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-the_thao-11",
+    "turns": [
+      "So sánh sức chứa của hai sân có sức chứa lớn nhất."
+    ],
+    "check": {
+      "all": [
+        "VinFast",
+        "135.000",
+        "Rạch Chiếc",
+        "70.000"
+      ],
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Câu không nói rõ chỉ tính sân đang hoạt động. Đọc y nguyên số liệu (không tự lọc trạng thái) thì 2 sân lớn nhất là VinFast – Trống Đồng (135.000, đang xây dựng) và Rạch Chiếc (70.000, đang xây dựng) — đều CHƯA tồn tại thật. Nếu chỉ tính sân đang hoạt động thì là Mỹ Đình (40.192) và 1 trong 3 sân hoà 30.000 (Cần Thơ/Lạch Tray/Thiên Trường, không phân biệt được hạng 2 duy nhất). Đây là bẫy chủ động: test engine có lọc trạng thái xây dựng trước khi so sánh 'lớn nhất' không — ghi cả 2 cách đọc vào ASSUMPTIONS_B.md khi họp thống nhất với người gán nhãn B.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-01",
+    "turns": [
+      "Trường nào có tên viết tắt là HCMUTE?"
     ],
     "check": {
       "any": [
-        "Di sản thiên nhiên",
-        "Thiên nhiên"
-      ]
+        "Trường Đại học Công nghệ Kỹ thuật Thành phố Hồ Chí Minh"
+      ],
+      "all": [
+        "Trường Đại học Công nghệ Kỹ thuật Thành phố Hồ Chí Minh"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Phong Nha là di sản thiên nhiên",
-    "source": "human_written_blind_b"
+    "notes": "Lọc cột Viết tắt = HCMUTE, liệt kê trường khớp [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dstg-06",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "du_lich"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-truong_dai_hoc-02",
     "turns": [
-      "Quần thể di tích Cố đô Huế nằm ở đâu"
-    ],
-    "check": {
-      "any": [
-        "Thừa Thiên Huế",
-        "Huế"
-      ]
-    },
-    "gold_note": "Cố đô Huế ở Huế",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dstg-07",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "du_lich"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Quần thể danh thắng Tràng An thuộc tỉnh nào"
-    ],
-    "check": {
-      "any": [
-        "Ninh Bình",
-        "tỉnh Ninh Bình"
-      ]
-    },
-    "gold_note": "Tràng An ở Ninh Bình",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dstg-08",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "du_lich"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Thánh địa Mỹ Sơn thuộc niên đại nào"
-    ],
-    "check": {
-      "any": [
-        "Thế kỷ IV - XIII",
-        "Thế kỷ 4 - 13"
-      ]
-    },
-    "gold_note": "Niên đại Mỹ Sơn",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dstg-09",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "du_lich"
-    ],
-    "kind": "count",
-    "turns": [
-      "Việt Nam có bao nhiêu di sản thế giới chính thức được liệt kê"
+      "Những trường nào có tên giao dịch tiếng Anh chứa từ 'Technology'?"
     ],
     "check": {
       "num": [
-        "8"
-      ]
+        38
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "8 di sản thế giới chính thức",
-    "source": "human_written_blind_b"
+    "notes": "Lọc cột Tên giao dịch tiếng Anh, dòng nào có chữ Technology. Có tổng 38 dòng khớp (>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dstg-10",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "du_lich"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-truong_dai_hoc-03",
     "turns": [
-      "Quần thể Hương Sơn có tình trạng thế nào trong danh sách đề cử"
+      "Trường nào do Bộ Giáo dục và Đào tạo quản lý trực tiếp?"
+    ],
+    "check": {
+      "num": [
+        32
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc cột Cơ quan chủ quản = Bộ Giáo dục và Đào tạo, có 32 dòng khớp(>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-04",
+    "turns": [
+      "Có bao nhiêu trường thuộc loại hình tư thục?"
+    ],
+    "check": {
+      "num": [
+        68
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Cột 'Loại hình' chỉ có đúng 2 giá trị sạch: Công lập (435) và Tư thục (68)",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-05",
+    "turns": [
+      "Đại học Bách khoa, ĐHQG_HCM ở địa điểm nào?",
+      "Tên giao dịch tiếng Anh của trường là gì?"
     ],
     "check": {
       "any": [
-        "Khu đề cử dự kiến",
-        "Đề cử",
-        "Đã gửi UNESCO"
-      ]
+        "VNUHCM-University of Technology"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Hương Sơn là đề cử dự kiến",
-    "source": "human_written_blind_b"
+    "notes": "Lượt 1 (Đại học Bách khoa, ĐHQG_HCM, Toàn quốc) chỉ để dẫn ngữ cảnh follow-up, không chấm. Lượt 2 lấy cột 'Tên giao dịch tiếng Anh' = 'VNUHCM-University of Technology'",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dstg-11",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "du_lich"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-truong_dai_hoc-06",
     "turns": [
-      "Thành nhà Hồ thuộc tỉnh thành nào"
+      "truong nao co ten viet tat la HUIT"
     ],
     "check": {
       "any": [
-        "Thanh Hóa",
-        "tỉnh Thanh Hóa"
-      ]
+        "Trường Đại học Công Thương Thành phố Hồ Chí Minh"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Thành nhà Hồ ở Thanh Hóa",
-    "source": "human_written_blind_b"
+    "notes": "Lọc cột Viết tắt = HUIT, liệt kê trường khớp",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dh-01",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "giao_duc"
-    ],
-    "kind": "followup",
+    "id": "v4_b-truong_dai_hoc-07",
     "turns": [
-      "Trường Đại học Bách khoa Hà Nội viết tắt là gì?",
-      "Trụ sở ở đâu vậy bạn?"
+      "Trường nào có tỷ lệ sinh viên tốt nghiệp đúng hạn cao nhất?"
     ],
     "check": {
-      "any": [
-        "Hà Nội",
-        "Số 1 Đại Cồ Việt"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "gold_note": "Lượt 2 hỏi trụ sở ĐH Bách khoa Hà Nội",
-    "source": "human_written_blind_b"
+    "notes": "Câu này bot phải từ chối do không có cột tỷ lệ sinh viên tốt nghiệp trong dataset này",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dh-02",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "giao_duc"
-    ],
-    "kind": "unaccent",
+    "id": "v4_b-truong_dai_hoc-08",
     "turns": [
-      "dai hoc ngoai thuong viet tat la gi"
+      "Trường nào có mức học phí ngành công nghệ thông tin thấp nhất năm nay?"
     ],
     "check": {
-      "any": [
-        "FTU"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "gold_note": "ĐH Ngoại thương viết tắt FTU",
-    "source": "human_written_blind_b"
+    "notes": "Câu này bot phải từ chối do không có cột học phí trong dataset này",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dh-03",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "giao_duc"
-    ],
-    "kind": "refusal",
+    "id": "v4_b-truong_dai_hoc-09",
     "turns": [
-      "Học phí một năm của Đại học Ngoại thương là bao nhiêu?"
+      "Đại học Quốc gia có những thông tin gì?"
     ],
     "check": {
-      "refusal": true
-    },
-    "gold_note": "Bảng không có cột học phí",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dh-04",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "giao_duc"
-    ],
-    "kind": "ambiguous",
-    "turns": [
-      "Trường Đại học Bách khoa"
-    ],
-    "check": {
+      "refusal": false,
       "ask_back": true
     },
-    "gold_note": "Mơ hồ: có ĐH Bách khoa Hà Nội, ĐH Bách khoa ĐHQG-HCM, ĐH Bách khoa ĐH Đà Nẵng",
-    "source": "human_written_blind_b"
+    "notes": "không rõ hỏi trường đại học nào, phải hỏi lại. Không tự ý bóc bừa 1 trường rồi trả lời",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dh-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "giao_duc"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-truong_dai_hoc-10",
     "turns": [
-      "Trường Đại học FPT là trường công lập hay tư thục"
-    ],
-    "check": {
-      "any": [
-        "Tư thục"
-      ]
-    },
-    "gold_note": "ĐH FPT là tư thục",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dh-06",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "giao_duc"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Học viện Tài chính trực thuộc cơ quan nào"
-    ],
-    "check": {
-      "any": [
-        "Bộ Tài chính"
-      ]
-    },
-    "gold_note": "Học viện Tài chính trực thuộc Bộ Tài chính",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dh-07",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "giao_duc"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Trường Đại học Cần Thơ có địa điểm ở đâu"
-    ],
-    "check": {
-      "any": [
-        "Cần Thơ",
-        "thành phố Cần Thơ"
-      ]
-    },
-    "gold_note": "ĐH Cần Thơ ở Cần Thơ",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dh-08",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "giao_duc"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Tên tiếng Anh của Trường Đại học Công nghệ ĐHQGHN là gì"
-    ],
-    "check": {
-      "any": [
-        "VNU-University of Engineering and Technology",
-        "UET"
-      ]
-    },
-    "gold_note": "Tên tiếng Anh UET",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dh-09",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "giao_duc"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Trường Đại học Y Hà Nội trực thuộc đơn vị nào quản lý"
-    ],
-    "check": {
-      "any": [
-        "Bộ Y tế"
-      ]
-    },
-    "gold_note": "ĐH Y Hà Nội trực thuộc Bộ Y tế",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dh-10",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "giao_duc"
-    ],
-    "kind": "count",
-    "turns": [
-      "Có bao nhiêu trường đại học tư thục trong danh sách"
+      "Liệt kê các trường ở Thành phố Hồ Chí Minh."
     ],
     "check": {
       "num": [
-        "60"
-      ]
+        72
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Thống nhất số trường tư thục là 60 trường",
-    "source": "human_written_blind_b"
+    "notes": "Lọc cột Địa điểm = Hồ chí Minh, 72 trường khớp (>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-dh-11",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "giao_duc"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-truong_dai_hoc-11",
     "turns": [
-      "Trường Đại học Luật Hà Nội trực thuộc cơ quan nào"
+      "] Trường nào có loại hình là công lập?"
+    ],
+    "check": {
+      "num": [
+        435
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Cột 'Loại hình' chỉ có đúng 2 giá trị sạch: Công lập (435) và Tư thục (68)",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-xe_buyt-01",
+    "turns": [
+      "Tuyến D4 chạy từ đâu tới đâu vậy?"
+    ],
+    "check": {
+      "all": [
+        "VinHomes Grand Park",
+        "Bến Thành"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "D4: VinHomes Grand Park <-> Bến Thành",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-xe_buyt-02",
+    "turns": [
+      "Mấy tuyến nào có điểm đến hoặc điểm đi là Chợ Lớn?"
+    ],
+    "check": {
+      "num": [
+        16
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "16 tuyến có Chợ Lớn là Đầu A hoặc Đầu B — quá 8 dòng, chấm bằng số lượng.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-xe_buyt-03",
+    "turns": [
+      "Tuyến nào mà điểm đầu với điểm cuối là một chỗ luôn?"
+    ],
+    "check": {
+      "all": [
+        "167",
+        "170"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "2 tuyến dạng vòng (loop), điểm đầu = điểm cuối: 167 (Đại học Hutech) và 170 (Đại học Quốc gia).",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-xe_buyt-04",
+    "turns": [
+      "Tuyến nào chạy sớm nhất trong ngày, trước 4 giờ sáng?"
+    ],
+    "check": {
+      "all": [
+        "9",
+        "722B",
+        "74"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "3 tuyến có giờ bắt đầu trước 04:00: tuyến 9 (03:45), 722B (02:40), 74 (03:30).",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
+  },
+  {
+    "id": "v4_b-xe_buyt-05",
+    "turns": [
+      "Tuyến 172 giãn cách bao nhiêu phút một chuyến?",
+      "Thời gian hoạt động của nó thì sao?"
     ],
     "check": {
       "any": [
-        "Bộ Tư pháp"
-      ]
+        "04:00 - 19:00"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "ĐH Luật Hà Nội thuộc Bộ Tư pháp",
-    "source": "human_written_blind_b"
+    "notes": "Lượt 1 (172: giãn cách 180-210 phút) là ngữ cảnh. Lượt 2 lấy Thời gian hoạt động: 04:00 - 19:00.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-bvsg-01",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "y_te"
-    ],
-    "kind": "followup",
+    "id": "v4_b-xe_buyt-06",
     "turns": [
-      "Bệnh viện Chợ Rẫy có bao nhiêu giường bệnh?",
-      "Năm thành lập của bệnh viện là năm nào?"
+      "tuyen nao co cu ly tren 100km"
     ],
     "check": {
       "any": [
-        "1900"
-      ]
+        "721"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Lượt 2 hỏi năm thành lập Chợ Rẫy = 1900",
-    "source": "human_written_blind_b"
+    "notes": "Chỉ tuyến 721 (180 km) > 100km, tuyến 172 (97km) chưa tới 100km nên không tính.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-bvsg-02",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "y_te"
-    ],
-    "kind": "unaccent",
+    "id": "v4_b-xe_buyt-07",
     "turns": [
-      "benh vien tu du nam o dau"
+      "Tuyến 1 đi qua bao nhiêu trạm dừng?"
     ],
     "check": {
-      "any": [
-        "Phường Phạm Ngũ Lão",
-        "Quận 1"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "gold_note": "BV Từ Dũ ở Quận 1",
-    "source": "human_written_blind_b"
+    "notes": "Không có cột số trạm dừng/lộ trình chi tiết, bot phải từ chối",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-bvsg-03",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "y_te"
-    ],
-    "kind": "refusal",
+    "id": "v4_b-xe_buyt-08",
     "turns": [
-      "Trưởng khoa cấp cứu Bệnh viện Chợ Rẫy là bác sĩ nào?"
+      "Đơn vị nào đang khai thác tuyến 172 vậy?"
     ],
     "check": {
-      "refusal": true
+      "refusal": true,
+      "ask_back": false
     },
-    "gold_note": "Bảng không có cột tên bác sĩ trưởng khoa",
-    "source": "human_written_blind_b"
+    "notes": "Không có cột đơn vị đảm nhiệm trong bảng dữ liệu đã nạp, bot phải từ chối",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-bvsg-04",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "y_te"
-    ],
-    "kind": "ambiguous",
+    "id": "v4_b-xe_buyt-09",
     "turns": [
-      "Bệnh viện Nhi đồng"
+      "Tuyến nào đi Đại học Quốc gia?"
     ],
     "check": {
+      "refusal": false,
       "ask_back": true
     },
-    "gold_note": "Mơ hồ: có Nhi đồng 1, Nhi đồng 2, Nhi đồng Thành phố",
-    "source": "human_written_blind_b"
+    "notes": "Mơ hồ: có 9 tuyến khác nhau (8, 10, 19, 33, 50, 52, 53, 99, 170) đều có Đại học Quốc gia là điểm đầu hoặc điểm cuối — hệ thống nên hỏi lại cụ thể hơn (đi từ đâu, hay liệt kê tất cả) thay vì chỉ chọn 1 tuyến bừa.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-bvsg-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "y_te"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-xe_buyt-10",
     "turns": [
-      "Bệnh viện Thống Nhất trực thuộc tuyến quản lý nào"
+      "Giữa tuyến 1 và tuyến 172, tuyến nào dài hơn?"
     ],
     "check": {
       "any": [
-        "Tuyến trung ương / Bộ ngành",
-        "Bộ Y tế"
-      ]
+        "172"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "BV Thống Nhất tuyến trung ương",
-    "source": "human_written_blind_b"
+    "notes": "172 = 97 km, dài hơn tuyến 1 = 9.62 km.",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   },
   {
-    "id": "v4_b-bvsg-06",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "y_te"
-    ],
-    "kind": "lookup",
+    "id": "v4_b-xe_buyt-11",
     "turns": [
-      "Bệnh viện Nhân dân Gia Định có tên gọi cũ là gì"
+      "Tuyến nào có giãn cách chuyến lâu nhất, kiểu phải đợi lâu nhất đó?"
     ],
     "check": {
       "any": [
-        "Bệnh viện Nguyễn Văn Học"
-      ]
+        "722B",
+        "172"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "gold_note": "Tên cũ BV Gia Định",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-bvsg-07",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "y_te"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Bệnh viện Đại học Y Dược Thành phố Hồ Chí Minh có bao nhiêu giường"
-    ],
-    "check": {
-      "any": [
-        "1.000",
-        "1000",
-        "1.000 giường"
-      ]
-    },
-    "gold_note": "Số giường BV ĐH Y Dược",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-bvsg-08",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "y_te"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Bệnh viện Hùng Vương là bệnh viện chuyên khoa hay đa khoa"
-    ],
-    "check": {
-      "any": [
-        "Chuyên khoa"
-      ]
-    },
-    "gold_note": "BV Hùng Vương chuyên khoa sản phụ khoa",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-bvsg-09",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "y_te"
-    ],
-    "kind": "count",
-    "turns": [
-      "có bao nhiêu bệnh viện trực thuộc tuyến bộ ngành tại TP.HCM"
-    ],
-    "check": {
-      "num": [
-        "10"
-      ]
-    },
-    "gold_note": "10 BV tuyến bộ ngành",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-bvsg-10",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "y_te"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Bệnh viện Mắt Thành phố Hồ Chí Minh thành lập năm nào"
-    ],
-    "check": {
-      "any": [
-        "1978"
-      ]
-    },
-    "gold_note": "BV Mắt thành lập 1978",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-bvsg-11",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "y_te"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Bệnh viện Bệnh Nhiệt đới nằm ở cơ sở nào"
-    ],
-    "check": {
-      "any": [
-        "Phường Chợ Lớn",
-        "Quận 5"
-      ]
-    },
-    "gold_note": "BV Bệnh Nhiệt đới",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dtqg-01",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_tich"
-    ],
-    "kind": "followup",
-    "turns": [
-      "Cố đô Hoa Lư được xếp hạng đợt mấy?",
-      "Năm xếp hạng là năm nào?"
-    ],
-    "check": {
-      "any": [
-        "2012"
-      ]
-    },
-    "gold_note": "Lượt 2 hỏi năm xếp hạng Cố đô Hoa Lư = 2012",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dtqg-02",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_tich"
-    ],
-    "kind": "unaccent",
-    "turns": [
-      "dia dao cu chi nam o dau"
-    ],
-    "check": {
-      "any": [
-        "Thành phố Hồ Chí Minh",
-        "TP.HCM",
-        "Củ Chi"
-      ]
-    },
-    "gold_note": "Địa đạo Củ Chi",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dtqg-03",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_tich"
-    ],
-    "kind": "refusal",
-    "turns": [
-      "Giá vé tham quan Dinh Độc Lập hiện nay là bao nhiêu?"
-    ],
-    "check": {
-      "refusal": true
-    },
-    "gold_note": "Bảng không có cột giá vé",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dtqg-04",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_tich"
-    ],
-    "kind": "ambiguous",
-    "turns": [
-      "Khu di tích Lam Kinh"
-    ],
-    "check": {
-      "ask_back": true
-    },
-    "gold_note": "Mơ hồ: Lam Kinh ở Thanh Hóa xếp hạng đợt 3",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dtqg-05",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_tich"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Đền Hùng được xếp hạng di tích quốc gia đặc biệt năm nào"
-    ],
-    "check": {
-      "any": [
-        "2009"
-      ]
-    },
-    "gold_note": "Đền Hùng xếp hạng đợt 1 năm 2009",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dtqg-06",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_tich"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Khu di tích trung tâm Hoàng thành Thăng Long được xếp hạng vào đợt mấy"
-    ],
-    "check": {
-      "any": [
-        "Đợt 1",
-        "1"
-      ]
-    },
-    "gold_note": "Hoàng thành Thăng Long xếp hạng đợt 1",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dtqg-07",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_tich"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Nhà tù Côn Đảo nằm ở tỉnh thành nào"
-    ],
-    "check": {
-      "any": [
-        "Bà Rịa - Vũng Tàu",
-        "Bà Rịa Vũng Tàu"
-      ]
-    },
-    "gold_note": "Nhà tù Côn Đảo",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dtqg-08",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_tich"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Di tích Cổ Loa thuộc hạng mục di tích nào"
-    ],
-    "check": {
-      "any": [
-        "Di tích lịch sử, kiến trúc nghệ thuật, khảo cổ",
-        "Khảo cổ",
-        "Lịch sử"
-      ]
-    },
-    "gold_note": "Hạng mục Cổ Loa",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dtqg-09",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_tich"
-    ],
-    "kind": "count",
-    "turns": [
-      "Đợt 1 năm 2009 có bao nhiêu di tích được xếp hạng"
-    ],
-    "check": {
-      "num": [
-        "10"
-      ]
-    },
-    "gold_note": "10 di tích đợt 1 năm 2009",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dtqg-10",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_tich"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Khu di tích Kim Liên quê Bác nằm ở tỉnh nào"
-    ],
-    "check": {
-      "any": [
-        "Nghệ An",
-        "tỉnh Nghệ An",
-        "Nam Đàn"
-      ]
-    },
-    "gold_note": "Khu di tích Kim Liên ở Nghệ An",
-    "source": "human_written_blind_b"
-  },
-  {
-    "id": "v4_b-dtqg-11",
-    "suite": "real4",
-    "split": "blind",
-    "datasets": [
-      "di_tich"
-    ],
-    "kind": "lookup",
-    "turns": [
-      "Vịnh Hạ Long được xếp hạng di tích quốc gia đặc biệt vào năm nào"
-    ],
-    "check": {
-      "any": [
-        "2009"
-      ]
-    },
-    "gold_note": "Vịnh Hạ Long xếp hạng đợt 1 năm 2009",
-    "source": "human_written_blind_b"
+    "notes": "722B có giãn cách 180-210 phút, khoảng chờ tối đa (210 phút) cao nhất trong danh sách; tuyến 172 cũng 180-210 phút nên chấp nhận cả 2 nếu engine trả về đồng hạng — ghi chú vào ASSUMPTIONS. [Họp: gộp biên rộng cả 2 nhãn A+B, không mâu thuẫn nội dung]",
+    "labeler": "final (dj + Nguyễn Viết Hưng)"
   }
 ]

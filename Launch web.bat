@@ -3,7 +3,14 @@ setlocal
 rem Start the web (System 3 Strict + System 4 Friendly) at http://127.0.0.1:8300 (close this window or press Ctrl+C to stop).
 set "REPO=%~dp0"
 set "REPO=%REPO:~0,-1%"
-for %%I in ("%REPO%\..") do set "PYROOT=%%~fI\pyroot_merge"
+for %%I in ("%REPO%") do set "REPONAME=%%~nxI"
+for %%I in ("%REPO%\..") do (
+    if exist "%%~fI\pyroot_%REPONAME%\system3\server\main.py" (
+        set "PYROOT=%%~fI\pyroot_%REPONAME%"
+    ) else (
+        set "PYROOT=%%~fI\pyroot_merge"
+    )
+)
 
 if not exist "%REPO%\.venv\Scripts\python.exe" goto :nosetup
 if not exist "%PYROOT%\system3\server\main.py" goto :nosetup

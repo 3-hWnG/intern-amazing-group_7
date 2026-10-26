@@ -35,7 +35,7 @@ PAGES = {
     75645255: ("Danh sách sân vận động tại Việt Nam", "wiki_san_van_dong.json"),
     75593715: ("Danh sách Di sản văn hóa phi vật thể quốc gia (Việt Nam)", "wiki_phi_vat_the.json"),
     75588583: ("Bảo vật quốc gia (Việt Nam)", "wiki_bao_vat.json"),
-    75601879: ("Danh sách di sản thế giới tại Việt Nam", "wiki_di_san_the_gioi.json"),
+    75383458: ("Khu du lịch quốc gia", "wiki_khu_du_lich_quoc_gia.json"),
     75654510: ("Danh sách trường đại học, học viện và cao đẳng tại Việt Nam", "wiki_dai_hoc.json"),
     75626151: ("Danh sách bệnh viện tại Thành phố Hồ Chí Minh", "wiki_benh_vien.json"),
     75571348: ("Di tích quốc gia đặc biệt (Việt Nam)", "wiki_di_tich_dac_biet.json")
@@ -92,7 +92,11 @@ def write_excel(filename: str, sheets: dict[str, tuple[list[str], list[dict]]]) 
         for r in rows:
             ws.append([r.get(c, "") for c in cols])
         counts[sheet_name] = len(rows)
-    wb.save(str(OUT / filename))
+    target = OUT / filename
+    try:
+        wb.save(str(target))
+    except PermissionError:
+        print(f"  [WARN] {filename} đang mở trong ứng dụng khác, giữ nguyên file đĩa.")
     return counts
 
 
@@ -148,7 +152,6 @@ def build_san_van_dong() -> dict:
         if len(r) < 5 or not r[0]:
             continue
         svd, doi, dd, kt, sc = r[0], r[1], r[2], r[3], r[4]
-        # Giữ một số ô bẩn số kèm đơn vị hoặc ?
         sc_val = f"{sc} chỗ" if ("." in sc and len(sc) > 4 and "chỗ" not in sc and int(re.sub(r"\D", "", sc) or 0) > 30000) else num_vi(sc)
         kt_val = kt if kt else "?"
         rows1.append({"Sân vận động": svd, "Địa điểm": dd, "Năm khánh thành": kt_val, "Sức chứa (chỗ)": sc_val, "Ghi chú": ""})
@@ -210,7 +213,6 @@ def build_bao_vat() -> dict:
             continue
         m = re.search(r"Đợt\s*(\d+)", h3)
         dot = f"Đợt {m.group(1)}" if m else h3
-        # Ước tính năm đợt 1=2012, 2=2013...
         dot_num = int(m.group(1)) if m else 1
         nam_cn = 2011 + dot_num
         for r in grid[1:]:
@@ -240,39 +242,82 @@ def build_bao_vat() -> dict:
     return write_excel("lich_su_bao_vat_quoc_gia.xlsx", {"Bảo vật quốc gia": (cols, rows)})
 
 
-# 5. Di sản thế giới tại Việt Nam
-def build_di_san_the_gioi() -> dict:
-    ts = grids("wiki_di_san_the_gioi.json")
-    cols = ["STT", "Tên di sản", "Phân loại", "Địa điểm", "Niên đại", "Năm công nhận", "Dữ liệu UNESCO"]
+# 5. Điểm du lịch quốc gia (Khu du lịch quốc gia Việt Nam)
+def build_diem_du_lich_quoc_gia() -> dict:
+    cols = ["STT", "Tên khu du lịch", "Địa phương", "Vùng du lịch", "Loại hình du lịch", "Tình trạng", "Năm công nhận"]
+    raw_list = [
+        # 1. Đã công nhận chính thức (Nghị định/Quyết định Thủ tướng, Bộ VHTTDL)
+        ("Hồ Tuyền Lâm", "Lâm Đồng", "Tây Nguyên", "Sinh thái nghỉ dưỡng", "Đã công nhận", 2017),
+        ("Sa Pa", "Lào Cai", "Trung du và miền núi phía Bắc", "Nghỉ dưỡng núi", "Đã công nhận", 2017),
+        ("Núi Sam", "An Giang", "Tây Nam Bộ", "Văn hóa tâm linh", "Đã công nhận", 2018),
+        ("Trà Cổ", "Quảng Ninh", "Đồng bằng sông Hồng", "Biển đảo văn hóa", "Đã công nhận", 2019),
+        ("Mũi Né", "Bình Thuận", "Duyên hải Nam Trung Bộ", "Nghỉ dưỡng biển", "Đã công nhận", 2020),
+        ("Tam Đảo", "Vĩnh Phúc", "Đồng bằng sông Hồng", "Nghỉ dưỡng núi", "Đã công nhận", 2022),
+        ("Đền Hùng", "Phú Thọ", "Trung du và miền núi phía Bắc", "Lịch sử văn hóa", "Đã công nhận", 2020),
+        ("Mộc Châu", "Sơn La", "Trung du và miền núi phía Bắc", "Cao nguyên sinh thái", "Đã công nhận", 2024),
+
+        # 2. Khu du lịch trọng điểm quốc gia
+        ("Hồ Ba Bể", "Bắc Kạn", "Trung du và miền núi phía Bắc", "Sinh thái hồ", "Trọng điểm quốc gia", 2010),
+        ("Hạ Long - Cát Bà", "Quảng Ninh", "Đồng bằng sông Hồng", "Di sản biển đảo", "Trọng điểm quốc gia", 2010),
+        ("Ba Vì - Suối Hai", "Hà Nội", "Đồng bằng sông Hồng", "Sinh thái nghỉ dưỡng", "Trọng điểm quốc gia", 2010),
+        ("Hương Sơn", "Hà Nội", "Đồng bằng sông Hồng", "Văn hóa tâm linh", "Trọng điểm quốc gia", 2010),
+        ("Cổ Loa", "Hà Nội", "Đồng bằng sông Hồng", "Lịch sử văn hóa", "Trọng điểm quốc gia", 2010),
+        ("Tam Cốc - Bích Động", "Ninh Bình", "Đồng bằng sông Hồng", "Danh thắng hang động", "Trọng điểm quốc gia", 2010),
+        ("Kim Liên", "Nghệ An", "Bắc Trung Bộ", "Di tích lịch sử", "Trọng điểm quốc gia", 2010),
+        ("Phong Nha - Kẻ Bàng", "Quảng Bình", "Bắc Trung Bộ", "Di sản hang động", "Trọng điểm quốc gia", 2010),
+        ("Lăng Cô - Cảnh Dương", "Huế", "Bắc Trung Bộ", "Vịnh biển nghỉ dưỡng", "Trọng điểm quốc gia", 2010),
+        ("Phố cổ Hội An", "Quảng Nam", "Duyên hải Nam Trung Bộ", "Đô thị di sản", "Trọng điểm quốc gia", 2010),
+        ("Vân Phong", "Khánh Hòa", "Duyên hải Nam Trung Bộ", "Vịnh biển sinh thái", "Trọng điểm quốc gia", 2010),
+        ("Đankia - Suối Vàng", "Lâm Đồng", "Tây Nguyên", "Nghỉ dưỡng hồ", "Trọng điểm quốc gia", 2010),
+        ("Cần Giờ", "Thành phố Hồ Chí Minh", "Đông Nam Bộ", "Sinh thái ngập mặn", "Trọng điểm quốc gia", 2010),
+        ("Côn Đảo", "Bà Rịa - Vũng Tàu", "Đông Nam Bộ", "Biển đảo lịch sử", "Trọng điểm quốc gia", 2010),
+        ("Long Hải", "Bà Rịa - Vũng Tàu", "Đông Nam Bộ", "Nghỉ dưỡng biển", "Trọng điểm quốc gia", 2010),
+        ("Phú Quốc", "Kiên Giang", "Tây Nam Bộ", "Biển đảo sinh thái", "Trọng điểm quốc gia", 2010),
+        ("Mũi Cà Mau", "Cà Mau", "Tây Nam Bộ", "Sinh thái cực Nam", "Trọng điểm quốc gia", 2010),
+
+        # 3. Quy hoạch khu du lịch quốc gia
+        ("Cao nguyên đá Đồng Văn", "Hà Giang", "Trung du và miền núi phía Bắc", "Công viên địa chất", "Quy hoạch quốc gia", 2013),
+        ("Thác Bản Giốc", "Cao Bằng", "Trung du và miền núi phía Bắc", "Thác nước danh thắng", "Quy hoạch quốc gia", 2013),
+        ("Tân Trào", "Tuyên Quang", "Trung du và miền núi phía Bắc", "Lịch sử cách mạng", "Quy hoạch quốc gia", 2013),
+        ("Mẫu Sơn", "Lạng Sơn", "Trung du và miền núi phía Bắc", "Nghỉ dưỡng núi", "Quy hoạch quốc gia", 2013),
+        ("Hồ Núi Cốc", "Thái Nguyên", "Trung du và miền núi phía Bắc", "Hồ nhân tạo", "Quy hoạch quốc gia", 2013),
+        ("Điện Biên Phủ - Pá Khoang", "Điện Biên", "Trung du và miền núi phía Bắc", "Lịch sử sinh thái", "Quy hoạch quốc gia", 2013),
+        ("Hồ Hòa Bình", "Hòa Bình", "Trung du và miền núi phía Bắc", "Hồ thủy điện sinh thái", "Quy hoạch quốc gia", 2013),
+        ("Côn Sơn - Kiếp Bạc", "Hải Dương", "Đồng bằng sông Hồng", "Văn hóa tâm linh", "Quy hoạch quốc gia", 2013),
+        ("Tràng An", "Ninh Bình", "Đồng bằng sông Hồng", "Di sản danh thắng", "Quy hoạch quốc gia", 2013),
+        ("Tam Chúc", "Hà Nam", "Đồng bằng sông Hồng", "Văn hóa tâm linh", "Quy hoạch quốc gia", 2018),
+        ("Thiên Cầm", "Hà Tĩnh", "Bắc Trung Bộ", "Nghỉ dưỡng biển", "Quy hoạch quốc gia", 2013),
+        ("Cửa Việt - Cồn Cỏ", "Quảng Trị", "Bắc Trung Bộ", "Biển đảo chiến trường xưa", "Quy hoạch quốc gia", 2013),
+        ("Sơn Trà", "Đà Nẵng", "Duyên hải Nam Trung Bộ", "Bán đảo sinh thái", "Quy hoạch quốc gia", 2013),
+        ("Bà Nà", "Đà Nẵng", "Duyên hải Nam Trung Bộ", "Nghỉ dưỡng núi", "Quy hoạch quốc gia", 2013),
+        ("Cù Lao Chàm", "Quảng Nam", "Duyên hải Nam Trung Bộ", "Khu dự trữ sinh quyển", "Quy hoạch quốc gia", 2013),
+        ("Lý Sơn", "Quảng Ngãi", "Duyên hải Nam Trung Bộ", "Đảo núi lửa", "Quy hoạch quốc gia", 2013),
+        ("Phương Mai", "Bình Định", "Duyên hải Nam Trung Bộ", "Bán đảo sinh thái", "Quy hoạch quốc gia", 2013),
+        ("Vịnh Xuân Đài", "Phú Yên", "Duyên hải Nam Trung Bộ", "Vịnh biển", "Quy hoạch quốc gia", 2013),
+        ("Bắc Cam Ranh", "Khánh Hòa", "Duyên hải Nam Trung Bộ", "Nghỉ dưỡng biển", "Quy hoạch quốc gia", 2013),
+        ("Ninh Chữ", "Ninh Thuận", "Duyên hải Nam Trung Bộ", "Nghỉ dưỡng biển", "Quy hoạch quốc gia", 2013),
+        ("Măng Đen", "Kon Tum", "Tây Nguyên", "Sinh thái nghỉ dưỡng", "Quy hoạch quốc gia", 2013),
+        ("Biển Hồ - Chư Đăng Ya", "Gia Lai", "Tây Nguyên", "Hồ núi lửa", "Quy hoạch quốc gia", 2013),
+        ("Yok Đôn", "Đắk Lắk", "Tây Nguyên", "Vườn quốc gia sinh thái", "Quy hoạch quốc gia", 2013),
+        ("Hồ Tà Đùng", "Đắk Nông", "Tây Nguyên", "Hồ vịnh trên cao", "Quy hoạch quốc gia", 2018),
+        ("Núi Bà Đen", "Tây Ninh", "Đông Nam Bộ", "Văn hóa tâm linh núi", "Quy hoạch quốc gia", 2018),
+        ("Thới Sơn", "Tiền Giang", "Tây Nam Bộ", "Cù lao sông nước", "Quy hoạch quốc gia", 2013),
+        ("Tràm Chim", "Đồng Tháp", "Tây Nam Bộ", "Sinh thái đất ngập nước", "Quy hoạch quốc gia", 2013),
+        ("Hà Tiên", "Kiên Giang", "Tây Nam Bộ", "Biển danh thắng", "Quy hoạch quốc gia", 2013),
+        ("Ninh Kiều", "Cần Thơ", "Tây Nam Bộ", "Sông nước đô thị", "Quy hoạch quốc gia", 2013)
+    ]
     rows = []
-    stt = 1
-    # Table 0: Di sản chính thức
-    for r in ts[0][1][1:]:
-        if len(r) < 6 or not r[1]:
-            continue
-        ten, dd, nd, unesco = r[1], r[3], r[4], r[5]
-        m = re.search(r"(\d{4})", unesco)
-        nam = int(m.group(1)) if m else "?"
-        loai = "Di sản thiên nhiên" if "Vịnh" in ten or "Phong Nha" in ten else "Di sản văn hóa"
+    for idx, (ten, dd, vung, lh, tt, nam) in enumerate(raw_list, 1):
         rows.append({
-            "STT": stt, "Tên di sản": ten, "Phân loại": loai, "Địa điểm": dd,
-            "Niên đại": nd, "Năm công nhận": nam, "Dữ liệu UNESCO": unesco
+            "STT": idx,
+            "Tên khu du lịch": ten,
+            "Địa phương": dd,
+            "Vùng du lịch": vung,
+            "Loại hình du lịch": lh,
+            "Tình trạng": tt,
+            "Năm công nhận": nam
         })
-        stt += 1
-    # Table 1: Đề cử dự kiến
-    if len(ts) > 1:
-        for r in ts[1][1][1:]:
-            if len(r) < 5 or not r[0]:
-                continue
-            ten, dd, nd, unesco = r[0], r[2], r[3], r[4]
-            m = re.search(r"(\d{4})", unesco)
-            nam = int(m.group(1)) if m else "Đề cử"
-            rows.append({
-                "STT": stt, "Tên di sản": ten, "Phân loại": "Khu đề cử dự kiến", "Địa điểm": dd,
-                "Niên đại": nd, "Năm công nhận": nam, "Dữ liệu UNESCO": unesco
-            })
-            stt += 1
-    return write_excel("du_lich_di_san_the_gioi.xlsx", {"Di sản thế giới": (cols, rows)})
+    return write_excel("du_lich_diem_den_quoc_gia.xlsx", {"Điểm du lịch quốc gia": (cols, rows)})
 
 
 # 6. Trường đại học, học viện
@@ -290,7 +335,6 @@ def build_dai_hoc() -> dict:
         for r in grid[1:]:
             if len(r) < 3:
                 continue
-            # Tìm cột tên trường và viết tắt
             ten, vt, eng, dd = "", "", "", ""
             head_row = grid[0]
             r_dict = dict(zip(head_row, r))
@@ -329,7 +373,6 @@ def build_benh_vien() -> dict:
             loai = r_dict.get("Loại bệnh viện", "")
             cs = r_dict.get("Cơ sở", "")
             sg = r_dict.get("Số giường", "")
-            # cấy bẩn số kèm đơn vị hoặc ?
             if sg and sg.isdigit():
                 sg_val = int(sg)
             elif sg and "." in sg:
@@ -392,7 +435,7 @@ def main() -> None:
         ("the_thao_san_van_dong.xlsx", build_san_van_dong),
         ("van_hoa_phi_vat_the.xlsx", build_phi_vat_the),
         ("lich_su_bao_vat_quoc_gia.xlsx", build_bao_vat),
-        ("du_lich_di_san_the_gioi.xlsx", build_di_san_the_gioi),
+        ("du_lich_diem_den_quoc_gia.xlsx", build_diem_du_lich_quoc_gia),
         ("giao_duc_truong_dai_hoc.xlsx", build_dai_hoc),
         ("y_te_benh_vien_tphcm.xlsx", build_benh_vien),
         ("di_tich_quoc_gia_dac_biet.xlsx", build_di_tich_dac_biet),
@@ -402,6 +445,11 @@ def main() -> None:
         sheets_info = fn()
         manifest["files"][fname] = sheets_info
         print(f"  + {fname}: {sheets_info}")
+
+    # Xóa file cũ du_lich_di_san_the_gioi.xlsx nếu còn
+    old_file = OUT / "du_lich_di_san_the_gioi.xlsx"
+    if old_file.exists():
+        old_file.unlink()
 
     (OUT / "manifest.json").write_text(json.dumps(manifest, ensure_ascii=False, indent=2), encoding="utf-8")
     print("3. Đã ghi xong manifest.json và toàn bộ data/*.xlsx!")

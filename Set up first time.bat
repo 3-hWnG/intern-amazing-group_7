@@ -6,7 +6,8 @@ rem Safe to re-run after "git pull" (teammates catching up): every step skips wh
 rem Total download the first time: about 9 GB (packages ~3 GB incl. GPU torch, models ~6 GB).
 set "REPO=%~dp0"
 set "REPO=%REPO:~0,-1%"
-for %%I in ("%REPO%\..") do set "PYROOT=%%~fI\pyroot_merge"
+for %%I in ("%REPO%") do set "REPONAME=%%~nxI"
+for %%I in ("%REPO%\..") do set "PYROOT=%%~fI\pyroot_%REPONAME%"
 cd /d "%REPO%"
 
 echo [1/11] Creating Python environment (.venv)...
@@ -24,11 +25,9 @@ echo [2/11] Installing packages from requirements.txt (System 4 adds GPU torch, 
 
 echo [3/11] Linking package "system3" -^> this folder...
 rem The code imports itself as "system3.*", so PYTHONPATH needs a folder named system3.
-if not exist "%PYROOT%\system3\server\main.py" (
-    if exist "%PYROOT%\system3" rmdir "%PYROOT%\system3"
-    mkdir "%PYROOT%" 2>nul
-    mklink /J "%PYROOT%\system3" "%REPO%" >nul || goto :fail
-)
+if exist "%PYROOT%\system3" rmdir "%PYROOT%\system3"
+mkdir "%PYROOT%" 2>nul
+mklink /J "%PYROOT%\system3" "%REPO%" >nul || goto :fail
 
 rem One answer model for Strict and Friendly (no "thinking" model any more, D9 18/10/2026).
 if not defined LLM_MODEL set "LLM_MODEL=qwen3:4b-instruct-2507-q4_K_M"

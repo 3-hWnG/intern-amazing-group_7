@@ -1,1308 +1,1359 @@
 [
   {
-    "id": "v4_b-dt-01",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-dan_toc-01",
     "turns": [
-      "Dân tộc Tày có bao nhiêu người?",
-      "Thế còn địa bàn cư trú ở đâu?"
+      "Mấy dân tộc có ngữ hệ Nam Á vậy?"
     ],
     "check": {
       "any": [
-        "Miền núi phía Bắc",
-        "Cao Bằng",
-        "Lạng Sơn"
-      ]
+        "Kinh",
+        "Mường",
+        "Thổ",
+        "Chứt",
+        "Ba Na",
+        "Xơ Đăng",
+        "Cơ Ho",
+        "H'rê",
+        "M'Nông",
+        "Xtiêng",
+        "Giẻ Triêng",
+        "Mạ",
+        "Co",
+        "Chơ Ro",
+        "Rơ Măm",
+        "Brâu",
+        "Bru - Vân Kiều",
+        "Cơ Tu",
+        "Tà Ôi",
+        "Khơ Mú",
+        "Xinh Mun",
+        "Ơ Đu",
+        "Khmer",
+        "Kháng",
+        "Mảng",
+        "Người Mường Lò (nhánh)",
+        "Người Mường La (nhánh)"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Followup lượt 2 hỏi địa bàn cư trú của dân tộc Tày",
-    "labeler": "human_labeler_B"
+    "notes": "Lọc cột Ngữ hệ = Nam Á, liệt kê các dân tộc khớp",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dt-02",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-dan_toc-02",
     "turns": [
-      "dan toc hoa chu yeu cu tru o dau"
+      "Dân tộc nào có tỷ lệ dân số cao nhất?"
     ],
     "check": {
       "any": [
-        "Khắp cả nước",
-        "Đồng bằng"
-      ]
+        "Kinh"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Dân tộc Hoa cư trú khắp cả nước",
-    "labeler": "human_labeler_B"
+    "notes": "Lọc cột Tỷ lệ dân số (%) lớn nhất",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dt-03",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-dan_toc-03",
     "turns": [
-      "Dân tộc Mông có trang phục truyền thống màu gì?"
+      "Có dân tộc nào ghi nhiều tên gọi khác nhau không?"
     ],
     "check": {
-      "refusal": true
+      "any": [
+        "Thổ",
+        "Chứt",
+        "Dao",
+        "Lô Lô"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Bảng không có cột màu sắc trang phục",
-    "labeler": "human_labeler_B"
+    "notes": "xét theo cột tên gọi khác, dùng cách lấy độ dài chuỗi kí tự ban đầu trừ đi độ dài sau khi xóa phẩy cộng 1 sẻa số tên gọi khác",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dt-04",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-dan_toc-04",
     "turns": [
-      "Dân tộc nào đông dân thứ nhì Việt Nam?"
+      "Tìm các dân tộc thuộc cùng một nhóm ngôn ngữ giúp mình."
     ],
     "check": {
+      "refusal": false,
       "ask_back": true
     },
-    "notes": "Câu hỏi mơ hồ (nhiều cách hiểu thứ nhì theo % hoặc số tuyệt đối, hoặc dân tộc thiểu số đông nhất)",
-    "labeler": "human_labeler_B"
+    "notes": "không rõ nhóm ngôn ngữ nào, không tự chọn 1 hay liệt kê hết",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dt-05",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-dan_toc-05",
     "turns": [
-      "cho mình hỏi dân tộc Nùng thuộc hệ ngôn ngữ nào"
+      "Dân tộc Khmer có dân số khoảng bao nhiêu?",
+      "Thế họ cư trú chủ yếu ở vùng nào?"
     ],
     "check": {
       "any": [
-        "Hệ Tai-Kadai"
-      ]
+        "Đồng bằng",
+        "Đồng bằng / Toàn quốc",
+        "Toàn quốc"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Nùng thuộc hệ Tai-Kadai",
-    "labeler": "human_labeler_B"
+    "notes": "Lượt 1 (Khmer, dân số 1.319.652) chỉ để dẫn ngữ cảnh follow-up, không chấm. Lượt 2 lấy cột 'Vùng cư trú chủ yếu' = 'Đồng bằng / Toàn quốc', không lấy cột địa bàn cư trú chi tiết (liệt kê tỉnh)",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dt-06",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-dan_toc-06",
     "turns": [
-      "ở Tây Nguyên có những dân tộc bản địa nào"
+      "dan toc nao co dan so tren mot trieu nguoi"
+    ],
+    "check": {
+      "any": [
+        "Kinh",
+        "Mường",
+        "Khmer",
+        "Thái",
+        "Tày",
+        "Nùng",
+        "H'Mông"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc cột Dân số(người) > 1.000.000, liệt kê các dân tọc khớp",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-dan_toc-07",
+    "turns": [
+      "Dân tộc nào có tuổi thọ trung bình cao nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Câu này bot phải từ chối do không có cột tuổi or tuổi thọ trong dataset này",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-dan_toc-08",
+    "turns": [
+      "Dân tộc nào có thu nhập bình quân đầu người cao nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Câu này bot phải từ chối do không có cột thu nhập trong dataset này",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-dan_toc-09",
+    "turns": [
+      "Cho mình thông tin về dân tộc Thái."
+    ],
+    "check": {
+      "refusal": false,
+      "ask_back": true
+    },
+    "notes": "Dân tộc 'Thái' khớp đúng 1 dòng (không trùng tên), nhưng câu hỏi không nói rõ muốn biết thuộc tính nào trong 5 cột (ngữ hệ, nhóm ngôn ngữ, tên gọi khác, tỷ lệ dân số, dân số) — hệ thống nên hỏi lại, không tự chọn 1 cột để trả lời",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-dan_toc-10",
+    "turns": [
+      "Ngữ hệ và nhóm ngôn ngữ của dân tộc Chăm là gì"
     ],
     "check": {
       "all": [
+        "Hệ Nam Đảo",
+        "Chăm"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc dòng dân tộc Chăm, câu hỏi đòi 2 thông tin (ngữ hệ + nhóm ngôn ngữ)",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-dan_toc-11",
+    "turns": [
+      "Dân tộc nào có địa bàn cư trú chính ở Tây Nguyên?"
+    ],
+    "check": {
+      "any": [
+        "Ba Na",
+        "Xơ Đăng",
+        "Cơ Ho",
+        "M'Nông",
+        "Giẻ Triêng",
+        "Mạ",
+        "Rơ Măm",
+        "Brâu",
+        "Bru - Vân Kiều",
+        "Nùng",
         "Gia Rai",
-        "Ê Đê"
-      ]
+        "Êđê",
+        "Chu Ru"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Thống nhất chấp nhận các dân tộc cư trú chính ở Tây Nguyên",
-    "labeler": "human_labeler_B"
+    "notes": "Lọc địa bàn cư trú chính có dân tộc nào thuộc Tây Nguyên thì liệt kê, Tây Nguyên bao gồm 5 tỉnh: Kon Tum, Gia Lai, Đắk Lắk, Đắk Nông và Lâm Đồng.",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dt-07",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-the_thao-01",
     "turns": [
-      "dân tộc Chăm thuộc nhóm ngôn ngữ gì vậy"
+      "Sân nào có sức chứa lớn nhất trong danh sách?"
     ],
     "check": {
       "any": [
-        "Mã Lai-Đa Đảo"
-      ]
+        "VinFast – Trống Đồng"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Chăm thuộc nhóm Mã Lai-Đa Đảo",
-    "labeler": "human_labeler_B"
+    "notes": "Lọc cột Sức chứa (chỗ) lấy giá trị lớn nhất",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dt-08",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-the_thao-02",
     "turns": [
-      "dân tộc Khơ me có tên gọi khác không"
+      "Những sân vận động nào được khánh thành từ năm 2000 trở đi?"
     ],
     "check": {
       "any": [
-        "Khmer",
-        "Miên"
-      ]
+        "Mỹ Đình",
+        "Thiên Trường",
+        "Thái Nguyên",
+        "Chi Lăng (Hòa Xuân cũ)",
+        "Buôn Ma Thuột",
+        "Phan Thiết",
+        "Đà Lạt",
+        "Long An",
+        "Cẩm Phả",
+        "Pleiku",
+        "Kon Tum",
+        "Bà Rịa",
+        "Bến Tre",
+        "Việt Yên",
+        "Thành Long",
+        "PVF",
+        "Rạch Giá",
+        "Cà Mau",
+        "Hòa Bình",
+        "VinFast – Trống Đồng",
+        "PVF",
+        "Rạch Chiếc",
+        "Lạng Sơn"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Tên gọi khác của Khmer",
-    "labeler": "human_labeler_B"
+    "notes": "Lọc cột Năm khánh thành >= 2000, liệt kê hết sân thỏa điều kiện",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dt-09",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-the_thao-03",
     "turns": [
-      "có bao nhiêu dân tộc thuộc hệ Nam Đảo"
+      "Sân nào đang có ghi chú về việc cải tạo hoặc nâng cấp?"
+    ],
+    "check": {
+      "any": [
+        "VinFast – Trống Đồng",
+        "PVF",
+        "Rạch Chiếc",
+        "Lạng Sơn"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc cột Ghi chú có dòng Đang xây dựng, liêtk kê hết những sân vận động khớp",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-the_thao-04",
+    "turns": [
+      "Có bao nhiêu sân đang được khai thác?"
     ],
     "check": {
       "num": [
-        "5"
-      ]
+        49
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "5 dân tộc hệ Nam Đảo: Chăm, Gia Rai, Ê Đê, Raglai, Chu Ru",
-    "labeler": "human_labeler_B"
+    "notes": "Đếm số dòng ghi đang hoạt động ở cột Trạng thái khai thác",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dt-10",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-the_thao-05",
     "turns": [
-      "dân tộc Kinh chiếm bao nhiêu phần trăm dân số"
+      "Sân Mỹ Đình có sức chứa bao nhiêu chỗ?",
+      "Đội bóng nào quản lý sân đó vậy?"
     ],
     "check": {
       "any": [
-        "85,32%",
-        "85.32%"
-      ]
+        "Thể Công – Viettel Đội tuyển quốc gia Việt Nam"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Tỷ lệ dân số Kinh",
-    "labeler": "human_labeler_B"
+    "notes": "Lượt 1 (Mỹ Đình, sức chứa 40.192 chỗ) chỉ để dẫn ngữ cảnh follow-up, không chấm. Lượt 2 lấy cột 'Đội bóng chủ quản' = 'Thể Công – Viettel Đội tuyển quốc gia Việt Nam'",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dt-11",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-the_thao-06",
     "turns": [
-      "Người Mường Lò có địa bàn cư trú chính ở đâu?"
+      "san van dong nao co suc chua tren 30000 cho"
     ],
     "check": {
       "any": [
-        "Thị xã Nghĩa Lộ, Yên Bái"
-      ]
+        "Mỹ Đình",
+        "VinFast – Trống Đồng",
+        "PVF",
+        "Rạch Chiếc"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Mường Lò cư trú tại Nghĩa Lộ Yên Bái",
-    "labeler": "human_labeler_B"
+    "notes": "Lọc cột 'Sức chứa (chỗ)' > 30.000, liệt kê các sân khớp",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-svd-01",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
+    "id": "v4_b-the_thao-07",
     "turns": [
-      "Sân vận động Mỹ Đình chứa được bao nhiêu người?",
-      "Sân này khánh thành năm nào thế?"
+      "Sân nào có giá vé vào cửa rẻ nhất?"
     ],
     "check": {
-      "any": [
-        "2003"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "notes": "Lượt 2 hỏi năm khánh thành sân Mỹ Đình = 2003",
-    "labeler": "human_labeler_B"
+    "notes": "Câu này bot phải từ chối do không có cột giá vé trong dataset này",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-svd-02",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
+    "id": "v4_b-the_thao-08",
     "turns": [
-      "san thong nhat o dau vay ban"
+      "Sân nào có doanh thu bán vé cao nhất năm ngoái?"
     ],
     "check": {
-      "any": [
-        "Thành phố Hồ Chí Minh",
-        "TP.HCM"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "notes": "Sân Thống Nhất ở TP.HCM",
-    "labeler": "human_labeler_B"
+    "notes": "Câu này bot phải từ chối do không có cột giá vé trong dataset này",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-svd-03",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
+    "id": "v4_b-the_thao-09",
     "turns": [
-      "Giá vé vào sân Lạch Tray xem bóng đá là bao nhiêu?"
+      "Sân Thống Nhất giờ thế nào rồi?"
     ],
     "check": {
-      "refusal": true
-    },
-    "notes": "Bảng không có cột giá vé",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-svd-04",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
-    "turns": [
-      "Sân vận động ở Hà Nội"
-    ],
-    "check": {
+      "refusal": false,
       "ask_back": true
     },
-    "notes": "Câu mơ hồ: Hà Nội có nhiều sân (Mỹ Đình, Hàng Đẫy...)",
-    "labeler": "human_labeler_B"
+    "notes": "Sân 'Thống nhất' khớp đúng 1 dòng (không trùng tên), nhưng câu hỏi không nói rõ muốn biết thuộc tính nào trong 4 cột (Địa điểm, Năm khánh thành,Sức chứa (chỗ), Ghi chú) — hệ thống nên hỏi lại, không tự chọn 1 cột để trả lời",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-svd-05",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
+    "id": "v4_b-the_thao-10",
     "turns": [
-      "CLB Hải Phòng đá ở sân vận động nào"
+      "Sân nào có trạng thái khai thác là tạm ngừng?"
     ],
     "check": {
-      "any": [
-        "Lạch Tray"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "notes": "Hải Phòng đá ở Lạch Tray",
-    "labeler": "human_labeler_B"
+    "notes": "Cột 'Trạng thái khai thác' có tồn tại, nhưng giá trị thật trong data chỉ có 'Đang hoạt động' hoặc 'Đang xây dựng' — không sân nào ghi 'tạm ngừng'. Đây là bẫy lọc-ra-0-dòng, hệ thống phải nói không tìm thấy, không được bịa ra 1 sân nào",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-svd-06",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
+    "id": "v4_b-the_thao-11",
     "turns": [
-      "sân Cần Thơ có sức chứa bao nhiêu khán giả"
+      "So sánh sức chứa của hai sân có sức chứa lớn nhất."
     ],
     "check": {
-      "any": [
-        "30.000"
-      ]
+      "all": [
+        "VinFast",
+        "135.000",
+        "Rạch Chiếc",
+        "70.000"
+      ],
+      "refusal": true,
+      "ask_back": false
     },
-    "notes": "Sức chứa Cần Thơ = 30.000",
-    "labeler": "human_labeler_B"
+    "notes": "Câu không nói rõ chỉ tính sân đang hoạt động. Đọc y nguyên số liệu (không tự lọc trạng thái) thì 2 sân lớn nhất là VinFast – Trống Đồng (135.000, đang xây dựng) và Rạch Chiếc (70.000, đang xây dựng) — đều CHƯA tồn tại thật. Nếu chỉ tính sân đang hoạt động thì là Mỹ Đình (40.192) và 1 trong 3 sân hoà 30.000 (Cần Thơ/Lạch Tray/Thiên Trường, không phân biệt được hạng 2 duy nhất). Đây là bẫy chủ động: test engine có lọc trạng thái xây dựng trước khi so sánh 'lớn nhất' không — ghi cả 2 cách đọc vào ASSUMPTIONS_B.md khi họp thống nhất với người gán nhãn B.",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-svd-07",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
+    "id": "v4_b-phi_vat_the-01",
     "turns": [
-      "sân vận động Trống Đồng dự kiến khánh thành năm nào"
-    ],
-    "check": {
-      "any": [
-        "2027/2028"
-      ]
-    },
-    "notes": "Sân Trống Đồng khánh thành 2027/2028",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-svd-08",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
-    "turns": [
-      "trạng thái của sân vận động Rạch Chiếc hiện nay ra sao"
-    ],
-    "check": {
-      "any": [
-        "Đang xây dựng"
-      ]
-    },
-    "notes": "Rạch Chiếc đang xây dựng",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-svd-09",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
-    "turns": [
-      "có bao nhiêu sân vận động có sức chứa từ 30000 chỗ trở lên"
+      "Có những di sản nào thuộc loại hình nghệ thuật trình diễn dân gian?"
     ],
     "check": {
       "num": [
-        "3"
-      ]
+        100,
+        107
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "3 sân >= 30.000 chỗ đang hoạt động: Mỹ Đình, Cần Thơ, Lạch Tray",
-    "labeler": "human_labeler_B"
+    "notes": "532 dòng, cột 'Loại hình' khớp chính xác 'Nghệ thuật trình diễn dân gian' = 100 dòng. Nếu tính cả các dòng ghép nhiều loại hình chứa cụm này (kể cả 1 dòng lỗi chính tả 'Tri thứ dân gian') thì lên 107. Câu có >8 kết quả nên không dùng kiểu liệt kê (S), chấm bằng số lượng; chấp nhận cả 2 cách đếm (100 = khớp đúng nhãn, 107 = chứa cụm từ)",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-svd-10",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
+    "id": "v4_b-phi_vat_the-02",
     "turns": [
-      "sân vận động Hàng Đẫy nằm ở tỉnh thành nào"
+      "Di sản nào được công nhận sớm nhất?"
     ],
     "check": {
+      "num": 32,
       "any": [
-        "Hà Nội"
-      ]
+        "2012"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Hàng Đẫy ở Hà Nội",
-    "labeler": "human_labeler_B"
+    "notes": "Năm công nhận sớm nhất trong bảng là 2012, nhưng có 32 di sản hoà nhau cùng năm (Ca trù, Chữ Nôm người Dao, Dân ca quan họ Bắc Ninh, Hát xoan, Hội Gióng...). Không có 1 di sản 'sớm nhất' duy nhất — đáp án đúng phải nói rõ năm 2012 và số lượng 32 (hoặc liệt kê vài ví dụ + nói 'và 31 di sản khác cùng năm'), không được tự chọn bừa 1 cái rồi nói đó là 'sớm nhất'.",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-svd-11",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
+    "id": "v4_b-phi_vat_the-03",
     "turns": [
-      "đội bóng nào sử dụng sân vận động Hàng Đẫy làm sân nhà"
+      "Liệt kê các di sản được công nhận trong giai đoạn 2010–2015"
     ],
     "check": {
+      "num": 138,
       "any": [
-        "Hà Nội",
-        "Công an Hà Nội"
-      ]
+        "2012",
+        "2013",
+        "2014",
+        "2015"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Đội bóng sân Hàng Đẫy",
-    "labeler": "human_labeler_B"
+    "notes": "Không có dòng năm 2010 hoặc 2011 trong bảng. Đếm 2012-2015: 32+16+47+43 = 138. Quá nhiều để liệt kê (>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-pvt-01",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
+    "id": "v4_b-phi_vat_the-04",
     "turns": [
-      "Ca Huế được công nhận năm nào?",
-      "Thế loại hình của nó là gì?"
+      "Có bao nhiêu di sản được ghi nhận trong bảng?"
     ],
     "check": {
-      "any": [
-        "Nghệ thuật trình diễn dân gian"
-      ]
+      "num": [
+        532
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Lượt 2 hỏi loại hình Ca Huế",
-    "labeler": "human_labeler_B"
+    "notes": "Đếm số dòng di sản",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-pvt-02",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
+    "id": "v4_b-phi_vat_the-05",
     "turns": [
-      "hoi giong o phu dong duoc cong nhan nam nao"
-    ],
-    "check": {
-      "any": [
-        "2014"
-      ]
-    },
-    "notes": "Hội Gióng ghi danh quốc gia năm 2014",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-pvt-03",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
-    "turns": [
-      "Nghệ nhân nào hát Ca trù hay nhất hiện nay?"
-    ],
-    "check": {
-      "refusal": true
-    },
-    "notes": "Bảng không có cột nghệ nhân",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-pvt-04",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
-    "turns": [
-      "Lễ hội Đền Hùng"
-    ],
-    "check": {
-      "ask_back": true
-    },
-    "notes": "Mơ hồ: cần hỏi rõ năm ghi danh hay loại hình",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-pvt-05",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
-    "turns": [
-      "Nghệ thuật Bài Chòi được ghi danh là loại hình gì"
-    ],
-    "check": {
-      "any": [
-        "Nghệ thuật trình diễn dân gian"
-      ]
-    },
-    "notes": "Loại hình Bài Chòi",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-pvt-06",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
-    "turns": [
-      "Hát Xoan được ghi nhận thuộc tỉnh nào"
+      "Tín ngưỡng thờ cúng Hùng Vương được công nhận năm nào?",
+      "Nó thuộc địa điểm nào vậy?"
     ],
     "check": {
       "any": [
         "Phú Thọ"
-      ]
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Hát Xoan ở Phú Thọ",
-    "labeler": "human_labeler_B"
+    "notes": "Lượt 1 (Tín ngưỡng thờ cúng Hùng Vương, 2012) chỉ để dẫn ngữ cảnh follow-up, không chấm. Lượt 2 lấy cột 'Địa điểmn' = 'Phú Thọ'",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-pvt-07",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
+    "id": "v4_b-phi_vat_the-06",
     "turns": [
-      "Nghề làm gốm của người Chăm thuộc loại hình di sản nào"
-    ],
-    "check": {
-      "any": [
-        "Nghề thủ công truyền thống"
-      ]
-    },
-    "notes": "Nghề làm gốm Chăm",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-pvt-08",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
-    "turns": [
-      "ở tỉnh Bắc Ninh có bao nhiêu di sản văn hóa phi vật thể quốc gia"
+      "di san nao duoc cong nhan sau nam 2020"
     ],
     "check": {
       "num": [
-        "14"
-      ]
+        169
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Thống nhất đếm chính xác số di sản có Bắc Ninh trong địa điểm = 15",
-    "labeler": "human_labeler_B"
+    "notes": "đếm 2021-2024: 33+45+90+1 = 169. Quá nhiều để liệt kê (>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-pvt-09",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
+    "id": "v4_b-phi_vat_the-07",
     "turns": [
-      "Múa Then của người Tày Nùng được công nhận năm nào"
+      "Di sản nào có lượng khách tham dự đông nhất mỗi năm?"
     ],
     "check": {
-      "any": [
-        "2012"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "notes": "Múa Then",
-    "labeler": "human_labeler_B"
+    "notes": "Câu này bot phải từ chối do không có cột số lương khách trong dataset này",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-pvt-10",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
+    "id": "v4_b-phi_vat_the-08",
     "turns": [
-      "Không gian văn hóa Cồng chiêng Tây Nguyên thuộc loại hình nào"
+      "Di sản nào được ngân sách nhà nước cấp kinh phí bảo tồn nhiều nhất?"
     ],
     "check": {
-      "any": [
-        "Không gian văn hóa"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "notes": "Cồng chiêng Tây Nguyên",
-    "labeler": "human_labeler_B"
+    "notes": "Câu này bot phải từ chối do không có cột kinh phí trong dataset này",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-pvt-11",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
+    "id": "v4_b-phi_vat_the-09",
     "turns": [
-      "năm 2015 có bao nhiêu di sản phi vật thể được công nhận"
+      "Cho mình thông tin về hát xoan."
     ],
     "check": {
-      "num": [
-        "37"
-      ]
-    },
-    "notes": "37 di sản công nhận năm 2015",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-bv-01",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "turns": [
-      "Trống đồng Ngọc Lũ đang được lưu giữ ở đâu?",
-      "Niên đại của trống này là khi nào?"
-    ],
-    "check": {
-      "any": [
-        "Văn hóa Đông Sơn"
-      ]
-    },
-    "notes": "Lượt 2 hỏi niên đại Trống Ngọc Lũ",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-bv-02",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "turns": [
-      "trong dong den hung o tinh nao"
-    ],
-    "check": {
-      "any": [
-        "Phú Thọ"
-      ]
-    },
-    "notes": "Trống Đền Hùng ở Phú Thọ",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-bv-03",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "turns": [
-      "Trống đồng Ngọc Lũ nặng bao nhiêu ki lô gam?"
-    ],
-    "check": {
-      "refusal": true
-    },
-    "notes": "Bảng không có cột khối lượng/trọng lượng",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-bv-04",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "turns": [
-      "Trống đồng Đông Sơn"
-    ],
-    "check": {
+      "refusal": false,
       "ask_back": true
     },
-    "notes": "Mơ hồ: có nhiều trống đồng văn hóa Đông Sơn",
-    "labeler": "human_labeler_B"
+    "notes": "Hát xoan khớp đúng 1 dòng (không trùng tên), nhưng câu hỏi không nói rõ muốn biết thuộc tính nào trong 3 cột (Loại hình, Địa điểm, Năm công nhận) — hệ thống nên hỏi lại, không tự chọn 1 cột để trả lời",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-bv-05",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
+    "id": "v4_b-phi_vat_the-10",
     "turns": [
-      "Bia đá tiến sĩ Văn Miếu Thăng Long được công nhận vào đợt mấy"
+      "Tìm các di sản ở Hà Nội"
     ],
     "check": {
-      "any": [
-        "Đợt 3"
-      ]
+      "nun": [
+        32
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Bia tiến sĩ Văn Miếu công nhận đợt 3 (2015)",
-    "labeler": "human_labeler_B"
+    "notes": "đếm cột địa điểm có chứ Hà Nội: 32. Quá nhiều để liệt kê (>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-bv-06",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
+    "id": "v4_b-phi_vat_the-11",
     "turns": [
-      "Tượng Phật bà Quan Âm chùa Bút Tháp ở tỉnh nào"
+      "Di sản nào được công nhận trong năm 2003?"
     ],
     "check": {
-      "any": [
-        "Bắc Ninh"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "notes": "Chùa Bút Tháp ở Bắc Ninh",
-    "labeler": "human_labeler_B"
+    "notes": "Cột 'Năm công nhận' có tồn tại, nhưng giá trị thật trong data chỉ có từ 2012 đến 2024. Đây là bẫy lọc-ra-0-dòng, hệ thống phải nói không tìm thấy, không được bịa ra 1 di sản nào",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-bv-07",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
+    "id": "v4_b-bao_vat-01",
     "turns": [
-      "Áo ngự bào triều Nguyễn hiện được đơn vị nào lưu giữ"
-    ],
-    "check": {
-      "any": [
-        "Bảo tàng Cổ vật Cung đình Huế"
-      ]
-    },
-    "notes": "Lưu giữ áo ngự bào",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-bv-08",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "turns": [
-      "Trống đồng Sông Lô được công nhận năm nào"
-    ],
-    "check": {
-      "any": [
-        "2012"
-      ]
-    },
-    "notes": "Trống Sông Lô công nhận 2012",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-bv-09",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "turns": [
-      "Trống đồng Sông Lò hiện đang ở bảo tàng nào"
-    ],
-    "check": {
-      "any": [
-        "Bảo tàng Tỉnh Hà Giang"
-      ]
-    },
-    "notes": "Trống Sông Lò ở Hà Giang",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-bv-10",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "turns": [
-      "Đợt 1 có bao nhiêu bảo vật quốc gia được công nhận"
+      "Bảo vật nào được công nhận ở đợt đầu tiên?"
     ],
     "check": {
       "num": [
-        "30"
-      ]
+        31
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Đợt 1 có 30 bảo vật",
-    "labeler": "human_labeler_B"
+    "notes": "Có tổng cộng 31 bảo vật được công nhận vào đợt 1 nên đáp án là 31 (hoặc liệt kê vài ví dụ + nói 'và 30 bảo vật khác cùng được công nhận ở đợt 1'), không được tự chọn bừa 1 cái rồi nói đó là 'được công nhận ở đợt đàu tiên'.",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-bv-11",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
+    "id": "v4_b-bao_vat-02",
     "turns": [
-      "Trống đồng Cảnh Thịnh thuộc niên đại triều đại nào"
+      "Có những bảo vật nào có niên đại trước thế kỷ X?"
+    ],
+    "check": {
+      "num": 108,
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Có tổng cộng 108 bảo vật trước thể kỷ X nên đáp án là 108 (hoặc liệt kê vài ví dụ + nói 'và 107 bảo vật trước thế kỉ X'), không được tự chọn bừa 1 cái rồi nói chỉ có 1 cái đó là 'trước niên đại thế kỷ X'.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-bao_vat-03",
+    "turns": [
+      "Bảo vật nào đang được một bảo tàng lưu giữ?"
+    ],
+    "check": {
+      "num": 195,
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Có tới 195 bảo vật được bảo tàng trên toàn quốc lưu giữ. Quá nhiều để liệt kê (>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-bao_vat-04",
+    "turns": [
+      "Có bao nhiêu bảo vật được công nhận trong năm 2020?"
+    ],
+    "check": {
+      "num": [
+        24
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Đếm số lượng bảo vật được công nhận vào năm 2020, cũng là đợt 9",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-bao_vat-05",
+    "turns": [
+      "Trống đồng Ngọc Lũ được công nhận vào đợt nào?",
+      "Bảo vật đó hiện thuộc đơn vị nào lưu giữ?"
     ],
     "check": {
       "any": [
-        "Thời Tây Sơn"
-      ]
+        "Bảo tàng Lịch sử Quốc gia"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Trống Cảnh Thịnh thời Tây Sơn",
-    "labeler": "human_labeler_B"
+    "notes": "Lượt 1 (Trống đồng Ngọc Lũ, đợt 1) chỉ để dẫn ngữ cảnh follow-up, không chấm. Lượt 2 lấy cột 'Chủ sở hữu / Đơn vị lưu giữ' = 'Bảo tàng Lịch sử Quốc gia'",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dstg-01",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-bao_vat-06",
     "turns": [
-      "Hoàng thành Thăng Long được UNESCO công nhận năm nào?",
-      "Nằm ở tỉnh thành nào thế?"
+      "bao vat nao co dia phuong la vinh long"
     ],
     "check": {
-      "any": [
-        "Hà Nội"
-      ]
+      "Any": [
+        "Tượng Thần Vishnu Vũng Liêm (STT 152)"
+      ],
+      "num": [
+        1,
+        3
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Lượt 2 hỏi vị trí Hoàng thành Thăng Long",
-    "labeler": "human_labeler_B"
+    "notes": "Cột Địa phương ghi tên tỉnh CŨ (trước sáp nhập 2025). Khớp chuỗi đúng 'Vĩnh Long' = 1 dòng (Tượng Thần Vishnu Vũng Liêm). Nhưng Vĩnh Long mới (sau sáp nhập) gồm cả Trà Vinh + Bến Tre cũ — nếu engine biết quy đổi địa giới mới/cũ thì phải cộng thêm 2 dòng ghi 'Trà Vinh'/'Tỉnh Trà Vinh' (Ngẫu tượng Linga - Yoni, Sưu tập vàng lá Châu Thành Trà Vinh), tổng 3. Không có dòng Bến Tre. Đây là bẫy chính: test S4-2 (khớp tên) mở rộng sang khớp địa giới hành chính cũ/mới — đa số engine hiện tại (chỉ bỏ dấu) sẽ CHỈ ra được 1 dòng, không tự quy đổi sang tỉnh cũ.",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dstg-02",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-bao_vat-07",
     "turns": [
-      "vinh ha long duoc unesco cong nhan nam nao"
+      "Bảo vật nào có giá đấu giá cao nhất?"
     ],
     "check": {
-      "any": [
-        "1994"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "notes": "Vịnh Hạ Long công nhận lần đầu 1994",
-    "labeler": "human_labeler_B"
+    "notes": "Câu này bot phải từ chối do không có cột số giá đấu giá trong dataset này",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dstg-03",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-bao_vat-08",
     "turns": [
-      "Giá vé tham quan phố cổ Hội An hiện nay là bao nhiêu tiền?"
+      "Bảo vật nào đang được bảo hiểm với số tiền lớn nhất?"
     ],
     "check": {
-      "refusal": true
+      "refusal": true,
+      "ask_back": false
     },
-    "notes": "Bảng không có cột giá vé",
-    "labeler": "human_labeler_B"
+    "notes": "Câu này bot phải từ chối do không có cột bảo hiểm trong dataset này",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dstg-04",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-bao_vat-09",
     "turns": [
-      "Di sản thế giới ở miền Trung"
+      "Mình muốn tìm hiểu về tượng Phật."
     ],
     "check": {
+      "refusal": false,
       "ask_back": true
     },
-    "notes": "Mơ hồ: miền Trung có nhiều di sản (Huế, Hội An, Mỹ Sơn, Phong Nha)",
-    "labeler": "human_labeler_B"
+    "notes": "Tượng Phật khớp 28 dòng và câu hỏi cũng không nói rõ muốn biết thuộc tính nào trong 5 cột (Đợt công nhận, Năm công nhận, Niên đại / Lịch sử, Chủ sở hữu / Đơn vị lưu giữ, Địa phương) — hệ thống nên hỏi lại, không tự chọn 1 cột để trả lời",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dstg-05",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-bao_vat-10",
     "turns": [
-      "Vườn quốc gia Phong Nha Kẻ Bàng là di sản thiên nhiên hay văn hóa"
+      "Liệt kê bảo vật do bảo tàng cấp tỉnh lưu giữ"
     ],
     "check": {
-      "any": [
-        "Di sản thiên nhiên"
-      ]
+      "nun": [
+        71
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Phong Nha là di sản thiên nhiên",
-    "labeler": "human_labeler_B"
+    "notes": "đếm cột Chủ sở hữu / Đơn vị lưu giữ có chữ tỉnh: 71. Quá nhiều để liệt kê (>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dstg-06",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-bao_vat-11",
     "turns": [
-      "Quần thể di tích Cố đô Huế nằm ở đâu"
-    ],
-    "check": {
-      "any": [
-        "Thừa Thiên Huế",
-        "Huế"
-      ]
-    },
-    "notes": "Cố đô Huế ở Huế",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dstg-07",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
-    "turns": [
-      "Quần thể danh thắng Tràng An thuộc tỉnh nào"
-    ],
-    "check": {
-      "any": [
-        "Ninh Bình"
-      ]
-    },
-    "notes": "Tràng An ở Ninh Bình",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dstg-08",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
-    "turns": [
-      "Thánh địa Mỹ Sơn thuộc niên đại nào"
-    ],
-    "check": {
-      "any": [
-        "Thế kỷ IV - XIII"
-      ]
-    },
-    "notes": "Niên đại Mỹ Sơn",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dstg-09",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
-    "turns": [
-      "Việt Nam có bao nhiêu di sản thế giới chính thức được liệt kê"
+      "Bảo vật nào có ghi niên đại thời Lý?"
     ],
     "check": {
       "num": [
-        "8"
-      ]
+        9
+      ],
+      "any": [
+        "thời Lý"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "8 di sản thế giới chính thức",
-    "labeler": "human_labeler_B"
+    "notes": "đếm cột Niên đại / Lịch sử có chữ thời Lý.Có thể liệt kê or nêu số lượng (>8 dòng), ưu tiên chấm bằng số lượng",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dstg-10",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-truong_dai_hoc-01",
     "turns": [
-      "Quần thể Hương Sơn có tình trạng thế nào trong danh sách đề cử"
+      "Trường nào có tên viết tắt là HCMUTE?"
     ],
     "check": {
       "any": [
-        "Khu đề cử dự kiến"
-      ]
+        "Trường Đại học Công nghệ Kỹ thuật Thành phố Hồ Chí Minh"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Hương Sơn là đề cử dự kiến",
-    "labeler": "human_labeler_B"
+    "notes": "Lọc cột Viết tắt = HCMUTE, liệt kê trường khớp",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dstg-11",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-truong_dai_hoc-02",
     "turns": [
-      "Thành nhà Hồ thuộc tỉnh thành nào"
+      "Những trường nào có tên giao dịch tiếng Anh chứa từ 'Technology'?"
+    ],
+    "check": {
+      "num": [
+        38
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc cột Tên giao dịch tiếng Anh, dòng nào có chữ Technology. Có tổng 38 dòng khớp (>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-03",
+    "turns": [
+      "Trường nào do Bộ Giáo dục và Đào tạo quản lý trực tiếp?"
+    ],
+    "check": {
+      "num": [
+        32
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc cột Cơ quan chủ quản = Bộ Giáo dục và Đào tạo, có 32 dòng khớp(>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-04",
+    "turns": [
+      "Có bao nhiêu trường thuộc loại hình tư thục?"
+    ],
+    "check": {
+      "num": [
+        68
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Cột 'Loại hình' chỉ có đúng 2 giá trị sạch: Công lập (435) và Tư thục (68)",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-05",
+    "turns": [
+      "Đại học Bách khoa, ĐHQG_HCM ở địa điểm nào?",
+      "Tên giao dịch tiếng Anh của trường là gì?"
     ],
     "check": {
       "any": [
-        "Thanh Hóa"
-      ]
+        "VNUHCM-University of Technology"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Thành nhà Hồ ở Thanh Hóa",
-    "labeler": "human_labeler_B"
+    "notes": "Lượt 1 (Đại học Bách khoa, ĐHQG_HCM, Toàn quốc) chỉ để dẫn ngữ cảnh follow-up, không chấm. Lượt 2 lấy cột 'Tên giao dịch tiếng Anh' = 'VNUHCM-University of Technology'",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dh-01",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
+    "id": "v4_b-truong_dai_hoc-06",
     "turns": [
-      "Trường Đại học Bách khoa Hà Nội viết tắt là gì?",
-      "Trụ sở ở đâu vậy bạn?"
+      "truong nao co ten viet tat la HUIT"
     ],
     "check": {
       "any": [
-        "Hà Nội"
-      ]
+        "Trường Đại học Công Thương Thành phố Hồ Chí Minh"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Lượt 2 hỏi trụ sở ĐH Bách khoa Hà Nội",
-    "labeler": "human_labeler_B"
+    "notes": "Lọc cột Viết tắt = HUIT, liệt kê trường khớp",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dh-02",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
+    "id": "v4_b-truong_dai_hoc-07",
     "turns": [
-      "dai hoc ngoai thuong viet tat la gi"
+      "Trường nào có tỷ lệ sinh viên tốt nghiệp đúng hạn cao nhất?"
     ],
     "check": {
-      "any": [
-        "FTU"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "notes": "ĐH Ngoại thương viết tắt FTU",
-    "labeler": "human_labeler_B"
+    "notes": "Câu này bot phải từ chối do không có cột tỷ lệ sinh viên tốt nghiệp trong dataset này",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dh-03",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
+    "id": "v4_b-truong_dai_hoc-08",
     "turns": [
-      "Học phí một năm của Đại học Ngoại thương là bao nhiêu?"
+      "Trường nào có mức học phí ngành công nghệ thông tin thấp nhất năm nay?"
     ],
     "check": {
-      "refusal": true
+      "refusal": true,
+      "ask_back": false
     },
-    "notes": "Bảng không có cột học phí",
-    "labeler": "human_labeler_B"
+    "notes": "Câu này bot phải từ chối do không có cột học phí trong dataset này",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dh-04",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
+    "id": "v4_b-truong_dai_hoc-09",
     "turns": [
-      "Trường Đại học Bách khoa"
+      "Đại học Quốc gia có những thông tin gì?"
     ],
     "check": {
+      "refusal": false,
       "ask_back": true
     },
-    "notes": "Mơ hồ: có ĐH Bách khoa Hà Nội, ĐH Bách khoa ĐHQG-HCM, ĐH Bách khoa ĐH Đà Nẵng",
-    "labeler": "human_labeler_B"
+    "notes": "không rõ hỏi trường đại học nào, phải hỏi lại. Không tự ý bóc bừa 1 trường rồi trả lời",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dh-05",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
+    "id": "v4_b-truong_dai_hoc-10",
     "turns": [
-      "Trường Đại học FPT là trường công lập hay tư thục"
-    ],
-    "check": {
-      "any": [
-        "Tư thục"
-      ]
-    },
-    "notes": "ĐH FPT là tư thục",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dh-06",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
-    "turns": [
-      "Học viện Tài chính trực thuộc cơ quan nào"
-    ],
-    "check": {
-      "any": [
-        "Bộ Tài chính"
-      ]
-    },
-    "notes": "Học viện Tài chính trực thuộc Bộ Tài chính",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dh-07",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
-    "turns": [
-      "Trường Đại học Cần Thơ có địa điểm ở đâu"
-    ],
-    "check": {
-      "any": [
-        "Cần Thơ"
-      ]
-    },
-    "notes": "ĐH Cần Thơ ở Cần Thơ",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dh-08",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
-    "turns": [
-      "Tên tiếng Anh của Trường Đại học Công nghệ ĐHQGHN là gì"
-    ],
-    "check": {
-      "any": [
-        "VNU-University of Engineering and Technology"
-      ]
-    },
-    "notes": "Tên tiếng Anh UET",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dh-09",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
-    "turns": [
-      "Trường Đại học Y Hà Nội trực thuộc đơn vị nào quản lý"
-    ],
-    "check": {
-      "any": [
-        "Bộ Y tế"
-      ]
-    },
-    "notes": "ĐH Y Hà Nội trực thuộc Bộ Y tế",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dh-10",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
-    "turns": [
-      "Có bao nhiêu trường đại học tư thục trong danh sách"
+      "Liệt kê các trường ở Thành phố Hồ Chí Minh."
     ],
     "check": {
       "num": [
-        "58"
-      ]
+        72
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Thống nhất số trường tư thục là 60 trường",
-    "labeler": "human_labeler_B"
+    "notes": "Lọc cột Địa điểm = Hồ chí Minh, 72 trường khớp (>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dh-11",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
+    "id": "v4_b-truong_dai_hoc-11",
     "turns": [
-      "Trường Đại học Luật Hà Nội trực thuộc cơ quan nào"
+      "] Trường nào có loại hình là công lập?"
+    ],
+    "check": {
+      "num": [
+        435
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Cột 'Loại hình' chỉ có đúng 2 giá trị sạch: Công lập (435) và Tư thục (68)",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-01",
+    "turns": [
+      "Di tích nào được xếp hạng trong đợt đầu tiên?"
+    ],
+    "check": {
+      "num": [
+        10
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc cột Đợt xếp hạng = đợt 1, có 10 trường khớp(>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-02",
+    "turns": [
+      "Những di tích nào được xếp hạng trước năm 2010?"
+    ],
+    "check": {
+      "num": [
+        10
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc cột Năm xếp hạng < 2010, có 10 trường khớp(>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-03",
+    "turns": [
+      "Di tích nào có nhiều hạng mục được liệt kê nhất?"
+    ],
+    "check": {
+      "all": [
+        "Thành nhà Hồ",
+        "Cổ Loa"
+      ],
+      "num": [
+        3
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Cột 'Hạng mục di tích' tách bằng dấu phẩy. Max = 3 hạng mục, hoà nhau giữa 2 di tích: 'Thành nhà Hồ' (Di tích lịch sử, kiến trúc nghệ thuật, khảo cổ) và 'Cổ Loa' (cùng 3 loại). Không có đáp án duy nhất — hệ thống chỉ nêu 1 trong 2 mà không nói rõ hoà nhau là thiếu, không được coi là sai hoàn toàn nhưng chưa đạt điểm tối đa.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-04",
+    "turns": [
+      "Có bao nhiêu di tích được xếp hạng trong năm 2022?"
+    ],
+    "check": {
+      "num": [
+        9
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lọc cột Năm xếp hạng = 2022, có 9 trường khớp(>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-05",
+    "turns": [
+      "Hoàng thành Thăng Long được xếp hạng năm nào?",
+      "Ghi chú của di tích đó có thông tin gì?"
     ],
     "check": {
       "any": [
-        "Bộ Tư pháp"
-      ]
+        "Được UNESCO công nhận là Di sản văn hóa thế giới năm 2010"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "ĐH Luật Hà Nội thuộc Bộ Tư pháp",
-    "labeler": "human_labeler_B"
+    "notes": "Lượt 1 (Hoàng thành Thăng Long, năm 2009) chỉ để dẫn ngữ cảnh follow-up, không chấm. Lượt 2 lấy cột 'Ghi chú' = 'Được UNESCO công nhận là Di sản văn hóa thế giới năm 2010'",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-bvsg-01",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-06",
     "turns": [
-      "Bệnh viện Chợ Rẫy có bao nhiêu giường bệnh?",
-      "Năm thành lập của bệnh viện là năm nào?"
+      "di tich nao co dia diem o quang tri"
     ],
     "check": {
       "any": [
-        "1900"
-      ]
+        "Vườn quốc gia Phong Nha - Kẻ Bàng",
+        "Đường Trường Sơn - Đường Hồ Chí Minh",
+        "Đôi bờ Hiền Lương - Bến Hải",
+        "Thành cổ Quảng Trị và những địa điểm lưu niệm sự kiện 81 ngày đêm năm 1972",
+        "Địa đạo Vĩnh Mốc và hệ thống làng hầm Vĩnh Linh"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Lượt 2 hỏi năm thành lập Chợ Rẫy = 1900",
-    "labeler": "human_labeler_B"
+    "notes": "Lọc cột địa điểm có quảng trị, liệt kê di tích khớp",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-bvsg-02",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-07",
     "turns": [
-      "benh vien tu du nam o dau"
+      "Di tích nào có lượng khách tham quan cao nhất dịp Tết vừa rồi?"
     ],
     "check": {
-      "any": [
-        "Quận 1"
-      ]
+      "refusal": true,
+      "ask_back": false
     },
-    "notes": "BV Từ Dũ ở Quận 1",
-    "labeler": "human_labeler_B"
+    "notes": "Câu này bot phải từ chối do không có cột lượng khách tham quan trong dataset này",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-bvsg-03",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-08",
     "turns": [
-      "Trưởng khoa cấp cứu Bệnh viện Chợ Rẫy là bác sĩ nào?"
+      "Di tích nào có kinh phí trùng tu lớn nhất trong năm nay?"
     ],
     "check": {
-      "refusal": true
+      "refusal": true,
+      "ask_back": false
     },
-    "notes": "Bảng không có cột tên bác sĩ trưởng khoa",
-    "labeler": "human_labeler_B"
+    "notes": "Câu này bot phải từ chối do không có cột kinh phí trùng tu trong dataset này",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-bvsg-04",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-09",
     "turns": [
-      "Bệnh viện Nhi đồng"
+      "Cho mình thông tin về thành nhà Hồ."
     ],
     "check": {
+      "refusal": false,
       "ask_back": true
     },
-    "notes": "Mơ hồ: có Nhi đồng 1, Nhi đồng 2, Nhi đồng Thành phố",
-    "labeler": "human_labeler_B"
+    "notes": "Thành nhà Hồ khớp đúng 1 dòng (không trùng tên), nhưng câu hỏi không nói rõ muốn biết thuộc tính nào trong 5 cột (Đợt xếp hạng, Năm xếp hạng, Địa điểm, Hạng mục di tích, Ghi chú) — hệ thống nên hỏi lại, không tự chọn 1 cột để trả lời",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-bvsg-05",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-10",
     "turns": [
-      "Bệnh viện Thống Nhất trực thuộc tuyến quản lý nào"
-    ],
-    "check": {
-      "any": [
-        "Tuyến trung ương / Bộ ngành"
-      ]
-    },
-    "notes": "BV Thống Nhất tuyến trung ương",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-bvsg-06",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
-    "turns": [
-      "Bệnh viện Nhân dân Gia Định có tên gọi cũ là gì"
-    ],
-    "check": {
-      "any": [
-        "Bệnh viện Nguyễn Văn Học"
-      ]
-    },
-    "notes": "Tên cũ BV Gia Định",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-bvsg-07",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
-    "turns": [
-      "Bệnh viện Đại học Y Dược Thành phố Hồ Chí Minh có bao nhiêu giường"
-    ],
-    "check": {
-      "any": [
-        "1.000"
-      ]
-    },
-    "notes": "Số giường BV ĐH Y Dược",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-bvsg-08",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
-    "turns": [
-      "Bệnh viện Hùng Vương là bệnh viện chuyên khoa hay đa khoa"
-    ],
-    "check": {
-      "any": [
-        "Chuyên khoa"
-      ]
-    },
-    "notes": "BV Hùng Vương chuyên khoa sản phụ khoa",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-bvsg-09",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
-    "turns": [
-      "có bao nhiêu bệnh viện trực thuộc tuyến bộ ngành tại TP.HCM"
+      "Tìm các di tích ở Hà Nội"
     ],
     "check": {
       "num": [
-        "10"
-      ]
+        22
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "10 BV tuyến bộ ngành",
-    "labeler": "human_labeler_B"
+    "notes": "Lọc cột Địa điểm = Hà Nội, 22 di tích khớp (>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-bvsg-10",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-11",
     "turns": [
-      "Bệnh viện Mắt Thành phố Hồ Chí Minh thành lập năm nào"
-    ],
-    "check": {
-      "any": [
-        "1978"
-      ]
-    },
-    "notes": "BV Mắt thành lập 1978",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-bvsg-11",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
-    "turns": [
-      "Bệnh viện Bệnh Nhiệt đới nằm ở cơ sở nào"
-    ],
-    "check": {
-      "any": [
-        "Quận 5"
-      ]
-    },
-    "notes": "BV Bệnh Nhiệt đới",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dtqg-01",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
-    "turns": [
-      "Cố đô Hoa Lư được xếp hạng đợt mấy?",
-      "Năm xếp hạng là năm nào?"
-    ],
-    "check": {
-      "any": [
-        "2012"
-      ]
-    },
-    "notes": "Lượt 2 hỏi năm xếp hạng Cố đô Hoa Lư = 2012",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dtqg-02",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
-    "turns": [
-      "dia dao cu chi nam o dau"
-    ],
-    "check": {
-      "any": [
-        "Thành phố Hồ Chí Minh",
-        "Củ Chi"
-      ]
-    },
-    "notes": "Địa đạo Củ Chi",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dtqg-03",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
-    "turns": [
-      "Giá vé tham quan Dinh Độc Lập hiện nay là bao nhiêu?"
-    ],
-    "check": {
-      "refusal": true
-    },
-    "notes": "Bảng không có cột giá vé",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dtqg-04",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
-    "turns": [
-      "Khu di tích Lam Kinh"
-    ],
-    "check": {
-      "ask_back": true
-    },
-    "notes": "Mơ hồ: Lam Kinh ở Thanh Hóa xếp hạng đợt 3",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dtqg-05",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
-    "turns": [
-      "Đền Hùng được xếp hạng di tích quốc gia đặc biệt năm nào"
-    ],
-    "check": {
-      "any": [
-        "2009"
-      ]
-    },
-    "notes": "Đền Hùng xếp hạng đợt 1 năm 2009",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dtqg-06",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
-    "turns": [
-      "Khu di tích trung tâm Hoàng thành Thăng Long được xếp hạng vào đợt mấy"
-    ],
-    "check": {
-      "any": [
-        "Đợt 1"
-      ]
-    },
-    "notes": "Hoàng thành Thăng Long xếp hạng đợt 1",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dtqg-07",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
-    "turns": [
-      "Nhà tù Côn Đảo nằm ở tỉnh thành nào"
-    ],
-    "check": {
-      "any": [
-        "Bà Rịa - Vũng Tàu"
-      ]
-    },
-    "notes": "Nhà tù Côn Đảo",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dtqg-08",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
-    "turns": [
-      "Di tích Cổ Loa thuộc hạng mục di tích nào"
-    ],
-    "check": {
-      "any": [
-        "Di tích lịch sử, kiến trúc nghệ thuật, khảo cổ"
-      ]
-    },
-    "notes": "Hạng mục Cổ Loa",
-    "labeler": "human_labeler_B"
-  },
-  {
-    "id": "v4_b-dtqg-09",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
-    "turns": [
-      "Đợt 1 năm 2009 có bao nhiêu di tích được xếp hạng"
+      "Di tích nào có hạng mục liên quan đến khảo cổ?"
     ],
     "check": {
       "num": [
-        "10"
-      ]
+        14
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "10 di tích đợt 1 năm 2009",
-    "labeler": "human_labeler_B"
+    "notes": "Cột 'Hạng mục di tích' có chữ khảo cổ, 14 di tích khớp(>8 dòng, loại S không áp dụng), chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dtqg-10",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
+    "id": "v4_b-ngan_hang-01",
     "turns": [
-      "Khu di tích Kim Liên quê Bác nằm ở tỉnh nào"
+      "VPBank có vốn điều lệ khoảng bao nhiêu?"
     ],
     "check": {
       "any": [
-        "Nghệ An"
-      ]
+        "79.339",
+        "79,339",
+        "79339"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Khu di tích Kim Liên ở Nghệ An",
-    "labeler": "human_labeler_B"
+    "notes": "VPBank = Việt Nam Thịnh Vượng, vốn điều lệ 79.339 tỷ",
+    "labeler": "Phạm Lê Thiên Dấn"
   },
   {
-    "id": "v4_b-dtqg-11",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
+    "id": "v4_b-ngan_hang-02",
     "turns": [
-      "Vịnh Hạ Long được xếp hạng di tích quốc gia đặc biệt vào năm nào"
+      "Có ngân hàng nào trụ sở ở Nghệ An không?"
     ],
     "check": {
       "any": [
-        "2009"
-      ]
+        "Bắc Á",
+        "Bac A Bank"
+      ],
+      "refusal": false,
+      "ask_back": false
     },
-    "notes": "Vịnh Hạ Long xếp hạng đợt 1 năm 2009",
-    "labeler": "human_labeler_B"
+    "notes": "Chỉ 1 ngân hàng trụ sở Nghệ An: Bắc Á (Bac A Bank)",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-ngan_hang-03",
+    "turns": [
+      "Những ngân hàng nào trụ sở tại TP.HCM?"
+    ],
+    "check": {
+      "num": [
+        9
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "9 ngân hàng trụ sở TP.HCM (Á Châu, HDBank, VIB, OCB, SCB, Sacombank, Nam A Bank, BVBank, Saigonbank) — quá 8 dòng nên chấm bằng số lượng, không bắt liệt kê hết.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-ngan_hang-04",
+    "turns": [
+      "Ngân hàng SHB có trụ sở ở đâu?"
+    ],
+    "check": {
+      "any": [
+        "77 Trần Hưng Đạo, phường Cửa Nam, Hà Nội"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "SHB = Sài Gòn – Hà Nội, trụ sở 77 Trần Hưng Đạo, Hà Nội — lưu ý tên đầy đủ có chữ 'Sài Gòn' dù trụ sở ở Hà Nội, dễ gây nhầm khi lọc theo tên.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-ngan_hang-05",
+    "turns": [
+      "Sacombank có vốn điều lệ bao nhiêu?",
+      "Trụ sở nó ở đâu?"
+    ],
+    "check": {
+      "any": [
+        "43-45-47 Nguyễn Thị Minh Khai, phường Sài Gòn, TP.HCM"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lượt 1 (Sacombank/STB, vốn 18.852) chỉ dẫn ngữ cảnh. Lượt 2 lấy Trụ sở. Lưu ý tên hiển thị trong bảng là 'Sài Gòn Tài Lộc' (khác tên thường gọi 'Sài Gòn Thương Tín') — đây là dữ liệu gốc từ Wikipedia, giữ nguyên không tự sửa.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-ngan_hang-06",
+    "turns": [
+      "ngan hang nao von dieu le duoi 5000 ty"
+    ],
+    "check": {
+      "all": [
+        "Kiên Long",
+        "Sài Gòn Công Thương",
+        "Bảo Việt"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "3 ngân hàng vốn điều lệ dưới 5.000 tỷ: Kiên Long (3.653), Sài Gòn Công Thương (3.388), Bảo Việt (3.150)",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-ngan_hang-07",
+    "turns": [
+      "Ngân hàng nào có app di động được đánh giá tốt nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Không có cột đánh giá app/dịch vụ số, bot phải từ chối",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-ngan_hang-08",
+    "turns": [
+      "Phí chuyển tiền liên ngân hàng của BIDV là bao nhiêu?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Không có cột phí dịch vụ, bot phải từ chối",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-ngan_hang-09",
+    "turns": [
+      "Cho mình biết về Ngân hàng Sài Gòn."
+    ],
+    "check": {
+      "ask_back": true,
+      "refusal": false
+    },
+    "notes": "Bẫy tên gần trùng: có 4 ngân hàng chứa chữ 'Sài Gòn' trong tên hiển thị (Sài Gòn = SCB, Sài Gòn – Hà Nội = SHB, Sài Gòn Tài Lộc = Sacombank, Sài Gòn Công Thương = Saigonbank). Khớp đúng chuỗi 'Sài Gòn' chỉ ra 1 (SCB), nhưng câu hỏi đời thường dễ bị hiểu nhầm — hệ thống nên hỏi lại ngân hàng nào trong 4 cái, không tự chọn bừa.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-ngan_hang-10",
+    "turns": [
+      "Ngân hàng nào vừa cập nhật số liệu gần đây nhất, quý mấy năm nào?"
+    ],
+    "check": {
+      "num": [
+        18
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "18 ngân hàng cùng cập nhật mới nhất Q2/2025 (hoà nhau, không có 1 ngân hàng duy nhất 'gần đây nhất') — chấm bằng số lượng ngân hàng ở quý mới nhất.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-ngan_hang-11",
+    "turns": [
+      "Ngân hàng nào có vốn điều lệ gần bằng BIDV nhất?"
+    ],
+    "check": {
+      "any": [
+        "Việt Nam Thịnh Vượng",
+        "VPBank",
+        "Kỹ Thương Việt Nam",
+        "Techcombank"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "BIDV vốn 70.214. Gần nhất về số: Techcombank 70.862 (cách 648) gần hơn VPBank 79.339 (cách 9.125). Đáp án đúng nhất là Techcombank — chấp nhận cả VPBank nếu engine chỉ so 'lớn hơn gần nhất' theo thứ tự bảng chứ không tính khoảng cách tuyệt đối, ghi rõ vào ASSUMPTIONS khi họp.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-xe_buyt-01",
+    "turns": [
+      "Tuyến D4 chạy từ đâu tới đâu vậy?"
+    ],
+    "check": {
+      "all": [
+        "VinHomes Grand Park",
+        "Bến Thành"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "D4: VinHomes Grand Park <-> Bến Thành",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-xe_buyt-02",
+    "turns": [
+      "Mấy tuyến nào có điểm đến hoặc điểm đi là Chợ Lớn?"
+    ],
+    "check": {
+      "num": [
+        16
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "16 tuyến có Chợ Lớn là Đầu A hoặc Đầu B — quá 8 dòng, chấm bằng số lượng.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-xe_buyt-03",
+    "turns": [
+      "Tuyến nào mà điểm đầu với điểm cuối là một chỗ luôn?"
+    ],
+    "check": {
+      "all": [
+        "167",
+        "170"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "2 tuyến dạng vòng (loop), điểm đầu = điểm cuối: 167 (Đại học Hutech) và 170 (Đại học Quốc gia).",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-xe_buyt-04",
+    "turns": [
+      "Tuyến nào chạy sớm nhất trong ngày, trước 4 giờ sáng?"
+    ],
+    "check": {
+      "all": [
+        "9",
+        "722B",
+        "74"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "3 tuyến có giờ bắt đầu trước 04:00: tuyến 9 (03:45), 722B (02:40), 74 (03:30).",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-xe_buyt-05",
+    "turns": [
+      "Tuyến 172 giãn cách bao nhiêu phút một chuyến?",
+      "Thời gian hoạt động của nó thì sao?"
+    ],
+    "check": {
+      "any": [
+        "04:00 - 19:00"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Lượt 1 (172: giãn cách 180-210 phút) là ngữ cảnh. Lượt 2 lấy Thời gian hoạt động: 04:00 - 19:00.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-xe_buyt-06",
+    "turns": [
+      "tuyen nao co cu ly tren 100km"
+    ],
+    "check": {
+      "any": [
+        "721"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "Chỉ tuyến 721 (180 km) > 100km, tuyến 172 (97km) chưa tới 100km nên không tính.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-xe_buyt-07",
+    "turns": [
+      "Tuyến 1 đi qua bao nhiêu trạm dừng?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Không có cột số trạm dừng/lộ trình chi tiết, bot phải từ chối",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-xe_buyt-08",
+    "turns": [
+      "Đơn vị nào đang khai thác tuyến 172 vậy?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    },
+    "notes": "Không có cột đơn vị đảm nhiệm trong bảng dữ liệu đã nạp, bot phải từ chối",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-xe_buyt-09",
+    "turns": [
+      "Tuyến nào đi Đại học Quốc gia?"
+    ],
+    "check": {
+      "ask_back": true,
+      "refusal": false
+    },
+    "notes": "Mơ hồ: có 9 tuyến khác nhau (8, 10, 19, 33, 50, 52, 53, 99, 170) đều có Đại học Quốc gia là điểm đầu hoặc điểm cuối — hệ thống nên hỏi lại cụ thể hơn (đi từ đâu, hay liệt kê tất cả) thay vì chỉ chọn 1 tuyến bừa.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-xe_buyt-10",
+    "turns": [
+      "Giữa tuyến 1 và tuyến 172, tuyến nào dài hơn?"
+    ],
+    "check": {
+      "any": [
+        "172"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "172 = 97 km, dài hơn tuyến 1 = 9.62 km.",
+    "labeler": "Phạm Lê Thiên Dấn"
+  },
+  {
+    "id": "v4_b-xe_buyt-11",
+    "turns": [
+      "Tuyến nào có giãn cách chuyến lâu nhất, kiểu phải đợi lâu nhất đó?"
+    ],
+    "check": {
+      "any": [
+        "722B"
+      ],
+      "refusal": false,
+      "ask_back": false
+    },
+    "notes": "722B có giãn cách 180-210 phút, khoảng chờ tối đa (210 phút) cao nhất trong danh sách; tuyến 172 cũng 180-210 phút nên chấp nhận cả 2 nếu engine trả về đồng hạng — ghi chú vào ASSUMPTIONS.",
+    "labeler": "Phạm Lê Thiên Dấn"
   }
 ]

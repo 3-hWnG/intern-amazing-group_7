@@ -140,19 +140,20 @@ SPEC = {
         "sum": {},
         "refuse": ["Bảo vật {k} được định giá bao nhiêu tiền?", "Bảo vật {k} nặng bao nhiêu kg?", "Bảo vật {k} do nghệ nhân nào chế tác?"],
     },
-    "di_san_the_gioi": {
-        "file": "du_lich_di_san_the_gioi.xlsx", "sheet": "Di sản thế giới", "key": "Tên di sản", "noun": "di sản thế giới",
+    "diem_du_lich": {
+        "file": "du_lich_diem_den_quoc_gia.xlsx", "sheet": "Điểm du lịch quốc gia", "key": "Tên khu du lịch", "noun": "khu du lịch",
         "look": {
-            "Phân loại": "Di sản {k} thuộc phân loại nào?",
-            "Địa điểm": "Di sản {k} nằm ở đâu?",
-            "Niên đại": "Niên đại của di sản {k} là thời kỳ nào?",
-            "Năm công nhận": "Di sản {k} được UNESCO công nhận năm nào?"
+            "Địa phương": "Khu du lịch {k} nằm ở tỉnh/thành nào?",
+            "Vùng du lịch": "Khu du lịch {k} thuộc vùng du lịch nào?",
+            "Loại hình du lịch": "Loại hình du lịch chính của {k} là gì?",
+            "Tình trạng": "Tình trạng quy hoạch hoặc công nhận của {k} là gì?",
+            "Năm công nhận": "Khu du lịch {k} được công nhận hoặc quy hoạch năm nào?"
         },
-        "cat": {"Phân loại": "{n} là {v}"},
-        "contains": {"Địa điểm": "{n} ở {v}"},
+        "cat": {"Vùng du lịch": "{n} ở vùng {v}", "Tình trạng": "{n} có tình trạng {v}"},
+        "contains": {"Địa phương": "{n} ở {v}"},
         "numeric": {"Năm công nhận": "năm công nhận"},
         "sum": {},
-        "refuse": ["Giá vé tham quan di sản {k} là bao nhiêu?", "Số lượng khách du lịch tới di sản {k} năm 2025 là bao nhiêu?", "Giám đốc ban quản lý di sản {k} là ai?"],
+        "refuse": ["Giá vé vào cổng của khu du lịch {k} là bao nhiêu?", "Số lượng khách du lịch tới {k} năm 2025 là bao nhiêu?", "Trưởng ban quản lý khu du lịch {k} là ai?"],
     },
     "dai_hoc": {
         "file": "giao_duc_truong_dai_hoc.xlsx", "sheet": "Trường đại học", "key": "Tên trường", "noun": "trường đại học",

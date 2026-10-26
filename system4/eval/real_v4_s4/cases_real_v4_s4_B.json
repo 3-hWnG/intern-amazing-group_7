@@ -1,642 +1,818 @@
 [
   {
-    "id": "v4_b-dt-01",
+    "id": "v4_b-dan_toc-01",
+    "domain": "van_hoa",
+    "table": "van_hoa_dan_toc.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Mấy dân tộc có ngữ hệ Nam Á vậy?"
+  },
+  {
+    "id": "v4_b-dan_toc-02",
+    "domain": "van_hoa",
+    "table": "van_hoa_dan_toc.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Dân tộc nào có tỷ lệ dân số cao nhất?"
+  },
+  {
+    "id": "v4_b-dan_toc-03",
+    "domain": "van_hoa",
+    "table": "van_hoa_dan_toc.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Có dân tộc nào ghi nhiều tên gọi khác nhau không?"
+  },
+  {
+    "id": "v4_b-dan_toc-04",
+    "domain": "van_hoa",
+    "table": "van_hoa_dan_toc.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Tìm các dân tộc thuộc cùng một nhóm ngôn ngữ giúp mình."
+  },
+  {
+    "id": "v4_b-dan_toc-05",
     "domain": "van_hoa",
     "table": "van_hoa_dan_toc.xlsx",
     "kind_hint": "followup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
     "text": [
-      "Dân tộc Tày có bao nhiêu người?",
-      "Thế còn địa bàn cư trú ở đâu?"
+      "Dân tộc Khmer có dân số khoảng bao nhiêu?",
+      "Thế họ cư trú chủ yếu ở vùng nào?"
     ]
   },
   {
-    "id": "v4_b-dt-02",
+    "id": "v4_b-dan_toc-06",
     "domain": "van_hoa",
     "table": "van_hoa_dan_toc.xlsx",
     "kind_hint": "unaccent",
-    "text": "dan toc hoa chu yeu cu tru o dau"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "dan toc nao co dan so tren mot trieu nguoi"
   },
   {
-    "id": "v4_b-dt-03",
+    "id": "v4_b-dan_toc-07",
     "domain": "van_hoa",
     "table": "van_hoa_dan_toc.xlsx",
     "kind_hint": "refusal",
-    "text": "Dân tộc Mông có trang phục truyền thống màu gì?"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Dân tộc nào có tuổi thọ trung bình cao nhất?"
   },
   {
-    "id": "v4_b-dt-04",
+    "id": "v4_b-dan_toc-08",
+    "domain": "van_hoa",
+    "table": "van_hoa_dan_toc.xlsx",
+    "kind_hint": "refusal",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Dân tộc nào có thu nhập bình quân đầu người cao nhất?"
+  },
+  {
+    "id": "v4_b-dan_toc-09",
     "domain": "van_hoa",
     "table": "van_hoa_dan_toc.xlsx",
     "kind_hint": "ambiguous",
-    "text": "Dân tộc nào đông dân thứ nhì Việt Nam?"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Cho mình thông tin về dân tộc Thái."
   },
   {
-    "id": "v4_b-dt-05",
+    "id": "v4_b-dan_toc-10",
     "domain": "van_hoa",
     "table": "van_hoa_dan_toc.xlsx",
     "kind_hint": "lookup",
-    "text": "cho mình hỏi dân tộc Nùng thuộc hệ ngôn ngữ nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Ngữ hệ và nhóm ngôn ngữ của dân tộc Chăm là gì?"
   },
   {
-    "id": "v4_b-dt-06",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
-    "kind_hint": "filter",
-    "text": "ở Tây Nguyên có những dân tộc bản địa nào"
-  },
-  {
-    "id": "v4_b-dt-07",
+    "id": "v4_b-dan_toc-11",
     "domain": "van_hoa",
     "table": "van_hoa_dan_toc.xlsx",
     "kind_hint": "lookup",
-    "text": "dân tộc Chăm thuộc nhóm ngôn ngữ gì vậy"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Dân tộc nào có địa bàn cư trú chính ở Tây Nguyên?"
   },
   {
-    "id": "v4_b-dt-08",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-the_thao-01",
+    "domain": "the_thao",
+    "table": "the_thao_san_van_dong.xlsx",
     "kind_hint": "lookup",
-    "text": "dân tộc Khơ me có tên gọi khác không"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Sân nào có sức chứa lớn nhất trong danh sách?"
   },
   {
-    "id": "v4_b-dt-09",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
-    "kind_hint": "count",
-    "text": "có bao nhiêu dân tộc thuộc hệ Nam Đảo"
-  },
-  {
-    "id": "v4_b-dt-10",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-the_thao-02",
+    "domain": "the_thao",
+    "table": "the_thao_san_van_dong.xlsx",
     "kind_hint": "lookup",
-    "text": "dân tộc Kinh chiếm bao nhiêu phần trăm dân số"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Những sân vận động nào được khánh thành từ năm 2000 trở đi?"
   },
   {
-    "id": "v4_b-dt-11",
-    "domain": "van_hoa",
-    "table": "van_hoa_dan_toc.xlsx",
+    "id": "v4_b-the_thao-03",
+    "domain": "the_thao",
+    "table": "the_thao_san_van_dong.xlsx",
     "kind_hint": "lookup",
-    "text": "Người Mường Lò có địa bàn cư trú chính ở đâu?"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Sân nào đang có ghi chú về việc cải tạo hoặc nâng cấp?"
   },
   {
-    "id": "v4_b-svd-01",
+    "id": "v4_b-the_thao-04",
+    "domain": "the_thao",
+    "table": "the_thao_san_van_dong.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Có bao nhiêu sân đang được khai thác?"
+  },
+  {
+    "id": "v4_b-the_thao-05",
     "domain": "the_thao",
     "table": "the_thao_san_van_dong.xlsx",
     "kind_hint": "followup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
     "text": [
-      "Sân vận động Mỹ Đình chứa được bao nhiêu người?",
-      "Sân này khánh thành năm nào thế?"
+      "Sân Mỹ Đình có sức chứa bao nhiêu chỗ?",
+      "Đội bóng nào quản lý sân đó vậy?"
     ]
   },
   {
-    "id": "v4_b-svd-02",
+    "id": "v4_b-the_thao-06",
     "domain": "the_thao",
     "table": "the_thao_san_van_dong.xlsx",
     "kind_hint": "unaccent",
-    "text": "san thong nhat o dau vay ban"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "san van dong nao co suc chua tren 30000 cho"
   },
   {
-    "id": "v4_b-svd-03",
+    "id": "v4_b-the_thao-07",
     "domain": "the_thao",
     "table": "the_thao_san_van_dong.xlsx",
     "kind_hint": "refusal",
-    "text": "Giá vé vào sân Lạch Tray xem bóng đá là bao nhiêu?"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Sân nào có giá vé vào cửa rẻ nhất?"
   },
   {
-    "id": "v4_b-svd-04",
+    "id": "v4_b-the_thao-08",
+    "domain": "the_thao",
+    "table": "the_thao_san_van_dong.xlsx",
+    "kind_hint": "refusal",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Sân nào có doanh thu bán vé cao nhất năm ngoái?"
+  },
+  {
+    "id": "v4_b-the_thao-09",
     "domain": "the_thao",
     "table": "the_thao_san_van_dong.xlsx",
     "kind_hint": "ambiguous",
-    "text": "Sân vận động ở Hà Nội"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Sân Thống Nhất giờ thế nào rồi?"
   },
   {
-    "id": "v4_b-svd-05",
+    "id": "v4_b-the_thao-10",
     "domain": "the_thao",
     "table": "the_thao_san_van_dong.xlsx",
     "kind_hint": "lookup",
-    "text": "CLB Hải Phòng đá ở sân vận động nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Sân nào có trạng thái khai thác là tạm ngừng?"
   },
   {
-    "id": "v4_b-svd-06",
+    "id": "v4_b-the_thao-11",
     "domain": "the_thao",
     "table": "the_thao_san_van_dong.xlsx",
     "kind_hint": "lookup",
-    "text": "sân Cần Thơ có sức chứa bao nhiêu khán giả"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "So sánh sức chứa của hai sân có sức chứa lớn nhất."
   },
   {
-    "id": "v4_b-svd-07",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
+    "id": "v4_b-phi_vat_the-01",
+    "domain": "van_hoa_phi_vat_the",
+    "table": "van_hoa_phi_vat_the.xlsx",
     "kind_hint": "lookup",
-    "text": "sân vận động Trống Đồng dự kiến khánh thành năm nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Có những di sản nào thuộc loại hình nghệ thuật trình diễn dân gian?"
   },
   {
-    "id": "v4_b-svd-08",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
+    "id": "v4_b-phi_vat_the-02",
+    "domain": "van_hoa_phi_vat_the",
+    "table": "van_hoa_phi_vat_the.xlsx",
     "kind_hint": "lookup",
-    "text": "trạng thái của sân vận động Rạch Chiếc hiện nay ra sao"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Di sản nào được công nhận sớm nhất?"
   },
   {
-    "id": "v4_b-svd-09",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
-    "kind_hint": "count",
-    "text": "có bao nhiêu sân vận động có sức chứa từ 30000 chỗ trở lên"
-  },
-  {
-    "id": "v4_b-svd-10",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
+    "id": "v4_b-phi_vat_the-03",
+    "domain": "van_hoa_phi_vat_the",
+    "table": "van_hoa_phi_vat_the.xlsx",
     "kind_hint": "lookup",
-    "text": "sân vận động Hàng Đẫy nằm ở tỉnh thành nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Liệt kê các di sản được công nhận trong giai đoạn 2010–2015."
   },
   {
-    "id": "v4_b-svd-11",
-    "domain": "the_thao",
-    "table": "the_thao_san_van_dong.xlsx",
+    "id": "v4_b-phi_vat_the-04",
+    "domain": "van_hoa_phi_vat_the",
+    "table": "van_hoa_phi_vat_the.xlsx",
     "kind_hint": "lookup",
-    "text": "đội bóng nào sử dụng sân vận động Hàng Đẫy làm sân nhà"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Có bao nhiêu di sản được ghi nhận trong bảng?"
   },
   {
-    "id": "v4_b-pvt-01",
-    "domain": "van_hoa",
+    "id": "v4_b-phi_vat_the-05",
+    "domain": "van_hoa_phi_vat_the",
     "table": "van_hoa_phi_vat_the.xlsx",
     "kind_hint": "followup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
     "text": [
-      "Ca Huế được công nhận năm nào?",
-      "Thế loại hình của nó là gì?"
+      "Tín ngưỡng thờ cúng Hùng Vương được công nhận năm nào?",
+      "Nó thuộc địa điểm nào vậy?"
     ]
   },
   {
-    "id": "v4_b-pvt-02",
-    "domain": "van_hoa",
+    "id": "v4_b-phi_vat_the-06",
+    "domain": "van_hoa_phi_vat_the",
     "table": "van_hoa_phi_vat_the.xlsx",
     "kind_hint": "unaccent",
-    "text": "hoi giong o phu dong duoc cong nhan nam nao"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "di san nao duoc cong nhan sau nam 2020"
   },
   {
-    "id": "v4_b-pvt-03",
-    "domain": "van_hoa",
+    "id": "v4_b-phi_vat_the-07",
+    "domain": "van_hoa_phi_vat_the",
     "table": "van_hoa_phi_vat_the.xlsx",
     "kind_hint": "refusal",
-    "text": "Nghệ nhân nào hát Ca trù hay nhất hiện nay?"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Di sản nào có lượng khách tham dự đông nhất mỗi năm?"
   },
   {
-    "id": "v4_b-pvt-04",
-    "domain": "van_hoa",
+    "id": "v4_b-phi_vat_the-08",
+    "domain": "van_hoa_phi_vat_the",
+    "table": "van_hoa_phi_vat_the.xlsx",
+    "kind_hint": "refusal",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Di sản nào được ngân sách nhà nước cấp kinh phí bảo tồn nhiều nhất?"
+  },
+  {
+    "id": "v4_b-phi_vat_the-09",
+    "domain": "van_hoa_phi_vat_the",
     "table": "van_hoa_phi_vat_the.xlsx",
     "kind_hint": "ambiguous",
-    "text": "Lễ hội Đền Hùng"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Cho mình thông tin về hát xoan."
   },
   {
-    "id": "v4_b-pvt-05",
-    "domain": "van_hoa",
+    "id": "v4_b-phi_vat_the-10",
+    "domain": "van_hoa_phi_vat_the",
     "table": "van_hoa_phi_vat_the.xlsx",
     "kind_hint": "lookup",
-    "text": "Nghệ thuật Bài Chòi được ghi danh là loại hình gì"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Tìm các di sản ở Hà Nội."
   },
   {
-    "id": "v4_b-pvt-06",
-    "domain": "van_hoa",
+    "id": "v4_b-phi_vat_the-11",
+    "domain": "van_hoa_phi_vat_the",
     "table": "van_hoa_phi_vat_the.xlsx",
     "kind_hint": "lookup",
-    "text": "Hát Xoan được ghi nhận thuộc tỉnh nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Di sản nào được công nhận trong năm 2003?"
   },
   {
-    "id": "v4_b-pvt-07",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
+    "id": "v4_b-bao_vat-01",
+    "domain": "lich_su",
+    "table": "lich_su_bao_vat_quoc_gia.xlsx",
     "kind_hint": "lookup",
-    "text": "Nghề làm gốm của người Chăm thuộc loại hình di sản nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Bảo vật nào được công nhận ở đợt đầu tiên?"
   },
   {
-    "id": "v4_b-pvt-08",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
-    "kind_hint": "count",
-    "text": "ở tỉnh Bắc Ninh có bao nhiêu di sản văn hóa phi vật thể quốc gia"
-  },
-  {
-    "id": "v4_b-pvt-09",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
+    "id": "v4_b-bao_vat-02",
+    "domain": "lich_su",
+    "table": "lich_su_bao_vat_quoc_gia.xlsx",
     "kind_hint": "lookup",
-    "text": "Múa Then của người Tày Nùng được công nhận năm nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Có những bảo vật nào có niên đại trước thế kỷ X?"
   },
   {
-    "id": "v4_b-pvt-10",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
+    "id": "v4_b-bao_vat-03",
+    "domain": "lich_su",
+    "table": "lich_su_bao_vat_quoc_gia.xlsx",
     "kind_hint": "lookup",
-    "text": "Không gian văn hóa Cồng chiêng Tây Nguyên thuộc loại hình nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Bảo vật nào đang được một bảo tàng lưu giữ?"
   },
   {
-    "id": "v4_b-pvt-11",
-    "domain": "van_hoa",
-    "table": "van_hoa_phi_vat_the.xlsx",
-    "kind_hint": "count",
-    "text": "năm 2015 có bao nhiêu di sản phi vật thể được công nhận"
+    "id": "v4_b-bao_vat-04",
+    "domain": "lich_su",
+    "table": "lich_su_bao_vat_quoc_gia.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Có bao nhiêu bảo vật được công nhận trong năm 2020?"
   },
   {
-    "id": "v4_b-bv-01",
+    "id": "v4_b-bao_vat-05",
     "domain": "lich_su",
     "table": "lich_su_bao_vat_quoc_gia.xlsx",
     "kind_hint": "followup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
     "text": [
-      "Trống đồng Ngọc Lũ đang được lưu giữ ở đâu?",
-      "Niên đại của trống này là khi nào?"
+      "Trống đồng Ngọc Lũ được công nhận vào đợt nào?",
+      "Bảo vật đó hiện thuộc đơn vị nào lưu giữ?"
     ]
   },
   {
-    "id": "v4_b-bv-02",
+    "id": "v4_b-bao_vat-06",
     "domain": "lich_su",
     "table": "lich_su_bao_vat_quoc_gia.xlsx",
     "kind_hint": "unaccent",
-    "text": "trong dong den hung o tinh nao"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "bao vat nao co dia phuong la ha noi"
   },
   {
-    "id": "v4_b-bv-03",
+    "id": "v4_b-bao_vat-07",
     "domain": "lich_su",
     "table": "lich_su_bao_vat_quoc_gia.xlsx",
     "kind_hint": "refusal",
-    "text": "Trống đồng Ngọc Lũ nặng bao nhiêu ki lô gam?"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Bảo vật nào có giá đấu giá cao nhất?"
   },
   {
-    "id": "v4_b-bv-04",
+    "id": "v4_b-bao_vat-08",
     "domain": "lich_su",
     "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "kind_hint": "ambiguous",
-    "text": "Trống đồng Đông Sơn"
-  },
-  {
-    "id": "v4_b-bv-05",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "kind_hint": "lookup",
-    "text": "Bia đá tiến sĩ Văn Miếu Thăng Long được công nhận vào đợt mấy"
-  },
-  {
-    "id": "v4_b-bv-06",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "kind_hint": "lookup",
-    "text": "Tượng Phật bà Quan Âm chùa Bút Tháp ở tỉnh nào"
-  },
-  {
-    "id": "v4_b-bv-07",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "kind_hint": "lookup",
-    "text": "Áo ngự bào triều Nguyễn hiện được đơn vị nào lưu giữ"
-  },
-  {
-    "id": "v4_b-bv-08",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "kind_hint": "lookup",
-    "text": "Trống đồng Sông Lô được công nhận năm nào"
-  },
-  {
-    "id": "v4_b-bv-09",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "kind_hint": "lookup",
-    "text": "Trống đồng Sông Lò hiện đang ở bảo tàng nào"
-  },
-  {
-    "id": "v4_b-bv-10",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "kind_hint": "count",
-    "text": "Đợt 1 có bao nhiêu bảo vật quốc gia được công nhận"
-  },
-  {
-    "id": "v4_b-bv-11",
-    "domain": "lich_su",
-    "table": "lich_su_bao_vat_quoc_gia.xlsx",
-    "kind_hint": "lookup",
-    "text": "Trống đồng Cảnh Thịnh thuộc niên đại triều đại nào"
-  },
-  {
-    "id": "v4_b-dstg-01",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
-    "kind_hint": "followup",
-    "text": [
-      "Hoàng thành Thăng Long được UNESCO công nhận năm nào?",
-      "Nằm ở tỉnh thành nào thế?"
-    ]
-  },
-  {
-    "id": "v4_b-dstg-02",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
-    "kind_hint": "unaccent",
-    "text": "vinh ha long duoc unesco cong nhan nam nao"
-  },
-  {
-    "id": "v4_b-dstg-03",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
     "kind_hint": "refusal",
-    "text": "Giá vé tham quan phố cổ Hội An hiện nay là bao nhiêu tiền?"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Bảo vật nào đang được bảo hiểm với số tiền lớn nhất?"
   },
   {
-    "id": "v4_b-dstg-04",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-bao_vat-09",
+    "domain": "lich_su",
+    "table": "lich_su_bao_vat_quoc_gia.xlsx",
     "kind_hint": "ambiguous",
-    "text": "Di sản thế giới ở miền Trung"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Mình muốn tìm hiểu về tượng Phật."
   },
   {
-    "id": "v4_b-dstg-05",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-bao_vat-10",
+    "domain": "lich_su",
+    "table": "lich_su_bao_vat_quoc_gia.xlsx",
     "kind_hint": "lookup",
-    "text": "Vườn quốc gia Phong Nha Kẻ Bàng là di sản thiên nhiên hay văn hóa"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Liệt kê bảo vật do bảo tàng cấp tỉnh lưu giữ."
   },
   {
-    "id": "v4_b-dstg-06",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-bao_vat-11",
+    "domain": "lich_su",
+    "table": "lich_su_bao_vat_quoc_gia.xlsx",
     "kind_hint": "lookup",
-    "text": "Quần thể di tích Cố đô Huế nằm ở đâu"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Bảo vật nào có ghi niên đại thời Lý?"
   },
   {
-    "id": "v4_b-dstg-07",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-truong_dai_hoc-01",
+    "domain": "giao_duc",
+    "table": "giao_duc_truong_dai_hoc.xlsx",
     "kind_hint": "lookup",
-    "text": "Quần thể danh thắng Tràng An thuộc tỉnh nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Trường nào có tên viết tắt là HCMUT?"
   },
   {
-    "id": "v4_b-dstg-08",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-truong_dai_hoc-02",
+    "domain": "giao_duc",
+    "table": "giao_duc_truong_dai_hoc.xlsx",
     "kind_hint": "lookup",
-    "text": "Thánh địa Mỹ Sơn thuộc niên đại nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Những trường nào có tên giao dịch tiếng Anh chứa từ 'Technology'?"
   },
   {
-    "id": "v4_b-dstg-09",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
-    "kind_hint": "count",
-    "text": "Việt Nam có bao nhiêu di sản thế giới chính thức được liệt kê"
-  },
-  {
-    "id": "v4_b-dstg-10",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-truong_dai_hoc-03",
+    "domain": "giao_duc",
+    "table": "giao_duc_truong_dai_hoc.xlsx",
     "kind_hint": "lookup",
-    "text": "Quần thể Hương Sơn có tình trạng thế nào trong danh sách đề cử"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Trường nào do Bộ Giáo dục và Đào tạo quản lý trực tiếp?"
   },
   {
-    "id": "v4_b-dstg-11",
-    "domain": "du_lich",
-    "table": "du_lich_di_san_the_gioi.xlsx",
+    "id": "v4_b-truong_dai_hoc-04",
+    "domain": "giao_duc",
+    "table": "giao_duc_truong_dai_hoc.xlsx",
     "kind_hint": "lookup",
-    "text": "Thành nhà Hồ thuộc tỉnh thành nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Có bao nhiêu trường thuộc loại hình tư thục?"
   },
   {
-    "id": "v4_b-dh-01",
+    "id": "v4_b-truong_dai_hoc-05",
     "domain": "giao_duc",
     "table": "giao_duc_truong_dai_hoc.xlsx",
     "kind_hint": "followup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
     "text": [
-      "Trường Đại học Bách khoa Hà Nội viết tắt là gì?",
-      "Trụ sở ở đâu vậy bạn?"
+      "Đại học Bách khoa Hà Nội ở địa điểm nào?",
+      "Tên giao dịch tiếng Anh của trường là gì?"
     ]
   },
   {
-    "id": "v4_b-dh-02",
+    "id": "v4_b-truong_dai_hoc-06",
     "domain": "giao_duc",
     "table": "giao_duc_truong_dai_hoc.xlsx",
     "kind_hint": "unaccent",
-    "text": "dai hoc ngoai thuong viet tat la gi"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "truong nao co ten viet tat la neu"
   },
   {
-    "id": "v4_b-dh-03",
+    "id": "v4_b-truong_dai_hoc-07",
     "domain": "giao_duc",
     "table": "giao_duc_truong_dai_hoc.xlsx",
     "kind_hint": "refusal",
-    "text": "Học phí một năm của Đại học Ngoại thương là bao nhiêu?"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Trường nào có tỷ lệ sinh viên tốt nghiệp đúng hạn cao nhất?"
   },
   {
-    "id": "v4_b-dh-04",
+    "id": "v4_b-truong_dai_hoc-08",
     "domain": "giao_duc",
     "table": "giao_duc_truong_dai_hoc.xlsx",
-    "kind_hint": "ambiguous",
-    "text": "Trường Đại học Bách khoa"
-  },
-  {
-    "id": "v4_b-dh-05",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
-    "kind_hint": "lookup",
-    "text": "Trường Đại học FPT là trường công lập hay tư thục"
-  },
-  {
-    "id": "v4_b-dh-06",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
-    "kind_hint": "lookup",
-    "text": "Học viện Tài chính trực thuộc cơ quan nào"
-  },
-  {
-    "id": "v4_b-dh-07",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
-    "kind_hint": "lookup",
-    "text": "Trường Đại học Cần Thơ có địa điểm ở đâu"
-  },
-  {
-    "id": "v4_b-dh-08",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
-    "kind_hint": "lookup",
-    "text": "Tên tiếng Anh của Trường Đại học Công nghệ ĐHQGHN là gì"
-  },
-  {
-    "id": "v4_b-dh-09",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
-    "kind_hint": "lookup",
-    "text": "Trường Đại học Y Hà Nội trực thuộc đơn vị nào quản lý"
-  },
-  {
-    "id": "v4_b-dh-10",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
-    "kind_hint": "count",
-    "text": "Có bao nhiêu trường đại học tư thục trong danh sách"
-  },
-  {
-    "id": "v4_b-dh-11",
-    "domain": "giao_duc",
-    "table": "giao_duc_truong_dai_hoc.xlsx",
-    "kind_hint": "lookup",
-    "text": "Trường Đại học Luật Hà Nội trực thuộc cơ quan nào"
-  },
-  {
-    "id": "v4_b-bvsg-01",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
-    "kind_hint": "followup",
-    "text": [
-      "Bệnh viện Chợ Rẫy có bao nhiêu giường bệnh?",
-      "Năm thành lập của bệnh viện là năm nào?"
-    ]
-  },
-  {
-    "id": "v4_b-bvsg-02",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
-    "kind_hint": "unaccent",
-    "text": "benh vien tu du nam o dau"
-  },
-  {
-    "id": "v4_b-bvsg-03",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
     "kind_hint": "refusal",
-    "text": "Trưởng khoa cấp cứu Bệnh viện Chợ Rẫy là bác sĩ nào?"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Trường nào có mức học phí ngành công nghệ thông tin thấp nhất năm nay?"
   },
   {
-    "id": "v4_b-bvsg-04",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
+    "id": "v4_b-truong_dai_hoc-09",
+    "domain": "giao_duc",
+    "table": "giao_duc_truong_dai_hoc.xlsx",
     "kind_hint": "ambiguous",
-    "text": "Bệnh viện Nhi đồng"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Đại học Quốc gia có những thông tin gì?"
   },
   {
-    "id": "v4_b-bvsg-05",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
+    "id": "v4_b-truong_dai_hoc-10",
+    "domain": "giao_duc",
+    "table": "giao_duc_truong_dai_hoc.xlsx",
     "kind_hint": "lookup",
-    "text": "Bệnh viện Thống Nhất trực thuộc tuyến quản lý nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Liệt kê các trường ở Thành phố Hồ Chí Minh."
   },
   {
-    "id": "v4_b-bvsg-06",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
+    "id": "v4_b-truong_dai_hoc-11",
+    "domain": "giao_duc",
+    "table": "giao_duc_truong_dai_hoc.xlsx",
     "kind_hint": "lookup",
-    "text": "Bệnh viện Nhân dân Gia Định có tên gọi cũ là gì"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Trường nào có loại hình là công lập?"
   },
   {
-    "id": "v4_b-bvsg-07",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-01",
+    "domain": "di_tich",
+    "table": "di_tich_quoc_gia_dac_biet.xlsx",
     "kind_hint": "lookup",
-    "text": "Bệnh viện Đại học Y Dược Thành phố Hồ Chí Minh có bao nhiêu giường"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Di tích nào được xếp hạng trong đợt đầu tiên?"
   },
   {
-    "id": "v4_b-bvsg-08",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-02",
+    "domain": "di_tich",
+    "table": "di_tich_quoc_gia_dac_biet.xlsx",
     "kind_hint": "lookup",
-    "text": "Bệnh viện Hùng Vương là bệnh viện chuyên khoa hay đa khoa"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Những di tích nào được xếp hạng trước năm 2010?"
   },
   {
-    "id": "v4_b-bvsg-09",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
-    "kind_hint": "count",
-    "text": "có bao nhiêu bệnh viện trực thuộc tuyến bộ ngành tại TP.HCM"
-  },
-  {
-    "id": "v4_b-bvsg-10",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-03",
+    "domain": "di_tich",
+    "table": "di_tich_quoc_gia_dac_biet.xlsx",
     "kind_hint": "lookup",
-    "text": "Bệnh viện Mắt Thành phố Hồ Chí Minh thành lập năm nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Di tích nào có nhiều hạng mục được liệt kê nhất?"
   },
   {
-    "id": "v4_b-bvsg-11",
-    "domain": "y_te",
-    "table": "y_te_benh_vien_tphcm.xlsx",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-04",
+    "domain": "di_tich",
+    "table": "di_tich_quoc_gia_dac_biet.xlsx",
     "kind_hint": "lookup",
-    "text": "Bệnh viện Bệnh Nhiệt đới nằm ở cơ sở nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Có bao nhiêu di tích được xếp hạng trong năm 2022?"
   },
   {
-    "id": "v4_b-dtqg-01",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-05",
     "domain": "di_tich",
     "table": "di_tich_quoc_gia_dac_biet.xlsx",
     "kind_hint": "followup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
     "text": [
-      "Cố đô Hoa Lư được xếp hạng đợt mấy?",
-      "Năm xếp hạng là năm nào?"
+      "Hoàng thành Thăng Long được xếp hạng năm nào?",
+      "Ghi chú của di tích đó có thông tin gì?"
     ]
   },
   {
-    "id": "v4_b-dtqg-02",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-06",
     "domain": "di_tich",
     "table": "di_tich_quoc_gia_dac_biet.xlsx",
     "kind_hint": "unaccent",
-    "text": "dia dao cu chi nam o dau"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "di tich nao co dia diem o quang tri"
   },
   {
-    "id": "v4_b-dtqg-03",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-07",
     "domain": "di_tich",
     "table": "di_tich_quoc_gia_dac_biet.xlsx",
     "kind_hint": "refusal",
-    "text": "Giá vé tham quan Dinh Độc Lập hiện nay là bao nhiêu?"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Di tích nào có lượng khách tham quan cao nhất dịp Tết vừa rồi?"
   },
   {
-    "id": "v4_b-dtqg-04",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-08",
+    "domain": "di_tich",
+    "table": "di_tich_quoc_gia_dac_biet.xlsx",
+    "kind_hint": "refusal",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Di tích nào có kinh phí trùng tu lớn nhất trong năm nay?"
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-09",
     "domain": "di_tich",
     "table": "di_tich_quoc_gia_dac_biet.xlsx",
     "kind_hint": "ambiguous",
-    "text": "Khu di tích Lam Kinh"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Cho mình thông tin về thành nhà Hồ."
   },
   {
-    "id": "v4_b-dtqg-05",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-10",
     "domain": "di_tich",
     "table": "di_tich_quoc_gia_dac_biet.xlsx",
     "kind_hint": "lookup",
-    "text": "Đền Hùng được xếp hạng di tích quốc gia đặc biệt năm nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Tìm các di tích ở Hà Nội."
   },
   {
-    "id": "v4_b-dtqg-06",
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-11",
     "domain": "di_tich",
     "table": "di_tich_quoc_gia_dac_biet.xlsx",
     "kind_hint": "lookup",
-    "text": "Khu di tích trung tâm Hoàng thành Thăng Long được xếp hạng vào đợt mấy"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Di tích nào có hạng mục liên quan đến khảo cổ?"
   },
   {
-    "id": "v4_b-dtqg-07",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
+    "id": "v4_b-ngan_hang-01",
+    "domain": "ngan_hang",
+    "table": "ngan_hang.xlsx",
     "kind_hint": "lookup",
-    "text": "Nhà tù Côn Đảo nằm ở tỉnh thành nào"
+    "collector": "Phạm Lê Thiên Dấn (hỗ trợ bởi Claude - xem ghi chú tác giả)",
+    "written_on": "2026-10-26",
+    "text": "VPBank có vốn điều lệ khoảng bao nhiêu?"
   },
   {
-    "id": "v4_b-dtqg-08",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
+    "id": "v4_b-ngan_hang-02",
+    "domain": "ngan_hang",
+    "table": "ngan_hang.xlsx",
     "kind_hint": "lookup",
-    "text": "Di tích Cổ Loa thuộc hạng mục di tích nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Có ngân hàng nào trụ sở ở Nghệ An không?"
   },
   {
-    "id": "v4_b-dtqg-09",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
-    "kind_hint": "count",
-    "text": "Đợt 1 năm 2009 có bao nhiêu di tích được xếp hạng"
-  },
-  {
-    "id": "v4_b-dtqg-10",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
+    "id": "v4_b-ngan_hang-03",
+    "domain": "ngan_hang",
+    "table": "ngan_hang.xlsx",
     "kind_hint": "lookup",
-    "text": "Khu di tích Kim Liên quê Bác nằm ở tỉnh nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Những ngân hàng nào trụ sở tại TP.HCM?"
   },
   {
-    "id": "v4_b-dtqg-11",
-    "domain": "di_tich",
-    "table": "di_tich_quoc_gia_dac_biet.xlsx",
+    "id": "v4_b-ngan_hang-04",
+    "domain": "ngan_hang",
+    "table": "ngan_hang.xlsx",
     "kind_hint": "lookup",
-    "text": "Vịnh Hạ Long được xếp hạng di tích quốc gia đặc biệt vào năm nào"
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Ngân hàng SHB có trụ sở ở đâu?"
+  },
+  {
+    "id": "v4_b-ngan_hang-05",
+    "domain": "ngan_hang",
+    "table": "ngan_hang.xlsx",
+    "kind_hint": "followup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": [
+      "Sacombank có vốn điều lệ bao nhiêu?",
+      "Trụ sở nó ở đâu?"
+    ]
+  },
+  {
+    "id": "v4_b-ngan_hang-06",
+    "domain": "ngan_hang",
+    "table": "ngan_hang.xlsx",
+    "kind_hint": "unaccent",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "ngan hang nao von dieu le duoi 5000 ty"
+  },
+  {
+    "id": "v4_b-ngan_hang-07",
+    "domain": "ngan_hang",
+    "table": "ngan_hang.xlsx",
+    "kind_hint": "refusal",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Ngân hàng nào có app di động được đánh giá tốt nhất?"
+  },
+  {
+    "id": "v4_b-ngan_hang-08",
+    "domain": "ngan_hang",
+    "table": "ngan_hang.xlsx",
+    "kind_hint": "refusal",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Phí chuyển tiền liên ngân hàng của BIDV là bao nhiêu?"
+  },
+  {
+    "id": "v4_b-ngan_hang-09",
+    "domain": "ngan_hang",
+    "table": "ngan_hang.xlsx",
+    "kind_hint": "ambiguous",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Cho mình biết về Ngân hàng Sài Gòn."
+  },
+  {
+    "id": "v4_b-ngan_hang-10",
+    "domain": "ngan_hang",
+    "table": "ngan_hang.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Ngân hàng nào vừa cập nhật số liệu gần đây nhất, quý mấy năm nào?"
+  },
+  {
+    "id": "v4_b-ngan_hang-11",
+    "domain": "ngan_hang",
+    "table": "ngan_hang.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Ngân hàng nào có vốn điều lệ gần bằng BIDV nhất?"
+  },
+  {
+    "id": "v4_b-xe_buyt-01",
+    "domain": "xe_buyt_tphcm",
+    "table": "xe_buyt_tphcm.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn (hỗ trợ bởi Claude - xem ghi chú tác giả)",
+    "written_on": "2026-10-26",
+    "text": "Tuyến D4 chạy từ đâu tới đâu vậy?"
+  },
+  {
+    "id": "v4_b-xe_buyt-02",
+    "domain": "xe_buyt_tphcm",
+    "table": "xe_buyt_tphcm.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Mấy tuyến nào có điểm đến hoặc điểm đi là Chợ Lớn?"
+  },
+  {
+    "id": "v4_b-xe_buyt-03",
+    "domain": "xe_buyt_tphcm",
+    "table": "xe_buyt_tphcm.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Tuyến nào mà điểm đầu với điểm cuối là một chỗ luôn?"
+  },
+  {
+    "id": "v4_b-xe_buyt-04",
+    "domain": "xe_buyt_tphcm",
+    "table": "xe_buyt_tphcm.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Tuyến nào chạy sớm nhất trong ngày, trước 4 giờ sáng?"
+  },
+  {
+    "id": "v4_b-xe_buyt-05",
+    "domain": "xe_buyt_tphcm",
+    "table": "xe_buyt_tphcm.xlsx",
+    "kind_hint": "followup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": [
+      "Tuyến 172 giãn cách bao nhiêu phút một chuyến?",
+      "Thời gian hoạt động của nó thì sao?"
+    ]
+  },
+  {
+    "id": "v4_b-xe_buyt-06",
+    "domain": "xe_buyt_tphcm",
+    "table": "xe_buyt_tphcm.xlsx",
+    "kind_hint": "unaccent",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "tuyen nao co cu ly tren 100km"
+  },
+  {
+    "id": "v4_b-xe_buyt-07",
+    "domain": "xe_buyt_tphcm",
+    "table": "xe_buyt_tphcm.xlsx",
+    "kind_hint": "refusal",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Tuyến 1 đi qua bao nhiêu trạm dừng?"
+  },
+  {
+    "id": "v4_b-xe_buyt-08",
+    "domain": "xe_buyt_tphcm",
+    "table": "xe_buyt_tphcm.xlsx",
+    "kind_hint": "refusal",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Đơn vị nào đang khai thác tuyến 172 vậy?"
+  },
+  {
+    "id": "v4_b-xe_buyt-09",
+    "domain": "xe_buyt_tphcm",
+    "table": "xe_buyt_tphcm.xlsx",
+    "kind_hint": "ambiguous",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Tuyến nào đi Đại học Quốc gia?"
+  },
+  {
+    "id": "v4_b-xe_buyt-10",
+    "domain": "xe_buyt_tphcm",
+    "table": "xe_buyt_tphcm.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Giữa tuyến 1 và tuyến 172, tuyến nào dài hơn?"
+  },
+  {
+    "id": "v4_b-xe_buyt-11",
+    "domain": "xe_buyt_tphcm",
+    "table": "xe_buyt_tphcm.xlsx",
+    "kind_hint": "lookup",
+    "collector": "Phạm Lê Thiên Dấn",
+    "written_on": "2026-10-26",
+    "text": "Tuyến nào có giãn cách chuyến lâu nhất, kiểu phải đợi lâu nhất đó?"
   }
 ]
