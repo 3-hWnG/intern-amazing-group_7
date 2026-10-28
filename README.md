@@ -44,6 +44,6 @@ Tải `07_paper_draft/paper1_overleaf.zip` lên Overleaf; tệp chính là `main
 
 ## Việc còn lại trước khi nộp
 
-- ORCID của các tác giả (bắt buộc với tác giả liên hệ).
-- Chốt nơi đặt mã công khai, tức URL trong mục Data Availability của bài.
-- Biên dịch lại trên Overleaf sau khi sửa trình bày ngày 28/10, rồi đặt PDF vào `08_final_submission/`.
+- Biên dịch lại trên Overleaf bằng gói `paper1_overleaf.zip` mới (28/10, đã có ORCID và URL), rồi đặt PDF vào `08_final_submission/`.
+- ORCID của mentor, nếu thầy có (không bắt buộc; bài hiện ghi ORCID của ba sinh viên).
+- URL trong mục Data Availability trỏ tới nhánh `paper1-vjcs-draft`; nếu mã chuyển sang chỗ khác thì phải sửa URL trước khi nộp.

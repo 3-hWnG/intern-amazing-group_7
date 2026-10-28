@@ -18,4 +18,6 @@ This research received no external funding.
 
 ## ORCID
 
-**[TODO: ORCID iDs of all authors.]**
+- Trinh Hoang Nhan: <https://orcid.org/0009-0003-1961-9022>
+- Nguyen Viet Hung: <https://orcid.org/0009-0006-5603-6143>
+- Pham Le Thien Dan: <https://orcid.org/0009-0006-3191-0965>
