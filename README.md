@@ -35,7 +35,7 @@ Trên hai bộ test khoá trước khi sửa code, một lớp luật minh bạc
 
 ## Biên dịch bài
 
-Tải `07_paper_draft/paper1_overleaf.zip` lên Overleaf; tệp chính là `main.tex`, template `ws-vjcs.cls`. Bản ngày 27/10/2026 dài 12 trang, trong đó 9 trang là nội dung.
+Tải `07_paper_draft/paper1_overleaf.zip` lên Overleaf; tệp chính là `main.tex`, template `ws-vjcs.cls`. Bản ngày 28/10 (`08_final_submission/final_paper.pdf`) dài 12 trang, trong đó 9 trang là nội dung.
 
 ## Dữ liệu và quyền riêng tư
 
@@ -44,6 +44,6 @@ Tải `07_paper_draft/paper1_overleaf.zip` lên Overleaf; tệp chính là `main
 
 ## Việc còn lại trước khi nộp
 
-- Biên dịch lại trên Overleaf bằng gói `paper1_overleaf.zip` mới (28/10, đã có ORCID và URL), rồi đặt PDF vào `08_final_submission/`.
+- Thầy duyệt, rồi nộp bài qua Editorial Manager của VJCS.
 - ORCID của mentor, nếu thầy có (không bắt buộc; bài hiện ghi ORCID của ba sinh viên).
 - URL trong mục Data Availability trỏ tới nhánh `paper1-vjcs-draft`; nếu mã chuyển sang chỗ khác thì phải sửa URL trước khi nộp.

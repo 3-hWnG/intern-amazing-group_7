@@ -42,6 +42,6 @@
 ## Tình trạng (28/10/2026)
 
 - Phản biện nội bộ 7 vòng: agent checklist kết luận "nộp được"; agent phản biện khuyến nghị nhận sau khi sửa câu chữ (đã sửa).
-- Bản Overleaf ngày 27/10: 12 trang (9 trang nội dung, phần còn lại là tài liệu tham khảo). Ngày 28/10 sửa trình bày theo template, cần biên dịch lại.
+- Bản Overleaf ngày 28/10 (`08_final_submission/final_paper.pdf`): 12 trang, nội dung hết trang 9, tài liệu tham khảo trang 10–12. Đã gồm các sửa trình bày theo template, ORCID và URL.
 - Đã điền: ORCID của ba sinh viên; URL trong mục Data Availability (nhánh `paper1-vjcs-draft`).
-- Còn chờ: ORCID của mentor (nếu có), biên dịch lại trên Overleaf bằng gói zip mới.
+- Còn chờ: ORCID của mentor (nếu có).

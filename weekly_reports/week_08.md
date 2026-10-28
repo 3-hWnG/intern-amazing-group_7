@@ -17,13 +17,13 @@ Mentor: Trương Long
 | Trịnh Hoàng Nhân | 7 vòng phản biện nội bộ (agent rà checklist và agent phản biện) và sửa bài theo từng vòng | Kết luận cuối: "nộp được"; phản biện khuyến nghị nhận sau khi sửa câu chữ |
 | Trịnh Hoàng Nhân | Phân tích sau (post hoc): bỏ từng luật, chỉ dùng cổng, cổng học naive Bayes và hồi quy logistic trên BGE-M3, McNemar cặp và khoảng bootstrap; chạy lại bộ tự viết ở code đóng băng | Không cổng học nào tốt hơn có ý nghĩa |
 | Trịnh Hoàng Nhân | Biên dịch Overleaf, sửa trình bày theo template ws-vjcs; hoàn thiện thư mục bài báo (báo cáo tuần, sơ đồ, bảng, hình, tóm tắt 29 tài liệu) | Bản Overleaf ngày 27/10: 12 trang |
-| Trịnh Hoàng Nhân | Điền ORCID của ba sinh viên và URL mã công khai vào bài; dựng lại gói Overleaf | Bài không còn chỗ trống bắt buộc; mentor chưa có ORCID trong bài |
+| Trịnh Hoàng Nhân | Điền ORCID của ba sinh viên và URL mã công khai vào bài; dựng lại gói Overleaf | Biên dịch lại ngày 28/10: 12 trang, ở `08_final_submission/final_paper.pdf`; mentor chưa có ORCID trong bài |
 | Nguyễn Viết Hưng | Không có commit trên các nhánh của nhóm trong tuần (tính tới 28/10). | — |
 | Phạm Lê Thiên Dấn | Không có commit trên các nhánh của nhóm trong tuần (tính tới 28/10). | — |
 
 ## Git Commits
 
-Tổng số commit trong tuần (tính tới 28/10): 7 (Trịnh Hoàng Nhân: 7, Nguyễn Viết Hưng: 0, Phạm Lê Thiên Dấn: 0), gồm 5 commit trên exec/2026-10-24-hard-questions và 2 commit trên paper1-vjcs-draft (`311a593` và commit chứa bản báo cáo này). Nhánh: exec/2026-10-24-hard-questions (chưa đẩy), paper1-vjcs-draft. Bảng dưới chỉ liệt kê các commit tiêu biểu; danh sách đầy đủ xem bằng `git log --all` trên repo nhóm.
+Tổng số commit trong tuần (tính tới 28/10): 8 (Trịnh Hoàng Nhân: 8, Nguyễn Viết Hưng: 0, Phạm Lê Thiên Dấn: 0), gồm 5 commit trên exec/2026-10-24-hard-questions và 3 commit trên paper1-vjcs-draft (`311a593`, `9ab02ca` và commit chứa bản báo cáo này). Nhánh: exec/2026-10-24-hard-questions (chưa đẩy), paper1-vjcs-draft. Bảng dưới chỉ liệt kê các commit tiêu biểu; danh sách đầy đủ xem bằng `git log --all` trên repo nhóm.
 
 | Commit ID | Message | Author |
 |---|---|---|
@@ -33,6 +33,7 @@ Tổng số commit trong tuần (tính tới 28/10): 7 (Trịnh Hoàng Nhân: 7,
 | c7e47da | eval(hard): one script for the paired tests and bootstrap intervals in the paper | Trịnh Hoàng Nhân |
 | 9daef1c | fix(eval): keep the unrounded balanced-accuracy difference in paired_stats | Trịnh Hoàng Nhân |
 | 311a593 | docs: complete paper 1 folder in the course-repo layout | Trịnh Hoàng Nhân |
+| 9ab02ca | docs: add the authors' ORCID iDs and rebuild the Overleaf package | Trịnh Hoàng Nhân |
 
 ## Current Problems
 
@@ -42,7 +43,6 @@ Tổng số commit trong tuần (tính tới 28/10): 7 (Trịnh Hoàng Nhân: 7,
 
 ## Plan for Next Week
 
-- Biên dịch lại bằng gói Overleaf mới và kiểm trang cuối.
 - Chốt nơi đặt mã công khai.
 - Nộp bài lên VJCS.
 - Làm slide trình bày.
