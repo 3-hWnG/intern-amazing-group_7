@@ -74,7 +74,11 @@ def score(check: dict, content: str, meta: dict) -> tuple[bool, list[str]]:
         why.append("thiếu: " + ", ".join(x for x in check["all"] if fold(x) not in f))
     if "any" in check and not any(fold(x) in f for x in check["any"]):
         why.append("không có ý nào trong: " + " | ".join(check["any"]))
-    for n in check.get("num", []):   # con số đứng riêng (không dính chữ số khác): "4" không khớp "14" hay "4.000"
+    nums = check.get("num") or []   # 27/10: vai cau Phan B ghi "num": 195 (so tran) thay vi [195] -> re.escape(int) crash
+    if isinstance(nums, (int, float, str)):
+        nums = [nums]
+    for n in nums:   # con số đứng riêng (không dính chữ số khác): "4" không khớp "14" hay "4.000"
+        n = str(n)
         if not re.search(r"(?<![\d.,])" + re.escape(n) + r"(?![\d]|[.,]\d)", content):
             why.append(f"thiếu số {n}")
     if "none" in check and any(fold(x) in f for x in check["none"]):
@@ -120,8 +124,11 @@ def start_server(settings: dict, log_name: str) -> subprocess.Popen:
                S4_RUNTIME_DIR=str(RUNTIME), S3_DB_PATH=str(RUNTIME / "s3.db"), S4_RATE_LIMIT="0",   # bench hỏi liên tục: tắt giới hạn lượt hỏi
                S4_BOOTSTRAP="0",   # 24/10: bench chỉ đo bộ dữ liệu nó tự nạp; bootstrap (dữ liệu thật + FLM) trên runtime mới làm máy quá nóng và server chết
                S4_ABI_SYNC="0",    # 25/10: không đồng bộ abi.com.vn khi đo (runtime đo không có khoá: lượt "trước" gọi /site/settings một lần, bị 401)
+               PYTHONUNBUFFERED="1",   # 27/10: server chết đột ngột lúc nạp dataset (RemoteProtocolError/WinError 10053), log luôn cắt sạch không
+               # traceback — nghi do log ra FILE thì Python mặc định block-buffer, dòng lỗi thật còn kẹt trong buffer chưa kịp ghi xuống đĩa lúc
+               # chết. Buộc server không buffer gì để lần chết tới log giữ được traceback thật (nếu có), thay vì chỉ thấy im lặng.
                LLM_MODEL=settings.get("FRIENDLY_MODEL", "qwen3:4b"))   # System 3 nạp sẵn model này lúc khởi động: dùng chung, khỏi chiếm thêm
-    log = open(RUNTIME / f"server_{log_name}.log", "w", encoding="utf-8")
+    log = open(RUNTIME / f"server_{log_name}.log", "w", encoding="utf-8", buffering=1)   # 27/10: line-buffer phía ghi file luôn (xem lý do trên)
     p = subprocess.Popen([str(PY), "main.py"], cwd=REPO / "server", env=env, stdout=log, stderr=subprocess.STDOUT)
     _restrict(p.pid)
     for _ in range(180):
@@ -138,13 +145,11 @@ def start_server(settings: dict, log_name: str) -> subprocess.Popen:
 
 
 def _restrict(pid: int) -> None:
-    """24/10 (máy không quá 70 °C): server bench + tiến trình chạy model của Ollama chỉ dùng 4 luồng CPU, ưu tiên thấp (eval/thermal.py)."""
-    sys.path.insert(0, str(REPO / "eval"))
-    import thermal
-    thermal.restrict(pid, 4)
-    for image in ("llama-server.exe", "ollama_llama_server.exe"):
-        for q in thermal.pids_of(image):
-            thermal.restrict(q, 4)
+    """27/10: TẮT — hạ ưu tiên (BELOW_NORMAL) + giới hạn 4 luồng CPU cho server/llama-server lúc 24/10 làm máy đỡ nóng, nhưng gây crash ngẫu
+    nhiên không traceback đúng lúc server nạp model lên GPU (nghi Windows TDR: CPU bị bóp ưu tiên thấp không phục vụ kịp đồng bộ GPU, driver
+    tự reset và giết process) — lặp lại nhiều lần khi đo J2 S4-1..S4-4 (26/10), hết crash khi tắt hàm này, không liên quan 4 cờ sửa. Giữ canh
+    nhiệt qua thermal.guard() giữa các câu (đã đủ cho yêu cầu ≤ 70°C); bỏ riêng phần hạ luồng/ưu tiên này."""
+    return
 
 
 def stop_server(p: subprocess.Popen):
@@ -157,23 +162,35 @@ def stop_server(p: subprocess.Popen):
 
 class Client:
     def __init__(self):
-        self.c = httpx.Client(base_url=BASE, timeout=600)
+        self.c = httpx.Client(base_url=BASE, timeout=600, transport=httpx.HTTPTransport(retries=3))
         cred = {"username": "bench", "password": "matkhau123"}
         if self.c.post("/s4/auth/login", json=cred).status_code != 200:
             assert self.c.post("/s4/auth/signup", json=cred).status_code == 200, "không tạo được tài khoản bench"
         self.ds = {}
+
+    def _get(self, url: str):
+        """GET có retry: loopback đôi khi bị rớt kết nối thoáng qua (không phải lỗi server) khi server đang
+        bận xử lý (nạp bảng mới, biên dịch đường nhanh) lâu — 27/10, phát hiện khi chạy J3 trên real_v4_s4."""
+        for attempt in range(8):
+            try:
+                return self.c.get(url)
+            except httpx.TransportError as e:
+                if attempt == 7:
+                    raise
+                print(f"  (mất kết nối tạm lúc GET {url}, thử lại lần {attempt + 1}/8: {e})")
+                time.sleep(2)
 
     def ensure_datasets(self, needed: set | None = None):
         """Nạp các bộ dữ liệu một lần cho bench_runtime (lần sau dùng lại; đổi bộ đọc tệp thì server tự xử lý lại).
         24/10: chỉ nạp bộ mà các câu được chọn cần (`needed`), TỪNG bộ một, đợi xử lý xong mới nạp bộ sau, canh nhiệt giữa các lần nạp."""
         files = {"class": HERE / "data" / "ds_lop_gia.xlsx", "tourism": HERE / "data" / "tourism_records.xlsx",
                  "procedures": HERE / "data" / "MAU_100_THU_TUC.xlsx", "policy": policy_docx(), "du_lich": tourism_xlsx(), "cua_hang": shop_xlsx(),
-                 **REAL3_FILES}
+                 **REAL3_FILES, **REAL_V4_S4_FILES}
         if needed:
             files = {k: v for k, v in files.items() if k in needed}
         sys.path.insert(0, str(REPO / "eval"))
         from thermal import guard
-        have = {d["filename"]: d for d in self.c.get("/s4/datasets").json()["datasets"]}
+        have = {d["filename"]: d for d in self._get("/s4/datasets").json()["datasets"]}
         for key, path in files.items():
             if path.name not in have:
                 guard(every=0, label="nạp " + path.name)
@@ -183,13 +200,13 @@ class Client:
                 print(f"  nạp {path.name}…")
                 t0 = time.time()
                 while time.time() - t0 < 1800:     # đợi bộ này xử lý + biên dịch đường nhanh xong rồi mới nạp bộ sau (đỡ dồn tải)
-                    d = {x["filename"]: x for x in self.c.get("/s4/datasets").json()["datasets"]}.get(path.name, {})
-                    fp = self.c.get(f"/s4/fastpath/{d['id']}").json().get("status") if d.get("id") and d.get("status") == "ready" else None
+                    d = {x["filename"]: x for x in self._get("/s4/datasets").json()["datasets"]}.get(path.name, {})
+                    fp = self._get(f"/s4/fastpath/{d['id']}").json().get("status") if d.get("id") and d.get("status") == "ready" else None
                     if d.get("status") == "error" or fp in ("ready", "error", "skipped"):
                         break
-                    time.sleep(5)
+                    time.sleep(3)
         while True:
-            ds = {d["filename"]: d for d in self.c.get("/s4/datasets").json()["datasets"]}
+            ds = {d["filename"]: d for d in self._get("/s4/datasets").json()["datasets"]}
             pending = [n for n in (p.name for p in files.values()) if ds[n]["status"] not in ("ready", "error")]
             if not pending:
                 break
@@ -200,11 +217,11 @@ class Client:
             self.ds[key] = d
         t0 = time.time()   # đường nhanh: đợi biên dịch + tự kiểm xong (kể cả khi đo đường cũ) để không đo lẫn lúc GPU đang biên dịch
         while time.time() - t0 < 900:
-            st = {k: self.c.get(f"/s4/fastpath/{d['id']}").json().get("status") for k, d in self.ds.items()}
+            st = {k: self._get(f"/s4/fastpath/{d['id']}").json().get("status") for k, d in self.ds.items()}
             if all(s in ("ready", "error", "skipped") for s in st.values()):
                 break
             time.sleep(3)
-        print("  đường nhanh:", {k: self.c.get(f"/s4/fastpath/{d['id']}").json().get("message", "")[:90] for k, d in self.ds.items()})
+        print("  đường nhanh:", {k: self._get(f"/s4/fastpath/{d['id']}").json().get("message", "")[:90] for k, d in self.ds.items()})
         self.active = {k for k, d in self.ds.items() if d["active"]}
 
     def use(self, keys: list[str]):
@@ -254,6 +271,15 @@ class Client:
 REAL3_FILES = {k: HERE / "real_v3" / "data" / f for k, f in (   # bộ mù thứ ba: 4 bảng Wikipedia thật (real_v3/build_v3.py)
     ("tinh_thanh", "hanh_chinh_tinh_thanh.xlsx"), ("san_bay", "giao_thong_san_bay.xlsx"),
     ("vuon_quoc_gia", "moi_truong_vuon_quoc_gia.xlsx"), ("thuy_dien", "nang_luong_thuy_dien.xlsx"))}
+
+REAL_V4_S4_FILES = {k: HERE / "real_v4_s4" / "data" / f for k, f in (   # 27/10: bo mu thu tu (J2/J3) - 8 bang Wikipedia thuc
+    # (real_v4_s4/build_v4.py, LOCK.md). THIEU dict nay la ly do ensure_datasets() chua tung nap bang nao cua real_v4_s4 khi
+    # chay suite "real4": needed chua cac key duoi day nhung "files" (truoc khi sua) khong co key nao khop -> 0 bang nap,
+    # moi cau tra loi "nguon sai (co: [])" vi khong co du lieu nao active. Phat hien 27/10 khi chay J3 v4a_before.
+    ("dan_toc", "van_hoa_dan_toc.xlsx"), ("san_van_dong", "the_thao_san_van_dong.xlsx"),
+    ("phi_vat_the", "van_hoa_phi_vat_the.xlsx"), ("bao_vat", "lich_su_bao_vat_quoc_gia.xlsx"),
+    ("dai_hoc", "giao_duc_truong_dai_hoc.xlsx"), ("di_tich_dac_biet", "di_tich_quoc_gia_dac_biet.xlsx"),
+    ("ngan_hang", "ngan_hang.xlsx"), ("xe_buyt_tphcm", "xe_buyt_tphcm.xlsx"))}
 
 
 def tourism_xlsx() -> Path:
@@ -345,12 +371,25 @@ def run(args):
         behavior = None
         if not args.no_behavior:
             out = OUT_DIR / f"{args.name}_nv2.json"
-            env = dict(os.environ, PYTHONIOENCODING="utf-8", NV2_OUT=str(out))
+            env = dict(os.environ, PYTHONIOENCODING="utf-8", NV2_OUT=str(out), PYTHONPATH=str(PYROOT))   # 27/10: nv2_behavior.py tự đoán pyroot bằng path tương đối, sai trên máy có BENCH_PYROOT riêng -> ModuleNotFoundError no module system3, crash ngay dong dau, im lang vi bi nuot loi
             print("  22 tình huống hành vi (nv2_behavior.py)…")
-            subprocess.run([str(PY), str(HERE / "nv2_behavior.py"), BASE], env=env, capture_output=True, timeout=3600)
+            try:
+                proc = subprocess.run([str(PY), str(HERE / "nv2_behavior.py"), BASE], env=env,
+                                       capture_output=True, timeout=3600, text=True, encoding="utf-8", errors="replace")
+            except subprocess.TimeoutExpired as e:
+                print(f"  !! nv2_behavior.py quá giờ (3600s), bỏ qua phần hành vi. stdout cuối:\n{(e.stdout or '')[-2000:]}")
+                proc = None
             if out.exists():
                 behavior = json.loads(out.read_text(encoding="utf-8"))
                 print(f"  hành vi: {behavior['summary']['passed']}/{behavior['summary']['total']}")
+            elif proc is not None:
+                # 27/10: trước đây lỗi ở đây bị nuốt im lặng (capture_output nhưng không ai đọc) -> không biết
+                # vì sao thiếu behavior ở cả 6 lần chạy J3. Giờ in ra để thấy lỗi thật nếu còn crash.
+                print(f"  !! nv2_behavior.py không ghi được file kết quả (returncode={proc.returncode}).")
+                if proc.stdout:
+                    print(f"  --- stdout (2000 ký tự cuối) ---\n{proc.stdout[-2000:]}")
+                if proc.stderr:
+                    print(f"  --- stderr (2000 ký tự cuối) ---\n{proc.stderr[-2000:]}")
     finally:
         stop_server(srv)
     res = {"name": args.name, "settings": settings, "split": args.split, "repeat": args.repeat, "time": time.strftime("%Y-%m-%d %H:%M"),
@@ -384,13 +423,15 @@ def summarize(res: dict) -> dict:
     b = (res.get("behavior") or {}).get("summary") or {}
     b_fail = (b.get("total", 0) - b.get("passed", 0)) if b else None
     spec = [r for r in runs if r["search_ms"] is not None]
-    s = {"accuracy": _rate(acc), "accuracy_dev": _rate([r for r in acc if r["split"] == "dev"]),
+    s = {"accuracy": _rate(acc) if acc else _rate(runs), "accuracy_dev": _rate([r for r in acc if r["split"] == "dev"]),
          "accuracy_exam": _rate([r for r in acc if r["split"] == "exam"]),
          "acc_only": _rate([r for r in runs if r["suite"] == "accuracy"]), "halluc": _rate([r for r in runs if r["suite"] == "halluc"]),
          "tourism": _rate(tour), "tourism_fails": sum(not r["pass"] for r in tour),
          "shop": _rate(shop), "shop_fails": sum(not r["pass"] for r in shop),
          "real3": _rate([r for r in runs if r["suite"] == "real3"]),
          "real3_kind": {k: _rate([r for r in runs if r["suite"] == "real3" and r.get("kind") == k]) for k in "LUCSMARF"},
+         "real4": _rate([r for r in runs if r["suite"] == "real4"]),
+         "real4_kind": {k: _rate([r for r in runs if r["suite"] == "real4" and r.get("kind") == k]) for k in ("L", "U", "C", "S", "M", "A", "R", "F", "X", "AMB")},
          "fast_path": sum(bool(r.get("fast_path")) for r in runs),
          "greeting": _rate(gr), "greeting_fails": sum(not r["pass"] for r in gr), "behavior": f"{b.get('passed')}/{b.get('total')}" if b else None,
          "wrong_behavior": sum(not r["pass"] for r in gr) + (b_fail or 0),

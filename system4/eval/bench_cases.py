@@ -218,5 +218,14 @@ def real3_cases() -> list[dict]:
     return json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
 
 
+def real4_cases() -> list[dict]:
+    """Bộ MÙ thứ tư (26/10/2026): 216 câu (128 khuôn Phần A + 88 người viết Phần B) trên 8 bảng Wikipedia THẬT
+    (system4/eval/real_v4_s4, run_real_v4_s4.py), khoá trước khi sửa 4 lỗi S4-1..S4-4 ở J2 (real_v4_s4/LOCK.md).
+    Không chỉnh câu / đáp án theo kết quả sau khi khoá."""
+    import json
+    path = Path(__file__).resolve().parent / "real_v4_s4" / "cases_real_v4_s4_labeled.json"
+    return json.loads(path.read_text(encoding="utf-8")) if path.exists() else []
+
+
 def all_cases() -> list[dict]:
-    return CASES + procedure_cases() + TOUR_CASES + SHOP_CASES + real3_cases()
+    return CASES + procedure_cases() + TOUR_CASES + SHOP_CASES + real3_cases() + real4_cases()

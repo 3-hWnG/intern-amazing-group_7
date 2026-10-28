@@ -24,6 +24,7 @@ from .engine import Engine
 log = logging.getLogger("system4.fastpath")
 _jobs: "queue.Queue[int]" = queue.Queue()
 _worker: threading.Thread | None = None
+_worker_lock = threading.Lock()
 _cache: dict = {}
 _lock = threading.Lock()
 _build_lock = threading.Lock()   # một engine dựng một lần: luồng dựng sẵn và câu hỏi đầu tiên không cùng dựng
@@ -81,6 +82,8 @@ def _materialize(spec: dict, with_texts: bool = True) -> tuple[list[dict], list[
     for t in spec["tables"]:
         rows = [{"id": i, "title": recs[i]["title"], "fields": json.loads(recs[i]["fields"] or "{}")} for i in t["row_ids"] if i in recs]
         tables.append({**{k: v for k, v in t.items() if k != "row_ids"}, "rows": rows})
+    if any(t.get("wide") for t in tables):      # S4-1: bảng rộng (spec chỉ có khi cờ FASTPATH_WIDE_TABLE bật lúc biên dịch)
+        C.apply_wide(tables)
     texts = [{"id": i, "title": recs[i]["title"], "text": recs[i]["text"], "source": recs[i]["source"], "dataset_id": spec["dataset_id"],
               "dataset": ds.get("name", "")} for i in spec.get("text_ids", []) if i in recs] if with_texts else []
     return tables, texts
@@ -135,10 +138,11 @@ def enqueue(ds_id: int) -> None:
     global _worker
     if db.get_dataset(ds_id):
         _save(ds_id, status="queued", message="Đang chờ biên dịch…")
-    _jobs.put(ds_id)
-    if _worker is None or not _worker.is_alive():
-        _worker = threading.Thread(target=_work, name="s4-fastpath", daemon=True)
-        _worker.start()
+    with _worker_lock:
+        _jobs.put(ds_id)
+        if _worker is None or not _worker.is_alive():
+            _worker = threading.Thread(target=_work, name="s4-fastpath", daemon=True)
+            _worker.start()
 
 
 def _work() -> None:
@@ -147,7 +151,12 @@ def _work() -> None:
             ds_id = _jobs.get(timeout=5)
         except queue.Empty:
             warm()   # hết việc biên dịch: dựng sẵn engine để câu hỏi đầu tiên không phải chờ
-            return
+            with _worker_lock:
+                if _jobs.empty():
+                    global _worker
+                    _worker = None
+                    return
+            continue
         try:
             build(ds_id)
         except Exception:
@@ -199,7 +208,8 @@ def _engine(ds_ids: list[int]) -> tuple[Engine | None, list[int]]:
         return None, []
     agg = bool(settings.get("FASTPATH_AGGREGATE"))
     sql_raw = bool(settings.get("FASTPATH_SQL_RAW"))
-    key = (agg, _sql_on(), sql_raw, tuple(sorted((r["dataset_id"], r["updated_at"]) for r in ready)))
+    flags = tuple(bool(settings.get(k)) for k in ("FASTPATH_ACCENT_FIRST", "FASTPATH_ATTR_GUARD", "FASTPATH_CLEAN_SHOW"))
+    key = (agg, _sql_on(), sql_raw, flags, tuple(sorted((r["dataset_id"], r["updated_at"]) for r in ready)))
     with _lock:
         if key in _cache:
             return _cache[key], [r["dataset_id"] for r in ready]

@@ -17,6 +17,7 @@ from . import config, db, ingest, search, settings
 log = logging.getLogger("system4.datasets")
 _jobs: "queue.Queue[int]" = queue.Queue()
 _worker: threading.Thread | None = None
+_worker_lock = threading.Lock()
 EMBED_BATCH = 32
 
 
@@ -108,10 +109,11 @@ def delete(ds: dict) -> None:
 # ------------------------------------------------------------- nạp chạy nền
 def enqueue(ds_id: int) -> None:
     global _worker
-    _jobs.put(ds_id)
-    if _worker is None or not _worker.is_alive():
-        _worker = threading.Thread(target=_work, name="s4-ingest", daemon=True)
-        _worker.start()
+    with _worker_lock:
+        _jobs.put(ds_id)
+        if _worker is None or not _worker.is_alive():
+            _worker = threading.Thread(target=_work, name="s4-ingest", daemon=True)
+            _worker.start()
 
 
 def _work() -> None:
@@ -119,7 +121,12 @@ def _work() -> None:
         try:
             ds_id = _jobs.get(timeout=5)
         except queue.Empty:
-            return   # hết việc: luồng tự dừng, lần tải sau tạo lại
+            with _worker_lock:
+                if _jobs.empty():
+                    global _worker
+                    _worker = None
+                    return   # hết việc: luồng tự dừng, lần tải sau tạo lại
+            continue
         try:
             process(ds_id)
         except Exception as e:   # không để một tệp lỗi làm dừng cả hàng đợi

@@ -102,6 +102,25 @@ def _q_sql(t: dict) -> list[dict]:
             g = sorted(e["values"], key=lambda v: -sum(cell(r, e) == v for r in rows))[0]
             tot = sum(x for x, ti in vals if any(r["title"] == ti and cell(r, e) == g for r in rows))
             out.append({"q": f"Tổng {c['label']} của các {noun} có {e['label']} là {g} là bao nhiêu?", "value": tot})
+    # S4-1: câu CHÉO SHEET — cột đến từ sheet con được ghép vào bảng rộng (compile.widen); đáp án tính bằng Python trên dòng đã ghép
+    wide_cols = {new for w in t.get("wide") or [] for new in w["cols"].values()}
+    w_enums = [c for c in enums if c["field"] in wide_cols]
+    w_nums = [c for c in nums if c["field"] in wide_cols]
+    for c in w_enums[:1]:
+        v = sorted(c["values"], key=lambda v: -sum(cell(r, c) == v for r in rows))[0]
+        out.append({"q": f"Có bao nhiêu {noun} có {c['label']} là {v}?", "count": sum(cell(r, c) == v for r in rows)})
+    for c in w_nums[:1]:
+        vals = [(sqlroute.to_number(cell(r, c), c["style"]), r) for r in rows]
+        vals = [(x, r) for x, r in vals if isinstance(x, (int, float))]
+        if len(vals) >= 3:
+            mid = sorted(x for x, _ in vals)[len(vals) // 2]
+            out.append({"q": f"Có bao nhiêu {noun} có {c['label']} lớn hơn {sqlroute.fmt(mid)}?", "count": sum(1 for x, _ in vals if x > mid)})
+            e = next((x for x in enums if x["field"] not in wide_cols), None)     # điều kiện ở sheet chính + điều kiện ở sheet phụ
+            if e:
+                g = sorted(e["values"], key=lambda v: -sum(cell(r, e) == v for r in rows))[0]
+                out.append({"q": f"Có bao nhiêu {noun} có {e['label']} là {g} và {c['label']} lớn hơn {sqlroute.fmt(mid)}?",
+                            "count": sum(1 for x, r in vals if x > mid and cell(r, e) == g)})
+    out = list({o["q"]: o for o in out}.values())      # bỏ câu trùng (câu "lớn hơn" của cột sheet phụ có thể đã nằm trong nhóm chung)
     return out
 
 

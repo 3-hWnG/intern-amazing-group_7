@@ -14,6 +14,7 @@ import time
 from collections import Counter
 from datetime import datetime, timedelta, timezone
 
+from .. import settings
 from ..ground import fold
 from .compile import tokens, words
 
@@ -64,10 +65,20 @@ def show(v, typ: str, col: str = "") -> str:
         d = parse_date(s)
         if d:
             return d.strftime("%d/%m/%Y %H:%M") if (d.hour or d.minute) else d.strftime("%d/%m/%Y")
-    if typ == "number" and re.fullmatch(r"\d{4}", s) and 1000 <= int(s) <= 2100 and re.search(r"\bnam\b", fold(col)):
-        return s
-    if typ == "number" and re.fullmatch(r"-?\d{4,}", s):
-        return f"{int(s):,}".replace(",", ".")
+    clean_show = settings.get("FASTPATH_CLEAN_SHOW")
+    if clean_show:
+        if typ == "number" and re.fullmatch(r"-?\d+", s):      # chỉ cột SỐ: mã / số điện thoại (kiểu id, text) giữ nguyên
+            val = int(s)
+            if 1000 <= val <= 2100 and re.search(r"\b(nam|thanh lap|khoi cong|khanh thanh|xep hang|cong nhan)\b", fold(col)):
+                return s
+            if abs(val) < 10000:
+                return s
+            return f"{val:,}".replace(",", ".")
+    else:
+        if typ == "number" and re.fullmatch(r"\d{4}", s) and 1000 <= int(s) <= 2100 and re.search(r"\bnam\b", fold(col)):
+            return s
+        if typ == "number" and re.fullmatch(r"-?\d{4,}", s):
+            return f"{int(s):,}".replace(",", ".")
     return s
 
 
@@ -391,6 +402,21 @@ class Engine:
         count_q = bool(COUNT.search(qs)) and bool(agg_pos) and not numeric_field and (noun_after or not clear_row)
         # SQL: "bao nhiêu <danh từ của bảng>" là câu đếm kể cả khi câu có cột số ("bao nhiêu di tích xếp hạng năm 2012")
         count_sql = count_q or (bool(COUNT.search(qs)) and noun_after)
+        # "gọi đích danh": khớp tên một dòng, hoặc có cụm tên riêng viết hoa (dòng đó có thể không có trong bảng: "Sân bay Đồng Hới")
+        if settings.get("FASTPATH_ATTR_GUARD") and ((best and best[0][1] >= 0.5) or _cap_words(text)):
+            # S4-3: câu gọi đích danh MỘT dòng rồi "bao nhiêu <chữ>" mà <chữ> không là danh từ của bảng nào và không khớp cột nào của bảng đó
+            # ("Sân bay Đồng Hới có bao nhiêu nhân viên?") -> nói dữ liệu không ghi, đừng đếm bừa (trước đây SQL đếm ra 1)
+            mc = COUNT.search(qs)
+            if mc:
+                i0 = len(qs[:mc.end()].split())
+                tail = [(j, q[j]) for j in range(i0, len(q)) if q[j] not in STOP]
+                # danh từ của bảng: so hai chữ đầu ("sân bay" khớp "sân bay dân dụng": danh từ dự phòng là cả tên sheet)
+                if tail and not any([w for _, w in tail[:min(2, len(nw))]] == nw[:2] for t2 in self.ents for nw in self.nouns(t2) + [words(t2["name"])] if nw):
+                    known = {fold(w) for t2 in self.ents for m2 in t2["fields"].values() for ph in (m2["cues"] + [words(m2["label"])]) for w in ph}
+                    if not any(w in known for _, w in tail[:2]):
+                        what = " ".join(qraw[j] for j, _ in tail[:2])
+                        return {"kind": "answer", "route": "absent", "content": f"Dữ liệu không có thông tin «{what}» (không có cột nào như vậy).",
+                                "sources": []}
         if self.sql and (count_sql or LIST.search(qs) or SUPERL_GAP.search(qs) or SUMQ.search(qs) or COMPARE.search(qs)):
             r = self._sql_answer(q, qt, text)          # 24/10: lộ trình SQL trên bảng phẳng đã biên dịch (model viết SELECT, code trả lời)
             if r:
@@ -481,6 +507,12 @@ class Engine:
         t = self.sql_table(q, qt)
         if t is None:
             return None
+        if settings.get("FASTPATH_ATTR_GUARD"):
+            qs = " ".join(q)
+            if COUNT.search(qs) and not any(_contig(q, nw) is not None for nw in self.nouns(t)):
+                has_col = any(_contig(q, [fold(w) for w in c]) is not None for m in t["fields"].values() for c in m["cues"])
+                if not has_col:
+                    return None
         box = self._boxes.get(t["key"])
         if box is None:
             box = self._boxes[t["key"]] = sqlroute.Box(t, compiled=self.sql_compiled)

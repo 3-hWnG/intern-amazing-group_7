@@ -111,6 +111,112 @@ def gather(ds: dict) -> tuple[list[dict], list[dict]]:
     return tables, texts
 
 
+TITLE_KEY = "__title__"          # khoá ghép = tên dòng đã chuẩn hoá (hai sheet không có cột trùng tên: "Côn Đảo (1945)" / "Côn Đảo")
+SERIAL_COL = re.compile(r"^(stt|tt|no|#|so tt|so thu tu)$")
+
+
+def _norm_title(t: str) -> str:
+    s = re.sub(r"[(\[].*?[)\]]", " ", t or "")
+    return " ".join(re.findall(r"[a-z0-9]+", fold(s)))
+
+
+def _key_of(r: dict, via: str) -> str:
+    return _norm_title(r["title"]) if via == TITLE_KEY else str(r["fields"].get(via) or "").strip()
+
+
+def _is_serial(a: dict, b: dict, via: str) -> bool:
+    """Cột số thứ tự (STT) không phải khoá: sheet này dòng 1 là Côn Đảo, sheet kia dòng 1 là Tân Sơn Nhất. Nhận theo tên cột hoặc theo
+    giá trị là dãy số nguyên liên tiếp ở cả hai bảng."""
+    if via == TITLE_KEY:
+        return False
+    if SERIAL_COL.match(" ".join(re.findall(r"[a-z0-9#]+", fold(via)))):
+        return True
+
+    def seq(t):
+        v = [str(r["fields"].get(via) or "").strip() for r in t["rows"]]
+        return all(x.isdigit() for x in v) and sorted(int(x) for x in v) == list(range(min(int(x) for x in v), min(int(x) for x in v) + len(v))) if v else False
+    return seq(a) and seq(b)
+
+
+def _unique_key(rows: list[dict], via: str) -> bool:
+    vals = [_key_of(r, via) for r in rows]
+    return bool(vals) and all(vals) and len(set(vals)) == len(vals)
+
+
+def widen(tables: list[dict]) -> None:
+    """S4-1 (26/10/2026, cờ FASTPATH_WIDE_TABLE): các sheet CÙNG KHOÁ ghép thành MỘT bảng rộng lúc biên dịch (model không phải JOIN).
+    Hai cách nhận khoá: (1) cột cùng tên, giá trị duy nhất (bảng con mà gather đã nhận); (2) KHÔNG có cột trùng tên: cùng tệp, tên dòng chuẩn
+    hoá (bỏ phần trong ngoặc, bỏ dấu) khớp 1-1 >= 80% (bộ sân bay: "Côn Đảo (1945)" / "Côn Đảo"). Chỉ ghép khi khoá duy nhất ở cả hai bên
+    (1-1): bảng con 1-nhiều không ghép (ghép sẽ nhân dòng, sai phép đếm). Cột còn lại của bảng con đổ vào bảng cha; trùng tên cột thì thêm
+    tên sheet làm tiền tố; cột số thứ tự (STT) bỏ. Ghi t["wide"] = [{table, via, cols: {cột gốc: cột mới}}] để _materialize ghép lại dòng
+    (apply_wide); ở đây ghép luôn để suy kiểu cột mới."""
+    by_key = {t["key"]: t for t in tables}
+    for a in tables:      # gỡ quan hệ con-cha dựng trên cột số thứ tự (gather nhận nhầm); cặp đó được xét lại ở bước (2) theo tên dòng
+        for ch in list(a["children"]):
+            b = by_key[ch["table"]]
+            if _is_serial(a, b, ch["via"]):
+                a["children"].remove(ch)
+                b["parent"] = None
+    # (2) cặp sheet cùng tệp chưa có quan hệ con-cha
+    for a in tables:
+        for b in tables:
+            if a is b or a["parent"] or b["parent"] or b["children"] or a["file"] != b["file"] or a["key"] > b["key"]:
+                continue
+            ka, kb = {_norm_title(r["title"]) for r in a["rows"]}, {_norm_title(r["title"]) for r in b["rows"]}
+            if len(a["rows"]) >= 3 and len(b["rows"]) >= 3 and _unique_key(a["rows"], TITLE_KEY) and _unique_key(b["rows"], TITLE_KEY) \
+                    and len(ka & kb) >= 0.8 * min(len(ka), len(kb)):
+                b["parent"] = {"table": a["key"], "via": TITLE_KEY}
+                a["children"].append({"table": b["key"], "via": TITLE_KEY})
+    for a in tables:
+        wide = []
+        for ch in a["children"]:
+            b, via = by_key[ch["table"]], ch["via"]
+            if b["children"] or not _unique_key(b["rows"], via) or not _unique_key(a["rows"], via):
+                continue
+            taken = set(a["fields"]) | {c for w in wide for c in w["cols"].values()}
+            cols = {}
+            for c in b["fields"]:
+                if c == via or b["fields"][c]["type"] == "empty" or SERIAL_COL.match(" ".join(re.findall(r"[a-z0-9#]+", fold(c)))):
+                    continue
+                new = c if c not in taken else f"{b['name']} · {c}"
+                k = 2
+                while new in taken:
+                    new, k = f"{b['name']} · {c} ({k})", k + 1
+                taken.add(new)
+                cols[c] = new
+            if cols:
+                wide.append({"table": b["key"], "via": via, "cols": cols})
+        if wide:
+            a["wide"] = wide
+            apply_wide(tables)
+            n = len(a["rows"])
+            for w in wide:
+                for new in w["cols"].values():
+                    vals = [str(r["fields"].get(new, "")) for r in a["rows"]]
+                    filled = [v for v in vals if v]
+                    a["fields"][new] = {"type": infer_type(new, vals, n), "label": new,
+                                        "long": bool(filled) and sum(len(v) for v in filled) / len(filled) > LONG_CHARS}
+
+
+def apply_wide(tables: list[dict]) -> None:
+    """Ghép giá trị cột của bảng con vào dòng bảng cha theo t["wide"] (chạy được nhiều lần: kết quả như nhau)."""
+    by_key = {t["key"]: t for t in tables}
+    for a in tables:
+        for w in a.get("wide") or []:
+            b = by_key.get(w["table"])
+            if not b:
+                continue
+            idx = {_key_of(r, w["via"]): r for r in b["rows"]}
+            for r in a["rows"]:
+                src = idx.get(_key_of(r, w["via"]))
+                for old, new in w["cols"].items():
+                    v = src["fields"].get(old) if src else None
+                    if v:
+                        r["fields"][new] = v
+                    else:
+                        r["fields"].pop(new, None)
+
+
 def header_cues(fields: list[str]) -> dict[str, list[list[str]]]:
     toks = {f: [w for _, w in tokens(f.replace("_", " "))] for f in fields}
     df = Counter(fold(w) for ws in toks.values() for w in set(ws))
@@ -217,6 +323,8 @@ def compile_dataset(ds: dict, use_llm: bool | None = None) -> dict:
     """Bộ dữ liệu -> spec (JSON được; dòng chỉ giữ id bản ghi, engine đọc lại nội dung từ DB)."""
     use_llm = settings.get("FASTPATH_LLM_CUES") if use_llm is None else use_llm
     tables, texts = gather(ds)
+    if settings.get("FASTPATH_WIDE_TABLE"):
+        widen(tables)
     llm_used = 0
     for t in tables:
         hc = header_cues(list(t["fields"]))

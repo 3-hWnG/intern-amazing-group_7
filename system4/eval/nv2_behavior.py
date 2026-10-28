@@ -28,7 +28,7 @@ EMPATHY = ("xin lỗi", "rất tiếc", "hiểu", "thông cảm", "chia sẻ", "
 results, timings, filtered = [], [], {"letters": 0, "other": 0, "retries": 0}
 
 
-def chat(text, cid=None):
+def _chat_once(text, cid):
     t0, first, evs = time.time(), None, []
     body = {"text": text, "conversation_id": cid}
     with c.stream("POST", "/s4/chat", json=body) as r:
@@ -44,13 +44,28 @@ def chat(text, cid=None):
                         first = time.time() - t0
                     if ev["type"] == "done":
                         timings.append((evs[0].get("mode"), first or 0, time.time() - t0))
-    cid = evs[0]["conversation_id"]
-    msg = c.get(f"/s4/conversations/{cid}/messages").json()["messages"][-1]
+    new_cid = evs[0]["conversation_id"]
+    msg = c.get(f"/s4/conversations/{new_cid}/messages").json()["messages"][-1]
+    return new_cid, msg, evs
+
+
+def chat(text, cid=None):
+    # 27/10: loopback đôi khi rớt kết nối thoáng qua giữa ~20 lượt chat liên tiếp (giống bench.py
+    # ensure_datasets()) -> không retry thì 1 lần rớt là mất trắng cả file kết quả hành vi.
+    for attempt in range(8):
+        try:
+            new_cid, msg, evs = _chat_once(text, cid)
+            break
+        except httpx.TransportError as e:
+            if attempt == 7:
+                raise
+            print(f"  (mất kết nối tạm lúc chat, thử lại lần {attempt + 1}/8: {e})")
+            time.sleep(5)
     f = msg["meta"].get("filtered") or {}
     filtered["letters"] += f.get("letters", 0); filtered["other"] += f.get("other", 0)
     filtered["retries"] += 1 if msg["meta"].get("leak_retry") else 0
     mem = next((e for e in evs if e["type"] == "memory"), None)
-    return cid, msg, mem
+    return new_cid, msg, mem
 
 
 def check(name, ok, msg, note=""):
@@ -134,10 +149,21 @@ _, m, _ = chat("Phân tích giúp mình nên học Python hay JavaScript trướ
 check("câu phân tích: chữ đầu dưới 10 giây", m["content"] and timings[-1][1] < 10, m, f"chữ đầu sau {timings[-1][1]:.1f}s")
 
 # chữ lạ trên toàn bộ câu trả lời
+def _get_retry(url):
+    for attempt in range(8):
+        try:
+            return c.get(url)
+        except httpx.TransportError as e:
+            if attempt == 7:
+                raise
+            print(f"  (mất kết nối tạm lúc GET {url}, thử lại lần {attempt + 1}/8: {e})")
+            time.sleep(5)
+
+
 all_msgs = []
-for conv in c.get("/s4/conversations").json()["conversations"]:
+for conv in _get_retry("/s4/conversations").json()["conversations"]:
     if conv["mode"] == "friendly":
-        all_msgs += [x for x in c.get(f"/s4/conversations/{conv['id']}/messages").json()["messages"] if x["role"] == "assistant"]
+        all_msgs += [x for x in _get_retry(f"/s4/conversations/{conv['id']}/messages").json()["messages"] if x["role"] == "assistant"]
 leaks = [x["content"][:60] for x in all_msgs if not latin_only(x["content"])]
 check("không lọt chữ ngoài Latin (mọi câu trả lời)", not leaks, None,
       f"bộ lọc đã bỏ {filtered['letters']} chữ lạ, {filtered['other']} ký hiệu; viết lại {filtered['retries']} lần")

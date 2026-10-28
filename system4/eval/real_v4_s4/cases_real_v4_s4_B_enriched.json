@@ -1,0 +1,1745 @@
+[
+  {
+    "id": "v4_b-bao_vat-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "bao_vat"
+    ],
+    "kind": "L",
+    "turns": [
+      "Bảo vật nào được công nhận ở đợt đầu tiên?"
+    ],
+    "check": {
+      "num": [
+        31
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-bao_vat-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "bao_vat"
+    ],
+    "kind": "L",
+    "turns": [
+      "Có những bảo vật nào có niên đại trước thế kỷ X?"
+    ],
+    "check": {
+      "num": [
+        108
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-bao_vat-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "bao_vat"
+    ],
+    "kind": "L",
+    "turns": [
+      "Bảo vật nào đang được một bảo tàng lưu giữ?"
+    ],
+    "check": {
+      "num": 195,
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-bao_vat-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "bao_vat"
+    ],
+    "kind": "L",
+    "turns": [
+      "Có bao nhiêu bảo vật được công nhận trong năm 2020?"
+    ],
+    "check": {
+      "num": [
+        24
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-bao_vat-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "bao_vat"
+    ],
+    "kind": "F",
+    "turns": [
+      "Trống đồng Ngọc Lũ được công nhận vào đợt nào?",
+      "Bảo vật đó hiện thuộc đơn vị nào lưu giữ?"
+    ],
+    "check": {
+      "any": [
+        "Bảo tàng Lịch sử Quốc gia"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-bao_vat-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "bao_vat"
+    ],
+    "kind": "U",
+    "turns": [
+      "bao vat nao co dia phuong la vinh long"
+    ],
+    "check": {
+      "any": [
+        "Tượng Thần Vishnu Vũng Liêm (STT 152)"
+      ],
+      "num": [
+        3,
+        1
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-bao_vat-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "bao_vat"
+    ],
+    "kind": "R",
+    "turns": [
+      "Bảo vật nào có giá đấu giá cao nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-bao_vat-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "bao_vat"
+    ],
+    "kind": "R",
+    "turns": [
+      "Bảo vật nào đang được bảo hiểm với số tiền lớn nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-bao_vat-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "bao_vat"
+    ],
+    "kind": "AMB",
+    "turns": [
+      "Mình muốn tìm hiểu về tượng Phật."
+    ],
+    "check": {
+      "refusal": false,
+      "ask_back": true
+    }
+  },
+  {
+    "id": "v4_b-bao_vat-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "bao_vat"
+    ],
+    "kind": "L",
+    "turns": [
+      "Liệt kê bảo vật do bảo tàng cấp tỉnh lưu giữ"
+    ],
+    "check": {
+      "num": [
+        71
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-bao_vat-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "bao_vat"
+    ],
+    "kind": "L",
+    "turns": [
+      "Bảo vật nào có ghi niên đại thời Lý?"
+    ],
+    "check": {
+      "any": [
+        "thời Lý"
+      ],
+      "all": [
+        "thời Lý"
+      ],
+      "num": [
+        9
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-dan_toc-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dan_toc"
+    ],
+    "kind": "L",
+    "turns": [
+      "Mấy dân tộc có ngữ hệ Nam Á vậy?"
+    ],
+    "check": {
+      "any": [
+        "Kinh",
+        "Mường",
+        "Thổ",
+        "Chứt",
+        "Ba Na",
+        "Xơ Đăng",
+        "Cơ Ho",
+        "H'rê",
+        "M'Nông",
+        "Xtiêng",
+        "Giẻ Triêng",
+        "Mạ",
+        "Co",
+        "Chơ Ro",
+        "Rơ Măm",
+        "Brâu",
+        "Bru - Vân Kiều",
+        "Cơ Tu",
+        "Tà Ôi",
+        "Khơ Mú",
+        "Xinh Mun",
+        "Ơ Đu",
+        "Khmer",
+        "Kháng",
+        "Mảng",
+        "Người Mường Lò (nhánh)",
+        "Người Mường La (nhánh)"
+      ],
+      "num": [
+        27
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-dan_toc-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dan_toc"
+    ],
+    "kind": "L",
+    "turns": [
+      "Dân tộc nào có tỷ lệ dân số cao nhất?"
+    ],
+    "check": {
+      "any": [
+        "Kinh"
+      ],
+      "all": [
+        "Kinh"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-dan_toc-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dan_toc"
+    ],
+    "kind": "L",
+    "turns": [
+      "Có dân tộc nào ghi nhiều tên gọi khác nhau không?"
+    ],
+    "check": {
+      "any": [
+        "Thổ",
+        "Chứt",
+        "Dao",
+        "Lô Lô"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-dan_toc-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dan_toc"
+    ],
+    "kind": "L",
+    "turns": [
+      "Tìm các dân tộc thuộc cùng một nhóm ngôn ngữ giúp mình."
+    ],
+    "check": {
+      "refusal": false,
+      "ask_back": true
+    }
+  },
+  {
+    "id": "v4_b-dan_toc-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dan_toc"
+    ],
+    "kind": "F",
+    "turns": [
+      "Dân tộc Khmer có dân số khoảng bao nhiêu?",
+      "Thế họ cư trú chủ yếu ở vùng nào?"
+    ],
+    "check": {
+      "any": [
+        "Đồng bằng / Toàn quốc",
+        "Đồng bằng",
+        "Toàn quốc"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-dan_toc-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dan_toc"
+    ],
+    "kind": "U",
+    "turns": [
+      "dan toc nao co dan so tren mot trieu nguoi"
+    ],
+    "check": {
+      "any": [
+        "Kinh",
+        "Mường",
+        "Thái",
+        "Khmer",
+        "H'Mông",
+        "Tày",
+        "Nùng"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-dan_toc-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dan_toc"
+    ],
+    "kind": "R",
+    "turns": [
+      "Dân tộc nào có tuổi thọ trung bình cao nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-dan_toc-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dan_toc"
+    ],
+    "kind": "R",
+    "turns": [
+      "Dân tộc nào có thu nhập bình quân đầu người cao nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-dan_toc-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dan_toc"
+    ],
+    "kind": "AMB",
+    "turns": [
+      "Cho mình thông tin về dân tộc Thái."
+    ],
+    "check": {
+      "refusal": false,
+      "ask_back": true
+    }
+  },
+  {
+    "id": "v4_b-dan_toc-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dan_toc"
+    ],
+    "kind": "L",
+    "turns": [
+      "Ngữ hệ và nhóm ngôn ngữ của dân tộc Chăm là gì"
+    ],
+    "check": {
+      "all": [
+        "Hệ Nam Đảo",
+        "Chăm"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-dan_toc-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dan_toc"
+    ],
+    "kind": "L",
+    "turns": [
+      "Dân tộc nào có địa bàn cư trú chính ở Tây Nguyên?"
+    ],
+    "check": {
+      "any": [
+        "Mạ",
+        "Nùng",
+        "Brâu",
+        "Cơ Ho",
+        "Ba Na",
+        "Giẻ Triêng",
+        "Êđê",
+        "Gia Rai",
+        "Rơ Măm",
+        "Bru - Vân Kiều",
+        "Xơ Đăng",
+        "Chu Ru",
+        "M'Nông"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich_dac_biet"
+    ],
+    "kind": "L",
+    "turns": [
+      "Di tích nào được xếp hạng trong đợt đầu tiên?"
+    ],
+    "check": {
+      "all": [
+        "đợt 1"
+      ],
+      "num": [
+        10
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich_dac_biet"
+    ],
+    "kind": "L",
+    "turns": [
+      "Những di tích nào được xếp hạng trước năm 2010?"
+    ],
+    "check": {
+      "all": [
+        "2009"
+      ],
+      "num": [
+        10
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich_dac_biet"
+    ],
+    "kind": "L",
+    "turns": [
+      "Di tích nào có nhiều hạng mục được liệt kê nhất?"
+    ],
+    "check": {
+      "all": [
+        "Thành nhà Hồ",
+        "Cổ Loa"
+      ],
+      "num": [
+        3
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich_dac_biet"
+    ],
+    "kind": "L",
+    "turns": [
+      "Có bao nhiêu di tích được xếp hạng trong năm 2022?"
+    ],
+    "check": {
+      "all": [
+        "2022"
+      ],
+      "num": [
+        9
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich_dac_biet"
+    ],
+    "kind": "F",
+    "turns": [
+      "Hoàng thành Thăng Long được xếp hạng năm nào?",
+      "Ghi chú của di tích đó có thông tin gì?"
+    ],
+    "check": {
+      "any": [
+        "Được UNESCO công nhận là Di sản văn hóa thế giới năm 2010"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich_dac_biet"
+    ],
+    "kind": "U",
+    "turns": [
+      "di tich nao co dia diem o quang tri"
+    ],
+    "check": {
+      "any": [
+        "Vườn quốc gia Phong Nha - Kẻ Bàng",
+        "Đường Trường Sơn - Đường Hồ Chí Minh",
+        "Đôi bờ Hiền Lương - Bến Hải",
+        "Thành cổ Quảng Trị và những địa điểm lưu niệm sự kiện 81 ngày đêm năm 1972",
+        "Địa đạo Vĩnh Mốc và hệ thống làng hầm Vĩnh Linh"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich_dac_biet"
+    ],
+    "kind": "R",
+    "turns": [
+      "Di tích nào có lượng khách tham quan cao nhất dịp Tết vừa rồi?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich_dac_biet"
+    ],
+    "kind": "R",
+    "turns": [
+      "Di tích nào có kinh phí trùng tu lớn nhất trong năm nay?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich_dac_biet"
+    ],
+    "kind": "AMB",
+    "turns": [
+      "Cho mình thông tin về thành nhà Hồ."
+    ],
+    "check": {
+      "refusal": false,
+      "ask_back": true
+    }
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich_dac_biet"
+    ],
+    "kind": "L",
+    "turns": [
+      "Tìm các di tích ở Hà Nội"
+    ],
+    "check": {
+      "num": [
+        22
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-di_tich_quoc_gia_dac_biet-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "di_tich_dac_biet"
+    ],
+    "kind": "L",
+    "turns": [
+      "Di tích nào có hạng mục liên quan đến khảo cổ?"
+    ],
+    "check": {
+      "num": [
+        14
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-ngan_hang-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "L",
+    "turns": [
+      "VPBank có vốn điều lệ khoảng bao nhiêu?"
+    ],
+    "check": {
+      "any": [
+        "79.339",
+        "79,339",
+        "79339"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-ngan_hang-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "L",
+    "turns": [
+      "Có ngân hàng nào trụ sở ở Nghệ An không?"
+    ],
+    "check": {
+      "any": [
+        "Bắc Á",
+        "Bac A Bank"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-ngan_hang-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "L",
+    "turns": [
+      "Những ngân hàng nào trụ sở tại TP.HCM?"
+    ],
+    "check": {
+      "num": [
+        9
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-ngan_hang-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "L",
+    "turns": [
+      "Ngân hàng SHB có trụ sở ở đâu?"
+    ],
+    "check": {
+      "any": [
+        "77 Trần Hưng Đạo, phường Cửa Nam, Hà Nội"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-ngan_hang-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "F",
+    "turns": [
+      "Sacombank có vốn điều lệ bao nhiêu?",
+      "Trụ sở nó ở đâu?"
+    ],
+    "check": {
+      "any": [
+        "43-45-47 Nguyễn Thị Minh Khai, phường Sài Gòn, TP.HCM"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-ngan_hang-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "U",
+    "turns": [
+      "ngan hang nao von dieu le duoi 5000 ty"
+    ],
+    "check": {
+      "all": [
+        "Kiên Long",
+        "Sài Gòn Công Thương",
+        "Bảo Việt"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-ngan_hang-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "R",
+    "turns": [
+      "Ngân hàng nào có app di động được đánh giá tốt nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-ngan_hang-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "R",
+    "turns": [
+      "Phí chuyển tiền liên ngân hàng của BIDV là bao nhiêu?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-ngan_hang-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "AMB",
+    "turns": [
+      "Cho mình biết về Ngân hàng Sài Gòn."
+    ],
+    "check": {
+      "refusal": false,
+      "ask_back": true
+    }
+  },
+  {
+    "id": "v4_b-ngan_hang-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "L",
+    "turns": [
+      "Ngân hàng nào vừa cập nhật số liệu gần đây nhất, quý mấy năm nào?"
+    ],
+    "check": {
+      "num": [
+        18
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-ngan_hang-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "ngan_hang"
+    ],
+    "kind": "L",
+    "turns": [
+      "Ngân hàng nào có vốn điều lệ gần bằng BIDV nhất?"
+    ],
+    "check": {
+      "any": [
+        "Việt Nam Thịnh Vượng",
+        "VPBank",
+        "Kỹ Thương Việt Nam",
+        "Techcombank"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-phi_vat_the-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "phi_vat_the"
+    ],
+    "kind": "L",
+    "turns": [
+      "Có những di sản nào thuộc loại hình nghệ thuật trình diễn dân gian?"
+    ],
+    "check": {
+      "num": [
+        107,
+        100
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-phi_vat_the-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "phi_vat_the"
+    ],
+    "kind": "L",
+    "turns": [
+      "Di sản nào được công nhận sớm nhất?"
+    ],
+    "check": {
+      "any": [
+        "2012"
+      ],
+      "num": [
+        32
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-phi_vat_the-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "phi_vat_the"
+    ],
+    "kind": "L",
+    "turns": [
+      "Liệt kê các di sản được công nhận trong giai đoạn 2010–2015"
+    ],
+    "check": {
+      "any": [
+        "2012",
+        "2013",
+        "2014",
+        "2015"
+      ],
+      "num": [
+        138
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-phi_vat_the-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "phi_vat_the"
+    ],
+    "kind": "L",
+    "turns": [
+      "Có bao nhiêu di sản được ghi nhận trong bảng?"
+    ],
+    "check": {
+      "num": [
+        532
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-phi_vat_the-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "phi_vat_the"
+    ],
+    "kind": "F",
+    "turns": [
+      "Tín ngưỡng thờ cúng Hùng Vương được công nhận năm nào?",
+      "Nó thuộc địa điểm nào vậy?"
+    ],
+    "check": {
+      "any": [
+        "Phú Thọ"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-phi_vat_the-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "phi_vat_the"
+    ],
+    "kind": "U",
+    "turns": [
+      "di san nao duoc cong nhan sau nam 2020"
+    ],
+    "check": {
+      "num": [
+        169,
+        207
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-phi_vat_the-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "phi_vat_the"
+    ],
+    "kind": "R",
+    "turns": [
+      "Di sản nào có lượng khách tham dự đông nhất mỗi năm?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-phi_vat_the-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "phi_vat_the"
+    ],
+    "kind": "R",
+    "turns": [
+      "Di sản nào được ngân sách nhà nước cấp kinh phí bảo tồn nhiều nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-phi_vat_the-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "phi_vat_the"
+    ],
+    "kind": "AMB",
+    "turns": [
+      "Cho mình thông tin về hát xoan."
+    ],
+    "check": {
+      "refusal": false,
+      "ask_back": true
+    }
+  },
+  {
+    "id": "v4_b-phi_vat_the-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "phi_vat_the"
+    ],
+    "kind": "L",
+    "turns": [
+      "Tìm các di sản ở Hà Nội"
+    ],
+    "check": {
+      "num": [
+        32
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-phi_vat_the-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "phi_vat_the"
+    ],
+    "kind": "L",
+    "turns": [
+      "Di sản nào được công nhận trong năm 2003?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-the_thao-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "san_van_dong"
+    ],
+    "kind": "L",
+    "turns": [
+      "Sân nào có sức chứa lớn nhất trong danh sách?"
+    ],
+    "check": {
+      "any": [
+        "VinFast – Trống Đồng"
+      ],
+      "all": [
+        "VinFast – Trống Đồng"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-the_thao-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "san_van_dong"
+    ],
+    "kind": "L",
+    "turns": [
+      "Những sân vận động nào được khánh thành từ năm 2000 trở đi?"
+    ],
+    "check": {
+      "any": [
+        "Pleiku",
+        "VinFast – Trống Đồng",
+        "Cẩm Phả",
+        "Buôn Ma Thuột",
+        "Thiên Trường",
+        "Bến Tre",
+        "Rạch Giá",
+        "Việt Yên",
+        "Cà Mau",
+        "Thành Long",
+        "Mỹ Đình",
+        "Bà Rịa",
+        "Đà Lạt",
+        "Phan Thiết",
+        "Lạng Sơn",
+        "Long An",
+        "PVF",
+        "Thái Nguyên",
+        "Chi Lăng (Hòa Xuân cũ)",
+        "Kon Tum",
+        "Hòa Bình",
+        "Rạch Chiếc"
+      ],
+      "num": [
+        22
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-the_thao-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "san_van_dong"
+    ],
+    "kind": "L",
+    "turns": [
+      "Sân nào đang có ghi chú về việc cải tạo hoặc nâng cấp?"
+    ],
+    "check": {
+      "any": [
+        "VinFast – Trống Đồng",
+        "PVF",
+        "Rạch Chiếc",
+        "Lạng Sơn"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-the_thao-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "san_van_dong"
+    ],
+    "kind": "L",
+    "turns": [
+      "Có bao nhiêu sân đang được khai thác?"
+    ],
+    "check": {
+      "num": [
+        49
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-the_thao-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "san_van_dong"
+    ],
+    "kind": "F",
+    "turns": [
+      "Sân Mỹ Đình có sức chứa bao nhiêu chỗ?",
+      "Đội bóng nào quản lý sân đó vậy?"
+    ],
+    "check": {
+      "any": [
+        "Thể Công – Viettel Đội tuyển quốc gia Việt Nam"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-the_thao-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "san_van_dong"
+    ],
+    "kind": "U",
+    "turns": [
+      "san van dong nao co suc chua tren 30000 cho"
+    ],
+    "check": {
+      "any": [
+        "Mỹ Đình",
+        "VinFast – Trống Đồng",
+        "PVF",
+        "Rạch Chiếc"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-the_thao-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "san_van_dong"
+    ],
+    "kind": "R",
+    "turns": [
+      "Sân nào có giá vé vào cửa rẻ nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-the_thao-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "san_van_dong"
+    ],
+    "kind": "R",
+    "turns": [
+      "Sân nào có doanh thu bán vé cao nhất năm ngoái?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-the_thao-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "san_van_dong"
+    ],
+    "kind": "AMB",
+    "turns": [
+      "Sân Thống Nhất giờ thế nào rồi?"
+    ],
+    "check": {
+      "refusal": false,
+      "ask_back": true
+    }
+  },
+  {
+    "id": "v4_b-the_thao-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "san_van_dong"
+    ],
+    "kind": "L",
+    "turns": [
+      "Sân nào có trạng thái khai thác là tạm ngừng?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-the_thao-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "san_van_dong"
+    ],
+    "kind": "L",
+    "turns": [
+      "So sánh sức chứa của hai sân có sức chứa lớn nhất."
+    ],
+    "check": {
+      "all": [
+        "VinFast",
+        "135.000",
+        "Rạch Chiếc",
+        "70.000"
+      ],
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dai_hoc"
+    ],
+    "kind": "L",
+    "turns": [
+      "Trường nào có tên viết tắt là HCMUTE?"
+    ],
+    "check": {
+      "any": [
+        "Trường Đại học Công nghệ Kỹ thuật Thành phố Hồ Chí Minh"
+      ],
+      "all": [
+        "Trường Đại học Công nghệ Kỹ thuật Thành phố Hồ Chí Minh"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dai_hoc"
+    ],
+    "kind": "L",
+    "turns": [
+      "Những trường nào có tên giao dịch tiếng Anh chứa từ 'Technology'?"
+    ],
+    "check": {
+      "num": [
+        38
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dai_hoc"
+    ],
+    "kind": "L",
+    "turns": [
+      "Trường nào do Bộ Giáo dục và Đào tạo quản lý trực tiếp?"
+    ],
+    "check": {
+      "num": [
+        32
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dai_hoc"
+    ],
+    "kind": "L",
+    "turns": [
+      "Có bao nhiêu trường thuộc loại hình tư thục?"
+    ],
+    "check": {
+      "num": [
+        68
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dai_hoc"
+    ],
+    "kind": "F",
+    "turns": [
+      "Đại học Bách khoa, ĐHQG_HCM ở địa điểm nào?",
+      "Tên giao dịch tiếng Anh của trường là gì?"
+    ],
+    "check": {
+      "any": [
+        "VNUHCM-University of Technology"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dai_hoc"
+    ],
+    "kind": "U",
+    "turns": [
+      "truong nao co ten viet tat la HUIT"
+    ],
+    "check": {
+      "any": [
+        "Trường Đại học Công Thương Thành phố Hồ Chí Minh"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dai_hoc"
+    ],
+    "kind": "R",
+    "turns": [
+      "Trường nào có tỷ lệ sinh viên tốt nghiệp đúng hạn cao nhất?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dai_hoc"
+    ],
+    "kind": "R",
+    "turns": [
+      "Trường nào có mức học phí ngành công nghệ thông tin thấp nhất năm nay?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dai_hoc"
+    ],
+    "kind": "AMB",
+    "turns": [
+      "Đại học Quốc gia có những thông tin gì?"
+    ],
+    "check": {
+      "refusal": false,
+      "ask_back": true
+    }
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dai_hoc"
+    ],
+    "kind": "L",
+    "turns": [
+      "Liệt kê các trường ở Thành phố Hồ Chí Minh."
+    ],
+    "check": {
+      "num": [
+        72
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-truong_dai_hoc-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "dai_hoc"
+    ],
+    "kind": "L",
+    "turns": [
+      "] Trường nào có loại hình là công lập?"
+    ],
+    "check": {
+      "num": [
+        435
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-xe_buyt-01",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Tuyến D4 chạy từ đâu tới đâu vậy?"
+    ],
+    "check": {
+      "all": [
+        "VinHomes Grand Park",
+        "Bến Thành"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-xe_buyt-02",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Mấy tuyến nào có điểm đến hoặc điểm đi là Chợ Lớn?"
+    ],
+    "check": {
+      "num": [
+        16
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-xe_buyt-03",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Tuyến nào mà điểm đầu với điểm cuối là một chỗ luôn?"
+    ],
+    "check": {
+      "all": [
+        "167",
+        "170"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-xe_buyt-04",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Tuyến nào chạy sớm nhất trong ngày, trước 4 giờ sáng?"
+    ],
+    "check": {
+      "all": [
+        "9",
+        "722B",
+        "74"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-xe_buyt-05",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "F",
+    "turns": [
+      "Tuyến 172 giãn cách bao nhiêu phút một chuyến?",
+      "Thời gian hoạt động của nó thì sao?"
+    ],
+    "check": {
+      "any": [
+        "04:00 - 19:00"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-xe_buyt-06",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "U",
+    "turns": [
+      "tuyen nao co cu ly tren 100km"
+    ],
+    "check": {
+      "any": [
+        "721"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-xe_buyt-07",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "R",
+    "turns": [
+      "Tuyến 1 đi qua bao nhiêu trạm dừng?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-xe_buyt-08",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "R",
+    "turns": [
+      "Đơn vị nào đang khai thác tuyến 172 vậy?"
+    ],
+    "check": {
+      "refusal": true,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-xe_buyt-09",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "AMB",
+    "turns": [
+      "Tuyến nào đi Đại học Quốc gia?"
+    ],
+    "check": {
+      "refusal": false,
+      "ask_back": true
+    }
+  },
+  {
+    "id": "v4_b-xe_buyt-10",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Giữa tuyến 1 và tuyến 172, tuyến nào dài hơn?"
+    ],
+    "check": {
+      "any": [
+        "172"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  },
+  {
+    "id": "v4_b-xe_buyt-11",
+    "suite": "real4",
+    "split": "blind",
+    "datasets": [
+      "xe_buyt_tphcm"
+    ],
+    "kind": "L",
+    "turns": [
+      "Tuyến nào có giãn cách chuyến lâu nhất, kiểu phải đợi lâu nhất đó?"
+    ],
+    "check": {
+      "any": [
+        "722B",
+        "172"
+      ],
+      "refusal": false,
+      "ask_back": false
+    }
+  }
+]

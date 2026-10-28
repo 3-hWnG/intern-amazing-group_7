@@ -104,6 +104,10 @@ FASTPATH_MIN_PASS = 0.9
 FASTPATH_AGGREGATE = False
 FASTPATH_SQL = True          # 24/10: bật mặc định — chỉ chạy trên bảng qua bài tự kiểm lúc nạp (selftest route "sql")
 FASTPATH_SQL_RAW = False
+FASTPATH_WIDE_TABLE = True   # S4-1: ghép sheet cùng khoá thành một bảng rộng lúc biên dịch
+FASTPATH_ACCENT_FIRST = True # S4-2: khớp có dấu trước, chỉ bỏ dấu khi không ra dòng nào
+FASTPATH_ATTR_GUARD = True   # S4-3: từ chối câu hỏi về thuộc tính bảng không có (không đếm bừa)
+FASTPATH_CLEAN_SHOW = True   # S4-4: hiển thị số sạch (năm và số < 10000 không dấu nghìn)
 GUEST_ENABLED = True
 LIMIT_GUEST_PER_MIN = 3
 LIMIT_GUEST_PER_DAY = 20
@@ -253,6 +257,14 @@ SETTINGS = [
     dict(key="FASTPATH_SQL_RAW", type="bool", group="Tốc độ & độ chính xác", label="Đường nhanh: SQL không qua bước biên dịch (chỉ để đo)",
          help="Mốc so sánh cho bài báo: AI viết SQL trên bảng thô (cột chữ nguyên văn, không kiểu số, không giá trị mẫu), không tự kiểm. "
               "Chỉ dùng khi đo; người dùng thường để tắt."),
+    dict(key="FASTPATH_WIDE_TABLE", type="bool", group="Tốc độ & độ chính xác", label="Đường nhanh: ghép sheet cùng khoá thành bảng rộng (S4-1)",
+         help="Lúc biên dịch ghép các sheet cùng khoá thành một bảng SQLite rộng để model không phải JOIN."),
+    dict(key="FASTPATH_ACCENT_FIRST", type="bool", group="Tốc độ & độ chính xác", label="Đường nhanh: khớp có dấu trước khi bỏ dấu (S4-2)",
+         help="SQL rewrite: chỉ bỏ dấu khi khớp có dấu ra 0 dòng, tránh Sông Lô khớp Sông Lò."),
+    dict(key="FASTPATH_ATTR_GUARD", type="bool", group="Tốc độ & độ chính xác", label="Đường nhanh: chặn câu hỏi thuộc tính không có (S4-3)",
+         help="Không chạy SQL đếm khi câu hỏi về thuộc tính bảng không có."),
+    dict(key="FASTPATH_CLEAN_SHOW", type="bool", group="Tốc độ & độ chính xác", label="Đường nhanh: định dạng số sạch (S4-4)",
+         help="Cột năm và số dưới 10.000 không thêm dấu chấm phân cách nghìn."),
     dict(key="FASTPATH_MIN_PASS", type="float", group="Tốc độ & độ chính xác", label="Đường nhanh: ngưỡng bài tự kiểm", min=0.5, max=1.0,
          help="Lúc nạp, code tự sinh câu hỏi + đáp án từ chính dữ liệu và chạy thử. Bảng nào đạt dưới ngưỡng này ở một loại câu (tra trường / "
               "đếm-liệt kê / văn bản) thì loại câu đó tắt cho bảng ấy, câu hỏi đi đường cũ."),

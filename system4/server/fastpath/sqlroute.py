@@ -13,6 +13,7 @@ import re
 import sqlite3
 import threading
 
+from .. import settings
 from ..ground import fold
 
 MAX_ROWS, SHOW = 200, 40
@@ -181,9 +182,21 @@ class Box:
         s = re.sub(r"^```(?:sql)?|```$", "", (sql or "").strip(), flags=re.I).strip()
         s = re.sub(r"[\s;}]+$", "", s)
         noun = " ".join(re.findall(r"[a-z0-9]+", fold(self.t.get("entity_noun") or "")))
+        accent_first = settings.get("FASTPATH_ACCENT_FIRST")
 
         def like(m):
             col, neg, pat = m.group(1), m.group(2) or "", m.group(3)
+            col_raw = "ten" if col == "ten" or like_mode == "title" else (col if col in self.bysql and self.bysql[col]["kind"] == "text" else None)
+            pat_clean = pat.strip("%")
+            if accent_first and col_raw and fold(pat) != pat.lower() and pat_clean:
+                if like_mode != "substr" and pat.startswith("%") and pat.endswith("%"):
+                    test_sql = f"SELECT 1 FROM bang WHERE (' ' || {col_raw} || ' ') {neg}LIKE '% {pat_clean} %' LIMIT 1"
+                    if self.conn.execute(test_sql).fetchone() is not None:
+                        return f"(' ' || {col_raw} || ' ') {neg}LIKE '% {pat_clean} %'"
+                test_sql2 = f"SELECT 1 FROM bang WHERE {col_raw} {neg}LIKE '{'%' if pat.startswith('%') else ''}{pat_clean}{'%' if pat.endswith('%') else ''}' LIMIT 1"
+                if self.conn.execute(test_sql2).fetchone() is not None:
+                    return f"{col_raw} {neg}LIKE '{'%' if pat.startswith('%') else ''}{pat_clean}{'%' if pat.endswith('%') else ''}'"
+
             tgt = "ten_kd" if col == "ten" or like_mode == "title" else (f"{col}_kd" if col in self.bysql and self.bysql[col]["kind"] == "text" else col)
             core = "%".join(" ".join(re.findall(r"[a-z0-9_]+", fold(p))) for p in pat.strip("%").split("%"))
             if noun and core.startswith(noun + " "):
@@ -195,6 +208,12 @@ class Box:
 
         def eq(m):       # cột chữ = 'giá trị': so không phân biệt hoa thường / dấu
             col, val = m.group(1), m.group(2)
+            col_raw = "ten" if col == "ten" else (col if col in self.bysql and self.bysql[col]["kind"] == "text" else None)
+            if accent_first and col_raw and fold(val) != val.lower():
+                if self.conn.execute(f"SELECT 1 FROM bang WHERE {col_raw} = ? LIMIT 1", (val,)).fetchone() is not None:
+                    return f"{col_raw} = '{val}'"
+                if self.conn.execute(f"SELECT 1 FROM bang WHERE {col_raw} LIKE '%{val}%' LIMIT 1").fetchone() is not None:
+                    return f"{col_raw} LIKE '%{val}%'"
             kd = "ten_kd" if col == "ten" else (f"{col}_kd" if col in self.bysql and self.bysql[col]["kind"] == "text" else None)
             if not kd:
                 return m.group(0)
