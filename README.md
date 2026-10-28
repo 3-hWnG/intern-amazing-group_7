@@ -1,52 +1,49 @@
-# Bài báo 1 (System 3): bản nháp + code — branch `paper1-vjcs-draft`
+# Bài báo 1: System 3 — *Answer, Clarify or Refuse?*
 
-**Bản nháp chưa hoàn thiện, chưa nộp, không phát tán.** Cập nhật ngày 25/10/2026.
+**Answer, Clarify or Refuse? Rules, a Reranker and a Small LLM on Real Citizen Questions about Commune-Level Administrative Procedures in Vietnam**
 
-Bài: *When Rules Should Decide: Answering, Clarifying and Refusing Real Citizen Questions about Commune-Level Administrative Procedures in Vietnam*. Bài dự kiến nộp tạp chí Vietnam Journal of Computer Science.
+- **Nhóm:** Nhóm 7 (thực tập).
+- **Thành viên:** Trịnh Hoàng Nhân (trưởng nhóm, tác giả liên hệ), Nguyễn Viết Hưng, Phạm Lê Thiên Dấn.
+- **Mentor:** Trương Long.
+- **Đơn vị:** Khoa Trí tuệ nhân tạo, Trường Đại học FPT, TP. Hồ Chí Minh.
+- **Nơi nộp dự kiến:** Vietnam Journal of Computer Science (World Scientific).
 
-Tác giả:
-- Trịnh Hoàng Nhân (tác giả liên hệ)
-- Nguyễn Viết Hưng
-- Phạm Lê Thiên Dấn
-- Trương Long
+Bài là một nghiên cứu đánh giá. Đối tượng là một trợ lý chỉ phục vụ **thủ tục hành chính cấp xã/phường**, không phải mọi thủ tục trên toàn quốc. Bài hỏi trợ lý này nên trả lời, hỏi lại hay từ chối khi gặp câu hỏi thật của người dân.
 
-Phạm vi bài: trợ lý chỉ phục vụ thủ tục do **cấp xã/phường** giải quyết, không phải mọi thủ tục hành chính.
+Trên hai bộ test khoá trước khi sửa code, một lớp luật minh bạch nâng độ chính xác cân bằng từ 0,647 lên 0,814 (test 1), và số câu từ chối đúng từ 175 lên 297/335 (test 2). Reranker, model 4B chạy tại máy và các cổng học không cải thiện có ý nghĩa. Để model tự quyết thì không hơn luôn từ chối.
 
-## Đọc nhanh
-
-- `paper/paper1_draft_2026-10-25.pdf`: bản đọc được, dựng tự động từ nguồn LaTeX bằng `tools/tex_to_html.py` và LibreOffice. Dàn trang của bản này **khác** template VJCS.
-- `paper/latex/` và `paper/paper1_overleaf.zip`: nguồn LaTeX theo template `ws-vjcs`. Tải tệp zip lên Overleaf để biên dịch ra bản thật.
-
-Bài còn thiếu:
-- ORCID của các tác giả;
-- URL repo công khai;
-- một vòng phản biện cuối;
-- biên dịch trên Overleaf để kiểm số trang (mục tiêu ≤ 10 trang).
-
-## Kết quả chính
-
-Mỗi bộ test được khoá (hash + commit) trước khi sửa code; mỗi cấu hình chỉ chạy một lần.
-
-| Bộ test | Bản gốc | Lớp luật A | RAG + 4B tự quyết |
-|---|---|---|---|
-| Test 1 (313 câu): độ chính xác cân bằng | 0,647 | 0,814 | 0,489 |
-| Test 1: số câu trả lời đúng trọn | 19/59 | 35/59 | 28/59 |
-| Test 2 (363 câu mới): số câu từ chối đúng | 175/335 | 297/335 | 197/335 |
-
-Vòng luật thứ hai (A2) tốt hơn A trên dev (+25 câu), nhưng **hoà** với A trên test 2.
-
-## Cấu trúc
+## Cấu trúc (theo khuôn của repo môn)
 
 | Thư mục | Nội dung |
 |---|---|
-| `Code/` | Code System 3 và kết quả từng câu của mọi lượt chạy. Xem `Code/README.md`. |
-| `paper/` | Bản nháp bài (PDF đọc được và nguồn LaTeX). |
-| `tools/` | `make_public_code.py` (cách dựng `Code/` từ repo phát triển); `tex_to_html.py` (cách dựng bản PDF đọc được). |
+| `01_topic_proposal/` | Đề xuất đề tài, nhật ký đổi đề tài |
+| `02_related_work/` | Từ khoá tìm kiếm, danh sách tài liệu đã kiểm, ma trận tổng quan, 29 tệp tóm tắt (`paper_summaries/`) |
+| `03_problem_and_gap/` | Phát biểu vấn đề, khoảng trống nghiên cứu, 3 câu hỏi nghiên cứu, phân tích đóng góp |
+| `04_proposed_system/` | Tổng quan, kiến trúc, tích hợp model, luồng dữ liệu, sơ đồ (`diagrams/`) |
+| `05_methodology/` | Phương pháp, dữ liệu, baseline, chỉ số |
+| `06_experiment_results/` | Cài đặt thí nghiệm, kết quả, bảng (`tables/`), hình (`figures/`) |
+| `07_paper_draft/` | Bài báo: LaTeX (`latex/`, bản chuẩn), gói Overleaf, bản Markdown từng phần, dàn ý, ràng buộc khi viết (`constraints.md`) |
+| `08_final_submission/` | Bản nộp: PDF từ Overleaf, bản Word |
+| `weekly_reports/` | Báo cáo tuần 01–08 (07/09 – 01/11/2026) |
+| `Code/` | Bản code công khai đi kèm bài: System 3, script đánh giá, kết quả từng câu (không có văn bản câu hỏi) |
 
-## Không có trong branch này
+## Đọc nhanh
 
-- Văn bản câu hỏi của người dân. Hai dataset gốc trên Hugging Face không ghi giấy phép. Có thể dựng lại bằng `Code/eval/rebuild_questions.py`.
-- Tên người thật.
-- Dữ liệu hay khoá của bên thứ ba.
-- Dữ liệu thủ tục đã thu từ Cổng Dịch vụ công.
-- Lịch sử phát triển: branch này là một commit độc lập. Code phát triển nằm ở branch `merge_sys_3_4`.
+- Bài: `08_final_submission/final_paper.pdf`. Khi chưa có tệp này thì đọc `07_paper_draft/paper1_draft_readable.pdf` (bản nháp dựng từ LaTeX) hoặc các tệp `.md` trong `07_paper_draft/`.
+- Kết quả: `06_experiment_results/results.md`, Bảng 1 ở `06_experiment_results/tables/summary_table.md`.
+- Tái lập: `Code/README.md`.
+
+## Biên dịch bài
+
+Tải `07_paper_draft/paper1_overleaf.zip` lên Overleaf; tệp chính là `main.tex`, template `ws-vjcs.cls`. Bản ngày 27/10/2026 dài 12 trang, trong đó 9 trang là nội dung.
+
+## Dữ liệu và quyền riêng tư
+
+- **Câu hỏi:** lấy từ hai bộ dữ liệu công khai trên Hugging Face. Hai bộ này không ghi giấy phép, nên văn bản câu hỏi không được phát hành lại; repo chỉ có mã câu và nhãn. Thông tin cá nhân đã được che trước khi gán nhãn.
+- **Dữ liệu thủ tục:** thu từ Cổng Dịch vụ công Quốc gia ngày 13/10/2026, không chứa dữ liệu cá nhân.
+
+## Việc còn lại trước khi nộp
+
+- ORCID của các tác giả (bắt buộc với tác giả liên hệ).
+- Chốt nơi đặt mã công khai, tức URL trong mục Data Availability của bài.
+- Biên dịch lại trên Overleaf sau khi sửa trình bày ngày 28/10, rồi đặt PDF vào `08_final_submission/`.

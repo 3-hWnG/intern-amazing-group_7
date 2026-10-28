@@ -1,0 +1,33 @@
+> Sinh tự động từ `latex/sections/results.tex` ngày 28/10/2026 để đọc trên GitHub. Bản chuẩn là LaTeX; muốn sửa thì sửa tệp `.tex`.
+
+## 6. Results
+
+### 6.1. Team-written versus real questions
+
+On the same frozen base system, behavior accuracy is 77.2% (95% interval 73–81%) on the 518 team-written questions but 56.0% (50–62%) and 56.5% (51–62%) on the real development and first test sets; balanced accuracy falls from 0.852 to 0.636 and 0.647, and top-1 accuracy on *answer* questions from 274/381 (71.9%) to 7/55 (12.7%) and 20/59 (33.9%) (5/42 against 17/48 in the topical stratum, a gap we cannot explain). The largest change is in what is asked: 78–79% of real questions should be refused, against 11%, and the base system refuses about half of them (116/220 and 132/248, against 52/58 team-written). On the team-written set the rule layer makes no net change in behavior (+4/−4; 400/518 in both cases), so a team-written set alone would have shown neither the problem nor the fix.
+
+### 6.2. Locked test sets
+
+**First test set.** The rule layer (Table 1) raises balanced accuracy from 0.647 to 0.814 (difference +0.167, 95% interval 0.095–0.240) and end-to-end accuracy from 19/59 (95% interval 22–45%) to 35/59 (47–71%): base → A gains 96 and loses 10 questions on behavior (p ≈ 9·10⁻¹⁹) and 22 against 6 end-to-end (p = 0.004). Correct refusals rise from 132 to 219 of 248 while correct *answer* decisions stay level (45 to 44). The gain holds without the 11 near-duplicates (0.651 to 0.810), in the random stratum (102 questions, 11 *answer*; 0.512 to 0.859) and in each portal (Public Security 0.618 to 0.875, Binh Dinh 0.649 to 0.751). In *post hoc* ablations, removing the gate costs 70 correct refusals but adds 4 end-to-end answers, the lexicon costs 17 end-to-end answers and focus 7; the other rules change at most one question. Alone, the reranker (0.692) and the LLM reader (0.785; against A +28/−35 on behavior, p = 0.45, and 25 against 35 end-to-end, p = 0.06) do not do better, nor does either learned gate differ significantly in balanced accuracy from the hand-written gate alone on top of the base system (naive Bayes 0.765, embeddings 0.801, against 0.770). Added to the rules, the reranker gains one question; the reader's intents add refusals (+25/−10, p = 0.017) but lose answers, and its name alone scores highest (0.834) but was not selected and gains nothing significant end-to-end (+8/−4, p = 0.39). The RAG baseline scores 0.489, no better than always refusing, as it asks for clarification on 118 of the 248 questions it should refuse (0.727 if these were refusals, still below A). No configuration recognizes more than one of the six *clarify* questions, and second-pass labels give the same picture (base → A on 91 questions: +24/−1).
+
+**Second test set.** On new questions the rule layer again changes refusals most: correct refusals rise from 175 to 297 of 335 and balanced accuracy from 0.571 to 0.705 (+125/−5, p ≈ 4·10⁻³¹; difference +0.134, 0.033–0.228), the gate again supplying the refusals (62 fewer without it, 2 more end-to-end answers) and the lexicon the answers. The learned gates refuse more than the hand-written gate alone (308 and 313 against 287) but decide *answer* on only 5 of the 21 answerable questions against 10, for lower but not significantly lower balanced accuracy (0.579 and 0.586 against 0.666). The second round does not carry over on behavior: in the comparison declared before the run, A2 + B, which had gained 25 questions and lost none against A on development, ties A + B (+3/−3; end-to-end 10 against 8 of 21, p = 0.63; balanced difference +0.046, −0.048 to 0.143, a wide interval, since only 21 questions are answerable) and A (+4/−4) while beating the base (+129/−9). R is again last (0.413; 0.574 with clarifications as refusals; against A2 + B +19/−122, p ≈ 10⁻¹⁹).
+
+**Answer precision.** Answers remain unreliable: of the questions A answers, 45% get a correct procedure on the first test set and 20% on the second, most wrong answers going to questions that should be refused (29 of 42 and 34 of 37). On random traffic no configuration answers correctly more often than wrongly: the most precise are A + C with 7 of 15 answers in the random stratum of the first test set and A2 + B with 10 of 50 on the second.
+
+**Table 1.** Locked test sets, one run each (313 and 363 questions; Sec. 3). Bal.: balanced accuracy; Ref.: correct refusals; E2E: end-to-end correct answers (of 59 and of 21); Prec.: share of given answers that are correct (%); Gate only: the out-of-scope gate of A alone on the base system; L: learned gates in its place; \**post hoc*; –: not run on that set (for A2 + B on test 1: A2 was developed on those questions).
+
+| Configuration | T1 Bal. | T1 Ref. | T1 E2E | T1 Prec. | T2 Bal. | T2 Ref. | T2 E2E | T2 Prec. |
+|---|---|---|---|---|---|---|---|---|
+| Always refuse | 0.500 | 248 | 0 | – | 0.500 | 335 | 0 | – |
+| Base | 0.647 | 132 | 19 | 11.7 | 0.571 | 175 | 5 | 3.0 |
+| B: reranker alone | 0.692 | 175 | 21 | 17.9 | – | – | – | – |
+| C: LLM reader alone | 0.785 | 213 | 25 | 30.9 | – | – | – | – |
+| R: RAG + LLM decides | 0.489 | 104 | 28 | 43.8 | 0.413 | 197 | 4 | 10.5 |
+| L: naive Bayes gate\* | 0.765 | 224 | 14 | 21.9 | 0.579 | 308 | 2 | 6.9 |
+| L: embedding gate\* | 0.801 | 225 | 17 | 25.4 | 0.586 | 313 | 2 | 8.0 |
+| Gate only\* | 0.770 | 218 | 15 | 20.8 | 0.666 | 287 | 5 | 9.1 |
+| A: rule layer | 0.814 | 219 | 35 | 45.5 | 0.705 | 297 | 9 | 19.6 |
+| A + C (intent, name) | 0.817 | 237 | 32 | 58.2 | – | – | – | – |
+| A + C (name only) | 0.834 | 216 | 39 | 47.0 | – | – | – | – |
+| A + B (round-1 selection) | 0.823 | 219 | 36 | 46.2 | 0.683 | 298 | 8 | 17.4 |
+| A2 + B (round-2 selection) | – | – | – | – | 0.729 | 297 | 10 | 20.0 |

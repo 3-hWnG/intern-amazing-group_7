@@ -1,0 +1,28 @@
+\section{Discussion}
+
+\textbf{What the rules do.} The out-of-scope gate supplies the refusals: out-of-scope questions fall into a few recurring kinds (file
+status, complaints, penalties, police internal matters) worded regularly enough for patterns, and classifiers trained on the same labels
+were not significantly better in balanced or end-to-end accuracy on either test set. The citizen lexicon supplies the answers by mapping citizen wording to official names.
+The reranker favors complaints that name a real procedure, and the LLM reader labels many long procedural narratives as complaints.
+
+\textbf{What remains.} Of the 24 \emph{answer} questions that A misses on the first test set (\emph{post hoc} analysis), 12 are refused, 4 of them
+by the gate although the base system had ranked the correct procedure first; of the other 12, 7 have the correct procedure outside the
+top five, typically in long letters that only imply it. With such low answer precision on random traffic, an assistant should have a human
+officer confirm its answers, or answer only when confident\cite{geifman2017}; refusing better is necessary but not sufficient.
+
+\textbf{Why the second round did not carry over.} A2 + B changes the decision or procedure of a similar share of questions on development
+and on the new set (6.2\% and 5.2\%), but with 30 gains and no losses on development against 4 and 4 on the new set (a decision counting
+as correct only with the right procedure); its new out-of-scope patterns fixed 15 wrong answers on development but one on the new set,
+which suggests that they fit particular phrasings. The small \emph{answer} class and labels from another model with a slightly extended
+guideline may also contribute.
+
+\textbf{Limitations and threats to validity.} (i) One domain, language and data snapshot: hand-written rules for Vietnamese commune-level
+procedures, with no claim about provincial or ministry procedures. (ii) With only 59 and 21 \emph{answer} and 6 and 7 \emph{clarify} test
+questions, small differences are not significant and nothing can be concluded about clarification. (iii) The development and first-test
+labels were produced with the AI assistant that wrote the rules, so the gate may encode its notion of scope; the second-pass sample and the
+second test set were labeled with another model and checked by the project lead, who had seen aggregate class proportions and knew the
+kinds of rules being added. Circularity alone does not explain the second test set, whose labels did not come from that assistant (though they follow the
+same guideline) yet where the rule layer still gains 125 questions and loses 5 on behavior (122 more correct refusals). No fully independent human annotation exists, however. (iv) All questions come from two portals, with a larger gain on one, and the 79\% refusals of our samples understate the share in random
+traffic. (v) The locks are commits in our own repository, without an external timestamp. (vi) The rules received far more development
+effort than the learned components and the RAG baseline, systems from other studies could not be run on our questions, and the ablations
+and learned gates are \emph{post hoc}. (vii) LLM components ran once at temperature 0 on one quantized model.

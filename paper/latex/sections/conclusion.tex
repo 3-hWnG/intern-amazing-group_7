@@ -1,9 +1,0 @@
-\section{Conclusion}
-
-For an assistant limited to commune-level procedures, the hard part of real citizen questions is not finding a procedure but deciding
-whether to answer at all. A system that looked strong on team-written questions answered nearly half (114 of 248) of the real questions it
-should have refused. A small, transparent rule layer nearly doubled the end-to-end correct answers on a locked test set and kept its gain in refusals
-on a second one, while a reranker and a local 4B LLM reader added no significant end-to-end gain and a RAG design in which the model decides did worse. A second round of
-rules that looked clearly better on development was no better on new questions: gains must be measured on questions locked before the work
-that produced them. Future work will let the model propose procedure names while rules keep the decision, collect more \emph{answer} and
-\emph{clarify} cases, and replace the AI-assisted labels with independent human annotation.

@@ -1,0 +1,22 @@
+\section{Evaluation Protocol}
+
+\textbf{Order of work.} Each test set was labeled and locked by SHA-256 and a commit; rules and thresholds were developed on the
+development set only; the code was frozen in a commit; each configuration was run once and its results read once. Reusing a test set for
+selection inflates its estimates\cite{dwork2015}, so no test set was used to choose anything. The first test set then joined the development set (595 questions) for the second round. Ablations and the
+learned gates were run afterwards, on the frozen code, as \emph{post hoc} analyses.
+
+\textbf{Selection and comparisons.} Written before each test run: the development configuration with the highest balanced accuracy,
+subject to end-to-end accuracy not lower than that of the rule layer alone, ties going to end-to-end accuracy. This selected A + B in the
+first round and A2 + B in the second (0.916, tied with A2 but with one more end-to-end answer); such development numbers are optimistic, as the rules were written on the same questions. The first plan
+compared the base with each variant and with the selection; the second declared three primary comparisons, A + B $\rightarrow$ A2 + B,
+base $\rightarrow$ A2 + B and A2 + B $\rightarrow$ R. All other comparisons are descriptive.
+
+\textbf{Metrics.} \emph{Behavior accuracy} is the share of correct three-way decisions; since always refusing scores 79.2\% and 92.3\% on the
+two test sets, the main metric is \emph{balanced accuracy}, the mean recall of \emph{answer} and \emph{refuse}\cite{brodersen2010}
+(\emph{clarify} is too rare to weigh equally). Because it counts an answer with the wrong procedure as correct, we also report
+\emph{end-to-end} accuracy, the \emph{answer} questions answered with a correct procedure first, and answer \emph{precision}, the share of
+all answers given that are correct; \emph{top-1} accuracy is the share of \emph{answer} questions whose first output procedure is
+correct (a refusal outputs none). Proportions carry Wilson 95\% intervals\cite{wilson1927}; paired comparisons use the exact two-sided
+McNemar test\cite{mcnemar1947} and, for balanced accuracy, a paired bootstrap 95\% interval of the difference (4,000 resamples).
+
+\textbf{Setup.} Procedure data of 13 October 2026; one laptop with an NVIDIA GeForce RTX 4050 (6\,GB), paced by a temperature guard.

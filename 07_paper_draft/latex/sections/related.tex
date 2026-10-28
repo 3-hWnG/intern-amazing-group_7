@@ -1,0 +1,17 @@
+\section{Related Work}
+
+\textbf{Vietnamese public-service and legal question answering.} Pham Duy and Le Thanh retrieve legal passages for public-service questions
+from the portal's pages of frequently asked questions with BM25+, a contrastive PhoBERT encoder and a cross-encoder, reporting retrieval metrics\cite{phamduy2023}. ViGPTQA trains Vietnamese instruction-following LLMs for question answering, including
+law\cite{vigptqa2023}, and Hien \emph{et al.}\ combine vector retrieval over 45,000 legal documents with an LLM\cite{hien2025}; their system routes
+out-of-scope questions to experts, but this step is not evaluated. None measures refusal on real citizen questions.
+
+\textbf{Abstention and out-of-scope detection.} Selective classification trades coverage for risk\cite{geifman2017}; unanswerable questions
+caused a large drop for strong SQuAD readers\cite{rajpurkar2018}; a trained calibrator helps a reader abstain under domain
+shift\cite{kamath2020}; on CLINC150, intent classifiers that do well in scope struggle to flag out-of-scope queries\cite{larson2019}. A
+survey covers abstention in LLMs\cite{wen2025}, and clarifying questions are a third option between answering and
+refusing\cite{aliannejadi2019}.
+
+\textbf{Who decides.} In retrieval-augmented generation (RAG)\cite{lewis2020}, Self-RAG and corrective RAG, the model or a retrieval evaluator
+decides what to do\cite{asai2024,yan2024}; programmable guardrails let developer-written rails decide instead\cite{rebedea2023}. In
+e-government, a governance pipeline escalates to humans\cite{kaplan2026}, and a benchmark finds that answering correctly does not
+imply acknowledging what one does not know\cite{samson2026}. LLMs can outperform crowd workers at text annotation\cite{gilardi2023}.

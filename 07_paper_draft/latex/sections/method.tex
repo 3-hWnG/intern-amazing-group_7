@@ -1,0 +1,40 @@
+\section{System and Variants}\label{sec:method}
+
+\textbf{Base system.} The assistant as it stood before this study uses no language model to decide. Each segment of a question is
+normalized (abbreviations, synonyms, requested fields such as fees) and procedures are ranked by inverse document frequency over whole
+Vietnamese syllables, with a penalty for mismatched diacritics and thresholds on score and coverage (the share of the
+question's weight found in the name). A policy module checks the plan against the data and outputs the behavior; answers are composed by
+code from the record, and an optional LLM rewriting step is off in all experiments.
+
+\textbf{Rule layer (A).} Rules written from the base system's errors on development, each behind a switch (all off reproduces the base
+output on every test question): \emph{letter stripping} removes greetings, the addressed agency and thanks, which otherwise match procedure
+names; a \emph{citizen lexicon} of about twenty patterns maps citizen wording to current official names, including terms changed by recent
+laws; a \emph{weak-name filter} stops a few shared words from
+naming a long procedure; an \emph{out-of-scope gate} refuses questions about one's own file, complaints and petitions, law and penalties,
+police internal matters and topics absent from the data, unless they ask an explicit procedural question; \emph{focus} keeps only the
+segments of a long letter that ask something; and an \emph{organization default} prefers the individual version of a procedure.
+
+\textbf{Second round (A2).} Written after the first test set had been run, on the remaining errors of A on the development and first test
+sets, behind one more switch: a lexicon that tolerates inserted words; an explicit request recognized by the lexicon overrides a procedure
+inferred from a life event; more
+out-of-scope patterns (plain-word status questions, private disputes); and, as the labeling
+guideline prescribes, the version common to all provinces is answered instead of asking for the province.
+
+\textbf{Reranker (B).} The rule ranker's top eight and the ten in-scope procedures closest under BGE-M3 embeddings\cite{chen2024m3} are scored by the
+cross-encoder bge-reranker-v2-m3\cite{bgererank}; the system refuses below a score threshold and replaces the rule's choice when another
+candidate wins by a margin (thresholds chosen by grid search on development).
+
+\textbf{LLM reader (C).} A local 4-billion-parameter model (Qwen3-4B-Instruct-2507, Q4\_K\_M, Ollama, temperature 0, JSON
+schema)\cite{qwen3,qwen3inst} classifies the intent (procedure, file status, complaint, law, internal, other) and, for procedure
+questions, names the procedure in words, which the rule ranker maps to a procedure; other intents become refusals, and the \emph{name-only}
+variant ignores the intent.
+
+\textbf{Learned gates (L).} Trained on the development labels (282 questions for the first test set, 595 for the second) to predict
+\emph{refuse}, a classifier replaces the hand-written gate on top of the base system: multinomial naive Bayes over word and character
+n-grams, or class-balanced logistic regression over BGE-M3 embeddings of the question, with threshold and regularization chosen by
+five-fold cross-validation. Both were added after the test sets had been run, as trained counterparts of the gate.
+
+\textbf{RAG baseline (R).} In a common design in which the model decides, BGE-M3 retrieves the five closest in-scope procedures and the same
+4B model returns \emph{answer} with a number, \emph{clarify} or \emph{refuse}, without any rule; its prompt lists the refusal categories of
+the labeling guideline. After a first, short prompt over-used clarification, two variants were declared together; the best on development
+(ordered decision rules: 0.445, against 0.343 and 0.432) was run once on each test set.

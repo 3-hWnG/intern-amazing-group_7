@@ -1,8 +1,8 @@
-# Code — System 3 (bài 1: *When Rules Should Decide*)
+# Code — System 3 (bài 1: *Answer, Clarify or Refuse?*)
 
 Thư mục này chứa code và kết quả đi kèm bài báo về trợ lý **thủ tục hành chính cấp xã/phường**. Trợ lý chỉ phục vụ thủ tục do cấp xã/phường giải quyết, không phải mọi thủ tục hành chính.
 
-Bản xuất được dựng bằng `tools/make_public_code.py` từ commit ghi ở `EXPORT.txt` của repo phát triển.
+Bản xuất được dựng bằng một script nội bộ của repo phát triển, từ commit ghi ở `EXPORT.txt`. Script lọc bỏ văn bản câu hỏi và danh sách tên, rồi quét lại bản xuất trước khi công bố.
 
 ## Những gì không có ở đây
 
@@ -11,6 +11,8 @@ Bản xuất được dựng bằng `tools/make_public_code.py` từ commit ghi 
   - `doanhieung/vn-mps-public-service-qa`.
 
   Mỗi câu chỉ còn mã câu và vị trí dòng (`labels/*.jsonl`). Để dựng lại văn bản, chạy `python run_server.py eval/rebuild_questions.py`.
+
+  Đã kiểm ngày 25/10/2026: 956/958 câu dựng lại trùng khớp với bộ nhóm đã dùng. Hai câu còn lại khác nhau chỉ vì danh sách tên che tay đã bị bỏ (xem mục cuối).
 - **Dữ liệu thủ tục đã thu.** Dữ liệu từ Cổng Dịch vụ công Quốc gia, thu ngày 13/10/2026, gồm 1.517 thủ tục, không có trong bản này. Cổng không có API chính thức; dữ liệu được lấy qua các JSON endpoint công khai, không cần đăng nhập, mà chính trang web của cổng dùng, với tốc độ 2 yêu cầu/giây. Lược đồ ở `data/snapshot/schema_procedures.sql`; cách dựng DB ở `data/build.py`.
 - **Cache đầu ra của model, tệp Excel gán nhãn và log chạy.** Các tệp này có chứa văn bản câu hỏi.
 - **Danh sách 17 họ tên** tìm được khi đọc tay. Danh sách này đã bị xoá khỏi `eval/real_v1/collect_real_v1.py`.
@@ -25,8 +27,11 @@ Bản xuất được dựng bằng `tools/make_public_code.py` từ commit ghi 
 | LLM reader (C) | `server/planner/reader.py` (`S3_READER=1`) |
 | Baseline RAG (R) | `eval/hard/rag4b.py` (prompt `v2`) |
 | Chỉ số, McNemar, Wilson | `eval/hard/metrics.py` |
+| Bỏ từng luật, chỉ cổng (sau, post-hoc) | `eval/hard/ablation_runs.sh` |
+| Cổng học L (sau, post-hoc) | `eval/hard/learned_gate.py` (naive Bayes), `eval/hard/learned_gate_emb.py` (hồi quy logistic trên BGE-M3) |
+| McNemar cặp và khoảng bootstrap của hiệu độ chính xác cân bằng | `eval/hard/paired_stats.py` -> `results/paired_stats.json` |
 | Giao thức, chạy một lần | `eval/hard/final_runs.sh` (test 1), `eval/hard/final_runs_v4.sh` (test 2), `eval/real_v4/RUN_PLAN.md` |
-| Bảng 1–3 | `eval/hard/results/regress/`, `results/test/`, `results/test_v4/` (kết quả từng câu, không có văn bản câu hỏi) |
+| §6.1 và Bảng 1 | `eval/hard/results/regress/`, `results/test/`, `results/test_v4/` (kết quả từng câu, không có văn bản câu hỏi) |
 | Lượt nhãn thứ hai, κ | `eval/real_v2/relabel/` |
 | Nhiệt độ máy | `eval/thermal.py`, `results/test_v4/thermal.csv` |
 

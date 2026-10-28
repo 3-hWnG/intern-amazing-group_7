@@ -1,0 +1,8 @@
+A commune- and ward-level procedure assistant must decide whether to answer, clarify, or refuse. We evaluate it
+on real questions from two Vietnamese public-service portals, with test sets locked before the code and
+one run per configuration. On one frozen system, behavior accuracy falls from 77.2\% on team-written to 56.5\% on real questions,
+79\% of which must be refused. A transparent rule layer raises balanced accuracy from 0.647 to 0.814 and end-to-end answers from 19 to
+35 of 59, and on a second locked set raises correct refusals from 175 to 297 of 335. A reranker and a local 4-billion-parameter language
+model do not significantly improve its balanced or end-to-end accuracy, nor do gates learned \emph{post hoc}; that model deciding over
+retrieved procedures is no better than always refusing, and a second rule round tied the first on new questions. On random traffic,
+most answers of every configuration are wrong.

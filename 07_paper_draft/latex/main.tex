@@ -1,0 +1,63 @@
+%% Paper 1 (System 3) for Vietnam Journal of Computer Science. Template: ws-vjcs.cls (World Scientific, 2018).
+%% Numbers come from the frozen runs listed in sections/protocol.tex; every number has a source file noted in a comment.
+\documentclass{ws-vjcs}
+\usepackage[super,sort,compress]{cite}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{multirow}
+\newcommand{\todo}[1]{\textbf{[TODO: #1]}}
+
+\begin{document}
+
+\markboth{T. H. Nhan et al.}{Answer, Clarify or Refuse on Citizen Questions}
+
+\catchline{}{}{}{}{}
+
+\title{Answer, Clarify or Refuse? Rules, a Reranker and a Small LLM\\
+on Real Citizen Questions about Commune-Level\\
+Administrative Procedures in Vietnam}
+
+\author{Trinh Hoang Nhan\footnote{Corresponding author.}, Nguyen Viet Hung, Pham Le Thien Dan and Truong Long}
+
+\address{Department of Artificial Intelligence, FPT University\\
+Ho Chi Minh City, Vietnam\\
+hoangnhan070206@gmail.com, hung2272006@gmail.com, phamlethiendan1@gmail.com, longt5@fpt.edu.vn}
+
+\maketitle
+
+\pub{Received (Day Month Year)}{Revised (Day Month Year)}
+
+\begin{abstract}
+\input{sections/abstract}
+\keywords{Administrative procedures; question answering; abstention; Vietnamese; rule-based systems; evaluation.}
+\end{abstract}
+
+\input{sections/introduction}
+\input{sections/related}
+\input{sections/data}
+\input{sections/method}
+\input{sections/protocol}
+\input{sections/results}
+\input{sections/discussion}
+\input{sections/conclusion}
+
+\section*{Ethics and Data Availability}
+\input{sections/ethics}
+
+\section*{Competing Interests}
+The authors declare no competing interests.
+
+\section*{Declaration of AI Use}
+\input{sections/ai_declaration}
+
+\section*{Acknowledgments}
+This research received no external funding.
+
+\section*{ORCID}
+\todo{ORCID iDs of all authors.}
+
+\interlinepenalty=10000 % a reference entry is never split across pages
+\bibliographystyle{ws-vjcs}
+\bibliography{refs}
+
+\end{document}

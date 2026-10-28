@@ -1,0 +1,5 @@
+> Sinh tự động từ `latex/sections/conclusion.tex` ngày 28/10/2026 để đọc trên GitHub. Bản chuẩn là LaTeX; muốn sửa thì sửa tệp `.tex`.
+
+## 8. Conclusion
+
+For an assistant limited to commune-level procedures, the hard part of real citizen questions is deciding whether to answer at all. A system that looked strong on team-written questions answered 114 of the 248 real questions it should have refused. A small, transparent rule layer nearly doubled the end-to-end correct answers on a locked test set and kept its gain in refusals on a second one; neither a reranker nor a local 4B LLM reader significantly improved balanced or end-to-end accuracy, nor did two gates learned *post hoc* in place of the hand-written one, and letting the model decide was no better than always refusing. A second round of rules that looked better on development tied the first on new questions, and answers remain wrong more often than right on random traffic. Future work: confidence-based answering with human confirmation, procedure names proposed by the model while rules decide, a third locked set, and independent human annotation.
