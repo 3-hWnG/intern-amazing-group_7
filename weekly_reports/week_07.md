@@ -20,11 +20,11 @@ Mentor: Trương Long
 | Trịnh Hoàng Nhân | Baseline RAG + model 4B tự quyết; mẫu 100 câu cho lượt nhãn thứ hai (trưởng nhóm kiểm từng câu, κ = 0,685) | Kết luận không đổi khi dùng nhãn lượt hai |
 | Trịnh Hoàng Nhân | Bộ test thứ hai real_v4: khoá thứ tự, trưởng nhóm duyệt nhãn 400 câu, khoá nhãn; luật vòng 2 (đóng băng 88cabd6); chạy một lần | Vòng 2 hoà vòng 1 trên câu mới |
 | Trịnh Hoàng Nhân | Bản nháp bài 1 (System 3) và code công khai (nhánh paper1-vjcs-draft); JD cho thành viên làm bài 2; báo cáo tiến độ cho nhóm | Bản nháp cho nhóm đọc |
-| Phạm Lê Thiên Dấn | Không có commit trên các nhánh của nhóm trong tuần. | — |
+| Phạm Lê Thiên Dấn | Bài 2 (System 4), bước J1: khoá bản đầu của bộ mù real_v4_s4 (dữ liệu bảng, câu phần A và B, nhãn, sha256) trên nhánh JD-system4 | Bản khoá đầu; hoàn tất ở tuần 8 |
 
 ## Git Commits
 
-Tổng số commit trong tuần: 34 (Trịnh Hoàng Nhân: 31, Nguyễn Viết Hưng: 3, Phạm Lê Thiên Dấn: 0). Nhánh: exec/2026-10-19-audit-fixes, merge_sys_3_4, paper1-vjcs-draft, exec/2026-10-24-hard-questions (chưa đẩy). Bảng dưới chỉ liệt kê các commit tiêu biểu; danh sách đầy đủ xem bằng `git log --all` trên repo nhóm.
+Tổng số commit trong tuần: 35 (Trịnh Hoàng Nhân: 31, Nguyễn Viết Hưng: 3, Phạm Lê Thiên Dấn: 1). Nhánh: exec/2026-10-19-audit-fixes, merge_sys_3_4, paper1-vjcs-draft, JD-system4, exec/2026-10-24-hard-questions (chưa đẩy). Bảng dưới chỉ liệt kê các commit tiêu biểu; danh sách đầy đủ xem bằng `git log --all` trên repo nhóm.
 
 | Commit ID | Message | Author |
 |---|---|---|
@@ -37,6 +37,7 @@ Tổng số commit trong tuần: 34 (Trịnh Hoàng Nhân: 31, Nguyễn Viết H
 | 83b33b4 | eval(real_v2): second-pass labels for 100 test questions, agreement (kappa 0.685) and a rescoring check | Trịnh Hoàng Nhân |
 | a79ec5f | eval(real_v4): lock the labels of the second test set before the final run | Trịnh Hoàng Nhân |
 | 536d2be | eval(real_v4): one run of each configuration on the second locked test set | Trịnh Hoàng Nhân |
+| ea454a5 | eval: lock real_v4_s4 blind benchmark (data, cases A/B, labels, sha256) | Phạm Lê Thiên Dấn |
 | 18eab7e | docs: paper 1 (System 3) draft and code for the team to read | Trịnh Hoàng Nhân |
 
 ## Current Problems

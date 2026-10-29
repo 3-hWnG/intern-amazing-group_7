@@ -5,3 +5,5 @@ eval/real_v4/cases_*.json
 eval/results/
 __pycache__/
 *.db
+# DB thủ tục bản 3 mà bài báo dùng (dữ liệu công khai của Cổng DVC, không có dữ liệu cá nhân): phải có để chạy eval
+!data/runtime/knowledge/3-423eff02f8.db

@@ -13,9 +13,17 @@ Bản xuất được dựng bằng một script nội bộ của repo phát tri
   Mỗi câu chỉ còn mã câu và vị trí dòng (`labels/*.jsonl`). Để dựng lại văn bản, chạy `python run_server.py eval/rebuild_questions.py`.
 
   Đã kiểm ngày 25/10/2026: 956/958 câu dựng lại trùng khớp với bộ nhóm đã dùng. Hai câu còn lại khác nhau chỉ vì danh sách tên che tay đã bị bỏ (xem mục cuối).
-- **Dữ liệu thủ tục đã thu.** Dữ liệu từ Cổng Dịch vụ công Quốc gia, thu ngày 13/10/2026, gồm 1.517 thủ tục, không có trong bản này. Cổng không có API chính thức; dữ liệu được lấy qua các JSON endpoint công khai, không cần đăng nhập, mà chính trang web của cổng dùng, với tốc độ 2 yêu cầu/giây. Lược đồ ở `data/snapshot/schema_procedures.sql`; cách dựng DB ở `data/build.py`.
 - **Cache đầu ra của model, tệp Excel gán nhãn và log chạy.** Các tệp này có chứa văn bản câu hỏi.
 - **Danh sách 17 họ tên** tìm được khi đọc tay. Danh sách này đã bị xoá khỏi `eval/real_v1/collect_real_v1.py`.
+
+## Dữ liệu thủ tục (có trong bản này)
+
+`data/runtime/knowledge/3-423eff02f8.db` là DB thủ tục bản 3 mà mọi lượt đo của bài dùng. Các script trong `eval/hard/` mặc định đọc đúng đường dẫn này (biến `S3_DATA_DB`).
+
+- Nguồn: Cổng Dịch vụ công Quốc gia, thu ngày 13/10/2026, 1.517 thủ tục; trong đó 542 thủ tục cấp xã không theo tỉnh là phạm vi của bài. Dữ liệu công khai, không có dữ liệu cá nhân.
+- Cách thu: cổng không có API chính thức; dữ liệu được lấy qua các JSON endpoint công khai, không cần đăng nhập, mà chính trang web của cổng dùng, với tốc độ 2 yêu cầu/giây.
+- Kiểm tệp: sha256 của tệp `d9e8ced47ea3c4a36921f4a8da97466af605146ec0dccec9a01407cec534bb65`; `content_sha256` (băm theo nội dung, ghi trong `eval/real_v2/LOCK.md`) `70c42af175762bb5e91616ecf9f07cdef218ac557b195e7e00898bdafdaa36bd`.
+- Lược đồ ở `data/snapshot/schema_procedures.sql`.
 
 ## Ánh xạ với bài báo
 
@@ -47,7 +55,7 @@ Message của năm commit đã được sửa sau khi chạy; nội dung (tree) 
 ## Chạy
 
 1. Cài thư viện: `pip install -r requirements.txt`.
-2. Dựng DB thủ tục, xem `data/`.
+2. DB thủ tục có sẵn ở `data/runtime/knowledge/3-423eff02f8.db` (mục "Dữ liệu thủ tục" ở trên); không cần dựng lại.
 3. Dựng lại câu hỏi: `python run_server.py eval/rebuild_questions.py`.
 4. Chạy đánh giá trên dev: `python run_server.py eval/hard/dev.py`. Script dựng lại ở bước 3 ghi câu hỏi vào đúng chỗ mà `dev.py` và `--final real_v2|real_v4` đọc.
 
